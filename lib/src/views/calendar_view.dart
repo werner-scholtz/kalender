@@ -26,6 +26,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
     this.onEventChanged,
     this.onEventTapped,
     this.onCreateEvent,
+    this.onDateTapped,
     required this.eventTileBuilder,
     required this.multiDayEventTileBuilder,
     required this.monthEventTileBuilder,
@@ -50,6 +51,10 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [CalendarEvent] that is returned will be added to the [CalendarController].
   /// If null the event will not be created.
   final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)? onCreateEvent;
+
+  /// The [Function] called when a date is tapped.
+  ///
+  final void Function(DateTime date)? onDateTapped;
 
   /// This builder is used to build event's with a duration < 24 hours.
   final EventTileBuilder<T> eventTileBuilder;
@@ -134,6 +139,10 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
           onLeftArrowPressed: animateToPreviousPage,
           onDateSelectorPressed: _onDateSelectorPressed,
           onRightArrowPressed: animateToNextPage,
+          onDateTapped: widget.onDateTapped,
+          onCreateEvent: widget.onCreateEvent,
+          onEventChanged: widget.onEventChanged,
+          onEventTapped: widget.onEventTapped,
         ),
         style: const CalendarStyle(),
         state: _viewState,
