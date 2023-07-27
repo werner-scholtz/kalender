@@ -118,6 +118,11 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
 
   /// The vertical step duration.
   Duration get verticalDurationStep;
+
+  /// The size of the minute slots.
+  ///
+  /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
+  MinuteSlotSize get minuteSlotSize;
 }
 
 /// This is the base class for all [ViewType.multiDay]
@@ -129,6 +134,23 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
 
   /// The width of the timeline.
   double get timelineWidth;
+
+  /// The overlap of the hourlines and the timeline.
+  double get hourlineTimelineOverlap;
+
+  /// The height of the multiday tiles.
+  double get multidayTileHeight;
+
+  /// The vertical step duration.
+  Duration get verticalDurationStep;
+
+  /// The vertical step duration.
+  Duration get horizontalDurationStep;
+
+  /// The size of the minute slots.
+  ///
+  /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
+  MinuteSlotSize get minuteSlotSize;
 }
 
 /// This is the base class for all [ViewType.month]

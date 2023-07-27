@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({
@@ -8,6 +8,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
     this.verticalDurationStep = const Duration(minutes: 15),
+    this.minuteSlotSize = MinuteSlotSize.minute15,
   });
 
   @override
@@ -95,4 +96,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   @override
   final double multidayTileHeight;
+
+  @override
+  final MinuteSlotSize minuteSlotSize;
 }

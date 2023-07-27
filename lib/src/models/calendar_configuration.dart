@@ -21,7 +21,6 @@ class CalendarConfiguration {
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
-    this.minuteSlotSize = MinuteSlotSize.minute15,
   }) {
     this.isMobileDevice = isMobileDevice ?? kIsWeb ? false : (Platform.isIOS || Platform.isAndroid);
     assert(
@@ -75,9 +74,4 @@ class CalendarConfiguration {
   ///
   /// This will enable/disable the ability to create new events with the built in gestures.
   final bool createNewEvents;
-
-  /// The size of the minute slots.
-  ///
-  /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  final MinuteSlotSize minuteSlotSize;
 }

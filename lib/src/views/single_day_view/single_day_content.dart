@@ -105,7 +105,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                               dayWidth: dayWidth,
                               heightPerMinute: heightPerMinute,
                               visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: configuration.minuteSlotSize,
+                              minuteSlotSize: viewConfiguration.minuteSlotSize,
                             ),
                             Align(
                               alignment: Alignment.centerRight,
