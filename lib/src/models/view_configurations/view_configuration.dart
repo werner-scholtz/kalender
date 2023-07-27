@@ -19,7 +19,6 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   String get name;
 
-
   /// Calculates the width of each day.
   double calculateDayWidth(
     double pageWidth,
@@ -101,6 +100,18 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
 
   @override
   final ViewType viewType = ViewType.singleDay;
+
+  @override
+  double calculateDayWidth(double pageWidth) {
+    /// This is unnecessary for [ViewType.singleDay]
+    throw UnimplementedError();
+  }
+
+  /// The width of the timeline.
+  double get timelineWidth;
+
+  /// The overlap of the hourlines and the timeline.
+  double get hourlineTimelineOverlap;
 }
 
 /// This is the base class for all [ViewType.multiDay]
@@ -109,6 +120,9 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
 
   @override
   final ViewType viewType = ViewType.multiDay;
+
+  /// The width of the timeline.
+  double get timelineWidth;
 }
 
 /// This is the base class for all [ViewType.month]

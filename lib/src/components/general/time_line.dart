@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class TimelineStyle {
   const TimelineStyle({
@@ -32,7 +33,7 @@ class Timeline<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimelineStyle? timelineStyle = CalendarInternals.of(context).style.timelineStyle;
+    TimelineStyle? timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: hourHeight / 2),

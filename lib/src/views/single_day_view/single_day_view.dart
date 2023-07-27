@@ -1,63 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_components.dart';
-import 'package:kalender/src/models/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar_controller.dart';
-import 'package:kalender/src/models/calendar_functions.dart';
-import 'package:kalender/src/models/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
-import 'package:kalender/src/models/view_functions.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/views/single_day_view/single_day_content.dart';
+import 'package:kalender/src/views/single_day_view/single_day_header.dart';
 
-class SingleDayView<T extends Object?> extends StatefulWidget {
+class SingleDayView<T extends Object?> extends StatelessWidget {
   const SingleDayView({
     super.key,
-    required this.controller,
     required this.viewConfiguration,
-    this.initialDate,
-    this.dateTimeRange,
   });
 
-  final CalendarController<T> controller;
   final SingleDayViewConfiguration viewConfiguration;
-  final DateTime? initialDate;
-  final DateTimeRange? dateTimeRange;
-
-  @override
-  State<SingleDayView<T>> createState() => _SingleDayViewState<T>();
-}
-
-class _SingleDayViewState<T extends Object?> extends State<SingleDayView<T>> with ViewFunctions {
-  CalendarController<T>? _controller;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_controller != widget.controller) {
-      _controller = widget.controller;
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant SingleDayView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (_controller != widget.controller) {
-      _controller = widget.controller;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return CalendarInternals<T>(
-      components: CalendarComponents<T>(),
-      configuration: CalendarConfiguration(),
-      functions: CalendarFunctions<T>(),
-      style: const CalendarStyle(),
-      child: Container(),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        // Calculate the width of the day.
+        double dayWidth = constraints.maxWidth - viewConfiguration.timelineWidth;
+
+        return Column(
+          children: <Widget>[
+            SingleDayHeader<T>(
+              dayWidth: dayWidth,
+              viewConfiguration: viewConfiguration,
+            ),
+            SingleDayContent<T>(
+              dayWidth: dayWidth,
+              viewConfiguration: viewConfiguration,
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -3,7 +3,10 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class DayConfiguration extends SingleDayViewConfiguration {
-  const DayConfiguration();
+  const DayConfiguration({
+    this.timelineWidth = 56,
+    this.hourlineTimelineOverlap = 8,
+  });
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(
@@ -31,13 +34,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
     DateTime startDate,
   ) {
     return date.difference(startDate).inDays;
-  }
-
-  @override
-  double calculateDayWidth(
-    double pageWidth,
-  ) {
-    return pageWidth;
   }
 
   @override
@@ -85,4 +81,10 @@ class DayConfiguration extends SingleDayViewConfiguration {
     }
     return visibleDateTimeRange;
   }
+
+  @override
+  final double timelineWidth;
+
+  @override
+  final double hourlineTimelineOverlap;
 }

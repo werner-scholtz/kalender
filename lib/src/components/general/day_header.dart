@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
 import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class DayHeaderStyle {
   const DayHeaderStyle({
@@ -44,7 +45,7 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DayHeaderStyle? dayHeaderStyle = CalendarInternals.of(context).style.dayHeaderStyle;
+    DayHeaderStyle? dayHeaderStyle = CalendarStyleProvider.of(context).style.dayHeaderStyle;
     return Padding(
       padding: dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
       child: Center(

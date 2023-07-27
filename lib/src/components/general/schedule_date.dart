@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
 import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
+
 
 class ScheduleDateStyle {
   const ScheduleDateStyle({
@@ -40,7 +42,8 @@ class ScheduleDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScheduleDateStyle? scheduleDateStyle = CalendarInternals.of(context).style.scheduleDateStyle;
+    ScheduleDateStyle? scheduleDateStyle =
+        CalendarStyleProvider.of(context).style.scheduleDateStyle;
     if (CalendarInternals.of(context).configuration.isMobileDevice) {
       // If the device is mobile, the date is displayed vertically.
       return Padding(

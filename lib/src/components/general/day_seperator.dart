@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class DaySeperatorStyle {
   const DaySeperatorStyle({
@@ -14,8 +15,8 @@ class DaySeperatorStyle {
   final Color? color;
 }
 
-class DefaultDaySeperator extends StatelessWidget {
-  const DefaultDaySeperator({
+class DaySeperator extends StatelessWidget {
+  const DaySeperator({
     super.key,
     required this.pageHeight,
     required this.dayWidth,
@@ -50,8 +51,8 @@ class DefaultDaySeperator extends StatelessWidget {
               children: <Widget>[
                 Container(
                   height: pageHeight,
-                  width: CalendarInternals.of(context).style.daySeperatorStyle?.thickness ?? 1,
-                  color: CalendarInternals.of(context).style.daySeperatorStyle?.color ??
+                  width: CalendarStyleProvider.of(context).style.daySeperatorStyle?.thickness ?? 1,
+                  color: CalendarStyleProvider.of(context).style.daySeperatorStyle?.color ??
                       Theme.of(context).colorScheme.surfaceVariant,
                 ),
               ],

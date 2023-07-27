@@ -6,4 +6,5 @@ final DateTimeRange defaultDateRange = DateTimeRange(
 );
 
 const int hoursADay = 24;
+const int minutesAnHour = 60;
 const int minutesADay = 1440;

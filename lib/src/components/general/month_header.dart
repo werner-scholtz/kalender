@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
-
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class MonthHeaderStyle {
   const MonthHeaderStyle({
@@ -39,7 +39,7 @@ class MonthCellHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MonthHeaderStyle? monthHeaderStyle = CalendarInternals.of(context).style.monthHeaderStyle;
+    MonthHeaderStyle? monthHeaderStyle = CalendarStyleProvider.of(context).style.monthHeaderStyle;
     return SizedBox(
       width: dayWidth,
       child: Padding(

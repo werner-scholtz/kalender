@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class TimeIndicatorStyle {
   const TimeIndicatorStyle({
@@ -63,7 +64,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   void didChangeDependencies() {
-    circleRadius = CalendarInternals.of(context).style.timeIndicatorStyle?.circleRadius ?? 9;
+    circleRadius = CalendarStyleProvider.of(context).style.timeIndicatorStyle?.circleRadius ?? 9;
     super.didChangeDependencies();
   }
 
