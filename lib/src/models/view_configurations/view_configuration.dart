@@ -95,18 +95,4 @@ abstract class ViewConfiguration {
 }
 
 
-/// This is the base class for all [ViewType.month]
-abstract class MonthViewConfiguration implements ViewConfiguration {
-  const MonthViewConfiguration();
 
-  @override
-  final ViewType viewType = ViewType.month;
-}
-
-/// This is the base class for all [ViewType.schedule]
-abstract class ScheduleViewConfiguration implements ViewConfiguration {
-  const ScheduleViewConfiguration();
-
-  @override
-  final ViewType viewType = ViewType.schedule;
-}
