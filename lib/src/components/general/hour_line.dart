@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 class HourLineStyle {

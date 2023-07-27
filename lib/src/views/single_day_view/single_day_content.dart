@@ -37,7 +37,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
         return Expanded(
           child: SingleChildScrollView(
             child: Stack(
-              children: [
+              children: <Widget>[
                 components.timelineBuilder(
                   viewConfiguration.timelineWidth,
                   pageHeight,
@@ -61,7 +61,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                           configuration.firstDayOfWeek,
                         );
 
-                        TileLayoutController<T> tileLayoutController = TileLayoutController(
+                        TileLayoutController<T> tileLayoutController = TileLayoutController<T>(
                           visibleDateRange: pageVisibleDateRange,
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
@@ -71,7 +71,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
 
                         return Stack(
                           fit: StackFit.expand,
-                          children: [
+                          children: <Widget>[
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
