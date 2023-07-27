@@ -108,10 +108,10 @@ class CalendarEvent<T extends Object?> with ChangeNotifier {
         end == date.endOfDay;
   }
 
-  Map<String, dynamic> toJson() => {
-        "Start": start,
-        "End": end,
-        "Event": eventData.toString(),
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'Start': start,
+        'End': end,
+        'Event': eventData.toString(),
       };
 
   CalendarEvent<T> copyWith({

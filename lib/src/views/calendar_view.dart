@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';

@@ -28,7 +28,7 @@ class CalendarViewHeader<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isMobileDevice = CalendarInternals.of<T>(context).configuration.isMobileDevice;
     return Row(
-      children: [
+      children: <Widget>[
         Builder(
           builder: (BuildContext context) {
             if (currentPageConfiguration.viewType == ViewType.schedule) {
@@ -59,7 +59,7 @@ class CalendarViewHeader<T extends Object?> extends StatelessWidget {
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: isMobileDevice ? 0 : 2),
                 child: IconButton.filledTonal(

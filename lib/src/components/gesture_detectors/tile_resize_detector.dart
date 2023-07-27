@@ -62,7 +62,7 @@ class _TileResizeDetectorState extends State<TileResizeDetector> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
-        children: [
+        children: <Widget>[
           widget.disableTop
               ? const SizedBox.shrink()
               : MouseRegion(
@@ -122,7 +122,7 @@ class _TileResizeDetectorState extends State<TileResizeDetector> {
       DateTime newStart = initialDateTimeRange.start.add(widget.verticalDurationStep * steps);
 
       int index = snapPoints.indexWhere(
-        (element) => element.difference(newStart).abs() <= const Duration(minutes: 15),
+        (DateTime element) => element.difference(newStart).abs() <= const Duration(minutes: 15),
       );
 
       if (index != -1) {
@@ -142,7 +142,7 @@ class _TileResizeDetectorState extends State<TileResizeDetector> {
       DateTime newEnd = initialDateTimeRange.end.add(widget.verticalDurationStep * steps);
 
       int index = snapPoints.indexWhere(
-        (element) => element.difference(newEnd).abs() <= const Duration(minutes: 15),
+        (DateTime element) => element.difference(newEnd).abs() <= const Duration(minutes: 15),
       );
 
       if (index != -1) {

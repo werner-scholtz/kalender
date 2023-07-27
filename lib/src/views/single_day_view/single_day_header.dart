@@ -41,7 +41,7 @@ class SingleDayHeader<T extends Object?> extends StatelessWidget {
                 children: <Widget>[
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       SizedBox(
                         width: viewConfiguration.timelineWidth,
                         child: internalData.components.dayHeaderBuilder(

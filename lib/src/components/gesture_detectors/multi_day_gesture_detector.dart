@@ -4,7 +4,6 @@ import 'package:kalender/src/models/calendar_controller.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
-
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   const MultiDayGestureDetector({
     super.key,
@@ -72,11 +71,11 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   Widget build(BuildContext context) {
     final bool isMobileDevice = CalendarInternals.of<T>(context).configuration.isMobileDevice;
     return Column(
-      children: [
-        for (var r = 0; r < numberOfRows; r++)
+      children: <Widget>[
+        for (int r = 0; r < numberOfRows; r++)
           Row(
-            children: [
-              for (var c = 0; c < numberOfColums; c++)
+            children: <Widget>[
+              for (int c = 0; c < numberOfColums; c++)
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: SizedBox(
@@ -85,10 +84,12 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
                     child: GestureDetector(
                       onTap: () => _onTap(visibleDates[c].dayRange),
                       onHorizontalDragStart: !isMobileDevice
-                          ? (details) => _onHorizontalDragStart(details, visibleDates[c].dayRange)
+                          ? (DragStartDetails details) =>
+                              _onHorizontalDragStart(details, visibleDates[c].dayRange)
                           : null,
                       onHorizontalDragUpdate: !isMobileDevice
-                          ? (details) => _onHorizontalDragUpdate(details, visibleDates[c].dayRange)
+                          ? (DragUpdateDetails details) =>
+                              _onHorizontalDragUpdate(details, visibleDates[c].dayRange)
                           : null,
                       onHorizontalDragEnd: !isMobileDevice ? _onHorizontalDragEnd : null,
                       child: Container(

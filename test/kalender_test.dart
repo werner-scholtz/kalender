@@ -93,11 +93,11 @@ void testDateTimeRangeExtentions() {
     });
 
     test('datesSpanned', () {
-      expect(d2Range.datesSpanned, [
+      expect(d2Range.datesSpanned, <DateTime>[
         DateTime(2021, 1, 1),
         DateTime(2021, 1, 2),
       ]);
-      expect(d7Range.datesSpanned, [
+      expect(d7Range.datesSpanned, <DateTime>[
         DateTime(2021, 1, 1),
         DateTime(2021, 1, 2),
         DateTime(2021, 1, 3),
@@ -106,7 +106,7 @@ void testDateTimeRangeExtentions() {
         DateTime(2021, 1, 6),
         DateTime(2021, 1, 7),
       ]);
-      expect(d8Range.datesSpanned, [
+      expect(d8Range.datesSpanned, <DateTime>[
         DateTime(2021, 1, 1),
         DateTime(2021, 1, 2),
         DateTime(2021, 1, 3),

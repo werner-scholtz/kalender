@@ -86,7 +86,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
     Iterable<CalendarEvent<T>> eventsInDateTimeRange = getDayEventsFromDateRange(dateRange);
-    List<DateTime> snapPoints = [];
+    List<DateTime> snapPoints = <DateTime>[];
     for (CalendarEvent<T> event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
       snapPoints.add(event.end);

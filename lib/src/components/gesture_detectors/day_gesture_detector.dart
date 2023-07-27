@@ -200,7 +200,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
   /// Creates a new event on mobile.
   void createNewEventMobile(DateTimeRange dateTimeRange) async {
-    CalendarEvent<T> displayEvent = CalendarEvent(
+    CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
 

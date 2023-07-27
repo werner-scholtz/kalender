@@ -40,9 +40,9 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
                   Row(
-                    children: [
+                    children: <Widget>[
                       SizedBox(
                         width: viewConfiguration.timelineWidth,
                         child: Center(

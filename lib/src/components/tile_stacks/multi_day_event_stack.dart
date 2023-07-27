@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
@@ -48,18 +46,17 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
           int numberOfRows = multiDayEventLayout.stackHeight ~/ multiDayEventLayout.tileHeight;
           double stackHeight = multiDayEventLayout.stackHeight;
 
-
           return SizedBox(
             width: pageWidth,
             height: stackHeight,
             child: Stack(
-              children: [
+              children: <Widget>[
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                      children: <Widget>[
                         components.daySepratorBuilder(
                           15,
                           dayWidth,
@@ -139,7 +136,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
       builder: (BuildContext context, Widget? child) {
         bool isMoving = controller.chaningEvent == arragnedEvent.event;
         return Stack(
-          children: [
+          children: <Widget>[
             Positioned(
               top: arragnedEvent.top,
               left: arragnedEvent.left,

@@ -37,7 +37,7 @@ class MultiDayLayoutController<T extends Object?> {
       }
     }
 
-    List<PositionedMultiDayTileData<T>> arrangedEvents = [];
+    List<PositionedMultiDayTileData<T>> arrangedEvents = <PositionedMultiDayTileData<T>>[];
     void addArrangedEvent(PositionedMultiDayTileData<T> arragnedEvent) {
       if (arrangedEvents.contains(arragnedEvent)) return;
       arrangedEvents.add(arragnedEvent);
@@ -60,8 +60,10 @@ class MultiDayLayoutController<T extends Object?> {
               .any((DateTime date) => datesFilled.contains(date));
         },
       ).toList()
-        ..sort((PositionedMultiDayTileData<T> a, PositionedMultiDayTileData<T> b) =>
-            a.top.compareTo(b.top));
+        ..sort(
+          (PositionedMultiDayTileData<T> a, PositionedMultiDayTileData<T> b) =>
+              a.top.compareTo(b.top),
+        );
 
       double top = 0;
       if (arragedEventsAbove.isNotEmpty) {

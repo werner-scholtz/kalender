@@ -42,7 +42,7 @@ class DateTimeTestObject {
   final DateTimeRange yearRange;
 }
 
-List<DateTimeTestObject> dateTimeTestObjects = [
+List<DateTimeTestObject> dateTimeTestObjects = <DateTimeTestObject>[
   DateTimeTestObject(
     date: DateTime(2020, 1, 1),
     weekNumber: 1,

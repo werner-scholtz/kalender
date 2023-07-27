@@ -52,7 +52,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
         );
 
         // The list of snap points.
-        List<DateTime> snapPoints = [];
+        List<DateTime> snapPoints = <DateTime>[];
         if (configuration.eventSnapping) {
           snapPoints.addAll(
             controller.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
@@ -129,7 +129,7 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
       child: RepaintBoundary(
         child: Stack(
           fit: StackFit.expand,
-          children: [
+          children: <Widget>[
             ...tileGroup.tilePositionData.map(
               (PositionedTileData<T> positionedTileData) => PositionedTile<T>(
                 controller: controller,
@@ -216,7 +216,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
       height: positionedTileData.height,
       child: Stack(
         fit: StackFit.expand,
-        children: [
+        children: <Widget>[
           TileGestureDetector(
             horizontalDurationStep: horizontalDurationStep,
             verticalDurationStep: verticalDurationStep,
