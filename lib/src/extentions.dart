@@ -23,7 +23,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// A list of [DateTime]s that the [DateTimeRange] spannes.
   List<DateTime> get datesSpanned {
-    List<DateTime> dates = [];
+    List<DateTime> dates = <DateTime>[];
     for (int i = 0; i < dayDifference; i++) {
       DateTime date = start.add(Duration(days: i));
       dates.add(DateTime(date.year, date.month, date.day));
@@ -116,4 +116,10 @@ extension DateTimeExtentions on DateTime {
 
   /// Returns 'HH:mm' formatted [String] of the [DateTime].
   String get timeString => DateFormat('HH:mm').format(this);
+
+  /// Gets the week number of date.
+  int get weekNumber {
+    int dayOfYear = int.parse(DateFormat('D').format(this));
+    return ((dayOfYear - weekday + 10) / 7).floor();
+  }
 }

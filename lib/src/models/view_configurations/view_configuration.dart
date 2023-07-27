@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 
-/// This is the base class for all [_ViewConfiguration]s.
+/// This is the base class for all [ViewConfiguration]s.
 ///
 ///
-abstract class _ViewConfiguration {
-  const _ViewConfiguration();
+abstract class ViewConfiguration {
+  const ViewConfiguration();
 
-  /// The [ViewType] of this [_ViewConfiguration].
+  /// The [ViewType] of this [ViewConfiguration].
   /// This determines which [CalendarView] is used.
   ///
   /// [ViewType.singleDay]
@@ -16,8 +16,9 @@ abstract class _ViewConfiguration {
   /// [ViewType.schedule]
   ViewType get viewType;
 
-  /// The name of the [_ViewConfiguration].
+  /// The name of the [ViewConfiguration].
   String get name;
+
 
   /// Calculates the width of each day.
   double calculateDayWidth(
@@ -95,7 +96,7 @@ abstract class _ViewConfiguration {
 }
 
 /// This is the base class for all [ViewType.singleDay]
-abstract class SingleDayViewConfiguration implements _ViewConfiguration {
+abstract class SingleDayViewConfiguration implements ViewConfiguration {
   const SingleDayViewConfiguration();
 
   @override
@@ -103,7 +104,7 @@ abstract class SingleDayViewConfiguration implements _ViewConfiguration {
 }
 
 /// This is the base class for all [ViewType.multiDay]
-abstract class MultiDayViewConfiguration implements _ViewConfiguration {
+abstract class MultiDayViewConfiguration implements ViewConfiguration {
   const MultiDayViewConfiguration();
 
   @override
@@ -111,7 +112,7 @@ abstract class MultiDayViewConfiguration implements _ViewConfiguration {
 }
 
 /// This is the base class for all [ViewType.month]
-abstract class MonthViewConfiguration implements _ViewConfiguration {
+abstract class MonthViewConfiguration implements ViewConfiguration {
   const MonthViewConfiguration();
 
   @override
@@ -119,7 +120,7 @@ abstract class MonthViewConfiguration implements _ViewConfiguration {
 }
 
 /// This is the base class for all [ViewType.schedule]
-abstract class ScheduleViewConfiguration implements _ViewConfiguration {
+abstract class ScheduleViewConfiguration implements ViewConfiguration {
   const ScheduleViewConfiguration();
 
   @override
