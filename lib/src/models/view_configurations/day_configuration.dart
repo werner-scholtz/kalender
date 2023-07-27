@@ -61,14 +61,12 @@ class DayConfiguration extends SingleDayViewConfiguration {
     DateTime calendarStart,
     int firstDayOfWeek,
   ) {
-    // TODO: implement calculateVisibleDateRangeForIndex
-    throw UnimplementedError();
+    return calendarStart.add(Duration(days: index)).dayRange;
   }
 
   @override
   DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
-    // TODO: implement getHighlighedDate
-    throw UnimplementedError();
+    return visibleDateRange.start;
   }
 
   @override
@@ -80,7 +78,11 @@ class DayConfiguration extends SingleDayViewConfiguration {
     DateTimeRange visibleDateTimeRange,
     int firstDayOfWeek,
   ) {
-    // TODO: implement regulateVisibleDateTimeRange
-    throw UnimplementedError();
+    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
+      return dateTimeRange.start.dayRange;
+    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
+      return dateTimeRange.end.dayRange;
+    }
+    return visibleDateTimeRange;
   }
 }
