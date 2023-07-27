@@ -4,8 +4,8 @@ import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_dete
 import 'package:kalender/src/components/gesture_detectors/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_multi_day_event_stack.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar_components.dart';
-import 'package:kalender/src/models/calendar_state.dart';
+import 'package:kalender/src/models/calendar/calendar_components.dart';
+import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 class CalendarController<T extends Object?> with ChangeNotifier {
   CalendarController();

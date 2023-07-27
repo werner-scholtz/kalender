@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar_controller.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {

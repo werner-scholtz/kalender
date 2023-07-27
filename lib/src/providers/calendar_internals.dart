@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_components.dart';
-import 'package:kalender/src/models/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar_functions.dart';
-import 'package:kalender/src/models/calendar_state.dart';
-import 'package:kalender/src/models/calendar_style.dart';
+import 'package:kalender/src/models/calendar/calendar_components.dart';
+import 'package:kalender/src/models/calendar/calendar_configuration.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_state.dart';
+import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 class CalendarInternals<T extends Object?> extends InheritedWidget {
   const CalendarInternals({

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed on calendar's page.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
@@ -90,7 +91,7 @@ typedef PressDetectorBuilder = Widget Function(
   double width,
   double heightPerMinute,
   double dayWidth,
-  MinuteSlotSize minuteSlotSize,
+  SlotSize minuteSlotSize,
   void Function(DateTimeRange dateTimeRange)? onTap,
   void Function(DateTimeRange dateTimeRange)? onVerticalDragStart,
   VoidCallback? onVerticalDragEnd,

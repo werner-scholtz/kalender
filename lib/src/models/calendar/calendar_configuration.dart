@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/view_configurations/four_day_configuration.dart';
+import 'package:kalender/src/models/view_configurations/three_day_configuration.dart';
 import 'package:kalender/src/models/view_configurations/week_configuration.dart';
+import 'package:kalender/src/models/view_configurations/work_week_configuration.dart';
 
 class CalendarConfiguration {
   CalendarConfiguration({
@@ -16,6 +19,9 @@ class CalendarConfiguration {
     this.viewConfigurations = const <ViewConfiguration>[
       DayConfiguration(),
       WeekConfiguration(),
+      WorkWeekConfiguration(),
+      ThreeDayConfiguration(),
+      FourDayConfiguration(),
     ],
     this.scrollPhysics,
     this.pageTransitionDuration = const Duration(milliseconds: 300),

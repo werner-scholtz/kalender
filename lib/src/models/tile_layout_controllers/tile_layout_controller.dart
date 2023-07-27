@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// The [TileLayoutController] is used to arrange [EventTile]'s.
 class TileLayoutController<T extends Object?> {

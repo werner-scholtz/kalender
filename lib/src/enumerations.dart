@@ -29,11 +29,17 @@ enum TileType {
   selected,
 }
 
-enum MinuteSlotSize {
+/// The size of a slot in minutes.
+enum SlotSize {
+  /// A slot size of 15 minutes.
   minute15(15),
+
+  /// A slot size of 30 minutes.
   minute30(30),
+
+  /// A slot size of 60 minutes.
   minute60(60);
 
-  const MinuteSlotSize(this.minutes);
+  const SlotSize(this.minutes);
   final int minutes;
 }

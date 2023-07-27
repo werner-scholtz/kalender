@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 
 /// Provides a [CalendarController] to all descendants of this Widget.
 class CalendarControllerProvider<T extends Object?> extends InheritedWidget {

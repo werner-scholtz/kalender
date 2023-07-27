@@ -3,11 +3,11 @@ import 'package:kalender/src/components/gesture_detectors/tile_gesture_detector.
 import 'package:kalender/src/components/gesture_detectors/tile_resize_detector.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar_controller.dart';
-import 'package:kalender/src/models/calendar_event.dart';
-import 'package:kalender/src/models/calendar_functions.dart';
-import 'package:kalender/src/models/calendar_state.dart';
+import 'package:kalender/src/models/calendar/calendar_configuration.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/typedefs.dart';

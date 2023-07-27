@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_style.dart';
+import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 class CalendarStyleProvider extends InheritedWidget {
   const CalendarStyleProvider({

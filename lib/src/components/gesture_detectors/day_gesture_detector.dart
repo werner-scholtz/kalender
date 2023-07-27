@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar_controller.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/extentions.dart';
 
@@ -22,7 +22,7 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final double dayWidth;
   final double heightPerMinute;
   final DateTimeRange visibleDateRange;
-  final MinuteSlotSize minuteSlotSize;
+  final SlotSize minuteSlotSize;
 
   @override
   State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
@@ -34,7 +34,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   late double height;
   late double dayWidth;
   late List<DateTime> visibleDates;
-  late MinuteSlotSize minuteSlotSize;
+  late SlotSize minuteSlotSize;
   late double heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
 

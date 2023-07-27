@@ -122,7 +122,7 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   /// The size of the minute slots.
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  MinuteSlotSize get minuteSlotSize;
+  SlotSize get minuteSlotSize;
 }
 
 /// This is the base class for all [ViewType.multiDay]
@@ -150,7 +150,7 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
   /// The size of the minute slots.
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  MinuteSlotSize get minuteSlotSize;
+  SlotSize get minuteSlotSize;
 
   /// Paint the week number.
   bool get paintWeekNumber;
