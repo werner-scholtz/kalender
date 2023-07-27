@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-class FourDayConfiguration extends MultiDayViewConfiguration {
-  const FourDayConfiguration({
+class ThreeDayConfiguration extends MultiDayViewConfiguration {
+  const ThreeDayConfiguration({
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
@@ -36,11 +36,11 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
   final bool paintWeekNumber;
 
   @override
-  final String name = 'Four Day';
+  final String name = 'Three Day';
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
-    return date.fourDayRange;
+    return date.threeDayRange;
   }
 
   @override
@@ -51,32 +51,32 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
   ) {
     return DateTimeRange(
       start: visibleStart.startOfDay.subtract(
-        Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 4).ceil() * 4),
+        Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 3).ceil() * 3),
       ),
       end: visibleStart.startOfDay.add(
-        Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 4).ceil() * 4),
+        Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 3).ceil() * 3),
       ),
     );
   }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ 4;
+    return date.difference(startDate).inDays ~/ 3;
   }
 
   @override
   double calculateDayWidth(double pageWidth) {
-    return (pageWidth / 4);
+    return (pageWidth / 3);
   }
 
   @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return visibleStart.difference(calendarStart).inDays ~/ 4;
+    return visibleStart.difference(calendarStart).inDays ~/ 3;
   }
 
   @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ 4;
+    return calendarDateTimeRange.dayDifference ~/ 3;
   }
 
   @override
@@ -88,8 +88,8 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
     return DateTime(
       calendarStart.year,
       calendarStart.month,
-      calendarStart.day + (index * 4),
-    ).fourDayRange;
+      calendarStart.day + (index * 3),
+    ).threeDayRange;
   }
 
   @override
@@ -104,9 +104,9 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
     int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.fourDayRange;
+      return dateTimeRange.start.threeDayRange;
     } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.fourDayRange;
+      return dateTimeRange.end.threeDayRange;
     }
     return visibleDateTimeRange;
   }

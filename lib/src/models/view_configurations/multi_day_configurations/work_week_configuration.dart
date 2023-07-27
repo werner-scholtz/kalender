@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-class ThreeDayConfiguration extends MultiDayViewConfiguration {
-  const ThreeDayConfiguration({
+class WorkWeekConfiguration extends MultiDayViewConfiguration {
+  const WorkWeekConfiguration({
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
@@ -36,47 +36,46 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
   final bool paintWeekNumber;
 
   @override
-  final String name = 'Three Day';
+  final String name = 'Work Week';
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
-    return date.threeDayRange;
-  }
-
-  @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  ) {
+    DateTimeRange weekRange = date.weekRangeWithOffset(firstDayOfWeek);
     return DateTimeRange(
-      start: visibleStart.startOfDay.subtract(
-        Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 3).ceil() * 3),
-      ),
-      end: visibleStart.startOfDay.add(
-        Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 3).ceil() * 3),
+      start: weekRange.start,
+      end: weekRange.end.subtract(
+        const Duration(days: 2),
       ),
     );
   }
 
   @override
+  DateTimeRange calculateAdjustedDateTimeRange(
+      DateTimeRange dateTimeRange, DateTime visibleStart, int firstDayOfWeek) {
+    return DateTimeRange(
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
+    );
+  }
+
+  @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ 3;
+    return date.difference(startDate).inDays ~/ DateTime.daysPerWeek;
   }
 
   @override
   double calculateDayWidth(double pageWidth) {
-    return (pageWidth / 3);
+    return (pageWidth / 5);
   }
 
   @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return visibleStart.difference(calendarStart).inDays ~/ 3;
+    return (visibleStart.difference(calendarStart).inDays / DateTime.daysPerWeek).floor();
   }
 
   @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ 3;
+    return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
   }
 
   @override
@@ -85,11 +84,18 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
     DateTime calendarStart,
     int firstDayOfWeek,
   ) {
-    return DateTime(
+    DateTimeRange weekRange = DateTime(
       calendarStart.year,
       calendarStart.month,
-      calendarStart.day + (index * 3),
-    ).threeDayRange;
+      calendarStart.day + (index * DateTime.daysPerWeek),
+    ).weekRangeWithOffset(firstDayOfWeek);
+
+    return DateTimeRange(
+      start: weekRange.start,
+      end: weekRange.end.subtract(
+        const Duration(days: 2),
+      ),
+    );
   }
 
   @override
@@ -104,9 +110,9 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
     int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.threeDayRange;
+      return dateTimeRange.start.weekRangeWithOffset(firstDayOfWeek);
     } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.threeDayRange;
+      return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
     }
     return visibleDateTimeRange;
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
 class CalendarViewHeader<T extends Object?> extends StatelessWidget {

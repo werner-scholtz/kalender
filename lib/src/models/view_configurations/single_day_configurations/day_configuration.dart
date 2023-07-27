@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
 
 class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({

@@ -10,7 +10,7 @@ import 'package:kalender/src/models/calendar/calendar_configuration.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
 class SingleDayContent<T extends Object?> extends StatelessWidget {

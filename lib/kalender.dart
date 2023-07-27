@@ -11,8 +11,7 @@ export 'package:kalender/src/models/calendar/calendar_event.dart';
 export 'package:kalender/src/views/calendar_view.dart';
 
 /// View Configurations
-export 'package:kalender/src/models/view_configurations/view_configuration.dart';
-export 'package:kalender/src/models/view_configurations/day_configuration.dart';
+export 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 
 /// Enums
 export 'package:kalender/src/enumerations.dart';

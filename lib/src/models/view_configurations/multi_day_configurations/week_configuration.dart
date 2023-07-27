@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-class WorkWeekConfiguration extends MultiDayViewConfiguration {
-  const WorkWeekConfiguration({
+class WeekConfiguration extends MultiDayViewConfiguration {
+  const WeekConfiguration({
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
@@ -13,6 +13,75 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
   });
+
+  @override
+  DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
+    return date.weekRangeWithOffset(firstDayOfWeek);
+  }
+
+  @override
+  DateTimeRange calculateAdjustedDateTimeRange(
+    DateTimeRange dateTimeRange,
+    DateTime visibleStart,
+    int firstDayOfWeek,
+  ) {
+    return DateTimeRange(
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
+    );
+  }
+
+  @override
+  int calculateDateIndex(DateTime date, DateTime startDate) {
+    return date.difference(startDate).inDays ~/ DateTime.daysPerWeek;
+  }
+
+  @override
+  double calculateDayWidth(double pageWidth) {
+    return (pageWidth / DateTime.daysPerWeek);
+  }
+
+  @override
+  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
+    return (visibleStart.difference(calendarStart).inDays / DateTime.daysPerWeek).floor();
+  }
+
+  @override
+  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
+    return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
+  }
+
+  @override
+  DateTimeRange calculateVisibleDateRangeForIndex(
+    int index,
+    DateTime calendarStart,
+    int firstDayOfWeek,
+  ) {
+    return DateTime(
+      calendarStart.year,
+      calendarStart.month,
+      calendarStart.day + (index * DateTime.daysPerWeek),
+    ).weekRangeWithOffset(firstDayOfWeek);
+  }
+
+  @override
+  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
+    return visibleDateRange.start;
+  }
+
+  @override
+  DateTimeRange regulateVisibleDateTimeRange(
+    DateTimeRange dateTimeRange,
+    DateTimeRange visibleDateTimeRange,
+    int firstDayOfWeek,
+  ) {
+    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
+      return dateTimeRange.start.weekRangeWithOffset(firstDayOfWeek);
+    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
+      return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
+    }
+    return visibleDateTimeRange;
+  }
 
   @override
   final double timelineWidth;
@@ -36,84 +105,5 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   final bool paintWeekNumber;
 
   @override
-  final String name = 'Work Week';
-
-  @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
-    DateTimeRange weekRange = date.weekRangeWithOffset(firstDayOfWeek);
-    return DateTimeRange(
-      start: weekRange.start,
-      end: weekRange.end.subtract(
-        const Duration(days: 2),
-      ),
-    );
-  }
-
-  @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-      DateTimeRange dateTimeRange, DateTime visibleStart, int firstDayOfWeek) {
-    return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
-    );
-  }
-
-  @override
-  int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ DateTime.daysPerWeek;
-  }
-
-  @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / 5);
-  }
-
-  @override
-  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return (visibleStart.difference(calendarStart).inDays / DateTime.daysPerWeek).floor();
-  }
-
-  @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
-  }
-
-  @override
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  ) {
-    DateTimeRange weekRange = DateTime(
-      calendarStart.year,
-      calendarStart.month,
-      calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek);
-
-    return DateTimeRange(
-      start: weekRange.start,
-      end: weekRange.end.subtract(
-        const Duration(days: 2),
-      ),
-    );
-  }
-
-  @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-    int firstDayOfWeek,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.weekRangeWithOffset(firstDayOfWeek);
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
-    }
-    return visibleDateTimeRange;
-  }
+  final String name = 'Week';
 }

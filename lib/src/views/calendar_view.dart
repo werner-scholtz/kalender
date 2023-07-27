@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_state.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
+import 'package:kalender/src/models/calendar/calendar_model_export.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/providers/calendar_controller_provider.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
@@ -17,6 +11,8 @@ import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 import 'package:kalender/src/views/single_day_view/single_day_view.dart';
+
+import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
   const CalendarView({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/views/single_day_view/single_day_content.dart';
 import 'package:kalender/src/views/single_day_view/single_day_header.dart';
+import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
 
 class SingleDayView<T extends Object?> extends StatelessWidget {
   const SingleDayView({

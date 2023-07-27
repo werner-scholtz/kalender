@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/general/calendar_header.dart';
 import 'package:kalender/src/components/general/day_header.dart';
 import 'package:kalender/src/components/general/day_seperator.dart';
@@ -7,6 +6,7 @@ import 'package:kalender/src/components/general/hour_line.dart';
 import 'package:kalender/src/components/general/schedule_date.dart';
 import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/typedefs.dart';
 
 class CalendarComponents<T extends Object?> {
