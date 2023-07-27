@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
+import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
+import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar_components.dart';
@@ -21,11 +24,11 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internalData = CalendarInternals.of<T>(context);
-    CalendarComponents<T> components = internalData.components;
-    CalendarFunctions<T> functions = internalData.functions;
-    CalendarViewState state = internalData.state;
-    CalendarConfiguration configuration = internalData.configuration;
+    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
+    CalendarComponents<T> components = internals.components;
+    CalendarFunctions<T> functions = internals.functions;
+    CalendarViewState state = internals.state;
+    CalendarConfiguration configuration = internals.configuration;
 
     return ValueListenableBuilder<double>(
       valueListenable: state.heightPerMinute,
@@ -33,6 +36,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
         double pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
+        double verticalStep = heightPerMinute * viewConfiguration.verticalDurationStep.inMinutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -75,7 +79,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
-                                width: dayWidth + viewConfiguration.hourlineTimelineOverlap,
+                                width: pageWidth,
                                 height: pageHeight,
                                 child: components.hourlineBuilder(
                                   pageWidth,
@@ -86,7 +90,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
-                                width: pageWidth,
+                                width: dayWidth,
                                 height: pageHeight,
                                 child: components.daySepratorBuilder(
                                   pageHeight,
@@ -95,47 +99,37 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // DayGestureDetector(
-                            //   controller: controller,
-                            //   heightPerMinute: heightPerMinuteValue,
-                            //   pageWidth: pageWidth,
-                            //   height: pageHeight,
-                            //   dayWidth: dayWidth,
-                            //   minuteSlotSize: pageTypeConfig.minuteSlotSize,
-                            //   visibleDateRange: pageVisibleDateRange,
-                            // ),
-                            // Align(
-                            //   alignment: Alignment.centerRight,
-                            //   child: SizedBox(
-                            //     width: pageWidth,
-                            //     height: pageHeight,
-                            //     child: PositionedTileStack<T>(
-                            //       controller: controller,
-                            //       tileLayoutController: tileLayoutController,
-                            //       dayPageContentConfiguration: PositionedTileStackConfiguration(
-                            //         visibleDateRange: pageVisibleDateRange,
-                            //         dayWidth: dayWidth,
-                            //         heightPerMinute: heightPerMinuteValue,
-                            //         verticalDurationStep: pageTypeConfig.verticalDurationStep,
-                            //         horizontalDurationStep: pageTypeConfig.horizontalDurationStep,
-                            //         horizontalStep: dayWidth,
-                            //         eventSnapping: pageTypeConfig.eventSnapping,
-                            //         timeIndicatorSnapping: pageTypeConfig.timeIndicatorSnapping,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            // Align(
-                            //   alignment: Alignment.centerRight,
-                            //   child: SizedBox(
-                            //     width: pageWidth,
-                            //     height: pageHeight,
-                            //     child: ChangingEventStack(
-                            //       controller: controller,
-                            //       tileLayoutController: tileLayoutController,
-                            //     ),
-                            //   ),
-                            // ),
+                            DayGestureDetector<T>(
+                              controller: internals.controller,
+                              height: pageHeight,
+                              dayWidth: dayWidth,
+                              heightPerMinute: heightPerMinute,
+                              visibleDateRange: pageVisibleDateRange,
+                              minuteSlotSize: configuration.minuteSlotSize,
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: dayWidth,
+                                height: pageHeight,
+                                child: PositionedTileStack<T>(
+                                  tileLayoutController: tileLayoutController,
+                                  dayWidth: dayWidth,
+                                  verticalStep: verticalStep,
+                                  verticalDurationStep: viewConfiguration.verticalDurationStep,
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: dayWidth,
+                                height: pageHeight,
+                                child: ChangingTileStack<T>(
+                                  tileLayoutController: tileLayoutController,
+                                ),
+                              ),
+                            ),
                             Visibility(
                               visible: DateTime.now().isWithin(pageVisibleDateRange),
                               child: TimeIndicator(

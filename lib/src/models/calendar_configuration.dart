@@ -18,6 +18,10 @@ class CalendarConfiguration {
     this.scrollPhysics,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
+    this.eventSnapping = false,
+    this.timeIndicatorSnapping = false,
+    this.createNewEvents = true,
+    this.minuteSlotSize = MinuteSlotSize.minute15,
   }) {
     this.isMobileDevice = isMobileDevice ?? kIsWeb ? false : (Platform.isIOS || Platform.isAndroid);
     assert(
@@ -60,4 +64,20 @@ class CalendarConfiguration {
 
   /// Page transition curve.
   final Curve pageTransitionCurve;
+
+  /// Enable snapping to events.
+  final bool eventSnapping;
+
+  /// Enable snapping to the time indicator.
+  final bool timeIndicatorSnapping;
+
+  /// Enable new event creation.
+  ///
+  /// This will enable/disable the ability to create new events with the built in gestures.
+  final bool createNewEvents;
+
+  /// The size of the minute slots.
+  ///
+  /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
+  final MinuteSlotSize minuteSlotSize;
 }

@@ -112,6 +112,9 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
 
   /// The overlap of the hourlines and the timeline.
   double get hourlineTimelineOverlap;
+
+  /// The vertical step duration.
+  Duration get verticalDurationStep;
 }
 
 /// This is the base class for all [ViewType.multiDay]

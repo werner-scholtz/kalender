@@ -23,14 +23,16 @@ class SingleDayHeader<T extends Object?> extends StatelessWidget {
         builder: (BuildContext context, DateTimeRange visibleDateTimeRange, Widget? child) {
           return Column(
             children: <Widget>[
-              internalData.components.calendarHeaderBuilder(
-                visibleDateTimeRange,
-                viewConfiguration,
-                internalData.configuration.viewConfigurations,
-                internalData.functions.onConfigurationChanged,
-                internalData.functions.onDateSelectorPressed,
-                internalData.functions.onLeftArrowPressed,
-                internalData.functions.onRightArrowPressed,
+              RepaintBoundary(
+                child: internalData.components.calendarHeaderBuilder(
+                  visibleDateTimeRange,
+                  viewConfiguration,
+                  internalData.configuration.viewConfigurations,
+                  internalData.functions.onConfigurationChanged,
+                  internalData.functions.onDateSelectorPressed,
+                  internalData.functions.onLeftArrowPressed,
+                  internalData.functions.onRightArrowPressed,
+                ),
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,

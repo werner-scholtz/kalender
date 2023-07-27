@@ -6,9 +6,11 @@ import 'package:example/screens/mobile_screen.dart';
 import 'package:example/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
+  // debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 

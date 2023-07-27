@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 
 class CalendarController<T extends Object?> with ChangeNotifier {
@@ -6,7 +8,23 @@ class CalendarController<T extends Object?> with ChangeNotifier {
 
   /// The list of [CalendarEvent]s.
   final List<CalendarEvent<T>> _events = <CalendarEvent<T>>[];
-  // List<CalendarEvent<T>> get events => _events;
+  List<CalendarEvent<T>> get events => _events;
+
+  /// The moving [CalendarEvent].
+  CalendarEvent<T>? _chaningEvent;
+  CalendarEvent<T>? get chaningEvent => _chaningEvent;
+  set chaningEvent(CalendarEvent<T>? value) {
+    _chaningEvent = value;
+    notifyListeners();
+  }
+
+  bool isMoving = false;
+  bool isResizing = false;
+  bool isNewEvent = false;
+  bool isMultidayEvent = false;
+
+  /// Whether the [CalendarController] has a [_chaningEvent].
+  bool get hasChaningEvent => _chaningEvent != null;
 
   /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
   void addEvent(CalendarEvent<T> event) {
@@ -38,6 +56,46 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   void clearEvents() {
     _events.clear();
     notifyListeners();
+  }
+
+  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  /// * This exludes [CalendarEvent]s that are displayed on single days.
+  Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {
+    return _events.where(
+      (element) =>
+          ((element.start.isBefore(dateRange.start) && element.end.isAfter(dateRange.end)) ||
+              element.start.isWithin(dateRange) ||
+              element.end.isWithin(dateRange) ||
+              element.start == dateRange.start ||
+              element.end == dateRange.end) &&
+          element.isMultidayEvent,
+    );
+  }
+
+  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  /// * This excludes [CalendarEvent]s that are displayed on multiple days.
+  Iterable<CalendarEvent<T>> getDayEventsFromDateRange(DateTimeRange dateRange) {
+    return _events.where(
+      (element) =>
+          (element.start.isWithin(dateRange) || element.end.isWithin(dateRange)) &&
+          !element.isMultidayEvent,
+    );
+  }
+
+  /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
+  /// of the [CalendarEvent]s that are visible on the given date range.
+  Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
+    Iterable<CalendarEvent<T>> eventsInDateTimeRange = getDayEventsFromDateRange(dateRange);
+    List<DateTime> snapPoints = [];
+    for (var event in eventsInDateTimeRange) {
+      snapPoints.add(event.start);
+      snapPoints.add(event.end);
+    }
+    return snapPoints;
+  }
+
+  Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
+    return _events.where((element) => (element.isOnDate(date)));
   }
 
   @override
