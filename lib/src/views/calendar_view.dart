@@ -72,12 +72,11 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   late CalendarConfiguration _configuration;
 
   late PageController _pageController;
-  late int _initialPageIndex;
-  late int _numberOfPages;
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<double> _heightPerMinute = ValueNotifier<double>(0.7);
   late ViewConfiguration _viewConfiguration;
   late DateTimeRange _dateTimeRange;
+
   late final ValueNotifier<DateTimeRange> _visibleDateRange;
   late final ValueNotifier<DateTime> _highlightedDate;
   late CalendarViewState _viewState;
@@ -98,15 +97,8 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
       _configuration.dateTimeRange,
     );
 
-    _setDateTimeRange();
     _setVisibleDateTimeRange();
-    _setNumberOfPages();
     _regulateVisibleDateRange();
-    _setIndex();
-
-    _pageController = PageController(
-      initialPage: _initialPageIndex,
-    );
 
     _setViewState();
   }
@@ -179,27 +171,30 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
     setState(() {
       _pageController.dispose();
       _setViewConfiguration(viewConfiguration);
-      _setDateTimeRange();
+
       _setVisibleDateTimeRange();
       _regulateVisibleDateRange();
-      _setNumberOfPages();
-      _setIndex();
-      _pageController = PageController(
-        initialPage: _initialPageIndex,
-        keepPage: true,
-      );
+
       _setViewState();
     });
   }
 
   void _setViewState() {
+    _setVisibleDateTimeRange();
+    _regulateVisibleDateRange();
+    _setPageController();
+
     _viewState = CalendarViewState(
       scrollController: _scrollController,
       visibleDateRange: _visibleDateRange,
       heightPerMinute: _heightPerMinute,
-      dateTimeRange: _dateTimeRange,
+      dateTimeRange: _viewConfiguration.calculateAdjustedDateTimeRange(
+        _configuration.dateTimeRange,
+        _highlightedDate.value,
+        _configuration.firstDayOfWeek,
+      ),
       pageController: _pageController,
-      numberOfPages: _numberOfPages,
+      numberOfPages: _viewConfiguration.calculateNumberOfPages(_dateTimeRange),
     );
   }
 
@@ -208,11 +203,9 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
     _viewConfiguration = viewConfiguration;
   }
 
-  void _setDateTimeRange() {
-    _dateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
-      _configuration.dateTimeRange,
-      _highlightedDate.value,
-      _configuration.firstDayOfWeek,
+  void _setPageController() {
+    _pageController = PageController(
+      initialPage: _viewConfiguration.calculateIndex(_dateTimeRange.start, _highlightedDate.value),
     );
   }
 
@@ -241,16 +234,6 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
       _visibleDateRange.value,
       _configuration.firstDayOfWeek,
     );
-  }
-
-  void _setIndex() {
-    _initialPageIndex =
-        _viewConfiguration.calculateIndex(_dateTimeRange.start, _highlightedDate.value);
-  }
-
-  /// Sets the [_numberOfPages].
-  void _setNumberOfPages() {
-    _numberOfPages = _viewConfiguration.calculateNumberOfPages(_dateTimeRange);
   }
 
   /// Called when the page is changed.

@@ -10,6 +10,48 @@ import 'package:kalender/src/models/view_configurations/week_configuration.dart'
 import 'package:kalender/src/models/view_configurations/work_week_configuration.dart';
 
 class CalendarConfiguration {
+  /// The [bool] that indicates if it is a Mobile Platform.
+  ///
+  /// This will affect how the gestures are detected.
+  late bool isMobileDevice;
+
+  /// Specifies the start of the week.
+  ///
+  /// Use [DateTime.monday] to [DateTime.sunday]
+  final int firstDayOfWeek;
+
+  /// The [ViewConfiguration] that is used initially.
+  final ViewConfiguration initialViewConfiguration;
+
+  /// The [ViewConfiguration]s avaible for use.
+  final List<ViewConfiguration> viewConfigurations;
+
+  /// The initial date of the calendar.
+  late final DateTime initialDate;
+
+  /// The date time range of the calendar.
+  late final DateTimeRange dateTimeRange;
+
+  /// The [ScrollPhysics] used by the [CalendarView].
+  final ScrollPhysics? scrollPhysics;
+
+  /// Page transition duration.
+  final Duration pageTransitionDuration;
+
+  /// Page transition curve.
+  final Curve pageTransitionCurve;
+
+  /// Enable snapping to events.
+  final bool eventSnapping;
+
+  /// Enable snapping to the time indicator.
+  final bool timeIndicatorSnapping;
+
+  /// Enable new event creation.
+  ///
+  /// This will enable/disable the ability to create new events with the built in gestures.
+  final bool createNewEvents;
+
   CalendarConfiguration({
     this.firstDayOfWeek = DateTime.monday,
     DateTime? initialDate,
@@ -44,42 +86,4 @@ class CalendarConfiguration {
       'Initial date must be within the date time range',
     );
   }
-
-  /// The [bool] that indicates if it is a Mobile Platform.
-  ///
-  /// This will affect how the gestures are detected.
-  late bool isMobileDevice;
-
-  /// Specifies the start of the week.
-  ///
-  /// Use [DateTime.monday] to [DateTime.sunday]
-  final int firstDayOfWeek;
-
-  final ViewConfiguration initialViewConfiguration;
-
-  /// The [ViewConfiguration]s avaible for use.
-  final List<ViewConfiguration> viewConfigurations;
-
-  late final DateTime initialDate;
-  late final DateTimeRange dateTimeRange;
-
-  /// The [ScrollPhysics] used by the [CalendarView].
-  final ScrollPhysics? scrollPhysics;
-
-  /// Page transition duration.
-  final Duration pageTransitionDuration;
-
-  /// Page transition curve.
-  final Curve pageTransitionCurve;
-
-  /// Enable snapping to events.
-  final bool eventSnapping;
-
-  /// Enable snapping to the time indicator.
-  final bool timeIndicatorSnapping;
-
-  /// Enable new event creation.
-  ///
-  /// This will enable/disable the ability to create new events with the built in gestures.
-  final bool createNewEvents;
 }
