@@ -38,6 +38,9 @@ extension DateTimeRangeExtensions on DateTimeRange {
   DateTimeRange rescheduleDateTime(Duration duration) {
     return DateTimeRange(start: start.add(duration), end: end.add(duration));
   }
+
+  /// The center [DateTime] of the [DateTimeRange].
+  DateTime get centerDateTime => start.add(Duration(days: (dayDifference / 2).floor()));
 }
 
 /// [DateTime] extensions.
