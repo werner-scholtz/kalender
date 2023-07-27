@@ -15,6 +15,7 @@ import 'package:kalender/src/typedefs.dart';
 class PositionedTileStack<T extends Object?> extends StatelessWidget {
   const PositionedTileStack({
     super.key,
+    required this.pageVisibleDateRange,
     required this.tileLayoutController,
     required this.dayWidth,
     required this.verticalStep,
@@ -24,6 +25,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   });
 
   final TileLayoutController<T> tileLayoutController;
+  final DateTimeRange pageVisibleDateRange;
   final double dayWidth;
   final double verticalStep;
   final Duration verticalDurationStep;
@@ -41,7 +43,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
         Iterable<CalendarEvent<T>> events = controller.getDayEventsFromDateRange(
-          state.visibleDateRange.value,
+          pageVisibleDateRange,
         );
 
         // The list of tile groups.
@@ -53,7 +55,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
         List<DateTime> snapPoints = [];
         if (configuration.eventSnapping) {
           snapPoints.addAll(
-            controller.getSnapPointsFromDateTimeRange(state.visibleDateRange.value),
+            controller.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
           );
         }
         if (configuration.timeIndicatorSnapping) {

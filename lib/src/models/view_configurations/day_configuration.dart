@@ -6,6 +6,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
+    this.multidayTileHeight = 24,
     this.verticalDurationStep = const Duration(minutes: 15),
   });
 
@@ -91,4 +92,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   @override
   final Duration verticalDurationStep;
+
+  @override
+  final double multidayTileHeight;
 }

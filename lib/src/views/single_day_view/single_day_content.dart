@@ -113,6 +113,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                                 width: dayWidth,
                                 height: pageHeight,
                                 child: PositionedTileStack<T>(
+                                  pageVisibleDateRange: pageVisibleDateRange,
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
