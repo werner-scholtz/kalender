@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
@@ -153,7 +155,9 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
                   viewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
                 );
               case ViewType.multiDay:
-                return MultiDayView<T>();
+                return MultiDayView<T>(
+                  viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
+                );
               case ViewType.month:
                 return MonthView<T>();
               case ViewType.schedule:
@@ -174,9 +178,8 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   }
 
   void changeConfiguration(ViewConfiguration viewConfiguration) {
-    _pageController.dispose();
-
     setState(() {
+      _pageController.dispose();
       _setViewConfiguration(viewConfiguration);
       _setDateTimeRange();
       _setVisibleDateTimeRange();
@@ -204,7 +207,7 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
 
   void _setViewConfiguration(ViewConfiguration viewConfiguration) {
     assert(_configuration.viewConfigurations.contains(viewConfiguration));
-    _viewConfiguration = _configuration.initialViewConfiguration;
+    _viewConfiguration = viewConfiguration;
   }
 
   void _setDateTimeRange() {

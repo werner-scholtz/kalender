@@ -30,7 +30,7 @@ class MultiDayLayoutController<T extends Object?> {
     Iterable<CalendarEvent<T>> events, {
     CalendarEvent<T>? selectedEvent,
   }) {
-    double stackHeight = 0;
+    stackHeight = 0;
     void updateStackHeight(double top) {
       if (stackHeight < top + tileHeight) {
         stackHeight = top + tileHeight;

@@ -62,7 +62,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   /// * This exludes [CalendarEvent]s that are displayed on single days.
   Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {
     return _events.where(
-      (element) =>
+      (CalendarEvent<T> element) =>
           ((element.start.isBefore(dateRange.start) && element.end.isAfter(dateRange.end)) ||
               element.start.isWithin(dateRange) ||
               element.end.isWithin(dateRange) ||
@@ -76,7 +76,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
   Iterable<CalendarEvent<T>> getDayEventsFromDateRange(DateTimeRange dateRange) {
     return _events.where(
-      (element) =>
+      (CalendarEvent<T> element) =>
           (element.start.isWithin(dateRange) || element.end.isWithin(dateRange)) &&
           !element.isMultidayEvent,
     );
@@ -87,7 +87,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
     Iterable<CalendarEvent<T>> eventsInDateTimeRange = getDayEventsFromDateRange(dateRange);
     List<DateTime> snapPoints = [];
-    for (var event in eventsInDateTimeRange) {
+    for (CalendarEvent<T> event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
       snapPoints.add(event.end);
     }
@@ -95,7 +95,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   }
 
   Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
-    return _events.where((element) => (element.isOnDate(date)));
+    return _events.where((CalendarEvent<T> element) => (element.isOnDate(date)));
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
@@ -44,7 +46,8 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
           );
 
           int numberOfRows = multiDayEventLayout.stackHeight ~/ multiDayEventLayout.tileHeight;
-          double stackHeight = multiDayEventLayout.tileHeight;
+          double stackHeight = multiDayEventLayout.stackHeight;
+
 
           return SizedBox(
             width: pageWidth,

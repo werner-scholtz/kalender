@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
 
-/// TODO: Add multi-day view.
-class MultiDayView<T extends Object?> extends StatefulWidget {
-  const MultiDayView({super.key});
+class MultiDayView<T extends Object?> extends StatelessWidget {
+  const MultiDayView({
+    super.key,
+    required this.viewConfiguration,
+  });
 
-  @override
-  State<MultiDayView<T>> createState() => _MultiDayViewState<T>();
-}
+  final MultiDayViewConfiguration viewConfiguration;
 
-class _MultiDayViewState<T extends Object?> extends State<MultiDayView<T>> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        // Calculate the width of the page.
+        double pageWidth = constraints.maxWidth - viewConfiguration.timelineWidth;
+
+        // Calculate the width of the day.
+        double dayWidth = viewConfiguration.calculateDayWidth(pageWidth);
+
+        return Column(
+          children: <Widget>[
+            MultiDayHeader<T>(
+              viewConfiguration: viewConfiguration,
+              dayWidth: dayWidth,
+              pageWidth: pageWidth,
+            ),
+            MultiDayContent<T>(
+              viewConfiguration: viewConfiguration,
+              dayWidth: dayWidth,
+              pageWidth: pageWidth,
+            ),
+          ],
+        );
+      },
+    );
   }
 }

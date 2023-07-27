@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar_components.dart';
 import 'package:kalender/src/models/calendar_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
@@ -16,6 +17,7 @@ class ChaningMultiDayEventStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarController<T> controller = CalendarInternals.of<T>(context).controller;
+    CalendarComponents<T> components = CalendarInternals.of<T>(context).components;
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
@@ -29,19 +31,18 @@ class ChaningMultiDayEventStack<T extends Object?> extends StatelessWidget {
               return MouseRegion(
                 cursor: SystemMouseCursors.resizeColumn,
                 child: Stack(
-                  children: [
+                  children: <Widget>[
                     Positioned(
                       top: arragnedEvent.top,
                       left: arragnedEvent.left,
                       width: arragnedEvent.width,
                       height: arragnedEvent.height,
-                      child:
-                          CalendarInternals.of<T>(context).components.multiDayEventTileBuilder.call(
-                                arragnedEvent.event,
-                                TileType.selected,
-                                arragnedEvent.continuesBefore,
-                                arragnedEvent.continuesAfter,
-                              ),
+                      child: components.multiDayEventTileBuilder.call(
+                        arragnedEvent.event,
+                        TileType.selected,
+                        arragnedEvent.continuesBefore,
+                        arragnedEvent.continuesAfter,
+                      ),
                     )
                   ],
                 ),

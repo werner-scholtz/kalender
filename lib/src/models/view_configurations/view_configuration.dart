@@ -151,6 +151,9 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
   MinuteSlotSize get minuteSlotSize;
+
+  /// Paint the week number.
+  bool get paintWeekNumber;
 }
 
 /// This is the base class for all [ViewType.month]
