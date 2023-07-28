@@ -58,6 +58,8 @@ class SingleDayHeader<T extends Object?> extends StatelessWidget {
                       dayWidth: dayWidth,
                       visibleDateRange: visibleDateTimeRange,
                       tileHeight: viewConfiguration.multidayTileHeight,
+                      isMobileDevice: internalData.configuration.isMobileDevice,
+                      isMultidayView: false,
                     ),
                   ),
                 ],

@@ -42,8 +42,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [Function] called when an event is changed.
   ///
   /// [previousDateTimeRange] is the [DateTimeRange] of the event before it was changed.
-  final Future<void> Function(DateTimeRange previousDateTimeRange, CalendarEvent<T> event)?
-      onEventChanged;
+  final void Function(DateTimeRange previousDateTimeRange, CalendarEvent<T> event)? onEventChanged;
 
   /// The [Function] called when an event is tapped.
   final Future<void> Function(CalendarEvent<T> event)? onEventTapped;
@@ -133,23 +132,25 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
         configuration: _configuration,
         functions: _funcitons,
         state: _viewState,
-        child: Builder(
-          builder: (BuildContext context) {
-            switch (_viewConfiguration.viewType) {
-              case ViewType.singleDay:
-                return SingleDayView<T>(
-                  viewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
-                );
-              case ViewType.multiDay:
-                return MultiDayView<T>(
-                  viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
-                );
-              case ViewType.month:
-                return MonthView<T>();
-              case ViewType.schedule:
-                return ScheduleView<T>();
-            }
-          },
+        child: SafeArea(
+          child: Builder(
+            builder: (BuildContext context) {
+              switch (_viewConfiguration.viewType) {
+                case ViewType.singleDay:
+                  return SingleDayView<T>(
+                    viewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
+                  );
+                case ViewType.multiDay:
+                  return MultiDayView<T>(
+                    viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
+                  );
+                case ViewType.month:
+                  return MonthView<T>();
+                case ViewType.schedule:
+                  return ScheduleView<T>();
+              }
+            },
+          ),
         ),
       ),
     );

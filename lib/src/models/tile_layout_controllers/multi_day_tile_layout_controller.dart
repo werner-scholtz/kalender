@@ -17,6 +17,10 @@ class MultiDayLayoutController<T extends Object?> {
   /// The maximum width of the page.
   late final double maxWidth = dayWidth * (visibleDateRange.duration.inDays);
 
+  final bool isMobileDevice;
+
+  final bool isMultidayView;
+
   /// The maximum height of the stack.
   double stackHeight = 0;
 
@@ -27,6 +31,8 @@ class MultiDayLayoutController<T extends Object?> {
     required this.visibleDateRange,
     required this.dayWidth,
     required this.tileHeight,
+    required this.isMobileDevice,
+    required this.isMultidayView,
   });
 
   List<PositionedMultiDayTileData<T>> arrageEvents(
@@ -98,9 +104,13 @@ class MultiDayLayoutController<T extends Object?> {
     }
 
     numberOfRows = stackHeight ~/ tileHeight;
-    if (numberOfRows == 0) {
+
+    if (numberOfRows == 0 && isMultidayView && isMobileDevice) {
       numberOfRows = 1;
-      stackHeight = tileHeight;
+      stackHeight = tileHeight * numberOfRows;
+    } else if (numberOfRows == 0 && !isMultidayView && isMobileDevice) {
+      numberOfRows = 3;
+      stackHeight = tileHeight * numberOfRows;
     }
 
     return arrangedEvents;

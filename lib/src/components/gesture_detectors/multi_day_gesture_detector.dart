@@ -91,9 +91,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
                           : (DragUpdateDetails details) =>
                               _onHorizontalDragUpdate(details, visibleDates[c].dayRange),
                       onHorizontalDragEnd: createNewEvents ? _onHorizontalDragEnd : null,
-                      child: Container(
-                        color: Colors.red,
-                      ),
                     ),
                   ),
                 )
@@ -104,8 +101,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   }
 
   void _onTap(DateTimeRange dateTimeRange) async {
-    if (!CalendarInternals.of<T>(context).configuration.createNewEvents) return;
-
     CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );

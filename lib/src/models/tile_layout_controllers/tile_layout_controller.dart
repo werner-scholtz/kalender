@@ -25,17 +25,11 @@ class TileLayoutController<T extends Object?> {
   /// This is used to calculate the [left] and [width] of the event.
   final double dayWidth;
 
-  /// The offset on the left of that page.
-  ///
-  /// This is used to adjust the [left] of the event so it lines up with the correct day.
-  final double leftPageOffset;
-
   TileLayoutController({
     required this.visibleDateRange,
     required this.heightPerMinute,
     required this.dayWidth,
     required this.verticalDurationStep,
-    required this.leftPageOffset,
   });
 
   /// Generate tile groups from the [events].
@@ -330,7 +324,7 @@ class TileLayoutController<T extends Object?> {
   ///
   /// The [date] passed in is the date that the groupedTile is displayed on.
   double calculateLeft(DateTime date) {
-    return (date.difference(visibleDateRange.start).inDays * dayWidth) + leftPageOffset;
+    return (date.difference(visibleDateRange.start).inDays * dayWidth);
   }
 
   /// Calculate the top value of the tile.

@@ -73,7 +73,7 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
                           verticalDurationStep: const Duration(minutes: 15),
-                          leftPageOffset: 0,
+                
                         );
 
                         return Stack(
