@@ -21,7 +21,7 @@ class MultiDayEventTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       child: Material(
         type: MaterialType.card,
-        color: color(event.eventData?.color ?? Theme.of(context).colorScheme.primaryContainer),
+        color: color(event.eventData?.color ?? Colors.blue),
         elevation: elevation,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(continuesBefore ? 0 : 12),

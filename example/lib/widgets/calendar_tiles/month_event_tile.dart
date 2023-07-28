@@ -19,7 +19,7 @@ class MonthEventTile extends StatelessWidget {
     return Card(
       elevation: cardElevation,
       margin: const EdgeInsets.all(2),
-      color: cardColor(event.eventData?.color ?? Theme.of(context).colorScheme.primaryContainer),
+      color: cardColor(event.eventData?.color ?? Colors.blue),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(

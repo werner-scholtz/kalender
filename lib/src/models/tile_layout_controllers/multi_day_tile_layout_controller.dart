@@ -111,6 +111,9 @@ class MultiDayLayoutController<T extends Object?> {
     } else if (numberOfRows == 0 && !isMultidayView && isMobileDevice) {
       numberOfRows = 3;
       stackHeight = tileHeight * numberOfRows;
+    } else if (numberOfRows == 0) {
+      numberOfRows = 1;
+      stackHeight = tileHeight * numberOfRows;
     }
 
     return arrangedEvents;

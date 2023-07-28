@@ -22,7 +22,7 @@ class EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: color(event.eventData?.color ?? Theme.of(context).colorScheme.primaryContainer),
+        color: color(event.eventData?.color ?? Colors.blue),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(continuesBefore ? 0 : 8),
           bottomLeft: Radius.circular(continuesAfter ? 0 : 8),
