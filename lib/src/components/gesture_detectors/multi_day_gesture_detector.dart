@@ -92,7 +92,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
                               _onHorizontalDragUpdate(details, visibleDates[c].dayRange),
                       onHorizontalDragEnd: createNewEvents ? _onHorizontalDragEnd : null,
                       child: Container(
-                        color: Colors.transparent,
+                        color: Colors.red,
                       ),
                     ),
                   ),

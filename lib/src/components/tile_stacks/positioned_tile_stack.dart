@@ -221,7 +221,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          TileGestureDetector(
+          TileGestureDetector<T>(
             horizontalDurationStep: horizontalDurationStep,
             verticalDurationStep: verticalDurationStep,
             verticalStep: verticalStep,
@@ -234,7 +234,6 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
             onRescheduleEvent: onReschedhuleEvent,
             initialDateTimeRange: positionedTileData.event.dateTimeRange,
             snapPoints: pointsOfInterest,
-            isMobileDevice: isMobileDevice,
             eventSnapping: pointsOfInterest.isNotEmpty,
             child: tileBuilder(
               positionedTileData.event,

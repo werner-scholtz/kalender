@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/material_header.dart';
-import 'package:kalender/src/components/tile_stacks/multi_day_event_stack.dart';
+import 'package:kalender/src/components/tile_stacks/multi_day_tile_stack.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';

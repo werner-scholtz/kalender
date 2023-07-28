@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
-/// The [Stack] that contains the [MultiDayEvent] that is being modified.
-class ChaningMultiDayEventStack<T extends Object?> extends StatelessWidget {
-  const ChaningMultiDayEventStack({
+/// The [Stack] that contains the [PositionedMultiDayTileData] that is being modified.
+class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
+  const ChaningMultiDayTileStack({
     super.key,
     required this.multiDayEventLayout,
   });

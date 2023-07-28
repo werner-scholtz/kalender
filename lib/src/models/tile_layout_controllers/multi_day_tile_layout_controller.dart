@@ -20,6 +20,9 @@ class MultiDayLayoutController<T extends Object?> {
   /// The maximum height of the stack.
   double stackHeight = 0;
 
+  /// The number of rows in the stack.
+  int numberOfRows = 0;
+
   MultiDayLayoutController({
     required this.visibleDateRange,
     required this.dayWidth,
@@ -31,6 +34,7 @@ class MultiDayLayoutController<T extends Object?> {
     CalendarEvent<T>? selectedEvent,
   }) {
     stackHeight = 0;
+
     void updateStackHeight(double top) {
       if (stackHeight < top + tileHeight) {
         stackHeight = top + tileHeight;
@@ -91,6 +95,12 @@ class MultiDayLayoutController<T extends Object?> {
             .removeWhere((PositionedMultiDayTileData<T> element) => element.event == selectedEvent);
         arrangedEvents.addAll(selectedArrangedEvent);
       }
+    }
+
+    numberOfRows = stackHeight ~/ tileHeight;
+    if (numberOfRows == 0) {
+      numberOfRows = 1;
+      stackHeight = tileHeight;
     }
 
     return arrangedEvents;

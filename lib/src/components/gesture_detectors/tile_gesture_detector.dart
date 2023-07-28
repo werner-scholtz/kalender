@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/providers/calendar_internals.dart';
 
-class TileGestureDetector extends StatefulWidget {
+class TileGestureDetector<T extends Object?> extends StatefulWidget {
   const TileGestureDetector({
     super.key,
     required this.child,
@@ -16,7 +17,6 @@ class TileGestureDetector extends StatefulWidget {
     required this.onLongPressEnd,
     required this.onRescheduleEvent,
     required this.snapPoints,
-    required this.isMobileDevice,
     required this.eventSnapping,
   });
   final Widget child;
@@ -57,18 +57,16 @@ class TileGestureDetector extends StatefulWidget {
   final Function(DateTimeRange newDateTimeRange) onRescheduleEvent;
 
   final List<DateTime> snapPoints;
-  final bool isMobileDevice;
   final bool eventSnapping;
 
   @override
-  State<TileGestureDetector> createState() => _TileGestureDetectorState();
+  State<TileGestureDetector<T>> createState() => _TileGestureDetectorState<T>();
 }
 
-class _TileGestureDetectorState extends State<TileGestureDetector> {
+class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
   late DateTimeRange initialDateTimeRange = widget.initialDateTimeRange;
   late List<DateTime> snapPoints;
   late bool eventSnapping;
-  late bool isMobileDevice;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -78,11 +76,10 @@ class _TileGestureDetectorState extends State<TileGestureDetector> {
   void initState() {
     super.initState();
     snapPoints = widget.snapPoints;
-    isMobileDevice = widget.isMobileDevice;
   }
 
   @override
-  void didUpdateWidget(covariant TileGestureDetector oldWidget) {
+  void didUpdateWidget(covariant TileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
@@ -194,4 +191,6 @@ class _TileGestureDetectorState extends State<TileGestureDetector> {
       ),
     );
   }
+
+  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
 }

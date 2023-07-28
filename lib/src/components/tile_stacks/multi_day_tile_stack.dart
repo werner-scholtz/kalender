@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_tile_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/chaning_multi_day_event_stack.dart';
+import 'package:kalender/src/components/tile_stacks/chaning_multi_day_tile_stack.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
@@ -36,6 +35,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
       child: ListenableBuilder(
         listenable: controller,
         builder: (BuildContext context, Widget? child) {
+          /// Arrange the events.
           List<PositionedMultiDayTileData<T>> arragedEvents = multiDayEventLayout.arrageEvents(
             controller.getMultidayEventsFromDateRange(
               state.visibleDateRange.value,
@@ -43,12 +43,9 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
             selectedEvent: controller.chaningEvent,
           );
 
-          int numberOfRows = multiDayEventLayout.stackHeight ~/ multiDayEventLayout.tileHeight;
-          double stackHeight = multiDayEventLayout.stackHeight;
-
           return SizedBox(
             width: pageWidth,
-            height: stackHeight,
+            height: multiDayEventLayout.stackHeight,
             child: Stack(
               children: <Widget>[
                 Column(
@@ -69,10 +66,10 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                 MultiDayGestureDetector<T>(
                   controller: controller,
                   pageWidth: pageWidth,
-                  height: stackHeight,
+                  height: multiDayEventLayout.stackHeight,
                   dayWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
-                  numberOfRows: numberOfRows,
+                  numberOfRows: multiDayEventLayout.numberOfRows,
                   visibleDates: state.visibleDateRange.value.datesSpanned,
                 ),
                 ...arragedEvents.map(
@@ -89,7 +86,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                     );
                   },
                 ).toList(),
-                ChaningMultiDayEventStack<T>(
+                ChaningMultiDayTileStack<T>(
                   multiDayEventLayout: multiDayEventLayout,
                 ),
               ],
@@ -121,7 +118,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
 
   /// The [Function] called when the event is tapped.
   final Function(CalendarEvent<T> event)? onEventTapped;
-
+  
   final DateTimeRange visibleDateRange;
   final MultiDayLayoutController<T> multiDayEventLayout;
   final PositionedMultiDayTileData<T> arragnedEvent;
