@@ -30,4 +30,10 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
   SlotSize get minuteSlotSize;
+
+  /// Enable snapping to events.
+  bool get eventSnapping;
+
+  /// Enable snapping to the time indicator.
+  bool get timeIndicatorSnapping;
 }

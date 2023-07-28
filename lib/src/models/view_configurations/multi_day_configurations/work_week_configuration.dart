@@ -12,6 +12,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
+    this.eventSnapping = false,
+    this.timeIndicatorSnapping = false,
   });
 
   @override
@@ -34,6 +36,12 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final bool paintWeekNumber;
+
+  @override
+  final bool eventSnapping;
+
+  @override
+  final bool timeIndicatorSnapping;
 
   @override
   final String name = 'Work Week';

@@ -118,6 +118,8 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
                                   verticalDurationStep: viewConfiguration.verticalDurationStep,
+                                  eventSnapping: viewConfiguration.eventSnapping,
+                                  timeIndicatorSnapping: viewConfiguration.timeIndicatorSnapping,
                                 ),
                               ),
                             ),

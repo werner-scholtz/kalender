@@ -30,4 +30,10 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
 
   /// Paint the week number.
   bool get paintWeekNumber;
+
+  /// Enable snapping to events.
+  bool get eventSnapping;
+
+  /// Enable snapping to the time indicator.
+  bool get timeIndicatorSnapping;
 }

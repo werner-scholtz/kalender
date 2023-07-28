@@ -19,6 +19,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
     this.controller,
     this.calendarConfiguration,
     required this.calendarComponents,
+    this.calendarStyle,
     this.onEventChanged,
     this.onEventTapped,
     this.onCreateEvent,
@@ -34,10 +35,14 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [CalendarComponents] used to build different componets of the [CalendarView].
   final CalendarComponents<T> calendarComponents;
 
+  /// The [CalendarStyle] used to style the [CalendarView].
+  /// And all of its components.
+  final CalendarStyle? calendarStyle;
+
   /// The [Function] called when an event is changed.
   ///
-  /// The [T] that is returned will be used as the eventData of the [CalendarEvent].
-  final Future<void> Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
+  /// [previousDateTimeRange] is the [DateTimeRange] of the event before it was changed.
+  final Future<void> Function(DateTimeRange previousDateTimeRange, CalendarEvent<T> event)?
       onEventChanged;
 
   /// The [Function] called when an event is tapped.
@@ -64,6 +69,7 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   late CalendarComponents<T> _components;
   late CalendarFunctions<T> _funcitons;
   late CalendarState _viewState;
+  late CalendarStyle _style;
 
   late PageController _pageController;
   late ViewConfiguration _viewConfiguration;
@@ -80,6 +86,7 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
     super.initState();
 
     _components = widget.calendarComponents;
+    _style = widget.calendarStyle ?? const CalendarStyle();
     _configuration = widget.calendarConfiguration ?? CalendarConfiguration();
     _highlightedDate = ValueNotifier<DateTime>(
       _configuration.initialDate,
@@ -119,13 +126,12 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   @override
   Widget build(BuildContext context) {
     return CalendarStyleProvider(
-      style: const CalendarStyle(),
+      style: _style,
       child: CalendarInternals<T>(
         controller: _controller!,
         components: _components,
-        configuration: CalendarConfiguration(),
+        configuration: _configuration,
         functions: _funcitons,
-        style: const CalendarStyle(),
         state: _viewState,
         child: Builder(
           builder: (BuildContext context) {

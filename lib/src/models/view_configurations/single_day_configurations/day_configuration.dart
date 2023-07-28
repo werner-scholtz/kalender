@@ -9,7 +9,30 @@ class DayConfiguration extends SingleDayViewConfiguration {
     this.multidayTileHeight = 24,
     this.verticalDurationStep = const Duration(minutes: 15),
     this.minuteSlotSize = SlotSize.minute15,
+    this.eventSnapping = false,
+    this.timeIndicatorSnapping = false,
   });
+
+  @override
+  final double timelineWidth;
+
+  @override
+  final double hourlineTimelineOverlap;
+
+  @override
+  final Duration verticalDurationStep;
+
+  @override
+  final double multidayTileHeight;
+
+  @override
+  final SlotSize minuteSlotSize;
+
+  @override
+  final bool eventSnapping;
+
+  @override
+  final bool timeIndicatorSnapping;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(
@@ -84,19 +107,4 @@ class DayConfiguration extends SingleDayViewConfiguration {
     }
     return visibleDateTimeRange;
   }
-
-  @override
-  final double timelineWidth;
-
-  @override
-  final double hourlineTimelineOverlap;
-
-  @override
-  final Duration verticalDurationStep;
-
-  @override
-  final double multidayTileHeight;
-
-  @override
-  final SlotSize minuteSlotSize;
 }

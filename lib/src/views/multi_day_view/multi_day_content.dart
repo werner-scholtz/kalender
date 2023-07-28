@@ -123,6 +123,8 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                                   verticalDurationStep: viewConfiguration.verticalDurationStep,
                                   horizontalStep: dayWidth,
                                   horizontalDurationStep: viewConfiguration.horizontalDurationStep,
+                                  eventSnapping: viewConfiguration.eventSnapping,
+                                  timeIndicatorSnapping: viewConfiguration.timeIndicatorSnapping,
                                 ),
                               ),
                             ),

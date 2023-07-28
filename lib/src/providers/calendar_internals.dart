@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_configuration.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_state.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 class CalendarInternals<T extends Object?> extends InheritedWidget {
   const CalendarInternals({
     Key? key,
     required this.controller,
-    required this.style,
     required this.state,
     required this.components,
     required this.configuration,
@@ -19,7 +15,6 @@ class CalendarInternals<T extends Object?> extends InheritedWidget {
   }) : super(key: key, child: child);
 
   final CalendarConfiguration configuration;
-  final CalendarStyle style;
   final CalendarState state;
 
   final CalendarController<T> controller;

@@ -7,16 +7,6 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class CalendarConfiguration {
-  /// The [bool] that indicates if it is a Mobile Platform.
-  ///
-  /// This will affect how the gestures are detected.
-  late bool isMobileDevice;
-
-  /// Specifies the start of the week.
-  ///
-  /// Use [DateTime.monday] to [DateTime.sunday]
-  final int firstDayOfWeek;
-
   /// The [ViewConfiguration] that is used initially.
   final ViewConfiguration initialViewConfiguration;
 
@@ -38,16 +28,21 @@ class CalendarConfiguration {
   /// Page transition curve.
   final Curve pageTransitionCurve;
 
-  /// Enable snapping to events.
-  final bool eventSnapping;
 
-  /// Enable snapping to the time indicator.
-  final bool timeIndicatorSnapping;
+  /// Specifies the start of the week.
+  ///
+  /// Use [DateTime.monday] to [DateTime.sunday]
+  final int firstDayOfWeek;
 
   /// Enable new event creation.
   ///
   /// This will enable/disable the ability to create new events with the built in gestures.
   final bool createNewEvents;
+
+  /// The [bool] that indicates if it is a Mobile Platform.
+  ///
+  /// This will affect how the gestures are detected.
+  late bool isMobileDevice;
 
   CalendarConfiguration({
     this.firstDayOfWeek = DateTime.monday,
@@ -65,8 +60,6 @@ class CalendarConfiguration {
     this.scrollPhysics,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.ease,
-    this.eventSnapping = false,
-    this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
   }) {
     this.isMobileDevice = isMobileDevice ?? kIsWeb ? false : (Platform.isIOS || Platform.isAndroid);

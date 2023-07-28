@@ -12,7 +12,38 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
+    this.eventSnapping = false,
+    this.timeIndicatorSnapping = false,
   });
+  @override
+  final double timelineWidth;
+
+  @override
+  final Duration verticalDurationStep;
+
+  @override
+  final Duration horizontalDurationStep;
+
+  @override
+  final double hourlineTimelineOverlap;
+
+  @override
+  final SlotSize minuteSlotSize;
+
+  @override
+  final double multidayTileHeight;
+
+  @override
+  final bool paintWeekNumber;
+
+  @override
+  final bool eventSnapping;
+
+  @override
+  final bool timeIndicatorSnapping;
+
+  @override
+  final String name = 'Week';
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
@@ -82,28 +113,4 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     }
     return visibleDateTimeRange;
   }
-
-  @override
-  final double timelineWidth;
-
-  @override
-  final Duration verticalDurationStep;
-
-  @override
-  final Duration horizontalDurationStep;
-
-  @override
-  final double hourlineTimelineOverlap;
-
-  @override
-  final SlotSize minuteSlotSize;
-
-  @override
-  final double multidayTileHeight;
-
-  @override
-  final bool paintWeekNumber;
-
-  @override
-  final String name = 'Week';
 }

@@ -20,6 +20,8 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
     required this.dayWidth,
     required this.verticalStep,
     required this.verticalDurationStep,
+    required this.eventSnapping,
+    required this.timeIndicatorSnapping,
     this.horizontalStep,
     this.horizontalDurationStep,
   });
@@ -31,6 +33,8 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   final Duration verticalDurationStep;
   final double? horizontalStep;
   final Duration? horizontalDurationStep;
+  final bool eventSnapping;
+  final bool timeIndicatorSnapping;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +57,12 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
 
         // The list of snap points.
         List<DateTime> snapPoints = <DateTime>[];
-        if (configuration.eventSnapping) {
+        if (eventSnapping) {
           snapPoints.addAll(
             controller.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
           );
         }
-        if (configuration.timeIndicatorSnapping) {
+        if (timeIndicatorSnapping) {
           snapPoints.add(DateTime.now());
         }
 
