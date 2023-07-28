@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CalendarControllerProvider<Event>(
-      controller: CalendarController()..addEvents(generateCalendarEvents(context)),
+      controller: CalendarController()..addEvents(generateCalendarEvents()),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -47,37 +47,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  CalendarController<Event>? controller;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    controller = CalendarControllerProvider.of<Event>(context).controller;
-  }
-
-  @override
-  void didUpdateWidget(covariant MyHomePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    controller = CalendarControllerProvider.of<Event>(context).controller;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          if (kIsWeb) {
-            return DesktopScreen(
-              controller: controller!,
-            );
+          if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+            return const DesktopScreen();
           } else {
-            if (Platform.isAndroid || Platform.isIOS) {
-              return const MobileScreen();
-            } else {
-              return DesktopScreen(
-                controller: controller!,
-              );
-            }
+            return const MobileScreen();
           }
         },
       ),
@@ -85,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-List<CalendarEvent<Event>> generateCalendarEvents(BuildContext context) {
+List<CalendarEvent<Event>> generateCalendarEvents() {
   DateTime now = DateTime.now();
   DateTime mondayNow = now.subtract(Duration(days: now.weekday - 1));
   DateTime startOfMonday = DateTime(mondayNow.year, mondayNow.month, mondayNow.day);

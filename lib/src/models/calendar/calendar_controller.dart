@@ -58,6 +58,25 @@ class CalendarController<T extends Object?> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Updates an [CalendarEvent] in the list of [CalendarEvent]s.
+  ///
+  /// The event where [test] returns true will be updated.
+  void updateEvent({
+    required T? newEventData,
+    required DateTimeRange? newDateTimeRange,
+    required bool Function(CalendarEvent<T> calendarEvent) test,
+  }) {
+    int index = _events.indexWhere((CalendarEvent<T> element) => test(element));
+    if (index == -1) return;
+    if (newEventData != null) {
+      _events[index].eventData = newEventData;
+    }
+    if (newDateTimeRange != null) {
+      _events[index].dateTimeRange = newDateTimeRange;
+    }
+    notifyListeners();
+  }
+
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This exludes [CalendarEvent]s that are displayed on single days.
   Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {

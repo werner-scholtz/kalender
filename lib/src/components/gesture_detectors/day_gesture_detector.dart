@@ -95,7 +95,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
                 top: heightPerSlot * i,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: !createNewEvents
+                  onTap: createNewEvents
                       ? () => onTap(calculateDateTimeRange(visibleDates[day], i))
                       : null,
                   onVerticalDragStart: gestureDisabled
