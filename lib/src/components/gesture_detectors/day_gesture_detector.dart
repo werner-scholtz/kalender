@@ -17,11 +17,22 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
     required this.minuteSlotSize,
   });
 
+  /// The [CalendarController] of the calendar.
   final CalendarController<T> controller;
+
+  /// The height of the day.
   final double height;
+
+  /// The width of a day.
   final double dayWidth;
+
+  /// The height per minute.
   final double heightPerMinute;
+
+  /// The visible date range.
   final DateTimeRange visibleDateRange;
+
+  /// The size of a slot.
   final SlotSize minuteSlotSize;
 
   @override
@@ -35,10 +46,17 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   late double dayWidth;
   late List<DateTime> visibleDates;
   late SlotSize minuteSlotSize;
+
+  /// The height of a slot.
   late double heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+
+  /// The number of slots in a day.
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
 
+  /// The offset of the cursor.
   double cursorOffset = 0;
+
+  /// The number of slots selected.
   int numberOfSlotsSelected = 0;
 
   @override
@@ -65,9 +83,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
   @override
   Widget build(BuildContext context) {
-    bool isMobileDevice = CalendarInternals.of<T>(context).configuration.isMobileDevice;
-    bool createNewEvents = CalendarInternals.of<T>(context).configuration.createNewEvents;
-
     return SizedBox(
       width: dayWidth,
       height: height,
@@ -80,15 +95,17 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
                 top: heightPerSlot * i,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () => onTap(calculateDateTimeRange(visibleDates[day], i)),
-                  onVerticalDragStart: isMobileDevice || !createNewEvents
+                  onTap: !createNewEvents
+                      ? () => onTap(calculateDateTimeRange(visibleDates[day], i))
+                      : null,
+                  onVerticalDragStart: gestureDisabled
                       ? null
                       : (DragStartDetails details) => _onVerticalDragStart(
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
-                  onVerticalDragEnd: isMobileDevice || !createNewEvents ? null : _onVerticalDragEnd,
-                  onVerticalDragUpdate: isMobileDevice || !createNewEvents
+                  onVerticalDragEnd: gestureDisabled ? null : _onVerticalDragEnd,
+                  onVerticalDragUpdate: gestureDisabled
                       ? null
                       : (DragUpdateDetails details) => _onVerticalDragUpdate(
                             details,
@@ -105,13 +122,69 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     );
   }
 
+  /// Handles the onTap event.
+  /// If the device is a mobile device then [createNewEventMobile] is called.
+  /// If the device is not a mobile device then [createNewEventDesktop] is called.
   void onTap(DateTimeRange dateTimeRange) {
-    if (!CalendarInternals.of<T>(context).configuration.createNewEvents) return;
-    if (CalendarInternals.of<T>(context).configuration.isMobileDevice) {
+    if (isMobileDevice) {
       createNewEventMobile(dateTimeRange);
     } else {
       createNewEventDesktop(dateTimeRange);
     }
+  }
+
+  /// Creates a new event on desktop.
+  void createNewEventDesktop(DateTimeRange dateTimeRange) async {
+    // Create a new [CalendarEvent] with the [dateTimeRange].
+    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+      dateTimeRange: dateTimeRange,
+    );
+
+    // Set the chaning event to the new event.
+    controller.chaningEvent = newCalendarEvent;
+
+    // Set the [isNewEvent] to true.
+    controller.isNewEvent = true;
+
+    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
+        .functions
+        .onCreateEvent
+        ?.call(controller.chaningEvent!);
+
+    // If the [newEvent] is null then set the [chaningEvent] to null.
+    if (newEvent == null) {
+      controller.chaningEvent = null;
+    } else {
+      // Add the [newEvent] to the [CalendarController].
+      controller.addEvent(newEvent);
+      controller.chaningEvent = null;
+    }
+
+    // Set the [isNewEvent] to false.
+    controller.isNewEvent = false;
+  }
+
+  /// Creates a new event on mobile.
+  /// TODO: Add a way to change the [CalendarEvent] on mobile.
+  ///
+  void createNewEventMobile(DateTimeRange dateTimeRange) async {
+    CalendarEvent<T> displayEvent = CalendarEvent<T>(
+      dateTimeRange: dateTimeRange,
+    );
+
+    controller.isNewEvent = true;
+    controller.chaningEvent = displayEvent;
+
+    CalendarEvent<T>? newEvent =
+        await CalendarInternals.of<T>(context).functions.onCreateEvent?.call(displayEvent);
+
+    if (newEvent == null) {
+      controller.chaningEvent = null;
+    } else {
+      controller.addEvent(newEvent);
+      controller.chaningEvent = null;
+    }
+    controller.isNewEvent = false;
   }
 
   void _onVerticalDragStart(DragStartDetails details, DateTimeRange initialDateTimeRange) {
@@ -167,58 +240,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     }
   }
 
-  /// Creates a new event on desktop.
-  void createNewEventDesktop(DateTimeRange dateTimeRange) async {
-    // Create a new [CalendarEvent] with the [dateTimeRange].
-    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
-      dateTimeRange: dateTimeRange,
-    );
-
-    // Set the chaning event to the new event.
-    controller.chaningEvent = newCalendarEvent;
-
-    // Set the [isNewEvent] to true.
-    controller.isNewEvent = true;
-
-    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
-        .functions
-        .onCreateEvent
-        ?.call(controller.chaningEvent!);
-
-    // If the [newEvent] is null then set the [chaningEvent] to null.
-    if (newEvent == null) {
-      controller.chaningEvent = null;
-    } else {
-      // Add the [newEvent] to the [CalendarController].
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
-
-    // Set the [isNewEvent] to false.
-    controller.isNewEvent = false;
-  }
-
-  /// Creates a new event on mobile.
-  void createNewEventMobile(DateTimeRange dateTimeRange) async {
-    CalendarEvent<T> displayEvent = CalendarEvent<T>(
-      dateTimeRange: dateTimeRange,
-    );
-
-    controller.isNewEvent = true;
-    controller.chaningEvent = displayEvent;
-
-    CalendarEvent<T>? newEvent =
-        await CalendarInternals.of<T>(context).functions.onCreateEvent?.call(displayEvent);
-
-    if (newEvent == null) {
-      controller.chaningEvent = null;
-    } else {
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
-    controller.isNewEvent = false;
-  }
-
   /// Calculate the [DateTimeRange] of a slot.
   DateTimeRange calculateDateTimeRange(DateTime date, int i) => DateTimeRange(
         start: DateTime(
@@ -236,4 +257,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
           minuteSlotSize.minutes * (i + 1),
         ),
       );
+
+  bool get gestureDisabled => isMobileDevice || !createNewEvents;
+  bool get createNewEvents => CalendarInternals.of<T>(context).configuration.createNewEvents;
+  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
 }

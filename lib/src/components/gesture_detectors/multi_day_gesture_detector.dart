@@ -69,7 +69,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobileDevice = CalendarInternals.of<T>(context).configuration.isMobileDevice;
     return Column(
       children: <Widget>[
         for (int r = 0; r < numberOfRows; r++)
@@ -77,21 +76,21 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
             children: <Widget>[
               for (int c = 0; c < numberOfColums; c++)
                 MouseRegion(
-                  cursor: SystemMouseCursors.click,
+                  cursor: createNewEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
                   child: SizedBox(
                     width: dayWidth,
                     height: multidayEventHeight,
                     child: GestureDetector(
-                      onTap: () => _onTap(visibleDates[c].dayRange),
-                      onHorizontalDragStart: !isMobileDevice
-                          ? (DragStartDetails details) =>
-                              _onHorizontalDragStart(details, visibleDates[c].dayRange)
-                          : null,
-                      onHorizontalDragUpdate: !isMobileDevice
-                          ? (DragUpdateDetails details) =>
-                              _onHorizontalDragUpdate(details, visibleDates[c].dayRange)
-                          : null,
-                      onHorizontalDragEnd: !isMobileDevice ? _onHorizontalDragEnd : null,
+                      onTap: createNewEvents ? () => _onTap(visibleDates[c].dayRange) : null,
+                      onHorizontalDragStart: gestureDisabled
+                          ? null
+                          : (DragStartDetails details) =>
+                              _onHorizontalDragStart(details, visibleDates[c].dayRange),
+                      onHorizontalDragUpdate: gestureDisabled
+                          ? null
+                          : (DragUpdateDetails details) =>
+                              _onHorizontalDragUpdate(details, visibleDates[c].dayRange),
+                      onHorizontalDragEnd: createNewEvents ? _onHorizontalDragEnd : null,
                       child: Container(
                         color: Colors.transparent,
                       ),
@@ -179,4 +178,8 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     }
     controller.isMultidayEvent = false;
   }
+
+  bool get gestureDisabled => isMobileDevice || !createNewEvents;
+  bool get createNewEvents => CalendarInternals.of<T>(context).configuration.createNewEvents;
+  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
 }

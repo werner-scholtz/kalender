@@ -3,7 +3,6 @@ import 'package:kalender/src/components/gesture_detectors/tile_gesture_detector.
 import 'package:kalender/src/components/gesture_detectors/tile_resize_detector.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_configuration.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
@@ -40,7 +39,6 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarInternals<T> internals = CalendarInternals.of<T>(context);
     CalendarState state = internals.state;
-    CalendarConfiguration configuration = internals.configuration;
     CalendarController<T> controller = internals.controller;
 
     return ListenableBuilder(
@@ -50,19 +48,23 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
           pageVisibleDateRange,
         );
 
-        // The list of tile groups.
+        // genrate the list of tile groups.
         Iterable<TileGroup<T>> tileGroups = tileLayoutController.generateTileGroups(
           events,
         );
 
-        // The list of snap points.
+        // Get a list of snap points.
         List<DateTime> snapPoints = <DateTime>[];
+
         if (eventSnapping) {
+          // Add the snap points from other events.
           snapPoints.addAll(
             controller.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
           );
         }
+
         if (timeIndicatorSnapping) {
+          // Add the snap point from the time indicator.
           snapPoints.add(DateTime.now());
         }
 
@@ -92,8 +94,6 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
   const TileGroupStack({
     super.key,
     required this.tileGroup,
-    // required this.onEventChanged,
-    // required this.onEventTapped,
     required this.dayWidth,
     required this.verticalDurationStep,
     required this.verticalStep,

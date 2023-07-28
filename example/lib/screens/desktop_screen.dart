@@ -37,7 +37,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
   @override
   Widget build(BuildContext context) {
     return CalendarView<Event>(
-      calendarConfiguration: CalendarConfiguration(),
+      calendarConfiguration: CalendarConfiguration(
+        createNewEvents: true,
+      ),
       calendarComponents: CalendarComponents(
         eventTileBuilder: (event, tileType, drawOutline, continuesBefore, continuesAfter) {
           return EventTile(

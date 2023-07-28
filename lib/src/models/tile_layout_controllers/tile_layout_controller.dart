@@ -160,28 +160,34 @@ class TileLayoutController<T extends Object?> {
           double tileLeftOffset;
           double eventWidth;
           if (overlapsWithPreviousTitle(top, positionedTileDatas[i - 1].top, 15)) {
-            PositionedTileData<T>? eventBehind = positionedTileDatas
-                .where(
-                  (PositionedTileData<T> element) =>
-                      currentEvent.start.isWithin(element.event.dateTimeRange) ||
-                      currentEvent.start == element.event.start ||
-                      currentEvent.end == element.event.end,
-                )
-                .lastOrNull;
+            Iterable<PositionedTileData<T>> eventsBehind = positionedTileDatas.where(
+              (PositionedTileData<T> element) =>
+                  currentEvent.start.isWithin(element.event.dateTimeRange) ||
+                  currentEvent.start == element.event.start ||
+                  currentEvent.end == element.event.end,
+            );
+
+            PositionedTileData<T>? eventBehind;
+            if (eventsBehind.isNotEmpty) {
+              eventBehind = eventsBehind.last;
+            }
 
             tileLeftOffset =
                 eventBehind != null ? eventBehind.left + (dayWidth / 4) : i * (dayWidth / 10);
             eventWidth = dayWidth - (dayWidth / 20);
           } else {
-            eventWidth = dayWidth - (dayWidth / 10);
-            PositionedTileData<T>? eventBehind = positionedTileDatas
-                .where(
-                  (PositionedTileData<T> element) =>
-                      currentEvent.start.isWithin(element.event.dateTimeRange),
-                )
-                .toList()
-                .lastOrNull;
+            Iterable<PositionedTileData<T>> eventsBehind = positionedTileDatas.where(
+              (PositionedTileData<T> element) =>
+                  currentEvent.start.isWithin(element.event.dateTimeRange),
+            );
 
+            PositionedTileData<T>? eventBehind;
+
+            if (eventsBehind.isNotEmpty) {
+              eventBehind = eventsBehind.last;
+            }
+
+            eventWidth = dayWidth - (dayWidth / 10);
             tileLeftOffset = (eventBehind?.left ?? 0) + (dayWidth / 10);
           }
 
