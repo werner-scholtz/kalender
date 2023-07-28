@@ -6,6 +6,8 @@ export 'src/providers/calendar_controller_provider.dart';
 /// Models
 export 'package:kalender/src/models/calendar/calendar_controller.dart';
 export 'package:kalender/src/models/calendar/calendar_event.dart';
+export 'package:kalender/src/models/calendar/calendar_components.dart';
+export 'package:kalender/src/models/calendar/calendar_configuration.dart';
 
 /// Views
 export 'package:kalender/src/views/calendar_view.dart';

@@ -29,7 +29,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarController<T> controller = CalendarInternals.of<T>(context).controller;
-    CalendarViewState state = CalendarInternals.of<T>(context).state;
+    CalendarState state = CalendarInternals.of<T>(context).state;
     CalendarComponents<T> components = CalendarInternals.of<T>(context).components;
 
     return RepaintBoundary(

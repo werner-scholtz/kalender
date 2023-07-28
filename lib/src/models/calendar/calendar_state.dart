@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CalendarViewState {
-  const CalendarViewState({
+class CalendarState {
+  const CalendarState({
     required this.scrollController,
     required this.visibleDateRange,
     required this.heightPerMinute,

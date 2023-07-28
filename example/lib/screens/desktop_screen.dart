@@ -37,36 +37,39 @@ class _DesktopScreenState extends State<DesktopScreen> {
   @override
   Widget build(BuildContext context) {
     return CalendarView<Event>(
-      eventTileBuilder: (event, tileType, drawOutline, continuesBefore, continuesAfter) {
-        return EventTile(
-          event: event,
-          tileType: tileType,
-          drawOutline: drawOutline,
-          continuesBefore: continuesBefore,
-          continuesAfter: continuesAfter,
-        );
-      },
-      multiDayEventTileBuilder: (event, tileType, continuesBefore, continuesAfter) {
-        return MultiDayEventTile(
-          event: event,
-          tileType: tileType,
-          continuesBefore: continuesBefore,
-          continuesAfter: continuesAfter,
-        );
-      },
-      monthEventTileBuilder: (event, tileType, date) {
-        return MonthEventTile(
-          event: event,
-          tileType: tileType,
-          date: date,
-        );
-      },
-      scheduleEventTileBuilder: (event, date) {
-        return ScheduleEventTile(
-          event: event,
-          date: date,
-        );
-      },
+      calendarConfiguration: CalendarConfiguration(),
+      calendarComponents: CalendarComponents(
+        eventTileBuilder: (event, tileType, drawOutline, continuesBefore, continuesAfter) {
+          return EventTile(
+            event: event,
+            tileType: tileType,
+            drawOutline: drawOutline,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
+          );
+        },
+        multiDayEventTileBuilder: (event, tileType, continuesBefore, continuesAfter) {
+          return MultiDayEventTile(
+            event: event,
+            tileType: tileType,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
+          );
+        },
+        monthEventTileBuilder: (event, tileType, date) {
+          return MonthEventTile(
+            event: event,
+            tileType: tileType,
+            date: date,
+          );
+        },
+        scheduleEventTileBuilder: (event, date) {
+          return ScheduleEventTile(
+            event: event,
+            date: date,
+          );
+        },
+      ),
     );
   }
 }

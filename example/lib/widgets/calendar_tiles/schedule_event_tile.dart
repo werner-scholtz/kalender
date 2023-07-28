@@ -22,22 +22,19 @@ class ScheduleEventTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // SizedBox(
-            //   width: CalendarTheme.of(context)
-            //       .configuration
-            //       .schedulePageConfiguration
-            //       .scheduleDateWidth,
-            //   child: Text(event.isMultidayEvent
-            //       ? 'All Day'
-            //       : '${event.start.timeString} - ${event.end.timeString}'),
-            // ),
-            // Text(
-            //   event.eventData?.title ?? '',
-            // ),
-            // if (event.hasDateCounter)
-            //   Text(
-            //     '(${event.dayNumber(date)}/${event.daySpan})',
-            //   ),
+            SizedBox(
+              width: 108,
+              child: Text(event.isMultidayEvent
+                  ? 'All Day'
+                  : '${event.start.hour}:${event.start.minute} - ${event.end.hour}:${event.end.minute}'),
+            ),
+            Text(
+              event.eventData?.title ?? '',
+            ),
+            if (event.hasDateCounter)
+              Text(
+                '(${event.dayNumber(date)}/${event.daySpan})',
+              ),
           ],
         ),
       ),

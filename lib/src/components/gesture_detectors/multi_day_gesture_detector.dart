@@ -105,7 +105,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   }
 
   void _onTap(DateTimeRange dateTimeRange) async {
-    if (!CalendarInternals.of(context).configuration.createNewEvents) return;
+    if (!CalendarInternals.of<T>(context).configuration.createNewEvents) return;
 
     CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
@@ -132,7 +132,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     controller.isMultidayEvent = false;
   }
 
-  /// TODO: implement the horizontal drag functionality.
   void _onHorizontalDragStart(DragStartDetails details, DateTimeRange dateTimeRange) {
     cursorOffset = 0;
     controller.isMultidayEvent = true;

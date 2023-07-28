@@ -35,7 +35,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarViewState state = internals.state;
+    CalendarState state = internals.state;
     CalendarConfiguration configuration = internals.configuration;
     CalendarController<T> controller = internals.controller;
 
@@ -319,11 +319,15 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
 
   void _resizeStart(DateTime newStart) {
     if (controller.chaningEvent == null) return;
-    controller.chaningEvent!.start = newStart;
+    if (newStart.isBefore(controller.chaningEvent!.end)) {
+      controller.chaningEvent!.start = newStart;
+    }
   }
 
   void _resizeEnd(DateTime newEnd) {
     if (controller.chaningEvent == null) return;
-    controller.chaningEvent!.end = newEnd;
+    if (newEnd.isAfter(controller.chaningEvent!.start)) {
+      controller.chaningEvent!.end = newEnd;
+    }
   }
 }

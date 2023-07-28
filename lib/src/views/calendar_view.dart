@@ -6,7 +6,6 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 import 'package:kalender/src/providers/calendar_controller_provider.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/schedule_view/schedule_view.dart';
@@ -19,19 +18,21 @@ class CalendarView<T extends Object?> extends StatefulWidget {
     super.key,
     this.controller,
     this.calendarConfiguration,
+    required this.calendarComponents,
     this.onEventChanged,
     this.onEventTapped,
     this.onCreateEvent,
     this.onDateTapped,
-    required this.eventTileBuilder,
-    required this.multiDayEventTileBuilder,
-    required this.monthEventTileBuilder,
-    required this.scheduleEventTileBuilder,
   });
 
+  /// The [CalendarController] used to store events.
   final CalendarController<T>? controller;
 
+  /// The [CalendarConfiguration] used to configure the [CalendarView].
   final CalendarConfiguration? calendarConfiguration;
+
+  /// The [CalendarComponents] used to build different componets of the [CalendarView].
+  final CalendarComponents<T> calendarComponents;
 
   /// The [Function] called when an event is changed.
   ///
@@ -49,59 +50,58 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)? onCreateEvent;
 
   /// The [Function] called when a date is tapped.
-  ///
   final void Function(DateTime date)? onDateTapped;
 
-  /// This builder is used to build event's with a duration < 24 hours.
-  final EventTileBuilder<T> eventTileBuilder;
-
-  /// This builder is used to build event's with a duration >= 24 hours.
-  final MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
-
-  /// This builder is used to build event's on the [ViewType.month].
-  final MonthEventTileBuilder<T> monthEventTileBuilder;
-
-  /// This builder is used to build event's on the [ViewType.schedule].
-  final ScheduleEventTileBuilder<T> scheduleEventTileBuilder;
-
   @override
-  State<CalendarView<T>> createState() => _CalendarViewState<T>();
+  State<CalendarView<T>> createState() => CalendarViewState<T>();
 }
 
-class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
+class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   CalendarController<T>? _controller;
+  CalendarController<T> get controller => _controller!;
+
   late CalendarConfiguration _configuration;
+  late CalendarComponents<T> _components;
+  late CalendarFunctions<T> _funcitons;
+  late CalendarState _viewState;
 
   late PageController _pageController;
-  final ScrollController _scrollController = ScrollController();
-  final ValueNotifier<double> _heightPerMinute = ValueNotifier<double>(0.7);
   late ViewConfiguration _viewConfiguration;
   late DateTimeRange _dateTimeRange;
 
+  final ScrollController _scrollController = ScrollController();
+
+  late final ValueNotifier<double> _heightPerMinute;
   late final ValueNotifier<DateTimeRange> _visibleDateRange;
   late final ValueNotifier<DateTime> _highlightedDate;
-  late CalendarViewState _viewState;
 
   @override
   void initState() {
     super.initState();
 
+    _components = widget.calendarComponents;
     _configuration = widget.calendarConfiguration ?? CalendarConfiguration();
-
-    _setViewConfiguration(_configuration.initialViewConfiguration);
-
     _highlightedDate = ValueNotifier<DateTime>(
       _configuration.initialDate,
     );
 
+    _heightPerMinute = ValueNotifier<double>(0.7);
+
+    _setViewConfiguration(_configuration.initialViewConfiguration);
+
     _visibleDateRange = ValueNotifier<DateTimeRange>(
-      _configuration.dateTimeRange,
+      _viewConfiguration.calcualteVisibleDateTimeRange(
+        _highlightedDate.value,
+        _configuration.firstDayOfWeek,
+      ),
     );
 
+    _setDateTimeRange();
     _setVisibleDateTimeRange();
     _regulateVisibleDateRange();
-
-    _setViewState();
+    _setPageController();
+    _setCalendarFunctions();
+    _setCalendarState();
   }
 
   @override
@@ -122,24 +122,9 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
       style: const CalendarStyle(),
       child: CalendarInternals<T>(
         controller: _controller!,
-        components: CalendarComponents<T>(
-          eventTileBuilder: widget.eventTileBuilder,
-          multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
-          monthEventTileBuilder: widget.monthEventTileBuilder,
-          scheduleEventTileBuilder: widget.scheduleEventTileBuilder,
-        ),
+        components: _components,
         configuration: CalendarConfiguration(),
-        functions: CalendarFunctions<T>(
-          onPageChanged: _onPageChanged,
-          onConfigurationChanged: changeConfiguration,
-          onLeftArrowPressed: animateToPreviousPage,
-          onDateSelectorPressed: _onDateSelectorPressed,
-          onRightArrowPressed: animateToNextPage,
-          onDateTapped: widget.onDateTapped,
-          onCreateEvent: widget.onCreateEvent,
-          onEventChanged: widget.onEventChanged,
-          onEventTapped: widget.onEventTapped,
-        ),
+        functions: _funcitons,
         style: const CalendarStyle(),
         state: _viewState,
         child: Builder(
@@ -164,6 +149,20 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
     );
   }
 
+  void _setCalendarFunctions() {
+    _funcitons = CalendarFunctions<T>(
+      onPageChanged: _onPageChanged,
+      onConfigurationChanged: changeConfiguration,
+      onLeftArrowPressed: animateToPreviousPage,
+      onDateSelectorPressed: _onDateSelectorPressed,
+      onRightArrowPressed: animateToNextPage,
+      onDateTapped: widget.onDateTapped,
+      onCreateEvent: widget.onCreateEvent,
+      onEventChanged: widget.onEventChanged,
+      onEventTapped: widget.onEventTapped,
+    );
+  }
+
   void _assignController() {
     CalendarController<T> controller =
         widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
@@ -176,28 +175,20 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
     setState(() {
       _pageController.dispose();
       _setViewConfiguration(viewConfiguration);
-
+      _setDateTimeRange();
       _setVisibleDateTimeRange();
       _regulateVisibleDateRange();
-
-      _setViewState();
+      _setPageController();
+      _setCalendarState();
     });
   }
 
-  void _setViewState() {
-    _setVisibleDateTimeRange();
-    _regulateVisibleDateRange();
-    _setPageController();
-
-    _viewState = CalendarViewState(
+  void _setCalendarState() {
+    _viewState = CalendarState(
       scrollController: _scrollController,
       visibleDateRange: _visibleDateRange,
       heightPerMinute: _heightPerMinute,
-      dateTimeRange: _viewConfiguration.calculateAdjustedDateTimeRange(
-        _configuration.dateTimeRange,
-        _highlightedDate.value,
-        _configuration.firstDayOfWeek,
-      ),
+      dateTimeRange: _dateTimeRange,
       pageController: _pageController,
       numberOfPages: _viewConfiguration.calculateNumberOfPages(_dateTimeRange),
     );
@@ -215,6 +206,14 @@ class _CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
   }
 
   /// Sets the visible [DateTimeRange].
+  void _setDateTimeRange() {
+    _dateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
+      _configuration.dateTimeRange,
+      _highlightedDate.value,
+      _configuration.firstDayOfWeek,
+    );
+  }
+
   void _setVisibleDateTimeRange() {
     _visibleDateRange.value = _viewConfiguration.calcualteVisibleDateTimeRange(
       _highlightedDate.value,

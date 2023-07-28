@@ -20,7 +20,7 @@ class CalendarInternals<T extends Object?> extends InheritedWidget {
 
   final CalendarConfiguration configuration;
   final CalendarStyle style;
-  final CalendarViewState state;
+  final CalendarState state;
 
   final CalendarController<T> controller;
   final CalendarComponents<T> components;
@@ -29,7 +29,10 @@ class CalendarInternals<T extends Object?> extends InheritedWidget {
   static CalendarInternals<T> of<T extends Object?>(BuildContext context) {
     CalendarInternals<T>? result =
         context.dependOnInheritedWidgetOfExactType<CalendarInternals<T>>();
-
+    assert(
+        result != null,
+        'No CalendarInternals<$T> found in context. '
+        'Make sure to set the type to $T');
     return result!;
   }
 

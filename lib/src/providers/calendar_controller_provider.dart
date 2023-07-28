@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/views/calendar_view.dart';
 
 /// Provides a [CalendarController] to all descendants of this Widget.
 class CalendarControllerProvider<T extends Object?> extends InheritedWidget {
@@ -19,7 +20,7 @@ class CalendarControllerProvider<T extends Object?> extends InheritedWidget {
         'No CalendarControllerProvider<$T> found in context. '
         'Please wrap your app with a CalendarControllerProvider<$T>. '
         'OR'
-        'Provide a CalendarController<$T> to the View class.');
+        'Provide a CalendarController<$T> to the $CalendarView class.');
     return result!;
   }
 

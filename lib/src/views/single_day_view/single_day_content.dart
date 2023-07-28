@@ -27,7 +27,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
     CalendarInternals<T> internals = CalendarInternals.of<T>(context);
     CalendarComponents<T> components = internals.components;
     CalendarFunctions<T> functions = internals.functions;
-    CalendarViewState state = internals.state;
+    CalendarState state = internals.state;
     CalendarConfiguration configuration = internals.configuration;
 
     return ValueListenableBuilder<double>(
