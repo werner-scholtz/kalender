@@ -5,8 +5,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class MonthViewConfiguration implements ViewConfiguration {
   const MonthViewConfiguration();
 
-  @override
-  final ViewType viewType = ViewType.month;
+  // @override
+  // final ViewType viewType = ViewType.month;
 
   Duration get verticalDurationStep;
 

@@ -5,8 +5,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class MultiDayViewConfiguration implements ViewConfiguration {
   const MultiDayViewConfiguration();
 
-  @override
-  final ViewType viewType = ViewType.multiDay;
+  // @override
+  // final ViewType viewType = ViewType.multiDay;
 
   /// The width of the timeline.
   double get timelineWidth;

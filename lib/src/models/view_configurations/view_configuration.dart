@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
 
 /// This is the base class for all [ViewConfiguration]s.
 ///
@@ -7,14 +6,14 @@ import 'package:kalender/src/enumerations.dart';
 abstract class ViewConfiguration {
   const ViewConfiguration();
 
-  /// The [ViewType] of this [ViewConfiguration].
-  /// This determines which [CalendarView] is used.
-  ///
-  /// [ViewType.singleDay]
-  /// [ViewType.multiDay]
-  /// [ViewType.month]
-  /// [ViewType.schedule]
-  ViewType get viewType;
+  // /// The [ViewType] of this [ViewConfiguration].
+  // /// This determines which [CalendarView] is used.
+  // ///
+  // /// [ViewType.singleDay]
+  // /// [ViewType.multiDay]
+  // /// [ViewType.month]
+  // /// [ViewType.schedule]
+  // ViewType get viewType;
 
   /// The name of the [ViewConfiguration].
   String get name;
@@ -93,6 +92,3 @@ abstract class ViewConfiguration {
     DateTimeRange visibleDateRange,
   );
 }
-
-
-

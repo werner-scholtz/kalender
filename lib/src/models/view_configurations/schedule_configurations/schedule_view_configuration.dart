@@ -5,6 +5,6 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class ScheduleViewConfiguration implements ViewConfiguration {
   const ScheduleViewConfiguration();
 
-  @override
-  final ViewType viewType = ViewType.schedule;
+  // @override
+  // final ViewType viewType = ViewType.schedule;
 }

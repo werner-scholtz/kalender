@@ -5,8 +5,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class SingleDayViewConfiguration implements ViewConfiguration {
   const SingleDayViewConfiguration();
 
-  @override
-  final ViewType viewType = ViewType.singleDay;
+  // @override
+  // final ViewType viewType = ViewType.singleDay;
 
   @override
   double calculateDayWidth(double pageWidth) {

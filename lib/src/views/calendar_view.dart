@@ -135,22 +135,34 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
         child: SafeArea(
           child: Builder(
             builder: (BuildContext context) {
-              switch (_viewConfiguration.viewType) {
-                case ViewType.singleDay:
-                  return SingleDayView<T>(
-                    viewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
-                  );
-                case ViewType.multiDay:
-                  return MultiDayView<T>(
-                    viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
-                  );
-                case ViewType.month:
-                  return MonthView<T>(
-                    viewConfiguration: _viewConfiguration as MonthViewConfiguration,
-                  );
-                case ViewType.schedule:
-                  return ScheduleView<T>();
+              if (_viewConfiguration is SingleDayViewConfiguration) {
+                return SingleDayView<T>(
+                  viewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
+                );
+              } else if (_viewConfiguration is MultiDayViewConfiguration) {
+                return MultiDayView<T>(
+                  viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
+                );
+              } else if (_viewConfiguration is MonthViewConfiguration) {
+                return MonthView<T>(
+                  viewConfiguration: _viewConfiguration as MonthViewConfiguration,
+                );
+              } else if (_viewConfiguration is ScheduleViewConfiguration) {
+                return ScheduleView<T>();
+              } else {
+                return Container();
               }
+
+              // switch (_viewConfiguration.viewType) {
+              //   case ViewType.singleDay:
+
+              //   case ViewType.multiDay:
+
+              //   case ViewType.month:
+
+              //   case ViewType.schedule:
+
+              // }
             },
           ),
         ),

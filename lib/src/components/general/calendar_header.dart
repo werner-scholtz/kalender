@@ -32,25 +32,26 @@ class CalendarViewHeader<T extends Object?> extends StatelessWidget {
       children: <Widget>[
         Builder(
           builder: (BuildContext context) {
-            if (currentPageConfiguration.viewType == ViewType.schedule) {
-              DateFormat format = DateFormat('yyyy MMM');
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: isMobileDevice ? 4 : 8),
-                child: Text(
-                  '${format.format(visibleDateTimeRange.start)} - ${format.format(visibleDateTimeRange.end)}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  DateFormat('yyyy MMMM').format(visibleDateTimeRange.start
-                      .add(visibleDateTimeRange.end.difference(visibleDateTimeRange.start) ~/ 2)),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              );
-            }
+            DateFormat format = DateFormat('yyyy MMM');
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobileDevice ? 4 : 8),
+              child: Text(
+                '${format.format(visibleDateTimeRange.start)} - ${format.format(visibleDateTimeRange.end)}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            );
+            // if (currentPageConfiguration.viewType == ViewType.schedule) {
+
+            // } else {
+            //   return Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 8),
+            //     child: Text(
+            //       DateFormat('yyyy MMMM').format(visibleDateTimeRange.start
+            //           .add(visibleDateTimeRange.end.difference(visibleDateTimeRange.start) ~/ 2)),
+            //       style: Theme.of(context).textTheme.titleMedium,
+            //     ),
+            //   );
+            // }
           },
         ),
         IconButton.filledTonal(
