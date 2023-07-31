@@ -114,7 +114,7 @@ class CalendarController<T extends Object?> with ChangeNotifier {
   }
 
   Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
-    return _events.where((CalendarEvent<T> element) => (element.isOnDate(date)));
+    return _events.where((CalendarEvent<T> element) => element.isOnDate(date));
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/tile_gesture_detector.dart';
-import 'package:kalender/src/components/gesture_detectors/tile_resize_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day_tile_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day_tile_resize_detector.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
@@ -221,18 +221,20 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          TileGestureDetector<T>(
+          DayTileGestureDetector<T>(
+            event: positionedTileData.event,
+
             horizontalDurationStep: horizontalDurationStep,
             verticalDurationStep: verticalDurationStep,
             verticalStep: verticalStep,
             horizontalStep: horizontalStep,
-            onTap: onTap,
-            onLongPressStart: onLongPressStart,
-            onLongPressEnd: onLongPressEnd,
-            onPanStart: onPanStart,
-            onPanEnd: onPanEnd,
-            onRescheduleEvent: onReschedhuleEvent,
-            initialDateTimeRange: positionedTileData.event.dateTimeRange,
+            // onTap: onTap,
+            // onLongPressStart: onLongPressStart,
+            // onLongPressEnd: onLongPressEnd,
+            // onPanStart: onPanStart,
+            // onPanEnd: onPanEnd,
+            // onRescheduleEvent: onReschedhuleEvent,
+            visibleDateTimeRange: visibleDateRange,
             snapPoints: pointsOfInterest,
             eventSnapping: pointsOfInterest.isNotEmpty,
             child: tileBuilder(
@@ -245,7 +247,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
                   positionedTileData.date.isSameDay(positionedTileData.event.start),
             ),
           ),
-          TileResizeDetector(
+          DayTileResizeDetector(
             height: positionedTileData.height,
             width: positionedTileData.width,
             verticalStep: verticalStep,

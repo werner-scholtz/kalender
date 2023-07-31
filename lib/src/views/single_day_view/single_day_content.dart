@@ -55,7 +55,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                     child: PageView.builder(
                       key: Key(viewConfiguration.name),
                       controller: state.pageController,
-                      itemCount: state.numberOfPages,
+                      itemCount: state.itemCount,
                       onPageChanged: functions.onPageChanged,
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
@@ -70,7 +70,6 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
                           verticalDurationStep: const Duration(minutes: 15),
-                     
                         );
 
                         return Stack(
@@ -100,7 +99,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                               ),
                             ),
                             DayGestureDetector<T>(
-                              controller: internals.controller,
+                          
                               height: pageHeight,
                               dayWidth: dayWidth,
                               heightPerMinute: heightPerMinute,

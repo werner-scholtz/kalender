@@ -9,16 +9,12 @@ import 'package:kalender/src/extentions.dart';
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   const DayGestureDetector({
     super.key,
-    required this.controller,
     required this.height,
     required this.dayWidth,
     required this.heightPerMinute,
     required this.visibleDateRange,
     required this.minuteSlotSize,
   });
-
-  /// The [CalendarController] of the calendar.
-  final CalendarController<T> controller;
 
   /// The height of the day.
   final double height;
@@ -40,7 +36,6 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
 }
 
 class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetector<T>> {
-  late CalendarController<T> controller;
   late double heightPerMinute;
   late double height;
   late double dayWidth;
@@ -67,7 +62,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
-    controller = widget.controller;
   }
 
   @override
@@ -78,7 +72,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
-    controller = widget.controller;
   }
 
   @override
@@ -261,4 +254,5 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
   bool get createNewEvents => CalendarInternals.of<T>(context).configuration.createNewEvents;
   bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
+  CalendarController<T> get controller => CalendarInternals.of<T>(context).controller;
 }

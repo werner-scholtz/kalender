@@ -8,14 +8,51 @@ class MonthEventTile extends StatelessWidget {
     required this.event,
     required this.date,
     required this.tileType,
+    required this.continuesBefore,
+    required this.continuesAfter,
   });
 
   final CalendarEvent<Event> event;
   final DateTime date;
   final TileType tileType;
-
+  final bool continuesBefore;
+  final bool continuesAfter;
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+      child: Material(
+        type: MaterialType.card,
+        color: cardColor(event.eventData?.color ?? Colors.blue),
+        elevation: cardElevation,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(continuesBefore ? 0 : 12),
+          bottomLeft: Radius.circular(continuesBefore ? 0 : 12),
+          topRight: Radius.circular(continuesAfter ? 0 : 12),
+          bottomRight: Radius.circular(continuesAfter ? 0 : 12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  event.eventData?.title ?? '',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  maxLines: 1,
+                ),
+              ),
+              // if (event.hasDateCounter && !CalendarTheme.of(context).configuration.isMobileDevice)
+              //   Text(
+              //     '(${event.dayNumber(date)}/${event.daySpan})',
+              //   ),
+            ],
+          ),
+        ),
+      ),
+    );
+
     return Card(
       elevation: cardElevation,
       margin: const EdgeInsets.all(2),

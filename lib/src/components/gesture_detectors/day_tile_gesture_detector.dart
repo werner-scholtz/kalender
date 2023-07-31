@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_model_export.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
-class TileGestureDetector<T extends Object?> extends StatefulWidget {
-  const TileGestureDetector({
+class DayTileGestureDetector<T extends Object?> extends StatefulWidget {
+  const DayTileGestureDetector({
     super.key,
     required this.child,
-    required this.initialDateTimeRange,
+    required this.event,
+    required this.visibleDateTimeRange,
     required this.verticalDurationStep,
     required this.verticalStep,
     required this.horizontalDurationStep,
     required this.horizontalStep,
-    required this.onTap,
-    required this.onPanStart,
-    required this.onPanEnd,
-    required this.onLongPressStart,
-    required this.onLongPressEnd,
-    required this.onRescheduleEvent,
     required this.snapPoints,
     required this.eventSnapping,
   });
   final Widget child;
 
-  final DateTimeRange initialDateTimeRange;
+  final DateTimeRange visibleDateTimeRange;
+
+  final CalendarEvent<T> event;
 
   /// The duration of the vertical step when dragging/resizing an event.
   final Duration verticalDurationStep;
@@ -31,40 +30,16 @@ class TileGestureDetector<T extends Object?> extends StatefulWidget {
   final Duration? horizontalDurationStep;
   final double? horizontalStep;
 
-  /// The [Function] called when the event is tapped.
-  final VoidCallback? onTap;
-
-  /// The [Function] called when a pan starts.
-  ///
-  /// Only used on desktop devices.
-  final VoidCallback? onPanStart;
-
-  /// The [Function] called when a pan ends.
-  ///
-  /// Only used on desktop devices.
-  final VoidCallback? onPanEnd;
-
-  /// The [Function] called when a long press starts.
-  ///
-  /// Only used on mobile devices.
-  final VoidCallback? onLongPressStart;
-
-  /// The [Function] called when a long press ends.
-  ///
-  /// Only used on mobile devices.
-  final VoidCallback? onLongPressEnd;
-
-  final Function(DateTimeRange newDateTimeRange) onRescheduleEvent;
-
   final List<DateTime> snapPoints;
   final bool eventSnapping;
 
   @override
-  State<TileGestureDetector<T>> createState() => _TileGestureDetectorState<T>();
+  State<DayTileGestureDetector<T>> createState() => _DayTileGestureDetectorState<T>();
 }
 
-class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
-  late DateTimeRange initialDateTimeRange = widget.initialDateTimeRange;
+class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
+  late CalendarEvent<T> event;
+  late DateTimeRange initialDateTimeRange;
   late List<DateTime> snapPoints;
   late bool eventSnapping;
 
@@ -75,11 +50,13 @@ class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
   @override
   void initState() {
     super.initState();
+    event = widget.event;
+    initialDateTimeRange = event.dateTimeRange;
     snapPoints = widget.snapPoints;
   }
 
   @override
-  void didUpdateWidget(covariant TileGestureDetector<T> oldWidget) {
+  void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
@@ -97,20 +74,37 @@ class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
         onLongPressStart: isMobileDevice ? _onLongPressStart : null,
         onLongPressMoveUpdate: isMobileDevice ? _onLongPressMoveUpdate : null,
         onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
-        onTap: widget.onTap,
+        onTap: _onTap,
         child: widget.child,
       ),
     );
   }
 
+  void _onTap() {
+    // Set the changing event.
+    controller.chaningEvent = event;
+    controller.isMoving = true;
+
+    // Call the onEventTapped function.
+    functions.onEventTapped?.call(controller.chaningEvent!);
+
+    // Reset the changing event.
+    controller.isMoving = false;
+    controller.chaningEvent = null;
+  }
+
   void _onPanStart(DragStartDetails details) {
     _onRescheduleStart();
-    widget.onPanStart?.call();
+    controller.isMoving = true;
+    controller.chaningEvent = event;
+    initialDateTimeRange = event.dateTimeRange;
   }
 
   void _onPanEnd(DragEndDetails details) {
     _onRescheduleEnd();
-    widget.onPanEnd?.call();
+    functions.onEventChanged?.call(initialDateTimeRange, controller.chaningEvent!);
+    controller.chaningEvent = null;
+    controller.isMoving = false;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -119,12 +113,15 @@ class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
 
   void _onLongPressStart(LongPressStartDetails details) {
     _onRescheduleStart();
-    widget.onLongPressStart?.call();
+    controller.isMoving = true;
+    controller.chaningEvent = event;
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
     _onRescheduleEnd();
-    widget.onLongPressEnd?.call();
+    functions.onEventChanged?.call(initialDateTimeRange, controller.chaningEvent!);
+    controller.chaningEvent = null;
+    controller.isMoving = false;
   }
 
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
@@ -132,7 +129,7 @@ class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
   }
 
   void _onRescheduleStart() {
-    initialDateTimeRange = widget.initialDateTimeRange;
+    initialDateTimeRange = widget.visibleDateTimeRange;
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
@@ -184,13 +181,20 @@ class _TileGestureDetectorState<T> extends State<TileGestureDetector<T>> {
       newStart = newEnd.subtract(initialDateTimeRange.duration);
     }
 
-    widget.onRescheduleEvent(
-      DateTimeRange(
-        start: newStart,
-        end: newEnd,
-      ),
+    DateTimeRange newDateTimeRange = DateTimeRange(
+      start: newStart,
+      end: newEnd,
     );
+
+    if (newDateTimeRange.start.isWithin(widget.visibleDateTimeRange) ||
+        newDateTimeRange.end.isWithin(widget.visibleDateTimeRange)) {
+      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+    }
   }
 
   bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
+
+  CalendarInternals<T> get internals => CalendarInternals.of<T>(context);
+  CalendarController<T> get controller => internals.controller;
+  CalendarFunctions<T> get functions => internals.functions;
 }

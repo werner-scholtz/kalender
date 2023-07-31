@@ -98,11 +98,13 @@ class DesktopScreen extends StatelessWidget {
             continuesAfter: continuesAfter,
           );
         },
-        monthEventTileBuilder: (event, tileType, date) {
+        monthEventTileBuilder: (event, tileType, date, continuesBefore, continuesAfter) {
           return MonthEventTile(
             event: event,
             tileType: tileType,
             date: date,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
           );
         },
         scheduleEventTileBuilder: (event, date) {

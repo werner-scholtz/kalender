@@ -29,7 +29,6 @@ class CalendarConfiguration {
   /// Page transition curve.
   final Curve pageTransitionCurve;
 
-
   /// Specifies the start of the week.
   ///
   /// Use [DateTime.monday] to [DateTime.sunday]
@@ -50,7 +49,7 @@ class CalendarConfiguration {
     DateTime? initialDate,
     DateTimeRange? dateTimeRange,
     bool? isMobileDevice,
-    this.initialViewConfiguration = const DayConfiguration(),
+    this.initialViewConfiguration = const MonthConfiguration(),
     this.viewConfigurations = const <ViewConfiguration>[
       DayConfiguration(),
       WeekConfiguration(),

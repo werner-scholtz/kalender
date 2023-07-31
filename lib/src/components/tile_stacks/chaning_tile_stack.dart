@@ -15,7 +15,8 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarController<T> controller = CalendarInternals.of<T>(context).controller;
+    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
+    CalendarController<T> controller = internals.controller;
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
@@ -37,13 +38,13 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
                           left: e.left,
                           width: e.width,
                           height: e.height,
-                          child: CalendarInternals.of<T>(context).components.eventTileBuilder(
-                                e.event,
-                                TileType.selected,
-                                false,
-                                e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
-                                e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
-                              ),
+                          child: internals.components.eventTileBuilder(
+                            e.event,
+                            TileType.selected,
+                            false,
+                            e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
+                            e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
+                          ),
                         ),
                       )
                       .toList(),

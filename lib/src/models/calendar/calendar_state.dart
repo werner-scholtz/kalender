@@ -7,7 +7,7 @@ class CalendarState {
     required this.heightPerMinute,
     required this.dateTimeRange,
     required this.pageController,
-    required this.numberOfPages,
+    required this.itemCount,
   });
 
   final ScrollController scrollController;
@@ -15,5 +15,5 @@ class CalendarState {
   final ValueNotifier<double> heightPerMinute;
   final DateTimeRange dateTimeRange;
   final PageController pageController;
-  final int numberOfPages;
+  final int itemCount;
 }

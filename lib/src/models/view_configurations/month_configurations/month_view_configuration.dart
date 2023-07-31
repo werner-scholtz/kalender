@@ -7,4 +7,8 @@ abstract class MonthViewConfiguration implements ViewConfiguration {
 
   @override
   final ViewType viewType = ViewType.month;
+
+  Duration get verticalDurationStep;
+
+  Duration get horizontalDurationStep;
 }

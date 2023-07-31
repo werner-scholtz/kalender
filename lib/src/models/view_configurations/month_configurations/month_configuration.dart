@@ -4,9 +4,15 @@ import 'package:kalender/src/extentions.dart';
 
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration();
-  
+
   @override
   String get name => 'Month';
+
+  @override
+  final Duration horizontalDurationStep = const Duration(days: 1);
+
+  @override
+  final Duration verticalDurationStep = const Duration(days: 7);
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {

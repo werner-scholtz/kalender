@@ -53,7 +53,13 @@ class CalendarEvent<T extends Object?> with ChangeNotifier {
   bool get isMultidayEvent => duration.inDays >= 1;
 
   /// Whether the [CalendarEvent] is split across days.
-  bool get isSplitAcrossDays => !start.isSameDay(end);
+  bool get isSplitAcrossDays {
+    if (start.isSameDay(end) || start.endOfDay == end) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   /// Whether the [CalendarEvent] has a date counter.
   bool get hasDateCounter {
@@ -96,6 +102,32 @@ class CalendarEvent<T extends Object?> with ChangeNotifier {
   /// The duration of the [CalendarEvent] on a specific date.
   Duration durationOnDate(DateTime date) {
     return dateTimeRangeOnDate(date).duration;
+  }
+
+  /// Whether the [CalendarEvent] continues before the given date.
+  bool continuesBefore(DateTime date) {
+    assert(
+      date.isWithin(dateTimeRange) || date == start.startOfDay || date == end.endOfDay,
+      'The date must be within the dateTimeRange of the event',
+    );
+    if (isSplitAcrossDays) {
+      return !date.isSameDay(start);
+    } else {
+      return false;
+    }
+  }
+
+  /// Whether the [CalendarEvent] continues after the given date.
+  bool continuesAfter(DateTime date) {
+    assert(
+      date.isWithin(dateTimeRange) || date == start.startOfDay || date == end.endOfDay,
+      'The date must be within the dateTimeRange of the event',
+    );
+    if (isSplitAcrossDays) {
+      return !date.isSameDay(end);
+    } else {
+      return false;
+    }
   }
 
   /// The [DateTime]s that the [CalendarEvent] spans.

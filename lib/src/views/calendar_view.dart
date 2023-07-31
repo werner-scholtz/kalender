@@ -145,7 +145,9 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
                     viewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
                   );
                 case ViewType.month:
-                  return MonthView<T>();
+                  return MonthView<T>(
+                    viewConfiguration: _viewConfiguration as MonthViewConfiguration,
+                  );
                 case ViewType.schedule:
                   return ScheduleView<T>();
               }
@@ -197,7 +199,7 @@ class CalendarViewState<T extends Object?> extends State<CalendarView<T>> {
       heightPerMinute: _heightPerMinute,
       dateTimeRange: _dateTimeRange,
       pageController: _pageController,
-      numberOfPages: _viewConfiguration.calculateNumberOfPages(_dateTimeRange),
+      itemCount: _viewConfiguration.calculateNumberOfPages(_dateTimeRange),
     );
   }
 

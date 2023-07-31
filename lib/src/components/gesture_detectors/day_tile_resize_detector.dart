@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TileResizeDetector extends StatefulWidget {
-  const TileResizeDetector({
+class DayTileResizeDetector extends StatefulWidget {
+  const DayTileResizeDetector({
     super.key,
     required this.height,
     required this.width,
@@ -33,10 +33,10 @@ class TileResizeDetector extends StatefulWidget {
   final List<DateTime> snapPoints;
 
   @override
-  State<TileResizeDetector> createState() => _TileResizeDetectorState();
+  State<DayTileResizeDetector> createState() => _DayTileResizeDetectorState();
 }
 
-class _TileResizeDetectorState extends State<TileResizeDetector> {
+class _DayTileResizeDetectorState extends State<DayTileResizeDetector> {
   late DateTimeRange initialDateTimeRange = widget.initialDateTimeRange;
   late List<DateTime> snapPoints;
   double cursorVerticalOffset = 0;
@@ -49,7 +49,7 @@ class _TileResizeDetectorState extends State<TileResizeDetector> {
   }
 
   @override
-  void didUpdateWidget(covariant TileResizeDetector oldWidget) {
+  void didUpdateWidget(covariant DayTileResizeDetector oldWidget) {
     super.didUpdateWidget(oldWidget);
     snapPoints = widget.snapPoints;
   }

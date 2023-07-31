@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:example/widgets/dialogs/event_edit_dialog.dart';
@@ -91,11 +89,13 @@ class MobileScreen extends StatelessWidget {
             continuesAfter: continuesAfter,
           );
         },
-        monthEventTileBuilder: (event, tileType, date) {
+        monthEventTileBuilder: (event, tileType, date, continuesBefore, continuesAfter) {
           return MonthEventTile(
             event: event,
             tileType: tileType,
             date: date,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
           );
         },
         scheduleEventTileBuilder: (event, date) {
