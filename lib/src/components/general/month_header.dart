@@ -19,12 +19,12 @@ class MonthHeaderStyle {
   /// Whether the day of the week should be displayed in upper case.
   final bool? useUpperCase;
 
-  /// The padding around the [MonthCellHeader] widget.
+  /// The padding around the [MonthHeader] widget.
   final EdgeInsets? padding;
 }
 
-class MonthCellHeader extends StatelessWidget {
-  const MonthCellHeader({
+class MonthHeader extends StatelessWidget {
+  const MonthHeader({
     super.key,
     required this.dayWidth,
     required this.date,

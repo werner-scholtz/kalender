@@ -23,8 +23,8 @@ class MonthEventTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       child: Material(
         type: MaterialType.card,
-        color: cardColor(event.eventData?.color ?? Colors.blue),
-        elevation: cardElevation,
+        color: color(event.eventData?.color ?? Colors.blue),
+        elevation: elevation,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(continuesBefore ? 0 : 12),
           bottomLeft: Radius.circular(continuesBefore ? 0 : 12),
@@ -43,43 +43,18 @@ class MonthEventTile extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              // if (event.hasDateCounter && !CalendarTheme.of(context).configuration.isMobileDevice)
-              //   Text(
-              //     '(${event.dayNumber(date)}/${event.daySpan})',
-              //   ),
+              if (event.hasDateCounter)
+                Text(
+                  '(${event.dayNumber(date)}/${event.daySpan})',
+                ),
             ],
           ),
         ),
       ),
     );
-
-    return Card(
-      elevation: cardElevation,
-      margin: const EdgeInsets.all(2),
-      color: cardColor(event.eventData?.color ?? Colors.blue),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                event.eventData?.title ?? '',
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: 1,
-              ),
-            ),
-            // if (event.hasDateCounter && !CalendarTheme.of(context).configuration.isMobileDevice)
-            //   Text(
-            //     '(${event.dayNumber(date)}/${event.daySpan})',
-            //   ),
-          ],
-        ),
-      ),
-    );
   }
 
-  Color cardColor(Color color) {
+  Color color(Color color) {
     if (tileType == TileType.ghost) {
       return color.withAlpha(100);
     } else {
@@ -87,7 +62,7 @@ class MonthEventTile extends StatelessWidget {
     }
   }
 
-  double get cardElevation {
+  double get elevation {
     switch (tileType) {
       case TileType.ghost:
         return 0.0;

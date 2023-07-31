@@ -4,8 +4,8 @@ import 'package:kalender/src/components/general/month_header.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
-class MonthHeader<T extends Object?> extends StatelessWidget {
-  const MonthHeader({
+class MonthViewHeader<T extends Object?> extends StatelessWidget {
+  const MonthViewHeader({
     super.key,
     required this.viewConfiguration,
     required this.cellWidth,
@@ -40,7 +40,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
                 children: <Widget>[
                   ...List<Widget>.generate(
                     7,
-                    (int index) => MonthCellHeader(
+                    (int index) => MonthHeader(
                       dayWidth: cellWidth,
                       date: visibleDateTimeRange.start.add(
                         Duration(days: index),

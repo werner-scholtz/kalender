@@ -21,7 +21,7 @@ class MonthView<T extends Object?> extends StatelessWidget {
 
         return Column(
           children: [
-            MonthHeader<T>(
+            MonthViewHeader<T>(
               cellWidth: cellWidth,
               viewConfiguration: viewConfiguration,
             ),

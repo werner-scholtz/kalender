@@ -20,7 +20,6 @@ class MonthContent<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarComponents<T> components = internals.components;
     CalendarFunctions<T> functions = internals.functions;
     CalendarState state = internals.state;
     CalendarConfiguration configuration = internals.configuration;
