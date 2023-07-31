@@ -1,12 +1,177 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_model_export.dart';
+import 'package:kalender/src/providers/calendar_internals.dart';
 
-class MonthCellGestureDetector<T extends Object?> extends StatelessWidget {
+class MonthCellGestureDetector<T extends Object?> extends StatefulWidget {
   const MonthCellGestureDetector({
     super.key,
+    required this.date,
+    required this.visibleDateRange,
+    required this.verticalDurationStep,
+    required this.verticalStep,
+    required this.horizontalDurationStep,
+    required this.horizontalStep,
   });
+
+  final DateTime date;
+
+  /// The visible date range.
+  final DateTimeRange visibleDateRange;
+
+  /// The duration of the vertical step when dragging/resizing an event.
+  final Duration verticalDurationStep;
+
+  /// The pixel value of the vertical step.
+  final double verticalStep;
+
+  /// The duration of the horizontal step when dragging an event.
+  final Duration horizontalDurationStep;
+
+  /// The pixel value of the horizontal step.
+  final double horizontalStep;
+
+  @override
+  State<MonthCellGestureDetector<T>> createState() => _MonthCellGestureDetectorState<T>();
+}
+
+class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellGestureDetector<T>> {
+  late final DateTime date;
+
+  DateTimeRange? initialDateTimeRange;
+  Offset cursorOffset = Offset.zero;
+  int currentVerticalSteps = 0;
+  int currentHorizontalSteps = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    date = widget.date;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        onPanStart: isMobileDevice ? null : onPanStart,
+        onPanUpdate: isMobileDevice ? null : onPanUpdate,
+        onPanEnd: isMobileDevice ? null : onPanEnd,
+      ),
+    );
   }
+
+  void onTap() async {
+    // Create a new [CalendarEvent] with the [dateTimeRange].
+    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+      dateTimeRange: date.dayRange,
+    );
+
+    // Set the chaning event to the new event.
+    controller.chaningEvent = newCalendarEvent;
+
+    // Set the [isNewEvent] to true.
+    controller.isNewEvent = true;
+
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+
+    // If the [newEvent] is null then set the [chaningEvent] to null.
+    if (newEvent == null) {
+      controller.chaningEvent = null;
+    } else {
+      // Add the [newEvent] to the [CalendarController].
+      controller.addEvent(newEvent);
+      controller.chaningEvent = null;
+    }
+
+    // Set the [isNewEvent] to false.
+    controller.isNewEvent = false;
+  }
+
+  void onPanStart(DragStartDetails details) {
+    // Create a new [CalendarEvent] with the [dateTimeRange].
+    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+      dateTimeRange: date.dayRange,
+    );
+
+    // Set the chaning event to the new event.
+    controller.chaningEvent = newCalendarEvent;
+    initialDateTimeRange = newCalendarEvent.dateTimeRange;
+
+    // Set the [isNewEvent] to true.
+    controller.isNewEvent = true;
+
+    cursorOffset = Offset.zero;
+    currentVerticalSteps = 0;
+    currentHorizontalSteps = 0;
+  }
+
+  void onPanEnd(DragEndDetails details) async {
+    cursorOffset = Offset.zero;
+    currentVerticalSteps = 0;
+    currentHorizontalSteps = 0;
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    // If the [newEvent] is null then set the [chaningEvent] to null.
+    if (newEvent == null) {
+      controller.chaningEvent = null;
+    } else {
+      // Add the [newEvent] to the [CalendarController].
+      controller.addEvent(newEvent);
+      controller.chaningEvent = null;
+    }
+
+    controller.chaningEvent = null;
+    // Set the [isNewEvent] to false.
+    controller.isNewEvent = false;
+  }
+
+  void onPanUpdate(DragUpdateDetails details) {
+    cursorOffset += details.delta;
+
+    int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
+    if (verticalSteps != currentVerticalSteps) {
+      currentVerticalSteps = verticalSteps;
+    }
+
+    int horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
+    if (horizontalSteps != currentHorizontalSteps) {
+      currentHorizontalSteps = horizontalSteps;
+    }
+
+    DateTime newStart = initialDateTimeRange!.start
+        .add(widget.horizontalDurationStep * horizontalSteps)
+        .add(widget.verticalDurationStep * verticalSteps);
+
+    DateTime newEnd = initialDateTimeRange!.end
+        .add(widget.horizontalDurationStep * horizontalSteps)
+        .add(widget.verticalDurationStep * verticalSteps);
+
+    if (newStart.isBefore(initialDateTimeRange!.start)) {
+      DateTimeRange newDateTimeRange = DateTimeRange(
+        start: newStart,
+        end: initialDateTimeRange!.end,
+      );
+      if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
+          newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
+        controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      }
+    } else {
+      DateTimeRange newDateTimeRange = DateTimeRange(
+        start: initialDateTimeRange!.start,
+        end: newEnd,
+      );
+      if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
+          newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
+        controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      }
+    }
+  }
+
+  CalendarInternals<T> get internals => CalendarInternals.of<T>(context);
+  CalendarController<T> get controller => internals.controller;
+  CalendarFunctions<T> get functions => internals.functions;
+  CalendarConfiguration get configuration => internals.configuration;
+  bool get isMobileDevice => configuration.isMobileDevice;
 }

@@ -124,6 +124,9 @@ class CalendarEvent<T extends Object?> with ChangeNotifier {
       'The date must be within the dateTimeRange of the event',
     );
     if (isSplitAcrossDays) {
+      if (date.endOfDay == end) {
+        return false;
+      }
       return !date.isSameDay(end);
     } else {
       return false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
 import 'package:kalender/src/providers/calendar_internals.dart';
 
@@ -32,7 +33,16 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.isSplitAcrossDays ? 0 : 1);
 
         return Stack(
+          fit: StackFit.loose,
           children: <Widget>[
+            MonthCellGestureDetector<T>(
+              date: date,
+              visibleDateRange: internals.state.visibleDateRange.value,
+              verticalDurationStep: viewConfiguration.verticalDurationStep,
+              verticalStep: cellHeight,
+              horizontalDurationStep: viewConfiguration.horizontalDurationStep,
+              horizontalStep: cellWidth,
+            ),
             ListView.builder(
               itemCount: events.length,
               shrinkWrap: true,
