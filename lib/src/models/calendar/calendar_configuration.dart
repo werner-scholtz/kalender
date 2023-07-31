@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/view_configurations/month_configurations/month_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class CalendarConfiguration {
@@ -56,6 +57,7 @@ class CalendarConfiguration {
       WorkWeekConfiguration(),
       ThreeDayConfiguration(),
       FourDayConfiguration(),
+      MonthConfiguration(),
     ],
     this.scrollPhysics,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
