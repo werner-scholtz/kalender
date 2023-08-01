@@ -27,11 +27,11 @@ abstract class ViewConfiguration {
   ///
   /// [calendarStart] is the start of the calendar.
   /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  );
+  DateTimeRange calculateVisibleDateRangeForIndex({
+    required int index,
+    required DateTime calendarStart,
+    int? firstDayOfWeek,
+  });
 
   /// Calculates the index of the [visibleStart]
   ///
@@ -71,11 +71,11 @@ abstract class ViewConfiguration {
   /// [dateTimeRange] is the range of the calendar.
   /// [visibleStart] is the date that is highlighted.
   /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  );
+  DateTimeRange calculateAdjustedDateTimeRange({
+    required DateTimeRange dateTimeRange,
+    required DateTime visibleStart,
+    int? firstDayOfWeek,
+  });
 
   /// Calculates the index of the given [date].
   ///

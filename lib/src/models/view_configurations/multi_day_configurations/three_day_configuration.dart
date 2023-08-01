@@ -12,7 +12,7 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
-        this.eventSnapping = false,
+    this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
   });
 
@@ -52,11 +52,11 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateAdjustedDateTimeRange({
+    required DateTimeRange dateTimeRange,
+    required DateTime visibleStart,
+    int? firstDayOfWeek,
+  }) {
     return DateTimeRange(
       start: visibleStart.startOfDay.subtract(
         Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 3).ceil() * 3),
@@ -66,6 +66,22 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
       ),
     );
   }
+
+  // @override
+  // DateTimeRange calculateAdjustedDateTimeRange(
+  //   DateTimeRange dateTimeRange,
+  //   DateTime visibleStart,
+  //   int firstDayOfWeek,
+  // ) {
+  //   return DateTimeRange(
+  //     start: visibleStart.startOfDay.subtract(
+  //       Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 3).ceil() * 3),
+  //     ),
+  //     end: visibleStart.startOfDay.add(
+  //       Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 3).ceil() * 3),
+  //     ),
+  //   );
+  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
@@ -88,11 +104,11 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateVisibleDateRangeForIndex({
+    required int index,
+    required DateTime calendarStart,
+    int? firstDayOfWeek,
+  }) {
     return DateTime(
       calendarStart.year,
       calendarStart.month,
@@ -118,4 +134,7 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
     }
     return visibleDateTimeRange;
   }
+
+  @override
+  int get firstDayOfWeek => 1;
 }

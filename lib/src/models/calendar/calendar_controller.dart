@@ -1,127 +1,165 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/views/calendar_view.dart';
 
-class CalendarController<T extends Object?> with ChangeNotifier {
-  CalendarController();
+class CalendarController {
+  CalendarController({
+    DateTime? initialDate,
+    DateTimeRange? calendarDateTimeRange,
+  })  : selectedDate = initialDate ?? DateTime.now(),
+        _dateTimeRange = calendarDateTimeRange ?? defaultDateRange;
 
-  /// The list of [CalendarEvent]s.
-  final List<CalendarEvent<T>> _events = <CalendarEvent<T>>[];
-  List<CalendarEvent<T>> get events => _events;
+  /// The currently selected date.
+  DateTime selectedDate;
 
-  /// The moving [CalendarEvent].
-  CalendarEvent<T>? _chaningEvent;
-  CalendarEvent<T>? get chaningEvent => _chaningEvent;
-  set chaningEvent(CalendarEvent<T>? value) {
-    _chaningEvent = value;
-    notifyListeners();
+  /// The dateTimeRange that the calendar can display.
+  DateTimeRange _dateTimeRange;
+  DateTimeRange get dateTimeRange => _dateTimeRange;
+
+  CalendarViewState? _state;
+
+  /// Attaches the [CalendarController] to a [CalendarView].
+  void attach(CalendarViewState controllerState) {
+    assert(
+      _state == null,
+      "The controller cannot be attached to multiple $CalendarView's",
+    );
+    _state = controllerState;
   }
 
-  bool isMoving = false;
-  bool isResizing = false;
-  bool isNewEvent = false;
-  bool isMultidayEvent = false;
-
-  /// Whether the [CalendarController] has a [_chaningEvent].
-  bool get hasChaningEvent => _chaningEvent != null;
-
-  /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
-  void addEvent(CalendarEvent<T> event) {
-    _events.add(event);
-    notifyListeners();
+  void detach() {
+    _state = null;
   }
 
-  /// Adds a list of [CalendarEvent]s to the list of [CalendarEvent]s.
-  void addEvents(List<CalendarEvent<T>> events) {
-    _events.addAll(events);
-    notifyListeners();
-  }
-
-  /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
-  void removeEvent(CalendarEvent<T> event) {
-    _events.remove(event);
-    notifyListeners();
-  }
-
-  /// Removes a list of [CalendarEvent]s from the list of [CalendarEvent]s.
-  ///
-  /// The events will be removed where [test] returns true.
-  void removeWhere(bool Function(CalendarEvent<T> element) test) {
-    _events.removeWhere(test);
-    notifyListeners();
-  }
-
-  /// Removes all [CalendarEvent]s from [_events].
-  void clearEvents() {
-    _events.clear();
-    notifyListeners();
-  }
-
-  /// Updates an [CalendarEvent] in the list of [CalendarEvent]s.
-  ///
-  /// The event where [test] returns true will be updated.
-  void updateEvent({
-    required T? newEventData,
-    required DateTimeRange? newDateTimeRange,
-    required bool Function(CalendarEvent<T> calendarEvent) test,
+  /// Animates to the next page.
+  void animateToNextPage({
+    Duration? duration,
+    Curve? curve,
   }) {
-    int index = _events.indexWhere((CalendarEvent<T> element) => test(element));
-    if (index == -1) return;
-    if (newEventData != null) {
-      _events[index].eventData = newEventData;
-    }
-    if (newDateTimeRange != null) {
-      _events[index].dateTimeRange = newDateTimeRange;
-    }
-    notifyListeners();
-  }
-
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
-  /// * This exludes [CalendarEvent]s that are displayed on single days.
-  Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {
-    return _events.where(
-      (CalendarEvent<T> element) =>
-          ((element.start.isBefore(dateRange.start) && element.end.isAfter(dateRange.end)) ||
-              element.start.isWithin(dateRange) ||
-              element.end.isWithin(dateRange) ||
-              element.start == dateRange.start ||
-              element.end == dateRange.end) &&
-          element.isMultidayEvent,
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a $CalendarView.',
+    );
+    _state?.pageController.nextPage(
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
     );
   }
 
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
-  /// * This excludes [CalendarEvent]s that are displayed on multiple days.
-  Iterable<CalendarEvent<T>> getDayEventsFromDateRange(DateTimeRange dateRange) {
-    return _events.where(
-      (CalendarEvent<T> element) =>
-          (element.start.isWithin(dateRange) || element.end.isWithin(dateRange)) &&
-          !element.isMultidayEvent,
+  /// Animates to the previous page.
+  void animateToPreviousPage({
+    Duration? duration,
+    Curve? curve,
+  }) {
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a $CalendarView.',
+    );
+    _state?.pageController.previousPage(
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
     );
   }
 
-  /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
-  /// of the [CalendarEvent]s that are visible on the given date range.
-  Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
-    Iterable<CalendarEvent<T>> eventsInDateTimeRange = getDayEventsFromDateRange(dateRange);
-    List<DateTime> snapPoints = <DateTime>[];
-    for (CalendarEvent<T> event in eventsInDateTimeRange) {
-      snapPoints.add(event.start);
-      snapPoints.add(event.end);
-    }
-    return snapPoints;
+  /// Jumps to the [page].
+  void jumpToPage(int page) {
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a $CalendarView.',
+    );
+    _state?.pageController.jumpToPage(page);
   }
 
-  Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
-    return _events.where((CalendarEvent<T> element) => element.isOnDate(date));
+  /// Jumps to the [date] of the [CalendarView].
+  void jumpToDate(DateTime date) {
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a $CalendarView.',
+    );
+    if (_state == null) return;
+
+    assert(
+      !date.isWithin(_state!.adjustedDateTimeRange),
+      'The date must be within the dateTimeRange of the Calendar.',
+    );
+    if (!date.isWithin(_state!.adjustedDateTimeRange)) return;
+
+    _state!.pageController.jumpToPage(
+      _state!.viewConfiguration.calculateDateIndex(
+        date,
+        _state!.adjustedDateTimeRange.start,
+      ),
+    );
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is CalendarController && listEquals(other._events, _events);
-  }
+  /// Animates to the [DateTime] provided.
+  Future<void> animateToDate(
+    DateTime date, {
+    required Duration duration,
+    required Curve curve,
+  }) async {
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a $CalendarView.',
+    );
+    if (_state == null) return;
 
-  @override
-  int get hashCode => _events.hashCode;
+    assert(
+      !date.isWithin(_state!.adjustedDateTimeRange),
+      'The date must be within the dateTimeRange of the Calendar.',
+    );
+    if (!date.isWithin(_state!.adjustedDateTimeRange)) return;
+
+    await _state!.pageController.animateToPage(
+      _state!.viewConfiguration.calculateDateIndex(
+        date,
+        _state!.adjustedDateTimeRange.start,
+      ),
+      duration: duration,
+      curve: curve,
+    );
+  }
+}
+
+/// The state of the [CalendarController].
+///
+/// This is used to store state related to the [CalendarView].
+class CalendarViewState {
+  CalendarViewState({
+    required this.viewConfiguration,
+    required this.pageController,
+    required this.scrollController,
+    required this.numberOfPages,
+    required this.adjustedDateTimeRange,
+    required this.visibleDateTimeRange,
+    this.heightPerMinute,
+  });
+
+  /// The current viewConfiguration of the [CalendarView].
+  final ViewConfiguration viewConfiguration;
+
+  /// The pageController of the [CalendarView].
+  final PageController pageController;
+
+  /// The scrollController of the [CalendarView].
+  final ScrollController scrollController;
+
+  /// The height per minute of the [CalendarView].
+  final ValueNotifier<double>? heightPerMinute;
+
+  /// The visible dateTimeRange of the [CalendarView].
+  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
+
+  /// The adjusted dateTimeRange of the [CalendarView].
+  final DateTimeRange adjustedDateTimeRange;
+
+  /// The number of pages the [PageView] of the [CalendarView] has.
+  final int numberOfPages;
 }

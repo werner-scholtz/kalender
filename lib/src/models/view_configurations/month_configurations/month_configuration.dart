@@ -24,16 +24,28 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateAdjustedDateTimeRange({
+    required DateTimeRange dateTimeRange,
+    required DateTime visibleStart,
+    int? firstDayOfWeek,
+  }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfMonth.startOfWeekWithOffset(firstDayOfWeek),
-      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
+      start: dateTimeRange.start.startOfMonth.startOfWeekWithOffset(firstDayOfWeek ?? 1),
+      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
+
+  // @override
+  // DateTimeRange calculateAdjustedDateTimeRange(
+  //   DateTimeRange dateTimeRange,
+  //   DateTime visibleStart,
+  //   int firstDayOfWeek,
+  // ) {
+  //   return DateTimeRange(
+  //     start: dateTimeRange.start.startOfMonth.startOfWeekWithOffset(firstDayOfWeek),
+  //     end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
+  //   );
+  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
@@ -59,11 +71,11 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateVisibleDateRangeForIndex({
+    required int index,
+    required DateTime calendarStart,
+    int? firstDayOfWeek,
+  }) {
     DateTimeRange monthRange = DateTime(
       calendarStart.year,
       calendarStart.month + index,
@@ -71,8 +83,8 @@ class MonthConfiguration extends MonthViewConfiguration {
     ).monthRange;
 
     return DateTimeRange(
-      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
+      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
+      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
 

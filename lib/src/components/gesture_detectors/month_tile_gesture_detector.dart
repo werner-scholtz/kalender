@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_model_export.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MonthTileGestureDetector<T extends Object?> extends StatefulWidget {
   const MonthTileGestureDetector({
@@ -119,7 +120,7 @@ class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileG
     }
   }
 
-  CalendarInternals<T> get internals => CalendarInternals.of<T>(context);
-  CalendarController<T> get controller => internals.controller;
+  CalendarScope<T> get internals => CalendarScope.of<T>(context);
+  CalendarEventController<T> get controller => internals.eventController;
   CalendarFunctions<T> get functions => internals.functions;
 }

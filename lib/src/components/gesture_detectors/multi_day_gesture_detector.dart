@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   const MultiDayGestureDetector({
@@ -13,10 +14,8 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
     required this.multidayEventHeight,
     required this.numberOfRows,
     required this.visibleDates,
-    required this.controller,
   });
 
-  final CalendarController<T> controller;
   final double pageWidth;
   final double dayWidth;
   final double height;
@@ -29,7 +28,6 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGestureDetector<T>> {
-  late CalendarController<T> controller;
   late double pageWidth;
   late double dayWidth;
   late double height;
@@ -51,7 +49,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     numberOfRows = widget.numberOfRows;
     visibleDates = widget.visibleDates;
     numberOfColums = visibleDates.length;
-    controller = widget.controller;
   }
 
   @override
@@ -64,7 +61,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     numberOfRows = widget.numberOfRows;
     visibleDates = widget.visibleDates;
     numberOfColums = visibleDates.length;
-    controller = widget.controller;
   }
 
   @override
@@ -109,10 +105,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     controller.chaningEvent = newCalendarEvent;
     controller.isMultidayEvent = true;
 
-    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
-        .functions
-        .onCreateEvent
-        ?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
@@ -161,10 +154,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   void _onHorizontalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
-    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
-        .functions
-        .onCreateEvent
-        ?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
     if (newEvent == null) {
       controller.chaningEvent = null;
     } else {
@@ -174,7 +164,12 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     controller.isMultidayEvent = false;
   }
 
+  CalendarScope<T> get internals => CalendarScope.of<T>(context);
+  CalendarEventController<T> get controller => internals.eventController;
+  CalendarFunctions<T> get functions => internals.functions;
+
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => CalendarInternals.of<T>(context).configuration.createNewEvents;
-  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
+  bool get createNewEvents =>
+      true; //CalendarInternals.of<T>(context).configuration.createNewEvents;
+  bool get isMobileDevice => false; //CalendarInternals.of<T>(context).configuration.isMobileDevice;
 }

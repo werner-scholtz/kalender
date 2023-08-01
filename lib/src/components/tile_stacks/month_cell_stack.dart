@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MonthCellStack<T extends Object?> extends StatelessWidget {
   const MonthCellStack({
@@ -23,12 +23,12 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
+    CalendarScope<T> internals = CalendarScope.of(context);
 
     return ListenableBuilder(
-      listenable: internals.controller,
+      listenable: internals.eventController,
       builder: (BuildContext context, Widget? child) {
-        List<CalendarEvent<T>> events = internals.controller.getEventsFromDate(date).toList()
+        List<CalendarEvent<T>> events = internals.eventController.getEventsFromDate(date).toList()
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.duration.compareTo(b.duration))
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.isSplitAcrossDays ? 0 : 1);
 
@@ -37,7 +37,7 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
           children: <Widget>[
             MonthCellGestureDetector<T>(
               date: date,
-              visibleDateRange: internals.state.visibleDateRange.value,
+              visibleDateRange: internals.state.visibleDateTimeRange.value,
               verticalDurationStep: viewConfiguration.verticalDurationStep,
               verticalStep: cellHeight,
               horizontalDurationStep: viewConfiguration.horizontalDurationStep,
@@ -48,11 +48,11 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 CalendarEvent<T> event = events.elementAt(index);
-                bool isMoving = internals.controller.chaningEvent == event;
+                bool isMoving = internals.eventController.chaningEvent == event;
 
                 return MonthTileGestureDetector<T>(
                   event: event,
-                  visibleDateRange: internals.state.visibleDateRange.value,
+                  visibleDateRange: internals.state.visibleDateTimeRange.value,
                   verticalDurationStep: viewConfiguration.verticalDurationStep,
                   verticalStep: cellHeight,
                   horizontalDurationStep: viewConfiguration.horizontalDurationStep,
@@ -67,16 +67,16 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
                 );
               },
             ),
-            if (internals.controller.hasChaningEvent)
+            if (internals.eventController.hasChaningEvent)
               ListenableBuilder(
-                listenable: internals.controller.chaningEvent!,
+                listenable: internals.eventController.chaningEvent!,
                 builder: (BuildContext context, Widget? child) {
-                  CalendarEvent<T> event = internals.controller.chaningEvent!;
+                  CalendarEvent<T> event = internals.eventController.chaningEvent!;
                   if (event.isOnDate(date)) {
                     return SizedBox(
                       width: cellWidth,
                       child: internals.components.monthEventTileBuilder(
-                        internals.controller.chaningEvent!,
+                        internals.eventController.chaningEvent!,
                         TileType.selected,
                         date,
                         event.continuesBefore(date),

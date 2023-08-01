@@ -6,12 +6,10 @@ import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_state.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MultiDayContent<T extends Object?> extends StatelessWidget {
   const MultiDayContent({
@@ -27,14 +25,12 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarComponents<T> components = internals.components;
-    CalendarFunctions<T> functions = internals.functions;
-    CalendarState state = internals.state;
-    CalendarConfiguration configuration = internals.configuration;
+    CalendarScope<T> scope = CalendarScope.of(context);
+    CalendarComponents<T> components = scope.components;
+    CalendarViewState state = scope.state;
 
     return ValueListenableBuilder<double>(
-      valueListenable: state.heightPerMinute,
+      valueListenable: state.heightPerMinute!,
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
@@ -58,14 +54,20 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                     child: PageView.builder(
                       key: Key(viewConfiguration.name),
                       controller: state.pageController,
-                      itemCount: state.itemCount,
-                      onPageChanged: functions.onPageChanged,
+                      itemCount: state.numberOfPages,
+                      onPageChanged: (int index) {
+                        scope.state.visibleDateTimeRange.value =
+                            viewConfiguration.calculateVisibleDateRangeForIndex(
+                          index: index,
+                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                        );
+                      },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
-                          index,
-                          state.dateTimeRange.start,
-                          configuration.firstDayOfWeek,
+                          index: index,
+                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                          firstDayOfWeek: viewConfiguration.firstDayOfWeek,
                         );
 
                         TileLayoutController<T> tileLayoutController = TileLayoutController<T>(

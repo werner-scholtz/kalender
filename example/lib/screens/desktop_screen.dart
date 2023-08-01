@@ -1,119 +1,116 @@
-import 'dart:developer';
-
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_tiles/event_tile.dart';
-import 'package:example/widgets/calendar_tiles/month_event_tile.dart';
-import 'package:example/widgets/calendar_tiles/multi_day_event_tile.dart';
-import 'package:example/widgets/calendar_tiles/schedule_event_tile.dart';
-import 'package:example/widgets/dialogs/event_edit_dialog.dart';
-import 'package:example/widgets/dialogs/new_event_dialog.dart';
+import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class DesktopScreen extends StatelessWidget {
+class DesktopScreen extends StatefulWidget {
   const DesktopScreen({
     super.key,
+    required this.eventController,
   });
+
+  final CalendarEventController<Event> eventController;
+
+  @override
+  State<DesktopScreen> createState() => _DesktopScreenState();
+}
+
+class _DesktopScreenState extends State<DesktopScreen> {
+  late CalendarEventController<Event> eventController;
+  late CalendarController calendarController;
+  late CalendarComponents<Event> components;
+
+  @override
+  void initState() {
+    super.initState();
+    eventController = widget.eventController;
+    calendarController = CalendarController();
+    components = CalendarComponents<Event>(
+      calendarHeaderBuilder: _calendarHeader,
+      eventTileBuilder: _eventTile,
+      multiDayEventTileBuilder: _multiDayEventTile,
+      monthEventTileBuilder: _monthEventTile,
+      scheduleEventTileBuilder: _scheduleEventTile,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<CalendarViewState> key = GlobalKey<CalendarViewState>();
-    return CalendarView<Event>(
-      key: key,
-      calendarConfiguration: CalendarConfiguration(
-        createNewEvents: true,
-      ),
-      onEventChanged: (initialDateTimeRange, event) async {
-        // Show the snackbar and undo the changes if the user presses the undo button.
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${event.eventData?.title} changed'),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                key.currentState?.controller.updateEvent(
-                  newEventData: event.eventData,
-                  newDateTimeRange: initialDateTimeRange,
-                  test: (other) => other.eventData == event.eventData,
-                );
-              },
-            ),
+    return Row(
+      children: [
+        Flexible(
+          flex: 1,
+          child: SingleDayView<Event>(
+            controller: calendarController,
+            eventController: eventController,
+            components: components,
           ),
-        );
-      },
-      onEventTapped: (event) async {
-        // Make a copy of the event to restore it if the user cancels the changes.
-        CalendarEvent<Event> copyOfEvent = event.copyWith();
+        ),
+        // Flexible(
+        //   flex: 1,
+        //   child: MultidDayView(
+        //     controller: calendarController,
+        //     eventController: eventController,
+        //     components: components,
+        //   ),
+        // ),
+      ],
+    );
+  }
 
-        // Show the edit dialog.
-        await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return EventEditDialog(
-              dialogTitle: 'Edit Event',
-              event: event,
-              deleteEvent: (event) => key.currentState?.controller.removeEvent(event),
-              cancelEdit: () => event.repalceWith(event: copyOfEvent),
-            );
+  Widget _calendarHeader(dateTimeRange, viewConfiguration) {
+    return Row(
+      children: [
+        IconButton.filledTonal(
+          onPressed: () {
+            calendarController.animateToPreviousPage();
           },
-        );
-      },
-      onCreateEvent: (newEvent) async {
-        newEvent.eventData = Event(
-          title: 'New Event',
-          color: Colors.blue,
-        );
-
-        // Show the new event dialog.
-        CalendarEvent<Event>? event = await showDialog<CalendarEvent<Event>>(
-          context: context,
-          builder: (BuildContext context) {
-            return NewEventDialog(
-              dialogTitle: 'Create Event',
-              event: newEvent,
-            );
+          icon: const Icon(Icons.arrow_back),
+        ),
+        IconButton.filledTonal(
+          onPressed: () {
+            calendarController.animateToNextPage();
           },
-        );
+          icon: const Icon(Icons.arrow_forward),
+        ),
+      ],
+    );
+  }
 
-        log(event.toString());
+  Widget _scheduleEventTile(event, date) {
+    return ScheduleEventTile(
+      event: event,
+      date: date,
+    );
+  }
 
-        // return the new event. (if the user cancels the dialog, null is returned)
-        return event;
-      },
-      calendarComponents: CalendarComponents(
-        eventTileBuilder: (event, tileType, drawOutline, continuesBefore, continuesAfter) {
-          return EventTile(
-            event: event,
-            tileType: tileType,
-            drawOutline: drawOutline,
-            continuesBefore: continuesBefore,
-            continuesAfter: continuesAfter,
-          );
-        },
-        multiDayEventTileBuilder: (event, tileType, continuesBefore, continuesAfter) {
-          return MultiDayEventTile(
-            event: event,
-            tileType: tileType,
-            continuesBefore: continuesBefore,
-            continuesAfter: continuesAfter,
-          );
-        },
-        monthEventTileBuilder: (event, tileType, date, continuesBefore, continuesAfter) {
-          return MonthEventTile(
-            event: event,
-            tileType: tileType,
-            date: date,
-            continuesBefore: continuesBefore,
-            continuesAfter: continuesAfter,
-          );
-        },
-        scheduleEventTileBuilder: (event, date) {
-          return ScheduleEventTile(
-            event: event,
-            date: date,
-          );
-        },
-      ),
+  Widget _monthEventTile(event, tileType, date, continuesBefore, continuesAfter) {
+    return MonthEventTile(
+      event: event,
+      tileType: tileType,
+      date: date,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
+    );
+  }
+
+  Widget _multiDayEventTile(event, tileType, continuesBefore, continuesAfter) {
+    return MultiDayEventTile(
+      event: event,
+      tileType: tileType,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
+    );
+  }
+
+  Widget _eventTile(event, tileType, drawOutline, continuesBefore, continuesAfter) {
+    return EventTile(
+      event: event,
+      tileType: tileType,
+      drawOutline: drawOutline,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
     );
   }
 }

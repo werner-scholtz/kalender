@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed on calendar's page.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
-  DateTimeRange dateTimeRange,
-  ViewConfiguration viewConfig,
-  List<ViewConfiguration> contentTypes,
-  void Function(ViewConfiguration pageView) onContentChanged,
-  VoidCallback onDateSelectorPressed,
-  VoidCallback onLeftArrowPressed,
-  VoidCallback onRightArrowPressed,
+  DateTimeRange visibleDateTimeRange,
+  ViewConfiguration viewConfiguration,
 );
 
 /// The [DayHeaderBuilder] is used to build the day headers displayed on calendar's page.

@@ -14,6 +14,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
+    this.firstDayOfWeek = 1,
   });
 
   @override
@@ -44,6 +45,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
+  final int firstDayOfWeek;
+
+  @override
   final String name = 'Work Week';
 
   @override
@@ -58,16 +62,28 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateAdjustedDateTimeRange({
+    required DateTimeRange dateTimeRange,
+    required DateTime visibleStart,
+    int? firstDayOfWeek,
+  }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
+
+  // @override
+  // DateTimeRange calculateAdjustedDateTimeRange(
+  //   DateTimeRange dateTimeRange,
+  //   DateTime visibleStart,
+  //   int firstDayOfWeek,
+  // ) {
+  //   return DateTimeRange(
+  //     start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+  //     end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
+  //   );
+  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
@@ -90,16 +106,16 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateVisibleDateRangeForIndex({
+    required int index,
+    required DateTime calendarStart,
+    int? firstDayOfWeek,
+  }) {
     DateTimeRange weekRange = DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek);
+    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
 
     return DateTimeRange(
       start: weekRange.start,

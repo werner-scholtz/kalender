@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
 import 'package:kalender/src/components/general/date_text.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-
 
 class ScheduleDateStyle {
   const ScheduleDateStyle({
@@ -44,57 +42,27 @@ class ScheduleDate extends StatelessWidget {
   Widget build(BuildContext context) {
     ScheduleDateStyle? scheduleDateStyle =
         CalendarStyleProvider.of(context).style.scheduleDateStyle;
-    if (CalendarInternals.of(context).configuration.isMobileDevice) {
-      // If the device is mobile, the date is displayed vertically.
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              DateText(
-                date: date,
-                textStyle: scheduleDateStyle?.textStyle ?? Theme.of(context).textTheme.bodySmall,
-                dateFormat: scheduleDateStyle?.dateFormat ?? 'EEE',
-                upperCase: scheduleDateStyle?.useUpperCase ?? false,
-              ),
-              DateIconButton(
-                date: date,
-                onTapped: (DateTime date) => onDateTapped?.call(date),
-                visualDensity: scheduleDateStyle?.buttonVisualDensity ?? VisualDensity.standard,
-                textStyle:
-                    scheduleDateStyle?.buttonTextStyle ?? Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      // If the device is not mobile, the date is displayed horizontally.
-      // The width of the widget is fixed to 108 so that the widget is a constant size.
-      return SizedBox(
-        width: 108,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Center(
+        child: Column(
           children: <Widget>[
+            DateText(
+              date: date,
+              textStyle: scheduleDateStyle?.textStyle ?? Theme.of(context).textTheme.bodySmall,
+              dateFormat: scheduleDateStyle?.dateFormat ?? 'EEE',
+              upperCase: scheduleDateStyle?.useUpperCase ?? false,
+            ),
             DateIconButton(
               date: date,
               onTapped: (DateTime date) => onDateTapped?.call(date),
-              visualDensity: scheduleDateStyle?.buttonVisualDensity ?? VisualDensity.compact,
+              visualDensity: scheduleDateStyle?.buttonVisualDensity ?? VisualDensity.standard,
               textStyle:
                   scheduleDateStyle?.buttonTextStyle ?? Theme.of(context).textTheme.bodyMedium,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: DateText(
-                date: date,
-                textStyle: scheduleDateStyle?.textStyle ?? Theme.of(context).textTheme.bodySmall,
-                dateFormat: scheduleDateStyle?.dateFormat ?? 'MMM, EEE',
-                upperCase: scheduleDateStyle?.useUpperCase ?? true,
-              ),
-            ),
           ],
         ),
-      );
-    }
+      ),
+    );
   }
 }

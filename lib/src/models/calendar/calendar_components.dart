@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/calendar_header.dart';
 import 'package:kalender/src/components/general/day_header.dart';
 import 'package:kalender/src/components/general/day_seperator.dart';
 import 'package:kalender/src/components/general/hour_line.dart';
 import 'package:kalender/src/components/general/schedule_date.dart';
 import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/typedefs.dart';
 
 class CalendarComponents<T extends Object?> {
@@ -15,7 +13,7 @@ class CalendarComponents<T extends Object?> {
     required this.monthEventTileBuilder,
     required this.scheduleEventTileBuilder,
     required this.multiDayEventTileBuilder,
-    CalendarHeaderBuilder? calendarHeaderBuilder,
+    this.calendarHeaderBuilder,
     DayHeaderBuilder? dayHeaderBuilder,
     WeekNumberBuilder? weekNumberBuilder,
     HourlineBuilder? hourlineBuilder,
@@ -23,7 +21,6 @@ class CalendarComponents<T extends Object?> {
     DaySepratorBuilder? daySepratorBuilder,
     ScheduleDateBuilder? scheduleDateBuilder,
   }) {
-    this.calendarHeaderBuilder = calendarHeaderBuilder ?? _defualtCalendarHeaderBuilder;
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
     this.hourlineBuilder = hourlineBuilder ?? _defaultHourLineBuilder;
@@ -33,7 +30,7 @@ class CalendarComponents<T extends Object?> {
   }
 
   ///
-  late CalendarHeaderBuilder<T> calendarHeaderBuilder;
+  late CalendarHeaderBuilder<T>? calendarHeaderBuilder;
 
   ///
   late DayHeaderBuilder<T> dayHeaderBuilder;
@@ -65,25 +62,25 @@ class CalendarComponents<T extends Object?> {
   ///
   late MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
 
-  Widget _defualtCalendarHeaderBuilder(
-    DateTimeRange dateTimeRange,
-    ViewConfiguration currentPageConfiguration,
-    List<ViewConfiguration> pageConfigurations,
-    Function(ViewConfiguration pageView) onContentChanged,
-    VoidCallback onDateSelectorPressed,
-    VoidCallback onLeftArrowPressed,
-    VoidCallback onRightArrowPressed,
-  ) {
-    return CalendarViewHeader<T>(
-      visibleDateTimeRange: dateTimeRange,
-      currentPageConfiguration: currentPageConfiguration,
-      pageConfigurations: pageConfigurations,
-      onContentChanged: onContentChanged,
-      onDateSelectorPressed: onDateSelectorPressed,
-      onLeftArrowPressed: onLeftArrowPressed,
-      onRightArrowPressed: onRightArrowPressed,
-    );
-  }
+  // Widget _defualtCalendarHeaderBuilder(
+  //   DateTimeRange dateTimeRange,
+  //   ViewConfiguration currentPageConfiguration,
+  //   List<ViewConfiguration> pageConfigurations,
+  //   Function(ViewConfiguration pageView) onContentChanged,
+  //   VoidCallback onDateSelectorPressed,
+  //   VoidCallback onLeftArrowPressed,
+  //   VoidCallback onRightArrowPressed,
+  // ) {
+  //   return CalendarViewHeader<T>(
+  //     visibleDateTimeRange: dateTimeRange,
+  //     currentPageConfiguration: currentPageConfiguration,
+  //     pageConfigurations: pageConfigurations,
+  //     onContentChanged: onContentChanged,
+  //     onDateSelectorPressed: onDateSelectorPressed,
+  //     onLeftArrowPressed: onLeftArrowPressed,
+  //     onRightArrowPressed: onRightArrowPressed,
+  //   );
+  // }
 
   Widget _defaultTimelineBuilder(
     double timelineWidth,

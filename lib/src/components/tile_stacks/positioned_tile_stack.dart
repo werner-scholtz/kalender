@@ -5,10 +5,10 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
 
 class PositionedTileStack<T extends Object?> extends StatelessWidget {
@@ -37,9 +37,9 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarState state = internals.state;
-    CalendarController<T> controller = internals.controller;
+    CalendarScope<T> internals = CalendarScope.of<T>(context);
+    CalendarViewState state = internals.state;
+    CalendarEventController<T> controller = internals.eventController;
 
     return ListenableBuilder(
       listenable: controller,
@@ -79,7 +79,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
                   horizontalStep: horizontalStep,
                   verticalDurationStep: verticalDurationStep,
                   horizontalDurationStep: horizontalDurationStep,
-                  visibleDateRange: state.visibleDateRange.value,
+                  visibleDateRange: state.visibleDateTimeRange.value,
                   snapPoints: snapPoints,
                 ),
               )
@@ -122,9 +122,9 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
+    CalendarScope<T> internals = CalendarScope.of<T>(context);
     CalendarFunctions<T> functions = internals.functions;
-    CalendarController<T> controller = internals.controller;
+    CalendarEventController<T> controller = internals.eventController;
     return Positioned(
       left: tileGroup.tileGroupLeft,
       top: tileGroup.tileGroupTop,
@@ -175,7 +175,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
   });
 
   /// The [CalendarController] used by the [PositionedTile].
-  final CalendarController<T> controller;
+  final CalendarEventController<T> controller;
 
   /// The [Function] called when the event is changed.
   final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
@@ -209,8 +209,8 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EventTileBuilder<T> tileBuilder = CalendarInternals.of<T>(context).components.eventTileBuilder;
-    bool isMobileDevice = CalendarInternals.of<T>(context).configuration.isMobileDevice;
+    EventTileBuilder<T> tileBuilder = CalendarScope.of<T>(context).components.eventTileBuilder;
+    bool isMobileDevice = CalendarScope.of<T>(context).platformData.isMobileDevice;
     bool isMoving = controller.chaningEvent == positionedTileData.event;
 
     return Positioned(

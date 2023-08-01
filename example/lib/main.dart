@@ -19,22 +19,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarControllerProvider<Event>(
-      controller: CalendarController()..addEvents(generateCalendarEvents()),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: lightColorScheme,
-        ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: darkColorScheme,
-        ),
-        themeMode: ThemeMode.dark,
-        home: const MyHomePage(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: lightColorScheme,
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: darkColorScheme,
+      ),
+      themeMode: ThemeMode.dark,
+      home: const MyHomePage(),
     );
   }
 }
@@ -47,13 +44,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late final CalendarEventController<Event> eventController;
+
+  @override
+  void initState() {
+    super.initState();
+    eventController = CalendarEventController<Event>();
+    eventController.addEvents(generateCalendarEvents());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Builder(
         builder: (context) {
           if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-            return const DesktopScreen();
+            return DesktopScreen(
+              eventController: eventController,
+            );
           } else {
             return const MobileScreen();
           }

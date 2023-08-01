@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// This stack is used to display the selected event when the user is moving or resizing it.
 class ChangingTileStack<T extends Object?> extends StatelessWidget {
@@ -15,8 +16,9 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarController<T> controller = internals.controller;
+    CalendarScope<T> scope = CalendarScope.of(context);
+    CalendarEventController<T> controller = scope.eventController;
+
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
@@ -38,7 +40,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
                           left: e.left,
                           width: e.width,
                           height: e.height,
-                          child: internals.components.eventTileBuilder(
+                          child: scope.components.eventTileBuilder(
                             e.event,
                             TileType.selected,
                             false,
@@ -59,7 +61,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
     );
   }
 
-  bool shouldDisplayTile(CalendarController<T> controller) =>
+  bool shouldDisplayTile(CalendarEventController<T> controller) =>
       controller.hasChaningEvent &&
       (controller.isMoving || controller.isResizing || controller.isNewEvent);
 }

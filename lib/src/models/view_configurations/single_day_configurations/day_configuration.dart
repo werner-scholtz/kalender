@@ -42,12 +42,24 @@ class DayConfiguration extends SingleDayViewConfiguration {
     return date.dayRange;
   }
 
+  // @override
+  // DateTimeRange calculateAdjustedDateTimeRange({
+  //   required DateTimeRange dateTimeRange,
+  //   required DateTime visibleStart,
+  //   required int firstDayOfWeek,
+  // }) {
+  // return DateTimeRange(
+  //   start: dateTimeRange.start.startOfDay,
+  //   end: dateTimeRange.end.endOfDay,
+  // );
+  // }
+
   @override
-  DateTimeRange calculateAdjustedDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTime visibleStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateAdjustedDateTimeRange({
+    required DateTimeRange dateTimeRange,
+    required DateTime visibleStart,
+    int? firstDayOfWeek,
+  }) {
     return DateTimeRange(
       start: dateTimeRange.start.startOfDay,
       end: dateTimeRange.end.endOfDay,
@@ -78,11 +90,11 @@ class DayConfiguration extends SingleDayViewConfiguration {
   }
 
   @override
-  DateTimeRange calculateVisibleDateRangeForIndex(
-    int index,
-    DateTime calendarStart,
-    int firstDayOfWeek,
-  ) {
+  DateTimeRange calculateVisibleDateRangeForIndex({
+    required int index,
+    required DateTime calendarStart,
+    int? firstDayOfWeek,
+  }) {
     return calendarStart.add(Duration(days: index)).dayRange;
   }
 

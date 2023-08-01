@@ -36,4 +36,7 @@ abstract class MultiDayViewConfiguration implements ViewConfiguration {
 
   /// Enable snapping to the time indicator.
   bool get timeIndicatorSnapping;
+
+  /// The first day of the week.
+  int get firstDayOfWeek;
 }

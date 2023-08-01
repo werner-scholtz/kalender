@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_model_export.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class DayTileGestureDetector<T extends Object?> extends StatefulWidget {
   const DayTileGestureDetector({
@@ -192,9 +194,9 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     }
   }
 
-  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
+  bool get isMobileDevice => false; //CalendarInternals.of<T>(context).configuration.isMobileDevice;
 
-  CalendarInternals<T> get internals => CalendarInternals.of<T>(context);
-  CalendarController<T> get controller => internals.controller;
+  CalendarScope<T> get internals => CalendarScope.of<T>(context);
+  CalendarEventController<T> get controller => internals.eventController;
   CalendarFunctions<T> get functions => internals.functions;
 }

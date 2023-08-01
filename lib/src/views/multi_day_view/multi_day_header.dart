@@ -3,7 +3,7 @@ import 'package:kalender/src/components/general/material_header.dart';
 import 'package:kalender/src/components/tile_stacks/multi_day_tile_stack.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   const MultiDayHeader({
@@ -19,23 +19,18 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internalData = CalendarInternals.of<T>(context);
+    CalendarScope<T> scope = CalendarScope.of(context);
 
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
-        valueListenable: CalendarInternals.of<T>(context).state.visibleDateRange,
+        valueListenable: scope.state.visibleDateTimeRange,
         builder: (BuildContext context, DateTimeRange visibleDateTimeRange, Widget? child) {
           return Column(
             children: <Widget>[
               RepaintBoundary(
-                child: internalData.components.calendarHeaderBuilder(
+                child: scope.components.calendarHeaderBuilder?.call(
                   visibleDateTimeRange,
                   viewConfiguration,
-                  internalData.configuration.viewConfigurations,
-                  internalData.functions.onConfigurationChanged,
-                  internalData.functions.onDateSelectorPressed,
-                  internalData.functions.onLeftArrowPressed,
-                  internalData.functions.onRightArrowPressed,
                 ),
               ),
               Column(
@@ -47,9 +42,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                         width: viewConfiguration.timelineWidth,
                         child: Center(
                           child: viewConfiguration.paintWeekNumber
-                              ? CalendarInternals.of<T>(context)
-                                  .components
-                                  .weekNumberBuilder(visibleDateTimeRange)
+                              ? scope.components.weekNumberBuilder(visibleDateTimeRange)
                               : null,
                         ),
                       ),
@@ -57,13 +50,10 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                         visibleDateTimeRange.duration.inDays,
                         (int index) => SizedBox(
                           width: dayWidth,
-                          child: CalendarInternals.of<T>(context).components.dayHeaderBuilder(
-                                visibleDateTimeRange.start.add(Duration(days: index)),
-                                (DateTime date) => CalendarInternals.of<T>(context)
-                                    .functions
-                                    .onDateTapped
-                                    ?.call(date),
-                              ),
+                          child: scope.components.dayHeaderBuilder(
+                            visibleDateTimeRange.start.add(Duration(days: index)),
+                            (DateTime date) => scope.functions.onDateTapped?.call(date),
+                          ),
                         ),
                       ),
                     ],
@@ -85,7 +75,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                         dayWidth: dayWidth,
                         visibleDateRange: visibleDateTimeRange,
                         tileHeight: viewConfiguration.multidayTileHeight,
-                        isMobileDevice: internalData.configuration.isMobileDevice,
+                        isMobileDevice: scope.platformData.isMobileDevice,
                         isMultidayView: true,
                       ),
                     ),

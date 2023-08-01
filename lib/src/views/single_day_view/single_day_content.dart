@@ -5,33 +5,26 @@ import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_configuration.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
-import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
-class SingleDayContent<T extends Object?> extends StatelessWidget {
+class SingleDayContent<T> extends StatelessWidget {
   const SingleDayContent({
     super.key,
     required this.dayWidth,
     required this.viewConfiguration,
   });
+
   final double dayWidth;
   final SingleDayViewConfiguration viewConfiguration;
 
   @override
   Widget build(BuildContext context) {
-    CalendarInternals<T> internals = CalendarInternals.of<T>(context);
-    CalendarComponents<T> components = internals.components;
-    CalendarFunctions<T> functions = internals.functions;
-    CalendarState state = internals.state;
-    CalendarConfiguration configuration = internals.configuration;
+    CalendarScope<T> scope = CalendarScope.of<T>(context);
 
     return ValueListenableBuilder<double>(
-      valueListenable: state.heightPerMinute,
+      valueListenable: scope.state.heightPerMinute!,
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
@@ -42,7 +35,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
           child: SingleChildScrollView(
             child: Stack(
               children: <Widget>[
-                components.timelineBuilder(
+                scope.components.timelineBuilder(
                   viewConfiguration.timelineWidth,
                   pageHeight,
                   hourHeight,
@@ -54,15 +47,20 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                     width: pageWidth,
                     child: PageView.builder(
                       key: Key(viewConfiguration.name),
-                      controller: state.pageController,
-                      itemCount: state.itemCount,
-                      onPageChanged: functions.onPageChanged,
+                      controller: scope.state.pageController,
+                      itemCount: scope.state.numberOfPages,
+                      onPageChanged: (int index) {
+                        scope.state.visibleDateTimeRange.value =
+                            viewConfiguration.calculateVisibleDateRangeForIndex(
+                          index: index,
+                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                        );
+                      },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
-                          index,
-                          state.dateTimeRange.start,
-                          configuration.firstDayOfWeek,
+                          index: index,
+                          calendarStart: scope.state.adjustedDateTimeRange.start,
                         );
 
                         TileLayoutController<T> tileLayoutController = TileLayoutController<T>(
@@ -80,7 +78,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                               child: SizedBox(
                                 width: pageWidth,
                                 height: pageHeight,
-                                child: components.hourlineBuilder(
+                                child: scope.components.hourlineBuilder(
                                   pageWidth,
                                   hourHeight,
                                 ),
@@ -91,7 +89,7 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                               child: SizedBox(
                                 width: dayWidth,
                                 height: pageHeight,
-                                child: components.daySepratorBuilder(
+                                child: scope.components.daySepratorBuilder(
                                   pageHeight,
                                   dayWidth,
                                   pageVisibleDateRange.dayDifference,
@@ -99,7 +97,6 @@ class SingleDayContent<T extends Object?> extends StatelessWidget {
                               ),
                             ),
                             DayGestureDetector<T>(
-                          
                               height: pageHeight,
                               dayWidth: dayWidth,
                               heightPerMinute: heightPerMinute,

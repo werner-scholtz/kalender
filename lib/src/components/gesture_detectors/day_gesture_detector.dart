@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   const DayGestureDetector({
@@ -139,10 +140,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     // Set the [isNewEvent] to true.
     controller.isNewEvent = true;
 
-    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
-        .functions
-        .onCreateEvent
-        ?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
@@ -168,8 +166,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     controller.isNewEvent = true;
     controller.chaningEvent = displayEvent;
 
-    CalendarEvent<T>? newEvent =
-        await CalendarInternals.of<T>(context).functions.onCreateEvent?.call(displayEvent);
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(displayEvent);
 
     if (newEvent == null) {
       controller.chaningEvent = null;
@@ -192,10 +189,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
-    CalendarEvent<T>? newEvent = await CalendarInternals.of<T>(context)
-        .functions
-        .onCreateEvent
-        ?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    
     if (newEvent == null) {
       controller.chaningEvent = null;
     } else {
@@ -252,7 +247,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       );
 
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => CalendarInternals.of<T>(context).configuration.createNewEvents;
-  bool get isMobileDevice => CalendarInternals.of<T>(context).configuration.isMobileDevice;
-  CalendarController<T> get controller => CalendarInternals.of<T>(context).controller;
+  bool get createNewEvents => true; //CalendarScope.of<T>(context).configuration.createNewEvents;
+  bool get isMobileDevice => false; //CalendarScope.of<T>(context).configuration.isMobileDevice;
+  CalendarEventController<T> get controller => CalendarScope.of<T>(context).eventController;
+  CalendarFunctions<T> get functions => CalendarScope.of<T>(context).functions;
 }

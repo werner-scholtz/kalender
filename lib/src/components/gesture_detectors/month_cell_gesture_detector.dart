@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_model_export.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 class MonthCellGestureDetector<T extends Object?> extends StatefulWidget {
   const MonthCellGestureDetector({
@@ -169,9 +171,9 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
     }
   }
 
-  CalendarInternals<T> get internals => CalendarInternals.of<T>(context);
-  CalendarController<T> get controller => internals.controller;
+  CalendarScope<T> get internals => CalendarScope.of<T>(context);
+  CalendarEventController<T> get controller => internals.eventController;
   CalendarFunctions<T> get functions => internals.functions;
-  CalendarConfiguration get configuration => internals.configuration;
-  bool get isMobileDevice => configuration.isMobileDevice;
+
+  bool get isMobileDevice => false; //configuration.isMobileDevice;
 }

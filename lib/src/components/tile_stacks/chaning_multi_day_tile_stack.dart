@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
-import 'package:kalender/src/providers/calendar_internals.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [Stack] that contains the [PositionedMultiDayTileData] that is being modified.
 class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
@@ -14,8 +15,9 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarController<T> controller = CalendarInternals.of<T>(context).controller;
-    CalendarComponents<T> components = CalendarInternals.of<T>(context).components;
+    CalendarScope<T> scope = CalendarScope.of(context);
+    CalendarEventController<T> controller = scope.eventController;
+    CalendarComponents<T> components = scope.components;
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
