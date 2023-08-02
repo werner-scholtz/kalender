@@ -9,7 +9,7 @@ typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
 /// The [DayHeaderBuilder] is used to build the header displayed above a day.
 typedef DayHeaderBuilder<T extends Object?> = Widget Function(
   DateTime date,
-  Function(DateTime date)? onTapped,
+  void Function(DateTime date)? onTapped,
 );
 
 /// The [HourlineBuilder] is used to build the hourlines displayed on calendar's.

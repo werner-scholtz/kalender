@@ -29,7 +29,7 @@ class CalendarEventHandlers<T> {
   final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)? onCreateEvent;
 
   /// The [Function] called when the event is tapped.
-  final Function(DateTime date)? onDateTapped;
+  final void Function(DateTime date)? onDateTapped;
 
   @override
   operator ==(Object other) {

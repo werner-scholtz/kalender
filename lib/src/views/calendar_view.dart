@@ -22,7 +22,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.multiDayEventTileBuilder,
     required this.monthEventTileBuilder,
     this.components,
-    this.functions,
+    this.eventHandlers,
     this.createNewEvents = true,
   }) : assert(
           eventTileBuilder != null &&
@@ -39,7 +39,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.eventTileBuilder,
     required this.multiDayEventTileBuilder,
     this.components,
-    this.functions,
+    this.eventHandlers,
     this.createNewEvents = true,
   }) : monthEventTileBuilder = null;
 
@@ -56,7 +56,7 @@ class CalendarView<T> extends StatefulWidget {
   final CalendarComponents? components;
 
   /// The [CalendarEventHandlers] used to handle events.
-  final CalendarEventHandlers<T>? functions;
+  final CalendarEventHandlers<T>? eventHandlers;
 
   /// The [EventTileBuilder] used to build event tiles.
   final EventTileBuilder<T>? eventTileBuilder;
@@ -102,7 +102,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         eventTileBuilder: widget.eventTileBuilder!,
         multiDayEventTileBuilder: widget.multiDayEventTileBuilder!,
         components: widget.components,
-        functions: widget.functions,
+        functions: widget.eventHandlers,
         singleDayViewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
       );
@@ -115,7 +115,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         eventTileBuilder: widget.eventTileBuilder!,
         multiDayEventTileBuilder: widget.multiDayEventTileBuilder!,
         components: widget.components,
-        functions: widget.functions,
+        functions: widget.eventHandlers,
         multiDayViewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
       );
@@ -127,7 +127,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         eventsController: widget.eventsController,
         monthEventTileBuilder: widget.monthEventTileBuilder!,
         components: widget.components,
-        functions: widget.functions,
+        functions: widget.eventHandlers,
         monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,
         createNewEvents: widget.createNewEvents,
       );

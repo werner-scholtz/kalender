@@ -63,7 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
               eventsController: eventController,
             );
           } else {
-            return const MobileScreen();
+            return MobileScreen(
+              eventsController: eventController,
+            );
           }
         },
       ),

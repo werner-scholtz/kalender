@@ -61,9 +61,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
       multiDayEventTileBuilder: _multiDayEventTileBuilder,
       monthEventTileBuilder: _monthEventTileBuilder,
       components: CalendarComponents(
-        calendarHeaderBuilder: _calendarHeader,
+        calendarHeaderBuilder: _calendarHeaderBuilder,
       ),
-      functions: CalendarEventHandlers<Event>(
+      eventHandlers: CalendarEventHandlers<Event>(
         onEventChanged: onEventChanged,
         onEventTapped: onEventTapped,
         onCreateEvent: onCreateEvent,
@@ -146,7 +146,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     }
   }
 
-  Widget _calendarHeader(dateTimeRange) {
+  Widget _calendarHeaderBuilder(dateTimeRange) {
     return CalendarHeader(
       calendarController: calendarController,
       viewConfigurations: viewConfigurations,
