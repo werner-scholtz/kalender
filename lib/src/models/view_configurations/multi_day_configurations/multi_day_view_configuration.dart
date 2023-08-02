@@ -1,7 +1,7 @@
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
-/// This is the base class for all [ViewType.multiDay]
+/// This is the base class for all [MultiDayViewConfiguration]s.
 abstract class MultiDayViewConfiguration implements ViewConfiguration {
   const MultiDayViewConfiguration();
 

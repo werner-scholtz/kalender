@@ -1,6 +1,8 @@
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
+import 'package:example/widgets/dialogs/event_edit_dialog.dart';
+import 'package:example/widgets/dialogs/new_event_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -26,6 +28,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   // This is used to control events.
   late CalendarController<Event> calendarController;
   late CalendarComponents components;
+  late CalendarFunctions<Event> functions;
 
   // The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
@@ -47,6 +50,11 @@ class _DesktopScreenState extends State<DesktopScreen> {
     components = CalendarComponents(
       calendarHeaderBuilder: _calendarHeader,
     );
+    functions = CalendarFunctions<Event>(
+      onEventChanged: onEventChanged,
+      onEventTapped: onEventTapped,
+      onCreateEvent: onCreateEvent,
+    );
   }
 
   @override
@@ -61,6 +69,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
             eventTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
             viewConfiguration: currentConfiguration as SingleDayViewConfiguration,
+            functions: functions,
           );
         } else if (currentConfiguration is MultiDayViewConfiguration) {
           return MultiDayView<Event>(
@@ -70,6 +79,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
             eventsTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
             viewConfiguration: currentConfiguration as MultiDayViewConfiguration,
+            functions: functions,
           );
         } else if (currentConfiguration is MonthViewConfiguration) {
           return MonthView<Event>(
@@ -78,6 +88,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
             monthEventTileBuilder: _monthEventTile,
             components: components,
             viewConfiguration: currentConfiguration as MonthViewConfiguration,
+            functions: functions,
           );
         }
         return Container();
@@ -118,13 +129,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  // Widget _scheduleEventTile(event, date) {
-  //   return ScheduleEventTile(
-  //     event: event,
-  //     date: date,
-  //   );
-  // }
-
   Widget _monthEventTile(event, tileType, date, continuesBefore, continuesAfter) {
     return MonthEventTile(
       event: event,
@@ -132,6 +136,65 @@ class _DesktopScreenState extends State<DesktopScreen> {
       date: date,
       continuesBefore: continuesBefore,
       continuesAfter: continuesAfter,
+    );
+  }
+
+  Future<CalendarEvent<Event>?> onCreateEvent(newEvent) async {
+    newEvent.eventData = Event(
+      title: 'New Event',
+      color: Colors.blue,
+    );
+
+    // Show the new event dialog.
+    CalendarEvent<Event>? event = await showDialog<CalendarEvent<Event>>(
+      context: context,
+      builder: (BuildContext context) {
+        return NewEventDialog(
+          dialogTitle: 'Create Event',
+          event: newEvent,
+        );
+      },
+    );
+
+    // return the new event. (if the user cancels the dialog, null is returned)
+    return event;
+  }
+
+  Future<void> onEventTapped(event) async {
+    // Make a copy of the event to restore it if the user cancels the changes.
+    CalendarEvent<Event> copyOfEvent = event.copyWith();
+
+    // Show the edit dialog.
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EventEditDialog(
+          dialogTitle: 'Edit Event',
+          event: event,
+          deleteEvent: (event) => eventsController.removeEvent(event),
+          cancelEdit: () => event.repalceWith(event: copyOfEvent),
+        );
+      },
+    );
+  }
+
+  Future<void> onEventChanged(initialDateTimeRange, event) async {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // Show the snackbar and undo the changes if the user presses the undo button.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${event.eventData?.title} changed'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            eventsController.updateEvent(
+              newEventData: event.eventData,
+              newDateTimeRange: initialDateTimeRange,
+              test: (other) => other.eventData == event.eventData,
+            );
+          },
+        ),
+      ),
     );
   }
 }

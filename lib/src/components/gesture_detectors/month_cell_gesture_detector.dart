@@ -44,6 +44,8 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarFunctions<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get createNewEvents => scope.state.createNewEvents;
+  bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   DateTimeRange? initialDateTimeRange;
   Offset cursorOffset = Offset.zero;
@@ -63,9 +65,9 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onTap,
-        onPanStart: isMobileDevice ? null : onPanStart,
-        onPanUpdate: isMobileDevice ? null : onPanUpdate,
-        onPanEnd: isMobileDevice ? null : onPanEnd,
+        onPanStart: gestureDisabled ? null : onPanStart,
+        onPanUpdate: gestureDisabled ? null : onPanUpdate,
+        onPanEnd: gestureDisabled ? null : onPanEnd,
       ),
     );
   }

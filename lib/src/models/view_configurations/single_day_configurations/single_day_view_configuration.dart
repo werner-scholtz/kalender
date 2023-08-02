@@ -1,7 +1,7 @@
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
-/// This is the base class for all [ViewType.singleDay]
+/// This is the base class for all [SingleDayViewConfiguration]s.
 abstract class SingleDayViewConfiguration implements ViewConfiguration {
   const SingleDayViewConfiguration();
 

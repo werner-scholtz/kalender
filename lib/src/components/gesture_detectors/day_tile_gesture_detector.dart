@@ -84,13 +84,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     );
   }
 
-  void _onTap() {
+  void _onTap() async {
     // Set the changing event.
     scope.eventsController.chaningEvent = event;
     scope.eventsController.isMoving = true;
 
     // Call the onEventTapped function.
-    scope.functions.onEventTapped?.call(scope.eventsController.chaningEvent!);
+    await scope.functions.onEventTapped?.call(scope.eventsController.chaningEvent!);
 
     // Reset the changing event.
     scope.eventsController.isMoving = false;
@@ -104,9 +104,9 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     initialDateTimeRange = event.dateTimeRange;
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onPanEnd(DragEndDetails details) async {
     _onRescheduleEnd();
-    scope.functions.onEventChanged
+    await scope.functions.onEventChanged
         ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
     scope.eventsController.chaningEvent = null;
     scope.eventsController.isMoving = false;
@@ -122,9 +122,9 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     scope.eventsController.chaningEvent = event;
   }
 
-  void _onLongPressEnd(LongPressEndDetails details) {
+  void _onLongPressEnd(LongPressEndDetails details) async {
     _onRescheduleEnd();
-    scope.functions.onEventChanged
+    await scope.functions.onEventChanged
         ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
     scope.eventsController.chaningEvent = null;
     scope.eventsController.isMoving = false;

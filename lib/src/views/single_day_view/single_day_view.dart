@@ -25,6 +25,7 @@ class SingleDayView<T> extends StatefulWidget {
     this.components,
     this.viewConfiguration,
     this.functions,
+    this.createNewEvents = true,
   });
 
   final CalendarController<T> controller;
@@ -34,6 +35,7 @@ class SingleDayView<T> extends StatefulWidget {
   final CalendarFunctions<T>? functions;
   final EventTileBuilder<T> eventTileBuilder;
   final MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
+  final bool createNewEvents;
 
   @override
   State<SingleDayView<T>> createState() => _SingleDayViewState<T>();
@@ -124,6 +126,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
       heightPerMinute: ValueNotifier<double>(0.7),
+      createNewEvents: widget.createNewEvents,
     );
   }
 

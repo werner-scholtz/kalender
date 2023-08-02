@@ -77,7 +77,7 @@ class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileG
 
   void _onTap() async {
     controller.chaningEvent = event;
-    functions.onEventTapped?.call(event);
+    await functions.onEventTapped?.call(event);
     controller.chaningEvent = null;
   }
 
@@ -89,11 +89,11 @@ class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileG
     controller.chaningEvent = event;
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onPanEnd(DragEndDetails details) async {
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
-    functions.onEventChanged?.call(initialDateTimeRange, event);
+    await functions.onEventChanged?.call(initialDateTimeRange, event);
     controller.chaningEvent = null;
   }
 

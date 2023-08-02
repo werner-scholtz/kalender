@@ -36,13 +36,13 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   late int numberOfColums;
   late List<DateTime> visibleDates;
 
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => internals.eventsController;
-  CalendarFunctions<T> get functions => internals.functions;
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => scope.eventsController;
+  CalendarFunctions<T> get functions => scope.functions;
 
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => true;
-  bool get isMobileDevice => internals.platformData.isMobileDevice;
+  bool get createNewEvents => scope.state.createNewEvents;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;

@@ -13,10 +13,11 @@ class CalendarFunctions<T extends Object?> {
   });
 
   /// The [Function] called when the event is changed.
-  final void Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
+  final Future<void> Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
+      onEventChanged;
 
   /// The [Function] called when the event is tapped.
-  final void Function(CalendarEvent<T> event)? onEventTapped;
+  final Future<void> Function(CalendarEvent<T> event)? onEventTapped;
 
   /// The [Function] called when an event is created.
   final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)? onCreateEvent;

@@ -47,11 +47,10 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   /// The number of slots in a day.
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
 
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => true; //CalendarScope.of<T>(context).platformData.createNewEvents;
-
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get createNewEvents => scope.state.createNewEvents;
+  bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;

@@ -17,8 +17,10 @@ class MultiDayLayoutController<T extends Object?> {
   /// The maximum width of the page.
   late final double maxWidth = dayWidth * (visibleDateRange.duration.inDays);
 
+  /// Whether the device is a mobile device.
   final bool isMobileDevice;
 
+  /// Whether the view is a multiday view.
   final bool isMultidayView;
 
   /// The maximum height of the stack.

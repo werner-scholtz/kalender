@@ -15,6 +15,7 @@ class ViewState extends ChangeNotifier {
     required this.adjustedDateTimeRange,
     required this.visibleDateTimeRange,
     this.heightPerMinute,
+    required this.createNewEvents,
   });
 
   /// The current viewConfiguration of the view.
@@ -37,6 +38,9 @@ class ViewState extends ChangeNotifier {
 
   /// The number of pages the [PageView] of the [CalendarView] has.
   final int numberOfPages;
+
+  /// Whether new events can be created.
+  final bool createNewEvents;
 
   @override
   operator ==(Object other) {

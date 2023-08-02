@@ -39,6 +39,7 @@ class DayTileResizeDetector extends StatefulWidget {
 class _DayTileResizeDetectorState extends State<DayTileResizeDetector> {
   late DateTimeRange initialDateTimeRange = widget.initialDateTimeRange;
   late List<DateTime> snapPoints;
+  
   double cursorVerticalOffset = 0;
   int currentSteps = 0;
 
