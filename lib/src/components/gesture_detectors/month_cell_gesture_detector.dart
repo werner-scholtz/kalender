@@ -42,7 +42,7 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
-  CalendarFunctions<T> get functions => scope.functions;
+  CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
   bool get createNewEvents => scope.state.createNewEvents;
   bool get gestureDisabled => isMobileDevice || !createNewEvents;

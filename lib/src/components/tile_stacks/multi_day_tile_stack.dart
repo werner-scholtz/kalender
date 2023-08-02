@@ -32,7 +32,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
     CalendarEventsController<T> controller = scope.eventsController;
     ViewState state = scope.state;
     CalendarComponents components = scope.components;
-    CalendarFunctions<T> functions = scope.functions;
+    CalendarEventHandlers<T> functions = scope.functions;
 
     return RepaintBoundary(
       child: ListenableBuilder(

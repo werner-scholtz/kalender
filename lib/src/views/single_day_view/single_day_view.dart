@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
@@ -15,6 +17,7 @@ import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/single_day_view/single_day_content.dart';
 import 'package:kalender/src/views/single_day_view/single_day_header.dart';
 
+/// A widget that displays a single day.
 class SingleDayView<T> extends StatefulWidget {
   const SingleDayView({
     super.key,
@@ -23,18 +26,33 @@ class SingleDayView<T> extends StatefulWidget {
     required this.eventTileBuilder,
     required this.multiDayEventTileBuilder,
     this.components,
-    this.viewConfiguration,
+    this.singleDayViewConfiguration,
     this.functions,
     this.createNewEvents = true,
   });
 
+  /// The [CalendarController] used to control the view.
   final CalendarController<T> controller;
+
+  /// The [CalendarEventsController] used to control events.
   final CalendarEventsController<T> eventsController;
-  final SingleDayViewConfiguration? viewConfiguration;
+
+  /// The [SingleDayViewConfiguration] used to configure the view.
+  final SingleDayViewConfiguration? singleDayViewConfiguration;
+
+  /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
-  final CalendarFunctions<T>? functions;
+
+  /// The [CalendarEventHandlers] used to handle events.
+  final CalendarEventHandlers<T>? functions;
+
+  /// The [EventTileBuilder] used to build event tiles.
   final EventTileBuilder<T> eventTileBuilder;
+
+  /// The [MultiDayEventTileBuilder] used to build multi day event tiles.
   final MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
+
+  /// Can create new events.
   final bool createNewEvents;
 
   @override
@@ -45,7 +63,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   late CalendarController<T> _controller;
   late CalendarEventsController<T> _eventsController;
   late ViewState _viewState;
-  late CalendarFunctions<T> _functions;
+  late CalendarEventHandlers<T> _functions;
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
   late SingleDayViewConfiguration _viewConfiguration;
@@ -56,20 +74,20 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
     _controller = widget.controller;
 
     _eventsController = widget.eventsController;
-    _functions = widget.functions ?? CalendarFunctions<T>();
+    _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
       eventTileBuilder: widget.eventTileBuilder,
       multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
     );
 
-    _viewConfiguration = (widget.viewConfiguration ?? const DayConfiguration());
+    _viewConfiguration = (widget.singleDayViewConfiguration ?? const DayConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
-    _controller.detach();
+    // _controller.detach();
     _controller.attach(_viewState);
   }
 
@@ -83,13 +101,14 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   void didUpdateWidget(covariant SingleDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
-    if (widget.viewConfiguration != null && widget.viewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.viewConfiguration!;
+    if (widget.singleDayViewConfiguration != null &&
+        widget.singleDayViewConfiguration != _viewConfiguration) {
+      _viewConfiguration = widget.singleDayViewConfiguration!;
       _initializeViewState();
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
-      _controller.detach();
+      // _controller.detach();
       _controller.attach(_viewState);
     }
   }

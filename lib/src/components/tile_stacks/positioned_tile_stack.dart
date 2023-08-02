@@ -124,7 +124,7 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> internals = CalendarScope.of<T>(context);
-    CalendarFunctions<T> functions = internals.functions;
+    CalendarEventHandlers<T> functions = internals.functions;
     CalendarEventsController<T> controller = internals.eventsController;
     return Positioned(
       left: tileGroup.tileGroupLeft,

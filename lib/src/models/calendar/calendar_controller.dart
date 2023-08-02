@@ -8,7 +8,7 @@ import 'package:kalender/src/models/view_configurations/view_confiuration_export
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 
-/// The [CalendarController] can be linked to a view to control the view.
+/// The [CalendarController] is used to control a calendar view.
 ///
 /// * Can be used to animate to a specific date or page.
 /// * Can be used to jump to a specific date or page.
@@ -38,17 +38,17 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {
-    assert(
-      _state == null,
-      "The controller cannot be attached to multiple view's.",
-    );
+    // assert(
+    //   _state == null,
+    //   "The controller cannot be attached to multiple view's.",
+    // );
     _state = viewState;
   }
 
-  void detach() {
-    if (_state == null) return;
-    _state = null;
-  }
+  // void detach() {
+  //   if (_state == null) return;
+  //   _state = null;
+  // }
 
   /// Animates to the next page.
   ///

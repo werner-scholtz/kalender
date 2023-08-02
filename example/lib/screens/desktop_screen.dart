@@ -19,21 +19,15 @@ class DesktopScreen extends StatefulWidget {
 }
 
 class _DesktopScreenState extends State<DesktopScreen> {
-  // The event controller.
-  // This is used to control the calendar such as,
-  // jump/animate to a specific date/event.
   late CalendarEventsController<Event> eventsController;
-
-  // The calendar controller.
-  // This is used to control events.
   late CalendarController<Event> calendarController;
   late CalendarComponents components;
-  late CalendarFunctions<Event> functions;
+  late CalendarEventHandlers<Event> eventHandlers;
 
-  // The current view configuration.
+  /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
 
-  // The list of view configurations.
+  /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
     const DayConfiguration(),
     const WeekConfiguration(),
@@ -46,14 +40,15 @@ class _DesktopScreenState extends State<DesktopScreen> {
   void initState() {
     super.initState();
     eventsController = widget.eventController;
-    calendarController = CalendarController();
+    calendarController = CalendarController<Event>();
     components = CalendarComponents(
       calendarHeaderBuilder: _calendarHeader,
     );
-    functions = CalendarFunctions<Event>(
+    eventHandlers = CalendarEventHandlers<Event>(
       onEventChanged: onEventChanged,
       onEventTapped: onEventTapped,
       onCreateEvent: onCreateEvent,
+      onDateTapped: onDateTapped,
     );
   }
 
@@ -68,18 +63,18 @@ class _DesktopScreenState extends State<DesktopScreen> {
             components: components,
             eventTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
-            viewConfiguration: currentConfiguration as SingleDayViewConfiguration,
-            functions: functions,
+            singleDayViewConfiguration: currentConfiguration as SingleDayViewConfiguration,
+            functions: eventHandlers,
           );
         } else if (currentConfiguration is MultiDayViewConfiguration) {
           return MultiDayView<Event>(
             controller: calendarController,
             eventsController: eventsController,
             components: components,
-            eventsTileBuilder: _eventTile,
+            eventTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
-            viewConfiguration: currentConfiguration as MultiDayViewConfiguration,
-            functions: functions,
+            multiDayViewConfiguration: currentConfiguration as MultiDayViewConfiguration,
+            functions: eventHandlers,
           );
         } else if (currentConfiguration is MonthViewConfiguration) {
           return MonthView<Event>(
@@ -87,8 +82,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
             eventsController: eventsController,
             monthEventTileBuilder: _monthEventTile,
             components: components,
-            viewConfiguration: currentConfiguration as MonthViewConfiguration,
-            functions: functions,
+            monthViewConfiguration: currentConfiguration as MonthViewConfiguration,
+            functions: eventHandlers,
           );
         }
         return Container();
@@ -139,6 +134,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
+  /// This function is called when a new event is created.
   Future<CalendarEvent<Event>?> onCreateEvent(newEvent) async {
     newEvent.eventData = Event(
       title: 'New Event',
@@ -160,6 +156,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     return event;
   }
 
+  /// This function is called when an event is tapped.
   Future<void> onEventTapped(event) async {
     // Make a copy of the event to restore it if the user cancels the changes.
     CalendarEvent<Event> copyOfEvent = event.copyWith();
@@ -178,6 +175,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
+  /// This function is called when an event is changed.
   Future<void> onEventChanged(initialDateTimeRange, event) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
@@ -196,5 +194,14 @@ class _DesktopScreenState extends State<DesktopScreen> {
         ),
       ),
     );
+  }
+
+  void onDateTapped(date) {
+    if (currentConfiguration is! SingleDayViewConfiguration) {
+      setState(() {
+        calendarController.selectedDate = date;
+        currentConfiguration = viewConfigurations.first;
+      });
+    }
   }
 }

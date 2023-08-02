@@ -38,7 +38,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
-  CalendarFunctions<T> get functions => scope.functions;
+  CalendarEventHandlers<T> get functions => scope.functions;
 
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
   bool get createNewEvents => scope.state.createNewEvents;

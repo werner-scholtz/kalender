@@ -21,18 +21,31 @@ class MonthView<T> extends StatefulWidget {
     required this.controller,
     required this.eventsController,
     required this.monthEventTileBuilder,
-    this.viewConfiguration,
+    this.monthViewConfiguration,
     this.components,
     this.functions,
     this.createNewEvents = true,
   });
 
+  /// The [CalendarController] used to control the view.
   final CalendarController<T> controller;
+
+  /// The [CalendarEventsController] used to control events.
   final CalendarEventsController<T> eventsController;
-  final MonthViewConfiguration? viewConfiguration;
+
+  /// The [MonthViewConfiguration] used to configure the view.
+  final MonthViewConfiguration? monthViewConfiguration;
+
+  /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
-  final CalendarFunctions<T>? functions;
+
+  /// The [CalendarEventHandlers] used to handle events.
+  final CalendarEventHandlers<T>? functions;
+
+  /// The [MonthEventTileBuilder] used to build month event tiles.
   final MonthEventTileBuilder<T> monthEventTileBuilder;
+
+  /// Can create new events.
   final bool createNewEvents;
 
   @override
@@ -43,7 +56,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   late CalendarController<T> _controller;
   late ViewState _viewState;
   late CalendarEventsController<T> _eventsController;
-  late CalendarFunctions<T> _functions;
+  late CalendarEventHandlers<T> _functions;
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
   late MonthViewConfiguration _viewConfiguration;
@@ -53,18 +66,18 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     super.initState();
     _controller = widget.controller;
     _eventsController = widget.eventsController;
-    _functions = widget.functions ?? CalendarFunctions<T>();
+    _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
       monthEventTileBuilder: widget.monthEventTileBuilder,
     );
-    _viewConfiguration = (widget.viewConfiguration ?? const MonthConfiguration());
+    _viewConfiguration = (widget.monthViewConfiguration ?? const MonthConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
-    _controller.detach();
+    // _controller.detach();
     _controller.attach(_viewState);
   }
 
@@ -78,13 +91,14 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   void didUpdateWidget(covariant MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
-    if (widget.viewConfiguration != null && widget.viewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.viewConfiguration!;
+    if (widget.monthViewConfiguration != null &&
+        widget.monthViewConfiguration != _viewConfiguration) {
+      _viewConfiguration = widget.monthViewConfiguration!;
       _initializeViewState();
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
-      _controller.detach();
+      // _controller.detach();
       _controller.attach(_viewState);
     }
   }

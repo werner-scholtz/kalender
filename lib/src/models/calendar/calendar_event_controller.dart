@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
+/// A [ChangeNotifier] that manages [CalendarEvent]s.
 class CalendarEventsController<T extends Object?> with ChangeNotifier {
   CalendarEventsController();
 
