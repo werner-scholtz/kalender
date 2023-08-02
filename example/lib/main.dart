@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context) {
           if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
             return DesktopScreen(
-              eventController: eventController,
+              eventsController: eventController,
             );
           } else {
             return const MobileScreen();

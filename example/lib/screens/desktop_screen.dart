@@ -9,10 +9,10 @@ import 'package:kalender/kalender.dart';
 class DesktopScreen extends StatefulWidget {
   const DesktopScreen({
     super.key,
-    required this.eventController,
+    required this.eventsController,
   });
 
-  final CalendarEventsController<Event> eventController;
+  final CalendarEventsController<Event> eventsController;
 
   @override
   State<DesktopScreen> createState() => _DesktopScreenState();
@@ -39,98 +39,36 @@ class _DesktopScreenState extends State<DesktopScreen> {
   @override
   void initState() {
     super.initState();
-    eventsController = widget.eventController;
+    eventsController = widget.eventsController;
     calendarController = CalendarController<Event>();
-    components = CalendarComponents(
-      calendarHeaderBuilder: _calendarHeader,
-    );
-    eventHandlers = CalendarEventHandlers<Event>(
-      onEventChanged: onEventChanged,
-      onEventTapped: onEventTapped,
-      onCreateEvent: onCreateEvent,
-      onDateTapped: onDateTapped,
-    );
+  }
+
+  @override
+  void didUpdateWidget(covariant DesktopScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.eventsController != oldWidget.eventsController) {
+      eventsController = widget.eventsController;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        if (currentConfiguration is SingleDayViewConfiguration) {
-          return SingleDayView<Event>(
-            controller: calendarController,
-            eventsController: eventsController,
-            components: components,
-            eventTileBuilder: _eventTile,
-            multiDayEventTileBuilder: _multiDayEventTile,
-            singleDayViewConfiguration: currentConfiguration as SingleDayViewConfiguration,
-            functions: eventHandlers,
-          );
-        } else if (currentConfiguration is MultiDayViewConfiguration) {
-          return MultiDayView<Event>(
-            controller: calendarController,
-            eventsController: eventsController,
-            components: components,
-            eventTileBuilder: _eventTile,
-            multiDayEventTileBuilder: _multiDayEventTile,
-            multiDayViewConfiguration: currentConfiguration as MultiDayViewConfiguration,
-            functions: eventHandlers,
-          );
-        } else if (currentConfiguration is MonthViewConfiguration) {
-          return MonthView<Event>(
-            controller: calendarController,
-            eventsController: eventsController,
-            monthEventTileBuilder: _monthEventTile,
-            components: components,
-            monthViewConfiguration: currentConfiguration as MonthViewConfiguration,
-            functions: eventHandlers,
-          );
-        }
-        return Container();
-      },
-    );
-  }
-
-  Widget _calendarHeader(dateTimeRange) {
-    return CalendarHeader(
-      calendarController: calendarController,
-      viewConfigurations: viewConfigurations,
-      currentConfiguration: currentConfiguration,
-      onViewConfigurationChanged: (viewConfiguration) {
-        setState(() {
-          currentConfiguration = viewConfiguration;
-        });
-      },
-      dateTimeRange: dateTimeRange,
-    );
-  }
-
-  Widget _multiDayEventTile(event, tileType, continuesBefore, continuesAfter) {
-    return MultiDayEventTile(
-      event: event,
-      tileType: tileType,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
-    );
-  }
-
-  Widget _eventTile(event, tileType, drawOutline, continuesBefore, continuesAfter) {
-    return EventTile(
-      event: event,
-      tileType: tileType,
-      drawOutline: drawOutline,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
-    );
-  }
-
-  Widget _monthEventTile(event, tileType, date, continuesBefore, continuesAfter) {
-    return MonthEventTile(
-      event: event,
-      tileType: tileType,
-      date: date,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+    return CalendarView<Event>(
+      controller: calendarController,
+      eventsController: eventsController,
+      viewConfiguration: currentConfiguration,
+      eventTileBuilder: _eventTileBuilder,
+      multiDayEventTileBuilder: _multiDayEventTileBuilder,
+      monthEventTileBuilder: _monthEventTileBuilder,
+      components: CalendarComponents(
+        calendarHeaderBuilder: _calendarHeader,
+      ),
+      functions: CalendarEventHandlers<Event>(
+        onEventChanged: onEventChanged,
+        onEventTapped: onEventTapped,
+        onCreateEvent: onCreateEvent,
+        onDateTapped: onDateTapped,
+      ),
     );
   }
 
@@ -196,12 +134,58 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
+  /// This function is called when a date is tapped.
   void onDateTapped(date) {
+    // If the current view is not the single day view, change the view to the single day view.
     if (currentConfiguration is! SingleDayViewConfiguration) {
       setState(() {
+        // Set the selected date to the tapped date.
         calendarController.selectedDate = date;
         currentConfiguration = viewConfigurations.first;
       });
     }
+  }
+
+  Widget _calendarHeader(dateTimeRange) {
+    return CalendarHeader(
+      calendarController: calendarController,
+      viewConfigurations: viewConfigurations,
+      currentConfiguration: currentConfiguration,
+      onViewConfigurationChanged: (viewConfiguration) {
+        setState(() {
+          currentConfiguration = viewConfiguration;
+        });
+      },
+      dateTimeRange: dateTimeRange,
+    );
+  }
+
+  Widget _multiDayEventTileBuilder(event, tileType, continuesBefore, continuesAfter) {
+    return MultiDayEventTile(
+      event: event,
+      tileType: tileType,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
+    );
+  }
+
+  Widget _eventTileBuilder(event, tileType, drawOutline, continuesBefore, continuesAfter) {
+    return EventTile(
+      event: event,
+      tileType: tileType,
+      drawOutline: drawOutline,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
+    );
+  }
+
+  Widget _monthEventTileBuilder(event, tileType, date, continuesBefore, continuesAfter) {
+    return MonthEventTile(
+      event: event,
+      tileType: tileType,
+      date: date,
+      continuesBefore: continuesBefore,
+      continuesAfter: continuesAfter,
+    );
   }
 }

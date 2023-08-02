@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// It contains all the methods that are used to calculate:
 /// * The layout of the calendar.
-/// * The visible date range.
+/// * The visible date range and indices.
 abstract class ViewConfiguration {
   const ViewConfiguration();
 

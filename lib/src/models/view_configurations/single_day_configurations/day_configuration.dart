@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 
+/// The [DayConfiguration] class contains the configuration for the [SingleDayView].
+///
+/// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [SingleDayView].
+/// It also contains some configuration values that are used to calculate the layout of the [SingleDayView].
 class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
@@ -41,18 +45,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
   ) {
     return date.dayRange;
   }
-
-  // @override
-  // DateTimeRange calculateAdjustedDateTimeRange({
-  //   required DateTimeRange dateTimeRange,
-  //   required DateTime visibleStart,
-  //   required int firstDayOfWeek,
-  // }) {
-  // return DateTimeRange(
-  //   start: dateTimeRange.start.startOfDay,
-  //   end: dateTimeRange.end.endOfDay,
-  // );
-  // }
 
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
