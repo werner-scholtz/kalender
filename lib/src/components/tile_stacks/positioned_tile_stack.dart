@@ -7,7 +7,6 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -38,14 +37,14 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> internals = CalendarScope.of<T>(context);
-    ViewState state = internals.state;
-    CalendarEventsController<T> controller = internals.eventsController;
+    CalendarScope<T> scope = CalendarScope.of<T>(context);
+    // ViewState state = scope.state;
+    // CalendarEventsController<T> controller = scope.eventsController;
 
     return ListenableBuilder(
-      listenable: controller,
+      listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        Iterable<CalendarEvent<T>> events = controller.getDayEventsFromDateRange(
+        Iterable<CalendarEvent<T>> events = scope.eventsController.getDayEventsFromDateRange(
           pageVisibleDateRange,
         );
 
@@ -60,7 +59,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
         if (eventSnapping) {
           // Add the snap points from other events.
           snapPoints.addAll(
-            controller.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
+            scope.eventsController.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
           );
         }
 
@@ -80,7 +79,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
                   horizontalStep: horizontalStep,
                   verticalDurationStep: verticalDurationStep,
                   horizontalDurationStep: horizontalDurationStep,
-                  visibleDateRange: state.visibleDateTimeRange.value,
+                  visibleDateRange: scope.state.visibleDateTimeRange.value,
                   snapPoints: snapPoints,
                 ),
               )

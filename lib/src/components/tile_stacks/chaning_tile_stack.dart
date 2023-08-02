@@ -16,21 +16,21 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventsController;
 
     return ListenableBuilder(
-      listenable: controller,
+      listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        if (shouldDisplayTile(controller)) {
+        if (shouldDisplayTile(scope.eventsController)) {
           return ListenableBuilder(
-            listenable: controller.chaningEvent!,
+            listenable: scope.eventsController.chaningEvent!,
             builder: (BuildContext context, Widget? child) {
               List<PositionedTileData<T>> arragnedEvents = tileLayoutController.positionSingleEvent(
-                controller.chaningEvent!,
+                scope.eventsController.chaningEvent!,
               );
               return MouseRegion(
-                cursor:
-                    controller.isResizing ? SystemMouseCursors.resizeRow : SystemMouseCursors.move,
+                cursor: scope.eventsController.isResizing
+                    ? SystemMouseCursors.resizeRow
+                    : SystemMouseCursors.move,
                 child: Stack(
                   children: arragnedEvents
                       .map(

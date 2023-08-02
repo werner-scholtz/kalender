@@ -15,17 +15,16 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventsController;
-    CalendarTileComponents<T> components = scope.tileComponents;
+
     return ListenableBuilder(
-      listenable: controller,
+      listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        if (controller.hasChaningEvent && controller.isMultidayEvent) {
+        if (scope.eventsController.hasChaningEvent && scope.eventsController.isMultidayEvent) {
           return ListenableBuilder(
-            listenable: controller.chaningEvent!,
+            listenable: scope.eventsController.chaningEvent!,
             builder: (BuildContext context, Widget? child) {
               PositionedMultiDayTileData<T> arragnedEvent = multiDayEventLayout.arrangeEvent(
-                controller.chaningEvent!,
+                scope.eventsController.chaningEvent!,
               );
               return MouseRegion(
                 cursor: SystemMouseCursors.resizeColumn,
@@ -36,7 +35,7 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
                       left: arragnedEvent.left,
                       width: arragnedEvent.width,
                       height: arragnedEvent.height,
-                      child: components.multiDayEventTileBuilder!(
+                      child: scope.tileComponents.multiDayEventTileBuilder!(
                         arragnedEvent.event,
                         TileType.selected,
                         arragnedEvent.continuesBefore,

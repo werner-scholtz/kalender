@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+
 import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_multi_day_tile_stack.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -29,21 +30,17 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventsController;
-    ViewState state = scope.state;
-    CalendarComponents components = scope.components;
-    CalendarEventHandlers<T> functions = scope.functions;
-
+ 
     return RepaintBoundary(
       child: ListenableBuilder(
-        listenable: controller,
+        listenable: scope.eventsController,
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
           List<PositionedMultiDayTileData<T>> arragedEvents = multiDayEventLayout.arrageEvents(
-            controller.getMultidayEventsFromDateRange(
-              state.visibleDateTimeRange.value,
+            scope.eventsController.getMultidayEventsFromDateRange(
+              scope.state.visibleDateTimeRange.value,
             ),
-            selectedEvent: controller.chaningEvent,
+            selectedEvent: scope.eventsController.chaningEvent,
           );
 
           return SizedBox(
@@ -57,10 +54,10 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        components.daySepratorBuilder(
+                        scope.components.daySepratorBuilder(
                           15,
                           dayWidth,
-                          state.visibleDateTimeRange.value.duration.inDays,
+                          scope.state.visibleDateTimeRange.value.duration.inDays,
                         ),
                       ],
                     ),
@@ -72,15 +69,15 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                   dayWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
                   numberOfRows: multiDayEventLayout.numberOfRows,
-                  visibleDates: state.visibleDateTimeRange.value.datesSpanned,
+                  visibleDates:scope. state.visibleDateTimeRange.value.datesSpanned,
                 ),
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
                     return MultidayTileStack<T>(
                       controller: scope.eventsController,
-                      onEventChanged: functions.onEventChanged,
-                      onEventTapped: functions.onEventTapped,
-                      visibleDateRange: state.visibleDateTimeRange.value,
+                      onEventChanged: scope.functions.onEventChanged,
+                      onEventTapped: scope.functions.onEventTapped,
+                      visibleDateRange: scope.state.visibleDateTimeRange.value,
                       multiDayEventLayout: multiDayEventLayout,
                       arragnedEvent: e,
                       dayWidth: dayWidth,
@@ -113,7 +110,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
     required this.horizontalDurationStep,
   });
 
-  final CalendarEventsController<T> controller;
+   final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
   final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
@@ -127,6 +124,9 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
 
   final double dayWidth;
   final Duration horizontalDurationStep;
+
+
+
 
   @override
   Widget build(BuildContext context) {
