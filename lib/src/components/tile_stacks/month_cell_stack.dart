@@ -26,9 +26,9 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
     CalendarScope<T> scope = CalendarScope.of(context);
 
     return ListenableBuilder(
-      listenable: scope.eventController,
+      listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        List<CalendarEvent<T>> events = scope.eventController.getEventsFromDate(date).toList()
+        List<CalendarEvent<T>> events = scope.eventsController.getEventsFromDate(date).toList()
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.duration.compareTo(b.duration))
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.isSplitAcrossDays ? 0 : 1);
 
@@ -48,7 +48,7 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 CalendarEvent<T> event = events.elementAt(index);
-                bool isMoving = scope.eventController.chaningEvent == event;
+                bool isMoving = scope.eventsController.chaningEvent == event;
 
                 return MonthTileGestureDetector<T>(
                   event: event,
@@ -67,16 +67,16 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
                 );
               },
             ),
-            if (scope.eventController.hasChaningEvent)
+            if (scope.eventsController.hasChaningEvent)
               ListenableBuilder(
-                listenable: scope.eventController.chaningEvent!,
+                listenable: scope.eventsController.chaningEvent!,
                 builder: (BuildContext context, Widget? child) {
-                  CalendarEvent<T> event = scope.eventController.chaningEvent!;
+                  CalendarEvent<T> event = scope.eventsController.chaningEvent!;
                   if (event.isOnDate(date)) {
                     return SizedBox(
                       width: cellWidth,
                       child: scope.tileComponents.monthEventTileBuilder!(
-                        scope.eventController.chaningEvent!,
+                        scope.eventsController.chaningEvent!,
                         TileType.selected,
                         date,
                         event.continuesBefore(date),

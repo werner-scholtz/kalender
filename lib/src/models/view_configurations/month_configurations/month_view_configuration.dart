@@ -5,10 +5,10 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class MonthViewConfiguration implements ViewConfiguration {
   const MonthViewConfiguration();
 
-  // @override
-  // final ViewType viewType = ViewType.month;
-
   Duration get verticalDurationStep;
 
   Duration get horizontalDurationStep;
+
+  /// The first day of the week.
+  int get firstDayOfWeek;
 }

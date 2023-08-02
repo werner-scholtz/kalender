@@ -20,7 +20,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   // The event controller.
   // This is used to control the calendar such as,
   // jump/animate to a specific date/event.
-  late CalendarEventsController<Event> eventController;
+  late CalendarEventsController<Event> eventsController;
 
   // The calendar controller.
   // This is used to control events.
@@ -36,12 +36,13 @@ class _DesktopScreenState extends State<DesktopScreen> {
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
     const ThreeDayConfiguration(),
+    const MonthConfiguration(),
   ];
 
   @override
   void initState() {
     super.initState();
-    eventController = widget.eventController;
+    eventsController = widget.eventController;
     calendarController = CalendarController();
     components = CalendarComponents(
       calendarHeaderBuilder: _calendarHeader,
@@ -55,7 +56,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
         if (currentConfiguration is SingleDayViewConfiguration) {
           return SingleDayView<Event>(
             controller: calendarController,
-            eventsController: eventController,
+            eventsController: eventsController,
             components: components,
             eventTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
@@ -64,16 +65,20 @@ class _DesktopScreenState extends State<DesktopScreen> {
         } else if (currentConfiguration is MultiDayViewConfiguration) {
           return MultiDayView<Event>(
             controller: calendarController,
-            eventsController: eventController,
+            eventsController: eventsController,
             components: components,
             eventsTileBuilder: _eventTile,
             multiDayEventTileBuilder: _multiDayEventTile,
             viewConfiguration: currentConfiguration as MultiDayViewConfiguration,
           );
         } else if (currentConfiguration is MonthViewConfiguration) {
-          return Container();
-        } else if (currentConfiguration is ScheduleViewConfiguration) {
-          return Container();
+          return MonthView<Event>(
+            controller: calendarController,
+            eventsController: eventsController,
+            monthEventTileBuilder: _monthEventTile,
+            components: components,
+            viewConfiguration: currentConfiguration as MonthViewConfiguration,
+          );
         }
         return Container();
       },
@@ -113,12 +118,12 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  Widget _scheduleEventTile(event, date) {
-    return ScheduleEventTile(
-      event: event,
-      date: date,
-    );
-  }
+  // Widget _scheduleEventTile(event, date) {
+  //   return ScheduleEventTile(
+  //     event: event,
+  //     date: date,
+  //   );
+  // }
 
   Widget _monthEventTile(event, tileType, date, continuesBefore, continuesAfter) {
     return MonthEventTile(

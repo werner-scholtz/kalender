@@ -86,29 +86,30 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   void _onTap() {
     // Set the changing event.
-    scope.eventController.chaningEvent = event;
-    scope.eventController.isMoving = true;
+    scope.eventsController.chaningEvent = event;
+    scope.eventsController.isMoving = true;
 
     // Call the onEventTapped function.
-    scope.functions.onEventTapped?.call(scope.eventController.chaningEvent!);
+    scope.functions.onEventTapped?.call(scope.eventsController.chaningEvent!);
 
     // Reset the changing event.
-    scope.eventController.isMoving = false;
-    scope.eventController.chaningEvent = null;
+    scope.eventsController.isMoving = false;
+    scope.eventsController.chaningEvent = null;
   }
 
   void _onPanStart(DragStartDetails details) {
     _onRescheduleStart();
-    scope.eventController.isMoving = true;
-    scope.eventController.chaningEvent = event;
+    scope.eventsController.isMoving = true;
+    scope.eventsController.chaningEvent = event;
     initialDateTimeRange = event.dateTimeRange;
   }
 
   void _onPanEnd(DragEndDetails details) {
     _onRescheduleEnd();
-    scope.functions.onEventChanged?.call(initialDateTimeRange, scope.eventController.chaningEvent!);
-    scope.eventController.chaningEvent = null;
-    scope.eventController.isMoving = false;
+    scope.functions.onEventChanged
+        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
+    scope.eventsController.chaningEvent = null;
+    scope.eventsController.isMoving = false;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -117,15 +118,16 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   void _onLongPressStart(LongPressStartDetails details) {
     _onRescheduleStart();
-    scope.eventController.isMoving = true;
-    scope.eventController.chaningEvent = event;
+    scope.eventsController.isMoving = true;
+    scope.eventsController.chaningEvent = event;
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
     _onRescheduleEnd();
-    scope.functions.onEventChanged?.call(initialDateTimeRange, scope.eventController.chaningEvent!);
-    scope.eventController.chaningEvent = null;
-    scope.eventController.isMoving = false;
+    scope.functions.onEventChanged
+        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
+    scope.eventsController.chaningEvent = null;
+    scope.eventsController.isMoving = false;
   }
 
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
@@ -192,7 +194,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
     if (newDateTimeRange.start.isWithin(widget.visibleDateTimeRange) ||
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange)) {
-      scope.eventController.chaningEvent!.dateTimeRange = newDateTimeRange;
+      scope.eventsController.chaningEvent!.dateTimeRange = newDateTimeRange;
     }
   }
 }

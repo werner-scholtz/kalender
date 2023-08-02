@@ -6,7 +6,7 @@ import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 
 class CalendarScope<T extends Object?> extends InheritedWidget {
-  final CalendarEventsController<T> eventController;
+  final CalendarEventsController<T> eventsController;
 
   final CalendarComponents components;
 
@@ -20,7 +20,7 @@ class CalendarScope<T extends Object?> extends InheritedWidget {
 
   const CalendarScope({
     super.key,
-    required this.eventController,
+    required this.eventsController,
     required this.components,
     required this.tileComponents,
     required this.functions,
@@ -40,7 +40,7 @@ class CalendarScope<T extends Object?> extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant CalendarScope<T> oldWidget) {
-    return eventController != oldWidget.eventController ||
+    return eventsController != oldWidget.eventsController ||
         components != oldWidget.components ||
         tileComponents != oldWidget.tileComponents ||
         functions != oldWidget.functions ||

@@ -29,7 +29,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventController;
+    CalendarEventsController<T> controller = scope.eventsController;
     ViewState state = scope.state;
     CalendarComponents components = scope.components;
     CalendarFunctions<T> functions = scope.functions;
@@ -77,7 +77,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
                     return MultidayTileStack<T>(
-                      controller: scope.eventController,
+                      controller: scope.eventsController,
                       onEventChanged: functions.onEventChanged,
                       onEventTapped: functions.onEventTapped,
                       visibleDateRange: state.visibleDateTimeRange.value,
@@ -150,11 +150,11 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
                 onHorizontalDragEnd: _onHorizontalDragEnd,
                 rescheduleEvent: _rescheduleEvent,
                 child: CalendarScope.of<T>(context).tileComponents.multiDayEventTileBuilder!(
-                      arragnedEvent.event,
-                      isMoving ? TileType.ghost : TileType.normal,
-                      arragnedEvent.continuesBefore,
-                      arragnedEvent.continuesAfter,
-                    ),
+                  arragnedEvent.event,
+                  isMoving ? TileType.ghost : TileType.normal,
+                  arragnedEvent.continuesBefore,
+                  arragnedEvent.continuesAfter,
+                ),
               ),
             ),
           ],

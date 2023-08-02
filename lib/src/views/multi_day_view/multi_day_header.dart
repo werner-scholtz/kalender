@@ -5,7 +5,7 @@ import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layou
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MultiDayHeader<T extends Object?> extends StatelessWidget {
+class MultiDayHeader<T> extends StatelessWidget {
   const MultiDayHeader({
     super.key,
     required this.viewConfiguration,

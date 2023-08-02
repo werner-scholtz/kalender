@@ -16,7 +16,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventController;
+    CalendarEventsController<T> controller = scope.eventsController;
 
     return ListenableBuilder(
       listenable: controller,

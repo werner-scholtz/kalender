@@ -40,7 +40,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> internals = CalendarScope.of<T>(context);
     ViewState state = internals.state;
-    CalendarEventsController<T> controller = internals.eventController;
+    CalendarEventsController<T> controller = internals.eventsController;
 
     return ListenableBuilder(
       listenable: controller,
@@ -125,7 +125,7 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> internals = CalendarScope.of<T>(context);
     CalendarFunctions<T> functions = internals.functions;
-    CalendarEventsController<T> controller = internals.eventController;
+    CalendarEventsController<T> controller = internals.eventsController;
     return Positioned(
       left: tileGroup.tileGroupLeft,
       top: tileGroup.tileGroupTop,

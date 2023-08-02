@@ -15,7 +15,7 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventsController<T> controller = scope.eventController;
+    CalendarEventsController<T> controller = scope.eventsController;
     CalendarTileComponents<T> components = scope.tileComponents;
     return ListenableBuilder(
       listenable: controller,

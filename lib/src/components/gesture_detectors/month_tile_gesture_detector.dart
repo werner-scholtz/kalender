@@ -47,7 +47,7 @@ class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileG
   late DateTimeRange initialDateTimeRange;
 
   CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => internals.eventController;
+  CalendarEventsController<T> get controller => internals.eventsController;
   CalendarFunctions<T> get functions => internals.functions;
 
   Offset cursorOffset = Offset.zero;

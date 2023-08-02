@@ -3,7 +3,9 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 
 class MonthConfiguration extends MonthViewConfiguration {
-  const MonthConfiguration();
+  const MonthConfiguration({
+    this.firstDayOfWeek = 1,
+  });
 
   @override
   String get name => 'Month';
@@ -13,6 +15,9 @@ class MonthConfiguration extends MonthViewConfiguration {
 
   @override
   final Duration verticalDurationStep = const Duration(days: 7);
+
+  @override
+  final int firstDayOfWeek;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
@@ -34,18 +39,6 @@ class MonthConfiguration extends MonthViewConfiguration {
       end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
-
-  // @override
-  // DateTimeRange calculateAdjustedDateTimeRange(
-  //   DateTimeRange dateTimeRange,
-  //   DateTime visibleStart,
-  //   int firstDayOfWeek,
-  // ) {
-  //   return DateTimeRange(
-  //     start: dateTimeRange.start.startOfMonth.startOfWeekWithOffset(firstDayOfWeek),
-  //     end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
-  //   );
-  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {

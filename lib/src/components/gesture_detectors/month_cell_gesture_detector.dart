@@ -41,7 +41,7 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
   late final DateTime date;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => scope.eventController;
+  CalendarEventsController<T> get controller => scope.eventsController;
   CalendarFunctions<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
 

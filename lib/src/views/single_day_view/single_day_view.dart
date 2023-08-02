@@ -41,7 +41,7 @@ class SingleDayView<T> extends StatefulWidget {
 
 class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   late CalendarController<T> _controller;
-  late CalendarEventsController<T> _eventController;
+  late CalendarEventsController<T> _eventsController;
   late ViewState _viewState;
   late CalendarFunctions<T> _functions;
   late CalendarComponents _components;
@@ -53,7 +53,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
     super.initState();
     _controller = widget.controller;
 
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
     _functions = widget.functions ?? CalendarFunctions<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
@@ -74,13 +74,13 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
   }
 
   @override
   void didUpdateWidget(covariant SingleDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
     if (widget.viewConfiguration != null && widget.viewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.viewConfiguration!;
       _initializeViewState();
@@ -133,7 +133,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       style: const CalendarStyle(),
       child: CalendarScope<T>(
         state: _viewState,
-        eventController: _eventController,
+        eventsController: _eventsController,
         functions: _functions,
         components: _components,
         platformData: PlatformData(),

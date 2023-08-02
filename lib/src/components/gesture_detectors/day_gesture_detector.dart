@@ -136,25 +136,25 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     );
 
     // Set the chaning event to the new event.
-    scope.eventController.chaningEvent = newCalendarEvent;
+    scope.eventsController.chaningEvent = newCalendarEvent;
 
     // Set the [isNewEvent] to true.
-    scope.eventController.isNewEvent = true;
+    scope.eventsController.isNewEvent = true;
 
     CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(scope.eventController.chaningEvent!);
+        await scope.functions.onCreateEvent?.call(scope.eventsController.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.chaningEvent = null;
     } else {
       // Add the [newEvent] to the [CalendarController].
-      scope.eventController.addEvent(newEvent);
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.addEvent(newEvent);
+      scope.eventsController.chaningEvent = null;
     }
 
     // Set the [isNewEvent] to false.
-    scope.eventController.isNewEvent = false;
+    scope.eventsController.isNewEvent = false;
   }
 
   /// Creates a new event on mobile.
@@ -165,42 +165,42 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
       dateTimeRange: dateTimeRange,
     );
 
-    scope.eventController.isNewEvent = true;
-    scope.eventController.chaningEvent = displayEvent;
+    scope.eventsController.isNewEvent = true;
+    scope.eventsController.chaningEvent = displayEvent;
 
     CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent?.call(displayEvent);
 
     if (newEvent == null) {
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.chaningEvent = null;
     } else {
-      scope.eventController.addEvent(newEvent);
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.addEvent(newEvent);
+      scope.eventsController.chaningEvent = null;
     }
-    scope.eventController.isNewEvent = false;
+    scope.eventsController.isNewEvent = false;
   }
 
   void _onVerticalDragStart(DragStartDetails details, DateTimeRange initialDateTimeRange) {
     cursorOffset = 0;
-    scope.eventController.isNewEvent = true;
+    scope.eventsController.isNewEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: initialDateTimeRange,
     );
-    scope.eventController.chaningEvent = displayEvent;
+    scope.eventsController.chaningEvent = displayEvent;
   }
 
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
     CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(scope.eventController.chaningEvent!);
+        await scope.functions.onCreateEvent?.call(scope.eventsController.chaningEvent!);
 
     if (newEvent == null) {
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.chaningEvent = null;
     } else {
-      scope.eventController.addEvent(newEvent);
-      scope.eventController.chaningEvent = null;
+      scope.eventsController.addEvent(newEvent);
+      scope.eventsController.chaningEvent = null;
     }
-    scope.eventController.isNewEvent = false;
+    scope.eventsController.isNewEvent = false;
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
@@ -227,7 +227,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
         );
       }
 
-      scope.eventController.chaningEvent?.dateTimeRange = dateTimeRange;
+      scope.eventsController.chaningEvent?.dateTimeRange = dateTimeRange;
     }
   }
 

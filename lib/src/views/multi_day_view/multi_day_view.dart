@@ -14,7 +14,7 @@ import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
 
-class MultiDayView<T extends Object?> extends StatefulWidget {
+class MultiDayView<T> extends StatefulWidget {
   const MultiDayView({
     super.key,
     required this.controller,
@@ -30,9 +30,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
   final CalendarEventsController<T> eventsController;
   final MultiDayViewConfiguration? viewConfiguration;
   final CalendarComponents? components;
-
   final CalendarFunctions<T>? functions;
-
   final EventTileBuilder<T> eventsTileBuilder;
   final MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
 
@@ -43,7 +41,7 @@ class MultiDayView<T extends Object?> extends StatefulWidget {
 class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late CalendarController<T> _controller;
   late ViewState _viewState;
-  late CalendarEventsController<T> _eventController;
+  late CalendarEventsController<T> _eventsController;
   late CalendarFunctions<T> _functions;
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
@@ -53,7 +51,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   void initState() {
     super.initState();
     _controller = widget.controller;
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
     _functions = widget.functions ?? CalendarFunctions<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
@@ -73,13 +71,13 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
   }
 
   @override
   void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _eventController = widget.eventsController;
+    _eventsController = widget.eventsController;
     if (widget.viewConfiguration != null && widget.viewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.viewConfiguration!;
       _initializeViewState();
@@ -95,6 +93,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     DateTimeRange adjustedDateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
+      firstDayOfWeek: _viewConfiguration.firstDayOfWeek,
     );
 
     int numberOfPages = _viewConfiguration.calculateNumberOfPages(
@@ -132,7 +131,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       style: const CalendarStyle(),
       child: CalendarScope<T>(
         state: _viewState,
-        eventController: _eventController,
+        eventsController: _eventsController,
         functions: _functions,
         components: _components,
         tileComponents: _tileComponents,
