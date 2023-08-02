@@ -11,7 +11,7 @@ import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controll
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
 
-class PositionedTileStack<T extends Object?> extends StatelessWidget {
+class PositionedTileStack<T> extends StatelessWidget {
   const PositionedTileStack({
     super.key,
     required this.pageVisibleDateRange,
@@ -90,7 +90,7 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   }
 }
 
-class TileGroupStack<T extends Object?> extends StatelessWidget {
+class TileGroupStack<T> extends StatelessWidget {
   const TileGroupStack({
     super.key,
     required this.tileGroup,
@@ -157,7 +157,7 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
   }
 }
 
-class PositionedTile<T extends Object?> extends StatelessWidget {
+class PositionedTile<T > extends StatelessWidget {
   const PositionedTile({
     super.key,
     required this.controller,

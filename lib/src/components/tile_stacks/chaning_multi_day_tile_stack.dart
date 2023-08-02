@@ -3,8 +3,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-/// The [Stack] that contains the [PositionedMultiDayTileData] that is being modified.
-class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
+/// The [ChaningMultiDayTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
+class ChaningMultiDayTileStack<T> extends StatelessWidget {
   const ChaningMultiDayTileStack({
     super.key,
     required this.multiDayEventLayout,

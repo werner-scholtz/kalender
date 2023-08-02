@@ -17,7 +17,7 @@ class MonthCellHeaderStyle {
 }
 
 /// A widget that displays the date.
-class MonthCellHeader<T extends Object?> extends StatelessWidget {
+class MonthCellHeader<T> extends StatelessWidget {
   const MonthCellHeader({
     super.key,
     required this.date,

@@ -6,7 +6,7 @@ import 'package:kalender/src/extentions.dart';
 /// [CalendarEvent] is a [ChangeNotifier] so it can be used to update the UI on changes.
 ///
 /// The [CalendarEvent] is generic and can be used to store any type of data.
-class CalendarEvent<T extends Object?> with ChangeNotifier {
+class CalendarEvent<T> with ChangeNotifier {
   CalendarEvent({
     required DateTimeRange dateTimeRange,
     T? eventData,

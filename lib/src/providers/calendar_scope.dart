@@ -13,7 +13,7 @@ import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 /// [state] is used to store the calendar's state.
 /// [platformData] is used to store platform specific data.
 ///
-class CalendarScope<T extends Object?> extends InheritedWidget {
+class CalendarScope<T> extends InheritedWidget {
   final CalendarEventsController<T> eventsController;
 
   final CalendarComponents components;
@@ -37,7 +37,7 @@ class CalendarScope<T extends Object?> extends InheritedWidget {
     required super.child,
   });
 
-  static CalendarScope<T> of<T extends Object?>(BuildContext context) {
+  static CalendarScope<T> of<T>(BuildContext context) {
     CalendarScope<T>? result = context.dependOnInheritedWidgetOfExactType<CalendarScope<T>>();
     assert(
         result != null,

@@ -4,7 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 /// The [CalendarEventHandlers] class contains the functions that are called when:
 ///  * an event is changed, tapped, or created
 ///  * when a date is tapped.
-class CalendarEventHandlers<T extends Object?> {
+class CalendarEventHandlers<T> {
   const CalendarEventHandlers({
     this.onEventChanged,
     this.onEventTapped,

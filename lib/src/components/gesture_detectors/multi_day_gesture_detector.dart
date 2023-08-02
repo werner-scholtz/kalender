@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
+class MultiDayGestureDetector<T > extends StatefulWidget {
   const MultiDayGestureDetector({
     super.key,
     required this.pageWidth,
@@ -27,7 +27,7 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   State<MultiDayGestureDetector<T>> createState() => _MultiDayGestureDetectorState<T>();
 }
 
-class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGestureDetector<T>> {
+class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>> {
   late double pageWidth;
   late double dayWidth;
   late double height;

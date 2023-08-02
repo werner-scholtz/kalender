@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-class MultiDayLayoutController<T extends Object?> {
+class MultiDayLayoutController<T> {
   /// The [DateTimeRange] that is visible on the calendar.
   final DateTimeRange visibleDateRange;
 
@@ -179,7 +179,7 @@ class MultiDayLayoutController<T extends Object?> {
   double calculateWidth(DateTimeRange dateRange) => (dateRange.dayDifference * dayWidth);
 }
 
-class PositionedMultiDayTileData<T extends Object?> {
+class PositionedMultiDayTileData<T> {
   /// The event that the tile represents.
   final CalendarEvent<T> event;
 

@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MonthCellGestureDetector<T extends Object?> extends StatefulWidget {
+class MonthCellGestureDetector<T> extends StatefulWidget {
   const MonthCellGestureDetector({
     super.key,
     required this.date,
@@ -37,7 +37,7 @@ class MonthCellGestureDetector<T extends Object?> extends StatefulWidget {
   State<MonthCellGestureDetector<T>> createState() => _MonthCellGestureDetectorState<T>();
 }
 
-class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellGestureDetector<T>> {
+class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T>> {
   late final DateTime date;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);

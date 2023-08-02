@@ -65,7 +65,7 @@ class MonthViewContent<T> extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   itemBuilder: (BuildContext context, int index) {
                     DateTime date = visibleDateRange.start.add(Duration(days: index));
-                    return MonthCell<T>(
+                    return MonthCell(
                       child: Column(
                         children: <Widget>[
                           DateIconButton(

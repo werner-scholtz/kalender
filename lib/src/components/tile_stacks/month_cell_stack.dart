@@ -4,7 +4,8 @@ import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_det
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MonthCellStack<T extends Object?> extends StatelessWidget {
+/// The [MonthCellStack] is used tp display events in a single cell.
+class MonthCellStack<T> extends StatelessWidget {
   const MonthCellStack({
     super.key,
     required this.viewConfiguration,

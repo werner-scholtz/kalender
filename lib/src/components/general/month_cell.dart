@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MonthCell<T extends Object?> extends StatelessWidget {
+class MonthCell extends StatelessWidget {
   const MonthCell({
     super.key,
     required this.child,

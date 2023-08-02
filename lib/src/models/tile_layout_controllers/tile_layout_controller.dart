@@ -4,7 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 
 /// The [TileLayoutController] is used to arrange [Tiles]'s.
-class TileLayoutController<T extends Object?> {
+class TileLayoutController<T> {
   /// The [DateTimeRange] that is visible on the calendar.
   final DateTimeRange visibleDateRange;
 
@@ -343,7 +343,7 @@ class TileLayoutController<T extends Object?> {
   }
 }
 
-class TileGroup<T extends Object?> {
+class TileGroup<T > {
   /// The date that the tile's will be displayed on.
   final DateTime date;
 
@@ -376,7 +376,7 @@ class TileGroup<T extends Object?> {
   });
 }
 
-class PositionedTileData<T extends Object?> {
+class PositionedTileData<T > {
   /// The event that the tile represents.
   final CalendarEvent<T> event;
 

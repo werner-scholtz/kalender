@@ -10,7 +10,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
+class PositionedMultiDayTileStack<T> extends StatelessWidget {
   const PositionedMultiDayTileStack({
     super.key,
     required this.pageWidth,
@@ -30,7 +30,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
- 
+
     return RepaintBoundary(
       child: ListenableBuilder(
         listenable: scope.eventsController,
@@ -69,7 +69,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
                   dayWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
                   numberOfRows: multiDayEventLayout.numberOfRows,
-                  visibleDates:scope. state.visibleDateTimeRange.value.datesSpanned,
+                  visibleDates: scope.state.visibleDateTimeRange.value.datesSpanned,
                 ),
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
@@ -97,7 +97,7 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   }
 }
 
-class MultidayTileStack<T extends Object?> extends StatelessWidget {
+class MultidayTileStack<T> extends StatelessWidget {
   const MultidayTileStack({
     super.key,
     required this.controller,
@@ -110,7 +110,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
     required this.horizontalDurationStep,
   });
 
-   final CalendarEventsController<T> controller;
+  final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
   final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
@@ -124,9 +124,6 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
 
   final double dayWidth;
   final Duration horizontalDurationStep;
-
-
-
 
   @override
   Widget build(BuildContext context) {

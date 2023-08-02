@@ -6,7 +6,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MonthTileGestureDetector<T extends Object?> extends StatefulWidget {
+class MonthTileGestureDetector<T> extends StatefulWidget {
   const MonthTileGestureDetector({
     super.key,
     required this.event,
@@ -42,7 +42,7 @@ class MonthTileGestureDetector<T extends Object?> extends StatefulWidget {
   State<MonthTileGestureDetector<T>> createState() => _MonthTileGestureDetectorState<T>();
 }
 
-class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileGestureDetector<T>> {
+class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T>> {
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
 

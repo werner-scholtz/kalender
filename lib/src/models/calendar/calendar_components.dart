@@ -8,7 +8,7 @@ import 'package:kalender/src/components/general/week_number.dart';
 import 'package:kalender/src/typedefs.dart';
 
 /// This class is used to provide the tile components for the calendar.
-class CalendarTileComponents<T extends Object?> {
+class CalendarTileComponents<T> {
   const CalendarTileComponents({
     this.eventTileBuilder,
     this.monthEventTileBuilder,

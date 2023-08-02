@@ -4,8 +4,8 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-/// This stack is used to display the selected event when the user is moving or resizing it.
-class ChangingTileStack<T extends Object?> extends StatelessWidget {
+/// The [ChangingTileStack] is used to display [PositionedTileData]'s of the event being modified..
+class ChangingTileStack<T > extends StatelessWidget {
   const ChangingTileStack({
     super.key,
     required this.tileLayoutController,
