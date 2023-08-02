@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
-import 'package:kalender/src/views/calendar_view.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
+import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 
-class CalendarController {
+/// The [CalendarController] can be linked to a view to control the view.
+///
+/// * Can be used to animate to a specific date or page.
+/// * Can be used to jump to a specific date or page.
+/// * Can be used to navigate to a specific Event.
+class CalendarController<T> with ChangeNotifier {
   CalendarController({
     DateTime? initialDate,
     DateTimeRange? calendarDateTimeRange,
@@ -15,25 +24,35 @@ class CalendarController {
   DateTime selectedDate;
 
   /// The dateTimeRange that the calendar can display.
-  DateTimeRange _dateTimeRange;
+  final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
 
-  CalendarViewState? _state;
+  /// The current [_state] of the view this controller is linked to.
+  ViewState? _state;
+  bool get isAttached => _state != null;
+
+  double? get heightPerMinute => _state?.heightPerMinute?.value;
+  DateTimeRange? get visibleDateTimeRange => _state?.visibleDateTimeRange.value;
+  DateTimeRange? get adjustedDateTimeRange => _state?.adjustedDateTimeRange;
+  int? get numberOfPages => _state?.numberOfPages;
 
   /// Attaches the [CalendarController] to a [CalendarView].
-  void attach(CalendarViewState controllerState) {
+  void attach(ViewState viewState) {
     assert(
       _state == null,
-      "The controller cannot be attached to multiple $CalendarView's",
+      "The controller cannot be attached to multiple view's.",
     );
-    _state = controllerState;
+    _state = viewState;
   }
 
   void detach() {
+    if (_state == null) return;
     _state = null;
   }
 
   /// Animates to the next page.
+  ///
+  /// The [duration] and [curve] can be provided to customize the animation.
   void animateToNextPage({
     Duration? duration,
     Curve? curve,
@@ -41,7 +60,7 @@ class CalendarController {
     assert(
       _state != null,
       'The $_state must not be null.'
-      'Please attach the $CalendarController to a $CalendarView.',
+      'Please attach the $CalendarController to a view.',
     );
     _state?.pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
@@ -50,6 +69,8 @@ class CalendarController {
   }
 
   /// Animates to the previous page.
+  ///
+  /// The [duration] and [curve] can be provided to customize the animation.
   void animateToPreviousPage({
     Duration? duration,
     Curve? curve,
@@ -57,7 +78,7 @@ class CalendarController {
     assert(
       _state != null,
       'The $_state must not be null.'
-      'Please attach the $CalendarController to a $CalendarView.',
+      'Please attach the $CalendarController to a view.',
     );
     _state?.pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
@@ -66,11 +87,12 @@ class CalendarController {
   }
 
   /// Jumps to the [page].
+  ///  The [page] must be within the [numberOfPages].
   void jumpToPage(int page) {
     assert(
       _state != null,
       'The $_state must not be null.'
-      'Please attach the $CalendarController to a $CalendarView.',
+      'Please attach the $CalendarController to a view.',
     );
     _state?.pageController.jumpToPage(page);
   }
@@ -80,7 +102,7 @@ class CalendarController {
     assert(
       _state != null,
       'The $_state must not be null.'
-      'Please attach the $CalendarController to a $CalendarView.',
+      'Please attach the $CalendarController to a view.',
     );
     if (_state == null) return;
 
@@ -99,6 +121,8 @@ class CalendarController {
   }
 
   /// Animates to the [DateTime] provided.
+  ///
+  /// The [duration] and [curve] can be provided to customize the animation.
   Future<void> animateToDate(
     DateTime date, {
     required Duration duration,
@@ -107,7 +131,7 @@ class CalendarController {
     assert(
       _state != null,
       'The $_state must not be null.'
-      'Please attach the $CalendarController to a $CalendarView.',
+      'Please attach the $CalendarController to a view.',
     );
     if (_state == null) return;
 
@@ -126,40 +150,40 @@ class CalendarController {
       curve: curve,
     );
   }
-}
 
-/// The state of the [CalendarController].
-///
-/// This is used to store state related to the [CalendarView].
-class CalendarViewState {
-  CalendarViewState({
-    required this.viewConfiguration,
-    required this.pageController,
-    required this.scrollController,
-    required this.numberOfPages,
-    required this.adjustedDateTimeRange,
-    required this.visibleDateTimeRange,
-    this.heightPerMinute,
-  });
+  /// Changes the [heightPerMinute] of the view.
+  /// * This is only available for [SingleDayView] and [MultiDayView].
+  void adjustHeightPerMinute(double heightPerMinute) {
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a view.',
+    );
+    assert(
+      _state?.heightPerMinute != null,
+      'The heightPerMinute must not be null.'
+      'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
+    );
+    _state?.heightPerMinute?.value = heightPerMinute;
+  }
 
-  /// The current viewConfiguration of the [CalendarView].
-  final ViewConfiguration viewConfiguration;
+  /// Animates to the [CalendarEvent].
+  Future<void> animateToEvent(CalendarEvent<T> event, {Duration? duration, Curve? curve}) async {
+    // First animate to the date of the event.
+    await animateToDate(
+      event.dateTimeRange.start,
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.ease,
+    );
 
-  /// The pageController of the [CalendarView].
-  final PageController pageController;
-
-  /// The scrollController of the [CalendarView].
-  final ScrollController scrollController;
-
-  /// The height per minute of the [CalendarView].
-  final ValueNotifier<double>? heightPerMinute;
-
-  /// The visible dateTimeRange of the [CalendarView].
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  /// The adjusted dateTimeRange of the [CalendarView].
-  final DateTimeRange adjustedDateTimeRange;
-
-  /// The number of pages the [PageView] of the [CalendarView] has.
-  final int numberOfPages;
+    if (_state?.viewConfiguration is SingleDayViewConfiguration ||
+        _state?.viewConfiguration is MultiDayViewConfiguration) {
+      // Then animate to the event.
+      await _state?.scrollController.animateTo(
+        event.start.difference(event.start.startOfDay).inMinutes * heightPerMinute!,
+        duration: duration ?? const Duration(milliseconds: 300),
+        curve: curve ?? Curves.ease,
+      );
+    }
+  }
 }

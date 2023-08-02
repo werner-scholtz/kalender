@@ -30,7 +30,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               RepaintBoundary(
                 child: scope.components.calendarHeaderBuilder?.call(
                   visibleDateTimeRange,
-                  viewConfiguration,
                 ),
               ),
               Column(

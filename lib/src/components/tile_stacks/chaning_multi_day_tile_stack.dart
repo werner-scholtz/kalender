@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -16,8 +15,8 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventController<T> controller = scope.eventController;
-    CalendarComponents<T> components = scope.components;
+    CalendarEventsController<T> controller = scope.eventController;
+    CalendarTileComponents<T> components = scope.tileComponents;
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
@@ -37,7 +36,7 @@ class ChaningMultiDayTileStack<T extends Object?> extends StatelessWidget {
                       left: arragnedEvent.left,
                       width: arragnedEvent.width,
                       height: arragnedEvent.height,
-                      child: components.multiDayEventTileBuilder.call(
+                      child: components.multiDayEventTileBuilder!(
                         arragnedEvent.event,
                         TileType.selected,
                         arragnedEvent.continuesBefore,

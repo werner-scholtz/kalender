@@ -5,6 +5,7 @@ import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -14,10 +15,12 @@ class SingleDayContent<T> extends StatelessWidget {
     super.key,
     required this.dayWidth,
     required this.viewConfiguration,
+    required this.controller,
   });
 
   final double dayWidth;
   final SingleDayViewConfiguration viewConfiguration;
+  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +53,14 @@ class SingleDayContent<T> extends StatelessWidget {
                       controller: scope.state.pageController,
                       itemCount: scope.state.numberOfPages,
                       onPageChanged: (int index) {
-                        scope.state.visibleDateTimeRange.value =
+                        DateTimeRange newVisibleDateTimeRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
                           calendarStart: scope.state.adjustedDateTimeRange.start,
                         );
+
+                        scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
+                        controller.selectedDate = newVisibleDateTimeRange.start;
                       },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =

@@ -9,7 +9,9 @@ import 'package:kalender/src/components/general/schedule_date.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
+import 'package:kalender/src/models/calendar/calendar_components.dart';
 
+/// The [CalendarStyle] class is used to store custom style's for the [CalendarComponents].
 class CalendarStyle {
   const CalendarStyle({
     this.backgroundColor,
@@ -57,4 +59,35 @@ class CalendarStyle {
 
   /// The [WeekNumberStyle] used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;
+
+  @override
+  operator ==(Object other) {
+    return other is CalendarStyle &&
+        other.backgroundColor == backgroundColor &&
+        other.calendarHeaderBackgroundStyle == calendarHeaderBackgroundStyle &&
+        other.daySeperatorStyle == daySeperatorStyle &&
+        other.hourLineStyle == hourLineStyle &&
+        other.scheduleDateStyle == scheduleDateStyle &&
+        other.dayHeaderStyle == dayHeaderStyle &&
+        other.monthHeaderStyle == monthHeaderStyle &&
+        other.timeIndicatorStyle == timeIndicatorStyle &&
+        other.timelineStyle == timelineStyle &&
+        other.weekNumberStyle == weekNumberStyle &&
+        other.monthCellHeaderStyle == monthCellHeaderStyle;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        backgroundColor,
+        calendarHeaderBackgroundStyle,
+        daySeperatorStyle,
+        hourLineStyle,
+        scheduleDateStyle,
+        dayHeaderStyle,
+        monthHeaderStyle,
+        timeIndicatorStyle,
+        timelineStyle,
+        weekNumberStyle,
+        monthCellHeaderStyle,
+      );
 }

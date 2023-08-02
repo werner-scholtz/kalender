@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -17,7 +16,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventController<T> controller = scope.eventController;
+    CalendarEventsController<T> controller = scope.eventController;
 
     return ListenableBuilder(
       listenable: controller,
@@ -40,7 +39,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
                           left: e.left,
                           width: e.width,
                           height: e.height,
-                          child: scope.components.eventTileBuilder(
+                          child: scope.tileComponents.eventTileBuilder!(
                             e.event,
                             TileType.selected,
                             false,
@@ -61,7 +60,7 @@ class ChangingTileStack<T extends Object?> extends StatelessWidget {
     );
   }
 
-  bool shouldDisplayTile(CalendarEventController<T> controller) =>
+  bool shouldDisplayTile(CalendarEventsController<T> controller) =>
       controller.hasChaningEvent &&
       (controller.isMoving || controller.isResizing || controller.isNewEvent);
 }

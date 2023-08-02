@@ -23,12 +23,12 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> internals = CalendarScope.of(context);
+    CalendarScope<T> scope = CalendarScope.of(context);
 
     return ListenableBuilder(
-      listenable: internals.eventController,
+      listenable: scope.eventController,
       builder: (BuildContext context, Widget? child) {
-        List<CalendarEvent<T>> events = internals.eventController.getEventsFromDate(date).toList()
+        List<CalendarEvent<T>> events = scope.eventController.getEventsFromDate(date).toList()
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.duration.compareTo(b.duration))
           ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.isSplitAcrossDays ? 0 : 1);
 
@@ -37,7 +37,7 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
           children: <Widget>[
             MonthCellGestureDetector<T>(
               date: date,
-              visibleDateRange: internals.state.visibleDateTimeRange.value,
+              visibleDateRange: scope.state.visibleDateTimeRange.value,
               verticalDurationStep: viewConfiguration.verticalDurationStep,
               verticalStep: cellHeight,
               horizontalDurationStep: viewConfiguration.horizontalDurationStep,
@@ -48,16 +48,16 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 CalendarEvent<T> event = events.elementAt(index);
-                bool isMoving = internals.eventController.chaningEvent == event;
+                bool isMoving = scope.eventController.chaningEvent == event;
 
                 return MonthTileGestureDetector<T>(
                   event: event,
-                  visibleDateRange: internals.state.visibleDateTimeRange.value,
+                  visibleDateRange: scope.state.visibleDateTimeRange.value,
                   verticalDurationStep: viewConfiguration.verticalDurationStep,
                   verticalStep: cellHeight,
                   horizontalDurationStep: viewConfiguration.horizontalDurationStep,
                   horizontalStep: cellWidth,
-                  child: internals.components.monthEventTileBuilder(
+                  child: scope.tileComponents.monthEventTileBuilder!(
                     event,
                     isMoving ? TileType.ghost : TileType.normal,
                     date,
@@ -67,16 +67,16 @@ class MonthCellStack<T extends Object?> extends StatelessWidget {
                 );
               },
             ),
-            if (internals.eventController.hasChaningEvent)
+            if (scope.eventController.hasChaningEvent)
               ListenableBuilder(
-                listenable: internals.eventController.chaningEvent!,
+                listenable: scope.eventController.chaningEvent!,
                 builder: (BuildContext context, Widget? child) {
-                  CalendarEvent<T> event = internals.eventController.chaningEvent!;
+                  CalendarEvent<T> event = scope.eventController.chaningEvent!;
                   if (event.isOnDate(date)) {
                     return SizedBox(
                       width: cellWidth,
-                      child: internals.components.monthEventTileBuilder(
-                        internals.eventController.chaningEvent!,
+                      child: scope.tileComponents.monthEventTileBuilder!(
+                        scope.eventController.chaningEvent!,
                         TileType.selected,
                         date,
                         event.continuesBefore(date),

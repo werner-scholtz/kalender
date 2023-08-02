@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-class CalendarEventController<T extends Object?> with ChangeNotifier {
-  CalendarEventController();
+class CalendarEventsController<T extends Object?> with ChangeNotifier {
+  CalendarEventsController();
 
   /// The list of [CalendarEvent]s.
   final List<CalendarEvent<T>> _events = <CalendarEvent<T>>[];
@@ -119,7 +119,7 @@ class CalendarEventController<T extends Object?> with ChangeNotifier {
 
   @override
   bool operator ==(Object other) {
-    return other is CalendarEventController && listEquals(other._events, _events);
+    return other is CalendarEventsController && listEquals(other._events, _events);
   }
 
   @override

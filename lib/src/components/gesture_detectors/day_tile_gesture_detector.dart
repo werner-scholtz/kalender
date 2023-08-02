@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 class DayTileGestureDetector<T extends Object?> extends StatefulWidget {
@@ -45,6 +43,9 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   late List<DateTime> snapPoints;
   late bool eventSnapping;
 
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
@@ -60,6 +61,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   @override
   void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    event = widget.event;
     snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
   }
@@ -84,29 +86,29 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   void _onTap() {
     // Set the changing event.
-    controller.chaningEvent = event;
-    controller.isMoving = true;
+    scope.eventController.chaningEvent = event;
+    scope.eventController.isMoving = true;
 
     // Call the onEventTapped function.
-    functions.onEventTapped?.call(controller.chaningEvent!);
+    scope.functions.onEventTapped?.call(scope.eventController.chaningEvent!);
 
     // Reset the changing event.
-    controller.isMoving = false;
-    controller.chaningEvent = null;
+    scope.eventController.isMoving = false;
+    scope.eventController.chaningEvent = null;
   }
 
   void _onPanStart(DragStartDetails details) {
     _onRescheduleStart();
-    controller.isMoving = true;
-    controller.chaningEvent = event;
+    scope.eventController.isMoving = true;
+    scope.eventController.chaningEvent = event;
     initialDateTimeRange = event.dateTimeRange;
   }
 
   void _onPanEnd(DragEndDetails details) {
     _onRescheduleEnd();
-    functions.onEventChanged?.call(initialDateTimeRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMoving = false;
+    scope.functions.onEventChanged?.call(initialDateTimeRange, scope.eventController.chaningEvent!);
+    scope.eventController.chaningEvent = null;
+    scope.eventController.isMoving = false;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -115,15 +117,15 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   void _onLongPressStart(LongPressStartDetails details) {
     _onRescheduleStart();
-    controller.isMoving = true;
-    controller.chaningEvent = event;
+    scope.eventController.isMoving = true;
+    scope.eventController.chaningEvent = event;
   }
 
   void _onLongPressEnd(LongPressEndDetails details) {
     _onRescheduleEnd();
-    functions.onEventChanged?.call(initialDateTimeRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMoving = false;
+    scope.functions.onEventChanged?.call(initialDateTimeRange, scope.eventController.chaningEvent!);
+    scope.eventController.chaningEvent = null;
+    scope.eventController.isMoving = false;
   }
 
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
@@ -190,13 +192,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
     if (newDateTimeRange.start.isWithin(widget.visibleDateTimeRange) ||
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange)) {
-      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      scope.eventController.chaningEvent!.dateTimeRange = newDateTimeRange;
     }
   }
-
-  bool get isMobileDevice => false; //CalendarInternals.of<T>(context).configuration.isMobileDevice;
-
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventController<T> get controller => internals.eventController;
-  CalendarFunctions<T> get functions => internals.functions;
 }

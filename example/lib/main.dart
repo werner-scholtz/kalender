@@ -6,7 +6,7 @@ import 'package:example/screens/mobile_screen.dart';
 import 'package:example/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
@@ -44,12 +44,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final CalendarEventController<Event> eventController;
+  late final CalendarEventsController<Event> eventController;
 
   @override
   void initState() {
     super.initState();
-    eventController = CalendarEventController<Event>();
+    eventController = CalendarEventsController<Event>();
     eventController.addEvents(generateCalendarEvents());
   }
 

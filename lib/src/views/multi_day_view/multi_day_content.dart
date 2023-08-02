@@ -5,32 +5,31 @@ import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MultiDayContent<T extends Object?> extends StatelessWidget {
+class MultiDayContent<T> extends StatelessWidget {
   const MultiDayContent({
     super.key,
     required this.viewConfiguration,
     required this.pageWidth,
     required this.dayWidth,
+    required this.controller,
   });
 
   final MultiDayViewConfiguration viewConfiguration;
   final double pageWidth;
   final double dayWidth;
+  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarComponents<T> components = scope.components;
-    CalendarViewState state = scope.state;
 
     return ValueListenableBuilder<double>(
-      valueListenable: state.heightPerMinute!,
+      valueListenable: scope.state.heightPerMinute!,
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
@@ -41,7 +40,7 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
           child: SingleChildScrollView(
             child: Stack(
               children: <Widget>[
-                components.timelineBuilder(
+                scope.components.timelineBuilder(
                   viewConfiguration.timelineWidth,
                   pageHeight,
                   hourHeight,
@@ -53,14 +52,16 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                     width: pageWidth,
                     child: PageView.builder(
                       key: Key(viewConfiguration.name),
-                      controller: state.pageController,
-                      itemCount: state.numberOfPages,
+                      controller: scope.state.pageController,
+                      itemCount: scope.state.numberOfPages,
                       onPageChanged: (int index) {
-                        scope.state.visibleDateTimeRange.value =
+                        DateTimeRange newVisibleDateTimeRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
                           calendarStart: scope.state.adjustedDateTimeRange.start,
                         );
+                        scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
+                        controller.selectedDate = newVisibleDateTimeRange.start;
                       },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
@@ -85,7 +86,7 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                               child: SizedBox(
                                 width: pageWidth,
                                 height: pageHeight,
-                                child: components.hourlineBuilder(
+                                child: scope.components.hourlineBuilder(
                                   pageWidth,
                                   hourHeight,
                                 ),
@@ -96,7 +97,7 @@ class MultiDayContent<T extends Object?> extends StatelessWidget {
                               child: SizedBox(
                                 width: pageWidth,
                                 height: pageHeight,
-                                child: components.daySepratorBuilder(
+                                child: scope.components.daySepratorBuilder(
                                   pageHeight,
                                   dayWidth,
                                   pageVisibleDateRange.dayDifference,

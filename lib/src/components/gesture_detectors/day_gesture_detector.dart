@@ -3,11 +3,9 @@ import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class DayGestureDetector<T extends Object?> extends StatefulWidget {
+class DayGestureDetector<T> extends StatefulWidget {
   const DayGestureDetector({
     super.key,
     required this.height,
@@ -36,7 +34,7 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
   State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
 }
 
-class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetector<T>> {
+class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   late double heightPerMinute;
   late double height;
   late double dayWidth;
@@ -49,10 +47,13 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   /// The number of slots in a day.
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
 
-  /// The offset of the cursor.
-  double cursorOffset = 0;
+  bool get gestureDisabled => isMobileDevice || !createNewEvents;
+  bool get createNewEvents => true; //CalendarScope.of<T>(context).platformData.createNewEvents;
 
-  /// The number of slots selected.
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+
+  double cursorOffset = 0;
   int numberOfSlotsSelected = 0;
 
   @override
@@ -135,24 +136,25 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     );
 
     // Set the chaning event to the new event.
-    controller.chaningEvent = newCalendarEvent;
+    scope.eventController.chaningEvent = newCalendarEvent;
 
     // Set the [isNewEvent] to true.
-    controller.isNewEvent = true;
+    scope.eventController.isNewEvent = true;
 
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent =
+        await scope.functions.onCreateEvent?.call(scope.eventController.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
-      controller.chaningEvent = null;
+      scope.eventController.chaningEvent = null;
     } else {
       // Add the [newEvent] to the [CalendarController].
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
+      scope.eventController.addEvent(newEvent);
+      scope.eventController.chaningEvent = null;
     }
 
     // Set the [isNewEvent] to false.
-    controller.isNewEvent = false;
+    scope.eventController.isNewEvent = false;
   }
 
   /// Creates a new event on mobile.
@@ -163,41 +165,42 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       dateTimeRange: dateTimeRange,
     );
 
-    controller.isNewEvent = true;
-    controller.chaningEvent = displayEvent;
+    scope.eventController.isNewEvent = true;
+    scope.eventController.chaningEvent = displayEvent;
 
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(displayEvent);
+    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent?.call(displayEvent);
 
     if (newEvent == null) {
-      controller.chaningEvent = null;
+      scope.eventController.chaningEvent = null;
     } else {
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
+      scope.eventController.addEvent(newEvent);
+      scope.eventController.chaningEvent = null;
     }
-    controller.isNewEvent = false;
+    scope.eventController.isNewEvent = false;
   }
 
   void _onVerticalDragStart(DragStartDetails details, DateTimeRange initialDateTimeRange) {
     cursorOffset = 0;
-    controller.isNewEvent = true;
+    scope.eventController.isNewEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: initialDateTimeRange,
     );
-    controller.chaningEvent = displayEvent;
+    scope.eventController.chaningEvent = displayEvent;
   }
 
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
-    
+    CalendarEvent<T>? newEvent =
+        await scope.functions.onCreateEvent?.call(scope.eventController.chaningEvent!);
+
     if (newEvent == null) {
-      controller.chaningEvent = null;
+      scope.eventController.chaningEvent = null;
     } else {
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
+      scope.eventController.addEvent(newEvent);
+      scope.eventController.chaningEvent = null;
     }
-    controller.isNewEvent = false;
+    scope.eventController.isNewEvent = false;
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
@@ -224,7 +227,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
         );
       }
 
-      controller.chaningEvent?.dateTimeRange = dateTimeRange;
+      scope.eventController.chaningEvent?.dateTimeRange = dateTimeRange;
     }
   }
 
@@ -245,10 +248,4 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
           minuteSlotSize.minutes * (i + 1),
         ),
       );
-
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => true; //CalendarScope.of<T>(context).configuration.createNewEvents;
-  bool get isMobileDevice => false; //CalendarScope.of<T>(context).configuration.isMobileDevice;
-  CalendarEventController<T> get controller => CalendarScope.of<T>(context).eventController;
-  CalendarFunctions<T> get functions => CalendarScope.of<T>(context).functions;
 }

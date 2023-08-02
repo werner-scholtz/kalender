@@ -19,7 +19,7 @@ class TimelineStyle {
   final bool? use24HourFormat;
 }
 
-class Timeline<T extends Object?> extends StatelessWidget {
+class Timeline extends StatelessWidget {
   const Timeline({
     super.key,
     required this.timelineWidth,

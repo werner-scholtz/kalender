@@ -4,8 +4,8 @@ import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_dete
 import 'package:kalender/src/components/gesture_detectors/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_multi_day_tile_stack.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -29,9 +29,9 @@ class PositionedMultiDayTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-    CalendarEventController<T> controller = scope.eventController;
-    CalendarViewState state = scope.state;
-    CalendarComponents<T> components = scope.components;
+    CalendarEventsController<T> controller = scope.eventController;
+    ViewState state = scope.state;
+    CalendarComponents components = scope.components;
     CalendarFunctions<T> functions = scope.functions;
 
     return RepaintBoundary(
@@ -113,7 +113,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
     required this.horizontalDurationStep,
   });
 
-  final CalendarEventController<T> controller;
+  final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
   final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
@@ -149,7 +149,7 @@ class MultidayTileStack<T extends Object?> extends StatelessWidget {
                 onHorizontalDragStart: _onHorizontalDragStart,
                 onHorizontalDragEnd: _onHorizontalDragEnd,
                 rescheduleEvent: _rescheduleEvent,
-                child: CalendarScope.of<T>(context).components.multiDayEventTileBuilder(
+                child: CalendarScope.of<T>(context).tileComponents.multiDayEventTileBuilder!(
                       arragnedEvent.event,
                       isMoving ? TileType.ghost : TileType.normal,
                       arragnedEvent.continuesBefore,

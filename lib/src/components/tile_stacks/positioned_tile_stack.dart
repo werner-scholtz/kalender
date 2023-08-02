@@ -7,6 +7,7 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -38,8 +39,8 @@ class PositionedTileStack<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> internals = CalendarScope.of<T>(context);
-    CalendarViewState state = internals.state;
-    CalendarEventController<T> controller = internals.eventController;
+    ViewState state = internals.state;
+    CalendarEventsController<T> controller = internals.eventController;
 
     return ListenableBuilder(
       listenable: controller,
@@ -124,7 +125,7 @@ class TileGroupStack<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> internals = CalendarScope.of<T>(context);
     CalendarFunctions<T> functions = internals.functions;
-    CalendarEventController<T> controller = internals.eventController;
+    CalendarEventsController<T> controller = internals.eventController;
     return Positioned(
       left: tileGroup.tileGroupLeft,
       top: tileGroup.tileGroupTop,
@@ -175,7 +176,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
   });
 
   /// The [CalendarController] used by the [PositionedTile].
-  final CalendarEventController<T> controller;
+  final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
   final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
@@ -209,7 +210,7 @@ class PositionedTile<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EventTileBuilder<T> tileBuilder = CalendarScope.of<T>(context).components.eventTileBuilder;
+    EventTileBuilder<T> tileBuilder = CalendarScope.of<T>(context).tileComponents.eventTileBuilder!;
     bool isMobileDevice = CalendarScope.of<T>(context).platformData.isMobileDevice;
     bool isMoving = controller.chaningEvent == positionedTileData.event;
 

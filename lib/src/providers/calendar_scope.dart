@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 
 class CalendarScope<T extends Object?> extends InheritedWidget {
-  final CalendarEventController<T> eventController;
+  final CalendarEventsController<T> eventController;
 
-  final CalendarComponents<T> components;
+  final CalendarComponents components;
+
+  final CalendarTileComponents<T> tileComponents;
 
   final CalendarFunctions<T> functions;
 
-  final CalendarViewState state;
+  final ViewState state;
 
   final PlatformData platformData;
 
@@ -20,6 +22,7 @@ class CalendarScope<T extends Object?> extends InheritedWidget {
     super.key,
     required this.eventController,
     required this.components,
+    required this.tileComponents,
     required this.functions,
     required this.state,
     required this.platformData,
@@ -36,7 +39,12 @@ class CalendarScope<T extends Object?> extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return false;
+  bool updateShouldNotify(covariant CalendarScope<T> oldWidget) {
+    return eventController != oldWidget.eventController ||
+        components != oldWidget.components ||
+        tileComponents != oldWidget.tileComponents ||
+        functions != oldWidget.functions ||
+        state != oldWidget.state ||
+        platformData != oldWidget.platformData;
   }
 }

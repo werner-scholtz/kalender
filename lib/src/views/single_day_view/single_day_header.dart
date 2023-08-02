@@ -28,7 +28,6 @@ class SingleDayHeader<T> extends StatelessWidget {
               RepaintBoundary(
                 child: scope.components.calendarHeaderBuilder?.call(
                   visibleDateTimeRange,
-                  viewConfiguration,
                 ),
               ),
               Row(

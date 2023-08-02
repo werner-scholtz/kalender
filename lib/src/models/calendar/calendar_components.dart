@@ -7,12 +7,33 @@ import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
 import 'package:kalender/src/typedefs.dart';
 
-class CalendarComponents<T extends Object?> {
+/// This class is used to provide the tile components for the calendar.
+class CalendarTileComponents<T extends Object?> {
+  const CalendarTileComponents({
+    this.eventTileBuilder,
+    this.monthEventTileBuilder,
+    this.scheduleEventTileBuilder,
+    this.multiDayEventTileBuilder,
+  });
+
+  ///
+  final EventTileBuilder<T>? eventTileBuilder;
+
+  ///
+  final MonthEventTileBuilder<T>? monthEventTileBuilder;
+
+  ///
+  final ScheduleEventTileBuilder<T>? scheduleEventTileBuilder;
+
+  ///
+  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
+}
+
+/// This class is used to provide the components for the calendar.
+///
+/// Custom component builders can be provided to the [CalendarComponents].
+class CalendarComponents {
   CalendarComponents({
-    required this.eventTileBuilder,
-    required this.monthEventTileBuilder,
-    required this.scheduleEventTileBuilder,
-    required this.multiDayEventTileBuilder,
     this.calendarHeaderBuilder,
     DayHeaderBuilder? dayHeaderBuilder,
     WeekNumberBuilder? weekNumberBuilder,
@@ -30,64 +51,32 @@ class CalendarComponents<T extends Object?> {
   }
 
   ///
-  late CalendarHeaderBuilder<T>? calendarHeaderBuilder;
+  late CalendarHeaderBuilder? calendarHeaderBuilder;
 
   ///
-  late DayHeaderBuilder<T> dayHeaderBuilder;
+  late DayHeaderBuilder dayHeaderBuilder;
 
   ///
-  late WeekNumberBuilder<T> weekNumberBuilder;
+  late WeekNumberBuilder weekNumberBuilder;
 
   ///
-  late HourlineBuilder<T> hourlineBuilder;
+  late HourlineBuilder hourlineBuilder;
 
   ///
-  late TimelineBuilder<T> timelineBuilder;
+  late TimelineBuilder timelineBuilder;
 
   ///
-  late DaySepratorBuilder<T> daySepratorBuilder;
+  late DaySepratorBuilder daySepratorBuilder;
 
   ///
-  late EventTileBuilder<T> eventTileBuilder;
-
-  ///
-  late MonthEventTileBuilder<T> monthEventTileBuilder;
-
-  ///
-  late ScheduleEventTileBuilder<T> scheduleEventTileBuilder;
-
-  ///
-  late ScheduleDateBuilder<T> scheduleDateBuilder;
-
-  ///
-  late MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
-
-  // Widget _defualtCalendarHeaderBuilder(
-  //   DateTimeRange dateTimeRange,
-  //   ViewConfiguration currentPageConfiguration,
-  //   List<ViewConfiguration> pageConfigurations,
-  //   Function(ViewConfiguration pageView) onContentChanged,
-  //   VoidCallback onDateSelectorPressed,
-  //   VoidCallback onLeftArrowPressed,
-  //   VoidCallback onRightArrowPressed,
-  // ) {
-  //   return CalendarViewHeader<T>(
-  //     visibleDateTimeRange: dateTimeRange,
-  //     currentPageConfiguration: currentPageConfiguration,
-  //     pageConfigurations: pageConfigurations,
-  //     onContentChanged: onContentChanged,
-  //     onDateSelectorPressed: onDateSelectorPressed,
-  //     onLeftArrowPressed: onLeftArrowPressed,
-  //     onRightArrowPressed: onRightArrowPressed,
-  //   );
-  // }
+  late ScheduleDateBuilder scheduleDateBuilder;
 
   Widget _defaultTimelineBuilder(
     double timelineWidth,
     double height,
     double hourHeight,
   ) {
-    return Timeline<T>(
+    return Timeline(
       timelineWidth: timelineWidth,
       height: height,
       hourHeight: hourHeight,
@@ -144,34 +133,26 @@ class CalendarComponents<T extends Object?> {
     );
   }
 
-  // @override
-  // bool operator ==(Object other) {
-  //   return other is CalendarComponents<T> &&
-  //       other.calendarHeaderBuilder == calendarHeaderBuilder &&
-  //       other.dayHeaderBuilder == dayHeaderBuilder &&
-  //       other.weekNumberBuilder == weekNumberBuilder &&
-  //       other.hourlineBuilder == hourlineBuilder &&
-  //       other.timelineBuilder == timelineBuilder &&
-  //       other.daySepratorBuilder == daySepratorBuilder &&
-  //       other.scheduleDateBuilder == scheduleDateBuilder &&
-  //       other.monthEventTileBuilder == monthEventTileBuilder &&
-  //       other.scheduleEventTileBuilder == scheduleEventTileBuilder &&
-  //       other.eventTileBuilder == eventTileBuilder &&
-  //       other.multiDayEventTileBuilder == multiDayEventTileBuilder;
-  // }
+  @override
+  bool operator ==(Object other) {
+    return other is CalendarComponents &&
+        other.calendarHeaderBuilder == calendarHeaderBuilder &&
+        other.dayHeaderBuilder == dayHeaderBuilder &&
+        other.weekNumberBuilder == weekNumberBuilder &&
+        other.hourlineBuilder == hourlineBuilder &&
+        other.timelineBuilder == timelineBuilder &&
+        other.daySepratorBuilder == daySepratorBuilder &&
+        other.scheduleDateBuilder == scheduleDateBuilder;
+  }
 
-  // @override
-  // int get hashCode => Object.hash(
-  //       calendarHeaderBuilder,
-  //       dayHeaderBuilder,
-  //       weekNumberBuilder,
-  //       hourlineBuilder,
-  //       timelineBuilder,
-  //       daySepratorBuilder,
-  //       scheduleDateBuilder,
-  //       monthEventTileBuilder,
-  //       scheduleEventTileBuilder,
-  //       eventTileBuilder,
-  //       multiDayEventTileBuilder,
-  //     );
+  @override
+  int get hashCode => Object.hash(
+        calendarHeaderBuilder,
+        dayHeaderBuilder,
+        weekNumberBuilder,
+        hourlineBuilder,
+        timelineBuilder,
+        daySepratorBuilder,
+        scheduleDateBuilder,
+      );
 }

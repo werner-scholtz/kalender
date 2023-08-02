@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -44,6 +45,10 @@ class MonthTileGestureDetector<T extends Object?> extends StatefulWidget {
 class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileGestureDetector<T>> {
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
+
+  CalendarScope<T> get internals => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => internals.eventController;
+  CalendarFunctions<T> get functions => internals.functions;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -119,8 +124,4 @@ class _MonthTileGestureDetectorState<T extends Object?> extends State<MonthTileG
       controller.chaningEvent!.dateTimeRange = newDateTimeRange;
     }
   }
-
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventController<T> get controller => internals.eventController;
-  CalendarFunctions<T> get functions => internals.functions;
 }

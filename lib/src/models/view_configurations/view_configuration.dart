@@ -2,18 +2,11 @@ import 'package:flutter/material.dart';
 
 /// This is the base class for all [ViewConfiguration]s.
 ///
-///
+/// It contains all the methods that are used to calculate:
+/// * The layout of the calendar.
+/// * The visible date range.
 abstract class ViewConfiguration {
   const ViewConfiguration();
-
-  // /// The [ViewType] of this [ViewConfiguration].
-  // /// This determines which [CalendarView] is used.
-  // ///
-  // /// [ViewType.singleDay]
-  // /// [ViewType.multiDay]
-  // /// [ViewType.month]
-  // /// [ViewType.schedule]
-  // ViewType get viewType;
 
   /// The name of the [ViewConfiguration].
   String get name;

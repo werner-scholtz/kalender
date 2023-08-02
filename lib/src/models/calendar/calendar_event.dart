@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 
-/// [CalendarEvent] is a [ChangeNotifier] that contains a [DateTimeRange] and an optional [eventData].
+/// It is used to represent an event.
+///
+/// [CalendarEvent] is a [ChangeNotifier] so it can be used to update the UI on changes.
+///
+/// The [CalendarEvent] is generic and can be used to store any type of data.
 class CalendarEvent<T extends Object?> with ChangeNotifier {
   CalendarEvent({
     required DateTimeRange dateTimeRange,

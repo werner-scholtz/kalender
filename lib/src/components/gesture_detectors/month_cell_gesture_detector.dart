@@ -40,6 +40,11 @@ class MonthCellGestureDetector<T extends Object?> extends StatefulWidget {
 class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellGestureDetector<T>> {
   late final DateTime date;
 
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => scope.eventController;
+  CalendarFunctions<T> get functions => scope.functions;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+
   DateTimeRange? initialDateTimeRange;
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -170,10 +175,4 @@ class _MonthCellGestureDetectorState<T extends Object?> extends State<MonthCellG
       }
     }
   }
-
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventController<T> get controller => internals.eventController;
-  CalendarFunctions<T> get functions => internals.functions;
-
-  bool get isMobileDevice => false; //configuration.isMobileDevice;
 }
