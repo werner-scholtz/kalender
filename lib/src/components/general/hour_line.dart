@@ -15,6 +15,7 @@ class HourLineStyle {
   final Color? color;
 }
 
+/// A widget that displays the hour lines.
 class HourLine extends StatelessWidget {
   const HourLine({
     super.key,

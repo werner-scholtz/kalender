@@ -13,6 +13,7 @@ class CalendarHeaderBackgroundStyle {
   final double? headerElevation;
 }
 
+/// A widget that displays the header background.
 class CalendarHeaderBackground extends StatelessWidget {
   const CalendarHeaderBackground({super.key, this.child});
 

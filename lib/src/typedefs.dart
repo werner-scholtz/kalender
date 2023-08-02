@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// The [CalendarHeaderBuilder] is used to build the header displayed on calendar's page.
+/// The [CalendarHeaderBuilder] is used to build the header displayed in the calendar's header.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
   DateTimeRange visibleDateTimeRange,
-  // ViewConfiguration viewConfiguration,
 );
 
-/// The [DayHeaderBuilder] is used to build the day headers displayed on calendar's page.
+/// The [DayHeaderBuilder] is used to build the header displayed above a day.
 typedef DayHeaderBuilder<T extends Object?> = Widget Function(
   DateTime date,
   Function(DateTime date)? onTapped,
 );
 
-/// The [HourlineBuilder] is used to build the hourlines displayed on calendar's page.
+/// The [HourlineBuilder] is used to build the hourlines displayed on calendar's.
 typedef HourlineBuilder<T extends Object?> = Widget Function(
   double hourlineWidth,
   double hourHeight,
@@ -80,22 +79,10 @@ typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
   DateTime date,
 );
 
-/// The [PressDetectorBuilder] is used to detect gestures performed on blank spaces in the calendar.
-typedef PressDetectorBuilder = Widget Function(
-  DateTimeRange visibleDateRange,
-  double height,
-  double width,
-  double heightPerMinute,
-  double dayWidth,
-  SlotSize minuteSlotSize,
-  void Function(DateTimeRange dateTimeRange)? onTap,
-  void Function(DateTimeRange dateTimeRange)? onVerticalDragStart,
-  VoidCallback? onVerticalDragEnd,
-  void Function(DateTimeRange dateTimeRange)? onVerticalDragUpdate,
-);
-
+/// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.
 typedef WeekNumberBuilder<T extends Object?> = Widget Function(DateTimeRange visibleDateRange);
 
+/// The [ScheduleDateBuilder] is used to build the date displayed on the left side of the calendar.
 typedef ScheduleDateBuilder<T extends Object?> = Widget Function(
   DateTime date,
   void Function(DateTime date) onDateTapped,

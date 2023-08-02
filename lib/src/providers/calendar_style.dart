@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 
+/// The [InheritedWidget] that provides the calendar with the necessary styleData.
 class CalendarStyleProvider extends InheritedWidget {
   const CalendarStyleProvider({
     Key? key,

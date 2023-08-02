@@ -32,6 +32,9 @@ class DayHeaderStyle {
   final EdgeInsets? padding;
 }
 
+
+
+/// A widget that displays the day of the week and the day number.
 class DayHeader extends StatelessWidget {
   const DayHeader({
     super.key,

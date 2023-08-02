@@ -5,6 +5,15 @@ import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 
+
+/// The [InheritedWidget] that provides the calendar with the necessary data.
+/// 
+/// [components] is used to build the calendar's components.
+/// [tileComponents] is used to build the calendar's tiles.
+/// [functions] is used to handle events.
+/// [state] is used to store the calendar's state.
+/// [platformData] is used to store platform specific data.
+/// 
 class CalendarScope<T extends Object?> extends InheritedWidget {
   final CalendarEventsController<T> eventsController;
 

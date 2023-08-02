@@ -16,17 +16,17 @@ class CalendarTileComponents<T extends Object?> {
     this.multiDayEventTileBuilder,
   });
 
-  ///
+  /// The [EventTileBuilder] is used to build event tiles that are displayed on [SingleDayView] and [MultiDayView] days.
   final EventTileBuilder<T>? eventTileBuilder;
 
-  ///
+  /// The [MultiDayEventTileBuilder] is used to build event tiles that are displayed on multiple days.
+  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
+
+  /// The [MonthEventTileBuilder] is used to build event tiles that are displayed on [MonthView] days.
   final MonthEventTileBuilder<T>? monthEventTileBuilder;
 
-  ///
+  /// The [ScheduleEventTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
   final ScheduleEventTileBuilder<T>? scheduleEventTileBuilder;
-
-  ///
-  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
 }
 
 /// This class is used to provide the components for the calendar.

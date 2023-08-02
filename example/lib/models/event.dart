@@ -1,39 +1,20 @@
 import 'package:flutter/material.dart';
 
-class Event extends ChangeNotifier {
+class Event {
   Event({
-    required String title,
-    String? description,
-    Color? color,
-  }) {
-    _title = title;
-    _description = description;
-    _tileColor = color;
-  }
+    required this.title,
+    this.description,
+    this.color,
+  });
 
   /// The title of the [Event].
-  late String _title;
-  String get title => _title;
-  set title(String value) {
-    _title = value;
-    notifyListeners();
-  }
+  late String title;
 
   /// The description of the [Event].
-  String? _description;
-  String? get description => _description;
-  set description(String? value) {
-    _description = value;
-    notifyListeners();
-  }
+  String? description;
 
   /// The color of the [Event] tile.
-  Color? _tileColor;
-  Color? get color => _tileColor;
-  set color(Color? value) {
-    _tileColor = value;
-    notifyListeners();
-  }
+  Color? color;
 
   Event copyWith({
     String? title,

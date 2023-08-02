@@ -3,7 +3,7 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 
-/// The [TileLayoutController] is used to arrange [EventTile]'s.
+/// The [TileLayoutController] is used to arrange [Tiles]'s.
 class TileLayoutController<T extends Object?> {
   /// The [DateTimeRange] that is visible on the calendar.
   final DateTimeRange visibleDateRange;

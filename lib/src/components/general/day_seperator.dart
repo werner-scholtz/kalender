@@ -14,6 +14,8 @@ class DaySeperatorStyle {
   final Color? color;
 }
 
+
+/// A widget that displays the day seperators.
 class DaySeperator extends StatelessWidget {
   const DaySeperator({
     super.key,

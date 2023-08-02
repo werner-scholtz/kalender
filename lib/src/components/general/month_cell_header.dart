@@ -16,6 +16,7 @@ class MonthCellHeaderStyle {
   final VisualDensity? visualDensity;
 }
 
+/// A widget that displays the date.
 class MonthCellHeader<T extends Object?> extends StatelessWidget {
   const MonthCellHeader({
     super.key,
