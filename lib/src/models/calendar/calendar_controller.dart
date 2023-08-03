@@ -31,24 +31,26 @@ class CalendarController<T> with ChangeNotifier {
   ViewState? _state;
   bool get isAttached => _state != null;
 
+  /// The height per minute of the current view.
+  /// This is only available for [SingleDayView] and [MultiDayView].
   double? get heightPerMinute => _state?.heightPerMinute?.value;
-  DateTimeRange? get visibleDateTimeRange => _state?.visibleDateTimeRange.value;
+
+  /// The value notifier visible dateTimeRange of the current view.
+  ValueNotifier<DateTimeRange>? get visibleDateTimeRange => _state?.visibleDateTimeRange;
+
+  /// The adjusted dateTimeRange of the current view.
   DateTimeRange? get adjustedDateTimeRange => _state?.adjustedDateTimeRange;
+
+  /// The number of pages the [PageView] of the current view has.
   int? get numberOfPages => _state?.numberOfPages;
+
+  /// The visible month of the current view.
+  DateTime? get visibleMonth => _state?.month;
 
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {
-    // assert(
-    //   _state == null,
-    //   "The controller cannot be attached to multiple view's.",
-    // );
     _state = viewState;
   }
-
-  // void detach() {
-  //   if (_state == null) return;
-  //   _state = null;
-  // }
 
   /// Animates to the next page.
   ///

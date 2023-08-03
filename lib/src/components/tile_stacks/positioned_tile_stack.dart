@@ -39,8 +39,6 @@ class PositionedTileStack<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of<T>(context);
-    // ViewState state = scope.state;
-    // CalendarEventsController<T> controller = scope.eventsController;
 
     return ListenableBuilder(
       listenable: scope.eventsController,
@@ -197,10 +195,7 @@ class PositionedTile<T> extends StatelessWidget {
   /// The visible [DateTimeRange].
   final DateTimeRange visibleDateRange;
 
-  /// The [ArragnedEvent] used by the [PositionedTile].
-  ///
-  /// This is used to display the:
-  /// [eventTileBuilder] and [ghostEventTileBuilder]
+  /// The [PositionedTileData] used by the [PositionedTile] to display the event.
   final PositionedTileData<T> positionedTileData;
 
   final DateTimeRange initialDateTimeRange;
@@ -234,17 +229,10 @@ class PositionedTile<T> extends StatelessWidget {
         children: <Widget>[
           DayTileGestureDetector<T>(
             event: positionedTileData.event,
-
             horizontalDurationStep: horizontalDurationStep,
             verticalDurationStep: verticalDurationStep,
             verticalStep: verticalStep,
             horizontalStep: horizontalStep,
-            // onTap: onTap,
-            // onLongPressStart: onLongPressStart,
-            // onLongPressEnd: onLongPressEnd,
-            // onPanStart: onPanStart,
-            // onPanEnd: onPanEnd,
-            // onRescheduleEvent: onReschedhuleEvent,
             visibleDateTimeRange: visibleDateRange,
             snapPoints: pointsOfInterest,
             eventSnapping: pointsOfInterest.isNotEmpty,
@@ -252,10 +240,8 @@ class PositionedTile<T> extends StatelessWidget {
               positionedTileData.event,
               isMoving ? TileType.ghost : TileType.normal,
               positionedTileData.drawOutline,
-              positionedTileData.event.isSplitAcrossDays &&
-                  !positionedTileData.date.isSameDay(positionedTileData.event.start),
-              positionedTileData.event.isSplitAcrossDays &&
-                  positionedTileData.date.isSameDay(positionedTileData.event.start),
+              positionedTileData.event.continuesBefore(positionedTileData.date),
+              positionedTileData.event.continuesAfter(positionedTileData.date),
             ),
           ),
           DayTileResizeDetector(
@@ -269,10 +255,8 @@ class PositionedTile<T> extends StatelessWidget {
             resizeEnd: isMobileDevice ? null : _resizeEnd,
             initialDateTimeRange: positionedTileData.event.dateTimeRange,
             snapPoints: pointsOfInterest,
-            disableTop: positionedTileData.event.isSplitAcrossDays &&
-                !positionedTileData.event.start.isSameDay(positionedTileData.date),
-            disableBottom: positionedTileData.event.isSplitAcrossDays &&
-                !positionedTileData.event.end.isSameDay(positionedTileData.date),
+            disableTop: positionedTileData.event.continuesBefore(positionedTileData.date),
+            disableBottom: positionedTileData.event.continuesAfter(positionedTileData.date),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 
@@ -41,6 +42,10 @@ class ViewState {
 
   /// Whether new events can be created.
   final bool createNewEvents;
+
+  DateTime get month {
+    return visibleDateTimeRange.value.visibleMonth;
+  }
 
   @override
   operator ==(Object other) {
