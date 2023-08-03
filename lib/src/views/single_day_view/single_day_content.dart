@@ -104,7 +104,7 @@ class SingleDayContent<T> extends StatelessWidget {
                             ),
                             DayGestureDetector<T>(
                               height: pageHeight,
-                              dayWidth: dayWidth,
+                              width: dayWidth,
                               heightPerMinute: heightPerMinute,
                               visibleDateRange: pageVisibleDateRange,
                               minuteSlotSize: viewConfiguration.minuteSlotSize,

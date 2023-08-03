@@ -1,12 +1,9 @@
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [SingleDayViewConfiguration]s.
 abstract class SingleDayViewConfiguration implements ViewConfiguration {
   const SingleDayViewConfiguration();
-
-  // @override
-  // final ViewType viewType = ViewType.singleDay;
 
   @override
   double calculateDayWidth(double pageWidth) {

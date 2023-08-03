@@ -41,6 +41,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// The center [DateTime] of the [DateTimeRange].
   DateTime get centerDateTime => start.add(Duration(days: (dayDifference / 2).floor()));
+
+  /// The visible month of the [DateTimeRange].
+  DateTime get visibleMonth {
+    return DateTime(centerDateTime.year, centerDateTime.month);
+  }
 }
 
 /// [DateTime] extensions.

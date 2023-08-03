@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 
-class FourDayConfiguration extends MultiDayViewConfiguration {
-  const FourDayConfiguration({
+class MultiDayConfiguration extends MultiDayViewConfiguration {
+  const MultiDayConfiguration({
+    required this.name,
+    this.numberOfDays = 3,
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
-    this.minuteSlotSize = SlotSize.minute15,
+    this.minuteSlotSize = const SlotSize(15),
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
   });
+
+  final int numberOfDays;
 
   @override
   final double timelineWidth;
@@ -44,11 +48,11 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
-  final String name = 'Four Day';
+  final String name;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
-    return date.fourDayRange;
+    return getMultiDayRange(date);
   }
 
   @override
@@ -59,47 +63,38 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
   }) {
     return DateTimeRange(
       start: visibleStart.startOfDay.subtract(
-        Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 4).ceil() * 4),
+        Duration(
+          days: (visibleStart.difference(dateTimeRange.start).inDays ~/ numberOfDays).ceil() *
+              numberOfDays,
+        ),
       ),
       end: visibleStart.startOfDay.add(
-        Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 4).ceil() * 4),
+        Duration(
+          days: (dateTimeRange.end.difference(visibleStart).inDays ~/ numberOfDays).ceil() *
+              numberOfDays,
+        ),
       ),
     );
   }
-  // @override
-  // DateTimeRange calculateAdjustedDateTimeRange(
-  //   DateTimeRange dateTimeRange,
-  //   DateTime visibleStart,
-  //   int firstDayOfWeek,
-  // ) {
-  // return DateTimeRange(
-  //   start: visibleStart.startOfDay.subtract(
-  //     Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 4).ceil() * 4),
-  //   ),
-  //   end: visibleStart.startOfDay.add(
-  //     Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 4).ceil() * 4),
-  //   ),
-  // );
-  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ 4;
+    return date.difference(startDate).inDays ~/ numberOfDays;
   }
 
   @override
   double calculateDayWidth(double pageWidth) {
-    return (pageWidth / 4);
+    return (pageWidth / numberOfDays);
   }
 
   @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return visibleStart.difference(calendarStart).inDays ~/ 4;
+    return visibleStart.difference(calendarStart).inDays ~/ numberOfDays;
   }
 
   @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ 4;
+    return calendarDateTimeRange.dayDifference ~/ numberOfDays;
   }
 
   @override
@@ -108,11 +103,13 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
     required DateTime calendarStart,
     int? firstDayOfWeek,
   }) {
-    return DateTime(
-      calendarStart.year,
-      calendarStart.month,
-      calendarStart.day + (index * 4),
-    ).fourDayRange;
+    return getMultiDayRange(
+      DateTime(
+        calendarStart.year,
+        calendarStart.month,
+        calendarStart.day + (index * numberOfDays),
+      ),
+    );
   }
 
   @override
@@ -127,13 +124,23 @@ class FourDayConfiguration extends MultiDayViewConfiguration {
     int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.fourDayRange;
+      return getMultiDayRange(dateTimeRange.start);
     } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.fourDayRange;
+      return getMultiDayRange(dateTimeRange.end);
     }
     return visibleDateTimeRange;
   }
 
   @override
   int get firstDayOfWeek => 1;
+
+  /// Gets the four day range with the [DateTime] as the first day.
+  DateTimeRange getMultiDayRange(DateTime date) {
+    return DateTimeRange(
+      start: date.startOfDay,
+      end: date.endOfDay.add(
+        Duration(days: numberOfDays - 1),
+      ),
+    );
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
@@ -8,7 +8,7 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
-    this.minuteSlotSize = SlotSize.minute15,
+    this.minuteSlotSize = const SlotSize(15),
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
@@ -66,22 +66,6 @@ class ThreeDayConfiguration extends MultiDayViewConfiguration {
       ),
     );
   }
-
-  // @override
-  // DateTimeRange calculateAdjustedDateTimeRange(
-  //   DateTimeRange dateTimeRange,
-  //   DateTime visibleStart,
-  //   int firstDayOfWeek,
-  // ) {
-  //   return DateTimeRange(
-  //     start: visibleStart.startOfDay.subtract(
-  //       Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 3).ceil() * 3),
-  //     ),
-  //     end: visibleStart.startOfDay.add(
-  //       Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 3).ceil() * 3),
-  //     ),
-  //   );
-  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {

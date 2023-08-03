@@ -32,15 +32,26 @@ class _DesktopScreenState extends State<DesktopScreen> {
     const DayConfiguration(),
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
-    const ThreeDayConfiguration(),
     const MonthConfiguration(),
+    const MultiDayConfiguration(
+      name: 'Two Day',
+      numberOfDays: 2,
+    ),
+    const MultiDayConfiguration(
+      name: 'Three Day',
+      numberOfDays: 3,
+    ),
+    const MultiDayConfiguration(
+      name: 'Four Day',
+      numberOfDays: 4,
+    ),
   ];
 
   @override
   void initState() {
     super.initState();
     eventsController = widget.eventsController;
-    calendarController = CalendarController<Event>();
+    calendarController = CalendarController();
   }
 
   @override

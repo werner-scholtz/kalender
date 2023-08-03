@@ -5,8 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 /// This is used to store state related to a view.
 ///
 /// This state is shared with the [CalendarController]
-/// which can then be used to navigate the view.
-class ViewState extends ChangeNotifier {
+class ViewState {
   ViewState({
     required this.viewConfiguration,
     required this.pageController,
@@ -28,6 +27,7 @@ class ViewState extends ChangeNotifier {
   final ScrollController scrollController;
 
   /// The height per minute of the [CalendarView].
+  /// This is only used in the [SingleDayView] & [MultiDayView].
   final ValueNotifier<double>? heightPerMinute;
 
   /// The visible dateTimeRange of the [CalendarView].

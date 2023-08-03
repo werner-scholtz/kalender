@@ -78,6 +78,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     notifyListeners();
   }
 
+
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This exludes [CalendarEvent]s that are displayed on single days.
   Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {

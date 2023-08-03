@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
@@ -8,7 +8,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
-    this.minuteSlotSize = SlotSize.minute15,
+    this.minuteSlotSize =const SlotSize(15),
     this.verticalDurationStep = const Duration(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
@@ -72,18 +72,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
       end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
-
-  // @override
-  // DateTimeRange calculateAdjustedDateTimeRange(
-  //   DateTimeRange dateTimeRange,
-  //   DateTime visibleStart,
-  //   int firstDayOfWeek,
-  // ) {
-  //   return DateTimeRange(
-  //     start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
-  //     end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
-  //   );
-  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {

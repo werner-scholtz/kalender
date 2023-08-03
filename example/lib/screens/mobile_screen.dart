@@ -29,7 +29,6 @@ class _MobileScreenState extends State<MobileScreen> {
     const DayConfiguration(),
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
-    const ThreeDayConfiguration(),
     const MonthConfiguration(),
   ];
 
@@ -111,7 +110,7 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   /// This function is called when an event is changed.
-  Future<void> onEventChanged(initialDateTimeRange, event) async {
+  Future<void> onEventChanged(initialDateTimeRange, CalendarEvent<Event> event) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
     ScaffoldMessenger.of(context).showSnackBar(
@@ -120,11 +119,12 @@ class _MobileScreenState extends State<MobileScreen> {
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
-            eventsController.updateEvent(
-              newEventData: event.eventData,
-              newDateTimeRange: initialDateTimeRange,
-              test: (other) => other.eventData == event.eventData,
-            );
+            event.dateTimeRange = initialDateTimeRange;
+            // eventsController.updateEvent(
+            //   newEventData: event.eventData,
+            //   newDateTimeRange: initialDateTimeRange,
+            //   test: (other) => other.eventData == event.eventData,
+            // );
           },
         ),
       ),

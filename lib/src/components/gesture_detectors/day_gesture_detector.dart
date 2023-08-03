@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -9,17 +9,17 @@ class DayGestureDetector<T> extends StatefulWidget {
   const DayGestureDetector({
     super.key,
     required this.height,
-    required this.dayWidth,
+    required this.width,
     required this.heightPerMinute,
     required this.visibleDateRange,
     required this.minuteSlotSize,
   });
 
-  /// The height of the day.
+  /// The height of the area.
   final double height;
 
-  /// The width of a day.
-  final double dayWidth;
+  /// The width of the area.
+  final double width;
 
   /// The height per minute.
   final double heightPerMinute;
@@ -59,7 +59,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   void initState() {
     super.initState();
     height = widget.height;
-    dayWidth = widget.dayWidth;
+    dayWidth = widget.width;
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
@@ -69,7 +69,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   void didUpdateWidget(covariant DayGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     height = widget.height;
-    dayWidth = widget.dayWidth;
+    dayWidth = widget.width;
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;

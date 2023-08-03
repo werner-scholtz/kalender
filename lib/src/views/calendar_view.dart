@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
@@ -93,8 +90,6 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    log(_viewConfiguration.runtimeType.toString());
-
     if (_viewConfiguration is SingleDayViewConfiguration) {
       return SingleDayView<T>(
         controller: widget.controller,

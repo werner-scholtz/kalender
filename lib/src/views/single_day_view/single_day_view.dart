@@ -82,9 +82,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
     _initializeViewState();
 
     if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
+      print('');
     }
-    // _controller.detach();
     _controller.attach(_viewState);
   }
 
@@ -105,7 +104,6 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
-      // _controller.detach();
       _controller.attach(_viewState);
     }
   }

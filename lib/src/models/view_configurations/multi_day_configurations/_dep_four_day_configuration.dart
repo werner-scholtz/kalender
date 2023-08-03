@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-class WeekConfiguration extends MultiDayViewConfiguration {
-  const WeekConfiguration({
+class FourDayConfiguration extends MultiDayViewConfiguration {
+  const FourDayConfiguration({
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
@@ -14,7 +14,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
-    this.firstDayOfWeek = 1,
   });
 
   @override
@@ -45,14 +44,11 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
-  final int firstDayOfWeek;
-
-  @override
-  final String name = 'Week';
+  final String name = 'Four Day';
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
-    return date.weekRangeWithOffset(firstDayOfWeek);
+    return date.fourDayRange;
   }
 
   @override
@@ -62,29 +58,48 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: visibleStart.startOfDay.subtract(
+        Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 4).ceil() * 4),
+      ),
+      end: visibleStart.startOfDay.add(
+        Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 4).ceil() * 4),
+      ),
     );
   }
+  // @override
+  // DateTimeRange calculateAdjustedDateTimeRange(
+  //   DateTimeRange dateTimeRange,
+  //   DateTime visibleStart,
+  //   int firstDayOfWeek,
+  // ) {
+  // return DateTimeRange(
+  //   start: visibleStart.startOfDay.subtract(
+  //     Duration(days: (visibleStart.difference(dateTimeRange.start).inDays ~/ 4).ceil() * 4),
+  //   ),
+  //   end: visibleStart.startOfDay.add(
+  //     Duration(days: (dateTimeRange.end.difference(visibleStart).inDays ~/ 4).ceil() * 4),
+  //   ),
+  // );
+  // }
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ DateTime.daysPerWeek;
+    return date.difference(startDate).inDays ~/ 4;
   }
 
   @override
   double calculateDayWidth(double pageWidth) {
-    return (pageWidth / DateTime.daysPerWeek);
+    return (pageWidth / 4);
   }
 
   @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return (visibleStart.difference(calendarStart).inDays / DateTime.daysPerWeek).floor();
+    return visibleStart.difference(calendarStart).inDays ~/ 4;
   }
 
   @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
+    return calendarDateTimeRange.dayDifference ~/ 4;
   }
 
   @override
@@ -96,8 +111,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     return DateTime(
       calendarStart.year,
       calendarStart.month,
-      calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
+      calendarStart.day + (index * 4),
+    ).fourDayRange;
   }
 
   @override
@@ -112,10 +127,13 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.weekRangeWithOffset(firstDayOfWeek);
+      return dateTimeRange.start.fourDayRange;
     } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
+      return dateTimeRange.end.fourDayRange;
     }
     return visibleDateTimeRange;
   }
+
+  @override
+  int get firstDayOfWeek => 1;
 }

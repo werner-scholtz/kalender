@@ -33,7 +33,6 @@ class MultiDayContent<T> extends StatelessWidget {
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
-
         double verticalStep = heightPerMinute * viewConfiguration.verticalDurationStep.inMinutes;
 
         return Expanded(
@@ -49,7 +48,7 @@ class MultiDayContent<T> extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: SizedBox(
                     height: pageHeight,
-                    width: pageWidth,
+                    width: pageWidth + viewConfiguration.hourlineTimelineOverlap,
                     child: PageView.builder(
                       key: Key(viewConfiguration.name),
                       controller: scope.state.pageController,
@@ -84,10 +83,10 @@ class MultiDayContent<T> extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
-                                width: pageWidth,
+                                width: pageWidth + viewConfiguration.hourlineTimelineOverlap,
                                 height: pageHeight,
                                 child: scope.components.hourlineBuilder(
-                                  pageWidth,
+                                  pageWidth + viewConfiguration.hourlineTimelineOverlap,
                                   hourHeight,
                                 ),
                               ),
@@ -106,7 +105,7 @@ class MultiDayContent<T> extends StatelessWidget {
                             ),
                             DayGestureDetector<T>(
                               height: pageHeight,
-                              dayWidth: dayWidth,
+                              width: dayWidth,
                               heightPerMinute: heightPerMinute,
                               visibleDateRange: pageVisibleDateRange,
                               minuteSlotSize: viewConfiguration.minuteSlotSize,

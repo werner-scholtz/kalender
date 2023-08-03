@@ -9,6 +9,9 @@ export 'package:kalender/src/models/view_configurations/view_configuration.dart'
 export 'package:kalender/src/models/view_configurations/single_day_configurations/day_configuration.dart';
 export 'package:kalender/src/models/view_configurations/multi_day_configurations/week_configuration.dart';
 export 'package:kalender/src/models/view_configurations/multi_day_configurations/work_week_configuration.dart';
-export 'package:kalender/src/models/view_configurations/multi_day_configurations/three_day_configuration.dart';
-export 'package:kalender/src/models/view_configurations/multi_day_configurations/four_day_configuration.dart';
+export 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_configuration.dart';
 export 'package:kalender/src/models/view_configurations/month_configurations/month_configuration.dart';
+
+
+// export 'package:kalender/src/models/view_configurations/multi_day_configurations/_dep_three_day_configuration.dart';
+// export 'package:kalender/src/models/view_configurations/multi_day_configurations/_dep_four_day_configuration.dart';

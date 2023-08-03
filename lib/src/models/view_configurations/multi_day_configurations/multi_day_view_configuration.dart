@@ -1,12 +1,9 @@
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [MultiDayViewConfiguration]s.
-abstract class MultiDayViewConfiguration implements ViewConfiguration {
+abstract class MultiDayViewConfiguration extends ViewConfiguration {
   const MultiDayViewConfiguration();
-
-  // @override
-  // final ViewType viewType = ViewType.multiDay;
 
   /// The width of the timeline.
   double get timelineWidth;

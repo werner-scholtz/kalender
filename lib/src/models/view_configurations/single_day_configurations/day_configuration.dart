@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/calendar/slot_size.dart';
 
 /// The [DayConfiguration] class contains the configuration for the [SingleDayView].
 ///
@@ -12,7 +13,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
     this.verticalDurationStep = const Duration(minutes: 15),
-    this.minuteSlotSize = SlotSize.minute15,
+    this.minuteSlotSize = const SlotSize(15),
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
   });
