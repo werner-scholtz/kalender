@@ -5,7 +5,7 @@ import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controll
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [ChangingTileStack] is used to display [PositionedTileData]'s of the event being modified..
-class ChangingTileStack<T > extends StatelessWidget {
+class ChangingTileStack<T> extends StatelessWidget {
   const ChangingTileStack({
     super.key,
     required this.tileLayoutController,
@@ -18,49 +18,36 @@ class ChangingTileStack<T > extends StatelessWidget {
     CalendarScope<T> scope = CalendarScope.of(context);
 
     return ListenableBuilder(
-      listenable: scope.eventsController,
+      listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        if (shouldDisplayTile(scope.eventsController)) {
-          return ListenableBuilder(
-            listenable: scope.eventsController.chaningEvent!,
-            builder: (BuildContext context, Widget? child) {
-              List<PositionedTileData<T>> arragnedEvents = tileLayoutController.positionSingleEvent(
-                scope.eventsController.chaningEvent!,
-              );
-              return MouseRegion(
-                cursor: scope.eventsController.isResizing
-                    ? SystemMouseCursors.resizeRow
-                    : SystemMouseCursors.move,
-                child: Stack(
-                  children: arragnedEvents
-                      .map(
-                        (PositionedTileData<T> e) => Positioned(
-                          top: e.top,
-                          left: e.left,
-                          width: e.width,
-                          height: e.height,
-                          child: scope.tileComponents.eventTileBuilder!(
-                            e.event,
-                            TileType.selected,
-                            false,
-                            e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
-                            e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              );
-            },
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
+        List<PositionedTileData<T>> arragnedEvents = tileLayoutController.positionSingleEvent(
+          scope.eventsController.chaningEvent!,
+        );
+        return MouseRegion(
+          cursor: scope.eventsController.isResizing
+              ? SystemMouseCursors.resizeRow
+              : SystemMouseCursors.move,
+          child: Stack(
+            children: arragnedEvents
+                .map(
+                  (PositionedTileData<T> e) => Positioned(
+                    top: e.top,
+                    left: e.left,
+                    width: e.width,
+                    height: e.height,
+                    child: scope.tileComponents.tileBuilder!(
+                      e.event,
+                      TileType.selected,
+                      false,
+                      e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
+                      e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        );
       },
     );
   }
-
-  bool shouldDisplayTile(CalendarEventsController<T> controller) =>
-      controller.hasChaningEvent &&
-      (controller.isMoving || controller.isResizing || controller.isNewEvent);
 }

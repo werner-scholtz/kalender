@@ -20,7 +20,7 @@ class MonthView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
-    required this.monthEventTileBuilder,
+    required this.monthTileBuilder,
     this.monthViewConfiguration,
     this.components,
     this.functions,
@@ -42,8 +42,8 @@ class MonthView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
-  /// The [MonthEventTileBuilder] used to build month event tiles.
-  final MonthEventTileBuilder<T> monthEventTileBuilder;
+  /// The [MonthEventBuilder] used to build month event tiles.
+  final MonthEventBuilder<T> monthTileBuilder;
 
   /// Can create new events.
   final bool createNewEvents;
@@ -69,7 +69,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
-      monthEventTileBuilder: widget.monthEventTileBuilder,
+      monthTileBuilder: widget.monthTileBuilder,
     );
     _viewConfiguration = (widget.monthViewConfiguration ?? const MonthConfiguration());
     _initializeViewState();

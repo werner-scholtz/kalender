@@ -58,7 +58,7 @@ class MonthCellStack<T> extends StatelessWidget {
                   verticalStep: cellHeight,
                   horizontalDurationStep: viewConfiguration.horizontalDurationStep,
                   horizontalStep: cellWidth,
-                  child: scope.tileComponents.monthEventTileBuilder!(
+                  child: scope.tileComponents.monthTileBuilder!(
                     event,
                     isMoving ? TileType.ghost : TileType.normal,
                     date,
@@ -76,7 +76,7 @@ class MonthCellStack<T> extends StatelessWidget {
                   if (event.isOnDate(date)) {
                     return SizedBox(
                       width: cellWidth,
-                      child: scope.tileComponents.monthEventTileBuilder!(
+                      child: scope.tileComponents.monthTileBuilder!(
                         scope.eventsController.chaningEvent!,
                         TileType.selected,
                         date,

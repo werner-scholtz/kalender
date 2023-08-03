@@ -68,9 +68,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
       controller: calendarController,
       eventsController: eventsController,
       viewConfiguration: currentConfiguration,
-      eventTileBuilder: _eventTileBuilder,
-      multiDayEventTileBuilder: _multiDayEventTileBuilder,
-      monthEventTileBuilder: _monthEventTileBuilder,
+      tileBuilder: _tileBuilder,
+      multiDayTileBuilder: _multiDayTileBuilder,
+      monthTileBuilder: _monthEventTileBuilder,
       components: CalendarComponents(
         calendarHeaderBuilder: _calendarHeaderBuilder,
       ),
@@ -171,7 +171,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  Widget _multiDayEventTileBuilder(event, tileType, continuesBefore, continuesAfter) {
+  Widget _multiDayTileBuilder(event, tileType, continuesBefore, continuesAfter) {
     return MultiDayEventTile(
       event: event,
       tileType: tileType,
@@ -180,7 +180,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  Widget _eventTileBuilder(event, tileType, drawOutline, continuesBefore, continuesAfter) {
+  Widget _tileBuilder(event, tileType, drawOutline, continuesBefore, continuesAfter) {
     return EventTile(
       event: event,
       tileType: tileType,

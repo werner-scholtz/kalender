@@ -20,8 +20,8 @@ class MultiDayView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
-    required this.eventTileBuilder,
-    required this.multiDayEventTileBuilder,
+    required this.tileBuilder,
+    required this.multiDayTileBuilder,
     this.components,
     this.multiDayViewConfiguration,
     this.functions,
@@ -43,11 +43,11 @@ class MultiDayView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
-  /// The [EventTileBuilder] used to build event tiles.
-  final EventTileBuilder<T> eventTileBuilder;
+  /// The [TileBuilder] used to build event tiles.
+  final TileBuilder<T> tileBuilder;
 
-  /// The [MultiDayEventTileBuilder] used to build multi day event tiles.
-  final MultiDayEventTileBuilder<T> multiDayEventTileBuilder;
+  /// The [MultiDayTileBuilder] used to build multi day event tiles.
+  final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   /// Can create new events.
   final bool createNewEvents;
@@ -73,8 +73,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
-      eventTileBuilder: widget.eventTileBuilder,
-      multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
+      tileBuilder: widget.tileBuilder,
+      multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _viewConfiguration = (widget.multiDayViewConfiguration ?? const WeekConfiguration());
     _initializeViewState();

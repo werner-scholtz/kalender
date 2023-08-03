@@ -10,23 +10,23 @@ import 'package:kalender/src/typedefs.dart';
 /// This class is used to provide the tile components for the calendar.
 class CalendarTileComponents<T> {
   const CalendarTileComponents({
-    this.eventTileBuilder,
-    this.monthEventTileBuilder,
-    this.scheduleEventTileBuilder,
-    this.multiDayEventTileBuilder,
+    this.tileBuilder,
+    this.monthTileBuilder,
+    this.scheduleTileBuilder,
+    this.multiDayTileBuilder,
   });
 
-  /// The [EventTileBuilder] is used to build event tiles that are displayed on [SingleDayView] and [MultiDayView] days.
-  final EventTileBuilder<T>? eventTileBuilder;
+  /// The [TileBuilder] is used to build event tiles that are displayed on [SingleDayView] and [MultiDayView] days.
+  final TileBuilder<T>? tileBuilder;
 
-  /// The [MultiDayEventTileBuilder] is used to build event tiles that are displayed on multiple days.
-  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
+  /// The [MultiDayTileBuilder] is used to build event tiles that are displayed on multiple days.
+  final MultiDayTileBuilder<T>? multiDayTileBuilder;
 
-  /// The [MonthEventTileBuilder] is used to build event tiles that are displayed on [MonthView] days.
-  final MonthEventTileBuilder<T>? monthEventTileBuilder;
+  /// The [MonthEventBuilder] is used to build event tiles that are displayed on [MonthView] days.
+  final MonthEventBuilder<T>? monthTileBuilder;
 
   /// The [ScheduleEventTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
-  final ScheduleEventTileBuilder<T>? scheduleEventTileBuilder;
+  final ScheduleEventTileBuilder<T>? scheduleTileBuilder;
 }
 
 /// This class is used to provide the components for the calendar.

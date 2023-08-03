@@ -17,39 +17,30 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
     CalendarScope<T> scope = CalendarScope.of(context);
 
     return ListenableBuilder(
-      listenable: scope.eventsController,
+      listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        if (scope.eventsController.hasChaningEvent && scope.eventsController.isMultidayEvent) {
-          return ListenableBuilder(
-            listenable: scope.eventsController.chaningEvent!,
-            builder: (BuildContext context, Widget? child) {
-              PositionedMultiDayTileData<T> arragnedEvent = multiDayEventLayout.arrangeEvent(
-                scope.eventsController.chaningEvent!,
-              );
-              return MouseRegion(
-                cursor: SystemMouseCursors.resizeColumn,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      top: arragnedEvent.top,
-                      left: arragnedEvent.left,
-                      width: arragnedEvent.width,
-                      height: arragnedEvent.height,
-                      child: scope.tileComponents.multiDayEventTileBuilder!(
-                        arragnedEvent.event,
-                        TileType.selected,
-                        arragnedEvent.continuesBefore,
-                        arragnedEvent.continuesAfter,
-                      ),
-                    )
-                  ],
+        PositionedMultiDayTileData<T> arragnedEvent = multiDayEventLayout.arrangeEvent(
+          scope.eventsController.chaningEvent!,
+        );
+        return MouseRegion(
+          cursor: SystemMouseCursors.resizeColumn,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: arragnedEvent.top,
+                left: arragnedEvent.left,
+                width: arragnedEvent.width,
+                height: arragnedEvent.height,
+                child: scope.tileComponents.multiDayTileBuilder!(
+                  arragnedEvent.event,
+                  TileType.selected,
+                  arragnedEvent.continuesBefore,
+                  arragnedEvent.continuesAfter,
                 ),
-              );
-            },
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
+              )
+            ],
+          ),
+        );
       },
     );
   }

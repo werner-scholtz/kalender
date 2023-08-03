@@ -53,9 +53,9 @@ class _MobileScreenState extends State<MobileScreen> {
       controller: calendarController,
       eventsController: eventsController,
       viewConfiguration: currentConfiguration,
-      eventTileBuilder: _eventTileBuilder,
-      multiDayEventTileBuilder: _multiDayEventTileBuilder,
-      monthEventTileBuilder: _monthEventTileBuilder,
+      tileBuilder: _eventTileBuilder,
+      multiDayTileBuilder: _multiDayEventTileBuilder,
+      monthTileBuilder: _monthEventTileBuilder,
       components: CalendarComponents(
         calendarHeaderBuilder: _calendarHeader,
       ),

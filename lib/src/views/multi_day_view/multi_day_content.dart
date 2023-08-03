@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
@@ -128,16 +127,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: pageWidth,
-                                height: pageHeight,
-                                child: ChangingTileStack<T>(
-                                  tileLayoutController: tileLayoutController,
-                                ),
-                              ),
-                            ),
+                            
                             Visibility(
                               visible: DateTime.now().isWithin(pageVisibleDateRange),
                               child: TimeIndicator(

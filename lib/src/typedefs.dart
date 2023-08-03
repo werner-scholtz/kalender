@@ -32,7 +32,7 @@ typedef TimelineBuilder<T extends Object?> = Widget Function(
   double hourHeight,
 );
 
-/// The [EventTileBuilder]
+/// The [TileBuilder]
 ///
 /// The [drawOutline] parameter is used to indicate whether the event should be drawn with an outline.
 /// This is true when the event is displayed on top of another event.
@@ -40,7 +40,7 @@ typedef TimelineBuilder<T extends Object?> = Widget Function(
 /// This builder is used to build event tiles that are displayed on [PageType.singleDay] and [PageType.multiDay] days.
 /// The [continuesBefore] and [continuesAfter] parameters are used to indicate whether the event
 /// continues before or after the day they are displayed on.
-typedef EventTileBuilder<T extends Object?> = Widget Function(
+typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   TileType tileType,
   bool drawOutline,
@@ -48,22 +48,22 @@ typedef EventTileBuilder<T extends Object?> = Widget Function(
   bool continuesAfter,
 );
 
-/// The [MultiDayEventTileBuilder]
+/// The [MultiDayTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on multiple days.
 /// The [continuesBefore] and [continuesAfter] parameters are used to indicate whether the event
 /// continues before or after the visible date range.
-typedef MultiDayEventTileBuilder<T extends Object?> = Widget Function(
+typedef MultiDayTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   TileType tileType,
   bool continuesBefore,
   bool continuesAfter,
 );
 
-/// The [MonthEventTileBuilder]
+/// The [MonthEventBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on a specific date.
-typedef MonthEventTileBuilder<T extends Object?> = Widget Function(
+typedef MonthEventBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   TileType tileType,
   DateTime date,

@@ -85,9 +85,11 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                     );
                   },
                 ).toList(),
-                ChaningMultiDayTileStack<T>(
-                  multiDayEventLayout: multiDayEventLayout,
-                ),
+                if (scope.eventsController.hasChaningEvent &&
+                    scope.eventsController.isMultidayEvent)
+                  ChaningMultiDayTileStack<T>(
+                    multiDayEventLayout: multiDayEventLayout,
+                  ),
               ],
             ),
           );
@@ -146,7 +148,7 @@ class MultidayTileStack<T> extends StatelessWidget {
                 onHorizontalDragStart: _onHorizontalDragStart,
                 onHorizontalDragEnd: _onHorizontalDragEnd,
                 rescheduleEvent: _rescheduleEvent,
-                child: CalendarScope.of<T>(context).tileComponents.multiDayEventTileBuilder!(
+                child: CalendarScope.of<T>(context).tileComponents.multiDayTileBuilder!(
                   arragnedEvent.event,
                   isMoving ? TileType.ghost : TileType.normal,
                   arragnedEvent.continuesBefore,

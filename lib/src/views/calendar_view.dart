@@ -15,16 +15,14 @@ class CalendarView<T> extends StatefulWidget {
     required this.controller,
     required this.eventsController,
     required this.viewConfiguration,
-    required this.eventTileBuilder,
-    required this.multiDayEventTileBuilder,
-    required this.monthEventTileBuilder,
+    required this.tileBuilder,
+    required this.multiDayTileBuilder,
+    required this.monthTileBuilder,
     this.components,
     this.eventHandlers,
     this.createNewEvents = true,
   }) : assert(
-          eventTileBuilder != null &&
-              multiDayEventTileBuilder != null &&
-              monthEventTileBuilder != null,
+          tileBuilder != null && multiDayTileBuilder != null && monthTileBuilder != null,
           'All Event Tile builders must be assigned',
         );
 
@@ -33,12 +31,60 @@ class CalendarView<T> extends StatefulWidget {
     required this.controller,
     required this.eventsController,
     required this.viewConfiguration,
-    required this.eventTileBuilder,
-    required this.multiDayEventTileBuilder,
+    required this.tileBuilder,
+    required this.multiDayTileBuilder,
     this.components,
     this.eventHandlers,
     this.createNewEvents = true,
-  }) : monthEventTileBuilder = null;
+  })  : monthTileBuilder = null,
+        assert(
+          tileBuilder != null && multiDayTileBuilder != null,
+          'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
+        ),
+        assert(
+          viewConfiguration is SingleDayViewConfiguration,
+          'SingleDayViewConfiguration must be assigned',
+        );
+
+  const CalendarView.multiDay({
+    super.key,
+    required this.controller,
+    required this.eventsController,
+    required this.viewConfiguration,
+    required this.tileBuilder,
+    required this.multiDayTileBuilder,
+    this.components,
+    this.eventHandlers,
+    this.createNewEvents = true,
+  })  : monthTileBuilder = null,
+        assert(
+          tileBuilder != null && multiDayTileBuilder != null,
+          'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
+        ),
+        assert(
+          viewConfiguration is MultiDayViewConfiguration,
+          'MultiDayViewConfiguration must be assigned',
+        );
+
+  const CalendarView.month({
+    super.key,
+    required this.controller,
+    required this.eventsController,
+    required this.viewConfiguration,
+    required this.monthTileBuilder,
+    this.components,
+    this.eventHandlers,
+    this.createNewEvents = true,
+  })  : tileBuilder = null,
+        multiDayTileBuilder = null,
+        assert(
+          monthTileBuilder != null,
+          'Month Event Tile builder must be assigned',
+        ),
+        assert(
+          viewConfiguration is MonthViewConfiguration,
+          'MonthViewConfiguration must be assigned',
+        );
 
   /// The [CalendarController] used to control the view.
   final CalendarController<T> controller;
@@ -55,14 +101,14 @@ class CalendarView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? eventHandlers;
 
-  /// The [EventTileBuilder] used to build event tiles.
-  final EventTileBuilder<T>? eventTileBuilder;
+  /// The [TileBuilder] used to build event tiles.
+  final TileBuilder<T>? tileBuilder;
 
-  /// The [MultiDayEventTileBuilder] used to build multi day event tiles.
-  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
+  /// The [MultiDayTileBuilder] used to build multi day event tiles.
+  final MultiDayTileBuilder<T>? multiDayTileBuilder;
 
-  /// The [MonthEventTileBuilder] used to build month event tiles.
-  final MonthEventTileBuilder<T>? monthEventTileBuilder;
+  /// The [MonthEventBuilder] used to build month event tiles.
+  final MonthEventBuilder<T>? monthTileBuilder;
 
   /// Can create new events.
   final bool createNewEvents;
@@ -94,8 +140,8 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       return SingleDayView<T>(
         controller: widget.controller,
         eventsController: widget.eventsController,
-        eventTileBuilder: widget.eventTileBuilder!,
-        multiDayEventTileBuilder: widget.multiDayEventTileBuilder!,
+        tileBuilder: widget.tileBuilder!,
+        multiDayTileBuilder: widget.multiDayTileBuilder!,
         components: widget.components,
         functions: widget.eventHandlers,
         singleDayViewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
@@ -107,8 +153,8 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       return MultiDayView<T>(
         controller: widget.controller,
         eventsController: widget.eventsController,
-        eventTileBuilder: widget.eventTileBuilder!,
-        multiDayEventTileBuilder: widget.multiDayEventTileBuilder!,
+        tileBuilder: widget.tileBuilder!,
+        multiDayTileBuilder: widget.multiDayTileBuilder!,
         components: widget.components,
         functions: widget.eventHandlers,
         multiDayViewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
@@ -120,7 +166,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       return MonthView<T>(
         controller: widget.controller,
         eventsController: widget.eventsController,
-        monthEventTileBuilder: widget.monthEventTileBuilder!,
+        monthTileBuilder: widget.monthTileBuilder!,
         components: widget.components,
         functions: widget.eventHandlers,
         monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,

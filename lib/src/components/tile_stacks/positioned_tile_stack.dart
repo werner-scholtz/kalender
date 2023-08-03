@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/day_tile_resize_detector.dart';
+import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
@@ -70,24 +71,34 @@ class PositionedTileStack<T> extends StatelessWidget {
 
         // Build the stack.
         return Stack(
-          children: tileGroups
-              .map(
-                (TileGroup<T> tileGroup) => TileGroupStack<T>(
-                  tileGroup: tileGroup,
-                  dayWidth: dayWidth,
-                  verticalStep: verticalStep,
-                  horizontalStep: horizontalStep,
-                  verticalDurationStep: verticalDurationStep,
-                  horizontalDurationStep: horizontalDurationStep,
-                  visibleDateRange: scope.state.visibleDateTimeRange.value,
-                  snapPoints: snapPoints,
-                ),
-              )
-              .toList(),
+          children: <Widget>[
+            ...tileGroups
+                .map(
+                  (TileGroup<T> tileGroup) => TileGroupStack<T>(
+                    tileGroup: tileGroup,
+                    dayWidth: dayWidth,
+                    verticalStep: verticalStep,
+                    horizontalStep: horizontalStep,
+                    verticalDurationStep: verticalDurationStep,
+                    horizontalDurationStep: horizontalDurationStep,
+                    visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    snapPoints: snapPoints,
+                  ),
+                )
+                .toList(),
+            if (shouldDisplayTile(scope.eventsController))
+              ChangingTileStack<T>(
+                tileLayoutController: tileLayoutController,
+              ),
+          ],
         );
       },
     );
   }
+
+  bool shouldDisplayTile(CalendarEventsController<T> controller) =>
+      controller.hasChaningEvent &&
+      (controller.isMoving || controller.isResizing || controller.isNewEvent);
 }
 
 class TileGroupStack<T> extends StatelessWidget {
@@ -157,7 +168,7 @@ class TileGroupStack<T> extends StatelessWidget {
   }
 }
 
-class PositionedTile<T > extends StatelessWidget {
+class PositionedTile<T> extends StatelessWidget {
   const PositionedTile({
     super.key,
     required this.controller,
@@ -209,7 +220,7 @@ class PositionedTile<T > extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EventTileBuilder<T> tileBuilder = CalendarScope.of<T>(context).tileComponents.eventTileBuilder!;
+    TileBuilder<T> tileBuilder = CalendarScope.of<T>(context).tileComponents.tileBuilder!;
     bool isMobileDevice = CalendarScope.of<T>(context).platformData.isMobileDevice;
     bool isMoving = controller.chaningEvent == positionedTileData.event;
 
