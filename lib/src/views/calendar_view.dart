@@ -9,6 +9,122 @@ import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 
+/// A navigable arrangement of events.
+///
+/// [controller] is a [CalendarController] used to control the view.
+///
+/// [eventsController] is a [CalendarEventsController] used to store and control events.
+///
+/// [viewConfiguration] is a [ViewConfiguration] used to configure the view.
+///
+/// [components] is a [CalendarComponents] used to build the components of the view.
+///
+/// [eventHandlers] is a [CalendarEventHandlers] used to handle any event that occurs.
+///
+/// [tileBuilder] is a [TileBuilder] used to build event tiles.
+///
+/// [multiDayTileBuilder] is a [MultiDayTileBuilder] used to build multi day event tiles.
+///
+/// [monthTileBuilder] is a [MonthEventBuilder] used to build month event tiles.
+///
+/// [createNewEvents] is a bool used to determine if new events can be created.
+///
+///
+/// There are four options for constructing a [CalendarView]:
+///
+///  1. The default constructor can display any view configuration and will update when a
+///     new view configuration is assigned.
+///
+///  2. The [CalendarView.singleDay] displays a single day and takes:
+///     * [SingleDayViewConfiguration] which is used to configure the view.
+///     * [TileBuilder] which is used to build tiles in the main view.
+///     * [MultiDayTileBuilder] which is used to build tiles above the main view.
+///
+///  3. The [CalendarView.multiDay] displays multiple days and takes:
+///     * [MultiDayViewConfiguration] which is used to configure the view.
+///     * [TileBuilder] which is used to build tiles in the main view.
+///     * [MultiDayTileBuilder] which is used to build tiles above the main view.
+///
+///  4. The [CalendarView.month] displays a month.
+///     * [MonthViewConfiguration] which is used to configure the view.
+///     * [MonthEventBuilder] which is used to build month event tiles.
+///
+/// Default constructor example:
+/// 
+/// {@tool snippet}
+/// '''dart
+/// CalendarView(
+///   controller: controller,
+///   eventsController: eventsController,
+///   viewConfiguration: viewConfiguration,
+///   tileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+///   multiDayTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+///   monthTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+/// );
+/// '''
+///
+/// SingleDay constructor example:
+///
+/// {@tool snippet}
+/// '''dart
+/// CalendarView.singleDay(
+///   controller: controller,
+///   eventsController: eventsController,
+///   viewConfiguration: DayConfiguration(),
+///   tileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+///   multiDayTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+/// );
+/// '''
+/// {@end-tool}
+///
+///
+/// MultiDay constructor example:
+///
+/// {@tool snippet}
+/// '''dart
+/// CalendarView.multiDay(
+///   controller: controller,
+///   eventsController: eventsController,
+///   viewConfiguration: WeekConfiguration(),
+///   tileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+///   multiDayTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///     color: Colors.blue,
+///   ),
+/// );
+/// '''
+/// {@end-tool}
+///
+///
+/// Month constructor example:
+///
+/// {@tool snippet}
+/// '''dart
+/// CalendarView.month(
+///   controller: controller,
+///   eventsController: eventsController,
+///   tileBuilder: (context, event) => Container(),
+///   viewConfiguration: MonthViewConfiguration(),
+///   multiDayTileBuilder: (context, event) => Container(
+///     color: Colors.blue,
+///   ),
+/// );
+/// '''
+/// {@end-tool}
+///
+///
+///
 class CalendarView<T> extends StatefulWidget {
   const CalendarView({
     super.key,

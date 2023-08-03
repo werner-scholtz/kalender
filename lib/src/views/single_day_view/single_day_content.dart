@@ -48,7 +48,7 @@ class SingleDayContent<T> extends StatelessWidget {
                     height: pageHeight,
                     width: pageWidth,
                     child: PageView.builder(
-                      key: Key(viewConfiguration.name),
+                      key: Key(viewConfiguration.hashCode.toString()),
                       controller: scope.state.pageController,
                       itemCount: scope.state.numberOfPages,
                       onPageChanged: (int index) {
@@ -124,7 +124,6 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                           
                             Visibility(
                               visible: DateTime.now().isWithin(pageVisibleDateRange),
                               child: TimeIndicator(

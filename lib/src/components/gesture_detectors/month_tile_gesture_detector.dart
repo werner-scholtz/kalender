@@ -62,6 +62,12 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
   }
 
   @override
+  void didUpdateWidget(covariant MonthTileGestureDetector<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    event = widget.event;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.deferToChild,

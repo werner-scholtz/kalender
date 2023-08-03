@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header.dart';
@@ -125,7 +127,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   }
 
   /// This function is called when an event is changed.
-  Future<void> onEventChanged(initialDateTimeRange, event) async {
+  Future<void> onEventChanged(initialDateTimeRange, CalendarEvent<Event> event) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
     ScaffoldMessenger.of(context).showSnackBar(

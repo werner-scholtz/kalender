@@ -33,7 +33,7 @@ class CalendarEventHandlers<T> {
 
   @override
   operator ==(Object other) {
-    return other is CalendarEventHandlers &&
+    return other is CalendarEventHandlers<T> &&
         other.onEventChanged == onEventChanged &&
         other.onEventTapped == onEventTapped &&
         other.onCreateEvent == onCreateEvent &&

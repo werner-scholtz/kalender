@@ -33,7 +33,7 @@ class MonthViewContent<T> extends StatelessWidget {
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             child: PageView.builder(
-              key: Key(viewConfiguration.name),
+              key: Key(viewConfiguration.hashCode.toString()),
               controller: scope.state.pageController,
               itemCount: scope.state.numberOfPages,
               onPageChanged: (int index) {
