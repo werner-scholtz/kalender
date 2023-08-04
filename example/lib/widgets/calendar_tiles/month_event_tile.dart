@@ -17,6 +17,7 @@ class MonthEventTile extends StatelessWidget {
   final TileType tileType;
   final bool continuesBefore;
   final bool continuesAfter;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,10 +44,10 @@ class MonthEventTile extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              if (event.hasDateCounter)
-                Text(
-                  '(${event.dayNumber(date)}/${event.daySpan})',
-                ),
+              // if (event.hasDateCounter)
+              //   Text(
+              //     '(${event.dayNumber(date)}/${event.daySpan})',
+              //   ),
             ],
           ),
         ),

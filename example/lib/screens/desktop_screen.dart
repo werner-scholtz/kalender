@@ -27,7 +27,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   late CalendarEventHandlers<Event> eventHandlers;
 
   /// The current view configuration.
-  late ViewConfiguration currentConfiguration = viewConfigurations.first;
+  late ViewConfiguration currentConfiguration = viewConfigurations[3];
 
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [

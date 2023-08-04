@@ -4,6 +4,8 @@ import 'package:kalender/src/components/general/day_seperator.dart';
 import 'package:kalender/src/components/general/hour_line.dart';
 import 'package:kalender/src/components/general/material_header.dart';
 import 'package:kalender/src/components/general/month_cell_header.dart';
+import 'package:kalender/src/components/general/month_cells.dart';
+import 'package:kalender/src/components/general/month_grid.dart';
 import 'package:kalender/src/components/general/month_header.dart';
 import 'package:kalender/src/components/general/schedule_date.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
@@ -25,6 +27,8 @@ class CalendarStyle {
     this.timelineStyle = const TimelineStyle(),
     this.weekNumberStyle = const WeekNumberStyle(),
     this.monthCellHeaderStyle = const MonthCellHeaderStyle(),
+    this.monthGridStyle = const MonthGridStyle(),
+    this.monthCellsStyle = const MonthCellsStyle(),
   });
 
   /// The background color of the [CalendarView].
@@ -45,12 +49,6 @@ class CalendarStyle {
   /// The [DayHeaderStyle] used by the [DayHeader].
   final DayHeaderStyle? dayHeaderStyle;
 
-  /// The [MonthHeaderStyle] used by the [MonthHeader].
-  final MonthHeaderStyle? monthHeaderStyle;
-
-  /// The [MonthCellHeaderStyle] used by the [MonthCellHeader]
-  final MonthCellHeaderStyle? monthCellHeaderStyle;
-
   /// The [TimeIndicatorStyle] used by the [TimeIndicator].
   final TimeIndicatorStyle? timeIndicatorStyle;
 
@@ -59,6 +57,18 @@ class CalendarStyle {
 
   /// The [WeekNumberStyle] used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;
+
+  /// The [MonthGridStyle] used by the [MonthGrid].
+  final MonthGridStyle? monthGridStyle;
+
+  /// The [MonthCellsStyle] used by the [MonthCells].
+  final MonthCellsStyle? monthCellsStyle;
+
+  /// The [MonthHeaderStyle] used by the [MonthHeader].
+  final MonthHeaderStyle? monthHeaderStyle;
+
+  /// The [MonthCellHeaderStyle] used by the [MonthCellHeader]
+  final MonthCellHeaderStyle? monthCellHeaderStyle;
 
   @override
   operator ==(Object other) {

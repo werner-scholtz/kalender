@@ -5,11 +5,11 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MultiDayGestureDetector<T > extends StatefulWidget {
+class MultiDayGestureDetector<T> extends StatefulWidget {
   const MultiDayGestureDetector({
     super.key,
     required this.pageWidth,
-    required this.dayWidth,
+    required this.cellWidth,
     required this.height,
     required this.multidayEventHeight,
     required this.numberOfRows,
@@ -17,7 +17,7 @@ class MultiDayGestureDetector<T > extends StatefulWidget {
   });
 
   final double pageWidth;
-  final double dayWidth;
+  final double cellWidth;
   final double height;
   final double multidayEventHeight;
   final int numberOfRows;
@@ -51,7 +51,7 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
   void initState() {
     super.initState();
     pageWidth = widget.pageWidth;
-    dayWidth = widget.dayWidth;
+    dayWidth = widget.cellWidth;
     height = widget.height;
     multidayEventHeight = widget.multidayEventHeight;
     numberOfRows = widget.numberOfRows;
@@ -63,7 +63,7 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
   void didUpdateWidget(covariant MultiDayGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     pageWidth = widget.pageWidth;
-    dayWidth = widget.dayWidth;
+    dayWidth = widget.cellWidth;
     height = widget.height;
     multidayEventHeight = widget.multidayEventHeight;
     numberOfRows = widget.numberOfRows;

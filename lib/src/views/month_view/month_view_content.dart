@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/date_icon_button.dart';
-import 'package:kalender/src/components/general/month_cell.dart';
-import 'package:kalender/src/components/tile_stacks/month_cell_stack.dart';
+import 'package:kalender/src/components/general/month_cells.dart';
+import 'package:kalender/src/components/general/month_grid.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -27,7 +28,7 @@ class MonthViewContent<T> extends StatelessWidget {
     return Expanded(
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          double cellHeight = constraints.maxHeight / 6;
+          double cellHeight = constraints.maxHeight / 5;
 
           return SizedBox(
             width: constraints.maxWidth,
@@ -55,37 +56,55 @@ class MonthViewContent<T> extends StatelessWidget {
                   firstDayOfWeek: viewConfiguration.firstDayOfWeek,
                 );
 
-                return GridView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                    childAspectRatio: cellWidth / cellHeight,
-                  ),
-                  itemCount: 42,
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (BuildContext context, int index) {
-                    DateTime date = visibleDateRange.start.add(Duration(days: index));
-                    return MonthCell(
-                      child: Column(
-                        children: <Widget>[
-                          DateIconButton(
-                            date: date,
-                            onTapped: (DateTime date) => scope.functions.onDateTapped?.call(date),
-                            visualDensity: VisualDensity.compact,
-                          ),
-                          Expanded(
-                            child: MonthCellStack<T>(
-                              viewConfiguration: viewConfiguration,
-                              date: date,
-                              cellHeight: cellHeight,
-                              cellWidth: cellWidth,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                log(visibleDateRange.toString());
+
+                return Stack(
+                  children: <Widget>[
+                    MonthGrid(
+                      pageHeight: constraints.maxHeight,
+                      cellHeight: cellHeight,
+                      cellWidth: cellWidth,
+                    ),
+                    MonthCells<T>(
+                      cellHeight: cellHeight,
+                      cellWidth: cellWidth,
+                      pageWidth: constraints.maxWidth,
+                      visibleDateRange: visibleDateRange,
+                    )
+                  ],
                 );
+
+                // return GridView.builder(
+                //   physics: const ClampingScrollPhysics(),
+                //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //     crossAxisCount: 7,
+                //     childAspectRatio: cellWidth / cellHeight,
+                //   ),
+                //   itemCount: 42,
+                //   padding: EdgeInsets.zero,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     DateTime date = visibleDateRange.start.add(Duration(days: index));
+                //     return MonthCell(
+                //       child: Column(
+                //         children: <Widget>[
+                //           DateIconButton(
+                //             date: date,
+                //             onTapped: (DateTime date) => scope.functions.onDateTapped?.call(date),
+                //             visualDensity: VisualDensity.compact,
+                //           ),
+                //           Expanded(
+                //             child: MonthCellStack<T>(
+                //               viewConfiguration: viewConfiguration,
+                //               date: date,
+                //               cellHeight: cellHeight,
+                //               cellWidth: cellWidth,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   },
+                // );
               },
             ),
           );

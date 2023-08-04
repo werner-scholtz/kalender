@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/positioned_tile_stack.dart';
+import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';

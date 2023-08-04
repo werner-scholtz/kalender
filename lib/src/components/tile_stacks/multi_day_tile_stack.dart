@@ -66,7 +66,7 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                 MultiDayGestureDetector<T>(
                   pageWidth: pageWidth,
                   height: multiDayEventLayout.stackHeight,
-                  dayWidth: dayWidth,
+                  cellWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
                   numberOfRows: multiDayEventLayout.numberOfRows,
                   visibleDates: scope.state.visibleDateTimeRange.value.datesSpanned,

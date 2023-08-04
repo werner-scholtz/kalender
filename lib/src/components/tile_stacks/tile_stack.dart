@@ -43,7 +43,7 @@ class PositionedTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        Iterable<CalendarEvent<T>> events = scope.eventsController.getDayEventsFromDateRange(
+        Iterable<CalendarEvent<T>> events = scope.eventsController.getEventsFromDateRange(
           pageVisibleDateRange,
         );
 
