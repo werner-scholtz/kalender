@@ -56,8 +56,6 @@ class MonthViewContent<T> extends StatelessWidget {
                   firstDayOfWeek: viewConfiguration.firstDayOfWeek,
                 );
 
-                log(visibleDateRange.toString());
-
                 return Stack(
                   children: <Widget>[
                     MonthGrid(

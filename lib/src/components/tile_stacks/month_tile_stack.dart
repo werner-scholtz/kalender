@@ -51,7 +51,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
 
           return SizedBox(
             width: pageWidth,
-            height: cellWidth,
+            height: monthEventLayout.stackHeight,
             child: Stack(
               children: <Widget>[
                 // MultiDayGestureDetector<T>(
