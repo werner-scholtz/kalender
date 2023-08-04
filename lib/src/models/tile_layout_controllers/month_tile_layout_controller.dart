@@ -102,8 +102,8 @@ class MonthLayoutController<T> {
 
     numberOfRows = stackHeight ~/ tileHeight;
 
-    if (numberOfRows <= 3 && isMobileDevice) {
-      numberOfRows = 3;
+    if (numberOfRows < 1) {
+      numberOfRows = 1;
       stackHeight = tileHeight * numberOfRows;
     }
 

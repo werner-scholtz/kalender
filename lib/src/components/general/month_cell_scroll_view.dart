@@ -37,10 +37,10 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: <Color>[
-              Theme.of(context).colorScheme.onBackground,
+              Theme.of(context).colorScheme.background,
               Colors.transparent,
               Colors.transparent,
-              Theme.of(context).colorScheme.onBackground,
+              Theme.of(context).colorScheme.background,
             ],
             stops: <double>[0.0, 0.05 * _stopStart, 1 - 0.05 * _stopEnd, 1.0],
             // widget.child.reverse
