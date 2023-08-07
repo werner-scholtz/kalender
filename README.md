@@ -11,29 +11,92 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<!--
+This README describes the package. If you publish this package to pub.dev,
+this README's contents appear on the landing page for your package.
+
+For information about how to write a good package README, see the guide for
+[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+
+For general information about developing packages, see the Dart guide for
+[creating packages](https://dart.dev/guides/libraries/create-library-packages)
+and the Flutter guide for
+[developing packages and plugins](https://flutter.dev/developing-packages).
+-->
+
+A Flutter package allows you to use a Calendar Widget that has built-in Day, MultiDay, and Month views. 
+It also allows you to customize the appearance of the calendar widget.
+
 
 ## Features
 
 TODO: List what your package can do. Maybe include images, gifs, or videos.
 
-## Getting started
+* Calendar Views - 
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+* Custom Object -
+
+* Reize, Drag and Drop - 
+
+* Flexible View's - 
+
+* First Day of the Week - 
+
+* Appearance -
+
+* Custom Builders - 
+
+
+## Installation
+
+1. Add this to your package's pubspec.yaml file:
+    
+    ```
+   $ flutter pub add kalender
+    ```
+2. Import it:   
+    
+    ```dart
+   import 'package:kalender/kalender.dart';
+    ```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+1. Create a custom class to store your data. 
+    ```dart
+    class Event {
+      final String title;
+      final Color color;
+    
+      Event(this.title, this.description);
+    }
+    ```
 
-```dart
-const like = 'sample';
-```
+2. Create a EventsController
+    ```dart
+    final eventsController = EventsController<Event>();
+    ```
+    Add events to the controller
+    ```dart
+    eventsController.addEvent(Event('Event 1', Colors.red));
+    eventsController.addEvent(Event('Event 2', Color.blue));
+    ```
+
+3. Create a CalendarController
+    ```dart
+    final calendarController = CalendarController();
+    ```
+
+4. Create a CalendarView
+    ```dart
+    CalendarView(
+      eventsController: eventsController,
+      calendarController: calendarController,
+    )
+    ```
+
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+
+<!-- TODO: Add more info -->
