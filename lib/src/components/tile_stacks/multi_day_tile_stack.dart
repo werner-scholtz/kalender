@@ -140,14 +140,11 @@ class MultidayTileStack<T> extends StatelessWidget {
               left: arragnedEvent.left,
               width: arragnedEvent.width,
               height: arragnedEvent.height,
-              child: MultiDayTileGestureDetector(
+              child: MultiDayTileGestureDetector<T>(
                 horizontalDurationStep: horizontalDurationStep,
-                dayWidth: dayWidth,
-                initialDateTimeRange: arragnedEvent.event.dateTimeRange,
-                onTap: _onTap,
-                onHorizontalDragStart: _onHorizontalDragStart,
-                onHorizontalDragEnd: _onHorizontalDragEnd,
-                rescheduleEvent: _rescheduleEvent,
+                horizontalStep: dayWidth,
+                event: arragnedEvent.event,
+                visibleDateRange: visibleDateRange,
                 child: CalendarScope.of<T>(context).tileComponents.multiDayTileBuilder!(
                   arragnedEvent.event,
                   isMoving ? TileType.ghost : TileType.normal,

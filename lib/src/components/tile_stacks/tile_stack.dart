@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day_tile_gesture_detector.dart';
-import 'package:kalender/src/components/gesture_detectors/day_tile_resize_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
@@ -216,49 +215,34 @@ class PositionedTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TileBuilder<T> tileBuilder = CalendarScope.of<T>(context).tileComponents.tileBuilder!;
-    bool isMobileDevice = CalendarScope.of<T>(context).platformData.isMobileDevice;
     bool isMoving = controller.chaningEvent == positionedTileData.event;
+
+    bool continuesBefore = positionedTileData.event.continuesBefore(positionedTileData.date);
+    bool continuesAfter = positionedTileData.event.continuesAfter(positionedTileData.date);
 
     return Positioned(
       left: positionedTileData.left,
       top: positionedTileData.top,
       width: positionedTileData.width,
       height: positionedTileData.height,
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          DayTileGestureDetector<T>(
-            event: positionedTileData.event,
-            horizontalDurationStep: horizontalDurationStep,
-            verticalDurationStep: verticalDurationStep,
-            verticalStep: verticalStep,
-            horizontalStep: horizontalStep,
-            visibleDateTimeRange: visibleDateRange,
-            snapPoints: pointsOfInterest,
-            eventSnapping: pointsOfInterest.isNotEmpty,
-            child: tileBuilder(
-              positionedTileData.event,
-              isMoving ? TileType.ghost : TileType.normal,
-              positionedTileData.drawOutline,
-              positionedTileData.event.continuesBefore(positionedTileData.date),
-              positionedTileData.event.continuesAfter(positionedTileData.date),
-            ),
-          ),
-          DayTileResizeDetector(
-            height: positionedTileData.height,
-            width: positionedTileData.width,
-            verticalStep: verticalStep,
-            verticalDurationStep: verticalDurationStep,
-            onVerticalDragStart: isMobileDevice ? null : onResizeStart,
-            onVerticalDragEnd: isMobileDevice ? null : onResizeEnd,
-            resizeStart: isMobileDevice ? null : _resizeStart,
-            resizeEnd: isMobileDevice ? null : _resizeEnd,
-            initialDateTimeRange: positionedTileData.event.dateTimeRange,
-            snapPoints: pointsOfInterest,
-            disableTop: positionedTileData.event.continuesBefore(positionedTileData.date),
-            disableBottom: positionedTileData.event.continuesAfter(positionedTileData.date),
-          ),
-        ],
+      child: DayTileGestureDetector<T>(
+        event: positionedTileData.event,
+        horizontalDurationStep: horizontalDurationStep,
+        verticalDurationStep: verticalDurationStep,
+        verticalStep: verticalStep,
+        horizontalStep: horizontalStep,
+        visibleDateTimeRange: visibleDateRange,
+        snapPoints: pointsOfInterest,
+        eventSnapping: pointsOfInterest.isNotEmpty,
+        continuesBefore: continuesBefore,
+        continuesAfter: continuesAfter,
+        child: tileBuilder(
+          positionedTileData.event,
+          isMoving ? TileType.ghost : TileType.normal,
+          positionedTileData.drawOutline,
+          continuesBefore,
+          continuesAfter,
+        ),
       ),
     );
   }
@@ -314,20 +298,6 @@ class PositionedTile<T> extends StatelessWidget {
     if (newDateTimeRange.start.isWithin(visibleDateRange) ||
         newDateTimeRange.end.isWithin(visibleDateRange)) {
       controller.chaningEvent!.dateTimeRange = newDateTimeRange;
-    }
-  }
-
-  void _resizeStart(DateTime newStart) {
-    if (controller.chaningEvent == null) return;
-    if (newStart.isBefore(controller.chaningEvent!.end)) {
-      controller.chaningEvent!.start = newStart;
-    }
-  }
-
-  void _resizeEnd(DateTime newEnd) {
-    if (controller.chaningEvent == null) return;
-    if (newEnd.isAfter(controller.chaningEvent!.start)) {
-      controller.chaningEvent!.end = newEnd;
     }
   }
 }

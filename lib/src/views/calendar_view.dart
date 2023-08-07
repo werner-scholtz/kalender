@@ -50,7 +50,7 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 ///     * [MonthEventBuilder] which is used to build month event tiles.
 ///
 /// Default constructor example:
-/// 
+///
 /// {@tool snippet}
 /// '''dart
 /// CalendarView(

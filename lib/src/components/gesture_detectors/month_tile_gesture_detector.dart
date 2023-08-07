@@ -68,15 +68,50 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.deferToChild,
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      child: InkWell(
-        onTap: _onTap,
-        child: widget.child,
-      ),
+    return Stack(
+      children: <Widget>[
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            behavior: HitTestBehavior.deferToChild,
+            onPanStart: _onPanStart,
+            onPanUpdate: _onPanUpdate,
+            onPanEnd: _onPanEnd,
+            onTap: _onTap,
+            child: widget.child,
+          ),
+        ),
+        Positioned(
+          left: 0,
+          width: 8,
+          top: 0,
+          bottom: 0,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.resizeLeftRight,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onHorizontalDragStart: _onResizeStart,
+              onHorizontalDragUpdate: _resizeStart,
+              onHorizontalDragEnd: _onResizeEnd,
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          width: 8,
+          top: 0,
+          bottom: 0,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.resizeLeftRight,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onHorizontalDragStart: _onResizeStart,
+              onHorizontalDragUpdate: _resizeEnd,
+              onHorizontalDragEnd: _onResizeEnd,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -127,6 +162,49 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
     if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
         newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
       controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+    }
+  }
+
+  void _onResizeStart(DragStartDetails details) {
+    event = widget.event;
+    initialDateTimeRange = event.dateTimeRange;
+    cursorOffset = Offset.zero;
+    currentHorizontalSteps = 0;
+    controller.chaningEvent = event;
+  }
+
+  void _onResizeEnd(DragEndDetails details) async {
+    event = widget.event;
+    await functions.onEventChanged?.call(event.dateTimeRange, controller.chaningEvent!);
+    controller.chaningEvent = null;
+  }
+
+  void _resizeStart(DragUpdateDetails details) {
+    cursorOffset += details.delta;
+    int steps = (cursorOffset.dx / widget.horizontalStep).round();
+    if (steps != currentHorizontalSteps) {
+      DateTime newStart = initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
+
+      if (controller.chaningEvent == null) return;
+      if (newStart.isBefore(initialDateTimeRange.end)) {
+        controller.chaningEvent?.start = newStart;
+      }
+
+      currentHorizontalSteps = steps;
+    }
+  }
+
+  void _resizeEnd(DragUpdateDetails details) {
+    cursorOffset += details.delta;
+    int steps = (cursorOffset.dx / widget.horizontalStep).round();
+    if (steps != currentHorizontalSteps) {
+      DateTime newEnd = initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
+      if (controller.chaningEvent == null) return;
+      if (newEnd.isAfter(initialDateTimeRange.start)) {
+        controller.chaningEvent?.end = newEnd;
+      }
+
+      currentHorizontalSteps = steps;
     }
   }
 }

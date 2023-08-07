@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
@@ -27,7 +28,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   late CalendarEventHandlers<Event> eventHandlers;
 
   /// The current view configuration.
-  late ViewConfiguration currentConfiguration = viewConfigurations[3];
+  late ViewConfiguration currentConfiguration = viewConfigurations[1];
 
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
@@ -128,6 +129,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// This function is called when an event is changed.
   Future<void> onEventChanged(initialDateTimeRange, CalendarEvent<Event> event) async {
+    log(event.dateTimeRange.toString());
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
     ScaffoldMessenger.of(context).showSnackBar(
