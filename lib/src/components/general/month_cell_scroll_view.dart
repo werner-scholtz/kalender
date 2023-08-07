@@ -19,15 +19,17 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollNotification) {
-        setState(() {
-          _stopStart = scrollNotification.metrics.pixels / overlayHeight;
-          _stopEnd =
-              (scrollNotification.metrics.maxScrollExtent - scrollNotification.metrics.pixels) /
-                  overlayHeight;
+        if (mounted) {
+          setState(() {
+            _stopStart = scrollNotification.metrics.pixels / overlayHeight;
+            _stopEnd =
+                (scrollNotification.metrics.maxScrollExtent - scrollNotification.metrics.pixels) /
+                    overlayHeight;
 
-          _stopStart = _stopStart.clamp(0.0, 1.0);
-          _stopEnd = _stopEnd.clamp(0.0, 1.0);
-        });
+            _stopStart = _stopStart.clamp(0.0, 1.0);
+            _stopEnd = _stopEnd.clamp(0.0, 1.0);
+          });
+        }
 
         return true;
       },
@@ -43,9 +45,6 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
               Theme.of(context).colorScheme.background,
             ],
             stops: <double>[0.0, 0.05 * _stopStart, 1 - 0.05 * _stopEnd, 1.0],
-            // widget.child.reverse
-            //     ? [0.0, 0.05 * _stopEnd, 1 - 0.05 * _stopStart, 1.0]
-            //     : ,
           ).createShader(rect);
         },
         blendMode: BlendMode.dstOut,

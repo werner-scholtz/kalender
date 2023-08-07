@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/month_cells.dart';
 import 'package:kalender/src/components/general/month_grid.dart';
