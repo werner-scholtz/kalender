@@ -69,38 +69,6 @@ class MonthViewContent<T> extends StatelessWidget {
                     )
                   ],
                 );
-
-                // return GridView.builder(
-                //   physics: const ClampingScrollPhysics(),
-                //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //     crossAxisCount: 7,
-                //     childAspectRatio: cellWidth / cellHeight,
-                //   ),
-                //   itemCount: 42,
-                //   padding: EdgeInsets.zero,
-                //   itemBuilder: (BuildContext context, int index) {
-                //     DateTime date = visibleDateRange.start.add(Duration(days: index));
-                //     return MonthCell(
-                //       child: Column(
-                //         children: <Widget>[
-                //           DateIconButton(
-                //             date: date,
-                //             onTapped: (DateTime date) => scope.functions.onDateTapped?.call(date),
-                //             visualDensity: VisualDensity.compact,
-                //           ),
-                //           Expanded(
-                //             child: MonthCellStack<T>(
-                //               viewConfiguration: viewConfiguration,
-                //               date: date,
-                //               cellHeight: cellHeight,
-                //               cellWidth: cellWidth,
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   },
-                // );
               },
             ),
           );

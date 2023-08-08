@@ -63,43 +63,47 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: onTap,
-        onPanStart: gestureDisabled ? null : onPanStart,
-        onPanUpdate: gestureDisabled ? null : onPanUpdate,
-        onPanEnd: gestureDisabled ? null : onPanEnd,
+        behavior: HitTestBehavior.opaque,
+        onTap: _onTap,
+        onPanStart: gestureDisabled ? null : _onPanStart,
+        onPanUpdate: gestureDisabled ? null : _onPanUpdate,
+        onPanEnd: gestureDisabled ? null : _onPanEnd,
       ),
     );
   }
 
-  void onTap() async {
-    // Create a new [CalendarEvent] with the [dateTimeRange].
-    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
-      dateTimeRange: date.dayRange,
-    );
-
-    // Set the chaning event to the new event.
-    controller.chaningEvent = newCalendarEvent;
-
-    // Set the [isNewEvent] to true.
-    controller.isNewEvent = true;
-
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
-
-    // If the [newEvent] is null then set the [chaningEvent] to null.
-    if (newEvent == null) {
-      controller.chaningEvent = null;
+  void _onTap() async {
+    if (isMobileDevice) {
+      scope.functions.onDateTapped?.call(date);
     } else {
-      // Add the [newEvent] to the [CalendarController].
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
+      // Create a new [CalendarEvent] with the [dateTimeRange].
+      CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+        dateTimeRange: date.dayRange,
+      );
 
-    // Set the [isNewEvent] to false.
-    controller.isNewEvent = false;
+      // Set the chaning event to the new event.
+      controller.chaningEvent = newCalendarEvent;
+
+      // Set the [isNewEvent] to true.
+      controller.isNewEvent = true;
+
+      CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+
+      // If the [newEvent] is null then set the [chaningEvent] to null.
+      if (newEvent == null) {
+        controller.chaningEvent = null;
+      } else {
+        // Add the [newEvent] to the [CalendarController].
+        controller.addEvent(newEvent);
+        controller.chaningEvent = null;
+      }
+
+      // Set the [isNewEvent] to false.
+      controller.isNewEvent = false;
+    }
   }
 
-  void onPanStart(DragStartDetails details) {
+  void _onPanStart(DragStartDetails details) {
     // Create a new [CalendarEvent] with the [dateTimeRange].
     CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: date.dayRange,
@@ -117,7 +121,7 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
     currentHorizontalSteps = 0;
   }
 
-  void onPanEnd(DragEndDetails details) async {
+  void _onPanEnd(DragEndDetails details) async {
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
@@ -136,7 +140,7 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
     controller.isNewEvent = false;
   }
 
-  void onPanUpdate(DragUpdateDetails details) {
+  void _onPanUpdate(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
     int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
@@ -162,19 +166,15 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
         start: newStart,
         end: initialDateTimeRange!.end,
       );
-      if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
-          newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
-        controller.chaningEvent!.dateTimeRange = newDateTimeRange;
-      }
+
+      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
     } else {
       DateTimeRange newDateTimeRange = DateTimeRange(
         start: initialDateTimeRange!.start,
         end: newEnd,
       );
-      if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
-          newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
-        controller.chaningEvent!.dateTimeRange = newDateTimeRange;
-      }
+
+      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
     }
   }
 }

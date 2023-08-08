@@ -44,10 +44,10 @@ class MonthEventTile extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              if (event.hasDateCounter)
-                Text(
-                  '(${event.dayNumber(date)}/${event.daySpan})',
-                ),
+              // if (event.hasDateCounter)
+              //   Text(
+              //     '(${event.dayNumber(date)}/${event.daySpan})',
+              //   ),
             ],
           ),
         ),

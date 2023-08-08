@@ -61,15 +61,16 @@ class MonthCells<T> extends StatelessWidget {
                       start: visibleDateRange.start.add(Duration(days: c * 7)),
                       end: visibleDateRange.start.add(Duration(days: (c * 7) + 7)),
                     );
-
+                    double contentHeight =
+                        cellHeight - (style.monthCellsStyle?.cellHeaderHeight ?? 32);
                     return SizedBox(
                       width: pageWidth,
-                      height: cellHeight - (style.monthCellsStyle?.cellHeaderHeight ?? 32),
+                      height: contentHeight,
                       child: MonthCellScrollView(
                         child: PositionedMonthTileStack<T>(
                           pageWidth: pageWidth,
                           cellWidth: cellWidth,
-                          cellHeight: cellHeight - (style.monthCellsStyle?.cellHeaderHeight ?? 32),
+                          cellHeight: contentHeight,
                           visibleDateRange: weekDateRange,
                           monthVisibleDateRange: visibleDateRange,
                           monthEventLayout: MonthLayoutController<T>(

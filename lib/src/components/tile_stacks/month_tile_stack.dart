@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
 
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_month_tile_stack.dart';
@@ -51,17 +52,28 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
 
           return SizedBox(
             width: pageWidth,
-            height: monthEventLayout.stackHeight,
+            height: monthEventLayout.stackHeight < cellHeight
+                ? cellHeight
+                : monthEventLayout.stackHeight,
             child: Stack(
               children: <Widget>[
-                // MultiDayGestureDetector<T>(
-                //   pageWidth: pageWidth,
-                //   height: monthEventLayout.stackHeight,
-                //   dayWidth: cellWidth,
-                //   multidayEventHeight: monthEventLayout.tileHeight,
-                //   numberOfRows: monthEventLayout.numberOfRows,
-                //   visibleDates: scope.state.visibleDateTimeRange.value.datesSpanned,
-                // ),
+                Row(
+                  children: <Widget>[
+                    for (int r = 0; r < 7; r++)
+                      SizedBox(
+                        width: cellWidth,
+                        height: cellHeight,
+                        child: MonthCellGestureDetector<T>(
+                          date: visibleDateRange.start.add(Duration(days: r)),
+                          visibleDateRange: visibleDateRange,
+                          verticalDurationStep: const Duration(days: 7),
+                          verticalStep: cellHeight,
+                          horizontalDurationStep: const Duration(days: 1),
+                          horizontalStep: cellWidth,
+                        ),
+                      ),
+                  ],
+                ),
                 ...arragedEvents.map(
                   (PositionedMonthTileData<T> e) {
                     return MonthTileStack<T>(
