@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/general/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_cell_scroll_view.dart';
 import 'package:kalender/src/components/tile_stacks/month_tile_stack.dart';
@@ -17,12 +18,14 @@ class MonthCellsStyle {
 class MonthCells<T> extends StatelessWidget {
   const MonthCells({
     super.key,
+    required this.viewConfiguration,
     required this.cellHeight,
     required this.cellWidth,
     required this.visibleDateRange,
     required this.pageWidth,
   });
 
+  final MonthViewConfiguration viewConfiguration;
   final DateTimeRange visibleDateRange;
   final double cellHeight;
   final double cellWidth;
@@ -68,6 +71,7 @@ class MonthCells<T> extends StatelessWidget {
                       height: contentHeight,
                       child: MonthCellScrollView(
                         child: PositionedMonthTileStack<T>(
+                          viewConfiguration: viewConfiguration,
                           pageWidth: pageWidth,
                           cellWidth: cellWidth,
                           cellHeight: contentHeight,

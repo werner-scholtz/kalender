@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header.dart';

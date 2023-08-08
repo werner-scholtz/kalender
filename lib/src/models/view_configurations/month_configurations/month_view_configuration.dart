@@ -12,4 +12,7 @@ abstract class MonthViewConfiguration implements ViewConfiguration {
 
   /// The first day of the week.
   int get firstDayOfWeek;
+
+  /// Whether the events can be resized.
+  bool get enableRezising;
 }

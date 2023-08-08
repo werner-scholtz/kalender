@@ -166,7 +166,6 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
       if (newStart.isBefore(initialDateTimeRange.end)) {
         controller.chaningEvent?.start = newStart;
       }
-
       currentSteps = steps;
     }
   }

@@ -5,6 +5,7 @@ import 'package:kalender/src/extentions.dart';
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
+    this.enableRezising = false,
   });
 
   @override
@@ -18,6 +19,9 @@ class MonthConfiguration extends MonthViewConfiguration {
 
   @override
   final int firstDayOfWeek;
+
+  @override
+  final bool enableRezising;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {

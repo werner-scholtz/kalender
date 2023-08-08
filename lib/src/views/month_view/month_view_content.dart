@@ -66,6 +66,7 @@ class MonthViewContent<T> extends StatelessWidget {
                       cellWidth: cellWidth,
                       pageWidth: constraints.maxWidth,
                       visibleDateRange: visibleDateRange,
+                      viewConfiguration: viewConfiguration,
                     )
                   ],
                 );

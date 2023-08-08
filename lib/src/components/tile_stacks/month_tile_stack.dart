@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
 
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
@@ -19,6 +20,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
     required this.monthEventLayout,
     required this.visibleDateRange,
     required this.monthVisibleDateRange,
+    required this.viewConfiguration,
   });
 
   /// The width of the page.
@@ -35,6 +37,8 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
   final DateTimeRange visibleDateRange;
 
   final DateTimeRange monthVisibleDateRange;
+
+  final MonthViewConfiguration viewConfiguration;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +83,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                     return MonthTileStack<T>(
                       controller: scope.eventsController,
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
+                      viewConfiguration: viewConfiguration,
                       monthEventLayout: monthEventLayout,
                       monthVisibleDateRange: monthVisibleDateRange,
                       arragnedEvent: e,
@@ -106,6 +111,7 @@ class MonthTileStack<T> extends StatelessWidget {
   const MonthTileStack({
     super.key,
     required this.controller,
+    required this.viewConfiguration,
     required this.visibleDateRange,
     required this.monthEventLayout,
     required this.monthVisibleDateRange,
@@ -117,6 +123,8 @@ class MonthTileStack<T> extends StatelessWidget {
   });
 
   final CalendarEventsController<T> controller;
+
+  final MonthViewConfiguration viewConfiguration;
 
   final DateTimeRange visibleDateRange;
   final DateTimeRange monthVisibleDateRange;
@@ -149,6 +157,8 @@ class MonthTileStack<T> extends StatelessWidget {
                 verticalDurationStep: verticalDurationStep,
                 verticalStep: verticalStep,
                 visibleDateRange: monthVisibleDateRange,
+                enableResizing: viewConfiguration.enableRezising,
+                // isMultidayEvent: arragnedEvent.event.isMultidayEvent,
                 child: CalendarScope.of<T>(context).tileComponents.monthTileBuilder!(
                   arragnedEvent.event,
                   isMoving ? TileType.ghost : TileType.normal,

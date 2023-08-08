@@ -14,6 +14,7 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
     required this.verticalStep,
     required this.horizontalDurationStep,
     required this.horizontalStep,
+    required this.enableResizing,
     required this.child,
   });
 
@@ -36,6 +37,8 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
 
   /// The pixel value of the horizontal step.
   final double horizontalStep;
+
+  final bool enableResizing;
 
   @override
   State<MonthTileGestureDetector<T>> createState() => _MonthTileGestureDetectorState<T>();
