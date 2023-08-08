@@ -179,6 +179,7 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
     controller.chaningEvent = null;
   }
 
+  /// TODO: If the event starts at a time other than 00:00, then the event might not allow resizing 
   void _resizeStart(DragUpdateDetails details) {
     cursorOffset += details.delta;
     int steps = (cursorOffset.dx / widget.horizontalStep).round();
@@ -194,6 +195,7 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
     }
   }
 
+  /// TODO: If the event ends at a time other than 00:00, then the event might not allow resizing
   void _resizeEnd(DragUpdateDetails details) {
     cursorOffset += details.delta;
     int steps = (cursorOffset.dx / widget.horizontalStep).round();

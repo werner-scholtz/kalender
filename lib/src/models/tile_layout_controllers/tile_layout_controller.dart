@@ -80,7 +80,7 @@ class TileLayoutController<T> {
       TileGroup<T> tileGroup;
 
       if (groupedEvents.length == 1) {
-        // log(date.toString(), name: 'Date');
+
 
         // If there is only one event in the group, directly create the tile group.
         tileGroup = createTileGroupFromSingleEvent(

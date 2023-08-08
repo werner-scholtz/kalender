@@ -158,32 +158,4 @@ class MultidayTileStack<T> extends StatelessWidget {
       },
     );
   }
-
-  void _onTap() async {
-    controller.isMultidayEvent = true;
-    controller.chaningEvent = arragnedEvent.event;
-    await onEventTapped?.call(controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMultidayEvent = false;
-  }
-
-  void _onHorizontalDragStart() {
-    controller.isMultidayEvent = true;
-    controller.chaningEvent = arragnedEvent.event;
-  }
-
-  void _onHorizontalDragEnd() {
-    onEventChanged?.call(arragnedEvent.dateRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMultidayEvent = false;
-  }
-
-  void _rescheduleEvent(DateTimeRange newDateTimeRange) {
-    if (controller.chaningEvent == null) return;
-
-    if (newDateTimeRange.start.isWithin(visibleDateRange) ||
-        newDateTimeRange.end.isWithin(visibleDateRange)) {
-      controller.chaningEvent?.dateTimeRange = newDateTimeRange;
-    }
-  }
 }
