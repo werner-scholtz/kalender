@@ -34,9 +34,22 @@ Try it out [here](https://049er.github.io/kalender/#/)
 
 <!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
-* Calendar Views - There is 3 calendar views available, Day, MultiDay, and Month.
-  ![Feature](./readme_assets/desktop_views.png)(desktop)
-  ![Feature](./readme_assets/mobile_views.png)(mobile)
+* Calendar Views - There are 3 calendar views available, Day, MultiDay, and Month.
+
+  <img src="./readme_assets/desktop_views.png" width="100%" height="100%"/>
+  (desktop)
+
+
+  <img src="./readme_assets/mobile_views.png" width="90%" height="90%"/>
+
+  (mobile)
+
+*  Reschedule - Drag and Drop events to your liking.
+    <img src="./readme_assets/drag_and_drop.gif" width="75%" height="75%"/>
+
+* Resize - Resize events by dragging the edges of an event.
+    <img src="./readme_assets/resize.gif" width="75%" height="75%"/>
+
 
 * Custom Object - CaledarEvent's can store any object and can be accessed in the builder functions.
     ```dart 
@@ -45,18 +58,15 @@ Try it out [here](https://049er.github.io/kalender/#/)
     )
     ```
 
+* Flexible View's - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own by extending one of the the classes.
+```dart
+  class YourConfiguration extends SingleDayViewConfiguration {}
+  class YourConfiguration extends MultiDayViewConfiguration {}
+  class YourConfiguration extends MonthViewConfiguration {}
+```
+  
 
-* Drag and Drop - Drag and drop events to different days.
-    ![Feature](./readme_assets/drag_and_drop.gif) (move and resize)
-
-* Resize - Resize events by dragging the bottom of the event.
-    ![Feature](./readme_assets/resize.gif) (resize)
-
-* Flexible View's - 
-
-* First Day of the Week - 
-
-* Appearance -
+* Appearance - 
 
 * Custom Builders - 
 
@@ -108,7 +118,14 @@ Try it out [here](https://049er.github.io/kalender/#/)
     final calendarController = CalendarController();
     ```
 
-4. Create a CalendarView
+4. Create tile builders
+   ```dart
+   Widget _tileBuilder(event, tileConfiguration) => Widget()
+   Widget _multiDayTileBuilder(event, tileConfiguration) => Widget()
+   Widget _monthEventTileBuilder(event, tileConfiguration) => Widget()
+   ```
+
+5. Create a CalendarView
     ```dart
     CalendarView(
       eventsController: eventsController,
