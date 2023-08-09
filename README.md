@@ -145,20 +145,91 @@ There are a few constructors that you can choose from to create a CalendarView.
 
 <!--TODO: Complete this-->
 ### Event Handling
+The CalendarEventHandlers handles the user's interaction with the calendar. (Do not confuse the CalendarEventHandlers with the EventsController)
+
+There are 4 events at this time that can be handeled.
+
+1. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
+
+2. **onEventTapped**: this function is called when an event displayed on the calendar is tapped.
+
+3. **onCreateEvent**: this function is called when a new event is created by the calendar.
+
+4. **onDateTapped**: this function is called when a date on the calendar is tapped.
+
+```dart
+CalendarEventHandlers<Event>(
+  onEventChanged: (initialDateTimeRange, event) async {
+    // The initialDateTimeRange is the original DateTimeRange of the event.
+    // The event is a reference to the event that was changed.
+
+    // This is a async function, so you can do any async work here.
+  },
+  onEventTapped: (calendarEvent) async {
+    // The calendarEvent is a reference to the event that was tapped.
+
+    // This is a async function, so you can do any async work here.
+  },
+  onCreateEvent: (calendarEvent) async {
+    // The calendarEvent is a reference to the event that was created.
+
+    // This is a async function, so you can do any async work here.
 
 
+    // You must return the calendarEvent.
+    return calendarEvent;
+  },
+  onDateTapped: (date) {
+    // The date is the date that was tapped. see example for use case.
+  },
+);
+```
 
 ### Events Controller
-Do not confuse the EventsController with EventHandling.
 The EventsController is used to store and manage events.
+(Do not confuse the EventsController with EventHandling)
 
-<!--TODO: Add a table of functions-->
+| Function      | Parameters    | Description   |
+| ------------- | ------------- | ------------- |
+| addEvent      | <!--TODO -->  | <!--TODO -->  |
+| addEvents     | <!--TODO -->  | <!--TODO -->  |
+| addEvent      | <!--TODO -->  | <!--TODO -->  |
+| removeEvent   | <!--TODO -->  | <!--TODO -->  |
+| removeWhere   | <!--TODO -->  | <!--TODO -->  |
+| clearEvents   | <!--TODO -->  | <!--TODO -->  |
+| updateEvent   | <!--TODO -->  | <!--TODO -->  | 
 
 
 ### Calendar Controller
-<!--TODO: Add a table of functions-->
+The CalendarController is used to control the CalendarView.
+
+| Function      | Parameters    | Description   |
+| ------------- | ------------- | ------------- |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
+| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  | 
+
 
 ### View Configuration
+There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewConfiguration, and MonthViewConfiguration.
+* You can create a Custom ViewConfiguration by extending one of these 'Types'.
+
+These are the default ViewConfiguration's:
+
+1. **DayConfiguration** - This configuration is used to configure the SingleDayView.
+
+2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
+
+3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
+
+4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+
+5. **MonthConfiguration** - this configuration is used to configure the MonthView.
+
 
 
 ### Custom Object
