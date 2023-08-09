@@ -35,7 +35,7 @@ It also allows you to customize the appearance of the calendar widget.
 * Calendar Views 
     
   ![Feature](./readme_assets/desktop_views.png)  (desktop)
-  ![Feature](./readme_assets/desktop_views.png)  (mobile)   
+  ![Feature](./readme_assets/mobile_views.png)  (mobile)   
 
 * Custom Object -
 
