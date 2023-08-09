@@ -1,17 +1,20 @@
-name: Gh-Pages
+name: GH Pages
 
 on:
   push:
-    branches: [ main ]
-
+    branches:
+      - main
+      
 jobs:
-  build:
+  build:    
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2 # Only works with v2
-      - uses: subosito/flutter-action@v1
-      - uses: erickzanardo/flutter-gh-pages@v7
-        with:
-          workingDir: example
-          baseHref: /kalender/
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter build web --release --base-href /kalender/
+      - run: git config user.name github-actions
+      - run: git config user.email github-actions@github.com
+      - run: git --work-tree build/web add --all
+      - run: git commit -m "Automatic deployment by github-actions"
+      - run: git push origin HEAD:gh-pages --force
