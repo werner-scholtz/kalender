@@ -42,8 +42,8 @@ class MonthView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
-  /// The [MonthEventBuilder] used to build month event tiles.
-  final MonthEventBuilder<T> monthTileBuilder;
+  /// The [MonthTileBuilder] used to build month event tiles.
+  final MonthTileBuilder<T> monthTileBuilder;
 
   /// Can create new events.
   final bool createNewEvents;

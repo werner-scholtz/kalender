@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -33,9 +34,11 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
                 height: arragnedEvent.height,
                 child: scope.tileComponents.multiDayTileBuilder!(
                   arragnedEvent.event,
-                  TileType.selected,
-                  arragnedEvent.continuesBefore,
-                  arragnedEvent.continuesAfter,
+                  MultiDayTileConfiguration(
+                    tileType: TileType.selected,
+                    continuesBefore: arragnedEvent.continuesBefore,
+                    continuesAfter: arragnedEvent.continuesAfter,
+                  ),
                 ),
               )
             ],

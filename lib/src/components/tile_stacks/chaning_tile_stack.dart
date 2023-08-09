@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -37,10 +38,14 @@ class ChangingTileStack<T> extends StatelessWidget {
                     height: e.height,
                     child: scope.tileComponents.tileBuilder!(
                       e.event,
-                      TileType.selected,
-                      false,
-                      e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
-                      e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
+                      TileConfiguration(
+                        tileType: TileType.selected,
+                        drawOutline: false,
+                        continuesBefore:
+                            e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
+                        continuesAfter:
+                            e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
+                      ),
                     ),
                   ),
                 )

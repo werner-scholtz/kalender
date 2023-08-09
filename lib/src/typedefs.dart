@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
+import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed in the calendar's header.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
@@ -42,10 +45,7 @@ typedef TimelineBuilder<T extends Object?> = Widget Function(
 /// continues before or after the day they are displayed on.
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
-  TileType tileType,
-  bool drawOutline,
-  bool continuesBefore,
-  bool continuesAfter,
+  TileConfiguration configuration,
 );
 
 /// The [MultiDayTileBuilder]
@@ -55,20 +55,15 @@ typedef TileBuilder<T extends Object?> = Widget Function(
 /// continues before or after the visible date range.
 typedef MultiDayTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
-  TileType tileType,
-  bool continuesBefore,
-  bool continuesAfter,
+  MultiDayTileConfiguration configuration,
 );
 
-/// The [MonthEventBuilder]
+/// The [MonthTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on a specific date.
-typedef MonthEventBuilder<T extends Object?> = Widget Function(
+typedef MonthTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
-  TileType tileType,
-  DateTime date,
-  bool continuesBefore,
-  bool continuesAfter,
+  MonthTileConfiguration configuration,
 );
 
 /// The [ScheduleEventTileBuilder]

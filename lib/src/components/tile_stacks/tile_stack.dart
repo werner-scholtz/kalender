@@ -7,6 +7,7 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -238,10 +239,12 @@ class PositionedTile<T> extends StatelessWidget {
         continuesAfter: continuesAfter,
         child: tileBuilder(
           positionedTileData.event,
-          isMoving ? TileType.ghost : TileType.normal,
-          positionedTileData.drawOutline,
-          continuesBefore,
-          continuesAfter,
+          TileConfiguration(
+            tileType: isMoving ? TileType.ghost : TileType.normal,
+            drawOutline: positionedTileData.drawOutline,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
+          ),
         ),
       ),
     );

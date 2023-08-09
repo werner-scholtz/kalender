@@ -22,8 +22,8 @@ class CalendarTileComponents<T> {
   /// The [MultiDayTileBuilder] is used to build event tiles that are displayed on multiple days.
   final MultiDayTileBuilder<T>? multiDayTileBuilder;
 
-  /// The [MonthEventBuilder] is used to build event tiles that are displayed on [MonthView] days.
-  final MonthEventBuilder<T>? monthTileBuilder;
+  /// The [MonthTileBuilder] is used to build event tiles that are displayed on [MonthView] days.
+  final MonthTileBuilder<T>? monthTileBuilder;
 
   /// The [ScheduleEventTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
   final ScheduleEventTileBuilder<T>? scheduleTileBuilder;

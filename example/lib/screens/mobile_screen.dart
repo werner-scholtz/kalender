@@ -53,8 +53,8 @@ class _MobileScreenState extends State<MobileScreen> {
       controller: calendarController,
       eventsController: eventsController,
       viewConfiguration: currentConfiguration,
-      tileBuilder: _eventTileBuilder,
-      multiDayTileBuilder: _multiDayEventTileBuilder,
+      tileBuilder: _tileBuilder,
+      multiDayTileBuilder: _multiDayTileBuilder,
       monthTileBuilder: _monthEventTileBuilder,
       components: CalendarComponents(
         calendarHeaderBuilder: _calendarHeader,
@@ -157,32 +157,41 @@ class _MobileScreenState extends State<MobileScreen> {
     );
   }
 
-  Widget _multiDayEventTileBuilder(event, tileType, continuesBefore, continuesAfter) {
+  Widget _multiDayTileBuilder(
+    CalendarEvent<Event> event,
+    MultiDayTileConfiguration tileConfiguration,
+  ) {
     return MultiDayEventTile(
       event: event,
-      tileType: tileType,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 
-  Widget _eventTileBuilder(event, tileType, drawOutline, continuesBefore, continuesAfter) {
+  Widget _tileBuilder(
+    CalendarEvent<Event> event,
+    TileConfiguration tileConfiguration,
+  ) {
     return EventTile(
       event: event,
-      tileType: tileType,
-      drawOutline: drawOutline,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      drawOutline: tileConfiguration.drawOutline,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 
-  Widget _monthEventTileBuilder(event, tileType, date, continuesBefore, continuesAfter) {
+  Widget _monthEventTileBuilder(
+    CalendarEvent<Event> event,
+    MonthTileConfiguration tileConfiguration,
+  ) {
     return MonthEventTile(
       event: event,
-      tileType: tileType,
-      date: date,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      date: tileConfiguration.date,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 }

@@ -25,7 +25,7 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 ///
 /// [multiDayTileBuilder] is a [MultiDayTileBuilder] used to build multi day event tiles.
 ///
-/// [monthTileBuilder] is a [MonthEventBuilder] used to build month event tiles.
+/// [monthTileBuilder] is a [MonthTileBuilder] used to build month event tiles.
 ///
 /// [createNewEvents] is a bool used to determine if new events can be created.
 ///
@@ -47,7 +47,7 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 ///
 ///  4. The [CalendarView.month] displays a month.
 ///     * [MonthViewConfiguration] which is used to configure the view.
-///     * [MonthEventBuilder] which is used to build month event tiles.
+///     * [MonthTileBuilder] which is used to build month event tiles.
 ///
 /// Default constructor example:
 ///
@@ -223,8 +223,8 @@ class CalendarView<T> extends StatefulWidget {
   /// The [MultiDayTileBuilder] used to build multi day event tiles.
   final MultiDayTileBuilder<T>? multiDayTileBuilder;
 
-  /// The [MonthEventBuilder] used to build month event tiles.
-  final MonthEventBuilder<T>? monthTileBuilder;
+  /// The [MonthTileBuilder] used to build month event tiles.
+  final MonthTileBuilder<T>? monthTileBuilder;
 
   /// Can create new events.
   final bool createNewEvents;

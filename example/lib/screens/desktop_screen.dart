@@ -171,32 +171,41 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  Widget _multiDayTileBuilder(event, tileType, continuesBefore, continuesAfter) {
+  Widget _multiDayTileBuilder(
+    CalendarEvent<Event> event,
+    MultiDayTileConfiguration tileConfiguration,
+  ) {
     return MultiDayEventTile(
       event: event,
-      tileType: tileType,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 
-  Widget _tileBuilder(event, tileType, drawOutline, continuesBefore, continuesAfter) {
+  Widget _tileBuilder(
+    CalendarEvent<Event> event,
+    TileConfiguration tileConfiguration,
+  ) {
     return EventTile(
       event: event,
-      tileType: tileType,
-      drawOutline: drawOutline,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      drawOutline: tileConfiguration.drawOutline,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 
-  Widget _monthEventTileBuilder(event, tileType, date, continuesBefore, continuesAfter) {
+  Widget _monthEventTileBuilder(
+    CalendarEvent<Event> event,
+    MonthTileConfiguration tileConfiguration,
+  ) {
     return MonthEventTile(
       event: event,
-      tileType: tileType,
-      date: date,
-      continuesBefore: continuesBefore,
-      continuesAfter: continuesAfter,
+      tileType: tileConfiguration.tileType,
+      date: tileConfiguration.date,
+      continuesBefore: tileConfiguration.continuesBefore,
+      continuesAfter: tileConfiguration.continuesAfter,
     );
   }
 }

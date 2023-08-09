@@ -7,6 +7,7 @@ import 'package:kalender/src/components/tile_stacks/chaning_month_tile_stack.dar
 import 'package:kalender/src/enumerations.dart';
 
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -161,10 +162,12 @@ class MonthTileStack<T> extends StatelessWidget {
                 // isMultidayEvent: arragnedEvent.event.isMultidayEvent,
                 child: CalendarScope.of<T>(context).tileComponents.monthTileBuilder!(
                   arragnedEvent.event,
-                  isMoving ? TileType.ghost : TileType.normal,
-                  arragnedEvent.dateRange.start,
-                  arragnedEvent.continuesBefore,
-                  arragnedEvent.continuesAfter,
+                  MonthTileConfiguration(
+                    tileType: isMoving ? TileType.ghost : TileType.normal,
+                    date: arragnedEvent.dateRange.start,
+                    continuesBefore: arragnedEvent.continuesBefore,
+                    continuesAfter: arragnedEvent.continuesAfter,
+                  ),
                 ),
               ),
             ),
