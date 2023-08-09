@@ -23,3 +23,5 @@ linter:
     require_trailing_commas: true
     # https://dart.dev/tools/linter-rules/unnecessary_lambdas
     unnecessary_lambdas: true
+    # https://dart.dev/tools/linter-rules/avoid_print
+    avoid_print: true
