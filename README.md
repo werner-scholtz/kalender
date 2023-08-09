@@ -32,7 +32,10 @@ It also allows you to customize the appearance of the calendar widget.
 
 <!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
-* Calendar Views - 
+* Calendar Views 
+    
+  ![Feature](./readme_assets/desktop_views.png)  (desktop)
+  ![Feature](./readme_assets/desktop_views.png)  (mobile)   
 
 * Custom Object -
 
