@@ -23,6 +23,7 @@ class MonthView<T> extends StatefulWidget {
     required this.monthTileBuilder,
     this.monthViewConfiguration,
     this.components,
+    this.style,
     this.functions,
     this.createNewEvents = true,
   });
@@ -38,6 +39,9 @@ class MonthView<T> extends StatefulWidget {
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
+
+  /// The [CalendarStyle] used to style the default components.
+  final CalendarStyle? style;
 
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
@@ -60,6 +64,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
   late MonthViewConfiguration _viewConfiguration;
+  late CalendarStyle _style;
 
   @override
   void initState() {
@@ -72,6 +77,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
       monthTileBuilder: widget.monthTileBuilder,
     );
     _viewConfiguration = (widget.monthViewConfiguration ?? const MonthConfiguration());
+    _style = widget.style ?? const CalendarStyle();
     _initializeViewState();
 
     if (kDebugMode) {
@@ -91,6 +97,11 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   void didUpdateWidget(covariant MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
+
+    if (_style != widget.style) {
+      _style = widget.style ?? const CalendarStyle();
+    }
+
     if (widget.monthViewConfiguration != null &&
         widget.monthViewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.monthViewConfiguration!;
@@ -143,7 +154,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   @override
   Widget build(BuildContext context) {
     return CalendarStyleProvider(
-      style: const CalendarStyle(),
+      style: _style,
       child: CalendarScope<T>(
         state: _viewState,
         eventsController: _eventsController,

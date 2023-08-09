@@ -23,6 +23,7 @@ class MultiDayView<T> extends StatefulWidget {
     required this.tileBuilder,
     required this.multiDayTileBuilder,
     this.components,
+    this.style,
     this.multiDayViewConfiguration,
     this.functions,
     this.createNewEvents = true,
@@ -39,6 +40,9 @@ class MultiDayView<T> extends StatefulWidget {
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
+
+  /// The [CalendarStyle] used to style the default components.
+  final CalendarStyle? style;
 
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
@@ -64,6 +68,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
   late MultiDayViewConfiguration _viewConfiguration;
+  late CalendarStyle _style;
 
   @override
   void initState() {
@@ -76,6 +81,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       tileBuilder: widget.tileBuilder,
       multiDayTileBuilder: widget.multiDayTileBuilder,
     );
+    _style = widget.style ?? const CalendarStyle();
     _viewConfiguration = (widget.multiDayViewConfiguration ?? const WeekConfiguration());
     _initializeViewState();
 
@@ -96,6 +102,11 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
+
+    if (_style != widget.style) {
+      _style = widget.style ?? const CalendarStyle();
+    }
+
     if (widget.multiDayViewConfiguration != null &&
         widget.multiDayViewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.multiDayViewConfiguration!;
@@ -148,7 +159,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   @override
   Widget build(BuildContext context) {
     return CalendarStyleProvider(
-      style: const CalendarStyle(),
+      style: _style,
       child: CalendarScope<T>(
         state: _viewState,
         eventsController: _eventsController,

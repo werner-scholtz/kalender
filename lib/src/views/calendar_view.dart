@@ -3,6 +3,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/month_view/month_view.dart';
@@ -135,6 +136,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.multiDayTileBuilder,
     required this.monthTileBuilder,
     this.components,
+    this.style,
     this.eventHandlers,
     this.createNewEvents = true,
   }) : assert(
@@ -150,6 +152,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.tileBuilder,
     required this.multiDayTileBuilder,
     this.components,
+    this.style,
     this.eventHandlers,
     this.createNewEvents = true,
   })  : monthTileBuilder = null,
@@ -170,6 +173,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.tileBuilder,
     required this.multiDayTileBuilder,
     this.components,
+    this.style,
     this.eventHandlers,
     this.createNewEvents = true,
   })  : monthTileBuilder = null,
@@ -189,6 +193,7 @@ class CalendarView<T> extends StatefulWidget {
     required this.viewConfiguration,
     required this.monthTileBuilder,
     this.components,
+    this.style,
     this.eventHandlers,
     this.createNewEvents = true,
   })  : tileBuilder = null,
@@ -208,11 +213,14 @@ class CalendarView<T> extends StatefulWidget {
   /// The [CalendarEventsController] used to control events.
   final CalendarEventsController<T> eventsController;
 
-  /// The [SingleDayViewConfiguration] used to configure the view.
+  /// The [ViewConfiguration] used to configure the view.
   final ViewConfiguration viewConfiguration;
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
+
+  /// The [CalendarStyle] used to style the default components.
+  final CalendarStyle? style;
 
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? eventHandlers;
@@ -262,6 +270,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         singleDayViewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
+        style: widget.style,
       );
     }
 
@@ -275,6 +284,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         multiDayViewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
+        style: widget.style,
       );
     }
 
@@ -287,6 +297,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,
         createNewEvents: widget.createNewEvents,
+        style: widget.style,
       );
     }
 
