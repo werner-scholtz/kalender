@@ -87,8 +87,8 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
   List<CalendarEvent<Event>> events = [
     CalendarEvent<Event>(
       dateTimeRange: DateTimeRange(
-        start: startOfMonday.subtract(const Duration(hours: 1)),
-        end: startOfTuesday.subtract(const Duration(hours: 1)),
+        start: startOfMonday,
+        end: startOfTuesday,
       ),
       eventData: Event(
         title: 'Event 1',

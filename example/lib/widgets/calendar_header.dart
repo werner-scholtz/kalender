@@ -19,13 +19,27 @@ class CalendarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<int, String> months = {
+      0: 'January',
+      1: 'February',
+      2: 'March',
+      3: 'April',
+      4: 'Mei',
+      5: 'June',
+      6: 'July',
+      7: 'August',
+      8: 'September',
+      9: 'October',
+      10: 'November',
+      11: 'Desember',
+    };
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
-            dateTimeRange.start.year.toString(),
+            '${dateTimeRange.start.year} - ${months[dateTimeRange.start.month]}',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
@@ -46,6 +60,7 @@ class CalendarHeader extends StatelessWidget {
             );
           },
           icon: const Icon(Icons.calendar_month),
+          tooltip: 'Date Picker',
         ),
         Expanded(
           child: Row(
@@ -58,6 +73,7 @@ class CalendarHeader extends StatelessWidget {
                     calendarController.animateToPreviousPage();
                   },
                   icon: const Icon(Icons.chevron_left),
+                  tooltip: 'Previous Page',
                 ),
               ),
               Padding(
@@ -67,6 +83,7 @@ class CalendarHeader extends StatelessWidget {
                     calendarController.animateToNextPage();
                   },
                   icon: const Icon(Icons.chevron_right),
+                  tooltip: 'Next Page',
                 ),
               ),
               Padding(
