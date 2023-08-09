@@ -30,7 +30,7 @@ It also allows you to customize the appearance of the calendar widget.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+<!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
 * Calendar Views - 
 
@@ -78,8 +78,15 @@ TODO: List what your package can do. Maybe include images, gifs, or videos.
     ```
     Add events to the controller
     ```dart
-    eventsController.addEvent(Event('Event 1', Colors.red));
-    eventsController.addEvent(Event('Event 2', Color.blue));
+    eventsController.addEvent(
+      CalendarEvent(
+        dateTimeRange: DateTimeRange()
+        eventData: Event(  
+            title: 'Event 1',
+            color: Colors.blue,
+        ),
+      ),
+    );
     ```
 
 3. Create a CalendarController
@@ -92,8 +99,12 @@ TODO: List what your package can do. Maybe include images, gifs, or videos.
     CalendarView(
       eventsController: eventsController,
       calendarController: calendarController,
-    )
+      tileBuilder: _tileBuilder(),
+      multiDayTileBuilder: _multiDayTileBuilder(),
+      monthTileBuilder: _monthEventTileBuilder(),
+    )       
     ```
+    
 
 
 ## Additional information
