@@ -4,8 +4,7 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    branches:
-      - main
+    branches: [ main ]
       
 jobs:
   build:    
@@ -14,10 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-      - run: cd example/lib
       - run: flutter build web --release --base-href /kalender/
+        shell: bash
+        working-directory: example
       - run: git config user.name github-actions
+        shell: bash
+        working-directory: example
       - run: git config user.email github-actions@github.com
+        shell: bash
+        working-directory: example
       - run: git --work-tree build/web add --all
+        shell: bash
+        working-directory: example
       - run: git commit -m "Automatic deployment by github-actions"
+        shell: bash
+        working-directory: example
       - run: git push origin HEAD:gh-pages --force
+        shell: bash
+        working-directory: example
