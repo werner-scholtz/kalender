@@ -99,7 +99,7 @@ class CalendarController<T> with ChangeNotifier {
     _state?.pageController.jumpToPage(page);
   }
 
-  /// Jumps to the [date] of the [CalendarView].
+  /// Jumps to the [date].
   void jumpToDate(DateTime date) {
     assert(
       _state != null,
@@ -127,8 +127,8 @@ class CalendarController<T> with ChangeNotifier {
   /// The [duration] and [curve] can be provided to customize the animation.
   Future<void> animateToDate(
     DateTime date, {
-    required Duration duration,
-    required Curve curve,
+    Duration? duration,
+    Curve? curve,
   }) async {
     assert(
       _state != null,
@@ -148,8 +148,8 @@ class CalendarController<T> with ChangeNotifier {
         date,
         _state!.adjustedDateTimeRange.start,
       ),
-      duration: duration,
-      curve: curve,
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
     );
   }
 

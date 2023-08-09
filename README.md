@@ -216,13 +216,12 @@ The EventsController is used to store and manage CalendarEvent's.
 
 | Function      | Parameters    | Description   |
 | ------------- | ------------- | ------------- |
-| addEvent      | <!--TODO -->  | <!--TODO -->  |
-| addEvents     | <!--TODO -->  | <!--TODO -->  |
-| addEvent      | <!--TODO -->  | <!--TODO -->  |
-| removeEvent   | <!--TODO -->  | <!--TODO -->  |
-| removeWhere   | <!--TODO -->  | <!--TODO -->  |
-| clearEvents   | <!--TODO -->  | <!--TODO -->  |
-| updateEvent   | <!--TODO -->  | <!--TODO -->  | 
+| addEvent      | CalendarEvent\<T\> event | Adds this event to the list and rebuilds the calendar view  |
+| addEvents     | List\<CalendarEvent\<T\>> events  | Adds these events to the list and rebuilds the calendar view |
+| removeEvent   | CalendarEvent\<T\> event  | Removes this event from the list and rebuilds the calendar view |
+| removeWhere   | bool Function(CalendarEvent\<T\> element) test  | Removes the event(s) where the test returns true  |
+| clearEvents   |   | Clears the list of stored events  |
+| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where the test returns true  | 
 
 
 ### Calendar Controller
@@ -231,13 +230,13 @@ The CalendarController is used to control the CalendarView.
 
 | Function      | Parameters    | Description   |
 | ------------- | ------------- | ------------- |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  |
-| <!--TODO -->  | <!--TODO -->  | <!--TODO -->  | 
+| animateToNextPage | Duration? duration, Curve? curve | Animates to the next page. |
+| animateToPreviousPage | Duration? duration, Curve? curve | Animates to the previous page. |
+| jumpToPage  | int page  | Jumps to the given page.  |
+| jumpToDate  | DateTime date  | Jumps to the given date.  |
+| animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided. * (This is only available for SingleDayView and MultiDayView)|
+| adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view.  |
+| animateToEvent  | CalendarEvent<T> event, {Duration? duration, Curve? curve}  | Animates to the CalendarEvent.  | 
 
 
 
