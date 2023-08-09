@@ -142,6 +142,23 @@ There are a few constructors that you can choose from to create a CalendarView.
 
 4. **MonthView** - this constructor will build a MonthView and does not need the tileBuilder or multiDayTileBuilder.
 
+### View Configuration
+There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewConfiguration, and MonthViewConfiguration.
+* You can create a Custom ViewConfiguration by extending one of these 'Types'.
+
+These are the default ViewConfiguration's:
+
+1. **DayConfiguration** - This configuration is used to configure the SingleDayView.
+
+2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
+
+3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
+
+4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+
+5. **MonthConfiguration** - this configuration is used to configure the MonthView.
+
+
 
 <!--TODO: Complete this-->
 ### Event Handling
@@ -214,29 +231,50 @@ The CalendarController is used to control the CalendarView.
 | <!--TODO -->  | <!--TODO -->  | <!--TODO -->  | 
 
 
-### View Configuration
-There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewConfiguration, and MonthViewConfiguration.
-* You can create a Custom ViewConfiguration by extending one of these 'Types'.
-
-These are the default ViewConfiguration's:
-
-1. **DayConfiguration** - This configuration is used to configure the SingleDayView.
-
-2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
-
-3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
-
-4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
-
-5. **MonthConfiguration** - this configuration is used to configure the MonthView.
-
 
 
 ### Custom Object
+The CalendarEvent can store any object. This object can be accessed by the tileBuilders and the CalendarEventHandlers.
 
+Custom Object Example:
+```dart
+CalendarEvent<CustomObject>(
+  dateTimeRange: DateTimeRange(),
+  eventData: CustomObject(
+    title: 'Event 1',
+    color: Colors.blue,
+  ),
+);
+```
+
+Tile Builder Example:
+```dart
+Widget _tileBuilder(CalendarEvent<CustomObject> event, tileConfiguration) {
+  final customObject = event.eventData;
+  return Card(
+    color: customObject.color,
+    child: Text(customObject.title),
+  );
+}
+```
 
 ### Appearance
+The CaledarView takes a CalendarStyle object.
+The CalendarStyle is used to change the appearance of the calendar and default components.
+
+| Property      | Type          | Description   |
+| ------------- | ------------- | ------------- |
+|               |               |               |
+|               |               |               |
+|               |               |               |
 
 
 ### Custom Builders
+The CalendarView takes a CalendarComponents object.
+This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
 
+| Property      | Type          | Description   |
+| ------------- | ------------- | ------------- |
+|               |               |               |
+|               |               |               |
+|               |               |               |
