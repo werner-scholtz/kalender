@@ -13,4 +13,4 @@ jobs:
       - uses: subosito/flutter-action@v1
       - uses: erickzanardo/flutter-gh-pages@v7
         with:
-          workingDir: example
+          workingDir: example/
