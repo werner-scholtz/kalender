@@ -20,7 +20,7 @@ class CalendarStyle {
     this.calendarHeaderBackgroundStyle = const CalendarHeaderBackgroundStyle(),
     this.daySeperatorStyle = const DaySeperatorStyle(),
     this.hourLineStyle = const HourLineStyle(),
-    this.scheduleDateStyle = const ScheduleDateStyle(),
+    // this.scheduleDateStyle = const ScheduleDateStyle(),
     this.dayHeaderStyle = const DayHeaderStyle(),
     this.monthHeaderStyle = const MonthHeaderStyle(),
     this.timeIndicatorStyle = const TimeIndicatorStyle(),
@@ -44,7 +44,7 @@ class CalendarStyle {
   final HourLineStyle? hourLineStyle;
 
   /// The [ScheduleDateStyle] used by the [ScheduleDate].
-  final ScheduleDateStyle? scheduleDateStyle;
+  // final ScheduleDateStyle? scheduleDateStyle;
 
   /// The [DayHeaderStyle] used by the [DayHeader].
   final DayHeaderStyle? dayHeaderStyle;
@@ -77,7 +77,7 @@ class CalendarStyle {
         other.calendarHeaderBackgroundStyle == calendarHeaderBackgroundStyle &&
         other.daySeperatorStyle == daySeperatorStyle &&
         other.hourLineStyle == hourLineStyle &&
-        other.scheduleDateStyle == scheduleDateStyle &&
+        // other.scheduleDateStyle == scheduleDateStyle &&
         other.dayHeaderStyle == dayHeaderStyle &&
         other.monthHeaderStyle == monthHeaderStyle &&
         other.timeIndicatorStyle == timeIndicatorStyle &&
@@ -92,7 +92,7 @@ class CalendarStyle {
         calendarHeaderBackgroundStyle,
         daySeperatorStyle,
         hourLineStyle,
-        scheduleDateStyle,
+        // scheduleDateStyle,
         dayHeaderStyle,
         monthHeaderStyle,
         timeIndicatorStyle,

@@ -184,11 +184,15 @@ CalendarEventHandlers<Event>(
     // The event is a reference to the event that was changed.
 
     // This is a async function, so you can do any async work here.
+
+    // Once this function is complete the calendar will rebuild.
   },
   onEventTapped: (CalendarEvent<Event> calendarEvent) async {
     // The calendarEvent is a reference to the event that was tapped.
 
     // This is a async function, so you can do any async work here.
+
+    // Once this function is complete the calendar will rebuild.
   },
   onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
     // The calendarEvent is a reference to the event that was created.
@@ -196,8 +200,8 @@ CalendarEventHandlers<Event>(
     // This is a async function, so you can do any async work here.
 
 
-    // You must return the calendarEvent.
-    return calendarEvent;
+    // You must return the calendarEvent and then the calendar will rebuild.
+    return calendarEvent; 
   },
   onDateTapped: (date) {
     // The date is the date that was tapped. see example for use case.
@@ -267,19 +271,15 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 The CaledarView can take a CalendarStyle object.
 The CalendarStyle is used to change the appearance of the calendar and default components.
 
-| Property      | Type          | Description   |
-| ------------- | ------------- | ------------- |
-|               |               |               |
-|               |               |               |
-|               |               |               |
+```dart
+CalendarStyle();
+```
 
 
 ### Custom Builders
 The CalendarView can take a CalendarComponents object.
 This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
 
-| Property      | Type          | Description   |
-| ------------- | ------------- | ------------- |
-|               |               |               |
-|               |               |               |
-|               |               |               |
+```dart
+CalendarComponents();
+```

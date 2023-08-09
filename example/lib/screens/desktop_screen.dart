@@ -80,6 +80,19 @@ class _DesktopScreenState extends State<DesktopScreen> {
         onCreateEvent: onCreateEvent,
         onDateTapped: onDateTapped,
       ),
+      style: CalendarStyle(
+        backgroundColor: ,
+        calendarHeaderBackgroundStyle: ,
+        daySeperatorStyle: ,
+        hourLineStyle: ,
+        dayHeaderStyle: ,
+        timeIndicatorStyle: ,
+        timelineStyle: ,
+        weekNumberStyle: ,
+        monthCellHeaderStyle: ,
+        monthGridStyle: ,
+        monthCellsStyle: ,
+      ),
     );
   }
 
