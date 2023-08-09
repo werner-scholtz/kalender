@@ -138,7 +138,7 @@ class CalendarController<T> with ChangeNotifier {
     if (_state == null) return;
 
     assert(
-      !date.isWithin(_state!.adjustedDateTimeRange),
+      date.isWithin(_state!.adjustedDateTimeRange),
       'The date must be within the dateTimeRange of the Calendar.',
     );
     if (!date.isWithin(_state!.adjustedDateTimeRange)) return;
