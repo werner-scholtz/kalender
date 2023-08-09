@@ -32,12 +32,17 @@ It also allows you to customize the appearance of the calendar widget.
 
 <!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
-* Calendar Views 
-    
-  ![Feature](./readme_assets/desktop_views.png)  (desktop)
-  ![Feature](./readme_assets/mobile_views.png)  (mobile)   
+* Calendar Views - There is 3 calendar views available, Day, MultiDay, and Month.
+  ![Feature](./readme_assets/desktop_views.png)(desktop)
+  ![Feature](./readme_assets/mobile_views.png)(mobile)
 
-* Custom Object -
+* Custom Object - CaledarEvent's can store any object and can be accessed in the builder functions.
+    ```dart 
+    CalendarEvent<CustomObject>(
+      eventData: CustomObject(),
+    )
+    ```
+
 
 * Reize, Drag and Drop - 
 
