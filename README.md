@@ -59,16 +59,15 @@ Try it out [here](https://049er.github.io/kalender/#/)
     ```
 
 * Flexible View's - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own by extending one of the the classes.
-```dart
-  class YourConfiguration extends SingleDayViewConfiguration {}
-  class YourConfiguration extends MultiDayViewConfiguration {}
-  class YourConfiguration extends MonthViewConfiguration {}
-```
-  
+  ```dart
+    class YourConfiguration extends SingleDayViewConfiguration {}
+    class YourConfiguration extends MultiDayViewConfiguration {}
+    class YourConfiguration extends MonthViewConfiguration {}
+  ```
 
-* Appearance - 
+* Appearance - You can change the style of the calendar and default components
 
-* Custom Builders - 
+* Custom Builders - You can create your own builders for different components of the calendar.
 
 
 ## Installation
