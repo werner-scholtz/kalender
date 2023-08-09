@@ -54,7 +54,7 @@ Try it out [here](https://049er.github.io/kalender/#/)
 
 * **Flexible View's** - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own. [Find out more](#view-configuration)
 
-* **Custom Object** - CaledarEvent's can store any object. [Find out more](#custom-object)
+* **Custom Object** - CaledarEvent's can contain any object of your choosing. [Find out more](#custom-object)
 
 * **Appearance** - You can change the style of the calendar and default components. [Find out more](#appearance)
 
@@ -143,6 +143,8 @@ There are a few constructors that you can choose from to create a CalendarView.
 4. **MonthView** - this constructor will build a MonthView and does not need the tileBuilder or multiDayTileBuilder.
 
 ### View Configuration
+The CaledarView takes a ViewConfiguration object.
+
 There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewConfiguration, and MonthViewConfiguration.
 * You can create a Custom ViewConfiguration by extending one of these 'Types'.
 
@@ -162,6 +164,7 @@ These are the default ViewConfiguration's:
 
 <!--TODO: Complete this-->
 ### Event Handling
+The CaledarView can take a CalendarEventHandlers object.
 The CalendarEventHandlers handles the user's interaction with the calendar. (Do not confuse the CalendarEventHandlers with the EventsController)
 
 There are 4 events at this time that can be handeled.
@@ -176,18 +179,18 @@ There are 4 events at this time that can be handeled.
 
 ```dart
 CalendarEventHandlers<Event>(
-  onEventChanged: (initialDateTimeRange, event) async {
+  onEventChanged: (initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
     // The initialDateTimeRange is the original DateTimeRange of the event.
     // The event is a reference to the event that was changed.
 
     // This is a async function, so you can do any async work here.
   },
-  onEventTapped: (calendarEvent) async {
+  onEventTapped: (CalendarEvent<Event> calendarEvent) async {
     // The calendarEvent is a reference to the event that was tapped.
 
     // This is a async function, so you can do any async work here.
   },
-  onCreateEvent: (calendarEvent) async {
+  onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
     // The calendarEvent is a reference to the event that was created.
 
     // This is a async function, so you can do any async work here.
@@ -203,7 +206,8 @@ CalendarEventHandlers<Event>(
 ```
 
 ### Events Controller
-The EventsController is used to store and manage events.
+The CaledarView takes a EventsController object.
+The EventsController is used to store and manage CalendarEvent's.
 (Do not confuse the EventsController with EventHandling)
 
 | Function      | Parameters    | Description   |
@@ -218,6 +222,7 @@ The EventsController is used to store and manage events.
 
 
 ### Calendar Controller
+The CaledarView takes a CalendarController object.
 The CalendarController is used to control the CalendarView.
 
 | Function      | Parameters    | Description   |
@@ -234,13 +239,13 @@ The CalendarController is used to control the CalendarView.
 
 
 ### Custom Object
-The CalendarEvent can store any object. This object can be accessed by the tileBuilders and the CalendarEventHandlers.
+The CalendarEvent can contain any object. This object can be accessed by the tileBuilders and the CalendarEventHandlers.
 
 Custom Object Example:
 ```dart
-CalendarEvent<CustomObject>(
+CalendarEvent<Event>(
   dateTimeRange: DateTimeRange(),
-  eventData: CustomObject(
+  eventData: Event(
     title: 'Event 1',
     color: Colors.blue,
   ),
@@ -249,7 +254,7 @@ CalendarEvent<CustomObject>(
 
 Tile Builder Example:
 ```dart
-Widget _tileBuilder(CalendarEvent<CustomObject> event, tileConfiguration) {
+Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
   final customObject = event.eventData;
   return Card(
     color: customObject.color,
@@ -259,7 +264,7 @@ Widget _tileBuilder(CalendarEvent<CustomObject> event, tileConfiguration) {
 ```
 
 ### Appearance
-The CaledarView takes a CalendarStyle object.
+The CaledarView can take a CalendarStyle object.
 The CalendarStyle is used to change the appearance of the calendar and default components.
 
 | Property      | Type          | Description   |
@@ -270,7 +275,7 @@ The CalendarStyle is used to change the appearance of the calendar and default c
 
 
 ### Custom Builders
-The CalendarView takes a CalendarComponents object.
+The CalendarView can take a CalendarComponents object.
 This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
 
 | Property      | Type          | Description   |
