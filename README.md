@@ -44,7 +44,11 @@ It also allows you to customize the appearance of the calendar widget.
     ```
 
 
-* Reize, Drag and Drop - 
+* Drag and Drop - Drag and drop events to different days.
+    ![Feature](./readme_assets/drag_and_drop.gif) (move and resize)
+
+* Resize - Resize events by dragging the bottom of the event.
+    ![Feature](./readme_assets/resize.gif) (resize)
 
 * Flexible View's - 
 
