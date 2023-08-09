@@ -66,7 +66,6 @@ class MultiDayContent<T> extends StatelessWidget {
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
                           calendarStart: scope.state.adjustedDateTimeRange.start,
-                          firstDayOfWeek: viewConfiguration.firstDayOfWeek,
                         );
 
                         TileLayoutController<T> tileLayoutController = TileLayoutController<T>(

@@ -51,7 +51,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final String name;
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
+  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
     return getMultiDayRange(date);
   }
 
@@ -121,7 +121,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
-    int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
       return getMultiDayRange(dateTimeRange.start);

@@ -23,7 +23,6 @@ abstract class ViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   });
 
   /// Calculates the index of the [visibleStart]
@@ -42,7 +41,6 @@ abstract class ViewConfiguration {
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
-    int firstDayOfWeek,
   );
 
   /// Calculates the number of pages for the [calendarDateTimeRange].
@@ -55,7 +53,6 @@ abstract class ViewConfiguration {
   /// [firstDayOfWeek] is the first day of the week.
   DateTimeRange calcualteVisibleDateTimeRange(
     DateTime date,
-    int firstDayOfWeek,
   );
 
   /// Calculates the adjusted [dateTimeRange].
@@ -67,7 +64,6 @@ abstract class ViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   });
 
   /// Calculates the index of the given [date].

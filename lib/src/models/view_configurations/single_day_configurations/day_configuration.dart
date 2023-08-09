@@ -42,7 +42,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
   @override
   DateTimeRange calcualteVisibleDateTimeRange(
     DateTime date,
-    int firstDayOfWeek,
   ) {
     return date.dayRange;
   }
@@ -103,7 +102,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
-    int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
       return dateTimeRange.start.dayRange;

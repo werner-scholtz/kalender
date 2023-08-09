@@ -140,7 +140,6 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
 
     DateTimeRange visibleDateRange = _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
-      _controller.dateTimeRange.start.weekday,
     );
 
     _viewState = ViewState(

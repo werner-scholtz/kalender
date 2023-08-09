@@ -24,7 +24,7 @@ class MonthConfiguration extends MonthViewConfiguration {
   final bool enableRezising;
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date, int firstDayOfWeek) {
+  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
     DateTimeRange monthRange = date.monthRange;
     return DateTimeRange(
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
@@ -94,7 +94,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
-    int firstDayOfWeek,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
       return dateTimeRange.start.monthRange.start.weekRangeWithOffset(firstDayOfWeek);

@@ -118,7 +118,6 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     DateTimeRange adjustedDateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
-      firstDayOfWeek: _viewConfiguration.firstDayOfWeek,
     );
 
     int numberOfPages = _viewConfiguration.calculateNumberOfPages(
@@ -136,7 +135,6 @@ class _MonthViewState<T> extends State<MonthView<T>> {
 
     DateTimeRange visibleDateRange = _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
-      _viewConfiguration.firstDayOfWeek,
     );
 
     _viewState = ViewState(

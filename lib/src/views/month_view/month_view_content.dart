@@ -40,7 +40,7 @@ class MonthViewContent<T> extends StatelessWidget {
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   index: index,
                   calendarStart: scope.state.adjustedDateTimeRange.start,
-                  firstDayOfWeek: viewConfiguration.firstDayOfWeek,
+              
                 );
 
                 scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
@@ -51,7 +51,7 @@ class MonthViewContent<T> extends StatelessWidget {
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   calendarStart: scope.state.adjustedDateTimeRange.start,
                   index: index,
-                  firstDayOfWeek: viewConfiguration.firstDayOfWeek,
+           
                 );
 
                 return Stack(
