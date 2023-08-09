@@ -34,7 +34,7 @@ Try it out [here](https://049er.github.io/kalender/#/)
 
 <!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
-* Calendar Views - There are 3 calendar views available, Day, MultiDay, and Month.
+* **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
   <img src="./readme_assets/desktop_views.png" width="100%" height="100%"/>
   (desktop)
@@ -44,30 +44,21 @@ Try it out [here](https://049er.github.io/kalender/#/)
 
   (mobile)
 
-*  Reschedule - Drag and Drop events to your liking.
+*  **Reschedule** - Drag and Drop events to your liking.
     <img src="./readme_assets/drag_and_drop.gif" width="75%" height="75%"/>
 
-* Resize - Resize events by dragging the edges of an event.
+* **Resize** - Resize events by dragging the edges of an event.
     <img src="./readme_assets/resize.gif" width="75%" height="75%"/>
 
+* **Event Handeling** - When a there is interaction with a tile or component the event can be handeled by you. [Find out more](#event-handling)
 
-* Custom Object - CaledarEvent's can store any object and can be accessed in the builder functions.
-    ```dart 
-    CalendarEvent<CustomObject>(
-      eventData: CustomObject(),
-    )
-    ```
+* **Flexible View's** - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own. [Find out more](#view-configuration)
 
-* Flexible View's - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own by extending one of the the classes.
-  ```dart
-    class YourConfiguration extends SingleDayViewConfiguration {}
-    class YourConfiguration extends MultiDayViewConfiguration {}
-    class YourConfiguration extends MonthViewConfiguration {}
-  ```
+* **Custom Object** - CaledarEvent's can store any object. [Find out more](#custom-object)
 
-* Appearance - You can change the style of the calendar and default components
+* **Appearance** - You can change the style of the calendar and default components. [Find out more](#appearance)
 
-* Custom Builders - You can create your own builders for different components of the calendar.
+* **Custom Builders** - You can create your own builders for different components of the calendar. [Find out more](#custom-builders)
 
 
 ## Installation
@@ -139,5 +130,42 @@ Try it out [here](https://049er.github.io/kalender/#/)
 
 ## Additional information
 
+<!--TODO: Complete this-->
+### Calendar Views
+There are a few constructors that you can choose from to create a CalendarView.
 
-<!-- TODO: Add more info -->
+1. **Default Constructor** - this constructor will build the correct view (Day, MultiDay, Month) based on the ViewConfiguration you pass it.
+
+2. **DayView** - this constructor will build a DayView and does not need the monthTileBuilder.
+
+3. **MultiDayView** - this constructor will build a MultiDayView and does not need the monthTileBuilder.
+
+4. **MonthView** - this constructor will build a MonthView and does not need the tileBuilder or multiDayTileBuilder.
+
+
+<!--TODO: Complete this-->
+### Event Handling
+
+
+
+### Events Controller
+Do not confuse the EventsController with EventHandling.
+The EventsController is used to store and manage events.
+
+<!--TODO: Add a table of functions-->
+
+
+### Calendar Controller
+<!--TODO: Add a table of functions-->
+
+### View Configuration
+
+
+### Custom Object
+
+
+### Appearance
+
+
+### Custom Builders
+
