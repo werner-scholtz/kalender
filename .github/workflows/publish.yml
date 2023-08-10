@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-
       - name: Setup flutter SDK
         uses: subosito/flutter-action@v2
       
@@ -26,7 +25,6 @@ jobs:
       - name: Publish - dry run
         run: dart pub publish --dry-run
         working-directory: ./
-
 
       - name: Publish to pub.dev
         run: dart pub publish -f
