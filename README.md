@@ -37,6 +37,7 @@ Try it out [here](https://049er.github.io/kalender/#/)
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
   <img src="./readme_assets/desktop_views.png" width="100%" height="100%"/>
+  
   (desktop)
 
 
