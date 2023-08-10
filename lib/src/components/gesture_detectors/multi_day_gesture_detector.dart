@@ -43,7 +43,7 @@ class _MultiDayGestureDetectorState<T>
   CalendarEventHandlers<T> get functions => scope.functions;
 
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => scope.state.createNewEvents;
+  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   double cursorOffset = 0;
@@ -96,12 +96,16 @@ class _MultiDayGestureDetectorState<T>
                           ? null
                           : (DragStartDetails details) =>
                               _onHorizontalDragStart(
-                                  details, visibleDates[c].dayRange,),
+                                details,
+                                visibleDates[c].dayRange,
+                              ),
                       onHorizontalDragUpdate: gestureDisabled
                           ? null
                           : (DragUpdateDetails details) =>
                               _onHorizontalDragUpdate(
-                                  details, visibleDates[c].dayRange,),
+                                details,
+                                visibleDates[c].dayRange,
+                              ),
                       onHorizontalDragEnd:
                           createNewEvents ? _onHorizontalDragEnd : null,
                     ),
@@ -138,7 +142,9 @@ class _MultiDayGestureDetectorState<T>
   }
 
   void _onHorizontalDragStart(
-      DragStartDetails details, DateTimeRange dateTimeRange,) {
+    DragStartDetails details,
+    DateTimeRange dateTimeRange,
+  ) {
     cursorOffset = 0;
     controller.isMultidayEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
@@ -148,7 +154,9 @@ class _MultiDayGestureDetectorState<T>
   }
 
   void _onHorizontalDragUpdate(
-      DragUpdateDetails details, DateTimeRange initialDateTimeRange,) {
+    DragUpdateDetails details,
+    DateTimeRange initialDateTimeRange,
+  ) {
     cursorOffset += details.delta.dx;
 
     int newNumberOfSlotsSelected = cursorOffset ~/ dayWidth;

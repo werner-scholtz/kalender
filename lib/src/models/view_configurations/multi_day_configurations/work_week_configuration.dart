@@ -12,6 +12,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
+    this.createNewEvents = true,
   });
 
   @override
@@ -43,6 +44,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final String name = 'Work Week';
+
+  @override
+  final bool createNewEvents;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {

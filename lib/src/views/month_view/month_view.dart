@@ -25,7 +25,6 @@ class MonthView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.functions,
-    this.createNewEvents = true,
   });
 
   /// The [CalendarController] used to control the view.
@@ -48,9 +47,6 @@ class MonthView<T> extends StatefulWidget {
 
   /// The [MonthTileBuilder] used to build month event tiles.
   final MonthTileBuilder<T> monthTileBuilder;
-
-  /// Can create new events.
-  final bool createNewEvents;
 
   @override
   State<MonthView<T>> createState() => _MonthViewState<T>();
@@ -148,7 +144,6 @@ class _MonthViewState<T> extends State<MonthView<T>> {
       scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
       heightPerMinute: ValueNotifier<double>(0.7),
-      createNewEvents: widget.createNewEvents,
     );
   }
 

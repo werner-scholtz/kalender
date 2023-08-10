@@ -11,6 +11,9 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   String get name;
 
+  /// Can create new events.
+  bool get createNewEvents;
+
   /// Calculates the width of each day.
   double calculateDayWidth(
     double pageWidth,

@@ -13,6 +13,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
     this.firstDayOfWeek = 1,
+    this.createNewEvents = true,
   });
 
   @override
@@ -44,6 +45,9 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final String name = 'Week';
+
+  @override
+  final bool createNewEvents;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {

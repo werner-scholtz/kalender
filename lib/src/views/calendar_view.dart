@@ -138,7 +138,6 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.createNewEvents = true,
   }) : assert(
           tileBuilder != null &&
               multiDayTileBuilder != null &&
@@ -156,7 +155,6 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.createNewEvents = true,
   })  : monthTileBuilder = null,
         assert(
           tileBuilder != null && multiDayTileBuilder != null,
@@ -177,7 +175,6 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.createNewEvents = true,
   })  : monthTileBuilder = null,
         assert(
           tileBuilder != null && multiDayTileBuilder != null,
@@ -197,7 +194,6 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.createNewEvents = true,
   })  : tileBuilder = null,
         multiDayTileBuilder = null,
         assert(
@@ -236,9 +232,6 @@ class CalendarView<T> extends StatefulWidget {
   /// The [MonthTileBuilder] used to build month event tiles.
   final MonthTileBuilder<T>? monthTileBuilder;
 
-  /// Can create new events.
-  final bool createNewEvents;
-
   @override
   State<CalendarView<T>> createState() => _CalendarViewState<T>();
 }
@@ -272,7 +265,6 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         singleDayViewConfiguration:
             _viewConfiguration as SingleDayViewConfiguration,
-        createNewEvents: widget.createNewEvents,
         style: widget.style,
       );
     }
@@ -287,7 +279,6 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         multiDayViewConfiguration:
             _viewConfiguration as MultiDayViewConfiguration,
-        createNewEvents: widget.createNewEvents,
         style: widget.style,
       );
     }
@@ -300,7 +291,6 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         components: widget.components,
         functions: widget.eventHandlers,
         monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,
-        createNewEvents: widget.createNewEvents,
         style: widget.style,
       );
     }

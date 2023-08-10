@@ -46,7 +46,7 @@ class _MonthCellGestureDetectorState<T>
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createNewEvents => scope.state.createNewEvents;
+  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   DateTimeRange? initialDateTimeRange;
@@ -63,10 +63,11 @@ class _MonthCellGestureDetectorState<T>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor:
+          createNewEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: _onTap,
+        onTap: createNewEvents ? _onTap : null,
         onPanStart: gestureDisabled ? null : _onPanStart,
         onPanUpdate: gestureDisabled ? null : _onPanUpdate,
         onPanEnd: gestureDisabled ? null : _onPanEnd,

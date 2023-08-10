@@ -49,7 +49,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createNewEvents => scope.state.createNewEvents;
+  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
   bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   double cursorOffset = 0;
@@ -182,7 +182,9 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   void _onVerticalDragStart(
-      DragStartDetails details, DateTimeRange initialDateTimeRange,) {
+    DragStartDetails details,
+    DateTimeRange initialDateTimeRange,
+  ) {
     cursorOffset = 0;
     scope.eventsController.isNewEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
@@ -207,7 +209,9 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   void _onVerticalDragUpdate(
-      DragUpdateDetails details, DateTimeRange initialDateTimeRange,) {
+    DragUpdateDetails details,
+    DateTimeRange initialDateTimeRange,
+  ) {
     cursorOffset += details.delta.dy;
 
     int newNumberOfSlotsSelected = cursorOffset ~/ heightPerSlot;

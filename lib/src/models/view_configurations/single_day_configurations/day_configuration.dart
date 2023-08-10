@@ -15,6 +15,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
     this.slotSize = const SlotSize(minutes: 15),
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
+    this.createNewEvents = true,
   });
 
   @override
@@ -34,6 +35,9 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   @override
   final bool timeIndicatorSnapping;
+
+  @override
+  final bool createNewEvents;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(

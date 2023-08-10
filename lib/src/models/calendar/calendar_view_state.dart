@@ -15,7 +15,6 @@ class ViewState {
     required this.adjustedDateTimeRange,
     required this.visibleDateTimeRange,
     this.heightPerMinute,
-    required this.createNewEvents,
   });
 
   /// The current viewConfiguration of the view.
@@ -39,9 +38,6 @@ class ViewState {
 
   /// The number of pages the [PageView] of the [CalendarView] has.
   final int numberOfPages;
-
-  /// Whether new events can be created.
-  final bool createNewEvents;
 
   DateTime get month {
     return visibleDateTimeRange.value.visibleMonth;

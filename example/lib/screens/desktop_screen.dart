@@ -29,21 +29,32 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MonthConfiguration(),
+    const DayConfiguration(
+      createNewEvents: false,
+    ),
+    const WeekConfiguration(
+      createNewEvents: false,
+    ),
+    const WorkWeekConfiguration(
+      createNewEvents: false,
+    ),
+    const MonthConfiguration(
+      createNewEvents: false,
+    ),
     const MultiDayConfiguration(
       name: 'Two Day',
       numberOfDays: 2,
+      createNewEvents: false,
     ),
     const MultiDayConfiguration(
       name: 'Three Day',
       numberOfDays: 3,
+      createNewEvents: false,
     ),
     const MultiDayConfiguration(
       name: 'Four Day',
       numberOfDays: 4,
+      createNewEvents: false,
     ),
   ];
 

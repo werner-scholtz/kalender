@@ -14,6 +14,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
+    this.createNewEvents = true,
   });
 
   final int numberOfDays;
@@ -44,6 +45,9 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   final String name;
+
+  @override
+  final bool createNewEvents;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {

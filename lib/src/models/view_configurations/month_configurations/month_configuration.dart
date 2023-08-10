@@ -6,6 +6,7 @@ class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
     this.enableRezising = false,
+    this.createNewEvents = true,
   });
 
   @override
@@ -22,6 +23,9 @@ class MonthConfiguration extends MonthViewConfiguration {
 
   @override
   final bool enableRezising;
+
+  @override
+  final bool createNewEvents;
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
