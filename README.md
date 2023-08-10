@@ -270,11 +270,9 @@ The CalendarController is used to control the CalendarView.
 | animateToPreviousPage | Duration? duration, Curve? curve | Animates to the previous page. |
 | jumpToPage  | int page  | Jumps to the given page.  |
 | jumpToDate  | DateTime date  | Jumps to the given date.  |
-| animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided. * (This is only available for SingleDayView and MultiDayView)|
+| animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided.|
 | adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view.  |
 | animateToEvent  | CalendarEvent<T> event, {Duration? duration, Curve? curve}  | Animates to the CalendarEvent.  | 
-
-
 
 
 ### Custom Object
@@ -308,61 +306,61 @@ Each of these components can be customized in the CalendarStyle object or by pas
 
 1. CalendarHeader - This is a custom widget that you can pass to the calendar to render in the header of the calendar.
 
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/calendar_header.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/calendar_header.png" width="75%" height="75%"/>
 
     (CalendarHeader)
 
 2. DayHeader - This widget is displayed above a day colum in the calendar.
 
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/day_header.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/day_header.png" width="75%" height="75%"/>
 
     (DayHeader)
 
 3. WeekNumber - This widget displays the week number of the year.
 
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/week_number.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/week_number.png" width="75%" height="75%"/>
 
     (WeekNumber)
 
 4. DaySeprator - This widget is displayed between days in the calendar.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/day_seperator.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/day_seperator.png" width="75%" height="75%"/>
 
     (DaySeprator)
 
 5. Hourlines - This widget is displayes the hourlines in the calendar.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/hourlines.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/hourlines.png" width="75%" height="75%"/>
 
     (Hourlines)
 
 6. Timeline - This widget is displayed on the left side of the calendar to show the time.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/timeline.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/timeline.png" width="75%" height="75%"/>
 
     (Timeline)
 
 7. TimeIndicator - This widget is displayed on the current day to show the current time.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/time_indicator.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/time_indicator.png" width="75%" height="75%"/>
 
     (TimeIndicator)
 
 8. MonthHeader - This widget is displayed above the month grid in the calendar header.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_header.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_header.png" width="75%" height="75%"/>
 
     (MonthHeader)
 
 9. MonthCellHeader - This widget is displayed in a month cell in the month grid.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_cell_header.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_cell_header.png" width="75%" height="75%"/>
 
     (MonthCellHeader)
 
 10. MonthGrid - This widget is displayed in the month view to show the grid.
     
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_grid.png" width="60%" height="60%"/>
+    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_grid.png" width="75%" height="75%"/>
 
     (MonthGrid)
 
