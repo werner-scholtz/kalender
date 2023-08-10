@@ -29,13 +29,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(
-      timelineWidth: 56,
-      hourlineTimelineOverlap: 8,
-      multidayTileHeight: 6,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
+    const DayConfiguration(),
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
     const MonthConfiguration(),

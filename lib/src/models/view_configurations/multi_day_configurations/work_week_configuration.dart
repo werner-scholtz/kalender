@@ -12,7 +12,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
-    this.firstDayOfWeek = 1,
   });
 
   @override
@@ -40,7 +39,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
-  final int firstDayOfWeek;
+  final int firstDayOfWeek = 1;
 
   @override
   final String name = 'Work Week';

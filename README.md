@@ -159,35 +159,63 @@ These are the default ViewConfiguration's:
       hourlineTimelineOverlap: 8,
       // The height of the multi day tiles.
       multidayTileHeight: 24,
-      // The duration of one vertical step (Used when the user is dragging an event)
-      verticalDurationStep: Duration(minutes: 15),
-      // The size of one slot in the calendar. (Used when create a new event by tapping on the calendar)
-      minuteSlotSize: SlotSize(15),
-      // Snap Events to each other.
+      // The size of one slot in the calendar.
+      slotSize: SlotSize(minutes: 15),
+      // Allow EventTiles to snap to each other.
       eventSnapping: true,
-      // Snap Events to the time indicator.
+      // Allow EventTiles snap to the time indicator.
       timeIndicatorSnapping: true,
     ),
     ```
 
 2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
     ```dart
-
+    MultiDayConfiguration(
+      name: 'Two Day',
+      numberOfDays: 2,
+      timelineWidth: 56,
+      hourlineTimelineOverlap: 8,
+      multidayTileHeight: 24,
+      slotSize: SlotSize(minutes: 15),
+      paintWeekNumber: true,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
     ```
 
 3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
     ```dart
-
+    WeekConfiguration(
+      timelineWidth: 56,
+      hourlineTimelineOverlap: 8,
+      multidayTileHeight: 24,
+      slotSize: SlotSize(minutes: 15),
+      paintWeekNumber: true,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      firstDayOfWeek: DateTime.monday,
+    ),
     ```
 
 4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
     ```dart
-
+    WorkWeekConfiguration(
+      timelineWidth: 56,
+      hourlineTimelineOverlap: 8,
+      multidayTileHeight: 24,
+      slotSize: SlotSize(minutes: 15),
+      paintWeekNumber: true,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    )
     ```
 
 5. **MonthConfiguration** - this configuration is used to configure the MonthView.
     ```dart
-
+    MonthConfiguration(
+      firstDayOfWeek: DateTime.monday,
+      enableRezising: true,
+    )
     ```
 
 
