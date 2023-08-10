@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
 
 import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
@@ -10,6 +9,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
+import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 class PositionedMonthTileStack<T> extends StatelessWidget {

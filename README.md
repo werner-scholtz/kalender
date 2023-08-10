@@ -151,18 +151,46 @@ There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewCo
 These are the default ViewConfiguration's:
 
 1. **DayConfiguration** - This configuration is used to configure the SingleDayView.
+    ```dart
+    DayConfiguration(
+      // The width of the timeline on the left of the page.
+      timelineWidth: 56,
+      // The overlap between the timeline and hourlines.
+      hourlineTimelineOverlap: 8,
+      // The height of the multi day tiles.
+      multidayTileHeight: 24,
+      // The duration of one vertical step (Used when the user is dragging an event)
+      verticalDurationStep: Duration(minutes: 15),
+      // Snap Events to each other.
+      eventSnapping: true,
+      // Snap Events to the time indicator.
+      timeIndicatorSnapping: true,
+    ),
+    ```
 
 2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
+    ```dart
+
+    ```
 
 3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
+    ```dart
+
+    ```
 
 4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+    ```dart
+
+    ```
 
 5. **MonthConfiguration** - this configuration is used to configure the MonthView.
+    ```dart
+
+    ```
 
 
 
-<!--TODO: Complete this-->
+
 ### Event Handling
 The CaledarView can take a CalendarEventHandlers object.
 The CalendarEventHandlers handles the user's interaction with the calendar. (Do not confuse the CalendarEventHandlers with the EventsController)
@@ -270,6 +298,8 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 The CaledarView can take a CalendarStyle object.
 The CalendarStyle is used to change the appearance of the calendar and default components.
 
+
+<!--TODO: Complete this-->
 ```dart
 CalendarStyle();
 ```
@@ -279,6 +309,10 @@ CalendarStyle();
 The CalendarView can take a CalendarComponents object.
 This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
 
+
+<!--TODO: Complete this-->
 ```dart
-CalendarComponents();
+CalendarComponents(
+  
+);
 ```

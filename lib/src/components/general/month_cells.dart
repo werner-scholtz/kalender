@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+
 import 'package:kalender/src/components/general/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_cell_scroll_view.dart';
 import 'package:kalender/src/components/tile_stacks/month_tile_stack.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
+import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 class MonthCellsStyle {

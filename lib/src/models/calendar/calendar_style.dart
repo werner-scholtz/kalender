@@ -7,7 +7,6 @@ import 'package:kalender/src/components/general/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_cells.dart';
 import 'package:kalender/src/components/general/month_grid.dart';
 import 'package:kalender/src/components/general/month_header.dart';
-import 'package:kalender/src/components/general/schedule_date.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
