@@ -325,17 +325,39 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 ```
 
 ### Appearance
+
+#### Components
+The CalendarView consists of quite a few sub components and I will try to explain them all here.
+
+1. CalendarHeader
+
+2. DayHeader
+
+3. WeekNumber
+
+4. Hourline
+
+5. Timeline
+
+6. DaySeprator
+
+
+
+
+#### CalendarStyle
 The CaledarView can take a CalendarStyle object.
 The CalendarStyle is used to change the appearance of the calendar and default components.
 
 
 <!--TODO: Complete this-->
 ```dart
-CalendarStyle();
+CalendarStyle(
+
+);
 ```
 
 
-### Custom Builders
+#### Custom Builders
 The CalendarView can take a CalendarComponents object.
 This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
 
