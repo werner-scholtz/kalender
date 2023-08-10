@@ -5,7 +5,7 @@ A Flutter package allows you to use a Calendar Widget that has built-in Day, Mul
 It also allows you to customize the appearance of the calendar widget.
 
 ## Web Example
-Try it out [here](https://049er.github.io/kalender/#/)
+Try it out [here](https://049er.github.io/kalender/)
 
 ## Features
 
