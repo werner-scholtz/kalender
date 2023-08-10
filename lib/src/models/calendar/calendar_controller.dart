@@ -172,7 +172,7 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Animates to the [CalendarEvent].
   Future<void> animateToEvent(CalendarEvent<T> event,
-      {Duration? duration, Curve? curve}) async {
+      {Duration? duration, Curve? curve,}) async {
     // First animate to the date of the event.
     await animateToDate(
       event.dateTimeRange.start,

@@ -25,7 +25,7 @@ class MultiDayHeader<T> extends StatelessWidget {
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRange,
         builder: (BuildContext context, DateTimeRange visibleDateTimeRange,
-            Widget? child) {
+            Widget? child,) {
           return Column(
             children: <Widget>[
               RepaintBoundary(

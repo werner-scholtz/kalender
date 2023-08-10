@@ -46,7 +46,7 @@ class TileLayoutController<T> {
 
       // Sort the eventsOnDate by start time.
       eventsOnDate.sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
-          a.start.compareTo(b.start));
+          a.start.compareTo(b.start),);
 
       // Group the events into TileGroups.
       List<TileGroup<T>> tileGroupsOnDate =
@@ -60,7 +60,7 @@ class TileLayoutController<T> {
   }
 
   List<TileGroup<T>> generateTileGroupsOnDate(
-      DateTime date, List<CalendarEvent<T>> eventsOnDate) {
+      DateTime date, List<CalendarEvent<T>> eventsOnDate,) {
     List<TileGroup<T>> tileGroupsOnDate = <TileGroup<T>>[];
 
     // Calculate the left value of the group tile.
@@ -105,7 +105,7 @@ class TileLayoutController<T> {
             <PositionedTileData<T>>[];
         void addTileData(PositionedTileData<T> positionedTileData) {
           if (positionedTileDatas.any((PositionedTileData<T> element) =>
-              element.event == positionedTileData.event)) {
+              element.event == positionedTileData.event,)) {
             return;
           }
           positionedTileDatas.add(positionedTileData);
@@ -148,24 +148,24 @@ class TileLayoutController<T> {
             );
             addTileData(positionedTileData);
             updateGroupHeight(
-                positionedTileData.height + positionedTileData.top);
+                positionedTileData.height + positionedTileData.top,);
             continue;
           }
 
           // Check if the current event has already been added to the tile group.
           if (positionedTileDatas.any((PositionedTileData<T> element) =>
-              element.event == currentEvent)) {
+              element.event == currentEvent,)) {
             continue;
           }
           // Calculate the top value of the tile to check if it overlaps with the previous tile's title.
           double top = calculateTop(currentEvent
               .dateTimeRangeOnDate(date)
               .start
-              .difference(tileGroupStart));
+              .difference(tileGroupStart),);
           double tileLeftOffset;
           double eventWidth;
           if (overlapsWithPreviousTitle(
-              top, positionedTileDatas[i - 1].top, 15)) {
+              top, positionedTileDatas[i - 1].top, 15,)) {
             Iterable<PositionedTileData<T>> eventsBehind =
                 positionedTileDatas.where(
               (PositionedTileData<T> element) =>
@@ -256,7 +256,7 @@ class TileLayoutController<T> {
       date: date,
       left: 0,
       top: calculateTop(
-          event.dateTimeRangeOnDate(date).start.difference(tileGroupStart)),
+          event.dateTimeRangeOnDate(date).start.difference(tileGroupStart),),
       width: eventWidth,
       height: calculateTileHeight(event.durationOnDate(date)),
       drawOutline: false,
@@ -316,7 +316,7 @@ class TileLayoutController<T> {
             date: e,
             left: calculateLeft(e),
             top: calculateTop(
-                event.dateTimeRangeOnDate(e).start.difference(e.startOfDay)),
+                event.dateTimeRangeOnDate(e).start.difference(e.startOfDay),),
             width: dayWidth,
             height: calculateTileHeight(event.durationOnDate(e)),
             drawOutline: false,
@@ -337,7 +337,7 @@ class TileLayoutController<T> {
 
   /// Returns a list of [CalendarEvent]'s that are visible on the [date].
   Iterable<CalendarEvent<T>> findEventsOnDate(
-      Iterable<CalendarEvent<T>> events, DateTime date) {
+      Iterable<CalendarEvent<T>> events, DateTime date,) {
     return events.where(
       (CalendarEvent<T> element) =>
           element.start.isSameDay(date) || element.end.isSameDay(date),

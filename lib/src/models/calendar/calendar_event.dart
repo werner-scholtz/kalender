@@ -27,7 +27,7 @@ class CalendarEvent<T> with ChangeNotifier {
   DateTime get start => _dateTimeRange.start;
   set start(DateTime newStart) {
     assert(newStart.isBefore(_dateTimeRange.end),
-        'CalendarEvent start must be before end');
+        'CalendarEvent start must be before end',);
     _dateTimeRange = DateTimeRange(
       start: newStart,
       end: _dateTimeRange.end,
@@ -39,7 +39,7 @@ class CalendarEvent<T> with ChangeNotifier {
   DateTime get end => _dateTimeRange.end;
   set end(DateTime newEnd) {
     assert(newEnd.isAfter(_dateTimeRange.start),
-        'CalendarEvent end must be after start');
+        'CalendarEvent end must be after start',);
     _dateTimeRange = DateTimeRange(
       start: _dateTimeRange.start,
       end: newEnd,

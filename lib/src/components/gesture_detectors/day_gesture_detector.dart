@@ -182,7 +182,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   void _onVerticalDragStart(
-      DragStartDetails details, DateTimeRange initialDateTimeRange) {
+      DragStartDetails details, DateTimeRange initialDateTimeRange,) {
     cursorOffset = 0;
     scope.eventsController.isNewEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
@@ -207,7 +207,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   void _onVerticalDragUpdate(
-      DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
+      DragUpdateDetails details, DateTimeRange initialDateTimeRange,) {
     cursorOffset += details.delta.dy;
 
     int newNumberOfSlotsSelected = cursorOffset ~/ heightPerSlot;

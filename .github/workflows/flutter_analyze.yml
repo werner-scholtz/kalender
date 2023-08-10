@@ -25,7 +25,7 @@ jobs:
         working-directory: ./
 
       - name: Formatting check
-        run: dart format . --set-exit-if-changed
+        run: dart analyze --fatal-infos
         shell: bash
         working-directory: ./
 

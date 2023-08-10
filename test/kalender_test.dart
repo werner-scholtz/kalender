@@ -185,7 +185,7 @@ void testDateTimeExtentions() {
       test('startOfWeekWithOffset', () {
         expect(object.date.startOfWeekWithOffset(1), object.startOfWeek);
         expect(object.date.startOfWeekWithOffset(7),
-            object.startOfWeekSundayOffset);
+            object.startOfWeekSundayOffset,);
       });
 
       test('endOfWeek', () {
@@ -222,7 +222,7 @@ void testDateTimeExtentions() {
 
       test('weekRangeWithOffset', () {
         expect(object.date.weekRangeWithOffset(1),
-            object.weekRangeWithMondayOffset);
+            object.weekRangeWithMondayOffset,);
       });
 
       test('weekRange', () {
@@ -240,7 +240,7 @@ void testDateTimeExtentions() {
       test('isSameDay', () {
         expect(object.date.isSameDay(object.date), true);
         expect(object.date.isSameDay(object.date.add(const Duration(days: 1))),
-            false);
+            false,);
       });
     }
   });

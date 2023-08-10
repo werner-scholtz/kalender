@@ -81,7 +81,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This exludes [CalendarEvent]s that are displayed on single days.
   Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(
-      DateTimeRange dateRange) {
+      DateTimeRange dateRange,) {
     return _events.where(
       (CalendarEvent<T> element) =>
           ((element.start.isBefore(dateRange.start) &&
@@ -105,7 +105,7 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   Iterable<CalendarEvent<T>> getDayEventsFromDateRange(
-      DateTimeRange dateRange) {
+      DateTimeRange dateRange,) {
     return _events.where(
       (CalendarEvent<T> element) =>
           (element.start.isWithin(dateRange) ||

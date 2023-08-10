@@ -55,7 +55,7 @@ class MonthLayoutController<T> {
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
       ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
-          a.start.compareTo(b.start));
+          a.start.compareTo(b.start),);
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -96,11 +96,11 @@ class MonthLayoutController<T> {
     if (selectedEvent != null) {
       List<PositionedMonthTileData<T>> selectedArrangedEvent = arrangedEvents
           .where((PositionedMonthTileData<T> element) =>
-              element.event == selectedEvent)
+              element.event == selectedEvent,)
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
         arrangedEvents.removeWhere((PositionedMonthTileData<T> element) =>
-            element.event == selectedEvent);
+            element.event == selectedEvent,);
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }

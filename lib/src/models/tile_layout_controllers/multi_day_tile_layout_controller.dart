@@ -59,7 +59,7 @@ class MultiDayLayoutController<T> {
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
       ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
-          a.start.compareTo(b.start));
+          a.start.compareTo(b.start),);
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -100,11 +100,11 @@ class MultiDayLayoutController<T> {
     if (selectedEvent != null) {
       List<PositionedMultiDayTileData<T>> selectedArrangedEvent = arrangedEvents
           .where((PositionedMultiDayTileData<T> element) =>
-              element.event == selectedEvent)
+              element.event == selectedEvent,)
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
         arrangedEvents.removeWhere((PositionedMultiDayTileData<T> element) =>
-            element.event == selectedEvent);
+            element.event == selectedEvent,);
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }

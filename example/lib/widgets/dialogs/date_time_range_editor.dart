@@ -85,8 +85,9 @@ class _DateTimePickerState extends State<DateTimePicker> {
                   initialValue: dateTime.hour.toString(),
                   onChanged: (value) {
                     int? hourValue = int.tryParse(value);
-                    if (hourValue == null || hourValue < 0 || hourValue > 23)
+                    if (hourValue == null || hourValue < 0 || hourValue > 23) {
                       return;
+                    }
 
                     widget.onDateTimeChanged(
                       DateTime(
