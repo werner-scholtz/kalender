@@ -8,6 +8,8 @@ name: Analyze
 on:
   pull_request:
     branches: [ main, testing ]
+  push:
+    branches: [ main, testing ]
 
 jobs:
   build:
