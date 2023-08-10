@@ -45,9 +45,11 @@ Try it out [here](https://049er.github.io/kalender/#/)
   (mobile)
 
 *  **Reschedule** - Drag and Drop events to your liking.
+
     <img src="./readme_assets/drag_and_drop.gif" width="75%" height="75%"/>
 
 * **Resize** - Resize events by dragging the edges of an event.
+
     <img src="./readme_assets/resize.gif" width="75%" height="75%"/>
 
 * **Event Handeling** - When a there is interaction with a tile or component the event can be handeled by you. [Find out more](#event-handling)
@@ -325,61 +327,65 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 ```
 
 ### Appearance
-
-#### Components
 The CalendarView consists of quite a few sub components:
+Each of these components can be customized in the CalendarStyle object or by passing a custom widget builder through the CalendarComponents object.
 
-1. CalendarHeader
-<img src="./readme_assets/calendar_header.png" width="100%" height="100%"/>
+1. CalendarHeader - This is a custom widget that you can pass to the calendar to render in the header of the calendar.
 
-2. DayHeader
-<img src="./readme_assets/day_header.png" width="100%" height="100%"/>
+    <img src="./readme_assets/calendar_header.png" width="60%" height="60%"/>
 
-3. WeekNumber
-<img src="./readme_assets/week_number.png" width="100%" height="100%"/>
+    (CalendarHeader)
 
-4. DaySeprator
-<img src="./readme_assets/day_seperator.png" width="100%" height="100%"/>
+2. DayHeader - This widget is displayed above a day colum in the calendar.
 
-5. Hourlines
-<img src="./readme_assets/hourlines.png" width="100%" height="100%"/>
+    <img src="./readme_assets/day_header.png" width="60%" height="60%"/>
 
-6. Timeline
-<img src="./readme_assets/timeline.png" width="100%" height="100%"/>
+    (DayHeader)
 
-7. TimeIndicator
-<img src="./readme_assets/time_indicator.png" width="100%" height="100%"/>
+3. WeekNumber - This widget displays the week number of the year.
 
-8. MonthHeader
-<img src="./readme_assets/month_header.png" width="100%" height="100%"/>
+    <img src="./readme_assets/week_number.png" width="60%" height="60%"/>
 
-9. MonthCellHeader
-<img src="./readme_assets/month_cell_header.png" width="100%" height="100%"/>
+    (WeekNumber)
 
-10. MonthGrid
-<img src="./readme_assets/month_grid.png" width="100%" height="100%"/>
+4. DaySeprator - This widget is displayed between days in the calendar.
+    
+    <img src="./readme_assets/day_seperator.png" width="60%" height="60%"/>
 
-#### CalendarStyle
-The CaledarView can take a CalendarStyle object.
-The CalendarStyle is used to change the appearance of the calendar and default components.
+    (DaySeprator)
 
+5. Hourlines - This widget is displayes the hourlines in the calendar.
+    
+    <img src="./readme_assets/hourlines.png" width="60%" height="60%"/>
 
-<!--TODO: Complete this-->
-```dart
-CalendarStyle(
+    (Hourlines)
 
-);
-```
+6. Timeline - This widget is displayed on the left side of the calendar to show the time.
+    
+    <img src="./readme_assets/timeline.png" width="60%" height="60%"/>
 
+    (Timeline)
 
-#### Custom Builders
-The CalendarView can take a CalendarComponents object.
-This object containes all the default builders for the calendar, you can override any of these builders to use your own custom builders.
+7. TimeIndicator - This widget is displayed on the current day to show the current time.
+    
+    <img src="./readme_assets/time_indicator.png" width="60%" height="60%"/>
 
+    (TimeIndicator)
 
-<!--TODO: Complete this-->
-```dart
-CalendarComponents(
-  
-);
-```
+8. MonthHeader - This widget is displayed above the month grid in the calendar header.
+    
+    <img src="./readme_assets/month_header.png" width="60%" height="60%"/>
+
+    (MonthHeader)
+
+9. MonthCellHeader - This widget is displayed in a month cell in the month grid.
+    
+    <img src="./readme_assets/month_cell_header.png" width="60%" height="60%"/>
+
+    (MonthCellHeader)
+
+10. MonthGrid - This widget is displayed in the month view to show the grid.
+    
+    <img src="./readme_assets/month_grid.png" width="60%" height="60%"/>
+
+    (MonthGrid)
