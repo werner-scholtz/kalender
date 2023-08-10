@@ -1,10 +1,11 @@
 name: kalender
-description: A new Flutter package project.
+description: A Flutter calendar UI package.
 version: 0.0.1
-homepage:
+repository: https://github.com/werner-scholtz/kalender.git
+
 
 environment:
-  sdk: '>=2.19.3 <3.0.0'
+  sdk: '>=2.19.3 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

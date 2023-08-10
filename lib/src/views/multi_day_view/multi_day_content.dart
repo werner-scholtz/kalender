@@ -31,7 +31,8 @@ class MultiDayContent<T> extends StatelessWidget {
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
-        double verticalStep = heightPerMinute * viewConfiguration.slotSize.minutes;
+        double verticalStep =
+            heightPerMinute * viewConfiguration.slotSize.minutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -46,7 +47,8 @@ class MultiDayContent<T> extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: SizedBox(
                     height: pageHeight,
-                    width: pageWidth + viewConfiguration.hourlineTimelineOverlap,
+                    width:
+                        pageWidth + viewConfiguration.hourlineTimelineOverlap,
                     child: PageView.builder(
                       key: Key(viewConfiguration.hashCode.toString()),
                       controller: scope.state.pageController,
@@ -55,19 +57,23 @@ class MultiDayContent<T> extends StatelessWidget {
                         DateTimeRange newVisibleDateTimeRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
-                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                          calendarStart:
+                              scope.state.adjustedDateTimeRange.start,
                         );
-                        scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
+                        scope.state.visibleDateTimeRange.value =
+                            newVisibleDateTimeRange;
                         controller.selectedDate = newVisibleDateTimeRange.start;
                       },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
-                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                          calendarStart:
+                              scope.state.adjustedDateTimeRange.start,
                         );
 
-                        TileLayoutController<T> tileLayoutController = TileLayoutController<T>(
+                        TileLayoutController<T> tileLayoutController =
+                            TileLayoutController<T>(
                           visibleDateRange: pageVisibleDateRange,
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
@@ -80,10 +86,12 @@ class MultiDayContent<T> extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
-                                width: pageWidth + viewConfiguration.hourlineTimelineOverlap,
+                                width: pageWidth +
+                                    viewConfiguration.hourlineTimelineOverlap,
                                 height: pageHeight,
                                 child: scope.components.hourlineBuilder(
-                                  pageWidth + viewConfiguration.hourlineTimelineOverlap,
+                                  pageWidth +
+                                      viewConfiguration.hourlineTimelineOverlap,
                                   hourHeight,
                                 ),
                               ),
@@ -117,30 +125,28 @@ class MultiDayContent<T> extends StatelessWidget {
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
-                                  verticalDurationStep: viewConfiguration.slotSize.duration,
+                                  verticalDurationStep:
+                                      viewConfiguration.slotSize.duration,
                                   horizontalStep: dayWidth,
-                                  horizontalDurationStep: viewConfiguration.horizontalDurationStep,
-                                  eventSnapping: viewConfiguration.eventSnapping,
-                                  timeIndicatorSnapping: viewConfiguration.timeIndicatorSnapping,
+                                  horizontalDurationStep:
+                                      viewConfiguration.horizontalDurationStep,
+                                  eventSnapping:
+                                      viewConfiguration.eventSnapping,
+                                  timeIndicatorSnapping:
+                                      viewConfiguration.timeIndicatorSnapping,
                                 ),
                               ),
                             ),
                             Visibility(
-                                visible: DateTime.now().isWithin(pageVisibleDateRange),
-                                child: scope.components.timeIndicatorBuilder(
-                                  dayWidth,
-                                  pageHeight,
-                                  pageVisibleDateRange,
-                                  heightPerMinute,
-                                )
-
-                                // TimeIndicator(
-                                //   width: dayWidth,
-                                //   height: pageHeight,
-                                //   visibleDateRange: pageVisibleDateRange,
-                                //   heightPerMinute: heightPerMinute,
-                                // ),
-                                ),
+                              visible:
+                                  DateTime.now().isWithin(pageVisibleDateRange),
+                              child: scope.components.timeIndicatorBuilder(
+                                dayWidth,
+                                pageHeight,
+                                pageVisibleDateRange,
+                                heightPerMinute,
+                              ),
+                            ),
                           ],
                         );
                       },
