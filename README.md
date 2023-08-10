@@ -327,7 +327,7 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 ### Appearance
 
 #### Components
-The CalendarView consists of quite a few sub components and I will try to explain them all here.
+The CalendarView consists of quite a few sub components:
 
 1. CalendarHeader
 
@@ -335,16 +335,19 @@ The CalendarView consists of quite a few sub components and I will try to explai
 
 3. WeekNumber
 
-4. Hourline
+4. DaySeprator
 
-5. Timeline
+5. Hourlines
 
-6. TimeIndicator
+6. Timeline
 
-7. DaySeprator
+7. TimeIndicator
 
+8. MonthHeader
 
+9. MonthCellHeader
 
+10. MonthGrid
 
 #### CalendarStyle
 The CaledarView can take a CalendarStyle object.

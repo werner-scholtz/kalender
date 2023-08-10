@@ -47,6 +47,25 @@ typedef TimeIndicatorBuilder = Widget Function(
   double heightPerMinute,
 );
 
+/// The [MonthGridBuilder] is used to build the month grid displayed on the calendar.
+typedef MonthGridBuilder = Widget Function(
+  double pageHeight,
+  double cellHeight,
+  double cellWidth,
+);
+
+/// The [MonthCellHeaderBuilder] is used to build the header displayed above a day.
+typedef MonthCellHeaderBuilder = Widget Function(
+  DateTime date,
+  void Function(DateTime date)? onTapped,
+);
+
+/// The [MonthHeaderBuilder] is used to build the header displayed above the month grid.
+typedef MonthHeaderBuilder = Widget Function(
+  double dayWidth,
+  DateTime date,
+);
+
 /// The [TileBuilder]
 ///
 /// The [drawOutline] parameter is used to indicate whether the event should be drawn with an outline.

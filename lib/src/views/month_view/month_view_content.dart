@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/month_cells.dart';
-import 'package:kalender/src/components/general/month_grid.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -40,7 +39,6 @@ class MonthViewContent<T> extends StatelessWidget {
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   index: index,
                   calendarStart: scope.state.adjustedDateTimeRange.start,
-              
                 );
 
                 scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
@@ -51,15 +49,14 @@ class MonthViewContent<T> extends StatelessWidget {
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   calendarStart: scope.state.adjustedDateTimeRange.start,
                   index: index,
-           
                 );
 
                 return Stack(
                   children: <Widget>[
-                    MonthGrid(
-                      pageHeight: constraints.maxHeight,
-                      cellHeight: cellHeight,
-                      cellWidth: cellWidth,
+                    scope.components.monthGridBuilder(
+                      constraints.maxHeight,
+                      cellHeight,
+                      cellWidth,
                     ),
                     MonthCells<T>(
                       cellHeight: cellHeight,

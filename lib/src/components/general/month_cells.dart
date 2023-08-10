@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:kalender/src/components/general/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_cell_scroll_view.dart';
 import 'package:kalender/src/components/tile_stacks/month_tile_stack.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 class MonthCellsStyle {
@@ -35,7 +35,7 @@ class MonthCells<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarStyle style = CalendarStyleProvider.of(context).style;
-
+    CalendarScope<T> scope = CalendarScope.of<T>(context);
     return Stack(
       children: <Widget>[
         for (int c = 0; c < 5; c++)
@@ -52,8 +52,9 @@ class MonthCells<T> extends StatelessWidget {
                         width: cellWidth,
                         height: style.monthCellsStyle?.cellHeaderHeight ?? 32,
                         child: Center(
-                          child: MonthCellHeader<T>(
-                            date: visibleDateRange.start.add(Duration(days: (c * 7) + r)),
+                          child: scope.components.monthCellHeaderBuilder(
+                            visibleDateRange.start.add(Duration(days: (c * 7) + r)),
+                            (DateTime date) => scope.functions.onDateTapped?.call(date),
                           ),
                         ),
                       ),

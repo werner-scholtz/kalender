@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header.dart';
 import 'package:kalender/src/components/general/day_seperator.dart';
 import 'package:kalender/src/components/general/hour_line.dart';
+import 'package:kalender/src/components/general/month_cell_header.dart';
+import 'package:kalender/src/components/general/month_grid.dart';
+import 'package:kalender/src/components/general/month_header.dart';
 import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line.dart';
 import 'package:kalender/src/components/general/week_number.dart';
@@ -41,6 +44,9 @@ class CalendarComponents {
     TimelineBuilder? timelineBuilder,
     TimeIndicatorBuilder? timeIndicatorBuilder,
     DaySepratorBuilder? daySepratorBuilder,
+    MonthGridBuilder? monthGridBuilder,
+    MonthCellHeaderBuilder? monthCellHeaderBuilder,
+    MonthHeaderBuilder? monthHeaderBuilder,
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
@@ -48,6 +54,9 @@ class CalendarComponents {
     this.timelineBuilder = timelineBuilder ?? _defaultTimelineBuilder;
     this.daySepratorBuilder = daySepratorBuilder ?? _defaultDaySeperatorBuilder;
     this.timeIndicatorBuilder = timeIndicatorBuilder ?? _defaultTimeIndicatorBuilder;
+    this.monthGridBuilder = monthGridBuilder ?? _defaultMonthGridBuilder;
+    this.monthCellHeaderBuilder = monthCellHeaderBuilder ?? _defaultMonthCellHeaderBuilder;
+    this.monthHeaderBuilder = monthHeaderBuilder ?? _defaultMonthHeaderBuilder;
   }
 
   /// This builder is used to build the widget displayed in the calendar's header.
@@ -70,6 +79,14 @@ class CalendarComponents {
 
   /// This builder is used to build the time indicator displayed on the calendar.
   late TimeIndicatorBuilder timeIndicatorBuilder;
+
+  /// This builder is used to build the month grid displayed on the calendar.
+  late MonthGridBuilder monthGridBuilder;
+
+  /// This builder is used to build the month cell header displayed on the calendar.
+  late MonthCellHeaderBuilder monthCellHeaderBuilder;
+
+  late MonthHeaderBuilder monthHeaderBuilder;
 
   Widget _defaultTimelineBuilder(
     double timelineWidth,
@@ -134,6 +151,38 @@ class CalendarComponents {
       height: areaHeight,
       visibleDateRange: visibleDateRange,
       heightPerMinute: heightPerMinute,
+    );
+  }
+
+  Widget _defaultMonthGridBuilder(
+    double pageHeight,
+    double cellHeight,
+    double cellWidth,
+  ) {
+    return MonthGrid(
+      pageHeight: pageHeight,
+      cellHeight: cellHeight,
+      cellWidth: cellWidth,
+    );
+  }
+
+  Widget _defaultMonthCellHeaderBuilder(
+    DateTime date,
+    void Function(DateTime date)? onTapped,
+  ) {
+    return MonthCellHeader(
+      date: date,
+      onTapped: onTapped,
+    );
+  }
+
+  Widget _defaultMonthHeaderBuilder(
+    double dayWidth,
+    DateTime date,
+  ) {
+    return MonthHeader(
+      date: date,
+      dayWidth: dayWidth,
     );
   }
 
