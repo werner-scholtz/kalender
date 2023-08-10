@@ -1,4 +1,4 @@
-name: GH Pages
+name: Web Demo
 
 on:
   pull_request:
