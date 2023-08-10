@@ -339,7 +339,9 @@ The CalendarView consists of quite a few sub components and I will try to explai
 
 5. Timeline
 
-6. DaySeprator
+6. TimeIndicator
+
+7. DaySeprator
 
 
 

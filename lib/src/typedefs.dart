@@ -16,8 +16,8 @@ typedef DayHeaderBuilder<T extends Object?> = Widget Function(
   void Function(DateTime date)? onTapped,
 );
 
-/// The [HourlineBuilder] is used to build the hourlines displayed on calendar's.
-typedef HourlineBuilder<T extends Object?> = Widget Function(
+/// The [HourlinesBuilder] is used to build the hourlines displayed on calendar's.
+typedef HourlinesBuilder<T extends Object?> = Widget Function(
   double hourlineWidth,
   double hourHeight,
 );
@@ -34,6 +34,17 @@ typedef TimelineBuilder<T extends Object?> = Widget Function(
   double timelineWidth,
   double height,
   double hourHeight,
+);
+
+/// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.
+typedef WeekNumberBuilder<T extends Object?> = Widget Function(DateTimeRange visibleDateRange);
+
+/// The [TimeIndicatorBuilder] is used to build the time indicator displayed on current day.
+typedef TimeIndicatorBuilder = Widget Function(
+  double timeIndicatorWidth,
+  double areaHeight,
+  DateTimeRange visibleDateRange,
+  double heightPerMinute,
 );
 
 /// The [TileBuilder]
@@ -73,13 +84,4 @@ typedef MonthTileBuilder<T extends Object?> = Widget Function(
 typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTime date,
-);
-
-/// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.
-typedef WeekNumberBuilder<T extends Object?> = Widget Function(DateTimeRange visibleDateRange);
-
-/// The [ScheduleDateBuilder] is used to build the date displayed on the left side of the calendar.
-typedef ScheduleDateBuilder<T extends Object?> = Widget Function(
-  DateTime date,
-  void Function(DateTime date) onDateTapped,
 );

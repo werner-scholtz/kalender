@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/time_indicator.dart';
 import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
@@ -125,14 +124,20 @@ class SingleDayContent<T> extends StatelessWidget {
                               ),
                             ),
                             Visibility(
-                              visible: DateTime.now().isWithin(pageVisibleDateRange),
-                              child: TimeIndicator(
-                                width: dayWidth,
-                                height: pageHeight,
-                                visibleDateRange: pageVisibleDateRange,
-                                heightPerMinute: heightPerMinute,
-                              ),
-                            ),
+                                visible: DateTime.now().isWithin(pageVisibleDateRange),
+                                child: scope.components.timeIndicatorBuilder(
+                                  dayWidth,
+                                  pageHeight,
+                                  pageVisibleDateRange,
+                                  heightPerMinute,
+                                )
+                                // child: TimeIndicator(
+                                //   width: dayWidth,
+                                //   height: pageHeight,
+                                //   visibleDateRange: pageVisibleDateRange,
+                                //   heightPerMinute: heightPerMinute,
+                                // ),
+                                ),
                           ],
                         );
                       },

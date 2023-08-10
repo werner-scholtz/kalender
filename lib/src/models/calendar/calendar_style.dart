@@ -39,7 +39,7 @@ class CalendarStyle {
   /// The [DaySeperatorStyle] used by the [DaySeperator].
   final DaySeperatorStyle? daySeperatorStyle;
 
-  /// The [HourLineStyle] used by the [HourLine].
+  /// The [HourLineStyle] used by the [HourLines].
   final HourLineStyle? hourLineStyle;
 
   /// The [ScheduleDateStyle] used by the [ScheduleDate].
