@@ -9,7 +9,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
     this.slotSize = const SlotSize(minutes: 15),
-    this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
@@ -20,7 +19,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   final double timelineWidth;
 
   @override
-  final Duration horizontalDurationStep;
+  final Duration horizontalDurationStep = const Duration(days: 1);
 
   @override
   final double hourlineTimelineOverlap;
