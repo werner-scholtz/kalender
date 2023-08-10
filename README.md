@@ -143,6 +143,8 @@ These are the default ViewConfiguration's:
       eventSnapping: true,
       // Allow EventTiles snap to the time indicator.
       timeIndicatorSnapping: true,
+      // Allow the view to create new events.
+      createNewEvents: true,
     ),
     ```
 
@@ -158,6 +160,7 @@ These are the default ViewConfiguration's:
       paintWeekNumber: true,
       eventSnapping: true,
       timeIndicatorSnapping: true,
+      createNewEvents: true,
     ),
     ```
 
@@ -172,6 +175,7 @@ These are the default ViewConfiguration's:
       eventSnapping: true,
       timeIndicatorSnapping: true,
       firstDayOfWeek: DateTime.monday,
+      createNewEvents: true,
     ),
     ```
 
@@ -185,6 +189,7 @@ These are the default ViewConfiguration's:
       paintWeekNumber: true,
       eventSnapping: true,
       timeIndicatorSnapping: true,
+      createNewEvents: true,
     )
     ```
 
@@ -193,6 +198,7 @@ These are the default ViewConfiguration's:
     MonthConfiguration(
       firstDayOfWeek: DateTime.monday,
       enableRezising: true,
+      createNewEvents: true,
     )
     ```
 
