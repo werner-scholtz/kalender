@@ -330,24 +330,34 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 The CalendarView consists of quite a few sub components:
 
 1. CalendarHeader
+<img src="./readme_assets/calendar_header.png" width="100%" height="100%"/>
 
 2. DayHeader
+<img src="./readme_assets/day_header.png" width="100%" height="100%"/>
 
 3. WeekNumber
+<img src="./readme_assets/week_number.png" width="100%" height="100%"/>
 
 4. DaySeprator
+<img src="./readme_assets/day_seperator.png" width="100%" height="100%"/>
 
 5. Hourlines
+<img src="./readme_assets/hourlines.png" width="100%" height="100%"/>
 
 6. Timeline
+<img src="./readme_assets/timeline.png" width="100%" height="100%"/>
 
 7. TimeIndicator
+<img src="./readme_assets/time_indicator.png" width="100%" height="100%"/>
 
 8. MonthHeader
+<img src="./readme_assets/month_header.png" width="100%" height="100%"/>
 
 9. MonthCellHeader
+<img src="./readme_assets/month_cell_header.png" width="100%" height="100%"/>
 
 10. MonthGrid
+<img src="./readme_assets/month_grid.png" width="100%" height="100%"/>
 
 #### CalendarStyle
 The CaledarView can take a CalendarStyle object.
