@@ -8,6 +8,7 @@ export 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 export 'package:kalender/src/models/calendar/calendar_functions.dart';
 export 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 export 'package:kalender/src/models/calendar/calendar_style.dart';
+export 'package:kalender/src/models/calendar/slot_size.dart';
 
 /// Views
 // export 'package:kalender/src/views/single_day_view/single_day_view.dart';

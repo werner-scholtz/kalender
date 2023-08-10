@@ -161,6 +161,8 @@ These are the default ViewConfiguration's:
       multidayTileHeight: 24,
       // The duration of one vertical step (Used when the user is dragging an event)
       verticalDurationStep: Duration(minutes: 15),
+      // The size of one slot in the calendar. (Used when create a new event by tapping on the calendar)
+      minuteSlotSize: SlotSize(15),
       // Snap Events to each other.
       eventSnapping: true,
       // Snap Events to the time indicator.
