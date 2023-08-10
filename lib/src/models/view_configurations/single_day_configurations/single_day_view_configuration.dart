@@ -20,13 +20,10 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   /// The height of the multiday tiles.
   double get multidayTileHeight;
 
-  /// The vertical step duration.
-  Duration get verticalDurationStep;
-
   /// The size of the minute slots.
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  SlotSize get minuteSlotSize;
+  SlotSize get slotSize;
 
   /// Enable snapping to events.
   bool get eventSnapping;

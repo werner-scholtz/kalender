@@ -32,7 +32,7 @@ class MultiDayContent<T> extends StatelessWidget {
       builder: (BuildContext context, double heightPerMinute, Widget? child) {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
-        double verticalStep = heightPerMinute * viewConfiguration.verticalDurationStep.inMinutes;
+        double verticalStep = heightPerMinute * viewConfiguration.slotSize.minutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -106,7 +106,7 @@ class MultiDayContent<T> extends StatelessWidget {
                               width: dayWidth,
                               heightPerMinute: heightPerMinute,
                               visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: viewConfiguration.minuteSlotSize,
+                              minuteSlotSize: viewConfiguration.slotSize,
                             ),
                             Align(
                               alignment: Alignment.centerRight,
@@ -118,7 +118,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
-                                  verticalDurationStep: viewConfiguration.verticalDurationStep,
+                                  verticalDurationStep: viewConfiguration.slotSize.duration,
                                   horizontalStep: dayWidth,
                                   horizontalDurationStep: viewConfiguration.horizontalDurationStep,
                                   eventSnapping: viewConfiguration.eventSnapping,

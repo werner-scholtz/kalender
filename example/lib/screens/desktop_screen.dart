@@ -33,7 +33,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
       timelineWidth: 56,
       hourlineTimelineOverlap: 8,
       multidayTileHeight: 6,
-      verticalDurationStep: Duration(minutes: 15),
       eventSnapping: true,
       timeIndicatorSnapping: true,
     ),

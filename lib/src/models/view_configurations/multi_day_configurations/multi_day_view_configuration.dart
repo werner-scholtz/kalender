@@ -15,15 +15,12 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   double get multidayTileHeight;
 
   /// The vertical step duration.
-  Duration get verticalDurationStep;
-
-  /// The vertical step duration.
   Duration get horizontalDurationStep;
 
   /// The size of the minute slots.
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  SlotSize get minuteSlotSize;
+  SlotSize get slotSize;
 
   /// Paint the week number.
   bool get paintWeekNumber;

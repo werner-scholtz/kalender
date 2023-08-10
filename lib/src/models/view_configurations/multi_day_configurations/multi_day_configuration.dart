@@ -10,8 +10,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
-    this.minuteSlotSize = const SlotSize(15),
-    this.verticalDurationStep = const Duration(minutes: 15),
+    this.slotSize = const SlotSize(minutes: 15),
     this.horizontalDurationStep = const Duration(days: 1),
     this.paintWeekNumber = true,
     this.eventSnapping = false,
@@ -23,8 +22,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   @override
   final double timelineWidth;
 
-  @override
-  final Duration verticalDurationStep;
 
   @override
   final Duration horizontalDurationStep;
@@ -33,7 +30,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final double hourlineTimelineOverlap;
 
   @override
-  final SlotSize minuteSlotSize;
+  final SlotSize slotSize;
 
   @override
   final double multidayTileHeight;

@@ -12,8 +12,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
     this.timelineWidth = 56,
     this.hourlineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
-    this.verticalDurationStep = const Duration(minutes: 15),
-    this.minuteSlotSize = const SlotSize(15),
+    this.slotSize = const SlotSize(minutes: 15),
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
   });
@@ -25,13 +24,10 @@ class DayConfiguration extends SingleDayViewConfiguration {
   final double hourlineTimelineOverlap;
 
   @override
-  final Duration verticalDurationStep;
-
-  @override
   final double multidayTileHeight;
 
   @override
-  final SlotSize minuteSlotSize;
+  final SlotSize slotSize;
 
   @override
   final bool eventSnapping;

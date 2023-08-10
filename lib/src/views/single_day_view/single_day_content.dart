@@ -31,7 +31,7 @@ class SingleDayContent<T> extends StatelessWidget {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
         double pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
-        double verticalStep = heightPerMinute * viewConfiguration.verticalDurationStep.inMinutes;
+        double verticalStep = heightPerMinute * viewConfiguration.slotSize.minutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -106,7 +106,7 @@ class SingleDayContent<T> extends StatelessWidget {
                               width: dayWidth,
                               heightPerMinute: heightPerMinute,
                               visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: viewConfiguration.minuteSlotSize,
+                              minuteSlotSize: viewConfiguration.slotSize,
                             ),
                             Align(
                               alignment: Alignment.centerRight,
@@ -118,7 +118,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
-                                  verticalDurationStep: viewConfiguration.verticalDurationStep,
+                                  verticalDurationStep: viewConfiguration.slotSize.duration,
                                   eventSnapping: viewConfiguration.eventSnapping,
                                   timeIndicatorSnapping: viewConfiguration.timeIndicatorSnapping,
                                 ),
