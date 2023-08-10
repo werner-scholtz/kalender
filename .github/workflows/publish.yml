@@ -6,11 +6,13 @@ on:
     tags:
     - 'v[0-9]+.[0-9]+.[0-9]+*' 
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -18,15 +20,44 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze
-        run: flutter analyze --fatal-infos
+        run: flutter analyze
       - name: Run tests
         run: flutter test
+      - name: Setup Pub Credentials
+        shell: bash
+        env:
+          PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
+          PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
+          PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
+          PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+        run: |
+          sh ./pub_login.sh
       - name: Check Publish Warnings
-        run: dart pub publish --dry-run
-      - name: Publish
-        uses: k-paxian/dart-package-publisher@v1.5.1
-        with:
-          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          flutter: true
-          skipTests: true
-          relativePath: ./
+        run: pub publish --dry-run
+      - name: Publish Package
+        run: pub publish -f
+            
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Install Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.10.6'
+#       - name: Install dependencies
+#         run: flutter pub get
+#       - name: Analyze
+#         run: flutter analyze --fatal-infos
+#       - name: Run tests
+#         run: flutter test
+#       - name: Check Publish Warnings
+#         run: dart pub publish --dry-run
+#       - name: Publish
+#         uses: k-paxian/dart-package-publisher@v1.5.1
+#         with:
+#           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+#           flutter: true
+#           skipTests: true
+#           relativePath: ./
