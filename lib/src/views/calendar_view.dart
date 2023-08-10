@@ -140,7 +140,9 @@ class CalendarView<T> extends StatefulWidget {
     this.eventHandlers,
     this.createNewEvents = true,
   }) : assert(
-          tileBuilder != null && multiDayTileBuilder != null && monthTileBuilder != null,
+          tileBuilder != null &&
+              multiDayTileBuilder != null &&
+              monthTileBuilder != null,
           'All Event Tile builders must be assigned',
         );
 
@@ -268,7 +270,8 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         multiDayTileBuilder: widget.multiDayTileBuilder!,
         components: widget.components,
         functions: widget.eventHandlers,
-        singleDayViewConfiguration: _viewConfiguration as SingleDayViewConfiguration,
+        singleDayViewConfiguration:
+            _viewConfiguration as SingleDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
         style: widget.style,
       );
@@ -282,7 +285,8 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         multiDayTileBuilder: widget.multiDayTileBuilder!,
         components: widget.components,
         functions: widget.eventHandlers,
-        multiDayViewConfiguration: _viewConfiguration as MultiDayViewConfiguration,
+        multiDayViewConfiguration:
+            _viewConfiguration as MultiDayViewConfiguration,
         createNewEvents: widget.createNewEvents,
         style: widget.style,
       );

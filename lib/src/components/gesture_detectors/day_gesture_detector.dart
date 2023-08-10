@@ -90,7 +90,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: createNewEvents
-                      ? () => onTap(calculateDateTimeRange(visibleDates[day], i))
+                      ? () =>
+                          onTap(calculateDateTimeRange(visibleDates[day], i))
                       : null,
                   onVerticalDragStart: gestureDisabled
                       ? null
@@ -98,7 +99,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
-                  onVerticalDragEnd: gestureDisabled ? null : _onVerticalDragEnd,
+                  onVerticalDragEnd:
+                      gestureDisabled ? null : _onVerticalDragEnd,
                   onVerticalDragUpdate: gestureDisabled
                       ? null
                       : (DragUpdateDetails details) => _onVerticalDragUpdate(
@@ -140,8 +142,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     // Set the [isNewEvent] to true.
     scope.eventsController.isNewEvent = true;
 
-    CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(scope.eventsController.chaningEvent!);
+    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent
+        ?.call(scope.eventsController.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
@@ -167,7 +169,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = true;
     scope.eventsController.chaningEvent = displayEvent;
 
-    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent?.call(displayEvent);
+    CalendarEvent<T>? newEvent =
+        await scope.functions.onCreateEvent?.call(displayEvent);
 
     if (newEvent == null) {
       scope.eventsController.chaningEvent = null;
@@ -178,7 +181,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = false;
   }
 
-  void _onVerticalDragStart(DragStartDetails details, DateTimeRange initialDateTimeRange) {
+  void _onVerticalDragStart(
+      DragStartDetails details, DateTimeRange initialDateTimeRange) {
     cursorOffset = 0;
     scope.eventsController.isNewEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
@@ -190,8 +194,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
-    CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(scope.eventsController.chaningEvent!);
+    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent
+        ?.call(scope.eventsController.chaningEvent!);
 
     if (newEvent == null) {
       scope.eventsController.chaningEvent = null;
@@ -202,7 +206,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = false;
   }
 
-  void _onVerticalDragUpdate(DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
+  void _onVerticalDragUpdate(
+      DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
     cursorOffset += details.delta.dy;
 
     int newNumberOfSlotsSelected = cursorOffset ~/ heightPerSlot;

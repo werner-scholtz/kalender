@@ -31,7 +31,8 @@ class HourLines extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HourLineStyle? hourLineStyle = CalendarStyleProvider.of(context).style.hourLineStyle;
+    HourLineStyle? hourLineStyle =
+        CalendarStyleProvider.of(context).style.hourLineStyle;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
       child: Column(
@@ -43,7 +44,8 @@ class HourLines extends StatelessWidget {
                 child: Container(
                   width: hourlineWidth,
                   height: hourLineStyle?.thickness ?? 1,
-                  color: hourLineStyle?.color ?? Theme.of(context).colorScheme.surfaceVariant,
+                  color: hourLineStyle?.color ??
+                      Theme.of(context).colorScheme.surfaceVariant,
                 ),
               ),
             ),

@@ -20,7 +20,8 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        PositionedMultiDayTileData<T> arragnedEvent = multiDayEventLayout.arrangeEvent(
+        PositionedMultiDayTileData<T> arragnedEvent =
+            multiDayEventLayout.arrangeEvent(
           scope.eventsController.chaningEvent!,
         );
         return MouseRegion(

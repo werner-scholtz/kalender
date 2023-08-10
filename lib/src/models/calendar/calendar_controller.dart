@@ -36,7 +36,8 @@ class CalendarController<T> with ChangeNotifier {
   double? get heightPerMinute => _state?.heightPerMinute?.value;
 
   /// The value notifier visible dateTimeRange of the current view.
-  ValueNotifier<DateTimeRange>? get visibleDateTimeRange => _state?.visibleDateTimeRange;
+  ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
+      _state?.visibleDateTimeRange;
 
   /// The adjusted dateTimeRange of the current view.
   DateTimeRange? get adjustedDateTimeRange => _state?.adjustedDateTimeRange;
@@ -170,7 +171,8 @@ class CalendarController<T> with ChangeNotifier {
   }
 
   /// Animates to the [CalendarEvent].
-  Future<void> animateToEvent(CalendarEvent<T> event, {Duration? duration, Curve? curve}) async {
+  Future<void> animateToEvent(CalendarEvent<T> event,
+      {Duration? duration, Curve? curve}) async {
     // First animate to the date of the event.
     await animateToDate(
       event.dateTimeRange.start,
@@ -182,7 +184,8 @@ class CalendarController<T> with ChangeNotifier {
         _state?.viewConfiguration is MultiDayViewConfiguration) {
       // Then animate to the event.
       await _state?.scrollController.animateTo(
-        event.start.difference(event.start.startOfDay).inMinutes * heightPerMinute!,
+        event.start.difference(event.start.startOfDay).inMinutes *
+            heightPerMinute!,
         duration: duration ?? const Duration(milliseconds: 300),
         curve: curve ?? Curves.ease,
       );

@@ -32,9 +32,11 @@ class CalendarHeaderBackground extends StatelessWidget {
               .calendarHeaderBackgroundStyle
               ?.headerSurfaceTintColor ??
           Theme.of(context).colorScheme.surfaceTint,
-      elevation:
-          CalendarStyleProvider.of(context).style.calendarHeaderBackgroundStyle?.headerElevation ??
-              4,
+      elevation: CalendarStyleProvider.of(context)
+              .style
+              .calendarHeaderBackgroundStyle
+              ?.headerElevation ??
+          4,
       child: child,
     );
   }

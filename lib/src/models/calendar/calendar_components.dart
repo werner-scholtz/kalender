@@ -53,9 +53,11 @@ class CalendarComponents {
     this.hourlineBuilder = hourlineBuilder ?? _defaultHourLineBuilder;
     this.timelineBuilder = timelineBuilder ?? _defaultTimelineBuilder;
     this.daySepratorBuilder = daySepratorBuilder ?? _defaultDaySeperatorBuilder;
-    this.timeIndicatorBuilder = timeIndicatorBuilder ?? _defaultTimeIndicatorBuilder;
+    this.timeIndicatorBuilder =
+        timeIndicatorBuilder ?? _defaultTimeIndicatorBuilder;
     this.monthGridBuilder = monthGridBuilder ?? _defaultMonthGridBuilder;
-    this.monthCellHeaderBuilder = monthCellHeaderBuilder ?? _defaultMonthCellHeaderBuilder;
+    this.monthCellHeaderBuilder =
+        monthCellHeaderBuilder ?? _defaultMonthCellHeaderBuilder;
     this.monthHeaderBuilder = monthHeaderBuilder ?? _defaultMonthHeaderBuilder;
   }
 

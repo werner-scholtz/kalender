@@ -49,7 +49,8 @@ class MultiDayLayoutController<T> {
       }
     }
 
-    List<PositionedMultiDayTileData<T>> arrangedEvents = <PositionedMultiDayTileData<T>>[];
+    List<PositionedMultiDayTileData<T>> arrangedEvents =
+        <PositionedMultiDayTileData<T>>[];
     void addArrangedEvent(PositionedMultiDayTileData<T> arragnedEvent) {
       if (arrangedEvents.contains(arragnedEvent)) return;
       arrangedEvents.add(arragnedEvent);
@@ -57,7 +58,8 @@ class MultiDayLayoutController<T> {
 
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
-      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start));
+      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
+          a.start.compareTo(b.start));
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -66,7 +68,8 @@ class MultiDayLayoutController<T> {
       List<DateTime> datesFilled = event.datesSpanned;
 
       // Find events that fill the same dates as the current event.
-      List<PositionedMultiDayTileData<T>> arragedEventsAbove = arrangedEvents.where(
+      List<PositionedMultiDayTileData<T>> arragedEventsAbove = arrangedEvents
+          .where(
         (PositionedMultiDayTileData<T> arragnedEvent) {
           return arragnedEvent.event.datesSpanned
               .any((DateTime date) => datesFilled.contains(date));
@@ -96,11 +99,12 @@ class MultiDayLayoutController<T> {
 
     if (selectedEvent != null) {
       List<PositionedMultiDayTileData<T>> selectedArrangedEvent = arrangedEvents
-          .where((PositionedMultiDayTileData<T> element) => element.event == selectedEvent)
+          .where((PositionedMultiDayTileData<T> element) =>
+              element.event == selectedEvent)
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
-        arrangedEvents
-            .removeWhere((PositionedMultiDayTileData<T> element) => element.event == selectedEvent);
+        arrangedEvents.removeWhere((PositionedMultiDayTileData<T> element) =>
+            element.event == selectedEvent);
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }
@@ -169,14 +173,16 @@ class MultiDayLayoutController<T> {
   }
 
   /// Calculates the top position of the event.
-  double calculateTop(int numberOfEventsAbove) => tileHeight * numberOfEventsAbove;
+  double calculateTop(int numberOfEventsAbove) =>
+      tileHeight * numberOfEventsAbove;
 
   /// Calculates the left position of the event.
   double calculateLeft(DateTime date) =>
       (date.startOfDay.difference(visibleDateRange.start).inDays * dayWidth);
 
   /// Calculates the width of the event.
-  double calculateWidth(DateTimeRange dateRange) => (dateRange.dayDifference * dayWidth);
+  double calculateWidth(DateTimeRange dateRange) =>
+      (dateRange.dayDifference * dayWidth);
 }
 
 class PositionedMultiDayTileData<T> {

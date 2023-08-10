@@ -10,7 +10,8 @@ class PlatformData {
     if (kIsWeb) {
       this.isMobileDevice = false;
     } else {
-      this.isMobileDevice = isMobileDevice ?? (Platform.isAndroid || Platform.isIOS);
+      this.isMobileDevice =
+          isMobileDevice ?? (Platform.isAndroid || Platform.isIOS);
     }
   }
 

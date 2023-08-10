@@ -41,7 +41,8 @@ class MonthViewContent<T> extends StatelessWidget {
                   calendarStart: scope.state.adjustedDateTimeRange.start,
                 );
 
-                scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
+                scope.state.visibleDateTimeRange.value =
+                    newVisibleDateTimeRange;
                 controller.selectedDate = newVisibleDateTimeRange.start;
               },
               itemBuilder: (BuildContext context, int index) {

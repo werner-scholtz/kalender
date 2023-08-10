@@ -14,5 +14,3 @@ enum TileType {
   /// This is used to show the size and position of a tile that is being modified.
   selected,
 }
-
-

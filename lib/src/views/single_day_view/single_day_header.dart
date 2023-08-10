@@ -22,7 +22,8 @@ class SingleDayHeader<T> extends StatelessWidget {
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRange,
-        builder: (BuildContext context, DateTimeRange visibleDateTimeRange, Widget? child) {
+        builder: (BuildContext context, DateTimeRange visibleDateTimeRange,
+            Widget? child) {
           return Column(
             children: <Widget>[
               RepaintBoundary(

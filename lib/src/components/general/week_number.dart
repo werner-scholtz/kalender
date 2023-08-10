@@ -29,14 +29,16 @@ class WeekNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WeekNumberStyle? weekNumberStyle = CalendarStyleProvider.of(context).style.weekNumberStyle;
+    WeekNumberStyle? weekNumberStyle =
+        CalendarStyleProvider.of(context).style.weekNumberStyle;
     return IconButton.filledTonal(
       tooltip: weekNumberStyle?.tooltip ?? 'Week Number',
       onPressed: null,
       visualDensity: weekNumberStyle?.visualDensity ?? VisualDensity.compact,
       icon: Text(
         visibleDateRange.start.startOfWeek.weekNumber.toString(),
-        style: weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+        style: weekNumberStyle?.textStyle ??
+            Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }

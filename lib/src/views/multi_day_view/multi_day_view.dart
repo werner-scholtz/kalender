@@ -82,7 +82,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _style = widget.style ?? const CalendarStyle();
-    _viewConfiguration = (widget.multiDayViewConfiguration ?? const WeekConfiguration());
+    _viewConfiguration =
+        (widget.multiDayViewConfiguration ?? const WeekConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
@@ -120,10 +121,10 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
+    DateTimeRange adjustedDateTimeRange =
+        _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
-
     );
 
     int numberOfPages = _viewConfiguration.calculateNumberOfPages(
@@ -139,9 +140,9 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange = _viewConfiguration.calcualteVisibleDateTimeRange(
+    DateTimeRange visibleDateRange =
+        _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
-
     );
 
     _viewState = ViewState(
@@ -170,7 +171,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             // Calculate the width of the page.
-            double pageWidth = constraints.maxWidth - _viewConfiguration.timelineWidth;
+            double pageWidth =
+                constraints.maxWidth - _viewConfiguration.timelineWidth;
 
             // Calculate the width of the day.
             double dayWidth = _viewConfiguration.calculateDayWidth(pageWidth);

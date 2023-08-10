@@ -63,7 +63,11 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   void didChangeDependencies() {
-    circleRadius = CalendarStyleProvider.of(context).style.timeIndicatorStyle?.circleRadius ?? 9;
+    circleRadius = CalendarStyleProvider.of(context)
+            .style
+            .timeIndicatorStyle
+            ?.circleRadius ??
+        9;
     super.didChangeDependencies();
   }
 
@@ -125,7 +129,10 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   }
 
   double get _left {
-    return (_visibleDateRange.start.startOfDay.difference(_currentDate).inDays.abs() *
+    return (_visibleDateRange.start.startOfDay
+            .difference(_currentDate)
+            .inDays
+            .abs() *
         widget.width);
   }
 }

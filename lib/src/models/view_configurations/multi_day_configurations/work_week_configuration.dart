@@ -79,7 +79,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return (visibleStart.difference(calendarStart).inDays / DateTime.daysPerWeek).floor();
+    return (visibleStart.difference(calendarStart).inDays /
+            DateTime.daysPerWeek)
+        .floor();
   }
 
   @override

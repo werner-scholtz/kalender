@@ -26,7 +26,8 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The start [DateTime] of the [CalendarEvent].
   DateTime get start => _dateTimeRange.start;
   set start(DateTime newStart) {
-    assert(newStart.isBefore(_dateTimeRange.end), 'CalendarEvent start must be before end');
+    assert(newStart.isBefore(_dateTimeRange.end),
+        'CalendarEvent start must be before end');
     _dateTimeRange = DateTimeRange(
       start: newStart,
       end: _dateTimeRange.end,
@@ -37,7 +38,8 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The end [DateTime] of the [CalendarEvent].
   DateTime get end => _dateTimeRange.end;
   set end(DateTime newEnd) {
-    assert(newEnd.isAfter(_dateTimeRange.start), 'CalendarEvent end must be after start');
+    assert(newEnd.isAfter(_dateTimeRange.start),
+        'CalendarEvent end must be after start');
     _dateTimeRange = DateTimeRange(
       start: _dateTimeRange.start,
       end: newEnd,
@@ -111,7 +113,9 @@ class CalendarEvent<T> with ChangeNotifier {
   /// Whether the [CalendarEvent] continues before the given date.
   bool continuesBefore(DateTime date) {
     assert(
-      date.isWithin(dateTimeRange) || date == start.startOfDay || date == end.endOfDay,
+      date.isWithin(dateTimeRange) ||
+          date == start.startOfDay ||
+          date == end.endOfDay,
       'The date must be within the dateTimeRange of the event',
     );
     if (isSplitAcrossDays) {
@@ -124,7 +128,9 @@ class CalendarEvent<T> with ChangeNotifier {
   /// Whether the [CalendarEvent] continues after the given date.
   bool continuesAfter(DateTime date) {
     assert(
-      date.isWithin(dateTimeRange) || date == start.startOfDay || date == end.endOfDay,
+      date.isWithin(dateTimeRange) ||
+          date == start.startOfDay ||
+          date == end.endOfDay,
       'The date must be within the dateTimeRange of the event',
     );
     if (isSplitAcrossDays) {

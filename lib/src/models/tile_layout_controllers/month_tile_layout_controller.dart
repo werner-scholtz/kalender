@@ -45,7 +45,8 @@ class MonthLayoutController<T> {
       }
     }
 
-    List<PositionedMonthTileData<T>> arrangedEvents = <PositionedMonthTileData<T>>[];
+    List<PositionedMonthTileData<T>> arrangedEvents =
+        <PositionedMonthTileData<T>>[];
     void addArrangedEvent(PositionedMonthTileData<T> arragnedEvent) {
       if (arrangedEvents.contains(arragnedEvent)) return;
       arrangedEvents.add(arragnedEvent);
@@ -53,7 +54,8 @@ class MonthLayoutController<T> {
 
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
-      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start));
+      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
+          a.start.compareTo(b.start));
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -62,15 +64,17 @@ class MonthLayoutController<T> {
       List<DateTime> datesFilled = event.datesSpanned;
 
       // Find events that fill the same dates as the current event.
-      List<PositionedMonthTileData<T>> arragedEventsAbove = arrangedEvents.where(
+      List<PositionedMonthTileData<T>> arragedEventsAbove =
+          arrangedEvents.where(
         (PositionedMonthTileData<T> arragnedEvent) {
           return arragnedEvent.event.datesSpanned
               .any((DateTime date) => datesFilled.contains(date));
         },
       ).toList()
-        ..sort(
-          (PositionedMonthTileData<T> a, PositionedMonthTileData<T> b) => a.top.compareTo(b.top),
-        );
+            ..sort(
+              (PositionedMonthTileData<T> a, PositionedMonthTileData<T> b) =>
+                  a.top.compareTo(b.top),
+            );
 
       double top = 0;
       if (arragedEventsAbove.isNotEmpty) {
@@ -91,11 +95,12 @@ class MonthLayoutController<T> {
 
     if (selectedEvent != null) {
       List<PositionedMonthTileData<T>> selectedArrangedEvent = arrangedEvents
-          .where((PositionedMonthTileData<T> element) => element.event == selectedEvent)
+          .where((PositionedMonthTileData<T> element) =>
+              element.event == selectedEvent)
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
-        arrangedEvents
-            .removeWhere((PositionedMonthTileData<T> element) => element.event == selectedEvent);
+        arrangedEvents.removeWhere((PositionedMonthTileData<T> element) =>
+            element.event == selectedEvent);
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }
@@ -158,14 +163,16 @@ class MonthLayoutController<T> {
   }
 
   /// Calculates the top position of the event.
-  double calculateTop(int numberOfEventsAbove) => tileHeight * numberOfEventsAbove;
+  double calculateTop(int numberOfEventsAbove) =>
+      tileHeight * numberOfEventsAbove;
 
   /// Calculates the left position of the event.
   double calculateLeft(DateTime date) =>
       (date.startOfDay.difference(visibleDateRange.start).inDays * cellWidth);
 
   /// Calculates the width of the event.
-  double calculateWidth(DateTimeRange dateRange) => (dateRange.dayDifference * cellWidth);
+  double calculateWidth(DateTimeRange dateRange) =>
+      (dateRange.dayDifference * cellWidth);
 }
 
 class PositionedMonthTileData<T> {

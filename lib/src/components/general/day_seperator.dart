@@ -14,7 +14,6 @@ class DaySeperatorStyle {
   final Color? color;
 }
 
-
 /// A widget that displays the day seperators.
 class DaySeperator extends StatelessWidget {
   const DaySeperator({
@@ -52,8 +51,15 @@ class DaySeperator extends StatelessWidget {
               children: <Widget>[
                 Container(
                   height: pageHeight,
-                  width: CalendarStyleProvider.of(context).style.daySeperatorStyle?.thickness ?? 1,
-                  color: CalendarStyleProvider.of(context).style.daySeperatorStyle?.color ??
+                  width: CalendarStyleProvider.of(context)
+                          .style
+                          .daySeperatorStyle
+                          ?.thickness ??
+                      1,
+                  color: CalendarStyleProvider.of(context)
+                          .style
+                          .daySeperatorStyle
+                          ?.color ??
                       Theme.of(context).colorScheme.surfaceVariant,
                 ),
               ],

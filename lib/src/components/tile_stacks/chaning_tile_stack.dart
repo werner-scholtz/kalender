@@ -22,7 +22,8 @@ class ChangingTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        List<PositionedTileData<T>> arragnedEvents = tileLayoutController.positionSingleEvent(
+        List<PositionedTileData<T>> arragnedEvents =
+            tileLayoutController.positionSingleEvent(
           scope.eventsController.chaningEvent!,
         );
         return MouseRegion(
@@ -42,10 +43,10 @@ class ChangingTileStack<T> extends StatelessWidget {
                       TileConfiguration(
                         tileType: TileType.selected,
                         drawOutline: false,
-                        continuesBefore:
-                            e.event.isSplitAcrossDays && !e.date.isSameDay(e.event.start),
-                        continuesAfter:
-                            e.event.isSplitAcrossDays && e.date.isSameDay(e.event.start),
+                        continuesBefore: e.event.isSplitAcrossDays &&
+                            !e.date.isSameDay(e.event.start),
+                        continuesAfter: e.event.isSplitAcrossDays &&
+                            e.date.isSameDay(e.event.start),
                       ),
                     ),
                   ),

@@ -80,10 +80,12 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This exludes [CalendarEvent]s that are displayed on single days.
-  Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(DateTimeRange dateRange) {
+  Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(
+      DateTimeRange dateRange) {
     return _events.where(
       (CalendarEvent<T> element) =>
-          ((element.start.isBefore(dateRange.start) && element.end.isAfter(dateRange.end)) ||
+          ((element.start.isBefore(dateRange.start) &&
+                  element.end.isAfter(dateRange.end)) ||
               element.start.isWithin(dateRange) ||
               element.end.isWithin(dateRange) ||
               element.start == dateRange.start ||
@@ -96,16 +98,18 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
   Iterable<CalendarEvent<T>> getEventsFromDateRange(DateTimeRange dateRange) {
     return _events.where(
-      (CalendarEvent<T> element) =>
-          (element.start.isWithin(dateRange) || element.end.isWithin(dateRange)),
+      (CalendarEvent<T> element) => (element.start.isWithin(dateRange) ||
+          element.end.isWithin(dateRange)),
     );
   }
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
-  Iterable<CalendarEvent<T>> getDayEventsFromDateRange(DateTimeRange dateRange) {
+  Iterable<CalendarEvent<T>> getDayEventsFromDateRange(
+      DateTimeRange dateRange) {
     return _events.where(
       (CalendarEvent<T> element) =>
-          (element.start.isWithin(dateRange) || element.end.isWithin(dateRange)) &&
+          (element.start.isWithin(dateRange) ||
+              element.end.isWithin(dateRange)) &&
           !element.isMultidayEvent,
     );
   }
@@ -113,7 +117,8 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
-    Iterable<CalendarEvent<T>> eventsInDateTimeRange = getEventsFromDateRange(dateRange);
+    Iterable<CalendarEvent<T>> eventsInDateTimeRange =
+        getEventsFromDateRange(dateRange);
     List<DateTime> snapPoints = <DateTime>[];
     for (CalendarEvent<T> event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
@@ -128,7 +133,8 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   @override
   bool operator ==(Object other) {
-    return other is CalendarEventsController && listEquals(other._events, _events);
+    return other is CalendarEventsController &&
+        listEquals(other._events, _events);
   }
 
   @override

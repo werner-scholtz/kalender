@@ -43,12 +43,14 @@ class PositionedTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController,
       builder: (BuildContext context, Widget? child) {
-        Iterable<CalendarEvent<T>> events = scope.eventsController.getDayEventsFromDateRange(
+        Iterable<CalendarEvent<T>> events =
+            scope.eventsController.getDayEventsFromDateRange(
           pageVisibleDateRange,
         );
 
         // genrate the list of tile groups.
-        Iterable<TileGroup<T>> tileGroups = tileLayoutController.generateTileGroups(
+        Iterable<TileGroup<T>> tileGroups =
+            tileLayoutController.generateTileGroups(
           events,
         );
 
@@ -58,7 +60,8 @@ class PositionedTileStack<T> extends StatelessWidget {
         if (eventSnapping) {
           // Add the snap points from other events.
           snapPoints.addAll(
-            scope.eventsController.getSnapPointsFromDateTimeRange(pageVisibleDateRange),
+            scope.eventsController
+                .getSnapPointsFromDateTimeRange(pageVisibleDateRange),
           );
         }
 
@@ -187,7 +190,8 @@ class PositionedTile<T> extends StatelessWidget {
   final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
-  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
+  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
+      onEventChanged;
 
   /// The [Function] called when the event is tapped.
   final Function(CalendarEvent<T> event)? onEventTapped;
@@ -215,11 +219,14 @@ class PositionedTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TileBuilder<T> tileBuilder = CalendarScope.of<T>(context).tileComponents.tileBuilder!;
+    TileBuilder<T> tileBuilder =
+        CalendarScope.of<T>(context).tileComponents.tileBuilder!;
     bool isMoving = controller.chaningEvent == positionedTileData.event;
 
-    bool continuesBefore = positionedTileData.event.continuesBefore(positionedTileData.date);
-    bool continuesAfter = positionedTileData.event.continuesAfter(positionedTileData.date);
+    bool continuesBefore =
+        positionedTileData.event.continuesBefore(positionedTileData.date);
+    bool continuesAfter =
+        positionedTileData.event.continuesAfter(positionedTileData.date);
 
     return Positioned(
       left: positionedTileData.left,

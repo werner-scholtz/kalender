@@ -21,7 +21,8 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        PositionedMonthTileData<T> arragnedEvent = monthEventLayout.arrangeEvent(
+        PositionedMonthTileData<T> arragnedEvent =
+            monthEventLayout.arrangeEvent(
           scope.eventsController.chaningEvent!,
         );
 

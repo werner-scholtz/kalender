@@ -38,16 +38,19 @@ class MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MonthHeaderStyle? monthHeaderStyle = CalendarStyleProvider.of(context).style.monthHeaderStyle;
+    MonthHeaderStyle? monthHeaderStyle =
+        CalendarStyleProvider.of(context).style.monthHeaderStyle;
     return SizedBox(
       width: dayWidth,
       child: Padding(
-        padding: monthHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 2),
+        padding: monthHeaderStyle?.padding ??
+            const EdgeInsets.symmetric(vertical: 2),
         child: Center(
           child: DateText(
             date: date,
             dateFormat: monthHeaderStyle?.dateFormat ?? 'EEE',
-            textStyle: monthHeaderStyle?.textStyle ?? Theme.of(context).textTheme.bodySmall,
+            textStyle: monthHeaderStyle?.textStyle ??
+                Theme.of(context).textTheme.bodySmall,
             upperCase: monthHeaderStyle?.useUpperCase ?? false,
           ),
         ),

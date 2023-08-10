@@ -41,10 +41,12 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
   final bool enableResizing;
 
   @override
-  State<MonthTileGestureDetector<T>> createState() => _MonthTileGestureDetectorState<T>();
+  State<MonthTileGestureDetector<T>> createState() =>
+      _MonthTileGestureDetectorState<T>();
 }
 
-class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T>> {
+class _MonthTileGestureDetectorState<T>
+    extends State<MonthTileGestureDetector<T>> {
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
 
@@ -178,16 +180,18 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
 
   void _onResizeEnd(DragEndDetails details) async {
     event = widget.event;
-    await functions.onEventChanged?.call(event.dateTimeRange, controller.chaningEvent!);
+    await functions.onEventChanged
+        ?.call(event.dateTimeRange, controller.chaningEvent!);
     controller.chaningEvent = null;
   }
 
-  /// TODO: If the event starts at a time other than 00:00, then the event might not allow resizing 
+  /// TODO: If the event starts at a time other than 00:00, then the event might not allow resizing
   void _resizeStart(DragUpdateDetails details) {
     cursorOffset += details.delta;
     int steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
-      DateTime newStart = initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
+      DateTime newStart =
+          initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
       if (controller.chaningEvent == null) return;
       if (newStart.isBefore(initialDateTimeRange.end)) {
@@ -203,7 +207,8 @@ class _MonthTileGestureDetectorState<T> extends State<MonthTileGestureDetector<T
     cursorOffset += details.delta;
     int steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
-      DateTime newEnd = initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
+      DateTime newEnd =
+          initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
       if (controller.chaningEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {
         controller.chaningEvent?.end = newEnd;

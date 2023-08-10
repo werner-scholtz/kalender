@@ -37,7 +37,8 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
         listenable: scope.eventsController,
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
-          List<PositionedMultiDayTileData<T>> arragedEvents = multiDayEventLayout.arrageEvents(
+          List<PositionedMultiDayTileData<T>> arragedEvents =
+              multiDayEventLayout.arrageEvents(
             scope.eventsController.getMultidayEventsFromDateRange(
               scope.state.visibleDateTimeRange.value,
             ),
@@ -58,7 +59,8 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                         scope.components.daySepratorBuilder(
                           15,
                           dayWidth,
-                          scope.state.visibleDateTimeRange.value.duration.inDays,
+                          scope
+                              .state.visibleDateTimeRange.value.duration.inDays,
                         ),
                       ],
                     ),
@@ -70,7 +72,8 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                   cellWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
                   numberOfRows: multiDayEventLayout.numberOfRows,
-                  visibleDates: scope.state.visibleDateTimeRange.value.datesSpanned,
+                  visibleDates:
+                      scope.state.visibleDateTimeRange.value.datesSpanned,
                 ),
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
@@ -116,7 +119,8 @@ class MultidayTileStack<T> extends StatelessWidget {
   final CalendarEventsController<T> controller;
 
   /// The [Function] called when the event is changed.
-  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)? onEventChanged;
+  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
+      onEventChanged;
 
   /// The [Function] called when the event is tapped.
   final Function(CalendarEvent<T> event)? onEventTapped;
@@ -146,7 +150,9 @@ class MultidayTileStack<T> extends StatelessWidget {
                 horizontalStep: dayWidth,
                 event: arragnedEvent.event,
                 visibleDateRange: visibleDateRange,
-                child: CalendarScope.of<T>(context).tileComponents.multiDayTileBuilder!(
+                child: CalendarScope.of<T>(context)
+                    .tileComponents
+                    .multiDayTileBuilder!(
                   arragnedEvent.event,
                   MultiDayTileConfiguration(
                     tileType: isMoving ? TileType.ghost : TileType.normal,

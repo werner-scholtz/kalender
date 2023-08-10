@@ -53,8 +53,10 @@ class MonthCells<T> extends StatelessWidget {
                         height: style.monthCellsStyle?.cellHeaderHeight ?? 32,
                         child: Center(
                           child: scope.components.monthCellHeaderBuilder(
-                            visibleDateRange.start.add(Duration(days: (c * 7) + r)),
-                            (DateTime date) => scope.functions.onDateTapped?.call(date),
+                            visibleDateRange.start
+                                .add(Duration(days: (c * 7) + r)),
+                            (DateTime date) =>
+                                scope.functions.onDateTapped?.call(date),
                           ),
                         ),
                       ),
@@ -64,10 +66,11 @@ class MonthCells<T> extends StatelessWidget {
                   builder: (BuildContext context) {
                     DateTimeRange weekDateRange = DateTimeRange(
                       start: visibleDateRange.start.add(Duration(days: c * 7)),
-                      end: visibleDateRange.start.add(Duration(days: (c * 7) + 7)),
+                      end: visibleDateRange.start
+                          .add(Duration(days: (c * 7) + 7)),
                     );
-                    double contentHeight =
-                        cellHeight - (style.monthCellsStyle?.cellHeaderHeight ?? 32);
+                    double contentHeight = cellHeight -
+                        (style.monthCellsStyle?.cellHeaderHeight ?? 32);
                     return SizedBox(
                       width: pageWidth,
                       height: contentHeight,

@@ -50,7 +50,8 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
         listenable: scope.eventsController,
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
-          List<PositionedMonthTileData<T>> arragedEvents = monthEventLayout.arrageEvents(
+          List<PositionedMonthTileData<T>> arragedEvents =
+              monthEventLayout.arrageEvents(
             scope.eventsController.getEventsFromDateRange(visibleDateRange),
             selectedEvent: scope.eventsController.chaningEvent,
           );
@@ -160,7 +161,9 @@ class MonthTileStack<T> extends StatelessWidget {
                 visibleDateRange: monthVisibleDateRange,
                 enableResizing: viewConfiguration.enableRezising,
                 // isMultidayEvent: arragnedEvent.event.isMultidayEvent,
-                child: CalendarScope.of<T>(context).tileComponents.monthTileBuilder!(
+                child: CalendarScope.of<T>(context)
+                    .tileComponents
+                    .monthTileBuilder!(
                   arragnedEvent.event,
                   MonthTileConfiguration(
                     tileType: isMoving ? TileType.ghost : TileType.normal,

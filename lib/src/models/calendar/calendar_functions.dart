@@ -15,7 +15,8 @@ class CalendarEventHandlers<T> {
   /// The [Function] called when the event is changed.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<void> Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
+  final Future<void> Function(
+          DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
       onEventChanged;
 
   /// The [Function] called when the event is tapped.
@@ -26,7 +27,8 @@ class CalendarEventHandlers<T> {
   /// The [Function] called when an event is created.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)? onCreateEvent;
+  final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)?
+      onCreateEvent;
 
   /// The [Function] called when the event is tapped.
   final void Function(DateTime date)? onDateTapped;

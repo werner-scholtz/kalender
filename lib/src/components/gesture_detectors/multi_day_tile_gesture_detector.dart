@@ -20,10 +20,12 @@ class MultiDayTileGestureDetector<T> extends StatefulWidget {
   final DateTimeRange visibleDateRange;
 
   @override
-  State<MultiDayTileGestureDetector<T>> createState() => _MultiDayTileGestureDetectorState<T>();
+  State<MultiDayTileGestureDetector<T>> createState() =>
+      _MultiDayTileGestureDetectorState<T>();
 }
 
-class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDetector<T>> {
+class _MultiDayTileGestureDetectorState<T>
+    extends State<MultiDayTileGestureDetector<T>> {
   late Widget child;
 
   late CalendarEvent<T> event;
@@ -116,7 +118,8 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
   }
 
   void _onRescheduleEnd(DragEndDetails details) {
-    functions.onEventChanged?.call(event.dateTimeRange, controller.chaningEvent!);
+    functions.onEventChanged
+        ?.call(event.dateTimeRange, controller.chaningEvent!);
     controller.chaningEvent = null;
     controller.isMultidayEvent = false;
   }
@@ -126,8 +129,10 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
     int steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
       DateTimeRange newDateTimeRange = DateTimeRange(
-        start: initialDateTimeRange.start.add(widget.horizontalDurationStep * steps),
-        end: initialDateTimeRange.end.add(widget.horizontalDurationStep * steps),
+        start: initialDateTimeRange.start
+            .add(widget.horizontalDurationStep * steps),
+        end:
+            initialDateTimeRange.end.add(widget.horizontalDurationStep * steps),
       );
 
       if (controller.chaningEvent == null) return;
@@ -151,7 +156,8 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
 
   void _onResizeEnd(DragEndDetails details) async {
     event = widget.event;
-    await functions.onEventChanged?.call(event.dateTimeRange, controller.chaningEvent!);
+    await functions.onEventChanged
+        ?.call(event.dateTimeRange, controller.chaningEvent!);
     controller.chaningEvent = null;
     controller.isMultidayEvent = false;
   }
@@ -160,7 +166,8 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
     cursorOffset += details.delta.dx;
     int steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
-      DateTime newStart = initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
+      DateTime newStart =
+          initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
       if (controller.chaningEvent == null) return;
       if (newStart.isBefore(initialDateTimeRange.end)) {
@@ -174,7 +181,8 @@ class _MultiDayTileGestureDetectorState<T> extends State<MultiDayTileGestureDete
     cursorOffset += details.delta.dx;
     int steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
-      DateTime newEnd = initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
+      DateTime newEnd =
+          initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
       if (controller.chaningEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {
         controller.chaningEvent?.end = newEnd;

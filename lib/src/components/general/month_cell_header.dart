@@ -32,7 +32,8 @@ class MonthCellHeader extends StatelessWidget {
     return DateIconButton(
       date: date,
       onTapped: (DateTime date) => onTapped?.call(date),
-      visualDensity: style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
+      visualDensity:
+          style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
       textStyle: style.monthCellHeaderStyle?.textStyle,
     );
   }

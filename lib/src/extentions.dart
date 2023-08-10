@@ -40,7 +40,8 @@ extension DateTimeRangeExtensions on DateTimeRange {
   }
 
   /// The center [DateTime] of the [DateTimeRange].
-  DateTime get centerDateTime => start.add(Duration(days: (dayDifference / 2).floor()));
+  DateTime get centerDateTime =>
+      start.add(Duration(days: (dayDifference / 2).floor()));
 
   /// The visible month of the [DateTimeRange].
   DateTime get visibleMonth {
@@ -59,7 +60,8 @@ extension DateTimeExtentions on DateTime {
 
   /// Gets the start of the week with an offset.
   DateTime startOfWeekWithOffset(int firstDayOfWeek) {
-    assert(firstDayOfWeek >= 1 && firstDayOfWeek <= 7, 'firstDayOfWeek must be between 1 and 7');
+    assert(firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
+        'firstDayOfWeek must be between 1 and 7');
     return subtract(Duration(days: weekday - firstDayOfWeek)).startOfDay;
   }
 
@@ -67,7 +69,8 @@ extension DateTimeExtentions on DateTime {
   DateTime get startOfWeek => startOfWeekWithOffset(1);
 
   /// Gets the end of the week with an offset.
-  DateTime endOfWeekWithOffset(int firstDayOfWeek) => startOfWeekWithOffset(firstDayOfWeek).add(
+  DateTime endOfWeekWithOffset(int firstDayOfWeek) =>
+      startOfWeekWithOffset(firstDayOfWeek).add(
         const Duration(days: 7),
       );
 
@@ -90,12 +93,12 @@ extension DateTimeExtentions on DateTime {
   DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
 
   /// Gets the four day range with the [DateTime] as the first day.
-  DateTimeRange get threeDayRange =>
-      DateTimeRange(start: startOfDay, end: endOfDay.add(const Duration(days: 2)));
+  DateTimeRange get threeDayRange => DateTimeRange(
+      start: startOfDay, end: endOfDay.add(const Duration(days: 2)));
 
   /// Gets the four day range with the [DateTime] as the first day.
-  DateTimeRange get fourDayRange =>
-      DateTimeRange(start: startOfDay, end: endOfDay.add(const Duration(days: 3)));
+  DateTimeRange get fourDayRange => DateTimeRange(
+      start: startOfDay, end: endOfDay.add(const Duration(days: 3)));
 
   /// Gets the week range in which the [DateTime] is in with an offset.
   DateTimeRange weekRangeWithOffset(int firstDayOfWeek) => DateTimeRange(
@@ -107,17 +110,20 @@ extension DateTimeExtentions on DateTime {
   DateTimeRange get weekRange => weekRangeWithOffset(1);
 
   /// Gets the month range in which the [DateTime] is in.
-  DateTimeRange get monthRange => DateTimeRange(start: startOfMonth, end: endOfMonth);
+  DateTimeRange get monthRange =>
+      DateTimeRange(start: startOfMonth, end: endOfMonth);
 
   /// Gets the year range in which the [DateTime] is in.
-  DateTimeRange get yearRange =>
-      DateTimeRange(start: DateTime(year, month), end: DateTime(year + 1, month));
+  DateTimeRange get yearRange => DateTimeRange(
+      start: DateTime(year, month), end: DateTime(year + 1, month));
 
   /// Checks if the [DateTime] is the same day as the calling object.
-  bool isSameDay(DateTime date) => year == date.year && month == date.month && day == date.day;
+  bool isSameDay(DateTime date) =>
+      year == date.year && month == date.month && day == date.day;
 
   /// Checks if the [DateTime] is within the [DateTimeRange].
-  bool isWithin(DateTimeRange range) => isAfter(range.start) && isBefore(range.end);
+  bool isWithin(DateTimeRange range) =>
+      isAfter(range.start) && isBefore(range.end);
 
   /// Checks if the [DateTime] is today.
   bool get isToday => isSameDay(DateTime.now());

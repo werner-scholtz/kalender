@@ -15,7 +15,8 @@ class ScheduleEventTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: event.eventData?.color ?? Theme.of(context).colorScheme.primaryContainer,
+      color: event.eventData?.color ??
+          Theme.of(context).colorScheme.primaryContainer,
       margin: const EdgeInsets.all(4),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

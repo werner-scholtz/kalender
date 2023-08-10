@@ -39,7 +39,8 @@ class DayTileGestureDetector<T> extends StatefulWidget {
   final bool continuesAfter;
 
   @override
-  State<DayTileGestureDetector<T>> createState() => _DayTileGestureDetectorState<T>();
+  State<DayTileGestureDetector<T>> createState() =>
+      _DayTileGestureDetectorState<T>();
 }
 
 class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
@@ -84,7 +85,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             onPanUpdate: isMobileDevice ? null : _onPanUpdate,
             onPanEnd: isMobileDevice ? null : _onPanEnd,
             onLongPressStart: isMobileDevice ? _onLongPressStart : null,
-            onLongPressMoveUpdate: isMobileDevice ? _onLongPressMoveUpdate : null,
+            onLongPressMoveUpdate:
+                isMobileDevice ? _onLongPressMoveUpdate : null,
             onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
             onTap: _onTap,
             child: widget.child,
@@ -100,9 +102,12 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                     cursor: SystemMouseCursors.resizeRow,
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onVerticalDragStart: isMobileDevice ? null : _onVerticalDragStart,
-                      onVerticalDragUpdate: isMobileDevice ? null : _resizeStart,
-                      onVerticalDragEnd: isMobileDevice ? null : _onVerticalDragEnd,
+                      onVerticalDragStart:
+                          isMobileDevice ? null : _onVerticalDragStart,
+                      onVerticalDragUpdate:
+                          isMobileDevice ? null : _resizeStart,
+                      onVerticalDragEnd:
+                          isMobileDevice ? null : _onVerticalDragEnd,
                     ),
                   ),
                 ),
@@ -117,9 +122,11 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                     cursor: SystemMouseCursors.resizeRow,
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onVerticalDragStart: isMobileDevice ? null : _onVerticalDragStart,
+                      onVerticalDragStart:
+                          isMobileDevice ? null : _onVerticalDragStart,
                       onVerticalDragUpdate: isMobileDevice ? null : _resizeEnd,
-                      onVerticalDragEnd: isMobileDevice ? null : _onVerticalDragEnd,
+                      onVerticalDragEnd:
+                          isMobileDevice ? null : _onVerticalDragEnd,
                     ),
                   ),
                 ),
@@ -134,7 +141,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     scope.eventsController.isMoving = true;
 
     // Call the onEventTapped function.
-    await scope.functions.onEventTapped?.call(scope.eventsController.chaningEvent!);
+    await scope.functions.onEventTapped
+        ?.call(scope.eventsController.chaningEvent!);
 
     // Reset the changing event.
     scope.eventsController.isMoving = false;
@@ -204,7 +212,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       if (horizontalSteps != currentHorizontalSteps) {
         currentHorizontalSteps = horizontalSteps;
       }
-      horizontalDurationDelta = widget.horizontalDurationStep! * horizontalSteps;
+      horizontalDurationDelta =
+          widget.horizontalDurationStep! * horizontalSteps;
     }
 
     DateTime newStart = initialDateTimeRange.start
@@ -216,11 +225,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
         .add(widget.verticalDurationStep * verticalSteps);
 
     int startIndex = snapPoints.indexWhere(
-      (DateTime element) => element.difference(newStart).abs() <= const Duration(minutes: 15),
+      (DateTime element) =>
+          element.difference(newStart).abs() <= const Duration(minutes: 15),
     );
 
     int endIndex = snapPoints.indexWhere(
-      (DateTime element) => element.difference(newEnd).abs() <= const Duration(minutes: 15),
+      (DateTime element) =>
+          element.difference(newEnd).abs() <= const Duration(minutes: 15),
     );
 
     if (startIndex != -1) {
@@ -262,10 +273,12 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
     int steps = (cursorOffset.dy / widget.verticalStep).round();
     if (steps != currentVerticalSteps) {
-      DateTime newStart = initialDateTimeRange.start.add(widget.verticalDurationStep * steps);
+      DateTime newStart =
+          initialDateTimeRange.start.add(widget.verticalDurationStep * steps);
 
       int index = snapPoints.indexWhere(
-        (DateTime element) => element.difference(newStart).abs() <= const Duration(minutes: 15),
+        (DateTime element) =>
+            element.difference(newStart).abs() <= const Duration(minutes: 15),
       );
 
       if (scope.eventsController.chaningEvent == null) return;
@@ -286,10 +299,12 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     cursorOffset += details.delta;
     int steps = (cursorOffset.dy / widget.verticalStep).round();
     if (steps != currentVerticalSteps) {
-      DateTime newEnd = initialDateTimeRange.end.add(widget.verticalDurationStep * steps);
+      DateTime newEnd =
+          initialDateTimeRange.end.add(widget.verticalDurationStep * steps);
 
       int index = snapPoints.indexWhere(
-        (DateTime element) => element.difference(newEnd).abs() <= const Duration(minutes: 15),
+        (DateTime element) =>
+            element.difference(newEnd).abs() <= const Duration(minutes: 15),
       );
 
       if (scope.eventsController.chaningEvent == null) return;

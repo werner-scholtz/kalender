@@ -29,7 +29,8 @@ class MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double thickness = CalendarStyleProvider.of(context).style.monthGridStyle?.thickness ?? 1;
+    double thickness =
+        CalendarStyleProvider.of(context).style.monthGridStyle?.thickness ?? 1;
 
     return Stack(
       children: <Widget>[
@@ -41,7 +42,10 @@ class MonthGrid extends StatelessWidget {
             width: thickness,
             child: Container(
               width: thickness,
-              color: CalendarStyleProvider.of(context).style.monthGridStyle?.color ??
+              color: CalendarStyleProvider.of(context)
+                      .style
+                      .monthGridStyle
+                      ?.color ??
                   Theme.of(context).colorScheme.surfaceVariant,
             ),
           ),
@@ -53,7 +57,10 @@ class MonthGrid extends StatelessWidget {
             right: 0,
             child: Container(
               width: thickness,
-              color: CalendarStyleProvider.of(context).style.monthGridStyle?.color ??
+              color: CalendarStyleProvider.of(context)
+                      .style
+                      .monthGridStyle
+                      ?.color ??
                   Theme.of(context).colorScheme.surfaceVariant,
             ),
           ),

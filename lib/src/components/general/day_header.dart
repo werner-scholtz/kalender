@@ -32,8 +32,6 @@ class DayHeaderStyle {
   final EdgeInsets? padding;
 }
 
-
-
 /// A widget that displays the day of the week and the day number.
 class DayHeader extends StatelessWidget {
   const DayHeader({
@@ -47,15 +45,18 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DayHeaderStyle? dayHeaderStyle = CalendarStyleProvider.of(context).style.dayHeaderStyle;
+    DayHeaderStyle? dayHeaderStyle =
+        CalendarStyleProvider.of(context).style.dayHeaderStyle;
     return Padding(
-      padding: dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
+      padding:
+          dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
       child: Center(
         child: Column(
           children: <Widget>[
             DateText(
               date: date,
-              textStyle: dayHeaderStyle?.textStyle ?? Theme.of(context).textTheme.bodySmall,
+              textStyle: dayHeaderStyle?.textStyle ??
+                  Theme.of(context).textTheme.bodySmall,
               dateFormat: dayHeaderStyle?.dateFormat ?? 'EEE',
               upperCase: dayHeaderStyle?.useUpperCase ?? false,
             ),
@@ -63,7 +64,8 @@ class DayHeader extends StatelessWidget {
               child: DateIconButton(
                 date: date,
                 onTapped: (DateTime date) => onTapped?.call(date),
-                textStyle: dayHeaderStyle?.buttonTextStyle ?? Theme.of(context).textTheme.bodyLarge,
+                textStyle: dayHeaderStyle?.buttonTextStyle ??
+                    Theme.of(context).textTheme.bodyLarge,
                 visualDensity: dayHeaderStyle?.buttonVisualDensity,
               ),
             ),

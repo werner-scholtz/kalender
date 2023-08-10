@@ -85,7 +85,8 @@ class _DateTimePickerState extends State<DateTimePicker> {
                   initialValue: dateTime.hour.toString(),
                   onChanged: (value) {
                     int? hourValue = int.tryParse(value);
-                    if (hourValue == null || hourValue < 0 || hourValue > 23) return;
+                    if (hourValue == null || hourValue < 0 || hourValue > 23)
+                      return;
 
                     widget.onDateTimeChanged(
                       DateTime(
@@ -116,11 +117,13 @@ class _DateTimePickerState extends State<DateTimePicker> {
                       dateTime.minute,
                     );
 
-                    if (widget.minDateTime != null && newDateTime.isBefore(widget.minDateTime!)) {
+                    if (widget.minDateTime != null &&
+                        newDateTime.isBefore(widget.minDateTime!)) {
                       return 'Invalid';
                     }
 
-                    if (widget.maxDateTime != null && newDateTime.isAfter(widget.maxDateTime!)) {
+                    if (widget.maxDateTime != null &&
+                        newDateTime.isAfter(widget.maxDateTime!)) {
                       return 'Invalid';
                     }
 
@@ -138,7 +141,9 @@ class _DateTimePickerState extends State<DateTimePicker> {
                   initialValue: widget.dateTime.minute.toString(),
                   onChanged: (value) {
                     int? minuteValue = int.tryParse(value);
-                    if (minuteValue == null || minuteValue < 0 || minuteValue > 59) return;
+                    if (minuteValue == null ||
+                        minuteValue < 0 ||
+                        minuteValue > 59) return;
                     widget.onDateTimeChanged(
                       DateTime(
                         dateTime.year,
@@ -168,11 +173,13 @@ class _DateTimePickerState extends State<DateTimePicker> {
                       minuteValue,
                     );
 
-                    if (widget.minDateTime != null && newDateTime.isBefore(widget.minDateTime!)) {
+                    if (widget.minDateTime != null &&
+                        newDateTime.isBefore(widget.minDateTime!)) {
                       return 'Invalid';
                     }
 
-                    if (widget.maxDateTime != null && newDateTime.isAfter(widget.maxDateTime!)) {
+                    if (widget.maxDateTime != null &&
+                        newDateTime.isAfter(widget.maxDateTime!)) {
                       return 'Invalid';
                     }
 

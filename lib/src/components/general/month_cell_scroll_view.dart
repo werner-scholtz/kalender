@@ -22,9 +22,9 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
         if (mounted) {
           setState(() {
             _stopStart = scrollNotification.metrics.pixels / overlayHeight;
-            _stopEnd =
-                (scrollNotification.metrics.maxScrollExtent - scrollNotification.metrics.pixels) /
-                    overlayHeight;
+            _stopEnd = (scrollNotification.metrics.maxScrollExtent -
+                    scrollNotification.metrics.pixels) /
+                overlayHeight;
 
             _stopStart = _stopStart.clamp(0.0, 1.0);
             _stopEnd = _stopEnd.clamp(0.0, 1.0);

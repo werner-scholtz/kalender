@@ -24,7 +24,8 @@ class MultiDayHeader<T> extends StatelessWidget {
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRange,
-        builder: (BuildContext context, DateTimeRange visibleDateTimeRange, Widget? child) {
+        builder: (BuildContext context, DateTimeRange visibleDateTimeRange,
+            Widget? child) {
           return Column(
             children: <Widget>[
               RepaintBoundary(
@@ -41,7 +42,8 @@ class MultiDayHeader<T> extends StatelessWidget {
                         width: viewConfiguration.timelineWidth,
                         child: Center(
                           child: viewConfiguration.paintWeekNumber
-                              ? scope.components.weekNumberBuilder(visibleDateTimeRange)
+                              ? scope.components
+                                  .weekNumberBuilder(visibleDateTimeRange)
                               : null,
                         ),
                       ),
@@ -50,8 +52,10 @@ class MultiDayHeader<T> extends StatelessWidget {
                         (int index) => SizedBox(
                           width: dayWidth,
                           child: scope.components.dayHeaderBuilder(
-                            visibleDateTimeRange.start.add(Duration(days: index)),
-                            (DateTime date) => scope.functions.onDateTapped?.call(date),
+                            visibleDateTimeRange.start
+                                .add(Duration(days: index)),
+                            (DateTime date) =>
+                                scope.functions.onDateTapped?.call(date),
                           ),
                         ),
                       ),

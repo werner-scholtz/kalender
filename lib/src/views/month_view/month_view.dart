@@ -76,7 +76,8 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     _tileComponents = CalendarTileComponents<T>(
       monthTileBuilder: widget.monthTileBuilder,
     );
-    _viewConfiguration = (widget.monthViewConfiguration ?? const MonthConfiguration());
+    _viewConfiguration =
+        (widget.monthViewConfiguration ?? const MonthConfiguration());
     _style = widget.style ?? const CalendarStyle();
     _initializeViewState();
 
@@ -115,7 +116,8 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
+    DateTimeRange adjustedDateTimeRange =
+        _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
@@ -133,7 +135,8 @@ class _MonthViewState<T> extends State<MonthView<T>> {
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange = _viewConfiguration.calcualteVisibleDateTimeRange(
+    DateTimeRange visibleDateRange =
+        _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
     );
 

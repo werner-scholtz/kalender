@@ -34,10 +34,12 @@ class MonthCellGestureDetector<T> extends StatefulWidget {
   final double horizontalStep;
 
   @override
-  State<MonthCellGestureDetector<T>> createState() => _MonthCellGestureDetectorState<T>();
+  State<MonthCellGestureDetector<T>> createState() =>
+      _MonthCellGestureDetectorState<T>();
 }
 
-class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T>> {
+class _MonthCellGestureDetectorState<T>
+    extends State<MonthCellGestureDetector<T>> {
   late final DateTime date;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
@@ -87,7 +89,8 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
       // Set the [isNewEvent] to true.
       controller.isNewEvent = true;
 
-      CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+      CalendarEvent<T>? newEvent =
+          await functions.onCreateEvent?.call(controller.chaningEvent!);
 
       // If the [newEvent] is null then set the [chaningEvent] to null.
       if (newEvent == null) {
@@ -125,7 +128,8 @@ class _MonthCellGestureDetectorState<T> extends State<MonthCellGestureDetector<T
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent =
+        await functions.onCreateEvent?.call(controller.chaningEvent!);
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
       controller.chaningEvent = null;

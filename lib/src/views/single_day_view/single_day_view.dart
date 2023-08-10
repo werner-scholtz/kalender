@@ -84,7 +84,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
     );
     _style = widget.style ?? const CalendarStyle();
 
-    _viewConfiguration = (widget.singleDayViewConfiguration ?? const DayConfiguration());
+    _viewConfiguration =
+        (widget.singleDayViewConfiguration ?? const DayConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
@@ -120,7 +121,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange = _viewConfiguration.calculateAdjustedDateTimeRange(
+    DateTimeRange adjustedDateTimeRange =
+        _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
@@ -138,7 +140,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange = _viewConfiguration.calcualteVisibleDateTimeRange(
+    DateTimeRange visibleDateRange =
+        _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
     );
 
@@ -168,7 +171,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             // Calculate the width of the day.
-            double dayWidth = constraints.maxWidth - _viewConfiguration.timelineWidth;
+            double dayWidth =
+                constraints.maxWidth - _viewConfiguration.timelineWidth;
 
             return Column(
               children: <Widget>[

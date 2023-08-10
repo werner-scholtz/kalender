@@ -24,10 +24,12 @@ class MultiDayGestureDetector<T> extends StatefulWidget {
   final List<DateTime> visibleDates;
 
   @override
-  State<MultiDayGestureDetector<T>> createState() => _MultiDayGestureDetectorState<T>();
+  State<MultiDayGestureDetector<T>> createState() =>
+      _MultiDayGestureDetectorState<T>();
 }
 
-class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>> {
+class _MultiDayGestureDetectorState<T>
+    extends State<MultiDayGestureDetector<T>> {
   late double pageWidth;
   late double dayWidth;
   late double height;
@@ -80,21 +82,28 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
             children: <Widget>[
               for (int c = 0; c < numberOfColums; c++)
                 MouseRegion(
-                  cursor: createNewEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
+                  cursor: createNewEvents
+                      ? SystemMouseCursors.click
+                      : SystemMouseCursors.basic,
                   child: SizedBox(
                     width: dayWidth,
                     height: multidayEventHeight,
                     child: GestureDetector(
-                      onTap: createNewEvents ? () => _onTap(visibleDates[c].dayRange) : null,
+                      onTap: createNewEvents
+                          ? () => _onTap(visibleDates[c].dayRange)
+                          : null,
                       onHorizontalDragStart: gestureDisabled
                           ? null
                           : (DragStartDetails details) =>
-                              _onHorizontalDragStart(details, visibleDates[c].dayRange),
+                              _onHorizontalDragStart(
+                                  details, visibleDates[c].dayRange),
                       onHorizontalDragUpdate: gestureDisabled
                           ? null
                           : (DragUpdateDetails details) =>
-                              _onHorizontalDragUpdate(details, visibleDates[c].dayRange),
-                      onHorizontalDragEnd: createNewEvents ? _onHorizontalDragEnd : null,
+                              _onHorizontalDragUpdate(
+                                  details, visibleDates[c].dayRange),
+                      onHorizontalDragEnd:
+                          createNewEvents ? _onHorizontalDragEnd : null,
                     ),
                   ),
                 )
@@ -113,7 +122,8 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
     controller.chaningEvent = newCalendarEvent;
     controller.isMultidayEvent = true;
 
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent =
+        await functions.onCreateEvent?.call(controller.chaningEvent!);
 
     // If the [newEvent] is null then set the [chaningEvent] to null.
     if (newEvent == null) {
@@ -127,7 +137,8 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
     controller.isMultidayEvent = false;
   }
 
-  void _onHorizontalDragStart(DragStartDetails details, DateTimeRange dateTimeRange) {
+  void _onHorizontalDragStart(
+      DragStartDetails details, DateTimeRange dateTimeRange) {
     cursorOffset = 0;
     controller.isMultidayEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
@@ -136,7 +147,8 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
     controller.chaningEvent = displayEvent;
   }
 
-  void _onHorizontalDragUpdate(DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
+  void _onHorizontalDragUpdate(
+      DragUpdateDetails details, DateTimeRange initialDateTimeRange) {
     cursorOffset += details.delta.dx;
 
     int newNumberOfSlotsSelected = cursorOffset ~/ dayWidth;
@@ -146,13 +158,15 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
       DateTimeRange dateTimeRange;
       if (numberOfSlotsSelected.isNegative) {
         dateTimeRange = DateTimeRange(
-          start: initialDateTimeRange.start.add(Duration(days: 1 * numberOfSlotsSelected)),
+          start: initialDateTimeRange.start
+              .add(Duration(days: 1 * numberOfSlotsSelected)),
           end: initialDateTimeRange.end,
         );
       } else {
         dateTimeRange = DateTimeRange(
           start: initialDateTimeRange.start,
-          end: initialDateTimeRange.end.add(Duration(days: 1 * numberOfSlotsSelected)),
+          end: initialDateTimeRange.end
+              .add(Duration(days: 1 * numberOfSlotsSelected)),
         );
       }
 
@@ -162,7 +176,8 @@ class _MultiDayGestureDetectorState<T> extends State<MultiDayGestureDetector<T>>
 
   void _onHorizontalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
-    CalendarEvent<T>? newEvent = await functions.onCreateEvent?.call(controller.chaningEvent!);
+    CalendarEvent<T>? newEvent =
+        await functions.onCreateEvent?.call(controller.chaningEvent!);
     if (newEvent == null) {
       controller.chaningEvent = null;
     } else {

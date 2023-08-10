@@ -39,8 +39,10 @@ class MonthConfiguration extends MonthViewConfiguration {
     int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfMonth.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: dateTimeRange.start.startOfMonth
+          .startOfWeekWithOffset(firstDayOfWeek ?? 1),
+      end:
+          dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
     );
   }
 
@@ -96,9 +98,11 @@ class MonthConfiguration extends MonthViewConfiguration {
     DateTimeRange visibleDateTimeRange,
   ) {
     if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.monthRange.start.weekRangeWithOffset(firstDayOfWeek);
+      return dateTimeRange.start.monthRange.start
+          .weekRangeWithOffset(firstDayOfWeek);
     } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.monthRange.end.weekRangeWithOffset(firstDayOfWeek);
+      return dateTimeRange.end.monthRange.end
+          .weekRangeWithOffset(firstDayOfWeek);
     }
     return visibleDateTimeRange;
   }

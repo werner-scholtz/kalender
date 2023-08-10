@@ -32,7 +32,8 @@ class Timeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TimelineStyle? timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
+    TimelineStyle? timelineStyle =
+        CalendarStyleProvider.of(context).style.timelineStyle;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
