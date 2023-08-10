@@ -1,28 +1,5 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
 
 A Flutter package allows you to use a Calendar Widget that has built-in Day, MultiDay, and Month views. 
 It also allows you to customize the appearance of the calendar widget.
@@ -31,8 +8,6 @@ It also allows you to customize the appearance of the calendar widget.
 Try it out [here](https://049er.github.io/kalender/#/)
 
 ## Features
-
-<!--TODO: List what your package can do. Maybe include images, gifs, or videos.-->
 
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
@@ -390,3 +365,5 @@ Each of these components can be customized in the CalendarStyle object or by pas
     <img src="./readme_assets/month_grid.png" width="60%" height="60%"/>
 
     (MonthGrid)
+
+

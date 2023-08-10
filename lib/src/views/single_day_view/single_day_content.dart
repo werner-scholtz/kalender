@@ -30,7 +30,8 @@ class SingleDayContent<T> extends StatelessWidget {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
         double pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
-        double verticalStep = heightPerMinute * viewConfiguration.slotSize.minutes;
+        double verticalStep =
+            heightPerMinute * viewConfiguration.slotSize.minutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -54,20 +55,24 @@ class SingleDayContent<T> extends StatelessWidget {
                         DateTimeRange newVisibleDateTimeRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
-                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                          calendarStart:
+                              scope.state.adjustedDateTimeRange.start,
                         );
 
-                        scope.state.visibleDateTimeRange.value = newVisibleDateTimeRange;
+                        scope.state.visibleDateTimeRange.value =
+                            newVisibleDateTimeRange;
                         controller.selectedDate = newVisibleDateTimeRange.start;
                       },
                       itemBuilder: (BuildContext context, int index) {
                         DateTimeRange pageVisibleDateRange =
                             viewConfiguration.calculateVisibleDateRangeForIndex(
                           index: index,
-                          calendarStart: scope.state.adjustedDateTimeRange.start,
+                          calendarStart:
+                              scope.state.adjustedDateTimeRange.start,
                         );
 
-                        TileLayoutController<T> tileLayoutController = TileLayoutController<T>(
+                        TileLayoutController<T> tileLayoutController =
+                            TileLayoutController<T>(
                           visibleDateRange: pageVisibleDateRange,
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
@@ -117,27 +122,25 @@ class SingleDayContent<T> extends StatelessWidget {
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
-                                  verticalDurationStep: viewConfiguration.slotSize.duration,
-                                  eventSnapping: viewConfiguration.eventSnapping,
-                                  timeIndicatorSnapping: viewConfiguration.timeIndicatorSnapping,
+                                  verticalDurationStep:
+                                      viewConfiguration.slotSize.duration,
+                                  eventSnapping:
+                                      viewConfiguration.eventSnapping,
+                                  timeIndicatorSnapping:
+                                      viewConfiguration.timeIndicatorSnapping,
                                 ),
                               ),
                             ),
                             Visibility(
-                                visible: DateTime.now().isWithin(pageVisibleDateRange),
-                                child: scope.components.timeIndicatorBuilder(
-                                  dayWidth,
-                                  pageHeight,
-                                  pageVisibleDateRange,
-                                  heightPerMinute,
-                                )
-                                // child: TimeIndicator(
-                                //   width: dayWidth,
-                                //   height: pageHeight,
-                                //   visibleDateRange: pageVisibleDateRange,
-                                //   heightPerMinute: heightPerMinute,
-                                // ),
-                                ),
+                              visible:
+                                  DateTime.now().isWithin(pageVisibleDateRange),
+                              child: scope.components.timeIndicatorBuilder(
+                                dayWidth,
+                                pageHeight,
+                                pageVisibleDateRange,
+                                heightPerMinute,
+                              ),
+                            ),
                           ],
                         );
                       },
