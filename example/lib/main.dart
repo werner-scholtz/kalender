@@ -6,11 +6,9 @@ import 'package:example/screens/mobile_screen.dart';
 import 'package:example/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  // debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }
 
@@ -76,7 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
 List<CalendarEvent<Event>> generateCalendarEvents() {
   DateTime now = DateTime.now();
   DateTime mondayNow = now.subtract(Duration(days: now.weekday - 1));
-  DateTime startOfMonday = DateTime(mondayNow.year, mondayNow.month, mondayNow.day);
+  DateTime startOfMonday =
+      DateTime(mondayNow.year, mondayNow.month, mondayNow.day);
   DateTime startOfTuesday = startOfMonday.add(const Duration(days: 1));
   DateTime startOfWednesday = startOfMonday.add(const Duration(days: 2));
   DateTime startOfThursday = startOfMonday.add(const Duration(days: 3));
