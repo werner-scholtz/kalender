@@ -7,10 +7,25 @@ on:
     - 'v[0-9]+.[0-9]+.[0-9]+*' 
 
 jobs:
-  publish:
-    permissions:
-      id-token: write # Required for authentication using OIDC
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    with:
-      environment: pub.dev
-      working-directory: ./
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.6'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+      - name: Run tests
+        run: flutter test
+      - name: Check Publish Warnings
+        run: dart pub publish --dry-run
+      - name: Publish
+        uses: k-paxian/dart-package-publisher@v1.5.1
+        with:
+          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+          flutter: true
+          skipTests: true
