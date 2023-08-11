@@ -35,7 +35,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Appearance** - You can change the style of the calendar and default components. [Find out more](#appearance)
 
-* **Custom Builders** - You can create your own builders for different components of the calendar. [Find out more](#custom-builders)
+* **Custom Builders** - You can create your own builders for different components of the calendar. [Find out more](#appearance)
 
 
 ## Installation
