@@ -1,7 +1,7 @@
 
 
 
-This Flutter package offers a versatile Calendar Widget featuring integrated Day, MultiDay, and Month views, all of which come with pre-built functionality. Moreover, it empowers you to effortlessly tailor the visual aspects of the calendar widget to align with your design preferences.
+This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay, and Month views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
 
 ## Web Example
 Try it out [here](https://werner-scholtz.github.io/kalender/)
