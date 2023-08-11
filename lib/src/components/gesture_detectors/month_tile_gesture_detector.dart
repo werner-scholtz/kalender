@@ -38,6 +38,7 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
   /// The pixel value of the horizontal step.
   final double horizontalStep;
 
+  /// Whether resizing is enabled.
   final bool enableResizing;
 
   @override
@@ -49,6 +50,7 @@ class _MonthTileGestureDetectorState<T>
     extends State<MonthTileGestureDetector<T>> {
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
+  late bool enableResizing;
 
   CalendarScope<T> get internals => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => internals.eventsController;
@@ -64,12 +66,14 @@ class _MonthTileGestureDetectorState<T>
     super.initState();
     event = widget.event;
     initialDateTimeRange = event.dateTimeRange;
+    enableResizing = widget.enableResizing;
   }
 
   @override
   void didUpdateWidget(covariant MonthTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     event = widget.event;
+    enableResizing = widget.enableResizing;
   }
 
   @override
@@ -100,9 +104,12 @@ class _MonthTileGestureDetectorState<T>
             cursor: SystemMouseCursors.resizeLeftRight,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
-              onHorizontalDragUpdate: isMobileDevice ? null : _resizeStart,
-              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
+              onHorizontalDragStart:
+                  isMobileDevice || !enableResizing ? null : _onResizeStart,
+              onHorizontalDragUpdate:
+                  isMobileDevice || !enableResizing ? null : _resizeStart,
+              onHorizontalDragEnd:
+                  isMobileDevice || !enableResizing ? null : _onResizeEnd,
             ),
           ),
         ),
@@ -115,9 +122,12 @@ class _MonthTileGestureDetectorState<T>
             cursor: SystemMouseCursors.resizeLeftRight,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
-              onHorizontalDragUpdate: isMobileDevice ? null : _resizeEnd,
-              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
+              onHorizontalDragStart:
+                  isMobileDevice || !enableResizing ? null : _onResizeStart,
+              onHorizontalDragUpdate:
+                  isMobileDevice || !enableResizing ? null : _resizeEnd,
+              onHorizontalDragEnd:
+                  isMobileDevice || !enableResizing ? null : _onResizeEnd,
             ),
           ),
         ),
