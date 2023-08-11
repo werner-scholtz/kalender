@@ -30,31 +30,37 @@ class _DesktopScreenState extends State<DesktopScreen> {
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
     const DayConfiguration(
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
     const WeekConfiguration(
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
     const WorkWeekConfiguration(
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
     const MonthConfiguration(
-      createNewEvents: false,
-    ),
+        // createNewEvents: false,
+        ),
     const MultiDayConfiguration(
       name: 'Two Day',
       numberOfDays: 2,
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
     const MultiDayConfiguration(
       name: 'Three Day',
       numberOfDays: 3,
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
     const MultiDayConfiguration(
       name: 'Four Day',
       numberOfDays: 4,
-      createNewEvents: false,
+      // createNewEvents: false,
+      hourlineTimelineOverlap: 56,
     ),
   ];
 

@@ -105,12 +105,19 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            DayGestureDetector<T>(
-                              height: pageHeight,
-                              width: dayWidth,
-                              heightPerMinute: heightPerMinute,
-                              visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: viewConfiguration.slotSize,
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: dayWidth,
+                                height: pageHeight,
+                                child: DayGestureDetector<T>(
+                                  height: pageHeight,
+                                  width: dayWidth,
+                                  heightPerMinute: heightPerMinute,
+                                  visibleDateRange: pageVisibleDateRange,
+                                  minuteSlotSize: viewConfiguration.slotSize,
+                                ),
+                              ),
                             ),
                             Align(
                               alignment: Alignment.centerRight,

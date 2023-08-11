@@ -108,12 +108,19 @@ class MultiDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            DayGestureDetector<T>(
-                              height: pageHeight,
-                              width: dayWidth,
-                              heightPerMinute: heightPerMinute,
-                              visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: viewConfiguration.slotSize,
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: pageWidth,
+                                height: pageHeight,
+                                child: DayGestureDetector<T>(
+                                  height: pageHeight,
+                                  width: dayWidth,
+                                  heightPerMinute: heightPerMinute,
+                                  visibleDateRange: pageVisibleDateRange,
+                                  minuteSlotSize: viewConfiguration.slotSize,
+                                ),
+                              ),
                             ),
                             Align(
                               alignment: Alignment.centerRight,
