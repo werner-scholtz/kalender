@@ -101,7 +101,9 @@ class _MonthTileGestureDetectorState<T>
           top: 0,
           bottom: 0,
           child: MouseRegion(
-            cursor: SystemMouseCursors.resizeLeftRight,
+            cursor: enableResizing
+                ? SystemMouseCursors.resizeLeftRight
+                : SystemMouseCursors.basic,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onHorizontalDragStart:
@@ -119,7 +121,9 @@ class _MonthTileGestureDetectorState<T>
           top: 0,
           bottom: 0,
           child: MouseRegion(
-            cursor: SystemMouseCursors.resizeLeftRight,
+            cursor: enableResizing
+                ? SystemMouseCursors.resizeLeftRight
+                : SystemMouseCursors.basic,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onHorizontalDragStart:
