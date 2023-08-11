@@ -9,3 +9,9 @@
 ## 0.0.3
 
 * Fixed desktop_views.png in README.md
+
+## 0.0.4
+
+* Fixed link to web exmaple.
+* Fixed bugs on mobile.
+* Removed intl dependency.

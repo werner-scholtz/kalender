@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:kalender/src/constants.dart';
 
 /// A widget that displays the abbreviated day of the week. ('EEE')
 class DateText extends StatelessWidget {
@@ -7,15 +7,11 @@ class DateText extends StatelessWidget {
     super.key,
     required this.date,
     required this.textStyle,
-    required this.dateFormat,
     required this.upperCase,
   });
 
   /// The date to display.
   final DateTime date;
-
-  /// The date format used to display the date.
-  final String dateFormat;
 
   /// The [TextStyle] used to display the date.
   final TextStyle? textStyle;
@@ -25,7 +21,8 @@ class DateText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat(dateFormat).format(date);
+    //format too EEE
+    String formattedDate = dayOfWeek[date.weekday - 1];
 
     return Text(
       upperCase ? formattedDate.toUpperCase() : formattedDate,

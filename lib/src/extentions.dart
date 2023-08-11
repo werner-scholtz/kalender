@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// [DateTimeRange] extensions.
 extension DateTimeRangeExtensions on DateTimeRange {
@@ -60,8 +59,10 @@ extension DateTimeExtentions on DateTime {
 
   /// Gets the start of the week with an offset.
   DateTime startOfWeekWithOffset(int firstDayOfWeek) {
-    assert(firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-        'firstDayOfWeek must be between 1 and 7',);
+    assert(
+      firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
+      'firstDayOfWeek must be between 1 and 7',
+    );
     return subtract(Duration(days: weekday - firstDayOfWeek)).startOfDay;
   }
 
@@ -94,11 +95,15 @@ extension DateTimeExtentions on DateTime {
 
   /// Gets the four day range with the [DateTime] as the first day.
   DateTimeRange get threeDayRange => DateTimeRange(
-      start: startOfDay, end: endOfDay.add(const Duration(days: 2)),);
+        start: startOfDay,
+        end: endOfDay.add(const Duration(days: 2)),
+      );
 
   /// Gets the four day range with the [DateTime] as the first day.
   DateTimeRange get fourDayRange => DateTimeRange(
-      start: startOfDay, end: endOfDay.add(const Duration(days: 3)),);
+        start: startOfDay,
+        end: endOfDay.add(const Duration(days: 3)),
+      );
 
   /// Gets the week range in which the [DateTime] is in with an offset.
   DateTimeRange weekRangeWithOffset(int firstDayOfWeek) => DateTimeRange(
@@ -115,7 +120,9 @@ extension DateTimeExtentions on DateTime {
 
   /// Gets the year range in which the [DateTime] is in.
   DateTimeRange get yearRange => DateTimeRange(
-      start: DateTime(year, month), end: DateTime(year + 1, month),);
+        start: DateTime(year, month),
+        end: DateTime(year + 1, month),
+      );
 
   /// Checks if the [DateTime] is the same day as the calling object.
   bool isSameDay(DateTime date) =>
@@ -129,11 +136,62 @@ extension DateTimeExtentions on DateTime {
   bool get isToday => isSameDay(DateTime.now());
 
   /// Returns 'HH:mm' formatted [String] of the [DateTime].
-  String get timeString => DateFormat('HH:mm').format(this);
+  String get timeString {
+    // DateFormat('HH:mm').format(this)
 
-  /// Gets the week number of date.
-  int get weekNumber {
-    int dayOfYear = int.parse(DateFormat('D').format(this));
-    return ((dayOfYear - weekday + 10) / 7).floor();
+    String hourString = hour.toString();
+    String minuteString = minute.toString();
+
+    if (hour < 10) {
+      hourString = '0$hourString';
+    }
+    if (minute < 10) {
+      minuteString = '0$minuteString';
+    }
+
+    return '$hourString:$minuteString';
+  }
+
+  /// Get the week of the year.
+  ///
+  /// https://en.wikipedia.org/wiki/ISO_week_date#Algorithms
+  int get weekOfYear {
+    final int weekOfYear = ((ordinalDate - weekday + 10) ~/ 7);
+
+    if (weekOfYear == 0) {
+      return DateTime(year - 1, 12, 28).weekOfYear;
+    }
+
+    if (weekOfYear == 53 &&
+        DateTime(year, 1, 1).weekday != DateTime.thursday &&
+        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+      return 1;
+    }
+
+    return weekOfYear;
+  }
+
+  /// Get the ordinal date.
+  int get ordinalDate {
+    const List<int> offsets = <int>[
+      0,
+      31,
+      59,
+      90,
+      120,
+      151,
+      181,
+      212,
+      243,
+      273,
+      304,
+      334
+    ];
+    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
+  }
+
+  /// Checks if the [DateTime] is a leap year.
+  bool get isLeapYear {
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 }

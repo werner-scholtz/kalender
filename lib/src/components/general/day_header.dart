@@ -8,16 +8,12 @@ class DayHeaderStyle {
     this.textStyle,
     this.buttonTextStyle,
     this.buttonVisualDensity,
-    this.dateFormat,
     this.useUpperCase,
     this.padding,
   });
 
   /// The [TextStyle] used by the [DateText] widget to display the day of the week.
   final TextStyle? textStyle;
-
-  /// The date format used by the [DateText] widget to display the day of the week.
-  final String? dateFormat;
 
   /// Whether the day of the week should be displayed in upper case.
   final bool? useUpperCase;
@@ -57,7 +53,6 @@ class DayHeader extends StatelessWidget {
               date: date,
               textStyle: dayHeaderStyle?.textStyle ??
                   Theme.of(context).textTheme.bodySmall,
-              dateFormat: dayHeaderStyle?.dateFormat ?? 'EEE',
               upperCase: dayHeaderStyle?.useUpperCase ?? false,
             ),
             RepaintBoundary(

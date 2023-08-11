@@ -36,7 +36,7 @@ class WeekNumber extends StatelessWidget {
       onPressed: null,
       visualDensity: weekNumberStyle?.visualDensity ?? VisualDensity.compact,
       icon: Text(
-        visibleDateRange.start.startOfWeek.weekNumber.toString(),
+        visibleDateRange.start.startOfWeek.weekOfYear.toString(),
         style: weekNumberStyle?.textStyle ??
             Theme.of(context).textTheme.bodyMedium,
       ),
