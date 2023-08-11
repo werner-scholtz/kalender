@@ -69,6 +69,7 @@ class CalendarController<T> with ChangeNotifier {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+    notifyListeners();
   }
 
   /// Animates to the previous page.
