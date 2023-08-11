@@ -4,7 +4,6 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
@@ -13,6 +12,9 @@ import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
+
+import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
+    if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
 
 /// A widget that displays a multi day view.
 class MultiDayView<T> extends StatefulWidget {
