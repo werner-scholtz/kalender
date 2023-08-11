@@ -70,9 +70,6 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     event = widget.event;
     snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
-    snapPoints.removeWhere(
-      (DateTime element) => element == event.start || element == event.end,
-    );
   }
 
   @override
