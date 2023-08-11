@@ -53,6 +53,7 @@ class _MonthTileGestureDetectorState<T>
   CalendarScope<T> get internals => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => internals.eventsController;
   CalendarEventHandlers<T> get functions => internals.functions;
+  bool get isMobileDevice => internals.platformData.isMobileDevice;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -79,9 +80,13 @@ class _MonthTileGestureDetectorState<T>
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            onPanStart: _onPanStart,
-            onPanUpdate: _onPanUpdate,
-            onPanEnd: _onPanEnd,
+            onPanStart: isMobileDevice ? null : _onPanStart,
+            onPanUpdate: isMobileDevice ? null : _onPanUpdate,
+            onPanEnd: isMobileDevice ? null : _onPanEnd,
+            onLongPressStart: isMobileDevice ? _onLongPressStart : null,
+            onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
+            onLongPressMoveUpdate:
+                isMobileDevice ? _onLongPressMoveUpdate : null,
             onTap: _onTap,
             child: widget.child,
           ),
@@ -95,9 +100,9 @@ class _MonthTileGestureDetectorState<T>
             cursor: SystemMouseCursors.resizeLeftRight,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: _onResizeStart,
-              onHorizontalDragUpdate: _resizeStart,
-              onHorizontalDragEnd: _onResizeEnd,
+              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
+              onHorizontalDragUpdate: isMobileDevice ? null : _resizeStart,
+              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
             ),
           ),
         ),
@@ -110,9 +115,9 @@ class _MonthTileGestureDetectorState<T>
             cursor: SystemMouseCursors.resizeLeftRight,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: _onResizeStart,
-              onHorizontalDragUpdate: _resizeEnd,
-              onHorizontalDragEnd: _onResizeEnd,
+              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
+              onHorizontalDragUpdate: isMobileDevice ? null : _resizeEnd,
+              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
             ),
           ),
         ),
@@ -127,30 +132,50 @@ class _MonthTileGestureDetectorState<T>
   }
 
   void _onPanStart(DragStartDetails details) {
-    initialDateTimeRange = event.dateTimeRange;
     cursorOffset = Offset.zero;
+    _onRescheduleStart();
+  }
+
+  void _onPanEnd(DragEndDetails details) async {
+    await _onRescheduleEnd();
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    cursorOffset += details.delta;
+    _onRescheduleUpdate(cursorOffset);
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    _onRescheduleStart();
+  }
+
+  void _onLongPressEnd(LongPressEndDetails details) async {
+    await _onRescheduleEnd();
+  }
+
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    _onRescheduleUpdate(details.offsetFromOrigin);
+  }
+
+  void _onRescheduleStart() {
+    initialDateTimeRange = event.dateTimeRange;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
     controller.chaningEvent = event;
   }
 
-  void _onPanEnd(DragEndDetails details) async {
-    cursorOffset = Offset.zero;
-    currentVerticalSteps = 0;
-    currentHorizontalSteps = 0;
+  Future<void> _onRescheduleEnd() async {
     await functions.onEventChanged?.call(initialDateTimeRange, event);
     controller.chaningEvent = null;
   }
 
-  void _onPanUpdate(DragUpdateDetails details) {
-    cursorOffset += details.delta;
-
-    int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
+  void _onRescheduleUpdate(Offset offset) {
+    int verticalSteps = (offset.dy / widget.verticalStep).round();
     if (verticalSteps != currentVerticalSteps) {
       currentVerticalSteps = verticalSteps;
     }
 
-    int horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
+    int horizontalSteps = (offset.dx / widget.horizontalStep).round();
     if (horizontalSteps != currentHorizontalSteps) {
       currentHorizontalSteps = horizontalSteps;
     }

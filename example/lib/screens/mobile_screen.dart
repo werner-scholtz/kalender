@@ -111,7 +111,9 @@ class _MobileScreenState extends State<MobileScreen> {
 
   /// This function is called when an event is changed.
   Future<void> onEventChanged(
-      initialDateTimeRange, CalendarEvent<Event> event) async {
+    DateTimeRange initialDateTimeRange,
+    CalendarEvent<Event> event,
+  ) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
     ScaffoldMessenger.of(context).showSnackBar(
@@ -121,11 +123,11 @@ class _MobileScreenState extends State<MobileScreen> {
           label: 'Undo',
           onPressed: () {
             event.dateTimeRange = initialDateTimeRange;
-            // eventsController.updateEvent(
-            //   newEventData: event.eventData,
-            //   newDateTimeRange: initialDateTimeRange,
-            //   test: (other) => other.eventData == event.eventData,
-            // );
+            eventsController.updateEvent(
+              newEventData: event.eventData,
+              newDateTimeRange: initialDateTimeRange,
+              test: (other) => other.eventData == event.eventData,
+            );
           },
         ),
       ),

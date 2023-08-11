@@ -135,6 +135,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     );
   }
 
+  /// Trigger the [onEventTapped] function.
   void _onTap() async {
     // Set the changing event.
     scope.eventsController.chaningEvent = event;
@@ -150,90 +151,92 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   }
 
   void _onPanStart(DragStartDetails details) {
+    cursorOffset = Offset.zero;
     _onRescheduleStart();
+  }
+
+  void _onPanEnd(DragEndDetails details) async {
+    await _onRescheduleEnd();
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    cursorOffset += details.delta;
+    _onReschedule(cursorOffset);
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    _onRescheduleStart();
+  }
+
+  void _onLongPressEnd(LongPressEndDetails details) async {
+    await _onRescheduleEnd();
+  }
+
+  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    _onReschedule(details.localOffsetFromOrigin);
+  }
+
+  void _onRescheduleStart() {
+    initialDateTimeRange = widget.visibleDateTimeRange;
+    currentVerticalSteps = 0;
+    currentHorizontalSteps = 0;
+
     scope.eventsController.isMoving = true;
     scope.eventsController.chaningEvent = event;
     initialDateTimeRange = event.dateTimeRange;
   }
 
-  void _onPanEnd(DragEndDetails details) async {
-    _onRescheduleEnd();
+  Future<void> _onRescheduleEnd() async {
     await scope.functions.onEventChanged
         ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
     scope.eventsController.chaningEvent = null;
     scope.eventsController.isMoving = false;
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    _onReschedule(cursorOffset += details.delta);
-  }
-
-  void _onLongPressStart(LongPressStartDetails details) {
-    _onRescheduleStart();
-    scope.eventsController.isMoving = true;
-    scope.eventsController.chaningEvent = event;
-  }
-
-  void _onLongPressEnd(LongPressEndDetails details) async {
-    _onRescheduleEnd();
-    await scope.functions.onEventChanged
-        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
-    scope.eventsController.chaningEvent = null;
-    scope.eventsController.isMoving = false;
-  }
-
-  void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    _onReschedule(details.offsetFromOrigin);
-  }
-
-  void _onRescheduleStart() {
-    initialDateTimeRange = widget.visibleDateTimeRange;
-    cursorOffset = Offset.zero;
-    currentVerticalSteps = 0;
-    currentHorizontalSteps = 0;
-  }
-
-  void _onRescheduleEnd() {
-    cursorOffset = Offset.zero;
-    currentVerticalSteps = 0;
-    currentHorizontalSteps = 0;
   }
 
   void _onReschedule(Offset cursorOffset) {
+    // Calculate the new vertical steps.
     int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
     if (verticalSteps != currentVerticalSteps) {
       currentVerticalSteps = verticalSteps;
     }
 
+    // Calculate the new horizontal steps if applicable.
     int horizontalSteps = 0;
-    Duration horizontalDurationDelta = const Duration();
     if (widget.horizontalStep != null) {
       horizontalSteps = (cursorOffset.dx / widget.horizontalStep!).round();
       if (horizontalSteps != currentHorizontalSteps) {
         currentHorizontalSteps = horizontalSteps;
       }
-      horizontalDurationDelta =
-          widget.horizontalDurationStep! * horizontalSteps;
     }
+    Duration horizontalDurationDelta =
+        (widget.horizontalDurationStep ?? const Duration(minutes: 0)) *
+            horizontalSteps;
 
+    // Calculate the new start time.
     DateTime newStart = initialDateTimeRange.start
         .add(horizontalDurationDelta)
         .add(widget.verticalDurationStep * verticalSteps);
 
+    // Calculate the new end time.
     DateTime newEnd = initialDateTimeRange.end
         .add(horizontalDurationDelta)
         .add(widget.verticalDurationStep * verticalSteps);
 
+    ///TODO: make the snap time configurable.
+
+    // Find the index of the snap point that is within a duration of 15 minutes of the startTime.
     int startIndex = snapPoints.indexWhere(
       (DateTime element) =>
           element.difference(newStart).abs() <= const Duration(minutes: 15),
     );
 
+    // Find the index of the snap point that is within a duration of 15 minutes of the endTime.
     int endIndex = snapPoints.indexWhere(
       (DateTime element) =>
           element.difference(newEnd).abs() <= const Duration(minutes: 15),
     );
 
+    // Check if the start or end snap points should be used.
     if (startIndex != -1) {
       newStart = snapPoints[startIndex];
       newEnd = newStart.add(initialDateTimeRange.duration);
