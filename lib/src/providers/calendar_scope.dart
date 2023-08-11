@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+
+import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
+    if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
 
 /// The [InheritedWidget] that provides the calendar with the necessary data.
 ///

@@ -1,18 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-
-/// The [PlatformData] class is used to store the platform data.
 class PlatformData {
   PlatformData({
     bool? isMobileDevice,
   }) {
-    if (kIsWeb) {
-      this.isMobileDevice = false;
-    } else {
-      this.isMobileDevice =
-          isMobileDevice ?? (Platform.isAndroid || Platform.isIOS);
-    }
+    this.isMobileDevice =
+        isMobileDevice ?? (Platform.isAndroid || Platform.isIOS);
   }
 
   late bool isMobileDevice;
