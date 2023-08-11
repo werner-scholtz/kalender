@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/day_header.dart';
-import 'package:kalender/src/components/general/day_seperator.dart';
-import 'package:kalender/src/components/general/hour_line.dart';
-import 'package:kalender/src/components/general/month_cell_header.dart';
-import 'package:kalender/src/components/general/month_grid.dart';
-import 'package:kalender/src/components/general/month_header.dart';
-import 'package:kalender/src/components/general/time_indicator.dart';
-import 'package:kalender/src/components/general/time_line.dart';
-import 'package:kalender/src/components/general/week_number.dart';
+import 'package:kalender/src/components/general/day_header/day_header.dart';
+import 'package:kalender/src/components/general/day_seperator/day_seperator.dart';
+import 'package:kalender/src/components/general/hour_line/hour_line.dart';
+import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
+import 'package:kalender/src/components/general/month_grid/month_grid.dart';
+import 'package:kalender/src/components/general/month_header/month_header.dart';
+import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
+import 'package:kalender/src/components/general/time_line/time_line.dart';
+import 'package:kalender/src/components/general/week_number/week_number.dart';
 import 'package:kalender/src/typedefs.dart';
 
 /// This class is used to provide the tile components for the calendar.
