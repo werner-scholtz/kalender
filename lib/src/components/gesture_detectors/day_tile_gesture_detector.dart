@@ -264,9 +264,9 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     scope.eventsController.isMoving = true;
   }
 
-  void _onVerticalDragEnd(DragEndDetails details) {
-    cursorOffset = Offset.zero;
-    currentVerticalSteps = 0;
+  Future<void> _onVerticalDragEnd(DragEndDetails details) async {
+    await scope.functions.onEventChanged
+        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
     scope.eventsController.isMoving = false;
     scope.eventsController.chaningEvent = null;
   }
