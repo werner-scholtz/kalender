@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class CalendarHeader extends StatelessWidget {
-  const CalendarHeader({
+class CalendarHeaderDesktop extends StatelessWidget {
+  const CalendarHeaderDesktop({
     super.key,
     required this.calendarController,
     required this.viewConfigurations,
@@ -19,20 +19,6 @@ class CalendarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<int, String> months = {
-      0: 'January',
-      1: 'February',
-      2: 'March',
-      3: 'April',
-      4: 'Mei',
-      5: 'June',
-      6: 'July',
-      7: 'August',
-      8: 'September',
-      9: 'October',
-      10: 'November',
-      11: 'Desember',
-    };
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -118,3 +104,18 @@ class CalendarHeader extends StatelessWidget {
     );
   }
 }
+
+const Map<int, String> months = {
+  0: 'January',
+  1: 'February',
+  2: 'March',
+  3: 'April',
+  4: 'Mei',
+  5: 'June',
+  6: 'July',
+  7: 'August',
+  8: 'September',
+  9: 'October',
+  10: 'November',
+  11: 'Desember',
+};

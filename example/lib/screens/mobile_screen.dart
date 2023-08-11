@@ -1,5 +1,5 @@
 import 'package:example/models/event.dart';
-import 'package:example/widgets/calendar_header.dart';
+import 'package:example/widgets/calendar_header_mobile.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:example/widgets/dialogs/event_edit_dialog.dart';
 import 'package:example/widgets/dialogs/new_event_dialog.dart';
@@ -49,21 +49,23 @@ class _MobileScreenState extends State<MobileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarView<Event>(
-      controller: calendarController,
-      eventsController: eventsController,
-      viewConfiguration: currentConfiguration,
-      tileBuilder: _tileBuilder,
-      multiDayTileBuilder: _multiDayTileBuilder,
-      monthTileBuilder: _monthEventTileBuilder,
-      components: CalendarComponents(
-        calendarHeaderBuilder: _calendarHeader,
-      ),
-      eventHandlers: CalendarEventHandlers<Event>(
-        onEventChanged: onEventChanged,
-        onEventTapped: onEventTapped,
-        onCreateEvent: onCreateEvent,
-        onDateTapped: onDateTapped,
+    return SafeArea(
+      child: CalendarView<Event>(
+        controller: calendarController,
+        eventsController: eventsController,
+        viewConfiguration: currentConfiguration,
+        tileBuilder: _tileBuilder,
+        multiDayTileBuilder: _multiDayTileBuilder,
+        monthTileBuilder: _monthEventTileBuilder,
+        components: CalendarComponents(
+          calendarHeaderBuilder: _calendarHeader,
+        ),
+        eventHandlers: CalendarEventHandlers<Event>(
+          onEventChanged: onEventChanged,
+          onEventTapped: onEventTapped,
+          onCreateEvent: onCreateEvent,
+          onDateTapped: onDateTapped,
+        ),
       ),
     );
   }
@@ -147,7 +149,7 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   Widget _calendarHeader(dateTimeRange) {
-    return CalendarHeader(
+    return CalendarHeaderMobile(
       calendarController: calendarController,
       viewConfigurations: viewConfigurations,
       currentConfiguration: currentConfiguration,
