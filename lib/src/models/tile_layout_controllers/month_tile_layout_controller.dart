@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
+/// TODO: Make the [MonthLayoutController] alogrithm configurable.
 class MonthLayoutController<T> {
   /// The [DateTimeRange] that is visible on the calendar.
   final DateTimeRange visibleDateRange;
@@ -54,8 +55,9 @@ class MonthLayoutController<T> {
 
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
-      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
-          a.start.compareTo(b.start),);
+      ..sort(
+        (CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start),
+      );
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -95,12 +97,16 @@ class MonthLayoutController<T> {
 
     if (selectedEvent != null) {
       List<PositionedMonthTileData<T>> selectedArrangedEvent = arrangedEvents
-          .where((PositionedMonthTileData<T> element) =>
-              element.event == selectedEvent,)
+          .where(
+            (PositionedMonthTileData<T> element) =>
+                element.event == selectedEvent,
+          )
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
-        arrangedEvents.removeWhere((PositionedMonthTileData<T> element) =>
-            element.event == selectedEvent,);
+        arrangedEvents.removeWhere(
+          (PositionedMonthTileData<T> element) =>
+              element.event == selectedEvent,
+        );
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }

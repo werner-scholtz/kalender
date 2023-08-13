@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
+/// TODO: Make the [MultiDayLayoutController] alogrithm configurable.
 class MultiDayLayoutController<T> {
   /// The [DateTimeRange] that is visible on the calendar.
   final DateTimeRange visibleDateRange;
@@ -58,8 +59,9 @@ class MultiDayLayoutController<T> {
 
     List<CalendarEvent<T>> eventsToArrange = events.toList()
       // Sort events by start dateTime
-      ..sort((CalendarEvent<T> a, CalendarEvent<T> b) =>
-          a.start.compareTo(b.start),);
+      ..sort(
+        (CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start),
+      );
 
     for (CalendarEvent<T> event in eventsToArrange) {
       double left = calculateLeft(event.start);
@@ -99,12 +101,16 @@ class MultiDayLayoutController<T> {
 
     if (selectedEvent != null) {
       List<PositionedMultiDayTileData<T>> selectedArrangedEvent = arrangedEvents
-          .where((PositionedMultiDayTileData<T> element) =>
-              element.event == selectedEvent,)
+          .where(
+            (PositionedMultiDayTileData<T> element) =>
+                element.event == selectedEvent,
+          )
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
-        arrangedEvents.removeWhere((PositionedMultiDayTileData<T> element) =>
-            element.event == selectedEvent,);
+        arrangedEvents.removeWhere(
+          (PositionedMultiDayTileData<T> element) =>
+              element.event == selectedEvent,
+        );
         arrangedEvents.addAll(selectedArrangedEvent);
       }
     }

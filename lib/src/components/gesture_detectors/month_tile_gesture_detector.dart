@@ -5,6 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// TODO: Create a builder for a [MonthTileGestureDetector].
 class MonthTileGestureDetector<T> extends StatefulWidget {
   const MonthTileGestureDetector({
     super.key,
