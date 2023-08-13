@@ -3,6 +3,7 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// TODO: Create a builder for a [DayTileGestureDetector].
 class DayTileGestureDetector<T> extends StatefulWidget {
   const DayTileGestureDetector({
     super.key,
