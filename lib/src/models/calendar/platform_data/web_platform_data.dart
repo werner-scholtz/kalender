@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 class PlatformData {
   PlatformData({
     bool? isMobileDevice,
   }) {
-    this.isMobileDevice = isMobileDevice ?? false;
+    this.isMobileDevice = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
   }
 
   late bool isMobileDevice;
