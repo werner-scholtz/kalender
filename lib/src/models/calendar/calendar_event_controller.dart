@@ -63,8 +63,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   ///
   /// The event where [test] returns true will be updated.
   void updateEvent({
-    required T? newEventData,
-    required DateTimeRange? newDateTimeRange,
+    T? newEventData,
+    DateTimeRange? newDateTimeRange,
+    bool? modifyable,
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
     int index = _events.indexWhere((CalendarEvent<T> element) => test(element));
@@ -75,6 +76,10 @@ class CalendarEventsController<T> with ChangeNotifier {
     if (newDateTimeRange != null) {
       _events[index].dateTimeRange = newDateTimeRange;
     }
+    if (modifyable != null) {
+      _events[index].modifyable = modifyable;
+    }
+
     notifyListeners();
   }
 
