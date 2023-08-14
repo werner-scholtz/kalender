@@ -51,11 +51,14 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   late bool eventSnapping;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
-  bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
+
+  bool get modifyable => event.modifyable;
+  bool get canBeChangedDesktop => modifyable && !isMobileDevice;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   @override
   void initState() {
@@ -82,13 +85,18 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
         children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            onPanStart: isMobileDevice ? null : _onPanStart,
-            onPanUpdate: isMobileDevice ? null : _onPanUpdate,
-            onPanEnd: isMobileDevice ? null : _onPanEnd,
-            onLongPressStart: isMobileDevice ? _onLongPressStart : null,
+            onPanStart: canBeChangedDesktop ? _onPanStart : null,
+            // isMobileDevice || !event.modifyable ? null : _onPanStart,
+            onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
+            // isMobileDevice || !event.modifyable ? null : _onPanUpdate,
+            onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
+            //  isMobileDevice || !event.modifyable ? null : _onPanEnd,
+            onLongPressStart:
+                isMobileDevice && modifyable ? _onLongPressStart : null,
             onLongPressMoveUpdate:
-                isMobileDevice ? _onLongPressMoveUpdate : null,
-            onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
+                isMobileDevice && modifyable ? _onLongPressMoveUpdate : null,
+            onLongPressEnd:
+                isMobileDevice && modifyable ? _onLongPressEnd : null,
             onTap: _onTap,
             child: widget.child,
           ),
@@ -104,11 +112,14 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onVerticalDragStart:
-                          isMobileDevice ? null : _onVerticalDragStart,
+                          canBeChangedDesktop ? _onVerticalDragStart : null,
+                      // isMobileDevice ? null : _onVerticalDragStart,
                       onVerticalDragUpdate:
-                          isMobileDevice ? null : _resizeStart,
+                          canBeChangedDesktop ? _resizeStart : null,
+                      // isMobileDevice ? null : _resizeStart,
                       onVerticalDragEnd:
-                          isMobileDevice ? null : _onVerticalDragEnd,
+                          canBeChangedDesktop ? _onVerticalDragEnd : null,
+                      // isMobileDevice ? null : _onVerticalDragEnd,
                     ),
                   ),
                 ),
@@ -124,10 +135,14 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onVerticalDragStart:
-                          isMobileDevice ? null : _onVerticalDragStart,
-                      onVerticalDragUpdate: isMobileDevice ? null : _resizeEnd,
+                          canBeChangedDesktop ? _onVerticalDragStart : null,
+                      // isMobileDevice ? null : _onVerticalDragStart,
+                      onVerticalDragUpdate:
+                          canBeChangedDesktop ? _resizeEnd : null,
+                      // isMobileDevice ? null : _resizeEnd,
                       onVerticalDragEnd:
-                          isMobileDevice ? null : _onVerticalDragEnd,
+                          canBeChangedDesktop ? _onVerticalDragEnd : null,
+                      // isMobileDevice ? null : _onVerticalDragEnd,
                     ),
                   ),
                 ),

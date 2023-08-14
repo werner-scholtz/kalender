@@ -53,14 +53,17 @@ class _MonthTileGestureDetectorState<T>
   late DateTimeRange initialDateTimeRange;
   late bool enableResizing;
 
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => internals.eventsController;
-  CalendarEventHandlers<T> get functions => internals.functions;
-  bool get isMobileDevice => internals.platformData.isMobileDevice;
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => scope.eventsController;
+  CalendarEventHandlers<T> get functions => scope.functions;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
+
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get modifyable => event.modifyable;
+  bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   @override
   void initState() {
@@ -85,13 +88,18 @@ class _MonthTileGestureDetectorState<T>
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            onPanStart: isMobileDevice ? null : _onPanStart,
-            onPanUpdate: isMobileDevice ? null : _onPanUpdate,
-            onPanEnd: isMobileDevice ? null : _onPanEnd,
-            onLongPressStart: isMobileDevice ? _onLongPressStart : null,
-            onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
+            onPanStart: canBeChangedDesktop ? _onPanStart : null,
+            // isMobileDevice ? null : _onPanStart,
+            onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
+            // isMobileDevice ? null : _onPanUpdate,
+            onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
+            //  isMobileDevice ? null : _onPanEnd,
+            onLongPressStart:
+                isMobileDevice && modifyable ? _onLongPressStart : null,
+            onLongPressEnd:
+                isMobileDevice && modifyable ? _onLongPressEnd : null,
             onLongPressMoveUpdate:
-                isMobileDevice ? _onLongPressMoveUpdate : null,
+                isMobileDevice && modifyable ? _onLongPressMoveUpdate : null,
             onTap: _onTap,
             child: widget.child,
           ),
@@ -108,11 +116,17 @@ class _MonthTileGestureDetectorState<T>
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onHorizontalDragStart:
-                  isMobileDevice || !enableResizing ? null : _onResizeStart,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _onResizeStart,
               onHorizontalDragUpdate:
-                  isMobileDevice || !enableResizing ? null : _resizeStart,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _resizeStart,
               onHorizontalDragEnd:
-                  isMobileDevice || !enableResizing ? null : _onResizeEnd,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _onResizeEnd,
             ),
           ),
         ),
@@ -128,11 +142,17 @@ class _MonthTileGestureDetectorState<T>
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onHorizontalDragStart:
-                  isMobileDevice || !enableResizing ? null : _onResizeStart,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _onResizeStart,
               onHorizontalDragUpdate:
-                  isMobileDevice || !enableResizing ? null : _resizeEnd,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _resizeEnd,
               onHorizontalDragEnd:
-                  isMobileDevice || !enableResizing ? null : _onResizeEnd,
+                  (isMobileDevice || !enableResizing || !modifyable)
+                      ? null
+                      : _onResizeEnd,
             ),
           ),
         ),

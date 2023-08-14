@@ -10,9 +10,11 @@ class CalendarEvent<T> with ChangeNotifier {
   CalendarEvent({
     required DateTimeRange dateTimeRange,
     T? eventData,
+    bool? modifyable,
   }) {
     _dateTimeRange = dateTimeRange;
     _eventData = eventData;
+    _mofifyable = modifyable ?? true;
   }
 
   /// The [DateTimeRange] of the [CalendarEvent].
@@ -26,8 +28,10 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The start [DateTime] of the [CalendarEvent].
   DateTime get start => _dateTimeRange.start;
   set start(DateTime newStart) {
-    assert(newStart.isBefore(_dateTimeRange.end),
-        'CalendarEvent start must be before end',);
+    assert(
+      newStart.isBefore(_dateTimeRange.end),
+      'CalendarEvent start must be before end',
+    );
     _dateTimeRange = DateTimeRange(
       start: newStart,
       end: _dateTimeRange.end,
@@ -38,8 +42,10 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The end [DateTime] of the [CalendarEvent].
   DateTime get end => _dateTimeRange.end;
   set end(DateTime newEnd) {
-    assert(newEnd.isAfter(_dateTimeRange.start),
-        'CalendarEvent end must be after start',);
+    assert(
+      newEnd.isAfter(_dateTimeRange.start),
+      'CalendarEvent end must be after start',
+    );
     _dateTimeRange = DateTimeRange(
       start: _dateTimeRange.start,
       end: newEnd,
@@ -52,6 +58,14 @@ class CalendarEvent<T> with ChangeNotifier {
   T? get eventData => _eventData;
   set eventData(T? newEvent) {
     _eventData = newEvent;
+    notifyListeners();
+  }
+
+  /// Whether the [CalendarEvent] is modifyable.
+  late bool _mofifyable;
+  bool get modifyable => _mofifyable;
+  set modifyable(bool newModifyable) {
+    _mofifyable = newModifyable;
     notifyListeners();
   }
 
