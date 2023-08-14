@@ -10,6 +10,7 @@ class TimeIndicator extends StatefulWidget {
     required this.height,
     required this.visibleDateRange,
     required this.heightPerMinute,
+    required this.timelineWidth,
   });
 
   /// Width of indicator
@@ -17,6 +18,8 @@ class TimeIndicator extends StatefulWidget {
 
   /// Height of the display area.
   final double height;
+
+  final double timelineWidth;
 
   /// The visible date range.
   final DateTimeRange visibleDateRange;
@@ -37,7 +40,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   void initState() {
     super.initState();
-
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
     _timer = Timer(const Duration(seconds: 1), setTimer);
@@ -81,7 +83,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      right: _left,
+      left: _left,
       top: _top,
       child: SizedBox(
         width: widget.width + circleRadius / 2,
@@ -121,9 +123,11 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   double get _left {
     return (_visibleDateRange.start.startOfDay
-            .difference(_currentDate)
-            .inDays
-            .abs() *
-        widget.width);
+                .difference(_currentDate)
+                .inDays
+                .abs() *
+            widget.width) +
+        widget.timelineWidth -
+        circleRadius / 2;
   }
 }

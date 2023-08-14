@@ -146,6 +146,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                 pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
+                                viewConfiguration.timelineWidth,
                               ),
                             ),
                           ],

@@ -144,15 +144,12 @@ class MultiDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Visibility(
-                              visible:
-                                  DateTime.now().isWithin(pageVisibleDateRange),
-                              child: scope.components.timeIndicatorBuilder(
-                                dayWidth,
-                                pageHeight,
-                                pageVisibleDateRange,
-                                heightPerMinute,
-                              ),
+                            scope.components.timeIndicatorBuilder(
+                              dayWidth,
+                              pageHeight,
+                              pageVisibleDateRange,
+                              heightPerMinute,
+                              viewConfiguration.timelineWidth,
                             ),
                           ],
                         );
