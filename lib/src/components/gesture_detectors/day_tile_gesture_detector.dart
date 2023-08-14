@@ -100,52 +100,54 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             onTap: _onTap,
             child: widget.child,
           ),
-          widget.continuesBefore
-              ? const SizedBox.shrink()
-              : Positioned(
-                  top: 0,
-                  height: 8,
-                  left: 0,
-                  right: 0,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.resizeRow,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onVerticalDragStart:
-                          canBeChangedDesktop ? _onVerticalDragStart : null,
-                      // isMobileDevice ? null : _onVerticalDragStart,
-                      onVerticalDragUpdate:
-                          canBeChangedDesktop ? _resizeStart : null,
-                      // isMobileDevice ? null : _resizeStart,
-                      onVerticalDragEnd:
-                          canBeChangedDesktop ? _onVerticalDragEnd : null,
-                      // isMobileDevice ? null : _onVerticalDragEnd,
+          if (canBeChangedDesktop)
+            widget.continuesBefore
+                ? const SizedBox.shrink()
+                : Positioned(
+                    top: 0,
+                    height: 8,
+                    left: 0,
+                    right: 0,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.resizeRow,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onVerticalDragStart:
+                            canBeChangedDesktop ? _onVerticalDragStart : null,
+                        // isMobileDevice ? null : _onVerticalDragStart,
+                        onVerticalDragUpdate:
+                            canBeChangedDesktop ? _resizeStart : null,
+                        // isMobileDevice ? null : _resizeStart,
+                        onVerticalDragEnd:
+                            canBeChangedDesktop ? _onVerticalDragEnd : null,
+                        // isMobileDevice ? null : _onVerticalDragEnd,
+                      ),
                     ),
                   ),
-                ),
-          widget.continuesAfter
-              ? const SizedBox.shrink()
-              : Positioned(
-                  bottom: 0,
-                  height: 8,
-                  left: 0,
-                  right: 0,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.resizeRow,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onVerticalDragStart:
-                          canBeChangedDesktop ? _onVerticalDragStart : null,
-                      // isMobileDevice ? null : _onVerticalDragStart,
-                      onVerticalDragUpdate:
-                          canBeChangedDesktop ? _resizeEnd : null,
-                      // isMobileDevice ? null : _resizeEnd,
-                      onVerticalDragEnd:
-                          canBeChangedDesktop ? _onVerticalDragEnd : null,
-                      // isMobileDevice ? null : _onVerticalDragEnd,
+          if (canBeChangedDesktop)
+            widget.continuesAfter
+                ? const SizedBox.shrink()
+                : Positioned(
+                    bottom: 0,
+                    height: 8,
+                    left: 0,
+                    right: 0,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.resizeRow,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onVerticalDragStart:
+                            canBeChangedDesktop ? _onVerticalDragStart : null,
+                        // isMobileDevice ? null : _onVerticalDragStart,
+                        onVerticalDragUpdate:
+                            canBeChangedDesktop ? _resizeEnd : null,
+                        // isMobileDevice ? null : _resizeEnd,
+                        onVerticalDragEnd:
+                            canBeChangedDesktop ? _onVerticalDragEnd : null,
+                        // isMobileDevice ? null : _onVerticalDragEnd,
+                      ),
                     ),
                   ),
-                ),
         ],
       ),
     );

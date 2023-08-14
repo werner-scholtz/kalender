@@ -72,39 +72,44 @@ class _MultiDayTileGestureDetectorState<T>
             onTap: _onTap,
             child: child,
           ),
-          Positioned(
-            left: 0,
-            width: 8,
-            top: 0,
-            bottom: 0,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.resizeLeftRight,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragStart:
-                    canBeChangedDesktop ? _onResizeStart : null,
-                onHorizontalDragUpdate:
-                    canBeChangedDesktop ? _resizeStart : null,
-                onHorizontalDragEnd: canBeChangedDesktop ? _onResizeEnd : null,
+          if (canBeChangedDesktop)
+            Positioned(
+              left: 0,
+              width: 8,
+              top: 0,
+              bottom: 0,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeftRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragStart:
+                      canBeChangedDesktop ? _onResizeStart : null,
+                  onHorizontalDragUpdate:
+                      canBeChangedDesktop ? _resizeStart : null,
+                  onHorizontalDragEnd:
+                      canBeChangedDesktop ? _onResizeEnd : null,
+                ),
               ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            width: 8,
-            top: 0,
-            bottom: 0,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.resizeLeftRight,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragStart:
-                    canBeChangedDesktop ? _onResizeStart : null,
-                onHorizontalDragUpdate: canBeChangedDesktop ? _resizeEnd : null,
-                onHorizontalDragEnd: canBeChangedDesktop ? _onResizeEnd : null,
+          if (canBeChangedDesktop)
+            Positioned(
+              right: 0,
+              width: 8,
+              top: 0,
+              bottom: 0,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeftRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragStart:
+                      canBeChangedDesktop ? _onResizeStart : null,
+                  onHorizontalDragUpdate:
+                      canBeChangedDesktop ? _resizeEnd : null,
+                  onHorizontalDragEnd:
+                      canBeChangedDesktop ? _onResizeEnd : null,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

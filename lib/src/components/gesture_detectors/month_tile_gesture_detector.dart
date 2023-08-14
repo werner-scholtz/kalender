@@ -104,58 +104,42 @@ class _MonthTileGestureDetectorState<T>
             child: widget.child,
           ),
         ),
-        Positioned(
-          left: 0,
-          width: 8,
-          top: 0,
-          bottom: 0,
-          child: MouseRegion(
-            cursor: enableResizing
-                ? SystemMouseCursors.resizeLeftRight
-                : SystemMouseCursors.basic,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _onResizeStart,
-              onHorizontalDragUpdate:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _resizeStart,
-              onHorizontalDragEnd:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _onResizeEnd,
+        if ((!isMobileDevice || enableResizing || modifyable))
+          Positioned(
+            left: 0,
+            width: 8,
+            top: 0,
+            bottom: 0,
+            child: MouseRegion(
+              cursor: enableResizing
+                  ? SystemMouseCursors.resizeLeftRight
+                  : SystemMouseCursors.basic,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragStart: _onResizeStart,
+                onHorizontalDragUpdate: _resizeStart,
+                onHorizontalDragEnd: _onResizeEnd,
+              ),
             ),
           ),
-        ),
-        Positioned(
-          right: 0,
-          width: 8,
-          top: 0,
-          bottom: 0,
-          child: MouseRegion(
-            cursor: enableResizing
-                ? SystemMouseCursors.resizeLeftRight
-                : SystemMouseCursors.basic,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _onResizeStart,
-              onHorizontalDragUpdate:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _resizeEnd,
-              onHorizontalDragEnd:
-                  (isMobileDevice || !enableResizing || !modifyable)
-                      ? null
-                      : _onResizeEnd,
+        if ((!isMobileDevice || enableResizing || modifyable))
+          Positioned(
+            right: 0,
+            width: 8,
+            top: 0,
+            bottom: 0,
+            child: MouseRegion(
+              cursor: enableResizing
+                  ? SystemMouseCursors.resizeLeftRight
+                  : SystemMouseCursors.basic,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragStart: _onResizeStart,
+                onHorizontalDragUpdate: _resizeEnd,
+                onHorizontalDragEnd: _onResizeEnd,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
