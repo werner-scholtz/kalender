@@ -7,9 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class MobileScreen extends StatefulWidget {
-  const MobileScreen({super.key, required this.eventsController});
+  const MobileScreen({
+    super.key,
+    required this.eventsController,
+    required this.viewConfigurations,
+  });
 
   final CalendarEventsController<Event> eventsController;
+  final List<ViewConfiguration> viewConfigurations;
 
   @override
   State<MobileScreen> createState() => _MobileScreenState();
@@ -21,16 +26,11 @@ class _MobileScreenState extends State<MobileScreen> {
   late CalendarComponents components;
   late CalendarEventHandlers<Event> eventHandlers;
 
+  /// The list of view configurations that can be used.
+  late List<ViewConfiguration> viewConfigurations = widget.viewConfigurations;
+
   /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
-
-  /// The list of view configurations that can be used.
-  List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MonthConfiguration(),
-  ];
 
   @override
   void initState() {

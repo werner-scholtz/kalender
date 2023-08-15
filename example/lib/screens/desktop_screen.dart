@@ -1,3 +1,4 @@
+import 'package:example/layout_controllers/day_layout_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header_desktop.dart';
@@ -10,9 +11,11 @@ class DesktopScreen extends StatefulWidget {
   const DesktopScreen({
     super.key,
     required this.eventsController,
+    required this.viewConfigurations,
   });
 
   final CalendarEventsController<Event> eventsController;
+  final List<ViewConfiguration> viewConfigurations;
 
   @override
   State<DesktopScreen> createState() => _DesktopScreenState();
@@ -28,57 +31,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   late ViewConfiguration currentConfiguration = viewConfigurations[1];
 
   /// The list of view configurations that can be used.
-  List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-    const WeekConfiguration(
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-    const WorkWeekConfiguration(
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-    const MonthConfiguration(),
-    const MultiDayConfiguration(
-      name: 'Two Day',
-      numberOfDays: 2,
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-    const MultiDayConfiguration(
-      name: 'Three Day',
-      numberOfDays: 3,
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-    const MultiDayConfiguration(
-      name: 'Four Day',
-      numberOfDays: 4,
-      hourlineTimelineOverlap: 56,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      verticalSnapRange: Duration(minutes: 1),
-      verticalStepDuration: Duration(minutes: 1),
-    ),
-  ];
+  late List<ViewConfiguration> viewConfigurations = widget.viewConfigurations;
 
   @override
   void initState() {
@@ -106,6 +59,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
       monthTileBuilder: _monthEventTileBuilder,
       components: CalendarComponents(
         calendarHeaderBuilder: _calendarHeaderBuilder,
+      ),
+      layoutControllers: CalendarLayoutControllers(
+        dayTileLayoutController: _dayTileLayoutController,
       ),
       eventHandlers: CalendarEventHandlers<Event>(
         onEventChanged: onEventChanged,
@@ -177,7 +133,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
         ),
       ),
     );
-    await Future.delayed(const Duration(milliseconds: 200));
   }
 
   /// This function is called when a date is tapped.
@@ -241,6 +196,22 @@ class _DesktopScreenState extends State<DesktopScreen> {
       date: tileConfiguration.date,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
+    );
+  }
+
+  DayTileLayoutController<Event> _dayTileLayoutController({
+    required DateTimeRange visibleDateRange,
+    required List<DateTime> visibleDates,
+    required double heightPerMinute,
+    required double dayWidth,
+    required Duration verticalDurationStep,
+  }) {
+    return ExampleDayTileLayoutController<Event>(
+      visibleDateRange: visibleDateRange,
+      visibleDates: visibleDates,
+      heightPerMinute: heightPerMinute,
+      dayWidth: dayWidth,
+      verticalDurationStep: verticalDurationStep,
     );
   }
 }

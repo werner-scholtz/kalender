@@ -1,6 +1,3 @@
-
-
-
 This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay, and Month views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
 
 ## Web Example
@@ -37,6 +34,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Custom Builders** - You can create your own builders for different components of the calendar. [Find out more](#appearance)
 
+* **Custom LayoutControllers** - You can create your own algorithm to layout tiles. [Find out more](#layoutcontrollers)
 
 ## Installation
 
@@ -144,6 +142,10 @@ These are the default ViewConfiguration's:
       timeIndicatorSnapping: true,
       // Allow the view to create new events.
       createNewEvents: true,
+      // The duration of the vertical step while dragging.
+      verticalStepDuration: Duration(minutes: 15),
+      // The vertical snap range while dragging.
+      verticalSnapRange: Duration(minutes: 15),
     ),
     ```
 
@@ -160,6 +162,8 @@ These are the default ViewConfiguration's:
       eventSnapping: true,
       timeIndicatorSnapping: true,
       createNewEvents: true,
+      verticalStepDuration: Duration(minutes: 15),
+      verticalSnapRange: Duration(minutes: 15),
     ),
     ```
 
@@ -173,8 +177,11 @@ These are the default ViewConfiguration's:
       paintWeekNumber: true,
       eventSnapping: true,
       timeIndicatorSnapping: true,
+      // The first day of the week.
       firstDayOfWeek: DateTime.monday,
       createNewEvents: true,
+      verticalStepDuration: Duration(minutes: 15),
+      verticalSnapRange: Duration(minutes: 15),
     ),
     ```
 
@@ -189,6 +196,8 @@ These are the default ViewConfiguration's:
       eventSnapping: true,
       timeIndicatorSnapping: true,
       createNewEvents: true,
+      verticalStepDuration: Duration(minutes: 15),
+      verticalSnapRange: Duration(minutes: 15),
     )
     ```
 
@@ -196,6 +205,7 @@ These are the default ViewConfiguration's:
     ```dart
     MonthConfiguration(
       firstDayOfWeek: DateTime.monday,
+      // Can events be resized.
       enableRezising: true,
       createNewEvents: true,
     )
@@ -304,6 +314,30 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
   );
 }
 ```
+
+### LayoutControllers
+There are three types of layout controllers: DayLayoutController, MultiDayLayoutController, and MonthLayoutController.
+
+(See the example app for examples)
+
+1. DayLayoutController
+   Create your own DayLayoutController by extending the DayLayoutController class.
+   ```dart
+    class DefaultDayLayoutController<T> extends DayTileLayoutController<T> {}
+   ```
+
+2. MultiDayLayoutController
+   Create your own MultiDayLayoutController by extending the DayLayoutController class.
+   ```dart
+   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {}
+   ```
+
+3. MonthLayoutController 
+   Create your own MonthLayoutController by extending the DayLayoutController class.
+   ```dart
+   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {}
+   ```
+
 
 ### Appearance
 The CalendarView consists of quite a few sub components:

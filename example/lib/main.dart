@@ -59,16 +59,53 @@ class _MyHomePageState extends State<MyHomePage> {
           if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
             return DesktopScreen(
               eventsController: eventController,
+              viewConfigurations: viewConfigurations,
             );
           } else {
             return MobileScreen(
               eventsController: eventController,
+              viewConfigurations: viewConfigurations,
             );
           }
         },
       ),
     );
   }
+
+  /// The list of view configurations that can be used.
+  List<ViewConfiguration> viewConfigurations = [
+    const DayConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WorkWeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Two Day',
+      numberOfDays: 2,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Three Day',
+      numberOfDays: 3,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Four Day',
+      numberOfDays: 4,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MonthConfiguration(),
+  ];
 }
 
 List<CalendarEvent<Event>> generateCalendarEvents() {
