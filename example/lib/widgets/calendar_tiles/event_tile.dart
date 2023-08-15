@@ -29,8 +29,8 @@ class EventTile extends StatelessWidget {
           topRight: Radius.circular(continuesBefore ? 0 : 8),
           bottomRight: Radius.circular(continuesAfter ? 0 : 8),
         ),
-        border: drawOutline
-            ? Border.all(color: Theme.of(context).colorScheme.background)
+        border: drawOutline || tileType == TileType.selected
+            ? Border.all(color: Theme.of(context).colorScheme.onBackground)
             : null,
       ),
       child: Padding(
