@@ -74,6 +74,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     event = widget.event;
+    snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
   }
 
