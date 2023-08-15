@@ -1,40 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 
-/// TODO: Make the [TileLayoutController] alogrithm configurable.
-///
-/// The [TileLayoutController] is used to arrange [Tiles]'s.
-class TileLayoutController<T> {
-  /// The [DateTimeRange] that is visible on the calendar.
-  final DateTimeRange visibleDateRange;
-
-  /// The [DateTime]s that are visible on the calendar.
-  late final List<DateTime> visibleDates = visibleDateRange.datesSpanned;
-
-  /// The [Duration] of a vertical duration step.
-  ///
-  /// This is used to estimate the height of the event title.
-  final Duration verticalDurationStep;
-
-  /// The height of each minute.
-  ///
-  /// This is used to calculate the [top] and [height] of the events.
-  final double heightPerMinute;
-
-  /// The width of each day.
-  ///
-  /// This is used to calculate the [left] and [width] of the event.
-  final double dayWidth;
-
-  TileLayoutController({
-    required this.visibleDateRange,
-    required this.heightPerMinute,
-    required this.dayWidth,
-    required this.verticalDurationStep,
+class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
+  DefaultDayTileLayoutController({
+    required super.visibleDateRange,
+    required super.visibleDates,
+    required super.verticalDurationStep,
+    required super.heightPerMinute,
+    required super.dayWidth,
   });
 
-  /// Generate tile groups from the [events].
+  @override
   List<TileGroup<T>> generateTileGroups(
     Iterable<CalendarEvent<T>> events,
   ) {
@@ -320,10 +297,10 @@ class TileLayoutController<T> {
     return overlappingEvents.toList();
   }
 
-  /// Positioned a single event on the calendar.
-  ///
-  /// This is mainly used for the chaning event.
-  List<PositionedTileData<T>> positionSingleEvent(CalendarEvent<T> event) {
+  @override
+  List<PositionedTileData<T>> positionSingleEvent(
+    CalendarEvent<T> event,
+  ) {
     return event.datesSpanned
         .map(
           (DateTime e) => PositionedTileData<T>(
@@ -382,86 +359,4 @@ class TileLayoutController<T> {
   double calculateTileHeight(Duration eventDuration) {
     return eventDuration.inMinutes * heightPerMinute;
   }
-}
-
-class TileGroup<T> {
-  /// The date that the tile's will be displayed on.
-  final DateTime date;
-
-  /// The tile group's left value.
-  final double tileGroupLeft;
-
-  /// The tile group's top value.
-  final double tileGroupTop;
-
-  /// The initial width of the tiles.
-  final double tileGroupWidth;
-
-  /// The height of the tile group.
-  final double tileGroupHeight;
-
-  /// The [PositionedTileData] that are used to position the tiles in this group.
-  final List<PositionedTileData<T>> tilePositionData;
-
-  /// The [CalendarEvent]'s that are in this group.
-  final Iterable<CalendarEvent<T>> events;
-
-  TileGroup({
-    required this.date,
-    required this.tileGroupLeft,
-    required this.tileGroupTop,
-    required this.tileGroupWidth,
-    required this.tileGroupHeight,
-    required this.tilePositionData,
-    required this.events,
-  });
-}
-
-class PositionedTileData<T> {
-  /// The event that the tile represents.
-  final CalendarEvent<T> event;
-
-  /// The date that the tile is displayed on.
-  final DateTime date;
-
-  /// The distance that the tile's left edge is inset from the left of the stack.
-  final double left;
-
-  /// The distance that the tile's top edge is inset from the top of the stack.
-  final double top;
-
-  /// The tile's height.
-  final double height;
-
-  /// The tile's width.
-  final double width;
-
-  /// If the tile should draw an outline.
-  final bool drawOutline;
-
-  PositionedTileData({
-    required this.event,
-    required this.date,
-    required this.left,
-    required this.top,
-    required this.width,
-    required this.height,
-    required this.drawOutline,
-  });
-
-  @override
-  bool operator ==(Object other) {
-    return other is PositionedTileData<T> &&
-        other.date == date &&
-        other.left == left &&
-        other.top == top &&
-        other.height == height &&
-        other.width == width &&
-        other.event == event &&
-        other.drawOutline == drawOutline;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(date, top, left, height, width, event, drawOutline);
 }

@@ -4,7 +4,7 @@ import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -72,9 +72,10 @@ class MultiDayContent<T> extends StatelessWidget {
                               scope.state.adjustedDateTimeRange.start,
                         );
 
-                        TileLayoutController<T> tileLayoutController =
-                            TileLayoutController<T>(
+                        DayTileLayoutController<T> tileLayoutController =
+                            scope.layoutControllers.dayTileLayoutController(
                           visibleDateRange: pageVisibleDateRange,
+                          visibleDates: pageVisibleDateRange.datesSpanned,
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
                           verticalDurationStep: const Duration(minutes: 15),

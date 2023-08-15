@@ -4,6 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
@@ -29,6 +30,7 @@ class SingleDayView<T> extends StatefulWidget {
     this.style,
     this.singleDayViewConfiguration,
     this.functions,
+    this.layoutControllers,
   });
 
   /// The [CalendarController] used to control the view.
@@ -49,6 +51,9 @@ class SingleDayView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
+  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
+  final CalendarLayoutControllers<T>? layoutControllers;
+
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T> tileBuilder;
 
@@ -68,6 +73,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   late CalendarTileComponents<T> _tileComponents;
   late SingleDayViewConfiguration _viewConfiguration;
   late CalendarStyle _style;
+  late CalendarLayoutControllers<T> _layoutControllers;
 
   @override
   void initState() {
@@ -82,6 +88,8 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _style = widget.style ?? const CalendarStyle();
+    _layoutControllers =
+        widget.layoutControllers ?? CalendarLayoutControllers<T>();
 
     _viewConfiguration =
         (widget.singleDayViewConfiguration ?? const DayConfiguration());
@@ -166,6 +174,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
         components: _components,
         platformData: PlatformData(),
         tileComponents: _tileComponents,
+        layoutControllers: _layoutControllers,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             // Calculate the width of the day.

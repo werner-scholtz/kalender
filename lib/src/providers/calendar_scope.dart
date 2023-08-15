@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
@@ -14,6 +15,7 @@ import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dar
 /// [functions] is used to handle events.
 /// [state] is used to store the calendar's state.
 /// [platformData] is used to store platform specific data.
+/// [layoutControllers] is used to layout the calendar's tiles.
 ///
 class CalendarScope<T> extends InheritedWidget {
   final CalendarEventsController<T> eventsController;
@@ -23,6 +25,8 @@ class CalendarScope<T> extends InheritedWidget {
   final CalendarTileComponents<T> tileComponents;
 
   final CalendarEventHandlers<T> functions;
+
+  final CalendarLayoutControllers<T> layoutControllers;
 
   final ViewState state;
 
@@ -36,6 +40,7 @@ class CalendarScope<T> extends InheritedWidget {
     required this.functions,
     required this.state,
     required this.platformData,
+    required this.layoutControllers,
     required super.child,
   });
 
@@ -56,6 +61,7 @@ class CalendarScope<T> extends InheritedWidget {
         tileComponents != oldWidget.tileComponents ||
         functions != oldWidget.functions ||
         state != oldWidget.state ||
-        platformData != oldWidget.platformData;
+        platformData != oldWidget.platformData ||
+        layoutControllers != oldWidget.layoutControllers;
   }
 }

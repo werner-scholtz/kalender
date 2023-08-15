@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [ChaningMultiDayTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
@@ -11,7 +11,7 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
     required this.multiDayEventLayout,
   });
 
-  final MultiDayLayoutController<T> multiDayEventLayout;
+  final MultiDayTileLayoutController<T> multiDayEventLayout;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
       listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
         PositionedMultiDayTileData<T> arragnedEvent =
-            multiDayEventLayout.arrangeEvent(
+            multiDayEventLayout.layoutTile(
           scope.eventsController.chaningEvent!,
         );
         return MouseRegion(

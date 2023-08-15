@@ -8,7 +8,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
 
@@ -26,7 +26,7 @@ class PositionedTileStack<T> extends StatelessWidget {
     this.horizontalDurationStep,
   });
 
-  final TileLayoutController<T> tileLayoutController;
+  final DayTileLayoutController<T> tileLayoutController;
   final DateTimeRange pageVisibleDateRange;
   final double dayWidth;
   final double verticalStep;

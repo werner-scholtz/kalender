@@ -8,7 +8,7 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 class PositionedMultiDayTileStack<T> extends StatelessWidget {
@@ -25,8 +25,8 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
   /// The width a single day.
   final double dayWidth;
 
-  /// The [MultiDayLayoutController]
-  final MultiDayLayoutController<T> multiDayEventLayout;
+  /// The [MultiDayTileLayoutController]
+  final MultiDayTileLayoutController<T> multiDayEventLayout;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
           List<PositionedMultiDayTileData<T>> arragedEvents =
-              multiDayEventLayout.arrageEvents(
+              multiDayEventLayout.layoutTiles(
             scope.eventsController.getMultidayEventsFromDateRange(
               scope.state.visibleDateTimeRange.value,
             ),
@@ -126,7 +126,7 @@ class MultidayTileStack<T> extends StatelessWidget {
   final Function(CalendarEvent<T> event)? onEventTapped;
 
   final DateTimeRange visibleDateRange;
-  final MultiDayLayoutController<T> multiDayEventLayout;
+  final MultiDayTileLayoutController<T> multiDayEventLayout;
   final PositionedMultiDayTileData<T> arragnedEvent;
 
   final double dayWidth;

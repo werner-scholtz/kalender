@@ -10,23 +10,15 @@ export 'package:kalender/src/models/tile_configurations/tile_configuration_expor
 export 'package:kalender/src/models/calendar/calendar_style.dart';
 export 'package:kalender/src/models/calendar/slot_size.dart';
 
+/// Layout Controllers
+export 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
+export 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
+export 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
+
 /// Styles
-export 'package:kalender/src/components/general/day_header/day_header_style.dart';
-export 'package:kalender/src/components/general/day_seperator/day_seperator_style.dart';
-export 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
-export 'package:kalender/src/components/general/material_header/material_header_style.dart';
-export 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';
-export 'package:kalender/src/components/general/month_cells/month_cells_style.dart';
-export 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
-export 'package:kalender/src/components/general/month_header/month_header_style.dart';
-export 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
-export 'package:kalender/src/components/general/time_line/time_line_style.dart';
-export 'package:kalender/src/components/general/week_number/week_number_style.dart';
+export 'package:kalender/src/components/general/styles_export.dart';
 
 /// Views
-// export 'package:kalender/src/views/single_day_view/single_day_view.dart';
-// export 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
-// export 'package:kalender/src/views/month_view/month_view.dart';
 export 'package:kalender/src/views/calendar_view.dart';
 
 /// View Configurations

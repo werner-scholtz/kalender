@@ -1,44 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 
-/// TODO: Make the [MultiDayLayoutController] alogrithm configurable.
-class MultiDayLayoutController<T> {
-  /// The [DateTimeRange] that is visible on the calendar.
-  final DateTimeRange visibleDateRange;
-
-  /// The width of each day.
-  ///
-  /// This is used to calculate the [left] and [width] of the event.
-  final double dayWidth;
-
-  /// The height of each event.
-  final double tileHeight;
-
-  /// The maximum width of the page.
-  late final double maxWidth = dayWidth * (visibleDateRange.duration.inDays);
-
-  /// Whether the device is a mobile device.
-  final bool isMobileDevice;
-
-  /// Whether the view is a multiday view.
-  final bool isMultidayView;
-
-  /// The maximum height of the stack.
-  double stackHeight = 0;
-
-  /// The number of rows in the stack.
-  int numberOfRows = 0;
-
-  MultiDayLayoutController({
-    required this.visibleDateRange,
-    required this.dayWidth,
-    required this.tileHeight,
-    required this.isMobileDevice,
-    required this.isMultidayView,
+class DefaultMultidayLayoutController<T>
+    extends MultiDayTileLayoutController<T> {
+  DefaultMultidayLayoutController({
+    required super.visibleDateRange,
+    required super.dayWidth,
+    required super.tileHeight,
+    required super.isMobileDevice,
+    required super.isMultidayView,
   });
 
-  List<PositionedMultiDayTileData<T>> arrageEvents(
+  @override
+  PositionedMultiDayTileData<T> layoutTile(CalendarEvent<T> event) {
+    double left = calculateLeft(event.start);
+    double width = calculateWidth(event.dateTimeRange);
+
+    return positionMultidayEvent(
+      event: event,
+      left: left,
+      width: width,
+      top: 0,
+    );
+  }
+
+  @override
+  List<PositionedMultiDayTileData<T>> layoutTiles(
     Iterable<CalendarEvent<T>> events, {
     CalendarEvent<T>? selectedEvent,
   }) {
@@ -50,11 +39,11 @@ class MultiDayLayoutController<T> {
       }
     }
 
-    List<PositionedMultiDayTileData<T>> arrangedEvents =
+    List<PositionedMultiDayTileData<T>> layedOutTiles =
         <PositionedMultiDayTileData<T>>[];
     void addArrangedEvent(PositionedMultiDayTileData<T> arragnedEvent) {
-      if (arrangedEvents.contains(arragnedEvent)) return;
-      arrangedEvents.add(arragnedEvent);
+      if (layedOutTiles.contains(arragnedEvent)) return;
+      layedOutTiles.add(arragnedEvent);
     }
 
     List<CalendarEvent<T>> eventsToArrange = events.toList()
@@ -70,7 +59,7 @@ class MultiDayLayoutController<T> {
       List<DateTime> datesFilled = event.datesSpanned;
 
       // Find events that fill the same dates as the current event.
-      List<PositionedMultiDayTileData<T>> arragedEventsAbove = arrangedEvents
+      List<PositionedMultiDayTileData<T>> arragedEventsAbove = layedOutTiles
           .where(
         (PositionedMultiDayTileData<T> arragnedEvent) {
           return arragnedEvent.event.datesSpanned
@@ -100,18 +89,18 @@ class MultiDayLayoutController<T> {
     }
 
     if (selectedEvent != null) {
-      List<PositionedMultiDayTileData<T>> selectedArrangedEvent = arrangedEvents
+      List<PositionedMultiDayTileData<T>> selectedArrangedEvent = layedOutTiles
           .where(
             (PositionedMultiDayTileData<T> element) =>
                 element.event == selectedEvent,
           )
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
-        arrangedEvents.removeWhere(
+        layedOutTiles.removeWhere(
           (PositionedMultiDayTileData<T> element) =>
               element.event == selectedEvent,
         );
-        arrangedEvents.addAll(selectedArrangedEvent);
+        layedOutTiles.addAll(selectedArrangedEvent);
       }
     }
 
@@ -128,19 +117,7 @@ class MultiDayLayoutController<T> {
       stackHeight = tileHeight * numberOfRows;
     }
 
-    return arrangedEvents;
-  }
-
-  PositionedMultiDayTileData<T> arrangeEvent(CalendarEvent<T> event) {
-    double left = calculateLeft(event.start);
-    double width = calculateWidth(event.dateTimeRange);
-
-    return positionMultidayEvent(
-      event: event,
-      left: left,
-      width: width,
-      top: 0,
-    );
+    return layedOutTiles;
   }
 
   PositionedMultiDayTileData<T> positionMultidayEvent({
@@ -189,60 +166,4 @@ class MultiDayLayoutController<T> {
   /// Calculates the width of the event.
   double calculateWidth(DateTimeRange dateRange) =>
       (dateRange.dayDifference * dayWidth);
-}
-
-class PositionedMultiDayTileData<T> {
-  /// The event that the tile represents.
-  final CalendarEvent<T> event;
-
-  /// The [DateTimeRange] this tile is rendered on.
-  final DateTimeRange dateRange;
-
-  /// The distance that the tile's left edge is inset from the left of the stack.
-  final double left;
-
-  /// The distance that the tile's top edge is inset from the top of the stack.
-  final double top;
-
-  /// The tile's width.
-  final double width;
-
-  /// The tile's height.
-  final double height;
-
-  /// Whether the event continues before the visible date range.
-  final bool continuesBefore;
-
-  /// Whether the event continues after the visible date range.
-  final bool continuesAfter;
-
-  PositionedMultiDayTileData({
-    required this.event,
-    required this.dateRange,
-    required this.left,
-    required this.top,
-    required this.width,
-    required this.height,
-    this.continuesBefore = false,
-    this.continuesAfter = false,
-  });
-
-  @override
-  String toString() {
-    return 'top: $top, left: $left, width: $width, height: $height';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is PositionedMultiDayTileData<T> &&
-        other.event == event &&
-        other.dateRange == dateRange &&
-        other.left == left &&
-        other.top == top &&
-        other.width == width &&
-        other.height == height;
-  }
-
-  @override
-  int get hashCode => Object.hash(event, dateRange, left, top, width, height);
 }

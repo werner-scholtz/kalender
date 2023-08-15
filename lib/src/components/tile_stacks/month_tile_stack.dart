@@ -7,8 +7,7 @@ import 'package:kalender/src/enumerations.dart';
 
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -32,8 +31,8 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
 
   final double cellHeight;
 
-  /// The [MultiDayLayoutController]
-  final MonthLayoutController<T> monthEventLayout;
+  /// The [MonthTileLayoutController]
+  final MonthTileLayoutController<T> monthEventLayout;
 
   final DateTimeRange visibleDateRange;
 
@@ -51,7 +50,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
           List<PositionedMonthTileData<T>> arragedEvents =
-              monthEventLayout.arrageEvents(
+              monthEventLayout.layoutTiles(
             scope.eventsController.getEventsFromDateRange(visibleDateRange),
             selectedEvent: scope.eventsController.chaningEvent,
           );
@@ -130,7 +129,7 @@ class MonthTileStack<T> extends StatelessWidget {
 
   final DateTimeRange visibleDateRange;
   final DateTimeRange monthVisibleDateRange;
-  final MonthLayoutController<T> monthEventLayout;
+  final MonthTileLayoutController<T> monthEventLayout;
   final PositionedMonthTileData<T> arragnedEvent;
 
   final double horizontalStep;

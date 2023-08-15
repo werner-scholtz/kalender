@@ -3,6 +3,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -138,6 +139,7 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
+    this.layoutControllers,
   }) : assert(
           tileBuilder != null &&
               multiDayTileBuilder != null &&
@@ -155,6 +157,7 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
+    this.layoutControllers,
   })  : monthTileBuilder = null,
         assert(
           tileBuilder != null && multiDayTileBuilder != null,
@@ -175,6 +178,7 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
+    this.layoutControllers,
   })  : monthTileBuilder = null,
         assert(
           tileBuilder != null && multiDayTileBuilder != null,
@@ -194,6 +198,7 @@ class CalendarView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.eventHandlers,
+    this.layoutControllers,
   })  : tileBuilder = null,
         multiDayTileBuilder = null,
         assert(
@@ -222,6 +227,9 @@ class CalendarView<T> extends StatefulWidget {
 
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? eventHandlers;
+
+  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
+  final CalendarLayoutControllers<T>? layoutControllers;
 
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T>? tileBuilder;
@@ -266,6 +274,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         singleDayViewConfiguration:
             _viewConfiguration as SingleDayViewConfiguration,
         style: widget.style,
+        layoutControllers: widget.layoutControllers,
       );
     }
 
@@ -280,6 +289,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         multiDayViewConfiguration:
             _viewConfiguration as MultiDayViewConfiguration,
         style: widget.style,
+        layoutControllers: widget.layoutControllers,
       );
     }
 
@@ -292,6 +302,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         functions: widget.eventHandlers,
         monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,
         style: widget.style,
+        layoutControllers: widget.layoutControllers,
       );
     }
 

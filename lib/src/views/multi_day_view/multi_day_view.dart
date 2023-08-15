@@ -4,6 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
@@ -28,6 +29,7 @@ class MultiDayView<T> extends StatefulWidget {
     this.style,
     this.multiDayViewConfiguration,
     this.functions,
+    this.layoutControllers,
   });
 
   /// The [CalendarController] used to control the view.
@@ -48,6 +50,9 @@ class MultiDayView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
+  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
+  final CalendarLayoutControllers<T>? layoutControllers;
+
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T> tileBuilder;
 
@@ -67,6 +72,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late CalendarTileComponents<T> _tileComponents;
   late MultiDayViewConfiguration _viewConfiguration;
   late CalendarStyle _style;
+  late CalendarLayoutControllers<T> _layoutControllers;
 
   @override
   void initState() {
@@ -80,6 +86,9 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _style = widget.style ?? const CalendarStyle();
+    _layoutControllers =
+        widget.layoutControllers ?? CalendarLayoutControllers<T>();
+
     _viewConfiguration =
         (widget.multiDayViewConfiguration ?? const WeekConfiguration());
     _initializeViewState();
@@ -165,6 +174,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         components: _components,
         tileComponents: _tileComponents,
         platformData: PlatformData(),
+        layoutControllers: _layoutControllers,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             // Calculate the width of the page.

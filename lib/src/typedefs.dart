@@ -4,6 +4,9 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed in the calendar's header.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
@@ -107,3 +110,29 @@ typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTime date,
 );
+
+typedef DayLayoutController<T extends Object?> = DayTileLayoutController<T>
+    Function({
+  required DateTimeRange visibleDateRange,
+  required List<DateTime> visibleDates,
+  required Duration verticalDurationStep,
+  required double heightPerMinute,
+  required double dayWidth,
+});
+
+typedef MultiDayLayoutController<T extends Object?>
+    = MultiDayTileLayoutController<T> Function({
+  required DateTimeRange visibleDateRange,
+  required double dayWidth,
+  required double tileHeight,
+  required bool isMobileDevice,
+  required bool isMultidayView,
+});
+
+typedef MonthLayoutController<T extends Object?> = MonthTileLayoutController<T>
+    Function({
+  required DateTimeRange visibleDateRange,
+  required double cellWidth,
+  required double tileHeight,
+  required bool isMobileDevice,
+});
