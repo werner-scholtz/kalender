@@ -1,14 +1,7 @@
 library kalender;
 
 /// Models
-export 'package:kalender/src/models/calendar/calendar_controller.dart';
-export 'package:kalender/src/models/calendar/calendar_event.dart';
-export 'package:kalender/src/models/calendar/calendar_components.dart';
-export 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-export 'package:kalender/src/models/calendar/calendar_functions.dart';
-export 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
-export 'package:kalender/src/models/calendar/calendar_style.dart';
-export 'package:kalender/src/models/calendar/slot_size.dart';
+export 'package:kalender/src/models/models_export.dart';
 
 /// Layout Controllers
 export 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
