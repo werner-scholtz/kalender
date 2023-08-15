@@ -69,6 +69,7 @@ class CalendarController<T> with ChangeNotifier {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+    notifyListeners();
   }
 
   /// Animates to the previous page.
@@ -87,6 +88,7 @@ class CalendarController<T> with ChangeNotifier {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+    notifyListeners();
   }
 
   /// Jumps to the [page].
@@ -98,6 +100,7 @@ class CalendarController<T> with ChangeNotifier {
       'Please attach the $CalendarController to a view.',
     );
     _state?.pageController.jumpToPage(page);
+    notifyListeners();
   }
 
   /// Jumps to the [date].
@@ -121,6 +124,7 @@ class CalendarController<T> with ChangeNotifier {
         _state!.adjustedDateTimeRange.start,
       ),
     );
+    notifyListeners();
   }
 
   /// Animates to the [DateTime] provided.
@@ -152,6 +156,7 @@ class CalendarController<T> with ChangeNotifier {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+    notifyListeners();
   }
 
   /// Changes the [heightPerMinute] of the view.
@@ -168,11 +173,15 @@ class CalendarController<T> with ChangeNotifier {
       'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
     );
     _state?.heightPerMinute?.value = heightPerMinute;
+    notifyListeners();
   }
 
   /// Animates to the [CalendarEvent].
-  Future<void> animateToEvent(CalendarEvent<T> event,
-      {Duration? duration, Curve? curve,}) async {
+  Future<void> animateToEvent(
+    CalendarEvent<T> event, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
     // First animate to the date of the event.
     await animateToDate(
       event.dateTimeRange.start,
@@ -190,5 +199,6 @@ class CalendarController<T> with ChangeNotifier {
         curve: curve ?? Curves.ease,
       );
     }
+    notifyListeners();
   }
 }

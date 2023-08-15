@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-class DaySeperatorStyle {
-  const DaySeperatorStyle({
-    this.thickness,
-    this.color,
-  });
-
-  /// The thickness of the day seperator.
-  final double? thickness;
-
-  /// The day seperator color.
-  final Color? color;
-}
-
 /// A widget that displays the day seperators.
 class DaySeperator extends StatelessWidget {
   const DaySeperator({

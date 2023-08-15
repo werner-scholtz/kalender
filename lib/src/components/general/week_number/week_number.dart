@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/general/week_number/week_number_style.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-
-class WeekNumberStyle {
-  const WeekNumberStyle({
-    this.textStyle,
-    this.visualDensity,
-    this.tooltip,
-  });
-
-  /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
-  final TextStyle? textStyle;
-
-  /// The [VisualDensity] used by the [WeekNumber] widget.
-  final VisualDensity? visualDensity;
-
-  /// The tooltip displayed when the [WeekNumber] widget is long pressed/hovered.
-  final String? tooltip;
-}
 
 class WeekNumber extends StatelessWidget {
   const WeekNumber({

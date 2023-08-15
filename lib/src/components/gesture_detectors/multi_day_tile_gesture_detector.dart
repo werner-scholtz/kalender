@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// TODO: Create a builder for a [MultiDayTileGestureDetector].
 class MultiDayTileGestureDetector<T> extends StatefulWidget {
   const MultiDayTileGestureDetector({
     super.key,
@@ -35,6 +36,10 @@ class _MultiDayTileGestureDetectorState<T>
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
 
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get modifyable => event.modifyable;
+  bool get canBeChangedDesktop => modifyable && !isMobileDevice;
+
   double cursorOffset = 0;
   int currentSteps = 0;
 
@@ -59,42 +64,52 @@ class _MultiDayTileGestureDetectorState<T>
       child: Stack(
         children: <Widget>[
           GestureDetector(
-            onHorizontalDragStart: _onRescheduleStart,
-            onHorizontalDragUpdate: _onRescheduleUpdate,
-            onHorizontalDragEnd: _onRescheduleEnd,
+            onHorizontalDragStart:
+                canBeChangedDesktop ? _onRescheduleStart : null,
+            onHorizontalDragUpdate:
+                canBeChangedDesktop ? _onRescheduleUpdate : null,
+            onHorizontalDragEnd: canBeChangedDesktop ? _onRescheduleEnd : null,
             onTap: _onTap,
             child: child,
           ),
-          Positioned(
-            left: 0,
-            width: 8,
-            top: 0,
-            bottom: 0,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.resizeLeftRight,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragStart: _onResizeStart,
-                onHorizontalDragUpdate: _resizeStart,
-                onHorizontalDragEnd: _onResizeEnd,
+          if (canBeChangedDesktop)
+            Positioned(
+              left: 0,
+              width: 8,
+              top: 0,
+              bottom: 0,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeftRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragStart:
+                      canBeChangedDesktop ? _onResizeStart : null,
+                  onHorizontalDragUpdate:
+                      canBeChangedDesktop ? _resizeStart : null,
+                  onHorizontalDragEnd:
+                      canBeChangedDesktop ? _onResizeEnd : null,
+                ),
               ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            width: 8,
-            top: 0,
-            bottom: 0,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.resizeLeftRight,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onHorizontalDragStart: _onResizeStart,
-                onHorizontalDragUpdate: _resizeEnd,
-                onHorizontalDragEnd: _onResizeEnd,
+          if (canBeChangedDesktop)
+            Positioned(
+              right: 0,
+              width: 8,
+              top: 0,
+              bottom: 0,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.resizeLeftRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragStart:
+                      canBeChangedDesktop ? _onResizeStart : null,
+                  onHorizontalDragUpdate:
+                      canBeChangedDesktop ? _resizeEnd : null,
+                  onHorizontalDragEnd:
+                      canBeChangedDesktop ? _onResizeEnd : null,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

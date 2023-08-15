@@ -4,7 +4,7 @@ import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -31,7 +31,7 @@ class SingleDayContent<T> extends StatelessWidget {
         double pageHeight = hourHeight * hoursADay;
         double pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
         double verticalStep =
-            heightPerMinute * viewConfiguration.slotSize.minutes;
+            heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
         return Expanded(
           child: SingleChildScrollView(
@@ -71,9 +71,10 @@ class SingleDayContent<T> extends StatelessWidget {
                               scope.state.adjustedDateTimeRange.start,
                         );
 
-                        TileLayoutController<T> tileLayoutController =
-                            TileLayoutController<T>(
+                        DayTileLayoutController<T> tileLayoutController =
+                            scope.layoutControllers.dayTileLayoutController(
                           visibleDateRange: pageVisibleDateRange,
+                          visibleDates: pageVisibleDateRange.datesSpanned,
                           heightPerMinute: heightPerMinute,
                           dayWidth: dayWidth,
                           verticalDurationStep: const Duration(minutes: 15),
@@ -105,12 +106,19 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            DayGestureDetector<T>(
-                              height: pageHeight,
-                              width: dayWidth,
-                              heightPerMinute: heightPerMinute,
-                              visibleDateRange: pageVisibleDateRange,
-                              minuteSlotSize: viewConfiguration.slotSize,
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: dayWidth,
+                                height: pageHeight,
+                                child: DayGestureDetector<T>(
+                                  height: pageHeight,
+                                  width: dayWidth,
+                                  heightPerMinute: heightPerMinute,
+                                  visibleDateRange: pageVisibleDateRange,
+                                  minuteSlotSize: viewConfiguration.slotSize,
+                                ),
+                              ),
                             ),
                             Align(
                               alignment: Alignment.centerRight,
@@ -123,11 +131,13 @@ class SingleDayContent<T> extends StatelessWidget {
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
                                   verticalDurationStep:
-                                      viewConfiguration.slotSize.duration,
+                                      viewConfiguration.verticalStepDuration,
                                   eventSnapping:
                                       viewConfiguration.eventSnapping,
                                   timeIndicatorSnapping:
                                       viewConfiguration.timeIndicatorSnapping,
+                                  verticalSnapRange:
+                                      viewConfiguration.verticalSnapRange,
                                 ),
                               ),
                             ),
@@ -139,6 +149,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                 pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
+                                viewConfiguration.timelineWidth,
                               ),
                             ),
                           ],

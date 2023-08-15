@@ -4,17 +4,6 @@ import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 import 'package:kalender/src/providers/calendar_style.dart';
 
-class MonthCellHeaderStyle {
-  const MonthCellHeaderStyle({
-    this.visualDensity,
-    this.textStyle,
-  });
-
-  final TextStyle? textStyle;
-
-  final VisualDensity? visualDensity;
-}
-
 /// A widget that displays the date.
 class MonthCellHeader extends StatelessWidget {
   const MonthCellHeader({

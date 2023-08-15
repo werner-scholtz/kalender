@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/day_header.dart';
-import 'package:kalender/src/components/general/day_seperator.dart';
-import 'package:kalender/src/components/general/hour_line.dart';
-import 'package:kalender/src/components/general/material_header.dart';
-import 'package:kalender/src/components/general/month_cell_header.dart';
-import 'package:kalender/src/components/general/month_cells.dart';
-import 'package:kalender/src/components/general/month_grid.dart';
-import 'package:kalender/src/components/general/month_header.dart';
-import 'package:kalender/src/components/general/time_indicator.dart';
-import 'package:kalender/src/components/general/time_line.dart';
-import 'package:kalender/src/components/general/week_number.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
+import 'package:kalender/src/components/general/day_header/day_header_style.dart';
+import 'package:kalender/src/components/general/day_seperator/day_seperator_style.dart';
+import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
+import 'package:kalender/src/components/general/material_header/material_header_style.dart';
+import 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';
+import 'package:kalender/src/components/general/month_cells/month_cells_style.dart';
+import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
+import 'package:kalender/src/components/general/month_header/month_header_style.dart';
+import 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
+import 'package:kalender/src/components/general/time_line/time_line_style.dart';
+import 'package:kalender/src/components/general/week_number/week_number_style.dart';
 
 /// The [CalendarStyle] class is used to store custom style's for the [CalendarComponents].
 class CalendarStyle {

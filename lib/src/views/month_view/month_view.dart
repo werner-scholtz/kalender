@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_platform_data.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
@@ -14,6 +14,9 @@ import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/month_view/month_view_content.dart';
 import 'package:kalender/src/views/month_view/month_view_header.dart';
+
+import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
+    if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
 
 class MonthView<T> extends StatefulWidget {
   const MonthView({
@@ -25,6 +28,7 @@ class MonthView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.functions,
+    this.layoutControllers,
   });
 
   /// The [CalendarController] used to control the view.
@@ -45,6 +49,9 @@ class MonthView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
+  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
+  final CalendarLayoutControllers<T>? layoutControllers;
+
   /// The [MonthTileBuilder] used to build month event tiles.
   final MonthTileBuilder<T> monthTileBuilder;
 
@@ -61,6 +68,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   late CalendarTileComponents<T> _tileComponents;
   late MonthViewConfiguration _viewConfiguration;
   late CalendarStyle _style;
+  late CalendarLayoutControllers<T> _layoutControllers;
 
   @override
   void initState() {
@@ -72,6 +80,8 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     _tileComponents = CalendarTileComponents<T>(
       monthTileBuilder: widget.monthTileBuilder,
     );
+    _layoutControllers =
+        widget.layoutControllers ?? CalendarLayoutControllers<T>();
     _viewConfiguration =
         (widget.monthViewConfiguration ?? const MonthConfiguration());
     _style = widget.style ?? const CalendarStyle();
@@ -158,6 +168,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
         components: _components,
         tileComponents: _tileComponents,
         platformData: PlatformData(),
+        layoutControllers: _layoutControllers,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             double pageWidth = constraints.maxWidth;

@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-class CalendarHeaderBackgroundStyle {
-  const CalendarHeaderBackgroundStyle({
-    this.headerBackgroundColor,
-    this.headerSurfaceTintColor,
-    this.headerElevation,
-  });
-
-  final Color? headerBackgroundColor;
-  final Color? headerSurfaceTintColor;
-  final double? headerElevation;
-}
-
 /// A widget that displays the header background.
 class CalendarHeaderBackground extends StatelessWidget {
   const CalendarHeaderBackground({super.key, this.child});

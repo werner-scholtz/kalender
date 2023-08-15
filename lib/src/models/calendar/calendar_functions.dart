@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
+/// TODO: add on drag start function.
+
 /// The [CalendarEventHandlers] class contains the functions that are called when:
 ///  * an event is changed, tapped, or created
 ///  * when a date is tapped.
@@ -16,8 +18,9 @@ class CalendarEventHandlers<T> {
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
   final Future<void> Function(
-          DateTimeRange initialDateTimeRange, CalendarEvent<T> event,)?
-      onEventChanged;
+    DateTimeRange initialDateTimeRange,
+    CalendarEvent<T> event,
+  )? onEventChanged;
 
   /// The [Function] called when the event is tapped.
   ///

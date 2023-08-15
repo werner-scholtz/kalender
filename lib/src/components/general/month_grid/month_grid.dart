@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-class MonthGridStyle {
-  const MonthGridStyle({
-    this.color,
-    this.thickness,
-  });
-
-  /// The color of the month grid lines.
-  final Color? color;
-
-  /// The thickness of the month grid lines.
-  final double? thickness;
-}
-
 /// A widget that displays the month grid.
 class MonthGrid extends StatelessWidget {
   const MonthGrid({

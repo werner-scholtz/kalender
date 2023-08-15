@@ -1,32 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
 import 'package:kalender/src/components/general/date_text.dart';
+import 'package:kalender/src/components/general/day_header/day_header_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-
-class DayHeaderStyle {
-  const DayHeaderStyle({
-    this.textStyle,
-    this.buttonTextStyle,
-    this.buttonVisualDensity,
-    this.useUpperCase,
-    this.padding,
-  });
-
-  /// The [TextStyle] used by the [DateText] widget to display the day of the week.
-  final TextStyle? textStyle;
-
-  /// Whether the day of the week should be displayed in upper case.
-  final bool? useUpperCase;
-
-  /// The [TextStyle] used by the [DateIconButton] widget to display the day number.
-  final TextStyle? buttonTextStyle;
-
-  /// The [VisualDensity] used by the [DateIconButton] widget.
-  final VisualDensity? buttonVisualDensity;
-
-  /// The padding around the [DayHeader] widget.
-  final EdgeInsets? padding;
-}
 
 /// A widget that displays the day of the week and the day number.
 class DayHeader extends StatelessWidget {

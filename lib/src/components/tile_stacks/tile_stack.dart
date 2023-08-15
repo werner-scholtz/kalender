@@ -8,7 +8,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/typedefs.dart';
 
@@ -20,17 +20,19 @@ class PositionedTileStack<T> extends StatelessWidget {
     required this.dayWidth,
     required this.verticalStep,
     required this.verticalDurationStep,
+    required this.verticalSnapRange,
     required this.eventSnapping,
     required this.timeIndicatorSnapping,
     this.horizontalStep,
     this.horizontalDurationStep,
   });
 
-  final TileLayoutController<T> tileLayoutController;
+  final DayTileLayoutController<T> tileLayoutController;
   final DateTimeRange pageVisibleDateRange;
   final double dayWidth;
   final double verticalStep;
   final Duration verticalDurationStep;
+  final Duration verticalSnapRange;
   final double? horizontalStep;
   final Duration? horizontalDurationStep;
   final bool eventSnapping;
@@ -84,6 +86,7 @@ class PositionedTileStack<T> extends StatelessWidget {
                     horizontalDurationStep: horizontalDurationStep,
                     visibleDateRange: scope.state.visibleDateTimeRange.value,
                     snapPoints: snapPoints,
+                    verticalSnapRange: verticalSnapRange,
                   ),
                 )
                 .toList(),
@@ -113,6 +116,7 @@ class TileGroupStack<T> extends StatelessWidget {
     required this.horizontalStep,
     required this.visibleDateRange,
     required this.snapPoints,
+    required this.verticalSnapRange,
   });
 
   /// The visible [DateTimeRange].
@@ -131,6 +135,7 @@ class TileGroupStack<T> extends StatelessWidget {
 
   final TileGroup<T> tileGroup;
   final List<DateTime> snapPoints;
+  final Duration verticalSnapRange;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +165,7 @@ class TileGroupStack<T> extends StatelessWidget {
                 visibleDateRange: visibleDateRange,
                 pointsOfInterest: snapPoints,
                 initialDateTimeRange: positionedTileData.event.dateTimeRange,
+                verticalSnapRange: verticalSnapRange,
               ),
             ),
           ],
@@ -184,6 +190,7 @@ class PositionedTile<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.pointsOfInterest,
     required this.initialDateTimeRange,
+    required this.verticalSnapRange,
   });
 
   /// The [CalendarController] used by the [PositionedTile].
@@ -216,6 +223,7 @@ class PositionedTile<T> extends StatelessWidget {
   final double? horizontalStep;
 
   final List<DateTime> pointsOfInterest;
+  final Duration verticalSnapRange;
 
   @override
   Widget build(BuildContext context) {
@@ -234,6 +242,7 @@ class PositionedTile<T> extends StatelessWidget {
       width: positionedTileData.width,
       height: positionedTileData.height,
       child: DayTileGestureDetector<T>(
+        snapToRange: verticalSnapRange,
         event: positionedTileData.event,
         horizontalDurationStep: horizontalDurationStep,
         verticalDurationStep: verticalDurationStep,

@@ -3,7 +3,7 @@ import 'package:kalender/src/enumerations.dart';
 
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [ChangingTileStack] is used to display [PositionedTileData]'s of the event being modified..
@@ -13,7 +13,7 @@ class ChangingTileStack<T> extends StatelessWidget {
     required this.tileLayoutController,
   });
 
-  final TileLayoutController<T> tileLayoutController;
+  final DayTileLayoutController<T> tileLayoutController;
 
   @override
   Widget build(BuildContext context) {

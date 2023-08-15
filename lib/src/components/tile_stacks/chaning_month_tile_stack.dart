@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_tile_layout_controller.dart';
+import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [ChaningMonthTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
@@ -12,7 +11,7 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
     required this.monthEventLayout,
   });
 
-  final MonthLayoutController<T> monthEventLayout;
+  final MonthTileLayoutController<T> monthEventLayout;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +20,7 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.chaningEvent!,
       builder: (BuildContext context, Widget? child) {
-        PositionedMonthTileData<T> arragnedEvent =
-            monthEventLayout.arrangeEvent(
+        PositionedMonthTileData<T> arragnedEvent = monthEventLayout.layoutTile(
           scope.eventsController.chaningEvent!,
         );
 

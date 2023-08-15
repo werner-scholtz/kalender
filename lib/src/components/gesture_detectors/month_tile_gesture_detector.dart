@@ -5,6 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// TODO: Create a builder for a [MonthTileGestureDetector].
 class MonthTileGestureDetector<T> extends StatefulWidget {
   const MonthTileGestureDetector({
     super.key,
@@ -38,6 +39,7 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
   /// The pixel value of the horizontal step.
   final double horizontalStep;
 
+  /// Whether resizing is enabled.
   final bool enableResizing;
 
   @override
@@ -49,27 +51,33 @@ class _MonthTileGestureDetectorState<T>
     extends State<MonthTileGestureDetector<T>> {
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
+  late bool enableResizing;
 
-  CalendarScope<T> get internals => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => internals.eventsController;
-  CalendarEventHandlers<T> get functions => internals.functions;
-  bool get isMobileDevice => internals.platformData.isMobileDevice;
+  CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => scope.eventsController;
+  CalendarEventHandlers<T> get functions => scope.functions;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
+
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get modifyable => event.modifyable;
+  bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   @override
   void initState() {
     super.initState();
     event = widget.event;
     initialDateTimeRange = event.dateTimeRange;
+    enableResizing = widget.enableResizing;
   }
 
   @override
   void didUpdateWidget(covariant MonthTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     event = widget.event;
+    enableResizing = widget.enableResizing;
   }
 
   @override
@@ -80,47 +88,58 @@ class _MonthTileGestureDetectorState<T>
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            onPanStart: isMobileDevice ? null : _onPanStart,
-            onPanUpdate: isMobileDevice ? null : _onPanUpdate,
-            onPanEnd: isMobileDevice ? null : _onPanEnd,
-            onLongPressStart: isMobileDevice ? _onLongPressStart : null,
-            onLongPressEnd: isMobileDevice ? _onLongPressEnd : null,
+            onPanStart: canBeChangedDesktop ? _onPanStart : null,
+            // isMobileDevice ? null : _onPanStart,
+            onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
+            // isMobileDevice ? null : _onPanUpdate,
+            onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
+            //  isMobileDevice ? null : _onPanEnd,
+            onLongPressStart:
+                isMobileDevice && modifyable ? _onLongPressStart : null,
+            onLongPressEnd:
+                isMobileDevice && modifyable ? _onLongPressEnd : null,
             onLongPressMoveUpdate:
-                isMobileDevice ? _onLongPressMoveUpdate : null,
+                isMobileDevice && modifyable ? _onLongPressMoveUpdate : null,
             onTap: _onTap,
             child: widget.child,
           ),
         ),
-        Positioned(
-          left: 0,
-          width: 8,
-          top: 0,
-          bottom: 0,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.resizeLeftRight,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
-              onHorizontalDragUpdate: isMobileDevice ? null : _resizeStart,
-              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
+        if ((!isMobileDevice || enableResizing || modifyable))
+          Positioned(
+            left: 0,
+            width: 8,
+            top: 0,
+            bottom: 0,
+            child: MouseRegion(
+              cursor: enableResizing
+                  ? SystemMouseCursors.resizeLeftRight
+                  : SystemMouseCursors.basic,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragStart: _onResizeStart,
+                onHorizontalDragUpdate: _resizeStart,
+                onHorizontalDragEnd: _onResizeEnd,
+              ),
             ),
           ),
-        ),
-        Positioned(
-          right: 0,
-          width: 8,
-          top: 0,
-          bottom: 0,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.resizeLeftRight,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragStart: isMobileDevice ? null : _onResizeStart,
-              onHorizontalDragUpdate: isMobileDevice ? null : _resizeEnd,
-              onHorizontalDragEnd: isMobileDevice ? null : _onResizeEnd,
+        if ((!isMobileDevice || enableResizing || modifyable))
+          Positioned(
+            right: 0,
+            width: 8,
+            top: 0,
+            bottom: 0,
+            child: MouseRegion(
+              cursor: enableResizing
+                  ? SystemMouseCursors.resizeLeftRight
+                  : SystemMouseCursors.basic,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragStart: _onResizeStart,
+                onHorizontalDragUpdate: _resizeEnd,
+                onHorizontalDragEnd: _onResizeEnd,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

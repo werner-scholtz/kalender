@@ -30,31 +30,53 @@ class _DesktopScreenState extends State<DesktopScreen> {
   /// The list of view configurations that can be used.
   List<ViewConfiguration> viewConfigurations = [
     const DayConfiguration(
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
     const WeekConfiguration(
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
     const WorkWeekConfiguration(
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
-    const MonthConfiguration(
-      createNewEvents: false,
-    ),
+    const MonthConfiguration(),
     const MultiDayConfiguration(
       name: 'Two Day',
       numberOfDays: 2,
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
     const MultiDayConfiguration(
       name: 'Three Day',
       numberOfDays: 3,
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
     const MultiDayConfiguration(
       name: 'Four Day',
       numberOfDays: 4,
-      createNewEvents: false,
+      hourlineTimelineOverlap: 56,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+      verticalSnapRange: Duration(minutes: 1),
+      verticalStepDuration: Duration(minutes: 1),
     ),
   ];
 
@@ -138,23 +160,24 @@ class _DesktopScreenState extends State<DesktopScreen> {
   /// This function is called when an event is changed.
   Future<void> onEventChanged(
       initialDateTimeRange, CalendarEvent<Event> event) async {
-    // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    // // Show the snackbar and undo the changes if the user presses the undo button.
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //     content: Text('${event.eventData?.title} changed'),
-    //     action: SnackBarAction(
-    //       label: 'Undo',
-    //       onPressed: () {
-    //         eventsController.updateEvent(
-    //           newEventData: event.eventData,
-    //           newDateTimeRange: initialDateTimeRange,
-    //           test: (other) => other.eventData == event.eventData,
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // Show the snackbar and undo the changes if the user presses the undo button.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${event.eventData?.title} changed'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            eventsController.updateEvent(
+              newEventData: event.eventData,
+              newDateTimeRange: initialDateTimeRange,
+              test: (other) => other.eventData == event.eventData,
+            );
+          },
+        ),
+      ),
+    );
+    await Future.delayed(const Duration(milliseconds: 200));
   }
 
   /// This function is called when a date is tapped.

@@ -14,6 +14,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.timeIndicatorSnapping = false,
     this.firstDayOfWeek = 1,
     this.createNewEvents = true,
+    this.verticalStepDuration = const Duration(minutes: 15),
+    this.verticalSnapRange = const Duration(minutes: 15),
   });
 
   @override
@@ -27,6 +29,11 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final SlotSize slotSize;
+
+  @override
+  final Duration verticalStepDuration;
+  @override
+  final Duration verticalSnapRange;
 
   @override
   final double multidayTileHeight;

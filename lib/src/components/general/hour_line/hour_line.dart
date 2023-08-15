@@ -1,19 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-
-class HourLineStyle {
-  const HourLineStyle({
-    this.thickness,
-    this.color,
-  });
-
-  /// The thickness of the hour line.
-  final double? thickness;
-
-  /// The hour line color.
-  final Color? color;
-}
 
 /// A widget that displays the hour lines.
 class HourLines extends StatelessWidget {

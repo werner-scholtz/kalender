@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_text.dart';
+import 'package:kalender/src/components/general/month_header/month_header_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-
-class MonthHeaderStyle {
-  const MonthHeaderStyle({
-    this.textStyle,
-    this.padding,
-    this.useUpperCase,
-  });
-
-  /// The [TextStyle] used by the [DateText] widget to display the day of the week.
-  final TextStyle? textStyle;
-
-  /// Whether the day of the week should be displayed in upper case.
-  final bool? useUpperCase;
-
-  /// The padding around the [MonthHeader] widget.
-  final EdgeInsets? padding;
-}
 
 class MonthHeader extends StatelessWidget {
   const MonthHeader({
