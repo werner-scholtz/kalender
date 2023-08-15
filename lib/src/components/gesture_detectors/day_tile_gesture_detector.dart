@@ -91,14 +91,18 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             // isMobileDevice || !event.modifyable ? null : _onPanStart,
             onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
             // isMobileDevice || !event.modifyable ? null : _onPanUpdate,
-            onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
+            onPanEnd: canBeChangedDesktop
+                ? (DragEndDetails details) async => _onPanEnd(details)
+                : null,
             //  isMobileDevice || !event.modifyable ? null : _onPanEnd,
             onLongPressStart:
                 isMobileDevice && modifyable ? _onLongPressStart : null,
             onLongPressMoveUpdate:
                 isMobileDevice && modifyable ? _onLongPressMoveUpdate : null,
-            onLongPressEnd:
-                isMobileDevice && modifyable ? _onLongPressEnd : null,
+            onLongPressEnd: isMobileDevice && modifyable
+                ? (LongPressEndDetails details) async =>
+                    _onLongPressEnd(details)
+                : null,
             onTap: _onTap,
             child: widget.child,
           ),
@@ -120,8 +124,10 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                         onVerticalDragUpdate:
                             canBeChangedDesktop ? _resizeStart : null,
                         // isMobileDevice ? null : _resizeStart,
-                        onVerticalDragEnd:
-                            canBeChangedDesktop ? _onVerticalDragEnd : null,
+                        onVerticalDragEnd: canBeChangedDesktop
+                            ? (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details)
+                            : null,
                         // isMobileDevice ? null : _onVerticalDragEnd,
                       ),
                     ),
@@ -144,8 +150,10 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                         onVerticalDragUpdate:
                             canBeChangedDesktop ? _resizeEnd : null,
                         // isMobileDevice ? null : _resizeEnd,
-                        onVerticalDragEnd:
-                            canBeChangedDesktop ? _onVerticalDragEnd : null,
+                        onVerticalDragEnd: canBeChangedDesktop
+                            ? (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details)
+                            : null,
                         // isMobileDevice ? null : _onVerticalDragEnd,
                       ),
                     ),
@@ -175,7 +183,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     _onRescheduleStart();
   }
 
-  void _onPanEnd(DragEndDetails details) async {
+  Future<void> _onPanEnd(DragEndDetails details) async {
     await _onRescheduleEnd();
   }
 
@@ -188,7 +196,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     _onRescheduleStart();
   }
 
-  void _onLongPressEnd(LongPressEndDetails details) async {
+  Future<void> _onLongPressEnd(LongPressEndDetails details) async {
     await _onRescheduleEnd();
   }
 
@@ -207,8 +215,10 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   }
 
   Future<void> _onRescheduleEnd() async {
-    await scope.functions.onEventChanged
-        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
+    await scope.functions.onEventChanged?.call(
+      initialDateTimeRange,
+      scope.eventsController.chaningEvent!,
+    );
     scope.eventsController.chaningEvent = null;
     scope.eventsController.isMoving = false;
   }
