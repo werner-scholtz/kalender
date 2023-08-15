@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Analyze
+name: Analyze and Test
 
 on:
   pull_request:
@@ -31,5 +31,10 @@ jobs:
 
       - name: Analyse
         run: flutter analyze
+        shell: bash
+        working-directory: ./
+
+      - name: Run tests
+        run: flutter test
         shell: bash
         working-directory: ./
