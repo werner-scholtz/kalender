@@ -15,6 +15,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
+    this.verticalStepDuration = const Duration(minutes: 15),
   });
 
   final int numberOfDays;
@@ -30,6 +31,9 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   final SlotSize slotSize;
+
+  @override
+  final Duration verticalStepDuration;
 
   @override
   final double multidayTileHeight;

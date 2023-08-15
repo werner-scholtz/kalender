@@ -25,6 +25,9 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
   SlotSize get slotSize;
 
+  /// The duration of the vertical drag step.
+  Duration get verticalStepDuration;
+
   /// Enable snapping to events.
   bool get eventSnapping;
 

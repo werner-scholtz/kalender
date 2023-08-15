@@ -134,7 +134,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                   dayWidth: dayWidth,
                                   verticalStep: verticalStep,
                                   verticalDurationStep:
-                                      viewConfiguration.slotSize.duration,
+                                      viewConfiguration.verticalStepDuration,
                                   horizontalStep: dayWidth,
                                   horizontalDurationStep:
                                       viewConfiguration.horizontalDurationStep,

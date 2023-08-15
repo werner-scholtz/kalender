@@ -33,4 +33,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The first day of the week.
   int get firstDayOfWeek;
+
+  /// The duration of the vertical drag step.
+  Duration get verticalStepDuration;
 }
