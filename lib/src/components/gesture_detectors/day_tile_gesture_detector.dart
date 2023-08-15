@@ -74,7 +74,6 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     event = widget.event;
-    snapPoints = widget.snapPoints;
     eventSnapping = widget.eventSnapping;
   }
 
@@ -165,17 +164,19 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   /// Trigger the [onEventTapped] function.
   void _onTap() async {
-    // Set the changing event.
-    scope.eventsController.chaningEvent = event;
-    scope.eventsController.isMoving = true;
+    if (scope.eventsController.chaningEvent == null) {
+      // Set the changing event.
+      scope.eventsController.chaningEvent = event;
+      scope.eventsController.isMoving = true;
 
-    // Call the onEventTapped function.
-    await scope.functions.onEventTapped
-        ?.call(scope.eventsController.chaningEvent!);
+      // Call the onEventTapped function.
+      await scope.functions.onEventTapped
+          ?.call(scope.eventsController.chaningEvent!);
 
-    // Reset the changing event.
-    scope.eventsController.isMoving = false;
-    scope.eventsController.chaningEvent = null;
+      // Reset the changing event.
+      scope.eventsController.isMoving = false;
+      scope.eventsController.chaningEvent = null;
+    }
   }
 
   void _onPanStart(DragStartDetails details) {
