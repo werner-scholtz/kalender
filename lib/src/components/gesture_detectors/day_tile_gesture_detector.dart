@@ -307,7 +307,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       if (index != -1) {
         scope.eventsController.chaningEvent!.start = snapPoints[index];
       } else {
-        if (newStart.isBefore(scope.eventsController.chaningEvent!.end)) {
+        if (newStart.isBefore(event.end)) {
           scope.eventsController.chaningEvent!.start = newStart;
         }
       }
@@ -333,7 +333,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       if (index != -1) {
         scope.eventsController.chaningEvent!.end = snapPoints[index];
       } else {
-        if (newEnd.isAfter(scope.eventsController.chaningEvent!.start)) {
+        if (newEnd.isAfter(event.start)) {
           scope.eventsController.chaningEvent!.end = newEnd;
         }
       }
