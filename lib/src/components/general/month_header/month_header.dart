@@ -3,6 +3,7 @@ import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/components/general/month_header/month_header_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the month header.
 class MonthHeader extends StatelessWidget {
   const MonthHeader({
     super.key,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the current time.
 class TimeIndicator extends StatefulWidget {
   const TimeIndicator({
     super.key,
@@ -19,12 +20,13 @@ class TimeIndicator extends StatefulWidget {
   /// Height of the display area.
   final double height;
 
+  /// The width of the timeline.
   final double timelineWidth;
 
   /// The visible date range.
   final DateTimeRange visibleDateRange;
 
-  ///
+  /// The height per minute.
   final double heightPerMinute;
 
   @override

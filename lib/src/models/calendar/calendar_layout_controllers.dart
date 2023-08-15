@@ -7,6 +7,7 @@ import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_con
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/typedefs.dart';
 
+/// The [CalendarLayoutControllers] class contains layout controllers used by the calendar view.
 class CalendarLayoutControllers<T> {
   CalendarLayoutControllers({
     DayLayoutController<T>? dayTileLayoutController,
@@ -23,12 +24,16 @@ class CalendarLayoutControllers<T> {
         monthTileLayoutController ?? defaultMonthTileLayoutController;
   }
 
+  /// The [DayLayoutController] used to layout the day tiles.
   late DayLayoutController<T> dayTileLayoutController;
 
+  /// The [MultiDayLayoutController] used to layout the multiday tiles.
   late MultiDayLayoutController<T> multiDayTileLayoutController;
 
+  /// The [MonthLayoutController] used to layout the month tiles.
   late MonthLayoutController<T> monthTileLayoutController;
 
+  /// The default [DayLayoutController] used to layout the day tiles.
   DayTileLayoutController<T> defaultDayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required List<DateTime> visibleDates,
@@ -45,6 +50,7 @@ class CalendarLayoutControllers<T> {
     );
   }
 
+  /// The default [MultiDayLayoutController] used to layout the multiday tiles.
   MultiDayTileLayoutController<T> defaultMultiDayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required double dayWidth,
@@ -61,6 +67,7 @@ class CalendarLayoutControllers<T> {
     );
   }
 
+  /// The default [MonthLayoutController] used to layout the month tiles.
   MonthTileLayoutController<T> defaultMonthTileLayoutController({
     required DateTimeRange visibleDateRange,
     required double cellWidth,

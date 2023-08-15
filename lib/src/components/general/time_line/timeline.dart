@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/time_line/time_line_style.dart';
+import 'package:kalender/src/components/general/time_line/timeline_style.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the timeline.
 class Timeline extends StatelessWidget {
   const Timeline({
     super.key,

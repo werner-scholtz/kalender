@@ -4,7 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 import 'package:kalender/src/providers/calendar_style.dart';
 
-/// A widget that displays the date.
+/// A widget that displays the date in the month cell header.
 class MonthCellHeader extends StatelessWidget {
   const MonthCellHeader({
     super.key,

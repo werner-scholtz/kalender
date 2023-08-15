@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [HourLineStyle] class is used by the default [HourLines] widget.
 class HourLineStyle {
   const HourLineStyle({
     this.thickness,

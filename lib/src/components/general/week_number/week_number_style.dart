@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [WeekNumberStyle] class is used by the default [WeekNumber] widget.
 class WeekNumberStyle {
   const WeekNumberStyle({
     this.textStyle,

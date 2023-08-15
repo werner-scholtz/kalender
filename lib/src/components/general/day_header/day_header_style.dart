@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [DayHeaderStyle] class is used by the default [DayHeader] widget.
 class DayHeaderStyle {
   const DayHeaderStyle({
     this.textStyle,

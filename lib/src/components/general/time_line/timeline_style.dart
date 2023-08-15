@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [TimelineStyle] class is used by the default [Timeline] widget.
 class TimelineStyle {
   const TimelineStyle({
     this.textStyle,
