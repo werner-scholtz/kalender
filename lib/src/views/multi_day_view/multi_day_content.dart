@@ -147,13 +147,14 @@ class MultiDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            scope.components.timeIndicatorBuilder(
-                              dayWidth,
-                              pageHeight,
-                              pageVisibleDateRange,
-                              heightPerMinute,
-                              viewConfiguration.timelineWidth,
-                            ),
+                            if (DateTime.now().isWithin(pageVisibleDateRange))
+                              scope.components.timeIndicatorBuilder(
+                                dayWidth,
+                                pageHeight,
+                                pageVisibleDateRange,
+                                heightPerMinute,
+                                viewConfiguration.timelineWidth,
+                              ),
                           ],
                         );
                       },

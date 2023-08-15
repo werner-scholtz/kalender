@@ -141,17 +141,14 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Visibility(
-                              visible:
-                                  DateTime.now().isWithin(pageVisibleDateRange),
-                              child: scope.components.timeIndicatorBuilder(
+                            if (DateTime.now().isWithin(pageVisibleDateRange))
+                              scope.components.timeIndicatorBuilder(
                                 dayWidth,
                                 pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
-                                viewConfiguration.timelineWidth,
-                              ),
-                            ),
+                                viewConfiguration.hourlineTimelineOverlap,
+                              )
                           ],
                         );
                       },
