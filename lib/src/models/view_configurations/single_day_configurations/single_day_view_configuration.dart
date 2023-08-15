@@ -28,6 +28,9 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;
 
+  /// The duration where the vertical drag will snap to.
+  Duration get verticalSnapRange;
+
   /// Enable snapping to events.
   bool get eventSnapping;
 

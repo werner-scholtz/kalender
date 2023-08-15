@@ -142,6 +142,8 @@ class MultiDayContent<T> extends StatelessWidget {
                                       viewConfiguration.eventSnapping,
                                   timeIndicatorSnapping:
                                       viewConfiguration.timeIndicatorSnapping,
+                                  verticalSnapRange:
+                                      viewConfiguration.verticalSnapRange,
                                 ),
                               ),
                             ),

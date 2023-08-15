@@ -18,6 +18,7 @@ class DayTileGestureDetector<T> extends StatefulWidget {
     required this.eventSnapping,
     required this.continuesBefore,
     required this.continuesAfter,
+    required this.snapToRange,
   });
   final Widget child;
 
@@ -33,6 +34,7 @@ class DayTileGestureDetector<T> extends StatefulWidget {
   final Duration? horizontalDurationStep;
   final double? horizontalStep;
 
+  final Duration snapToRange;
   final List<DateTime> snapPoints;
   final bool eventSnapping;
 

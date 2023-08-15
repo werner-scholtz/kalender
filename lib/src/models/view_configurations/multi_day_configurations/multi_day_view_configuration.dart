@@ -25,6 +25,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// Paint the week number.
   bool get paintWeekNumber;
 
+  /// The duration where the vertical drag will snap to.
+  Duration get verticalSnapRange;
+
   /// Enable snapping to events.
   bool get eventSnapping;
 

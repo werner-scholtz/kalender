@@ -14,6 +14,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
+    this.verticalSnapRange = const Duration(minutes: 15),
   });
 
   @override
@@ -30,6 +31,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final Duration verticalStepDuration;
+
+  @override
+  final Duration verticalSnapRange;
 
   @override
   final double multidayTileHeight;
