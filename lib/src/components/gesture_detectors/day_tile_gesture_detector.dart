@@ -247,13 +247,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     // Find the index of the snap point that is within a duration of 15 minutes of the startTime.
     int startIndex = snapPoints.indexWhere(
       (DateTime element) =>
-          element.difference(newStart).abs() <= widget.verticalDurationStep * 2,
+          element.difference(newStart).abs() <= widget.snapToRange,
     );
 
     // Find the index of the snap point that is within a duration of 15 minutes of the endTime.
     int endIndex = snapPoints.indexWhere(
       (DateTime element) =>
-          element.difference(newEnd).abs() <= widget.verticalDurationStep * 2,
+          element.difference(newEnd).abs() <= widget.snapToRange,
     );
 
     // Check if the start or end snap points should be used.
@@ -301,8 +301,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
       int index = snapPoints.indexWhere(
         (DateTime element) =>
-            element.difference(newStart).abs() <=
-            widget.verticalDurationStep * 2,
+            element.difference(newStart).abs() <= widget.snapToRange,
       );
 
       if (scope.eventsController.chaningEvent == null) return;
@@ -328,7 +327,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
       int index = snapPoints.indexWhere(
         (DateTime element) =>
-            element.difference(newEnd).abs() <= widget.verticalDurationStep * 2,
+            element.difference(newEnd).abs() <= widget.snapToRange,
       );
 
       if (scope.eventsController.chaningEvent == null) return;
