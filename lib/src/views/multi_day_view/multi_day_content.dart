@@ -32,7 +32,7 @@ class MultiDayContent<T> extends StatelessWidget {
         double hourHeight = heightPerMinute * minutesAnHour;
         double pageHeight = hourHeight * hoursADay;
         double verticalStep =
-            heightPerMinute * viewConfiguration.slotSize.minutes;
+            heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
         return Expanded(
           child: SingleChildScrollView(

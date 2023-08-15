@@ -31,7 +31,7 @@ class SingleDayContent<T> extends StatelessWidget {
         double pageHeight = hourHeight * hoursADay;
         double pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
         double verticalStep =
-            heightPerMinute * viewConfiguration.slotSize.minutes;
+            heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
         return Expanded(
           child: SingleChildScrollView(
