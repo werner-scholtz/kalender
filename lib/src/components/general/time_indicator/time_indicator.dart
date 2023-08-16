@@ -46,7 +46,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
     _heightPerMinute = widget.heightPerMinute;
-    _timer = Timer(const Duration(seconds: 15), setTimer);
+    _timer = Timer(const Duration(seconds: 1), setTimer);
   }
 
   @override
@@ -56,7 +56,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
     _heightPerMinute = widget.heightPerMinute;
-    _timer = Timer(const Duration(seconds: 15), setTimer);
+    _timer.cancel();
+    _timer = Timer(const Duration(seconds: 1), setTimer);
   }
 
   @override
@@ -80,7 +81,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     if (mounted) {
       setState(() {
         _currentDate = DateTime.now();
-        _timer = Timer(const Duration(seconds: 15), setTimer);
+        _timer = Timer(const Duration(seconds: 1), setTimer);
       });
     }
   }
@@ -122,7 +123,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   double get top {
     int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
-    return minutes * _heightPerMinute - (circleRadius * _heightPerMinute) / 2;
+    return minutes * _heightPerMinute - (circleRadius / 2);
   }
 
   double get left {

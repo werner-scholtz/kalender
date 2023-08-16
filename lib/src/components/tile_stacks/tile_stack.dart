@@ -67,11 +67,6 @@ class PositionedTileStack<T> extends StatelessWidget {
           );
         }
 
-        if (timeIndicatorSnapping) {
-          // Add the snap point from the time indicator.
-          snapPoints.add(DateTime.now());
-        }
-
         // Build the stack.
         return Stack(
           children: <Widget>[
@@ -87,6 +82,7 @@ class PositionedTileStack<T> extends StatelessWidget {
                     visibleDateRange: scope.state.visibleDateTimeRange.value,
                     snapPoints: snapPoints,
                     verticalSnapRange: verticalSnapRange,
+                    timelineSnapping: timeIndicatorSnapping,
                   ),
                 )
                 .toList(),
@@ -100,6 +96,7 @@ class PositionedTileStack<T> extends StatelessWidget {
                 visibleDateRange: scope.state.visibleDateTimeRange.value,
                 snapPoints: snapPoints,
                 verticalSnapRange: verticalSnapRange,
+                timeIndicatorSnapping: timeIndicatorSnapping,
               ),
           ],
         );
@@ -124,6 +121,7 @@ class TileGroupStack<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.snapPoints,
     required this.verticalSnapRange,
+    required this.timelineSnapping,
   });
 
   /// The visible [DateTimeRange].
@@ -142,6 +140,7 @@ class TileGroupStack<T> extends StatelessWidget {
 
   final TileGroup<T> tileGroup;
   final List<DateTime> snapPoints;
+  final bool timelineSnapping;
   final Duration verticalSnapRange;
 
   @override
@@ -173,6 +172,7 @@ class TileGroupStack<T> extends StatelessWidget {
                 snapPoints: snapPoints,
                 initialDateTimeRange: positionedTileData.event.dateTimeRange,
                 verticalSnapRange: verticalSnapRange,
+                timeIndicatorSnapping: timelineSnapping,
               ),
             ),
           ],
@@ -198,6 +198,7 @@ class PositionedTile<T> extends StatelessWidget {
     required this.snapPoints,
     required this.initialDateTimeRange,
     required this.verticalSnapRange,
+    required this.timeIndicatorSnapping,
   });
 
   /// The [CalendarController] used by the [PositionedTile].
@@ -231,6 +232,7 @@ class PositionedTile<T> extends StatelessWidget {
 
   final List<DateTime> snapPoints;
   final Duration verticalSnapRange;
+  final bool timeIndicatorSnapping;
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +259,7 @@ class PositionedTile<T> extends StatelessWidget {
         horizontalStep: horizontalStep,
         visibleDateTimeRange: visibleDateRange,
         snapPoints: snapPoints,
-        eventSnapping: snapPoints.isNotEmpty,
+        timelineSnapping: timeIndicatorSnapping,
         continuesBefore: continuesBefore,
         continuesAfter: continuesAfter,
         child: tileBuilder(

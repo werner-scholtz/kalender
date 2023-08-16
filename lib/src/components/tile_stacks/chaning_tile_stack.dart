@@ -18,6 +18,7 @@ class ChangingTileStack<T> extends StatelessWidget {
     required this.horizontalStep,
     required this.snapPoints,
     required this.verticalSnapRange,
+    required this.timeIndicatorSnapping,
   });
 
   final DayTileLayoutController<T> tileLayoutController;
@@ -35,6 +36,7 @@ class ChangingTileStack<T> extends StatelessWidget {
 
   final List<DateTime> snapPoints;
   final Duration verticalSnapRange;
+  final bool timeIndicatorSnapping;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class ChangingTileStack<T> extends StatelessWidget {
         horizontalStep: horizontalStep,
         snapPoints: snapPoints,
         verticalSnapRange: verticalSnapRange,
+        timeIndicatorSnapping: timeIndicatorSnapping,
       );
     } else {
       return DesktopChaningTile<T>(
@@ -123,6 +126,7 @@ class MobileChaningTile<T> extends StatelessWidget {
     required this.horizontalStep,
     required this.snapPoints,
     required this.verticalSnapRange,
+    required this.timeIndicatorSnapping,
   });
 
   final DayTileLayoutController<T> tileLayoutController;
@@ -139,6 +143,7 @@ class MobileChaningTile<T> extends StatelessWidget {
   final double? horizontalStep;
 
   final List<DateTime> snapPoints;
+  final bool timeIndicatorSnapping;
   final Duration verticalSnapRange;
 
   @override
@@ -169,7 +174,7 @@ class MobileChaningTile<T> extends StatelessWidget {
                     horizontalStep: horizontalStep,
                     visibleDateTimeRange: visibleDateRange,
                     snapPoints: snapPoints,
-                    eventSnapping: snapPoints.isNotEmpty,
+                    timelineSnapping: timeIndicatorSnapping,
                     continuesBefore: e.event.continuesBefore(e.date),
                     continuesAfter: e.event.continuesAfter(e.date),
                     child: scope.tileComponents.tileBuilder!(
