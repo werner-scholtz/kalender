@@ -1,5 +1,5 @@
 import 'package:example/layout_controllers/day_layout_controller.dart';
-import 'package:example/widgets/keyboard_detector.dart';
+import 'package:example/widgets/zoom_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header_desktop.dart';
@@ -51,10 +51,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarKeyboardDetector(
-      onZoom: (heightPerMinute) {
-        calendarController.adjustHeightPerMinute(heightPerMinute);
-      },
+    return CalendarZoomDetector(
       controller: calendarController,
       child: CalendarView<Event>(
         controller: calendarController,

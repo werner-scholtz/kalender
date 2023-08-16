@@ -3,48 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kalender/kalender.dart';
 
-class CalendarKeyboardDetector extends StatefulWidget {
-  const CalendarKeyboardDetector({
+class CalendarZoomDetector extends StatefulWidget {
+  const CalendarZoomDetector({
     super.key,
     required this.controller,
-    required this.onZoom,
     required this.child,
   });
   final Widget child;
   final CalendarController controller;
-  final void Function(double heightPerMinute) onZoom;
 
   @override
-  State<CalendarKeyboardDetector> createState() =>
-      _CalendarKeyboardDetectorState();
+  State<CalendarZoomDetector> createState() => _CalendarZoomDetectorState();
 }
 
-class _CalendarKeyboardDetectorState extends State<CalendarKeyboardDetector> {
-  final FocusNode _focusNode = FocusNode();
-  bool _isCtrlPressed = false;
+class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
+  final FocusNode focusNode = FocusNode();
+  bool isCtrlPressed = false;
 
   @override
   void initState() {
-    _focusNode.requestFocus();
+    focusNode.requestFocus();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
-      focusNode: _focusNode,
+      focusNode: focusNode,
       onKey: (value) {
         setState(() {
           if (value.isKeyPressed(LogicalKeyboardKey.controlLeft)) {
-            _isCtrlPressed = true;
+            isCtrlPressed = true;
           } else {
-            _isCtrlPressed = false;
+            isCtrlPressed = false;
           }
         });
       },
       child: Listener(
         onPointerSignal: (notification) {
-          if (notification is PointerScrollEvent && _isCtrlPressed) {
+          if (notification is PointerScrollEvent && isCtrlPressed) {
             _handlePointerScrollEvent(notification);
           }
         },
@@ -68,7 +65,6 @@ class _CalendarKeyboardDetectorState extends State<CalendarKeyboardDetector> {
     if (newHeightPerMinute > 2) {
       newHeightPerMinute = 2;
     }
-
-    widget.onZoom(newHeightPerMinute);
+    widget.controller.adjustHeightPerMinute(newHeightPerMinute);
   }
 }
