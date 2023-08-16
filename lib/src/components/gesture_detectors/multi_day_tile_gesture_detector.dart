@@ -131,7 +131,7 @@ class _MultiDayTileGestureDetectorState<T>
     currentSteps = 0;
     controller.isMultidayEvent = true;
     controller.chaningEvent = event;
-    scope.functions.onChangeStart?.call(event);
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   void _onRescheduleEnd(DragEndDetails details) {
@@ -169,7 +169,7 @@ class _MultiDayTileGestureDetectorState<T>
     currentSteps = 0;
     controller.isMultidayEvent = true;
     controller.chaningEvent = event;
-    scope.functions.onChangeStart?.call(event);
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   void _onResizeEnd(DragEndDetails details) async {

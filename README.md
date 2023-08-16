@@ -230,7 +230,10 @@ There are 4 events at this time that can be handeled.
 
 ```dart
 CalendarEventHandlers<Event>(
-  onEventChanged: (initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
+  onEventChangeStart: (CalendarEvent<T> event) {
+    // This function is called when an event is about to be changed.
+  }
+  onEventChanged: (DateTimeRange initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
     // The initialDateTimeRange is the original DateTimeRange of the event.
     // The event is a reference to the event that was changed.
 
