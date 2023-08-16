@@ -288,6 +288,8 @@ The CalendarController is used to control the CalendarView.
 | animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided.|
 | adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view.  |
 | animateToEvent  | CalendarEvent<T> event, {Duration? duration, Curve? curve}  | Animates to the CalendarEvent.  | 
+| lockScrollPhyscis  |   | Locks the vertical scroll of the current view. | 
+| unlockScrollPhysics  | ScrollPhysics? scrollPhysics | Unlocks the vertical scroll of the current view. | 
 
 
 ### Custom Object
