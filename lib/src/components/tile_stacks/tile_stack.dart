@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day_tile_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
@@ -93,6 +93,13 @@ class PositionedTileStack<T> extends StatelessWidget {
             if (shouldDisplayTile(scope.eventsController))
               ChangingTileStack<T>(
                 tileLayoutController: tileLayoutController,
+                verticalStep: verticalStep,
+                horizontalStep: horizontalStep,
+                verticalDurationStep: verticalDurationStep,
+                horizontalDurationStep: horizontalDurationStep,
+                visibleDateRange: scope.state.visibleDateTimeRange.value,
+                snapPoints: snapPoints,
+                verticalSnapRange: verticalSnapRange,
               ),
           ],
         );
@@ -163,7 +170,7 @@ class TileGroupStack<T> extends StatelessWidget {
                 horizontalDurationStep: horizontalDurationStep,
                 horizontalStep: horizontalStep,
                 visibleDateRange: visibleDateRange,
-                pointsOfInterest: snapPoints,
+                snapPoints: snapPoints,
                 initialDateTimeRange: positionedTileData.event.dateTimeRange,
                 verticalSnapRange: verticalSnapRange,
               ),
@@ -188,7 +195,7 @@ class PositionedTile<T> extends StatelessWidget {
     required this.horizontalDurationStep,
     required this.horizontalStep,
     required this.visibleDateRange,
-    required this.pointsOfInterest,
+    required this.snapPoints,
     required this.initialDateTimeRange,
     required this.verticalSnapRange,
   });
@@ -222,7 +229,7 @@ class PositionedTile<T> extends StatelessWidget {
   final Duration? horizontalDurationStep;
   final double? horizontalStep;
 
-  final List<DateTime> pointsOfInterest;
+  final List<DateTime> snapPoints;
   final Duration verticalSnapRange;
 
   @override
@@ -242,15 +249,15 @@ class PositionedTile<T> extends StatelessWidget {
       width: positionedTileData.width,
       height: positionedTileData.height,
       child: DayTileGestureDetector<T>(
-        snapToRange: verticalSnapRange,
+        verticalSnapRange: verticalSnapRange,
         event: positionedTileData.event,
         horizontalDurationStep: horizontalDurationStep,
         verticalDurationStep: verticalDurationStep,
         verticalStep: verticalStep,
         horizontalStep: horizontalStep,
         visibleDateTimeRange: visibleDateRange,
-        snapPoints: pointsOfInterest,
-        eventSnapping: pointsOfInterest.isNotEmpty,
+        snapPoints: snapPoints,
+        eventSnapping: snapPoints.isNotEmpty,
         continuesBefore: continuesBefore,
         continuesAfter: continuesAfter,
         child: tileBuilder(

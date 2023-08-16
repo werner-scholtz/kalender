@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header_mobile.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
@@ -32,6 +34,9 @@ class _MobileScreenState extends State<MobileScreen> {
   /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
 
+  /// The selected event.
+  CalendarEvent<Event>? selectedEvent;
+
   @override
   void initState() {
     super.initState();
@@ -49,24 +54,53 @@ class _MobileScreenState extends State<MobileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: CalendarView<Event>(
-        controller: calendarController,
-        eventsController: eventsController,
-        viewConfiguration: currentConfiguration,
-        tileBuilder: _tileBuilder,
-        multiDayTileBuilder: _multiDayTileBuilder,
-        monthTileBuilder: _monthEventTileBuilder,
-        components: CalendarComponents(
-          calendarHeaderBuilder: _calendarHeader,
-        ),
-        eventHandlers: CalendarEventHandlers<Event>(
-          onEventChanged: onEventChanged,
-          onEventTapped: onEventTapped,
-          onCreateEvent: onCreateEvent,
-          onDateTapped: onDateTapped,
+    return Scaffold(
+      body: SafeArea(
+        child: CalendarView<Event>(
+          controller: calendarController,
+          eventsController: eventsController,
+          viewConfiguration: currentConfiguration,
+          tileBuilder: _tileBuilder,
+          multiDayTileBuilder: _multiDayTileBuilder,
+          monthTileBuilder: _monthEventTileBuilder,
+          components: CalendarComponents(
+            calendarHeaderBuilder: _calendarHeader,
+          ),
+          eventHandlers: CalendarEventHandlers<Event>(
+            onEventChanged: onEventChanged,
+            onEventTapped: onEventTapped,
+            onCreateEvent: onCreateEvent,
+            onDateTapped: onDateTapped,
+          ),
         ),
       ),
+      bottomSheet: selectedEvent != null
+          ? SizedBox(
+              height: 100,
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Text(
+                    selectedEvent?.eventData?.title.toString() ?? 'New Event',
+                  ),
+                ],
+              ),
+            )
+          : null,
+    );
+  }
+
+  mainBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return const SizedBox(
+          height: 300.0,
+          child: Center(
+            child: Text("Demo Text"),
+          ),
+        );
+      },
     );
   }
 
@@ -77,38 +111,23 @@ class _MobileScreenState extends State<MobileScreen> {
       color: Colors.blue,
     );
 
-    // Show the new event dialog.
-    CalendarEvent<Event>? event = await showDialog<CalendarEvent<Event>>(
-      context: context,
-      builder: (BuildContext context) {
-        return NewEventDialog(
-          dialogTitle: 'Create Event',
-          event: newEvent,
-        );
-      },
-    );
+    setState(() {
+      selectedEvent = newEvent;
+    });
 
     // return the new event. (if the user cancels the dialog, null is returned)
-    return event;
+    return newEvent;
   }
 
   /// This function is called when an event is tapped.
   Future<void> onEventTapped(event) async {
-    // Make a copy of the event to restore it if the user cancels the changes.
-    CalendarEvent<Event> copyOfEvent = event.copyWith();
-
-    // Show the edit dialog.
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EventEditDialog(
-          dialogTitle: 'Edit Event',
-          event: event,
-          deleteEvent: (event) => eventsController.removeEvent(event),
-          cancelEdit: () => event.repalceWith(event: copyOfEvent),
-        );
-      },
-    );
+    setState(() {
+      if (selectedEvent == event) {
+        selectedEvent = null;
+      } else {
+        selectedEvent = event;
+      }
+    });
   }
 
   /// This function is called when an event is changed.
@@ -116,24 +135,9 @@ class _MobileScreenState extends State<MobileScreen> {
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    // Show the snackbar and undo the changes if the user presses the undo button.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${event.eventData?.title} changed'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            event.dateTimeRange = initialDateTimeRange;
-            eventsController.updateEvent(
-              newEventData: event.eventData,
-              newDateTimeRange: initialDateTimeRange,
-              test: (other) => other.eventData == event.eventData,
-            );
-          },
-        ),
-      ),
-    );
+    setState(() {
+      selectedEvent = event;
+    });
   }
 
   /// This function is called when a date is tapped.

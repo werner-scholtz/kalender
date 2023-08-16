@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';

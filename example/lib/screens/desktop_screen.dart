@@ -90,6 +90,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
       },
     );
 
+    calendarController.adjustHeightPerMinute(2);
+
     // return the new event. (if the user cancels the dialog, null is returned)
     return event;
   }

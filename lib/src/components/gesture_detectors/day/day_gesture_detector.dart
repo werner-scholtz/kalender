@@ -43,7 +43,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   late SlotSize minuteSlotSize;
 
   /// The height of a slot.
-  late double heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+  late double heightPerSlot;
 
   /// The number of slots in a day.
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
@@ -64,6 +64,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
+    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
   }
 
   @override
@@ -74,6 +75,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
+    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
   }
 
   @override
@@ -173,13 +175,13 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     CalendarEvent<T>? newEvent =
         await scope.functions.onCreateEvent?.call(displayEvent);
 
-    if (newEvent == null) {
-      scope.eventsController.chaningEvent = null;
-    } else {
-      scope.eventsController.addEvent(newEvent);
-      scope.eventsController.chaningEvent = null;
-    }
-    scope.eventsController.isNewEvent = false;
+    // if (newEvent == null) {
+    //   scope.eventsController.chaningEvent = null;
+    // } else {
+    //   scope.eventsController.addEvent(newEvent);
+    //   scope.eventsController.chaningEvent = null;
+    // }
+    // scope.eventsController.isNewEvent = false;
   }
 
   void _onVerticalDragStart(
