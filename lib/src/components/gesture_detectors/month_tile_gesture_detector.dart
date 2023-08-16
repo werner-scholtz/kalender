@@ -182,6 +182,7 @@ class _MonthTileGestureDetectorState<T>
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
     controller.chaningEvent = event;
+    scope.functions.onChangeStart?.call(event);
   }
 
   Future<void> _onRescheduleEnd() async {
@@ -221,6 +222,7 @@ class _MonthTileGestureDetectorState<T>
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
     controller.chaningEvent = event;
+    scope.functions.onChangeStart?.call(event);
   }
 
   void _onResizeEnd(DragEndDetails details) async {

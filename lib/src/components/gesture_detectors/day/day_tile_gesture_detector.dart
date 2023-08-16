@@ -265,6 +265,8 @@ class _MobileDayTileGestureDetectorState<T>
     scope.eventsController.isMoving = true;
     scope.eventsController.chaningEvent = event;
     initialDateTimeRange = event.dateTimeRange;
+
+    scope.functions.onChangeStart?.call(event);
   }
 
   Future<void> _onRescheduleEnd() async {
@@ -614,6 +616,8 @@ class _DesktopDayTileGestureDetectorState<T>
     scope.eventsController.isMoving = true;
     scope.eventsController.chaningEvent = event;
     initialDateTimeRange = event.dateTimeRange;
+
+    scope.functions.onChangeStart?.call(event);
   }
 
   Future<void> _onRescheduleEnd() async {
