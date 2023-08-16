@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+///A widget that detects gestures on a multiday tile.
 /// TODO: Create a builder for a [MultiDayTileGestureDetector].
 class MultiDayTileGestureDetector<T> extends StatefulWidget {
   const MultiDayTileGestureDetector({

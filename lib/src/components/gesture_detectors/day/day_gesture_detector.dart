@@ -5,6 +5,7 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// A widget that detects gestures on a day.
 /// TODO: Create a builder for a [DayGestureDetector].
 class DayGestureDetector<T> extends StatefulWidget {
   const DayGestureDetector({
