@@ -172,7 +172,10 @@ class CalendarController<T> with ChangeNotifier {
       'The heightPerMinute must not be null.'
       'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
     );
+    _state?.scrollPhysics = const NeverScrollableScrollPhysics();
     _state?.heightPerMinute?.value = heightPerMinute;
+    notifyListeners();
+    _state?.scrollPhysics = const ScrollPhysics();
     notifyListeners();
   }
 

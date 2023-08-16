@@ -35,6 +35,7 @@ class SingleDayContent<T> extends StatelessWidget {
 
         return Expanded(
           child: SingleChildScrollView(
+            physics: scope.state.scrollPhysics,
             child: Stack(
               children: <Widget>[
                 scope.components.timelineBuilder(

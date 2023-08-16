@@ -26,6 +26,8 @@ class ViewState {
   /// The scrollController of the [CalendarView].
   final ScrollController scrollController;
 
+  ScrollPhysics scrollPhysics = const ScrollPhysics();
+
   /// The height per minute of the [CalendarView].
   /// This is only used in the [SingleDayView] & [MultiDayView].
   final ValueNotifier<double>? heightPerMinute;
