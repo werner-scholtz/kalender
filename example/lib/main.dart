@@ -48,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     eventController = CalendarEventsController<Event>();
+    // Add the events to the controller.
     eventController.addEvents(generateCalendarEvents());
   }
 
