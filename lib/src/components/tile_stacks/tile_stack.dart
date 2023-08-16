@@ -250,28 +250,38 @@ class PositionedTile<T> extends StatelessWidget {
       top: positionedTileData.top,
       width: positionedTileData.width,
       height: positionedTileData.height,
-      child: DayTileGestureDetector<T>(
-        verticalSnapRange: verticalSnapRange,
-        event: positionedTileData.event,
-        horizontalDurationStep: horizontalDurationStep,
-        verticalDurationStep: verticalDurationStep,
-        verticalStep: verticalStep,
-        horizontalStep: horizontalStep,
-        visibleDateTimeRange: visibleDateRange,
-        snapPoints: snapPoints,
-        timelineSnapping: timeIndicatorSnapping,
-        continuesBefore: continuesBefore,
-        continuesAfter: continuesAfter,
-        child: tileBuilder(
-          positionedTileData.event,
-          TileConfiguration(
-            tileType: isMoving ? TileType.ghost : TileType.normal,
-            drawOutline: positionedTileData.drawOutline,
-            continuesBefore: continuesBefore,
-            continuesAfter: continuesAfter,
-          ),
-        ),
-      ),
+      child: isMoving
+          ? tileBuilder(
+              positionedTileData.event,
+              TileConfiguration(
+                tileType: TileType.ghost,
+                drawOutline: positionedTileData.drawOutline,
+                continuesBefore: continuesBefore,
+                continuesAfter: continuesAfter,
+              ),
+            )
+          : DayTileGestureDetector<T>(
+              verticalSnapRange: verticalSnapRange,
+              event: positionedTileData.event,
+              horizontalDurationStep: horizontalDurationStep,
+              verticalDurationStep: verticalDurationStep,
+              verticalStep: verticalStep,
+              horizontalStep: horizontalStep,
+              visibleDateTimeRange: visibleDateRange,
+              snapPoints: snapPoints,
+              timelineSnapping: timeIndicatorSnapping,
+              continuesBefore: continuesBefore,
+              continuesAfter: continuesAfter,
+              child: tileBuilder(
+                positionedTileData.event,
+                TileConfiguration(
+                  tileType: TileType.normal,
+                  drawOutline: positionedTileData.drawOutline,
+                  continuesBefore: continuesBefore,
+                  continuesAfter: continuesAfter,
+                ),
+              ),
+            ),
     );
   }
 

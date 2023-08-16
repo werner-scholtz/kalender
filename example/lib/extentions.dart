@@ -16,4 +16,18 @@ extension DateTimeExtentions on DateTime {
   /// Checks if the [DateTime] is within the [DateTimeRange].
   bool isWithin(DateTimeRange range) =>
       isAfter(range.start) && isBefore(range.end);
+
+  /// Get the format hh:mm
+  String get hoursMinutes {
+    String hours = hour.toString();
+    if (hours.length == 1) {
+      hours = '0$hours';
+    }
+    String minutes = minute.toString();
+    if (minutes.length == 1) {
+      minutes = '0$minutes';
+    }
+
+    return '$hours:$minutes';
+  }
 }

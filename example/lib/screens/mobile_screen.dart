@@ -1,4 +1,5 @@
 import 'package:example/models/event.dart';
+import 'package:example/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:example/widgets/calendar_header_mobile.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:flutter/material.dart';
@@ -71,32 +72,10 @@ class _MobileScreenState extends State<MobileScreen> {
         ),
       ),
       bottomSheet: selectedEvent != null
-          ? SizedBox(
-              height: 100,
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Text(
-                    selectedEvent?.eventData?.title.toString() ?? 'New Event',
-                  ),
-                ],
-              ),
+          ? EventEditSheet(
+              event: selectedEvent!,
             )
           : null,
-    );
-  }
-
-  mainBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const SizedBox(
-          height: 300.0,
-          child: Center(
-            child: Text("Demo Text"),
-          ),
-        );
-      },
     );
   }
 

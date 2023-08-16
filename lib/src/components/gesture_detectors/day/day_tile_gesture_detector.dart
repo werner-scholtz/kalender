@@ -53,7 +53,7 @@ class DayTileGestureDetector<T> extends StatelessWidget {
         horizontalDurationStep: horizontalDurationStep,
         horizontalStep: horizontalStep,
         snapPoints: snapPoints,
-        eventSnapping: timelineSnapping,
+        timeIndicatorSnapping: timelineSnapping,
         continuesBefore: continuesBefore,
         continuesAfter: continuesAfter,
         verticalSnapRange: verticalSnapRange,
@@ -89,7 +89,7 @@ class MobileDayTileGestureDetector<T> extends StatefulWidget {
     required this.horizontalDurationStep,
     required this.horizontalStep,
     required this.snapPoints,
-    required this.eventSnapping,
+    required this.timeIndicatorSnapping,
     required this.continuesBefore,
     required this.continuesAfter,
     required this.verticalSnapRange,
@@ -111,7 +111,7 @@ class MobileDayTileGestureDetector<T> extends StatefulWidget {
 
   final Duration verticalSnapRange;
   final List<DateTime> snapPoints;
-  final bool eventSnapping;
+  final bool timeIndicatorSnapping;
 
   final bool continuesBefore;
   final bool continuesAfter;
@@ -126,7 +126,7 @@ class _MobileDayTileGestureDetectorState<T>
   late CalendarEvent<T> event;
   late DateTimeRange initialDateTimeRange;
   late List<DateTime> snapPoints;
-  late bool timelineSnapping;
+  late bool timeIndicatorSnapping;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
 
@@ -142,6 +142,7 @@ class _MobileDayTileGestureDetectorState<T>
     event = widget.event;
     initialDateTimeRange = event.dateTimeRange;
     snapPoints = widget.snapPoints;
+    timeIndicatorSnapping = widget.timeIndicatorSnapping;
   }
 
   @override
@@ -149,7 +150,7 @@ class _MobileDayTileGestureDetectorState<T>
     super.didUpdateWidget(oldWidget);
     event = widget.event;
     snapPoints = widget.snapPoints;
-    timelineSnapping = widget.eventSnapping;
+    timeIndicatorSnapping = widget.timeIndicatorSnapping;
   }
 
   @override
@@ -306,6 +307,11 @@ class _MobileDayTileGestureDetectorState<T>
         .add(horizontalDurationDelta)
         .add(widget.verticalDurationStep * verticalSteps);
 
+    DateTime now = DateTime.now();
+    if (timeIndicatorSnapping) {
+      snapPoints.add(now);
+    }
+
     // Find the index of the snap point that is within a duration of 15 minutes of the startTime.
     int startIndex = snapPoints.indexWhere(
       (DateTime element) =>
@@ -336,6 +342,10 @@ class _MobileDayTileGestureDetectorState<T>
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange)) {
       scope.eventsController.chaningEvent!.dateTimeRange = newDateTimeRange;
     }
+
+    if (timeIndicatorSnapping) {
+      snapPoints.remove(now);
+    }
   }
 
   void _onVerticalDragStart(DragStartDetails details) {
@@ -363,6 +373,11 @@ class _MobileDayTileGestureDetectorState<T>
       DateTime newStart =
           initialDateTimeRange.start.add(widget.verticalDurationStep * steps);
 
+      DateTime now = DateTime.now();
+      if (timeIndicatorSnapping) {
+        snapPoints.add(now);
+      }
+
       int index = snapPoints.indexWhere(
         (DateTime element) =>
             element.difference(newStart).abs() <= widget.verticalSnapRange,
@@ -379,6 +394,10 @@ class _MobileDayTileGestureDetectorState<T>
       }
 
       currentVerticalSteps = steps;
+
+      if (timeIndicatorSnapping) {
+        snapPoints.remove(now);
+      }
     }
   }
 
@@ -388,6 +407,11 @@ class _MobileDayTileGestureDetectorState<T>
     if (steps != currentVerticalSteps) {
       DateTime newEnd =
           initialDateTimeRange.end.add(widget.verticalDurationStep * steps);
+
+      DateTime now = DateTime.now();
+      if (timeIndicatorSnapping) {
+        snapPoints.add(now);
+      }
 
       int index = snapPoints.indexWhere(
         (DateTime element) =>
@@ -405,6 +429,10 @@ class _MobileDayTileGestureDetectorState<T>
       }
 
       currentVerticalSteps = steps;
+
+      if (timeIndicatorSnapping) {
+        snapPoints.remove(now);
+      }
     }
   }
 }

@@ -162,8 +162,6 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   /// Creates a new event on mobile.
-  /// TODO: Add a way to change the [CalendarEvent] on mobile.
-  ///
   void createNewEventMobile(DateTimeRange dateTimeRange) async {
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
@@ -173,14 +171,6 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.chaningEvent = displayEvent;
 
     await scope.functions.onCreateEvent?.call(displayEvent);
-
-    // if (newEvent == null) {
-    //   scope.eventsController.chaningEvent = null;
-    // } else {
-    //   scope.eventsController.addEvent(newEvent);
-    //   scope.eventsController.chaningEvent = null;
-    // }
-    // scope.eventsController.isNewEvent = false;
   }
 
   void _onVerticalDragStart(

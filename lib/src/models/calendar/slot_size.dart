@@ -7,5 +7,6 @@ class SlotSize {
   /// The number of minutes that this slot represents.
   final int minutes;
 
+  /// The duration of this slot.
   Duration get duration => Duration(minutes: minutes);
 }
