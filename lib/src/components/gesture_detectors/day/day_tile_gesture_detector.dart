@@ -500,6 +500,7 @@ class _DesktopDayTileGestureDetectorState<T>
     event = widget.event;
     initialDateTimeRange = event.dateTimeRange;
     snapPoints = widget.snapPoints;
+    timeIndicatorSnapping = widget.timeIndicatorSnapping;
   }
 
   @override

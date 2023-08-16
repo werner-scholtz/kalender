@@ -80,12 +80,15 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<CalendarEvent<Event>?> onCreateEvent(newEvent) async {
+  Future<CalendarEvent<Event>?> onCreateEvent(
+      CalendarEvent<Event> newEvent) async {
+    // Set the new event's eventData.
     newEvent.eventData = Event(
       title: 'New Event',
       color: Colors.blue,
     );
 
+    // Set the selected event to the new event.
     setState(() {
       selectedEvent = newEvent;
     });
@@ -98,8 +101,10 @@ class _MobileScreenState extends State<MobileScreen> {
   Future<void> onEventTapped(event) async {
     setState(() {
       if (selectedEvent == event) {
+        // If the selected event is tapped again, set the selected event to null.
         selectedEvent = null;
       } else {
+        // Set the selected event to the tapped event.
         selectedEvent = event;
       }
     });
@@ -110,6 +115,7 @@ class _MobileScreenState extends State<MobileScreen> {
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
+    // Set the selected event to the changed event.
     setState(() {
       selectedEvent = event;
     });
