@@ -7,16 +7,14 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class MonthViewContent<T> extends StatelessWidget {
   const MonthViewContent({
     super.key,
-    required this.controller,
     required this.viewConfiguration,
+    required this.controller,
     required this.cellWidth,
   });
 
   final MonthViewConfiguration viewConfiguration;
-
-  final double cellWidth;
-
   final CalendarController<T> controller;
+  final double cellWidth;
 
   @override
   Widget build(BuildContext context) {

@@ -11,14 +11,14 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class SingleDayContent<T> extends StatelessWidget {
   const SingleDayContent({
     super.key,
-    required this.dayWidth,
     required this.viewConfiguration,
     required this.controller,
+    required this.dayWidth,
   });
 
-  final double dayWidth;
   final SingleDayViewConfiguration viewConfiguration;
   final CalendarController<T> controller;
+  final double dayWidth;
 
   @override
   Widget build(BuildContext context) {

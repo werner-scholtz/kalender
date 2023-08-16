@@ -12,15 +12,15 @@ class MultiDayContent<T> extends StatelessWidget {
   const MultiDayContent({
     super.key,
     required this.viewConfiguration,
+    required this.controller,
     required this.pageWidth,
     required this.dayWidth,
-    required this.controller,
   });
 
   final MultiDayViewConfiguration viewConfiguration;
+  final CalendarController<T> controller;
   final double pageWidth;
   final double dayWidth;
-  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
