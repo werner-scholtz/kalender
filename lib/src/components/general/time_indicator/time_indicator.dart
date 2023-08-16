@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -44,7 +45,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     super.initState();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
-    _timer = Timer(const Duration(seconds: 1), setTimer);
+    _timer = Timer(const Duration(seconds: 15), setTimer);
   }
 
   @override
@@ -53,7 +54,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _timer.cancel();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
-    _timer = Timer(const Duration(seconds: 1), setTimer);
+    _timer = Timer(const Duration(seconds: 15), setTimer);
   }
 
   @override
@@ -77,7 +78,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     if (mounted) {
       setState(() {
         _currentDate = DateTime.now();
-        _timer = Timer(const Duration(seconds: 1), setTimer);
+        _timer = Timer(const Duration(seconds: 15), setTimer);
+        log(_currentDate.toString());
       });
     }
   }
@@ -85,8 +87,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: _left,
-      top: _top,
+      left: left,
+      top: top,
       child: SizedBox(
         width: widget.width + circleRadius / 2,
         height: circleRadius,
@@ -117,13 +119,13 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     );
   }
 
-  double get _top {
+  double get top {
     double heightPerMinute = widget.heightPerMinute;
     int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
-    return minutes * heightPerMinute - (circleRadius * heightPerMinute);
+    return minutes * heightPerMinute - (circleRadius * heightPerMinute) / 2;
   }
 
-  double get _left {
+  double get left {
     return (_visibleDateRange.start.startOfDay
                 .difference(_currentDate)
                 .inDays

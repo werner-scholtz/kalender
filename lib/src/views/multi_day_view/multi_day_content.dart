@@ -154,7 +154,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                 pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
-                                viewConfiguration.timelineWidth,
+                                viewConfiguration.hourlineTimelineOverlap,
                               ),
                           ],
                         );
