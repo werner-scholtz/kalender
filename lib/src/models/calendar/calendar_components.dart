@@ -144,14 +144,12 @@ class CalendarComponents {
 
   Widget _defaultTimeIndicatorBuilder(
     double timeIndicatorWidth,
-    double areaHeight,
     DateTimeRange visibleDateRange,
     double heightPerMinute,
     double timelineWidth,
   ) {
     return TimeIndicator(
       width: timeIndicatorWidth,
-      height: areaHeight,
       visibleDateRange: visibleDateRange,
       heightPerMinute: heightPerMinute,
       timelineWidth: timelineWidth,

@@ -151,7 +151,6 @@ class MultiDayContent<T> extends StatelessWidget {
                             if (DateTime.now().isWithin(pageVisibleDateRange))
                               scope.components.timeIndicatorBuilder(
                                 dayWidth,
-                                pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
                                 viewConfiguration.hourlineTimelineOverlap,

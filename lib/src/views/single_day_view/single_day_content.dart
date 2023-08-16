@@ -145,7 +145,6 @@ class SingleDayContent<T> extends StatelessWidget {
                             if (DateTime.now().isWithin(pageVisibleDateRange))
                               scope.components.timeIndicatorBuilder(
                                 dayWidth,
-                                pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
                                 viewConfiguration.hourlineTimelineOverlap,

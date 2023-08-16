@@ -8,7 +8,6 @@ class TimeIndicator extends StatefulWidget {
   const TimeIndicator({
     super.key,
     required this.width,
-    required this.height,
     required this.visibleDateRange,
     required this.heightPerMinute,
     required this.timelineWidth,
@@ -16,9 +15,6 @@ class TimeIndicator extends StatefulWidget {
 
   /// Width of indicator
   final double width;
-
-  /// Height of the display area.
-  final double height;
 
   /// The width of the timeline.
   final double timelineWidth;

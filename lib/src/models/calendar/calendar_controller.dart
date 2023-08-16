@@ -172,10 +172,7 @@ class CalendarController<T> with ChangeNotifier {
       'The heightPerMinute must not be null.'
       'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
     );
-    _state?.scrollPhysics = const NeverScrollableScrollPhysics();
     _state?.heightPerMinute?.value = heightPerMinute;
-    notifyListeners();
-    _state?.scrollPhysics = const ScrollPhysics();
     notifyListeners();
   }
 
@@ -203,5 +200,17 @@ class CalendarController<T> with ChangeNotifier {
       );
     }
     notifyListeners();
+  }
+
+  /// Locks the vertical scroll of the current view.
+  void lockScrollPhyscis() {
+    _state?.scrollPhysics = const NeverScrollableScrollPhysics();
+  }
+
+  /// Unlocks the vertical scroll of the current view.
+  void unlockScrollPhysics({
+    ScrollPhysics? scrollPhysics,
+  }) {
+    _state?.scrollPhysics = scrollPhysics ?? const ScrollPhysics();
   }
 }
