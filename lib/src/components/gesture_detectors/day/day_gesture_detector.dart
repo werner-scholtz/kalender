@@ -172,8 +172,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = true;
     scope.eventsController.chaningEvent = displayEvent;
 
-    CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(displayEvent);
+    await scope.functions.onCreateEvent?.call(displayEvent);
 
     // if (newEvent == null) {
     //   scope.eventsController.chaningEvent = null;

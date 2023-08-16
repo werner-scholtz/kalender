@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:example/layout_controllers/day_layout_controller.dart';
+import 'package:example/widgets/keyboard_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header_desktop.dart';
@@ -50,24 +53,31 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarView<Event>(
+    return CalendarKeyboardDetector(
+      onZoom: (heightPerMinute) {
+        log(heightPerMinute.toString());
+        calendarController.adjustHeightPerMinute(heightPerMinute);
+      },
       controller: calendarController,
-      eventsController: eventsController,
-      viewConfiguration: currentConfiguration,
-      tileBuilder: _tileBuilder,
-      multiDayTileBuilder: _multiDayTileBuilder,
-      monthTileBuilder: _monthEventTileBuilder,
-      components: CalendarComponents(
-        calendarHeaderBuilder: _calendarHeaderBuilder,
-      ),
-      layoutControllers: CalendarLayoutControllers(
-        dayTileLayoutController: _dayTileLayoutController,
-      ),
-      eventHandlers: CalendarEventHandlers<Event>(
-        onEventChanged: onEventChanged,
-        onEventTapped: onEventTapped,
-        onCreateEvent: onCreateEvent,
-        onDateTapped: onDateTapped,
+      child: CalendarView<Event>(
+        controller: calendarController,
+        eventsController: eventsController,
+        viewConfiguration: currentConfiguration,
+        tileBuilder: _tileBuilder,
+        multiDayTileBuilder: _multiDayTileBuilder,
+        monthTileBuilder: _monthEventTileBuilder,
+        components: CalendarComponents(
+          calendarHeaderBuilder: _calendarHeaderBuilder,
+        ),
+        layoutControllers: CalendarLayoutControllers(
+          dayTileLayoutController: _dayTileLayoutController,
+        ),
+        eventHandlers: CalendarEventHandlers<Event>(
+          onEventChanged: onEventChanged,
+          onEventTapped: onEventTapped,
+          onCreateEvent: onCreateEvent,
+          onDateTapped: onDateTapped,
+        ),
       ),
     );
   }

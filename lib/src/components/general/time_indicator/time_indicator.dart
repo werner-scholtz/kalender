@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -38,6 +37,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   late Timer _timer;
   late DateTime _currentDate;
   late DateTimeRange _visibleDateRange;
+  late double _heightPerMinute;
   double circleRadius = 9;
 
   @override
@@ -45,6 +45,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     super.initState();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
+    _heightPerMinute = widget.heightPerMinute;
     _timer = Timer(const Duration(seconds: 15), setTimer);
   }
 
@@ -54,6 +55,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _timer.cancel();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
+    _heightPerMinute = widget.heightPerMinute;
     _timer = Timer(const Duration(seconds: 15), setTimer);
   }
 
@@ -79,7 +81,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
       setState(() {
         _currentDate = DateTime.now();
         _timer = Timer(const Duration(seconds: 15), setTimer);
-        log(_currentDate.toString());
       });
     }
   }
@@ -120,9 +121,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   }
 
   double get top {
-    double heightPerMinute = widget.heightPerMinute;
     int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
-    return minutes * heightPerMinute - (circleRadius * heightPerMinute) / 2;
+    return minutes * _heightPerMinute - (circleRadius * _heightPerMinute) / 2;
   }
 
   double get left {
