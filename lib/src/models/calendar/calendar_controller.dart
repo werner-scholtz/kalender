@@ -56,16 +56,16 @@ class CalendarController<T> with ChangeNotifier {
   /// Animates to the next page.
   ///
   /// The [duration] and [curve] can be provided to customize the animation.
-  void animateToNextPage({
+  Future<void> animateToNextPage({
     Duration? duration,
     Curve? curve,
-  }) {
+  }) async {
     assert(
       _state != null,
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
-    _state?.pageController.nextPage(
+    await _state?.pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
@@ -75,16 +75,16 @@ class CalendarController<T> with ChangeNotifier {
   /// Animates to the previous page.
   ///
   /// The [duration] and [curve] can be provided to customize the animation.
-  void animateToPreviousPage({
+  Future<void> animateToPreviousPage({
     Duration? duration,
     Curve? curve,
-  }) {
+  }) async {
     assert(
       _state != null,
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
-    _state?.pageController.previousPage(
+    await _state?.pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
