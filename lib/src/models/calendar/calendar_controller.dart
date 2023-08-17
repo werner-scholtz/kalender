@@ -48,6 +48,9 @@ class CalendarController<T> with ChangeNotifier {
   /// The visible month of the current view.
   DateTime? get visibleMonth => _state?.month;
 
+  /// The visible year of the current view.
+  DateTime? get visibleYear => _state?.year;
+
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {
     _state = viewState;
