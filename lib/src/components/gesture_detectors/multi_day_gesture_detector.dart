@@ -112,9 +112,9 @@ class _MultiDayGestureDetectorState<T>
                           createNewEvents ? _onHorizontalDragEnd : null,
                     ),
                   ),
-                )
+                ),
             ],
-          )
+          ),
       ],
     );
   }

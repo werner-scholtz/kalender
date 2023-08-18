@@ -42,7 +42,7 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
                     continuesAfter: arragnedEvent.continuesAfter,
                   ),
                 ),
-              )
+              ),
             ],
           ),
         );

@@ -149,7 +149,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                 pageVisibleDateRange,
                                 heightPerMinute,
                                 viewConfiguration.hourlineTimelineOverlap,
-                              )
+                              ),
                           ],
                         );
                       },
