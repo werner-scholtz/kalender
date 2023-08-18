@@ -3,7 +3,7 @@ name: Web Demo
 on:
   push:
     branches:
-      - main
+      - web_demo
 
 permissions:
   contents: write
