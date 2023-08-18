@@ -124,10 +124,7 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 /// );
 /// '''
 /// {@end-tool}
-///
-///
-///
-class CalendarView<T> extends StatefulWidget {
+class CalendarView<T> extends StatelessWidget {
   const CalendarView({
     super.key,
     required this.controller,
@@ -241,71 +238,49 @@ class CalendarView<T> extends StatefulWidget {
   final MonthTileBuilder<T>? monthTileBuilder;
 
   @override
-  State<CalendarView<T>> createState() => _CalendarViewState<T>();
-}
-
-class _CalendarViewState<T> extends State<CalendarView<T>> {
-  late ViewConfiguration _viewConfiguration;
-
-  @override
-  void initState() {
-    super.initState();
-    _viewConfiguration = widget.viewConfiguration;
-  }
-
-  @override
-  void didUpdateWidget(covariant CalendarView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.viewConfiguration != oldWidget.viewConfiguration) {
-      _viewConfiguration = widget.viewConfiguration;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_viewConfiguration is SingleDayViewConfiguration) {
+    if (viewConfiguration is SingleDayViewConfiguration) {
       return SingleDayView<T>(
-        controller: widget.controller,
-        eventsController: widget.eventsController,
-        tileBuilder: widget.tileBuilder!,
-        multiDayTileBuilder: widget.multiDayTileBuilder!,
-        components: widget.components,
-        functions: widget.eventHandlers,
+        controller: controller,
+        eventsController: eventsController,
+        tileBuilder: tileBuilder!,
+        multiDayTileBuilder: multiDayTileBuilder!,
+        components: components,
+        functions: eventHandlers,
         singleDayViewConfiguration:
-            _viewConfiguration as SingleDayViewConfiguration,
-        style: widget.style,
-        layoutControllers: widget.layoutControllers,
+            viewConfiguration as SingleDayViewConfiguration,
+        style: style,
+        layoutControllers: layoutControllers,
       );
     }
 
-    if (_viewConfiguration is MultiDayViewConfiguration) {
+    if (viewConfiguration is MultiDayViewConfiguration) {
       return MultiDayView<T>(
-        controller: widget.controller,
-        eventsController: widget.eventsController,
-        tileBuilder: widget.tileBuilder!,
-        multiDayTileBuilder: widget.multiDayTileBuilder!,
-        components: widget.components,
-        functions: widget.eventHandlers,
+        controller: controller,
+        eventsController: eventsController,
+        tileBuilder: tileBuilder!,
+        multiDayTileBuilder: multiDayTileBuilder!,
+        components: components,
+        functions: eventHandlers,
         multiDayViewConfiguration:
-            _viewConfiguration as MultiDayViewConfiguration,
-        style: widget.style,
-        layoutControllers: widget.layoutControllers,
+            viewConfiguration as MultiDayViewConfiguration,
+        style: style,
+        layoutControllers: layoutControllers,
       );
     }
 
-    if (_viewConfiguration is MonthViewConfiguration) {
+    if (viewConfiguration is MonthViewConfiguration) {
       return MonthView<T>(
-        controller: widget.controller,
-        eventsController: widget.eventsController,
-        monthTileBuilder: widget.monthTileBuilder!,
-        components: widget.components,
-        functions: widget.eventHandlers,
-        monthViewConfiguration: _viewConfiguration as MonthViewConfiguration,
-        style: widget.style,
-        layoutControllers: widget.layoutControllers,
+        controller: controller,
+        eventsController: eventsController,
+        monthTileBuilder: monthTileBuilder!,
+        components: components,
+        functions: eventHandlers,
+        monthViewConfiguration: viewConfiguration as MonthViewConfiguration,
+        style: style,
+        layoutControllers: layoutControllers,
       );
     }
-
     return Container();
   }
 }

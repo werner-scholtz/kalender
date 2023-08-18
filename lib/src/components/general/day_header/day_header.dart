@@ -19,28 +19,34 @@ class DayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     DayHeaderStyle? dayHeaderStyle =
         CalendarStyleProvider.of(context).style.dayHeaderStyle;
-    return Padding(
-      padding:
-          dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            DateText(
-              date: date,
-              textStyle: dayHeaderStyle?.textStyle ??
-                  Theme.of(context).textTheme.bodySmall,
-              upperCase: dayHeaderStyle?.useUpperCase ?? false,
-            ),
-            RepaintBoundary(
-              child: DateIconButton(
+    return Container(
+      decoration: BoxDecoration(
+        color: dayHeaderStyle?.backgroundColor,
+        borderRadius: dayHeaderStyle?.borderRadius,
+      ),
+      child: Padding(
+        padding:
+            dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              DateText(
                 date: date,
-                onTapped: (DateTime date) => onTapped?.call(date),
-                textStyle: dayHeaderStyle?.buttonTextStyle ??
-                    Theme.of(context).textTheme.bodyLarge,
-                visualDensity: dayHeaderStyle?.buttonVisualDensity,
+                textStyle: dayHeaderStyle?.textStyle ??
+                    Theme.of(context).textTheme.bodySmall,
+                upperCase: dayHeaderStyle?.useUpperCase ?? false,
               ),
-            ),
-          ],
+              RepaintBoundary(
+                child: DateIconButton(
+                  date: date,
+                  onTapped: (DateTime date) => onTapped?.call(date),
+                  textStyle: dayHeaderStyle?.buttonTextStyle ??
+                      Theme.of(context).textTheme.bodyLarge,
+                  visualDensity: dayHeaderStyle?.buttonVisualDensity,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

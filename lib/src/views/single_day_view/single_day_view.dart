@@ -125,6 +125,11 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       }
       _controller.attach(_viewState);
     }
+
+    if (_layoutControllers != widget.layoutControllers) {
+      _layoutControllers =
+          widget.layoutControllers ?? CalendarLayoutControllers<T>();
+    }
   }
 
   void _initializeViewState() {

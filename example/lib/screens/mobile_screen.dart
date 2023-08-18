@@ -1,7 +1,7 @@
 import 'package:example/models/event.dart';
 import 'package:example/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:example/widgets/calendar_header_mobile.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
+import 'package:example/widgets/components/calendar_header_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 

@@ -89,4 +89,16 @@ class CalendarLayoutControllers<T> {
 
   @override
   int get hashCode => Object.hash(dayTileLayoutController, 1);
+
+  CalendarLayoutControllers<T> copyWith({
+    DayLayoutController<T>? dayTileLayoutController,
+    MultiDayLayoutController<T>? multiDayTileLayoutController,
+    MonthLayoutController<T>? monthTileLayoutController,
+  }) {
+    return CalendarLayoutControllers<T>(
+      dayTileLayoutController: dayTileLayoutController,
+      multiDayTileLayoutController: multiDayTileLayoutController,
+      monthTileLayoutController: monthTileLayoutController,
+    );
+  }
 }

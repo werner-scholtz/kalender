@@ -18,12 +18,18 @@ class MonthCellHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarStyle style = CalendarStyleProvider.of(context).style;
-    return DateIconButton(
-      date: date,
-      onTapped: (DateTime date) => onTapped?.call(date),
-      visualDensity:
-          style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
-      textStyle: style.monthCellHeaderStyle?.textStyle,
+    return Container(
+      decoration: BoxDecoration(
+        color: style.monthCellHeaderStyle?.backgroundColor,
+        borderRadius: style.monthCellHeaderStyle?.borderRadius,
+      ),
+      child: DateIconButton(
+        date: date,
+        onTapped: (DateTime date) => onTapped?.call(date),
+        visualDensity:
+            style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
+        textStyle: style.monthCellHeaderStyle?.textStyle,
+      ),
     );
   }
 }

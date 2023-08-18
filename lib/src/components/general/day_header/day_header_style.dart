@@ -8,6 +8,8 @@ class DayHeaderStyle {
     this.buttonVisualDensity,
     this.useUpperCase,
     this.padding,
+    this.backgroundColor,
+    this.borderRadius,
   });
 
   /// The [TextStyle] used by the [DateText] widget to display the day of the week.
@@ -24,4 +26,10 @@ class DayHeaderStyle {
 
   /// The padding around the [DayHeader] widget.
   final EdgeInsets? padding;
+
+  /// The background color of the [DayHeader] widget.
+  final Color? backgroundColor;
+
+  /// The border radius of the [DayHeader] widget.
+  final BorderRadius? borderRadius;
 }

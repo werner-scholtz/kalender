@@ -24,7 +24,7 @@ class CalendarHeaderBackground extends StatelessWidget {
               .style
               .calendarHeaderBackgroundStyle
               ?.headerElevation ??
-          4,
+          2,
       child: child,
     );
   }

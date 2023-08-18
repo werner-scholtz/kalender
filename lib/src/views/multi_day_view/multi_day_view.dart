@@ -125,6 +125,11 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       // _controller.detach();
       _controller.attach(_viewState);
     }
+
+    if (_layoutControllers != widget.layoutControllers) {
+      _layoutControllers =
+          widget.layoutControllers ?? CalendarLayoutControllers<T>();
+    }
   }
 
   void _initializeViewState() {

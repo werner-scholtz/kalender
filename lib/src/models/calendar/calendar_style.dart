@@ -76,7 +76,8 @@ class CalendarStyle {
         other.timeIndicatorStyle == timeIndicatorStyle &&
         other.timelineStyle == timelineStyle &&
         other.weekNumberStyle == weekNumberStyle &&
-        other.monthCellHeaderStyle == monthCellHeaderStyle;
+        other.monthCellHeaderStyle == monthCellHeaderStyle &&
+        other.monthGridStyle == monthGridStyle;
   }
 
   @override
@@ -91,5 +92,35 @@ class CalendarStyle {
         timelineStyle,
         weekNumberStyle,
         monthCellHeaderStyle,
+        monthGridStyle,
       );
+
+  CalendarStyle copyWith({
+    CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle,
+    DaySeperatorStyle? daySeperatorStyle,
+    HourLineStyle? hourLineStyle,
+    DayHeaderStyle? dayHeaderStyle,
+    MonthHeaderStyle? monthHeaderStyle,
+    TimeIndicatorStyle? timeIndicatorStyle,
+    TimelineStyle? timelineStyle,
+    WeekNumberStyle? weekNumberStyle,
+    MonthCellHeaderStyle? monthCellHeaderStyle,
+    MonthGridStyle? monthGridStyle,
+    MonthCellsStyle? monthCellsStyle,
+  }) {
+    return CalendarStyle(
+      calendarHeaderBackgroundStyle:
+          calendarHeaderBackgroundStyle ?? this.calendarHeaderBackgroundStyle,
+      daySeperatorStyle: daySeperatorStyle ?? this.daySeperatorStyle,
+      hourLineStyle: hourLineStyle ?? this.hourLineStyle,
+      dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
+      monthHeaderStyle: monthHeaderStyle ?? this.monthHeaderStyle,
+      timeIndicatorStyle: timeIndicatorStyle ?? this.timeIndicatorStyle,
+      timelineStyle: timelineStyle ?? this.timelineStyle,
+      weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
+      monthCellHeaderStyle: monthCellHeaderStyle ?? this.monthCellHeaderStyle,
+      monthGridStyle: monthGridStyle ?? this.monthGridStyle,
+      monthCellsStyle: monthCellsStyle ?? this.monthCellsStyle,
+    );
+  }
 }
