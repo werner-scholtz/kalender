@@ -5,10 +5,9 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-Destop           |  Mobile
-:-------------------------:|:-------------------------:
-<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="75%"/>  | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_features.gif" width="75%"/>
- 
+<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="100%"/> 
+
+* **Mobile & Desktop** - This package is compatible with mobile and desktop.
 
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
