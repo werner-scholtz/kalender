@@ -5,24 +5,13 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
+<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="75%" height="75%"/>
+
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
-  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_views.png" width="100%" height="100%"/>
-  
-  (desktop)
+* **Reschedule** - Drag and Drop events to your liking. [Try it out](https://werner-scholtz.github.io/kalender/)
 
-
-  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_views.png" width="90%" height="90%"/>
-
-  (mobile)
-
-*  **Reschedule** - Drag and Drop events to your liking.
-
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/drag_and_drop.gif" width="75%" height="75%"/>
-
-* **Resize** - Resize events by dragging the edges of an event.
-
-    <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/resize.gif" width="75%" height="75%"/>
+* **Resize** - Resize events by dragging the edges of an event. [Try it out](https://werner-scholtz.github.io/kalender/)
 
 * **Event Handeling** - When a there is interaction with a tile or component the event can be handeled by you. [Find out more](#event-handling)
 

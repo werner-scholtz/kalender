@@ -97,206 +97,206 @@ class _DesktopScreenState extends State<DesktopScreen> {
             ),
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: ListView(
-            children: [
-              ListTile(
-                title: const Text('Theme'),
-                trailing: IconButton.filledTonal(
-                  onPressed: () => MyApp.of(context)!.toggleTheme(),
-                  icon: Icon(
-                    MyApp.of(context)!.themeMode == ThemeMode.dark
-                        ? Icons.brightness_2_rounded
-                        : Icons.brightness_7_rounded,
-                  ),
-                ),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Custom Layout Controller'),
-                value: customLayoutController,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    layoutControllers = layoutControllers.copyWith(
-                      dayTileLayoutController:
-                          value ? _dayTileLayoutController : null,
-                    );
-                    customLayoutController = value;
-                  });
-                },
-              ),
-              const Divider(),
-              const ListTile(
-                title: Text('Highlight Components'),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Calendar Header'),
-                value: highlightCalendarHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      calendarHeaderBackgroundStyle:
-                          CalendarHeaderBackgroundStyle(
-                        headerElevation: 5,
-                        headerBackgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                      ),
-                    );
-                    highlightCalendarHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Day Seperator'),
-                value: highlightDaySeperator,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      daySeperatorStyle: DaySeperatorStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlightDaySeperator = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Hour Lines'),
-                value: highlighthourLine,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      hourLineStyle: HourLineStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlighthourLine = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Day Header'),
-                value: highlightDayHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      dayHeaderStyle: DayHeaderStyle(
-                        backgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    );
-                    highlightDayHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Time Indicator'),
-                value: highlightTimeIndicator,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      timeIndicatorStyle: TimeIndicatorStyle(
-                        color: value ? Colors.greenAccent : null,
-                      ),
-                    );
-                    highlightTimeIndicator = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Header'),
-                value: highlightMonthHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                        monthHeaderStyle: MonthHeaderStyle(
-                            textStyle: TextStyle(
-                      color: value ? highlightColor : null,
-                    )));
-                    highlightMonthHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Cell Header'),
-                value: highlightMonthCellHeaders,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      monthCellHeaderStyle: MonthCellHeaderStyle(
-                        backgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    );
-                    highlightMonthCellHeaders = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Grid'),
-                value: highlightMonthGrid,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      monthGridStyle: MonthGridStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlightMonthGrid = value;
-                  });
-                },
-              ),
-              const Divider(),
-              const ListTile(
-                title: Text('Change Components'),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Timeline'),
-                value: highlightTimeline,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      timelineStyle: TimelineStyle(
-                        use24HourFormat: !value,
-                      ),
-                    );
-                    highlightTimeline = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Week Number'),
-                value: highlightWeekNumber,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      weekNumberStyle: WeekNumberStyle(
-                        visualDensity: value ? VisualDensity.comfortable : null,
-                        textStyle: TextStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    );
-                    highlightWeekNumber = value;
-                  });
-                },
-              ),
-            ],
-          ),
-        )
+        // Expanded(
+        //   flex: 1,
+        //   child: ListView(
+        //     children: [
+        //       ListTile(
+        //         title: const Text('Theme'),
+        //         trailing: IconButton.filledTonal(
+        //           onPressed: () => MyApp.of(context)!.toggleTheme(),
+        //           icon: Icon(
+        //             MyApp.of(context)!.themeMode == ThemeMode.dark
+        //                 ? Icons.brightness_2_rounded
+        //                 : Icons.brightness_7_rounded,
+        //           ),
+        //         ),
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Custom Layout Controller'),
+        //         value: customLayoutController,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             layoutControllers = layoutControllers.copyWith(
+        //               dayTileLayoutController:
+        //                   value ? _dayTileLayoutController : null,
+        //             );
+        //             customLayoutController = value;
+        //           });
+        //         },
+        //       ),
+        //       const Divider(),
+        //       const ListTile(
+        //         title: Text('Highlight Components'),
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Calendar Header'),
+        //         value: highlightCalendarHeader,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               calendarHeaderBackgroundStyle:
+        //                   CalendarHeaderBackgroundStyle(
+        //                 headerElevation: 5,
+        //                 headerBackgroundColor:
+        //                     value ? highlightColor.withAlpha(100) : null,
+        //               ),
+        //             );
+        //             highlightCalendarHeader = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Day Seperator'),
+        //         value: highlightDaySeperator,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               daySeperatorStyle: DaySeperatorStyle(
+        //                 color: value ? highlightColor : null,
+        //               ),
+        //             );
+        //             highlightDaySeperator = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Hour Lines'),
+        //         value: highlighthourLine,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               hourLineStyle: HourLineStyle(
+        //                 color: value ? highlightColor : null,
+        //               ),
+        //             );
+        //             highlighthourLine = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Day Header'),
+        //         value: highlightDayHeader,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               dayHeaderStyle: DayHeaderStyle(
+        //                 backgroundColor:
+        //                     value ? highlightColor.withAlpha(100) : null,
+        //                 borderRadius: BorderRadius.circular(16),
+        //               ),
+        //             );
+        //             highlightDayHeader = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Time Indicator'),
+        //         value: highlightTimeIndicator,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               timeIndicatorStyle: TimeIndicatorStyle(
+        //                 color: value ? Colors.greenAccent : null,
+        //               ),
+        //             );
+        //             highlightTimeIndicator = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Month Header'),
+        //         value: highlightMonthHeader,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //                 monthHeaderStyle: MonthHeaderStyle(
+        //                     textStyle: TextStyle(
+        //               color: value ? highlightColor : null,
+        //             )));
+        //             highlightMonthHeader = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Month Cell Header'),
+        //         value: highlightMonthCellHeaders,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               monthCellHeaderStyle: MonthCellHeaderStyle(
+        //                 backgroundColor:
+        //                     value ? highlightColor.withAlpha(100) : null,
+        //                 borderRadius: BorderRadius.circular(16),
+        //               ),
+        //             );
+        //             highlightMonthCellHeaders = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Month Grid'),
+        //         value: highlightMonthGrid,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               monthGridStyle: MonthGridStyle(
+        //                 color: value ? highlightColor : null,
+        //               ),
+        //             );
+        //             highlightMonthGrid = value;
+        //           });
+        //         },
+        //       ),
+        //       const Divider(),
+        //       const ListTile(
+        //         title: Text('Change Components'),
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Timeline'),
+        //         value: highlightTimeline,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               timelineStyle: TimelineStyle(
+        //                 use24HourFormat: !value,
+        //               ),
+        //             );
+        //             highlightTimeline = value;
+        //           });
+        //         },
+        //       ),
+        //       CheckboxListTile.adaptive(
+        //         title: const Text('Week Number'),
+        //         value: highlightWeekNumber,
+        //         onChanged: (value) {
+        //           if (value == null) return;
+        //           setState(() {
+        //             style = style.copyWith(
+        //               weekNumberStyle: WeekNumberStyle(
+        //                 visualDensity: value ? VisualDensity.comfortable : null,
+        //                 textStyle: TextStyle(
+        //                   color: value ? highlightColor : null,
+        //                 ),
+        //               ),
+        //             );
+        //             highlightWeekNumber = value;
+        //           });
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // )
       ],
     );
   }
@@ -345,23 +345,23 @@ class _DesktopScreenState extends State<DesktopScreen> {
   /// This function is called when an event is changed.
   Future<void> onEventChanged(
       initialDateTimeRange, CalendarEvent<Event> event) async {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    // Show the snackbar and undo the changes if the user presses the undo button.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${event.eventData?.title} changed'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            eventsController.updateEvent(
-              newEventData: event.eventData,
-              newDateTimeRange: initialDateTimeRange,
-              test: (other) => other.eventData == event.eventData,
-            );
-          },
-        ),
-      ),
-    );
+    // ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // // Show the snackbar and undo the changes if the user presses the undo button.
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text('${event.eventData?.title} changed'),
+    //     action: SnackBarAction(
+    //       label: 'Undo',
+    //       onPressed: () {
+    //         eventsController.updateEvent(
+    //           newEventData: event.eventData,
+    //           newDateTimeRange: initialDateTimeRange,
+    //           test: (other) => other.eventData == event.eventData,
+    //         );
+    //       },
+    //     ),
+    //   ),
+    // );
   }
 
   /// This function is called when a date is tapped.
