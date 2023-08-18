@@ -7,5 +7,5 @@ export 'package:kalender/src/components/general/month_cells/month_cells_style.da
 export 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
 export 'package:kalender/src/components/general/month_header/month_header_style.dart';
 export 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
-export 'package:kalender/src/components/general/time_line/time_line_style.dart';
+export 'package:kalender/src/components/general/time_line/timeline_style.dart';
 export 'package:kalender/src/components/general/week_number/week_number_style.dart';

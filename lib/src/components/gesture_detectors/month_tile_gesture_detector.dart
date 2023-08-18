@@ -5,6 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// A widget that detects gestures on a month tile.
 /// TODO: Create a builder for a [MonthTileGestureDetector].
 class MonthTileGestureDetector<T> extends StatefulWidget {
   const MonthTileGestureDetector({
@@ -62,7 +63,7 @@ class _MonthTileGestureDetectorState<T>
   int currentHorizontalSteps = 0;
 
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.modifyable;
+  bool get modifyable => event.canModify;
   bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   @override
@@ -181,6 +182,7 @@ class _MonthTileGestureDetectorState<T>
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
     controller.chaningEvent = event;
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   Future<void> _onRescheduleEnd() async {
@@ -220,6 +222,7 @@ class _MonthTileGestureDetectorState<T>
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
     controller.chaningEvent = event;
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   void _onResizeEnd(DragEndDetails details) async {

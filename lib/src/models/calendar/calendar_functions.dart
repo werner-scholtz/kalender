@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-/// TODO: add on drag start function.
-
-/// The [CalendarEventHandlers] class contains the functions that are called when:
+/// The [CalendarEventHandlers] class contains the functions that are called by the calendar view.
 ///  * an event is changed, tapped, or created
 ///  * when a date is tapped.
 class CalendarEventHandlers<T> {
@@ -12,9 +10,13 @@ class CalendarEventHandlers<T> {
     this.onEventTapped,
     this.onCreateEvent,
     this.onDateTapped,
+    this.onEventChangeStart,
   });
 
-  /// The [Function] called when the event is changed.
+  /// The [Function] called before the event is changed.
+  final void Function(CalendarEvent<T> event)? onEventChangeStart;
+
+  /// The [Function] called after the event is changed.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
   final Future<void> Function(
@@ -25,16 +27,21 @@ class CalendarEventHandlers<T> {
   /// The [Function] called when the event is tapped.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<void> Function(CalendarEvent<T> event)? onEventTapped;
+  final Future<void> Function(
+    CalendarEvent<T> event,
+  )? onEventTapped;
 
   /// The [Function] called when an event is created.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<CalendarEvent<T>?> Function(CalendarEvent<T> newEvent)?
-      onCreateEvent;
+  final Future<CalendarEvent<T>?> Function(
+    CalendarEvent<T> newEvent,
+  )? onCreateEvent;
 
   /// The [Function] called when the event is tapped.
-  final void Function(DateTime date)? onDateTapped;
+  final void Function(
+    DateTime date,
+  )? onDateTapped;
 
   @override
   operator ==(Object other) {

@@ -47,7 +47,6 @@ typedef WeekNumberBuilder<T extends Object?> = Widget Function(
 /// The [TimeIndicatorBuilder] is used to build the time indicator displayed on current day.
 typedef TimeIndicatorBuilder = Widget Function(
   double timeIndicatorWidth,
-  double areaHeight,
   DateTimeRange visibleDateRange,
   double heightPerMinute,
   double timelineWidth,
@@ -111,6 +110,9 @@ typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
   DateTime date,
 );
 
+/// The [DayLayoutController] is used to calculate the layout of the tiles displayed on a day.
+///
+/// The typedef is used to create a function that returns a [DayTileLayoutController].
 typedef DayLayoutController<T extends Object?> = DayTileLayoutController<T>
     Function({
   required DateTimeRange visibleDateRange,
@@ -120,6 +122,9 @@ typedef DayLayoutController<T extends Object?> = DayTileLayoutController<T>
   required double dayWidth,
 });
 
+/// The [MultiDayLayoutController] is used to calculate the layout of the tiles displayed on a day.
+///
+/// The typedef is used to create a function that returns a [MultiDayTileLayoutController].
 typedef MultiDayLayoutController<T extends Object?>
     = MultiDayTileLayoutController<T> Function({
   required DateTimeRange visibleDateRange,
@@ -129,6 +134,9 @@ typedef MultiDayLayoutController<T extends Object?>
   required bool isMultidayView,
 });
 
+/// The [MonthLayoutController] is used to calculate the layout of the tiles displayed on a day.
+///
+/// The typedef is used to create a function that returns a [MonthTileLayoutController].
 typedef MonthLayoutController<T extends Object?> = MonthTileLayoutController<T>
     Function({
   required DateTimeRange visibleDateRange,

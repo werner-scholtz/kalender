@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [MonthGridStyle] class is used by the [MonthGrid] widget.
 class MonthGridStyle {
   const MonthGridStyle({
     this.color,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
@@ -12,15 +12,15 @@ class MultiDayContent<T> extends StatelessWidget {
   const MultiDayContent({
     super.key,
     required this.viewConfiguration,
+    required this.controller,
     required this.pageWidth,
     required this.dayWidth,
-    required this.controller,
   });
 
   final MultiDayViewConfiguration viewConfiguration;
+  final CalendarController<T> controller;
   final double pageWidth;
   final double dayWidth;
-  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,7 @@ class MultiDayContent<T> extends StatelessWidget {
 
         return Expanded(
           child: SingleChildScrollView(
+            physics: scope.state.scrollPhysics,
             child: Stack(
               children: <Widget>[
                 scope.components.timelineBuilder(
@@ -109,20 +110,21 @@ class MultiDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: pageWidth,
-                                height: pageHeight,
-                                child: DayGestureDetector<T>(
+                            if (scope.state.viewConfiguration.createNewEvents)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
+                                  width: pageWidth,
                                   height: pageHeight,
-                                  width: dayWidth,
-                                  heightPerMinute: heightPerMinute,
-                                  visibleDateRange: pageVisibleDateRange,
-                                  minuteSlotSize: viewConfiguration.slotSize,
+                                  child: DayGestureDetector<T>(
+                                    height: pageHeight,
+                                    width: dayWidth,
+                                    heightPerMinute: heightPerMinute,
+                                    visibleDateRange: pageVisibleDateRange,
+                                    minuteSlotSize: viewConfiguration.slotSize,
+                                  ),
                                 ),
                               ),
-                            ),
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
@@ -140,20 +142,20 @@ class MultiDayContent<T> extends StatelessWidget {
                                       viewConfiguration.horizontalDurationStep,
                                   eventSnapping:
                                       viewConfiguration.eventSnapping,
-                                  timeIndicatorSnapping:
+                                  snapToTimeIndicator:
                                       viewConfiguration.timeIndicatorSnapping,
                                   verticalSnapRange:
                                       viewConfiguration.verticalSnapRange,
                                 ),
                               ),
                             ),
-                            scope.components.timeIndicatorBuilder(
-                              dayWidth,
-                              pageHeight,
-                              pageVisibleDateRange,
-                              heightPerMinute,
-                              viewConfiguration.timelineWidth,
-                            ),
+                            if (DateTime.now().isWithin(pageVisibleDateRange))
+                              scope.components.timeIndicatorBuilder(
+                                dayWidth,
+                                pageVisibleDateRange,
+                                heightPerMinute,
+                                viewConfiguration.hourlineTimelineOverlap,
+                              ),
                           ],
                         );
                       },

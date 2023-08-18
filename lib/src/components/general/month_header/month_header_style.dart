@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The [MonthHeaderStyle] class is used by the default [MonthHeader] widget.
 class MonthHeaderStyle {
   const MonthHeaderStyle({
     this.textStyle,

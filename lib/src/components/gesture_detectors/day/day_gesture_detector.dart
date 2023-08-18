@@ -5,6 +5,8 @@ import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// A widget that detects gestures on a day.
+/// TODO: Create a builder for a [DayGestureDetector].
 class DayGestureDetector<T> extends StatefulWidget {
   const DayGestureDetector({
     super.key,
@@ -42,15 +44,13 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   late SlotSize minuteSlotSize;
 
   /// The height of a slot.
-  late double heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+  late double heightPerSlot;
 
   /// The number of slots in a day.
   late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;
@@ -63,6 +63,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
+    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
   }
 
   @override
@@ -73,6 +74,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
     minuteSlotSize = widget.minuteSlotSize;
+    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
   }
 
   @override
@@ -89,19 +91,16 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                 top: heightPerSlot * i,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: createNewEvents
-                      ? () =>
-                          onTap(calculateDateTimeRange(visibleDates[day], i))
-                      : null,
-                  onVerticalDragStart: gestureDisabled
+                  onTap: () =>
+                      onTap(calculateDateTimeRange(visibleDates[day], i)),
+                  onVerticalDragStart: isMobileDevice
                       ? null
                       : (DragStartDetails details) => _onVerticalDragStart(
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
-                  onVerticalDragEnd:
-                      gestureDisabled ? null : _onVerticalDragEnd,
-                  onVerticalDragUpdate: gestureDisabled
+                  onVerticalDragEnd: isMobileDevice ? null : _onVerticalDragEnd,
+                  onVerticalDragUpdate: isMobileDevice
                       ? null
                       : (DragUpdateDetails details) => _onVerticalDragUpdate(
                             details,
@@ -159,8 +158,6 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   /// Creates a new event on mobile.
-  /// TODO: Add a way to change the [CalendarEvent] on mobile.
-  ///
   void createNewEventMobile(DateTimeRange dateTimeRange) async {
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
@@ -169,18 +166,10 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = true;
     scope.eventsController.chaningEvent = displayEvent;
 
-    CalendarEvent<T>? newEvent =
-        await scope.functions.onCreateEvent?.call(displayEvent);
-
-    if (newEvent == null) {
-      scope.eventsController.chaningEvent = null;
-    } else {
-      scope.eventsController.addEvent(newEvent);
-      scope.eventsController.chaningEvent = null;
-    }
-    scope.eventsController.isNewEvent = false;
+    await scope.functions.onCreateEvent?.call(displayEvent);
   }
 
+  /// Handles the vertical drag start event.
   void _onVerticalDragStart(
     DragStartDetails details,
     DateTimeRange initialDateTimeRange,
@@ -193,6 +182,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.chaningEvent = displayEvent;
   }
 
+  /// Handles the vertical drag end event.
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
@@ -208,6 +198,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = false;
   }
 
+  /// Handles the vertical drag update event.
   void _onVerticalDragUpdate(
     DragUpdateDetails details,
     DateTimeRange initialDateTimeRange,

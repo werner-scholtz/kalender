@@ -82,7 +82,6 @@ class MonthConfiguration extends MonthViewConfiguration {
     DateTimeRange monthRange = DateTime(
       calendarStart.year,
       calendarStart.month + index,
-      calendarStart.day,
     ).monthRange;
 
     return DateTimeRange(

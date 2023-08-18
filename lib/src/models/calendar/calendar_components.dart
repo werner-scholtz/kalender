@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header/day_header.dart';
 import 'package:kalender/src/components/general/day_seperator/day_seperator.dart';
-import 'package:kalender/src/components/general/hour_line/hour_line.dart';
+import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
 import 'package:kalender/src/components/general/month_header/month_header.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
-import 'package:kalender/src/components/general/time_line/time_line.dart';
+import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
 import 'package:kalender/src/typedefs.dart';
 
@@ -144,14 +144,12 @@ class CalendarComponents {
 
   Widget _defaultTimeIndicatorBuilder(
     double timeIndicatorWidth,
-    double areaHeight,
     DateTimeRange visibleDateRange,
     double heightPerMinute,
     double timelineWidth,
   ) {
     return TimeIndicator(
       width: timeIndicatorWidth,
-      height: areaHeight,
       visibleDateRange: visibleDateRange,
       heightPerMinute: heightPerMinute,
       timelineWidth: timelineWidth,

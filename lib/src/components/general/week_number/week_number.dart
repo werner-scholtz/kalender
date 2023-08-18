@@ -3,6 +3,7 @@ import 'package:kalender/src/components/general/week_number/week_number_style.da
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the week number.
 class WeekNumber extends StatelessWidget {
   const WeekNumber({
     super.key,

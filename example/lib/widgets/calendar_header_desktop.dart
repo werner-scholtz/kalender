@@ -19,13 +19,16 @@ class CalendarHeaderDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int month =
+        calendarController.visibleMonth?.month ?? dateTimeRange.start.month;
+    int year = calendarController.visibleYear?.year ?? dateTimeRange.start.year;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
-            '${dateTimeRange.start.year} - ${months[dateTimeRange.start.month]}',
+            '$year - ${months[month - 1]}',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),

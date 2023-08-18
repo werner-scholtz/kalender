@@ -5,6 +5,8 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+/// A widget that detects gestures on a month cell.
+/// TODO: Create a builder for a [MonthCellGestureDetector].
 class MonthCellGestureDetector<T> extends StatefulWidget {
   const MonthCellGestureDetector({
     super.key,
@@ -46,8 +48,7 @@ class _MonthCellGestureDetectorState<T>
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
+  bool get gestureDisabled => isMobileDevice;
 
   DateTimeRange? initialDateTimeRange;
   Offset cursorOffset = Offset.zero;
@@ -63,11 +64,10 @@ class _MonthCellGestureDetectorState<T>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor:
-          createNewEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      cursor: SystemMouseCursors.click,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: createNewEvents ? _onTap : null,
+        onTap: _onTap,
         onPanStart: gestureDisabled ? null : _onPanStart,
         onPanUpdate: gestureDisabled ? null : _onPanUpdate,
         onPanEnd: gestureDisabled ? null : _onPanEnd,

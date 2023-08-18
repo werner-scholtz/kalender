@@ -7,6 +7,7 @@ import 'package:kalender/src/models/view_configurations/month_configurations/mon
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the month cells for a one week period.
 class MonthCells<T> extends StatelessWidget {
   const MonthCells({
     super.key,

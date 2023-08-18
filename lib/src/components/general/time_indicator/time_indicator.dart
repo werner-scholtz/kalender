@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
+/// A widget that displays the current time.
 class TimeIndicator extends StatefulWidget {
   const TimeIndicator({
     super.key,
     required this.width,
-    required this.height,
     required this.visibleDateRange,
     required this.heightPerMinute,
     required this.timelineWidth,
@@ -16,15 +16,13 @@ class TimeIndicator extends StatefulWidget {
   /// Width of indicator
   final double width;
 
-  /// Height of the display area.
-  final double height;
-
+  /// The width of the timeline.
   final double timelineWidth;
 
   /// The visible date range.
   final DateTimeRange visibleDateRange;
 
-  ///
+  /// The height per minute.
   final double heightPerMinute;
 
   @override
@@ -35,6 +33,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   late Timer _timer;
   late DateTime _currentDate;
   late DateTimeRange _visibleDateRange;
+  late double _heightPerMinute;
   double circleRadius = 9;
 
   @override
@@ -42,6 +41,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     super.initState();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
+    _heightPerMinute = widget.heightPerMinute;
     _timer = Timer(const Duration(seconds: 1), setTimer);
   }
 
@@ -51,6 +51,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     _timer.cancel();
     _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
+    _heightPerMinute = widget.heightPerMinute;
+    _timer.cancel();
     _timer = Timer(const Duration(seconds: 1), setTimer);
   }
 
@@ -83,8 +85,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: _left,
-      top: _top,
+      left: left,
+      top: top,
       child: SizedBox(
         width: widget.width + circleRadius / 2,
         height: circleRadius,
@@ -115,13 +117,12 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     );
   }
 
-  double get _top {
-    double heightPerMinute = widget.heightPerMinute;
+  double get top {
     int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
-    return minutes * heightPerMinute - (circleRadius * heightPerMinute);
+    return minutes * _heightPerMinute - (circleRadius / 2);
   }
 
-  double get _left {
+  double get left {
     return (_visibleDateRange.start.startOfDay
                 .difference(_currentDate)
                 .inDays

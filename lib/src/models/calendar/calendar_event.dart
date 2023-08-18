@@ -61,10 +61,10 @@ class CalendarEvent<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether the [CalendarEvent] is modifyable.
+  /// Whether the [CalendarEvent] can be modified.
   late bool _mofifyable;
-  bool get modifyable => _mofifyable;
-  set modifyable(bool newModifyable) {
+  bool get canModify => _mofifyable;
+  set canModify(bool newModifyable) {
     _mofifyable = newModifyable;
     notifyListeners();
   }

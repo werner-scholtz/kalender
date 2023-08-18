@@ -26,6 +26,8 @@ class ViewState {
   /// The scrollController of the [CalendarView].
   final ScrollController scrollController;
 
+  ScrollPhysics scrollPhysics = const ScrollPhysics();
+
   /// The height per minute of the [CalendarView].
   /// This is only used in the [SingleDayView] & [MultiDayView].
   final ValueNotifier<double>? heightPerMinute;
@@ -39,8 +41,23 @@ class ViewState {
   /// The number of pages the [PageView] of the [CalendarView] has.
   final int numberOfPages;
 
+  /// The current month that is displayed.
   DateTime get month {
-    return visibleDateTimeRange.value.visibleMonth;
+    if (viewConfiguration is MonthViewConfiguration) {
+      return visibleDateTimeRange.value.visibleMonth;
+    } else {
+      return visibleDateTimeRange.value.start;
+    }
+  }
+
+  /// The current year that is displayed.
+  DateTime get year {
+    if (viewConfiguration is MonthViewConfiguration) {
+      DateTime month = visibleDateTimeRange.value.visibleMonth;
+      return DateTime(month.year);
+    } else {
+      return DateTime(visibleDateTimeRange.value.start.year);
+    }
   }
 
   @override

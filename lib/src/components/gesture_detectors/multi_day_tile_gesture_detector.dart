@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
+///A widget that detects gestures on a multiday tile.
 /// TODO: Create a builder for a [MultiDayTileGestureDetector].
 class MultiDayTileGestureDetector<T> extends StatefulWidget {
   const MultiDayTileGestureDetector({
@@ -37,7 +38,7 @@ class _MultiDayTileGestureDetectorState<T>
   CalendarEventHandlers<T> get functions => scope.functions;
 
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.modifyable;
+  bool get modifyable => event.canModify;
   bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   double cursorOffset = 0;
@@ -64,11 +65,9 @@ class _MultiDayTileGestureDetectorState<T>
       child: Stack(
         children: <Widget>[
           GestureDetector(
-            onHorizontalDragStart:
-                canBeChangedDesktop ? _onRescheduleStart : null,
-            onHorizontalDragUpdate:
-                canBeChangedDesktop ? _onRescheduleUpdate : null,
-            onHorizontalDragEnd: canBeChangedDesktop ? _onRescheduleEnd : null,
+            onHorizontalDragStart: modifyable ? _onRescheduleStart : null,
+            onHorizontalDragUpdate: modifyable ? _onRescheduleUpdate : null,
+            onHorizontalDragEnd: modifyable ? _onRescheduleEnd : null,
             onTap: _onTap,
             child: child,
           ),
@@ -130,6 +129,7 @@ class _MultiDayTileGestureDetectorState<T>
     currentSteps = 0;
     controller.isMultidayEvent = true;
     controller.chaningEvent = event;
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   void _onRescheduleEnd(DragEndDetails details) {
@@ -167,6 +167,7 @@ class _MultiDayTileGestureDetectorState<T>
     currentSteps = 0;
     controller.isMultidayEvent = true;
     controller.chaningEvent = event;
+    scope.functions.onEventChangeStart?.call(event);
   }
 
   void _onResizeEnd(DragEndDetails details) async {

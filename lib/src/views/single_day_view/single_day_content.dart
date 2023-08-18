@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extentions.dart';
@@ -11,14 +11,14 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class SingleDayContent<T> extends StatelessWidget {
   const SingleDayContent({
     super.key,
-    required this.dayWidth,
     required this.viewConfiguration,
     required this.controller,
+    required this.dayWidth,
   });
 
-  final double dayWidth;
   final SingleDayViewConfiguration viewConfiguration;
   final CalendarController<T> controller;
+  final double dayWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +35,7 @@ class SingleDayContent<T> extends StatelessWidget {
 
         return Expanded(
           child: SingleChildScrollView(
+            physics: scope.state.scrollPhysics,
             child: Stack(
               children: <Widget>[
                 scope.components.timelineBuilder(
@@ -106,20 +107,21 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: dayWidth,
-                                height: pageHeight,
-                                child: DayGestureDetector<T>(
-                                  height: pageHeight,
+                            if (scope.state.viewConfiguration.createNewEvents)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
                                   width: dayWidth,
-                                  heightPerMinute: heightPerMinute,
-                                  visibleDateRange: pageVisibleDateRange,
-                                  minuteSlotSize: viewConfiguration.slotSize,
+                                  height: pageHeight,
+                                  child: DayGestureDetector<T>(
+                                    height: pageHeight,
+                                    width: dayWidth,
+                                    heightPerMinute: heightPerMinute,
+                                    visibleDateRange: pageVisibleDateRange,
+                                    minuteSlotSize: viewConfiguration.slotSize,
+                                  ),
                                 ),
                               ),
-                            ),
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
@@ -134,24 +136,20 @@ class SingleDayContent<T> extends StatelessWidget {
                                       viewConfiguration.verticalStepDuration,
                                   eventSnapping:
                                       viewConfiguration.eventSnapping,
-                                  timeIndicatorSnapping:
+                                  snapToTimeIndicator:
                                       viewConfiguration.timeIndicatorSnapping,
                                   verticalSnapRange:
                                       viewConfiguration.verticalSnapRange,
                                 ),
                               ),
                             ),
-                            Visibility(
-                              visible:
-                                  DateTime.now().isWithin(pageVisibleDateRange),
-                              child: scope.components.timeIndicatorBuilder(
+                            if (DateTime.now().isWithin(pageVisibleDateRange))
+                              scope.components.timeIndicatorBuilder(
                                 dayWidth,
-                                pageHeight,
                                 pageVisibleDateRange,
                                 heightPerMinute,
-                                viewConfiguration.timelineWidth,
-                              ),
-                            ),
+                                viewConfiguration.hourlineTimelineOverlap,
+                              )
                           ],
                         );
                       },
