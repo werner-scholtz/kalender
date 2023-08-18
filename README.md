@@ -5,7 +5,11 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="75%" height="75%"/>
+
+Destop           |  Mobile
+:-------------------------:|:-------------------------:
+<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="75%"/>  | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_feature.gif" width="75%"/>
+ 
 
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
