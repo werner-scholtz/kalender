@@ -2,8 +2,8 @@ name: Web Demo
 
 on:
   push:
-    tags:
-      - 'web_build' 
+    branches:
+      - main
 
 permissions:
   contents: write
