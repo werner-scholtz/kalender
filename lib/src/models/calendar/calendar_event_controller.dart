@@ -20,6 +20,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   }
 
   bool isMoving = false;
+  bool isSelectedMobile = false;
   bool isResizing = false;
   bool isNewEvent = false;
   bool isMultidayEvent = false;
@@ -77,7 +78,7 @@ class CalendarEventsController<T> with ChangeNotifier {
       _events[index].dateTimeRange = newDateTimeRange;
     }
     if (modifyable != null) {
-      _events[index].modifyable = modifyable;
+      _events[index].canModify = modifyable;
     }
 
     notifyListeners();

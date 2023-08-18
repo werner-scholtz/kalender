@@ -107,20 +107,21 @@ class SingleDayContent<T> extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: dayWidth,
-                                height: pageHeight,
-                                child: DayGestureDetector<T>(
-                                  height: pageHeight,
+                            if (scope.state.viewConfiguration.createNewEvents)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: SizedBox(
                                   width: dayWidth,
-                                  heightPerMinute: heightPerMinute,
-                                  visibleDateRange: pageVisibleDateRange,
-                                  minuteSlotSize: viewConfiguration.slotSize,
+                                  height: pageHeight,
+                                  child: DayGestureDetector<T>(
+                                    height: pageHeight,
+                                    width: dayWidth,
+                                    heightPerMinute: heightPerMinute,
+                                    visibleDateRange: pageVisibleDateRange,
+                                    minuteSlotSize: viewConfiguration.slotSize,
+                                  ),
                                 ),
                               ),
-                            ),
                             Align(
                               alignment: Alignment.centerRight,
                               child: SizedBox(
@@ -135,7 +136,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                       viewConfiguration.verticalStepDuration,
                                   eventSnapping:
                                       viewConfiguration.eventSnapping,
-                                  timeIndicatorSnapping:
+                                  snapToTimeIndicator:
                                       viewConfiguration.timeIndicatorSnapping,
                                   verticalSnapRange:
                                       viewConfiguration.verticalSnapRange,

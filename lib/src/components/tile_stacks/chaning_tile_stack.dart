@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/day/selected_mobile_gesture_detector.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
@@ -52,7 +52,7 @@ class ChangingTileStack<T> extends StatelessWidget {
         horizontalStep: horizontalStep,
         snapPoints: snapPoints,
         verticalSnapRange: verticalSnapRange,
-        timeIndicatorSnapping: timeIndicatorSnapping,
+        snapToTimeIndicator: timeIndicatorSnapping,
       );
     } else {
       return DesktopChaningTile<T>(
@@ -126,7 +126,7 @@ class MobileChaningTile<T> extends StatelessWidget {
     required this.horizontalStep,
     required this.snapPoints,
     required this.verticalSnapRange,
-    required this.timeIndicatorSnapping,
+    required this.snapToTimeIndicator,
   });
 
   final DayTileLayoutController<T> tileLayoutController;
@@ -143,7 +143,7 @@ class MobileChaningTile<T> extends StatelessWidget {
   final double? horizontalStep;
 
   final List<DateTime> snapPoints;
-  final bool timeIndicatorSnapping;
+  final bool snapToTimeIndicator;
   final Duration verticalSnapRange;
 
   @override
@@ -165,7 +165,7 @@ class MobileChaningTile<T> extends StatelessWidget {
                   left: e.left,
                   width: e.width,
                   height: e.height,
-                  child: DayTileGestureDetector<T>(
+                  child: MobileDayTileGestureDetector<T>(
                     verticalSnapRange: verticalSnapRange,
                     event: e.event,
                     horizontalDurationStep: horizontalDurationStep,
@@ -174,7 +174,7 @@ class MobileChaningTile<T> extends StatelessWidget {
                     horizontalStep: horizontalStep,
                     visibleDateTimeRange: visibleDateRange,
                     snapPoints: snapPoints,
-                    timelineSnapping: timeIndicatorSnapping,
+                    snapToTimeIndicator: snapToTimeIndicator,
                     continuesBefore: e.event.continuesBefore(e.date),
                     continuesAfter: e.event.continuesAfter(e.date),
                     child: scope.tileComponents.tileBuilder!(

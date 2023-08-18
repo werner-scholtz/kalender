@@ -63,7 +63,7 @@ class _MonthTileGestureDetectorState<T>
   int currentHorizontalSteps = 0;
 
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.modifyable;
+  bool get modifyable => event.canModify;
   bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   @override

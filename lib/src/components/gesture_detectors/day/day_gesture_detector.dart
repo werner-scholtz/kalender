@@ -51,8 +51,6 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
 
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;
@@ -93,19 +91,16 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                 top: heightPerSlot * i,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: createNewEvents
-                      ? () =>
-                          onTap(calculateDateTimeRange(visibleDates[day], i))
-                      : null,
-                  onVerticalDragStart: gestureDisabled
+                  onTap: () =>
+                      onTap(calculateDateTimeRange(visibleDates[day], i)),
+                  onVerticalDragStart: isMobileDevice
                       ? null
                       : (DragStartDetails details) => _onVerticalDragStart(
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
-                  onVerticalDragEnd:
-                      gestureDisabled ? null : _onVerticalDragEnd,
-                  onVerticalDragUpdate: gestureDisabled
+                  onVerticalDragEnd: isMobileDevice ? null : _onVerticalDragEnd,
+                  onVerticalDragUpdate: isMobileDevice
                       ? null
                       : (DragUpdateDetails details) => _onVerticalDragUpdate(
                             details,
@@ -174,6 +169,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     await scope.functions.onCreateEvent?.call(displayEvent);
   }
 
+  /// Handles the vertical drag start event.
   void _onVerticalDragStart(
     DragStartDetails details,
     DateTimeRange initialDateTimeRange,
@@ -186,6 +182,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.chaningEvent = displayEvent;
   }
 
+  /// Handles the vertical drag end event.
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
@@ -201,6 +198,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     scope.eventsController.isNewEvent = false;
   }
 
+  /// Handles the vertical drag update event.
   void _onVerticalDragUpdate(
     DragUpdateDetails details,
     DateTimeRange initialDateTimeRange,

@@ -71,11 +71,18 @@ class _MobileScreenState extends State<MobileScreen> {
           ),
         ),
       ),
-      bottomSheet: selectedEvent != null
-          ? EventEditSheet(
-              event: selectedEvent!,
-            )
-          : null,
+      bottomSheet: ListenableBuilder(
+        listenable: eventsController,
+        builder: (context, child) {
+          if (eventsController.hasChaningEvent) {
+            return EventEditSheet(
+              event: eventsController.chaningEvent!,
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
     );
   }
 

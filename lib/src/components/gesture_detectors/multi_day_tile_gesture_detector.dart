@@ -38,7 +38,7 @@ class _MultiDayTileGestureDetectorState<T>
   CalendarEventHandlers<T> get functions => scope.functions;
 
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.modifyable;
+  bool get modifyable => event.canModify;
   bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   double cursorOffset = 0;
@@ -65,11 +65,9 @@ class _MultiDayTileGestureDetectorState<T>
       child: Stack(
         children: <Widget>[
           GestureDetector(
-            onHorizontalDragStart:
-                canBeChangedDesktop ? _onRescheduleStart : null,
-            onHorizontalDragUpdate:
-                canBeChangedDesktop ? _onRescheduleUpdate : null,
-            onHorizontalDragEnd: canBeChangedDesktop ? _onRescheduleEnd : null,
+            onHorizontalDragStart: modifyable ? _onRescheduleStart : null,
+            onHorizontalDragUpdate: modifyable ? _onRescheduleUpdate : null,
+            onHorizontalDragEnd: modifyable ? _onRescheduleEnd : null,
             onTap: _onTap,
             child: child,
           ),

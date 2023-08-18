@@ -65,18 +65,19 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     for (int r = 0; r < 7; r++)
-                      SizedBox(
-                        width: cellWidth,
-                        height: cellHeight,
-                        child: MonthCellGestureDetector<T>(
-                          date: visibleDateRange.start.add(Duration(days: r)),
-                          visibleDateRange: visibleDateRange,
-                          verticalDurationStep: const Duration(days: 7),
-                          verticalStep: cellHeight,
-                          horizontalDurationStep: const Duration(days: 1),
-                          horizontalStep: cellWidth,
+                      if (scope.state.viewConfiguration.createNewEvents)
+                        SizedBox(
+                          width: cellWidth,
+                          height: cellHeight,
+                          child: MonthCellGestureDetector<T>(
+                            date: visibleDateRange.start.add(Duration(days: r)),
+                            visibleDateRange: visibleDateRange,
+                            verticalDurationStep: const Duration(days: 7),
+                            verticalStep: cellHeight,
+                            horizontalDurationStep: const Duration(days: 1),
+                            horizontalStep: cellWidth,
+                          ),
                         ),
-                      ),
                   ],
                 ),
                 ...arragedEvents.map(
