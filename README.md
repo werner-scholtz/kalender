@@ -5,7 +5,6 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-
 Destop           |  Mobile
 :-------------------------:|:-------------------------:
 <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="75%"/>  | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_feature.gif" width="75%"/>
