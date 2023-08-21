@@ -66,9 +66,8 @@ class _MultiDayTileGestureDetectorState<T>
     if (tileData.event != widget.tileData.event) {
       tileData = widget.tileData;
       initialDateTimeRange = widget.tileData.event.dateTimeRange;
-
-      continuesBefore = tileData.continuesBefore;
-      continuesAfter = tileData.continuesAfter;
+      continuesBefore = widget.tileData.continuesBefore;
+      continuesAfter = widget.tileData.continuesAfter;
     }
   }
 
