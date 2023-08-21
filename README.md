@@ -240,13 +240,14 @@ CalendarEventHandlers<Event>(
     // Once this function is complete the calendar will rebuild.
   },
   onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
-    // The calendarEvent is a reference to the event that was created.
+    // The calendarEvent is a empty event and is not yet added to the list of events.
 
     // This is a async function, so you can do any async work here.
 
+    // If you want to add the event to the calendar 
+    eventsController.addEvent(event);
 
-    // You must return the calendarEvent and then the calendar will rebuild.
-    return calendarEvent; 
+    // Once this function completes the calendar will rebuild.
   },
   onDateTapped: (date) {
     // The date is the date that was tapped. see example for use case.

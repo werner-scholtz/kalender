@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// A [ChangeNotifier] that manages [CalendarEvent]s.
 class CalendarEventsController<T> with ChangeNotifier {
@@ -12,21 +12,48 @@ class CalendarEventsController<T> with ChangeNotifier {
   List<CalendarEvent<T>> get events => _events;
 
   /// The moving [CalendarEvent].
-  CalendarEvent<T>? _chaningEvent;
-  CalendarEvent<T>? get chaningEvent => _chaningEvent;
-  set chaningEvent(CalendarEvent<T>? value) {
-    _chaningEvent = value;
+  CalendarEvent<T>? _selectedEvent;
+  CalendarEvent<T>? get selectedEvent => _selectedEvent;
+
+  void deselectEvent() {
+    _selectedEvent = null;
+    _isSelectedEventMultiday = false;
+    _isResizing = false;
+    _isMoving = false;
     notifyListeners();
   }
 
-  bool isMoving = false;
-  bool isSelectedMobile = false;
-  bool isResizing = false;
-  bool isNewEvent = false;
-  bool isMultidayEvent = false;
+  void setSelectedEvent(
+    CalendarEvent<T> value,
+  ) {
+    _selectedEvent = value;
+    _isSelectedEventMultiday = value.isMultidayEvent;
+    notifyListeners();
+  }
 
-  /// Whether the [CalendarController] has a [_chaningEvent].
-  bool get hasChaningEvent => _chaningEvent != null;
+  /// Whether the [CalendarController] has a [_selectedEvent].
+  bool get hasChaningEvent => _selectedEvent != null;
+
+  bool _isSelectedEventMultiday = false;
+  bool get isSelectedEventMultiday => _isSelectedEventMultiday;
+
+  bool _isResizing = false;
+  bool get isResizing => _isResizing;
+  set isResizing(bool value) {
+    _isResizing = value;
+    notifyListeners();
+  }
+
+  bool _isMoving = false;
+  bool get isMoving => _isMoving;
+  set isMoving(bool value) {
+    _isMoving = value;
+    notifyListeners();
+  }
+
+  void updateUI() {
+    notifyListeners();
+  }
 
   /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
   void addEvent(CalendarEvent<T> event) {
@@ -43,6 +70,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent<T> event) {
     _events.remove(event);
+    _selectedEvent = null;
     notifyListeners();
   }
 

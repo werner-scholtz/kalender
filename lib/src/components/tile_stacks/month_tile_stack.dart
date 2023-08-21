@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/month/month_cell_gesture_detector.dart';
 
-import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/month/month_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_month_tile_stack.dart';
-import 'package:kalender/src/enumerations.dart';
-
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -52,7 +49,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
           List<PositionedMonthTileData<T>> arragedEvents =
               monthEventLayout.layoutTiles(
             scope.eventsController.getEventsFromDateRange(visibleDateRange),
-            selectedEvent: scope.eventsController.chaningEvent,
+            selectedEvent: scope.eventsController.selectedEvent,
           );
 
           return SizedBox(
@@ -99,6 +96,12 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 if (scope.eventsController.hasChaningEvent)
                   ChaningMonthTileStack<T>(
                     monthEventLayout: monthEventLayout,
+                    viewConfiguration: viewConfiguration,
+                    monthVisibleDateRange: monthVisibleDateRange,
+                    horizontalStep: cellWidth,
+                    horizontalDurationStep: const Duration(days: 1),
+                    verticalStep: cellHeight,
+                    verticalDurationStep: const Duration(days: 7),
                   ),
               ],
             ),
@@ -144,7 +147,6 @@ class MonthTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
-        bool isMoving = controller.chaningEvent == arragnedEvent.event;
         return Stack(
           children: <Widget>[
             Positioned(
@@ -154,24 +156,13 @@ class MonthTileStack<T> extends StatelessWidget {
               height: arragnedEvent.height,
               child: MonthTileGestureDetector<T>(
                 horizontalDurationStep: horizontalDurationStep,
-                event: arragnedEvent.event,
+                tileData: arragnedEvent,
                 horizontalStep: horizontalStep,
                 verticalDurationStep: verticalDurationStep,
                 verticalStep: verticalStep,
                 visibleDateRange: monthVisibleDateRange,
                 enableResizing: viewConfiguration.enableRezising,
-                // isMultidayEvent: arragnedEvent.event.isMultidayEvent,
-                child: CalendarScope.of<T>(context)
-                    .tileComponents
-                    .monthTileBuilder!(
-                  arragnedEvent.event,
-                  MonthTileConfiguration(
-                    tileType: isMoving ? TileType.ghost : TileType.normal,
-                    date: arragnedEvent.dateRange.start,
-                    continuesBefore: arragnedEvent.continuesBefore,
-                    continuesAfter: arragnedEvent.continuesAfter,
-                  ),
-                ),
+                isChanging: false,
               ),
             ),
           ],

@@ -127,6 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
       eventSnapping: true,
       timeIndicatorSnapping: true,
     ),
-    const MonthConfiguration(),
+    const MonthConfiguration(
+      enableRezising: true,
+    ),
   ];
 }

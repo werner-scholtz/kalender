@@ -90,7 +90,7 @@ class PositionedTileStack<T> extends StatelessWidget {
                 visibleDateRange: scope.state.visibleDateTimeRange.value,
                 snapPoints: snapPoints,
                 verticalSnapRange: verticalSnapRange,
-                timeIndicatorSnapping: snapToTimeIndicator,
+                snapToTimeIndicator: snapToTimeIndicator,
               ),
           ],
         );
@@ -99,11 +99,7 @@ class PositionedTileStack<T> extends StatelessWidget {
   }
 
   bool shouldDisplayTile(CalendarEventsController<T> controller) =>
-      controller.hasChaningEvent &&
-      (controller.isMoving ||
-          controller.isResizing ||
-          controller.isNewEvent ||
-          controller.isSelectedMobile);
+      controller.hasChaningEvent && !controller.isSelectedEventMultiday;
 }
 
 class TileGroupStack<T> extends StatelessWidget {
@@ -143,7 +139,6 @@ class TileGroupStack<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of<T>(context);
-    // CalendarEventsController<T> controller = scope.eventsController;
     return Positioned(
       left: tileGroup.tileGroupLeft,
       top: tileGroup.tileGroupTop,
@@ -170,6 +165,7 @@ class TileGroupStack<T> extends StatelessWidget {
                   snapToTimeIndicator: snapToTimeIndicator,
                   verticalSnapRange: verticalSnapRange,
                   isMobileDevice: scope.platformData.isMobileDevice,
+                  isChanging: false,
                 ),
               );
             }),

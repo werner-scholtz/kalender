@@ -302,7 +302,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<CalendarEvent<Event>?> onCreateEvent(newEvent) async {
+  Future<void> onCreateEvent(newEvent) async {
     newEvent.eventData = Event(
       title: 'New Event',
       color: Colors.blue,
@@ -319,8 +319,10 @@ class _DesktopScreenState extends State<DesktopScreen> {
       },
     );
 
-    // return the new event. (if the user cancels the dialog, null is returned)
-    return event;
+    /// Add the event to the events controller.
+    if (event != null) {
+      eventsController.addEvent(event);
+    }
   }
 
   /// This function is called when an event is tapped.
@@ -344,7 +346,11 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// This function is called when an event is changed.
   Future<void> onEventChanged(
-      initialDateTimeRange, CalendarEvent<Event> event) async {
+    initialDateTimeRange,
+    CalendarEvent<Event> event,
+  ) async {
+    eventsController.deselectEvent();
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     // Show the snackbar and undo the changes if the user presses the undo button.
     ScaffoldMessenger.of(context).showSnackBar(

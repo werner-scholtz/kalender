@@ -31,9 +31,6 @@ class _MobileScreenState extends State<MobileScreen> {
   /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
 
-  /// The selected event.
-  CalendarEvent<Event>? selectedEvent;
-
   @override
   void initState() {
     super.initState();
@@ -74,9 +71,17 @@ class _MobileScreenState extends State<MobileScreen> {
       bottomSheet: ListenableBuilder(
         listenable: eventsController,
         builder: (context, child) {
-          if (eventsController.hasChaningEvent) {
+          if (eventsController.hasChaningEvent &&
+              !eventsController.isMoving &&
+              !eventsController.isResizing) {
             return EventEditSheet(
-              event: eventsController.chaningEvent!,
+              event: eventsController.selectedEvent!,
+              onSave: (event) {
+                eventsController.addEvent(event);
+              },
+              onDelete: (event) {
+                eventsController.removeEvent(event);
+              },
             );
           } else {
             return const SizedBox();
@@ -87,34 +92,15 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<CalendarEvent<Event>?> onCreateEvent(
-      CalendarEvent<Event> newEvent) async {
-    // Set the new event's eventData.
-    newEvent.eventData = Event(
-      title: 'New Event',
-      color: Colors.blue,
-    );
-
-    // Set the selected event to the new event.
-    setState(() {
-      selectedEvent = newEvent;
-    });
-
-    // return the new event. (if the user cancels the dialog, null is returned)
-    return newEvent;
-  }
+  Future<void> onCreateEvent(CalendarEvent<Event> newEvent) async {}
 
   /// This function is called when an event is tapped.
   Future<void> onEventTapped(event) async {
-    setState(() {
-      if (selectedEvent == event) {
-        // If the selected event is tapped again, set the selected event to null.
-        selectedEvent = null;
-      } else {
-        // Set the selected event to the tapped event.
-        selectedEvent = event;
-      }
-    });
+    if (eventsController.selectedEvent == event) {
+      eventsController.deselectEvent();
+    } else {
+      eventsController.setSelectedEvent(event);
+    }
   }
 
   /// This function is called when an event is changed.
@@ -122,10 +108,7 @@ class _MobileScreenState extends State<MobileScreen> {
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
-    // Set the selected event to the changed event.
-    setState(() {
-      selectedEvent = event;
-    });
+    eventsController.setSelectedEvent(event);
   }
 
   /// This function is called when a date is tapped.

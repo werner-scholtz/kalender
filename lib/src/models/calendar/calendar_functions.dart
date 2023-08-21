@@ -34,7 +34,7 @@ class CalendarEventHandlers<T> {
   /// The [Function] called when an event is created.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<CalendarEvent<T>?> Function(
+  final Future<void> Function(
     CalendarEvent<T> newEvent,
   )? onCreateEvent;
 

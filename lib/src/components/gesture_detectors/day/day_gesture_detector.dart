@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// A widget that detects gestures on a day.
@@ -92,7 +91,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () =>
-                      onTap(calculateDateTimeRange(visibleDates[day], i)),
+                      _onTap(calculateDateTimeRange(visibleDates[day], i)),
                   onVerticalDragStart: isMobileDevice
                       ? null
                       : (DragStartDetails details) => _onVerticalDragStart(
@@ -118,55 +117,19 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   }
 
   /// Handles the onTap event.
-  /// If the device is a mobile device then [createNewEventMobile] is called.
-  /// If the device is not a mobile device then [createNewEventDesktop] is called.
-  void onTap(DateTimeRange dateTimeRange) {
-    if (isMobileDevice) {
-      createNewEventMobile(dateTimeRange);
-    } else {
-      createNewEventDesktop(dateTimeRange);
-    }
-  }
-
-  /// Creates a new event on desktop.
-  void createNewEventDesktop(DateTimeRange dateTimeRange) async {
+  void _onTap(DateTimeRange dateTimeRange) async {
     // Create a new [CalendarEvent] with the [dateTimeRange].
     CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
 
-    // Set the chaning event to the new event.
-    scope.eventsController.chaningEvent = newCalendarEvent;
-
-    // Set the [isNewEvent] to true.
-    scope.eventsController.isNewEvent = true;
-
-    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent
-        ?.call(scope.eventsController.chaningEvent!);
-
-    // If the [newEvent] is null then set the [chaningEvent] to null.
-    if (newEvent == null) {
-      scope.eventsController.chaningEvent = null;
-    } else {
-      // Add the [newEvent] to the [CalendarController].
-      scope.eventsController.addEvent(newEvent);
-      scope.eventsController.chaningEvent = null;
-    }
-
-    // Set the [isNewEvent] to false.
-    scope.eventsController.isNewEvent = false;
-  }
-
-  /// Creates a new event on mobile.
-  void createNewEventMobile(DateTimeRange dateTimeRange) async {
-    CalendarEvent<T> displayEvent = CalendarEvent<T>(
-      dateTimeRange: dateTimeRange,
+    scope.eventsController.setSelectedEvent(
+      newCalendarEvent,
     );
 
-    scope.eventsController.isNewEvent = true;
-    scope.eventsController.chaningEvent = displayEvent;
-
-    await scope.functions.onCreateEvent?.call(displayEvent);
+    await scope.functions.onCreateEvent?.call(
+      scope.eventsController.selectedEvent!,
+    );
   }
 
   /// Handles the vertical drag start event.
@@ -175,27 +138,25 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     DateTimeRange initialDateTimeRange,
   ) {
     cursorOffset = 0;
-    scope.eventsController.isNewEvent = true;
+
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: initialDateTimeRange,
     );
-    scope.eventsController.chaningEvent = displayEvent;
+
+    scope.eventsController.setSelectedEvent(
+      displayEvent,
+    );
   }
 
   /// Handles the vertical drag end event.
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
-    CalendarEvent<T>? newEvent = await scope.functions.onCreateEvent
-        ?.call(scope.eventsController.chaningEvent!);
+    await scope.functions.onCreateEvent?.call(
+      scope.eventsController.selectedEvent!,
+    );
 
-    if (newEvent == null) {
-      scope.eventsController.chaningEvent = null;
-    } else {
-      scope.eventsController.addEvent(newEvent);
-      scope.eventsController.chaningEvent = null;
-    }
-    scope.eventsController.isNewEvent = false;
+    scope.eventsController.deselectEvent();
   }
 
   /// Handles the vertical drag update event.
@@ -226,7 +187,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
         );
       }
 
-      scope.eventsController.chaningEvent?.dateTimeRange = dateTimeRange;
+      scope.eventsController.selectedEvent?.dateTimeRange = dateTimeRange;
     }
   }
 
