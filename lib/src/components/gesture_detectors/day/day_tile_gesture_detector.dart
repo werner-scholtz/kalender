@@ -92,6 +92,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       tileData = widget.tileData;
       initialDateTimeRange = tileData.event.dateTimeRange;
     }
+    snapPoints = widget.snapPoints;
+    snapToTimeIndicator = widget.snapToTimeIndicator;
   }
 
   @override
