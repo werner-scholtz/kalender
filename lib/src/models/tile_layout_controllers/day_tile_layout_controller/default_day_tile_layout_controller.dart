@@ -304,7 +304,7 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
   }
 
   @override
-  List<PositionedTileData<T>> positionSingleEvent(
+  List<PositionedTileData<T>> layoutSelectedEvent(
     CalendarEvent<T> event,
   ) {
     return event.datesSpanned

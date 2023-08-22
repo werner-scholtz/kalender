@@ -42,7 +42,7 @@ abstract class MultiDayTileLayoutController<T> {
   );
 
   /// Layout a single [event].
-  PositionedMultiDayTileData<T> layoutTile(CalendarEvent<T> event);
+  PositionedMultiDayTileData<T> layoutSelectedTile(CalendarEvent<T> event);
 }
 
 class PositionedMultiDayTileData<T> {
