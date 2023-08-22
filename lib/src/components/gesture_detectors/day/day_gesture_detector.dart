@@ -150,8 +150,6 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     await scope.functions.onCreateEvent?.call(
       scope.eventsController.selectedEvent!,
     );
-
-    scope.eventsController.deselectEvent();
   }
 
   /// Handles the vertical drag update event.

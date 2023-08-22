@@ -322,6 +322,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
     /// Add the event to the events controller.
     if (event != null) {
       eventsController.addEvent(event);
+    } else {
+      eventsController.deselectEvent();
     }
   }
 
