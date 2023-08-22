@@ -3,7 +3,9 @@ import 'package:kalender/src/components/gesture_detectors/month/month_cell_gestu
 
 import 'package:kalender/src/components/gesture_detectors/month/month_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_month_tile_stack.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -85,7 +87,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                       viewConfiguration: viewConfiguration,
                       monthEventLayout: monthEventLayout,
                       monthVisibleDateRange: monthVisibleDateRange,
-                      arragnedEvent: e,
+                      positionedTileData: e,
                       horizontalStep: cellWidth,
                       horizontalDurationStep: const Duration(days: 1),
                       verticalStep: cellHeight,
@@ -120,7 +122,7 @@ class MonthTileStack<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.monthEventLayout,
     required this.monthVisibleDateRange,
-    required this.arragnedEvent,
+    required this.positionedTileData,
     required this.horizontalStep,
     required this.horizontalDurationStep,
     required this.verticalStep,
@@ -134,7 +136,7 @@ class MonthTileStack<T> extends StatelessWidget {
   final DateTimeRange visibleDateRange;
   final DateTimeRange monthVisibleDateRange;
   final MonthTileLayoutController<T> monthEventLayout;
-  final PositionedMonthTileData<T> arragnedEvent;
+  final PositionedMonthTileData<T> positionedTileData;
 
   final double horizontalStep;
   final Duration horizontalDurationStep;
@@ -144,25 +146,36 @@ class MonthTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CalendarScope<T> scope = CalendarScope.of(context);
+    bool isMoving = controller.selectedEvent == positionedTileData.event;
     return ListenableBuilder(
       listenable: controller,
       builder: (BuildContext context, Widget? child) {
         return Stack(
           children: <Widget>[
             Positioned(
-              top: arragnedEvent.top,
-              left: arragnedEvent.left,
-              width: arragnedEvent.width,
-              height: arragnedEvent.height,
+              top: positionedTileData.top,
+              left: positionedTileData.left,
+              width: positionedTileData.width,
+              height: positionedTileData.height,
               child: MonthTileGestureDetector<T>(
                 horizontalDurationStep: horizontalDurationStep,
-                tileData: arragnedEvent,
+                tileData: positionedTileData,
                 horizontalStep: horizontalStep,
                 verticalDurationStep: verticalDurationStep,
                 verticalStep: verticalStep,
                 visibleDateRange: monthVisibleDateRange,
                 enableResizing: viewConfiguration.enableRezising,
-                isChanging: false,
+                isSelected: false,
+                child: scope.tileComponents.monthTileBuilder!(
+                  positionedTileData.event,
+                  MonthTileConfiguration(
+                    tileType: isMoving ? TileType.ghost : TileType.normal,
+                    date: positionedTileData.dateRange.start,
+                    continuesBefore: positionedTileData.continuesBefore,
+                    continuesAfter: positionedTileData.continuesAfter,
+                  ),
+                ),
               ),
             ),
           ],

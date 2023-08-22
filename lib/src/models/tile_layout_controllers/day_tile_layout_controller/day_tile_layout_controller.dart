@@ -97,6 +97,10 @@ class PositionedTileData<T> {
   /// If the tile should draw an outline.
   final bool drawOutline;
 
+  final bool continuesBefore;
+
+  final bool continuesAfter;
+
   PositionedTileData({
     required this.event,
     required this.date,
@@ -105,6 +109,8 @@ class PositionedTileData<T> {
     required this.width,
     required this.height,
     required this.drawOutline,
+    required this.continuesBefore,
+    required this.continuesAfter,
   });
 
   @override

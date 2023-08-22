@@ -34,6 +34,8 @@ class ExampleDayTileLayoutController<Event>
           width: dayWidth,
           height: height,
           drawOutline: false,
+          continuesBefore: event.continuesBefore(e),
+          continuesAfter: event.continuesAfter(e),
         );
       },
     ).toList();
@@ -173,6 +175,8 @@ class ExampleDayTileLayoutController<Event>
         width: tileWidth,
         height: height,
         drawOutline: false,
+        continuesBefore: currentEvent.continuesBefore(date),
+        continuesAfter: currentEvent.continuesAfter(date),
       );
 
       positionedTileDatas.add(positionedTileData);
@@ -221,6 +225,8 @@ class ExampleDayTileLayoutController<Event>
       width: eventWidth,
       height: calculateTileHeight(event.durationOnDate(date)),
       drawOutline: false,
+      continuesBefore: event.continuesBefore(date),
+      continuesAfter: event.continuesAfter(date),
     );
 
     // Create the tile group.

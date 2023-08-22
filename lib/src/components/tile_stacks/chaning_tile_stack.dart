@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector.dart';
+import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -41,13 +43,13 @@ class ChangingTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
-        List<PositionedTileData<T>> arragnedEvents =
+        List<PositionedTileData<T>> positionedTiles =
             tileLayoutController.positionSingleEvent(
           scope.eventsController.selectedEvent!,
         );
 
         return Stack(
-          children: arragnedEvents
+          children: positionedTiles
               .map(
                 (PositionedTileData<T> e) => Positioned(
                   top: e.top,
@@ -55,7 +57,7 @@ class ChangingTileStack<T> extends StatelessWidget {
                   width: e.width,
                   height: e.height,
                   child: DayTileGestureDetector<T>(
-                    positionedTileData: e,
+                    tileData: e,
                     visibleDateTimeRange: visibleDateRange,
                     verticalDurationStep: verticalDurationStep,
                     verticalStep: verticalStep,
@@ -64,8 +66,16 @@ class ChangingTileStack<T> extends StatelessWidget {
                     snapPoints: snapPoints,
                     snapToTimeIndicator: snapToTimeIndicator,
                     verticalSnapRange: verticalSnapRange,
-                    isMobileDevice: scope.platformData.isMobileDevice,
-                    isChanging: true,
+                    isSelected: true,
+                    child: scope.tileComponents.tileBuilder!(
+                      e.event,
+                      TileConfiguration(
+                        tileType: TileType.selected,
+                        drawOutline: e.drawOutline,
+                        continuesBefore: e.continuesBefore,
+                        continuesAfter: e.continuesAfter,
+                      ),
+                    ),
                   ),
                 ),
               )

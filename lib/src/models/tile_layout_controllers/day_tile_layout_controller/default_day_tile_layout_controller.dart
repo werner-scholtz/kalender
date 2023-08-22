@@ -129,6 +129,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
               width: eventWidth,
               height: height,
               drawOutline: false,
+              continuesBefore: currentEvent.continuesBefore(date),
+              continuesAfter: currentEvent.continuesAfter(date),
             );
             addTileData(positionedTileData);
             updateGroupHeight(
@@ -203,6 +205,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
             width: eventWidth - tileLeftOffset,
             height: height,
             drawOutline: drawOutline,
+            continuesBefore: currentEvent.continuesBefore(date),
+            continuesAfter: currentEvent.continuesAfter(date),
           );
 
           addTileData(positionedTileData);
@@ -252,6 +256,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
       width: eventWidth,
       height: calculateTileHeight(event.durationOnDate(date)),
       drawOutline: false,
+      continuesBefore: event.continuesBefore(date),
+      continuesAfter: event.continuesAfter(date),
     );
 
     // Create the tile group.
@@ -313,6 +319,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
             width: dayWidth,
             height: calculateTileHeight(event.durationOnDate(e)),
             drawOutline: false,
+            continuesBefore: event.continuesBefore(e),
+            continuesAfter: event.continuesAfter(e),
           ),
         )
         .toList();

@@ -12,16 +12,16 @@ class MultiDayTileGestureDetector<T> extends StatefulWidget {
     required this.horizontalDurationStep,
     required this.tileData,
     required this.visibleDateRange,
-    required this.isMobileDevice,
-    required this.isChanging,
+    required this.isSelected,
+    required this.child,
   });
 
+  final Widget child;
   final double horizontalStep;
   final Duration horizontalDurationStep;
   final PositionedMultiDayTileData<T> tileData;
   final DateTimeRange visibleDateRange;
-  final bool isMobileDevice;
-  final bool isChanging;
+  final bool isSelected;
 
   @override
   State<MultiDayTileGestureDetector<T>> createState() =>
@@ -36,12 +36,10 @@ class _MultiDayTileGestureDetectorState<T>
 
   late PositionedMultiDayTileData<T> tileData;
   late DateTimeRange initialDateTimeRange;
-  late bool continuesBefore;
-  late bool continuesAfter;
 
-  late bool isMobileDevice;
-  late bool useMobileGestures;
-  late bool useDesktopGestures;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get useMobileGestures => isMobileDevice && tileData.event.canModify;
+  bool get useDesktopGestures => !isMobileDevice && tileData.event.canModify;
 
   bool get canModify => tileData.event.canModify;
 
@@ -53,11 +51,6 @@ class _MultiDayTileGestureDetectorState<T>
     super.initState();
     tileData = widget.tileData;
     initialDateTimeRange = tileData.event.dateTimeRange;
-    continuesBefore = tileData.continuesBefore;
-    continuesAfter = tileData.continuesAfter;
-    isMobileDevice = widget.isMobileDevice;
-    useMobileGestures = isMobileDevice && tileData.event.canModify;
-    useDesktopGestures = !isMobileDevice && tileData.event.canModify;
   }
 
   @override
@@ -66,14 +59,11 @@ class _MultiDayTileGestureDetectorState<T>
     if (tileData.event != widget.tileData.event) {
       tileData = widget.tileData;
       initialDateTimeRange = widget.tileData.event.dateTimeRange;
-      continuesBefore = widget.tileData.continuesBefore;
-      continuesAfter = widget.tileData.continuesAfter;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isMoving = controller.selectedEvent == tileData.event;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
@@ -85,18 +75,7 @@ class _MultiDayTileGestureDetectorState<T>
                 useDesktopGestures ? _onRescheduleUpdate : null,
             onHorizontalDragEnd: useDesktopGestures ? _onRescheduleEnd : null,
             onTap: _onTap,
-            child: scope.tileComponents.multiDayTileBuilder!(
-              tileData.event,
-              MultiDayTileConfiguration(
-                tileType: widget.isChanging
-                    ? TileType.selected
-                    : isMoving
-                        ? TileType.ghost
-                        : TileType.normal,
-                continuesBefore: continuesBefore,
-                continuesAfter: continuesAfter,
-              ),
-            ),
+            child: widget.child,
           ),
           if (useDesktopGestures)
             Positioned(

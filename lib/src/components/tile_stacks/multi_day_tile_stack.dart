@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_multi_day_tile_stack.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -74,12 +75,8 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
                     return MultidayTileStack<T>(
-                      // controller: scope.eventsController,
-                      onEventChanged: scope.functions.onEventChanged,
-                      onEventTapped: scope.functions.onEventTapped,
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
-                      multiDayEventLayout: multiDayEventLayout,
-                      arragnedEvent: e,
+                      positionedTileData: e,
                       dayWidth: dayWidth,
                       horizontalDurationStep: const Duration(days: 1),
                     );
@@ -105,59 +102,46 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
 class MultidayTileStack<T> extends StatelessWidget {
   const MultidayTileStack({
     super.key,
-    // required this.controller,
-    required this.onEventTapped,
-    required this.onEventChanged,
     required this.visibleDateRange,
-    required this.multiDayEventLayout,
-    required this.arragnedEvent,
+    required this.positionedTileData,
     required this.dayWidth,
     required this.horizontalDurationStep,
   });
 
-  // final CalendarEventsController<T> controller;
-
-  /// The [Function] called when the event is changed.
-  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
-      onEventChanged;
-
-  /// The [Function] called when the event is tapped.
-  final Function(CalendarEvent<T> event)? onEventTapped;
-
   final DateTimeRange visibleDateRange;
-  final MultiDayTileLayoutController<T> multiDayEventLayout;
-  final PositionedMultiDayTileData<T> arragnedEvent;
-
+  final PositionedMultiDayTileData<T> positionedTileData;
   final double dayWidth;
   final Duration horizontalDurationStep;
 
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
-
+    bool isMoving =
+        scope.eventsController.selectedEvent == positionedTileData.event;
     return Stack(
       children: <Widget>[
         Positioned(
-          top: arragnedEvent.top,
-          left: arragnedEvent.left,
-          width: arragnedEvent.width,
-          height: arragnedEvent.height,
+          top: positionedTileData.top,
+          left: positionedTileData.left,
+          width: positionedTileData.width,
+          height: positionedTileData.height,
           child: MultiDayTileGestureDetector<T>(
             horizontalDurationStep: horizontalDurationStep,
             horizontalStep: dayWidth,
-            tileData: arragnedEvent,
+            tileData: positionedTileData,
             visibleDateRange: visibleDateRange,
-            isChanging: false,
-            isMobileDevice: scope.platformData.isMobileDevice,
+            isSelected: false,
+            child: scope.tileComponents.multiDayTileBuilder!(
+              positionedTileData.event,
+              MultiDayTileConfiguration(
+                tileType: isMoving ? TileType.ghost : TileType.normal,
+                continuesBefore: positionedTileData.continuesBefore,
+                continuesAfter: positionedTileData.continuesAfter,
+              ),
+            ),
           ),
         ),
       ],
     );
-    // return ListenableBuilder(
-    //   listenable: controller,
-    //   builder: (BuildContext context, Widget? child) {
-
-    //   },
-    // );
   }
 }

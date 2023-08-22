@@ -15,7 +15,8 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
     required this.horizontalDurationStep,
     required this.horizontalStep,
     required this.enableResizing,
-    required this.isChanging,
+    required this.isSelected,
+    required this.child,
   });
 
   /// The event.
@@ -39,7 +40,9 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
   /// Whether resizing is enabled.
   final bool enableResizing;
 
-  final bool isChanging;
+  final bool isSelected;
+
+  final Widget child;
 
   @override
   State<MonthTileGestureDetector<T>> createState() =>
@@ -83,7 +86,6 @@ class _MonthTileGestureDetectorState<T>
 
   @override
   Widget build(BuildContext context) {
-    bool isMoving = controller.selectedEvent == tileData.event;
     return Stack(
       children: <Widget>[
         MouseRegion(
@@ -100,20 +102,7 @@ class _MonthTileGestureDetectorState<T>
             onLongPressMoveUpdate:
                 isMobileDevice && modifyable ? _onLongPressMoveUpdate : null,
             onTap: _onTap,
-            child:
-                CalendarScope.of<T>(context).tileComponents.monthTileBuilder!(
-              tileData.event,
-              MonthTileConfiguration(
-                tileType: widget.isChanging
-                    ? TileType.selected
-                    : isMoving
-                        ? TileType.ghost
-                        : TileType.normal,
-                date: tileData.dateRange.start,
-                continuesBefore: tileData.continuesBefore,
-                continuesAfter: tileData.continuesAfter,
-              ),
-            ),
+            child: widget.child,
           ),
         ),
         if ((!isMobileDevice || enableResizing || modifyable))

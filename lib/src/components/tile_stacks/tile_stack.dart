@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector.dart';
 import 'package:kalender/src/components/tile_stacks/chaning_tile_stack.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -139,6 +141,7 @@ class TileGroupStack<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of<T>(context);
+
     return Positioned(
       left: tileGroup.tileGroupLeft,
       top: tileGroup.tileGroupTop,
@@ -148,30 +151,47 @@ class TileGroupStack<T> extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            ...tileGroup.tilePositionData.map((PositionedTileData<T> e) {
-              return Positioned(
-                left: e.left,
-                top: e.top,
-                width: e.width,
-                height: e.height,
-                child: DayTileGestureDetector<T>(
-                  positionedTileData: e,
-                  visibleDateTimeRange: visibleDateRange,
-                  verticalDurationStep: verticalDurationStep,
-                  verticalStep: verticalStep,
-                  horizontalDurationStep: horizontalDurationStep,
-                  horizontalStep: horizontalStep,
-                  snapPoints: snapPoints,
-                  snapToTimeIndicator: snapToTimeIndicator,
-                  verticalSnapRange: verticalSnapRange,
-                  isMobileDevice: scope.platformData.isMobileDevice,
-                  isChanging: false,
-                ),
-              );
-            }),
+            ...tileGroup.tilePositionData.map(
+              (PositionedTileData<T> e) {
+                bool isMoving = scope.eventsController.selectedEvent == e.event;
+                return Positioned(
+                  top: e.top,
+                  left: e.left,
+                  width: e.width,
+                  height: e.height,
+                  child: DayTileGestureDetector<T>(
+                    tileData: e,
+                    visibleDateTimeRange: visibleDateRange,
+                    verticalDurationStep: verticalDurationStep,
+                    verticalStep: verticalStep,
+                    horizontalDurationStep: horizontalDurationStep,
+                    horizontalStep: horizontalStep,
+                    snapPoints: snapPoints,
+                    snapToTimeIndicator: snapToTimeIndicator,
+                    verticalSnapRange: verticalSnapRange,
+                    isSelected: false,
+                    child: scope.tileComponents.tileBuilder!(
+                      e.event,
+                      TileConfiguration(
+                        tileType: isMoving ? TileType.ghost : TileType.normal,
+                        drawOutline: e.drawOutline,
+                        continuesBefore: e.continuesBefore,
+                        continuesAfter: e.continuesAfter,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+
+//  left: e.left,
+//                 top: e.top,
+//                 width: e.width,
+//                 height: e.height,

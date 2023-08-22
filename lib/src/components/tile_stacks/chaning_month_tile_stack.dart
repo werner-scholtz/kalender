@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/month/month_tile_gesture_detector.dart';
+import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -34,7 +36,7 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
-        PositionedMonthTileData<T> arragnedEvent = monthEventLayout.layoutTile(
+        PositionedMonthTileData<T> positionedTile = monthEventLayout.layoutTile(
           scope.eventsController.selectedEvent!,
         );
 
@@ -43,19 +45,28 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Positioned(
-                top: arragnedEvent.top,
-                left: arragnedEvent.left,
-                width: arragnedEvent.width,
-                height: arragnedEvent.height,
+                top: positionedTile.top,
+                left: positionedTile.left,
+                width: positionedTile.width,
+                height: positionedTile.height,
                 child: MonthTileGestureDetector<T>(
                   horizontalDurationStep: horizontalDurationStep,
-                  tileData: arragnedEvent,
+                  tileData: positionedTile,
                   horizontalStep: horizontalStep,
                   verticalDurationStep: verticalDurationStep,
                   verticalStep: verticalStep,
                   visibleDateRange: monthVisibleDateRange,
                   enableResizing: viewConfiguration.enableRezising,
-                  isChanging: true,
+                  isSelected: true,
+                  child: scope.tileComponents.monthTileBuilder!(
+                    positionedTile.event,
+                    MonthTileConfiguration(
+                      tileType: TileType.selected,
+                      date: positionedTile.dateRange.start,
+                      continuesBefore: positionedTile.continuesBefore,
+                      continuesAfter: positionedTile.continuesAfter,
+                    ),
+                  ),
                 ),
               ),
             ],

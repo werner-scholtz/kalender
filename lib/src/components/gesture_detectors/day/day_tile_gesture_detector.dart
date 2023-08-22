@@ -6,7 +6,8 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class DayTileGestureDetector<T> extends StatefulWidget {
   const DayTileGestureDetector({
     super.key,
-    required this.positionedTileData,
+    required this.child,
+    required this.tileData,
     required this.visibleDateTimeRange,
     required this.verticalDurationStep,
     required this.verticalStep,
@@ -15,15 +16,16 @@ class DayTileGestureDetector<T> extends StatefulWidget {
     required this.snapPoints,
     required this.snapToTimeIndicator,
     required this.verticalSnapRange,
-    required this.isMobileDevice,
-    required this.isChanging,
+    required this.isSelected,
   });
+
+  final Widget child;
 
   /// The visible [DateTimeRange].
   final DateTimeRange visibleDateTimeRange;
 
   /// The event that is wrapped by the [DayTileGestureDetector].
-  final PositionedTileData<T> positionedTileData;
+  final PositionedTileData<T> tileData;
 
   /// The duration of the vertical step when dragging/resizing an event.
   final Duration verticalDurationStep;
@@ -46,11 +48,8 @@ class DayTileGestureDetector<T> extends StatefulWidget {
   /// Whether to snap to the timeindicator.
   final bool snapToTimeIndicator;
 
-  /// Whether the device is a mobile device.
-  final bool isMobileDevice;
-
-  /// Whether the event is changing.
-  final bool isChanging;
+  /// Whether the event is selected.
+  final bool isSelected;
 
   @override
   State<DayTileGestureDetector<T>> createState() =>
@@ -61,17 +60,17 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
 
-  late bool isMobileDevice;
-
   late PositionedTileData<T> tileData;
   late DateTimeRange initialDateTimeRange;
   late List<DateTime> snapPoints;
   late bool snapToTimeIndicator;
-  late bool continuesBefore;
-  late bool continuesAfter;
 
-  late bool useMobileGestures;
-  late bool useDesktopGestures;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+
+  bool get useMobileGestures =>
+      isMobileDevice && widget.tileData.event.canModify;
+  bool get useDesktopGestures =>
+      !isMobileDevice && widget.tileData.event.canModify;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -80,12 +79,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   @override
   void initState() {
     super.initState();
-    tileData = widget.positionedTileData;
-    continuesBefore = tileData.event.continuesBefore(tileData.date);
-    continuesAfter = tileData.event.continuesAfter(tileData.date);
-    isMobileDevice = widget.isMobileDevice;
-    useMobileGestures = isMobileDevice && tileData.event.canModify;
-    useDesktopGestures = !isMobileDevice && tileData.event.canModify;
+    tileData = widget.tileData;
     initialDateTimeRange = tileData.event.dateTimeRange;
     snapPoints = widget.snapPoints;
     snapToTimeIndicator = widget.snapToTimeIndicator;
@@ -94,17 +88,14 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   @override
   void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (tileData.event != widget.positionedTileData.event) {
-      tileData = widget.positionedTileData;
-      continuesBefore = tileData.event.continuesBefore(tileData.date);
-      continuesAfter = tileData.event.continuesAfter(tileData.date);
+    if (tileData.event != widget.tileData.event) {
+      tileData = widget.tileData;
       initialDateTimeRange = tileData.event.dateTimeRange;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isMoving = controller.selectedEvent == tileData.event;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         double height = constraints.maxHeight < 16 ? constraints.maxHeight : 16;
@@ -128,22 +119,10 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                     ? (LongPressEndDetails details) async =>
                         _onLongPressEnd(details)
                     : null,
-                child: scope.tileComponents.tileBuilder!(
-                  tileData.event,
-                  TileConfiguration(
-                    tileType: widget.isChanging
-                        ? TileType.selected
-                        : isMoving
-                            ? TileType.ghost
-                            : TileType.normal,
-                    drawOutline: tileData.drawOutline,
-                    continuesBefore: continuesBefore,
-                    continuesAfter: continuesAfter,
-                  ),
-                ),
+                child: widget.child,
               ),
               if (tileData.event.canModify)
-                useMobileGestures && widget.isChanging
+                useMobileGestures && widget.isSelected
                     ? Positioned(
                         top: 0,
                         right: 0,
@@ -163,7 +142,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                           ),
                         ),
                       )
-                    : useDesktopGestures
+                    : useDesktopGestures && !tileData.continuesBefore
                         ? Positioned(
                             top: 0,
                             height: 8,
@@ -184,7 +163,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                           )
                         : const SizedBox.shrink(),
               if (tileData.event.canModify)
-                useMobileGestures && widget.isChanging
+                useMobileGestures && widget.isSelected
                     ? Positioned(
                         bottom: 0,
                         left: 0,
@@ -204,7 +183,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                           ),
                         ),
                       )
-                    : useDesktopGestures
+                    : useDesktopGestures && !tileData.continuesAfter
                         ? Positioned(
                             bottom: 0,
                             height: 8,
