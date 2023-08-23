@@ -43,7 +43,7 @@ class EventTile extends StatelessWidget {
                 text: TextSpan(children: [
                   TextSpan(
                     text: event.eventData?.title ?? '',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const TextSpan(text: '\n'),
                   TextSpan(
