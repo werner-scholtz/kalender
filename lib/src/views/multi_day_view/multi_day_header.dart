@@ -73,7 +73,7 @@ class MultiDayHeader<T> extends StatelessWidget {
                     SizedBox(
                       width: viewConfiguration.timelineWidth,
                     ),
-                    PositionedMultiDayTileStack<T>(
+                    MultiDayTileStack<T>(
                       pageWidth: pageWidth,
                       dayWidth: dayWidth,
                       multiDayEventLayout:

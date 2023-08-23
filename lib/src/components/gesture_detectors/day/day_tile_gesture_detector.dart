@@ -98,116 +98,109 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        double height = constraints.maxHeight < 16 ? constraints.maxHeight : 16;
-        double width = constraints.maxHeight < 16 ? constraints.maxHeight : 16;
-        return MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              GestureDetector(
-                onTap: _onTap,
-                onPanStart: useDesktopGestures ? _onPanStart : null,
-                onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
-                onPanEnd: useDesktopGestures
-                    ? (DragEndDetails details) async => _onPanEnd(details)
-                    : null,
-                onLongPressStart: useMobileGestures ? _onLongPressStart : null,
-                onLongPressMoveUpdate:
-                    useMobileGestures ? _onLongPressMoveUpdate : null,
-                onLongPressEnd: useMobileGestures
-                    ? (LongPressEndDetails details) async =>
-                        _onLongPressEnd(details)
-                    : null,
-                child: widget.child,
-              ),
-              if (tileData.event.canModify)
-                useMobileGestures && widget.isSelected
+    double height = tileData.height < 16 ? tileData.height : 16;
+    double width = tileData.height < 16 ? tileData.height : 16;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          GestureDetector(
+            onTap: _onTap,
+            onPanStart: useDesktopGestures ? _onPanStart : null,
+            onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
+            onPanEnd: useDesktopGestures
+                ? (DragEndDetails details) async => _onPanEnd(details)
+                : null,
+            onLongPressStart: useMobileGestures ? _onLongPressStart : null,
+            onLongPressMoveUpdate:
+                useMobileGestures ? _onLongPressMoveUpdate : null,
+            onLongPressEnd: useMobileGestures
+                ? (LongPressEndDetails details) async =>
+                    _onLongPressEnd(details)
+                : null,
+            child: widget.child,
+          ),
+          if (tileData.event.canModify)
+            useMobileGestures && widget.isSelected
+                ? Positioned(
+                    top: 0,
+                    right: 0,
+                    height: height,
+                    width: width,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragStart: _onVerticalDragStart,
+                      onVerticalDragUpdate: _onVerticalDragUpdateStart,
+                      onVerticalDragEnd: (DragEndDetails details) async =>
+                          _onVerticalDragEnd(details),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  )
+                : useDesktopGestures && !tileData.continuesBefore
                     ? Positioned(
                         top: 0,
+                        height: 8,
+                        left: 0,
                         right: 0,
-                        height: height,
-                        width: width,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onVerticalDragStart: _onVerticalDragStart,
-                          onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                          onVerticalDragEnd: (DragEndDetails details) async =>
-                              _onVerticalDragEnd(details),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onBackground,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.resizeRow,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onVerticalDragStart: _onVerticalDragStart,
+                            onVerticalDragUpdate: _onVerticalDragUpdateStart,
+                            onVerticalDragEnd: (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details),
                           ),
                         ),
                       )
-                    : useDesktopGestures && !tileData.continuesBefore
-                        ? Positioned(
-                            top: 0,
-                            height: 8,
-                            left: 0,
-                            right: 0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.resizeRow,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: _onVerticalDragStart,
-                                onVerticalDragUpdate:
-                                    _onVerticalDragUpdateStart,
-                                onVerticalDragEnd:
-                                    (DragEndDetails details) async =>
-                                        _onVerticalDragEnd(details),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-              if (tileData.event.canModify)
-                useMobileGestures && widget.isSelected
+                    : const SizedBox.shrink(),
+          if (tileData.event.canModify)
+            useMobileGestures && widget.isSelected
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    height: height,
+                    width: width,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragStart: _onVerticalDragStart,
+                      onVerticalDragUpdate: _onVerticalDragUpdateEnd,
+                      onVerticalDragEnd: (DragEndDetails details) async =>
+                          _onVerticalDragEnd(details),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  )
+                : useDesktopGestures && !tileData.continuesAfter
                     ? Positioned(
                         bottom: 0,
+                        height: 8,
                         left: 0,
-                        height: height,
-                        width: width,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onVerticalDragStart: _onVerticalDragStart,
-                          onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                          onVerticalDragEnd: (DragEndDetails details) async =>
-                              _onVerticalDragEnd(details),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onBackground,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                        right: 0,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.resizeRow,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onVerticalDragStart: _onVerticalDragStart,
+                            onVerticalDragUpdate: _onVerticalDragUpdateEnd,
+                            onVerticalDragEnd: (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details),
                           ),
                         ),
                       )
-                    : useDesktopGestures && !tileData.continuesAfter
-                        ? Positioned(
-                            bottom: 0,
-                            height: 8,
-                            left: 0,
-                            right: 0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.resizeRow,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: _onVerticalDragStart,
-                                onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                                onVerticalDragEnd:
-                                    (DragEndDetails details) async =>
-                                        _onVerticalDragEnd(details),
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-            ],
-          ),
-        );
-      },
+                    : const SizedBox.shrink(),
+        ],
+      ),
     );
   }
 

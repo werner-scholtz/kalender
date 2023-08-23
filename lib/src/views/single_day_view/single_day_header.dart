@@ -48,7 +48,7 @@ class SingleDayHeader<T> extends StatelessWidget {
                       ),
                     ],
                   ),
-                  PositionedMultiDayTileStack<T>(
+                  MultiDayTileStack<T>(
                     pageWidth: dayWidth,
                     dayWidth: dayWidth,
                     multiDayEventLayout:

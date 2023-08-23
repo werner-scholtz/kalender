@@ -9,8 +9,8 @@ import 'package:kalender/src/models/tile_configurations/tile_configuration_expor
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class PositionedMultiDayTileStack<T> extends StatelessWidget {
-  const PositionedMultiDayTileStack({
+class MultiDayTileStack<T> extends StatelessWidget {
+  const MultiDayTileStack({
     super.key,
     required this.pageWidth,
     required this.dayWidth,
@@ -74,7 +74,7 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                 ),
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
-                    return MultidayTileStack<T>(
+                    return PositionedMultiDayTile<T>(
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
                       positionedTileData: e,
                       dayWidth: dayWidth,
@@ -101,8 +101,9 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
       controller.hasChaningEvent && controller.isSelectedEventMultiday;
 }
 
-class MultidayTileStack<T> extends StatelessWidget {
-  const MultidayTileStack({
+/// The [PositionedMultiDayTile] is used to display a single [PositionedMultiDayTileData].
+class PositionedMultiDayTile<T> extends StatelessWidget {
+  const PositionedMultiDayTile({
     super.key,
     required this.visibleDateRange,
     required this.positionedTileData,
@@ -120,30 +121,26 @@ class MultidayTileStack<T> extends StatelessWidget {
     CalendarScope<T> scope = CalendarScope.of(context);
     bool isMoving =
         scope.eventsController.selectedEvent == positionedTileData.event;
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: positionedTileData.top,
-          left: positionedTileData.left,
-          width: positionedTileData.width,
-          height: positionedTileData.height,
-          child: MultiDayTileGestureDetector<T>(
-            horizontalDurationStep: horizontalDurationStep,
-            horizontalStep: dayWidth,
-            tileData: positionedTileData,
-            visibleDateRange: visibleDateRange,
-            isSelected: false,
-            child: scope.tileComponents.multiDayTileBuilder!(
-              positionedTileData.event,
-              MultiDayTileConfiguration(
-                tileType: isMoving ? TileType.ghost : TileType.normal,
-                continuesBefore: positionedTileData.continuesBefore,
-                continuesAfter: positionedTileData.continuesAfter,
-              ),
-            ),
+    return Positioned(
+      top: positionedTileData.top,
+      left: positionedTileData.left,
+      width: positionedTileData.width,
+      height: positionedTileData.height,
+      child: MultiDayTileGestureDetector<T>(
+        horizontalDurationStep: horizontalDurationStep,
+        horizontalStep: dayWidth,
+        tileData: positionedTileData,
+        visibleDateRange: visibleDateRange,
+        isSelected: false,
+        child: scope.tileComponents.multiDayTileBuilder!(
+          positionedTileData.event,
+          MultiDayTileConfiguration(
+            tileType: isMoving ? TileType.ghost : TileType.normal,
+            continuesBefore: positionedTileData.continuesBefore,
+            continuesAfter: positionedTileData.continuesAfter,
           ),
         ),
-      ],
+      ),
     );
   }
 }

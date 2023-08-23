@@ -130,7 +130,7 @@ class MultiDayContent<T> extends StatelessWidget {
                               child: SizedBox(
                                 width: pageWidth,
                                 height: pageHeight,
-                                child: PositionedTileStack<T>(
+                                child: DayTileStack<T>(
                                   pageVisibleDateRange: pageVisibleDateRange,
                                   tileLayoutController: tileLayoutController,
                                   dayWidth: dayWidth,

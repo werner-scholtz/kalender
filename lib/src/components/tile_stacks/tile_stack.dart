@@ -6,8 +6,9 @@ import 'package:kalender/src/models/tile_configurations/tile_configuration_expor
 import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class PositionedTileStack<T> extends StatelessWidget {
-  const PositionedTileStack({
+/// The [DayTileStack] is used to display [PositionedTileData]'s of the events in a [TileGroup].
+class DayTileStack<T> extends StatelessWidget {
+  const DayTileStack({
     super.key,
     required this.pageVisibleDateRange,
     required this.tileLayoutController,
@@ -99,6 +100,7 @@ class PositionedTileStack<T> extends StatelessWidget {
       controller.hasChaningEvent && !controller.isSelectedEventMultiday;
 }
 
+/// The [TileGroupStack] is used to display [PositionedTileData]'s of the events in a [TileGroup].
 class TileGroupStack<T> extends StatelessWidget {
   const TileGroupStack({
     super.key,
@@ -185,7 +187,7 @@ class TileGroupStack<T> extends StatelessWidget {
   }
 }
 
-/// The [ChangingTileStack] is used to display [PositionedTileData]'s of the event being modified..
+/// The [ChangingTileStack] is used to display [PositionedTileData]'s of the event being modified.
 class ChangingTileStack<T> extends StatelessWidget {
   const ChangingTileStack({
     super.key,

@@ -81,7 +81,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 ),
                 ...arragedEvents.map(
                   (PositionedMonthTileData<T> e) {
-                    return MonthTileStack<T>(
+                    return PositionedMonthTile<T>(
                       controller: scope.eventsController,
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
                       viewConfiguration: viewConfiguration,
@@ -114,8 +114,9 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
   }
 }
 
-class MonthTileStack<T> extends StatelessWidget {
-  const MonthTileStack({
+/// The [PositionedMonthTile] displays a single [PositionedMonthTileData].
+class PositionedMonthTile<T> extends StatelessWidget {
+  const PositionedMonthTile({
     super.key,
     required this.controller,
     required this.viewConfiguration,
@@ -148,39 +149,30 @@ class MonthTileStack<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
     bool isMoving = controller.selectedEvent == positionedTileData.event;
-    return ListenableBuilder(
-      listenable: controller,
-      builder: (BuildContext context, Widget? child) {
-        return Stack(
-          children: <Widget>[
-            Positioned(
-              top: positionedTileData.top,
-              left: positionedTileData.left,
-              width: positionedTileData.width,
-              height: positionedTileData.height,
-              child: MonthTileGestureDetector<T>(
-                horizontalDurationStep: horizontalDurationStep,
-                tileData: positionedTileData,
-                horizontalStep: horizontalStep,
-                verticalDurationStep: verticalDurationStep,
-                verticalStep: verticalStep,
-                visibleDateRange: monthVisibleDateRange,
-                enableResizing: viewConfiguration.enableRezising,
-                isSelected: false,
-                child: scope.tileComponents.monthTileBuilder!(
-                  positionedTileData.event,
-                  MonthTileConfiguration(
-                    tileType: isMoving ? TileType.ghost : TileType.normal,
-                    date: positionedTileData.dateRange.start,
-                    continuesBefore: positionedTileData.continuesBefore,
-                    continuesAfter: positionedTileData.continuesAfter,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+    return Positioned(
+      top: positionedTileData.top,
+      left: positionedTileData.left,
+      width: positionedTileData.width,
+      height: positionedTileData.height,
+      child: MonthTileGestureDetector<T>(
+        horizontalDurationStep: horizontalDurationStep,
+        tileData: positionedTileData,
+        horizontalStep: horizontalStep,
+        verticalDurationStep: verticalDurationStep,
+        verticalStep: verticalStep,
+        visibleDateRange: monthVisibleDateRange,
+        enableResizing: viewConfiguration.enableRezising,
+        isSelected: false,
+        child: scope.tileComponents.monthTileBuilder!(
+          positionedTileData.event,
+          MonthTileConfiguration(
+            tileType: isMoving ? TileType.ghost : TileType.normal,
+            date: positionedTileData.dateRange.start,
+            continuesBefore: positionedTileData.continuesBefore,
+            continuesAfter: positionedTileData.continuesAfter,
+          ),
+        ),
+      ),
     );
   }
 }
