@@ -215,7 +215,7 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Locks the vertical scroll of the current view.
   void lockScrollPhyscis() {
-    _state?.scrollPhysics = const NeverScrollableScrollPhysics();
+    _state?.scrollPhysics.value = const NeverScrollableScrollPhysics();
     notifyListeners();
   }
 
@@ -224,7 +224,7 @@ class CalendarController<T> with ChangeNotifier {
   void unlockScrollPhysics({
     ScrollPhysics? scrollPhysics,
   }) {
-    _state?.scrollPhysics = scrollPhysics ?? const ScrollPhysics();
+    _state?.scrollPhysics.value = scrollPhysics ?? const ScrollPhysics();
     notifyListeners();
   }
 }

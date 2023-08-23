@@ -27,7 +27,8 @@ class ViewState {
   final ScrollController scrollController;
 
   /// The scrollPhysics of the current view.
-  ScrollPhysics scrollPhysics = const ScrollPhysics();
+  ValueNotifier<ScrollPhysics> scrollPhysics =
+      ValueNotifier<ScrollPhysics>(const ScrollPhysics());
 
   /// The height per minute of the current view.
   /// This is only used in the [SingleDayView] & [MultiDayView].
