@@ -75,20 +75,16 @@ class _MonthCellGestureDetectorState<T>
 
   /// TODO: figure something out.
   void _onTap() async {
-    if (isMobileDevice) {
-      scope.functions.onDateTapped?.call(date);
-    } else {
-      // Create a new [CalendarEvent] with the [dateTimeRange].
-      CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+    // Set the selected event to a new event.
+    scope.eventsController.selectEvent(
+      CalendarEvent<T>(
         dateTimeRange: date.dayRange,
-      );
+      ),
+    );
 
-      controller.selectEvent(newCalendarEvent);
-
-      await functions.onCreateEvent?.call(controller.selectedEvent!);
-
-      scope.eventsController.deselectEvent();
-    }
+    await scope.functions.onCreateEvent?.call(
+      scope.eventsController.selectedEvent!,
+    );
   }
 
   void _onPanStart(DragStartDetails details) {
