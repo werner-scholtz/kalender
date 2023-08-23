@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: LayoutBuilder(
           builder: (context, constraints) {
             if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-              if (constraints.maxWidth < 800) {
+              if (constraints.maxWidth < 500) {
                 return MobileScreen(
                   eventsController: eventController,
                 );
