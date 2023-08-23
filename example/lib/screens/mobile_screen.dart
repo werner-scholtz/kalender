@@ -9,11 +9,9 @@ class MobileScreen extends StatefulWidget {
   const MobileScreen({
     super.key,
     required this.eventsController,
-    required this.viewConfigurations,
   });
 
   final CalendarEventsController<Event> eventsController;
-  final List<ViewConfiguration> viewConfigurations;
 
   @override
   State<MobileScreen> createState() => _MobileScreenState();
@@ -26,7 +24,41 @@ class _MobileScreenState extends State<MobileScreen> {
   late CalendarEventHandlers<Event> eventHandlers;
 
   /// The list of view configurations that can be used.
-  late List<ViewConfiguration> viewConfigurations = widget.viewConfigurations;
+  List<ViewConfiguration> viewConfigurations = [
+    const DayConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WorkWeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Two Day',
+      numberOfDays: 2,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Three Day',
+      numberOfDays: 3,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Four Day',
+      numberOfDays: 4,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MonthConfiguration(
+      enableRezising: true,
+    ),
+  ];
 
   /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
