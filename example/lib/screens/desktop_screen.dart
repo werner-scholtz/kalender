@@ -99,20 +99,25 @@ class _DesktopScreenState extends State<DesktopScreen> {
           ),
         ),
         Expanded(
-          child: CalendarCustomization(
-            currentConfiguration: currentConfiguration,
-            components: components,
-            layoutControllers: layoutControllers,
-            style: style,
-            onComponentChange: (components) =>
-                setState(() => this.components = components),
-            onLayoutControllerChange: (layoutControllers) =>
-                setState(() => this.layoutControllers = layoutControllers),
-            onStyleChange: (style) => setState(() => this.style = style),
-            onConfigurationChange: (configuration) => setState(
-              () {
-                currentConfiguration = configuration;
-              },
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              child: CalendarCustomization(
+                currentConfiguration: currentConfiguration,
+                components: components,
+                layoutControllers: layoutControllers,
+                style: style,
+                onComponentChange: (components) =>
+                    setState(() => this.components = components),
+                onLayoutControllerChange: (layoutControllers) =>
+                    setState(() => this.layoutControllers = layoutControllers),
+                onStyleChange: (style) => setState(() => this.style = style),
+                onConfigurationChange: (configuration) => setState(
+                  () {
+                    currentConfiguration = configuration;
+                  },
+                ),
+              ),
             ),
           ),
         ),
