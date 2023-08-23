@@ -101,7 +101,7 @@ class EventEditDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Icons.save),
               label: const Text('Save'),
             ),
           ],
