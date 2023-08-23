@@ -27,7 +27,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 1',
+          description: 'Description',
           color: Colors.blueGrey,
         ),
       ),
@@ -38,7 +38,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 2',
+          description: 'Description',
           color: Colors.red,
         ),
       ),
@@ -49,7 +49,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 3',
+          description: 'Description',
           color: Colors.blueGrey,
         ),
       ),
@@ -60,7 +60,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 4',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
@@ -71,7 +71,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 5',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
@@ -82,40 +82,46 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 6',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfThursday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfThursday.add(Duration(hours: 7 + Random().nextInt(6))),
+          start: startOfThursday
+              .add(Duration(hours: Random().nextInt(6), minutes: 4)),
+          end: startOfThursday
+              .add(Duration(hours: 7 + Random().nextInt(6), minutes: 4)),
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 7',
+          description: 'Description',
           color: Colors.green,
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfFriday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfFriday.add(Duration(hours: 8 + Random().nextInt(6))),
+          start: startOfFriday
+              .add(Duration(hours: Random().nextInt(6), minutes: 7)),
+          end: startOfFriday
+              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 7)),
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 8',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfSaturday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfSaturday.add(Duration(hours: 8 + Random().nextInt(6))),
+          start: startOfSaturday
+              .add(Duration(hours: Random().nextInt(6), minutes: 10)),
+          end: startOfSaturday
+              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 10)),
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 9',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
@@ -126,18 +132,20 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 9',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfSunday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfSunday.add(Duration(hours: 12 + Random().nextInt(6))),
+          start: startOfSunday
+              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+          end: startOfSunday
+              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
         ),
         eventData: Event(
           title: 'Event',
-          description: 'This is a description of event 10',
+          description: 'Description',
           color: Colors.blue,
         ),
       ),

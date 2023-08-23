@@ -9,6 +9,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
+import 'shortcuts/shortcuts.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -76,21 +78,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (context) {
-          if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-            return DesktopScreen(
-              eventsController: eventController,
-              viewConfigurations: viewConfigurations,
-            );
-          } else {
-            return MobileScreen(
-              eventsController: eventController,
-              viewConfigurations: viewConfigurations,
-            );
-          }
-        },
+    return Shortcuts(
+      shortcuts: shortcuts,
+      child: Scaffold(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+              if (constraints.maxWidth < 800) {
+                return MobileScreen(
+                  eventsController: eventController,
+                  viewConfigurations: viewConfigurations,
+                );
+              }
+              return DesktopScreen(
+                eventsController: eventController,
+              );
+            } else {
+              return MobileScreen(
+                eventsController: eventController,
+                viewConfigurations: viewConfigurations,
+              );
+            }
+          },
+        ),
       ),
     );
   }

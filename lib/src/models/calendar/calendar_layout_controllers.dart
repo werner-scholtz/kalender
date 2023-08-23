@@ -84,11 +84,18 @@ class CalendarLayoutControllers<T> {
 
   @override
   operator ==(Object other) {
-    return false;
+    return other is CalendarLayoutControllers &&
+        other.dayTileLayoutController == dayTileLayoutController &&
+        other.multiDayTileLayoutController == multiDayTileLayoutController &&
+        other.monthTileLayoutController == monthTileLayoutController;
   }
 
   @override
-  int get hashCode => Object.hash(dayTileLayoutController, 1);
+  int get hashCode => Object.hash(
+        dayTileLayoutController,
+        multiDayTileLayoutController,
+        monthTileLayoutController,
+      );
 
   CalendarLayoutControllers<T> copyWith({
     DayLayoutController<T>? dayTileLayoutController,

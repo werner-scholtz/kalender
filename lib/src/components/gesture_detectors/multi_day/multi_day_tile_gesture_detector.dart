@@ -67,6 +67,7 @@ class _MultiDayTileGestureDetectorState<T>
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
           GestureDetector(
             onHorizontalDragStart:
@@ -116,14 +117,14 @@ class _MultiDayTileGestureDetectorState<T>
 
   Future<void> _onTap() async {
     await functions.onEventTapped?.call(tileData.event);
-    controller.updateUI();
+    controller.forceUpdate();
   }
 
   void _onRescheduleStart(DragStartDetails details) {
     cursorOffset = 0;
     currentSteps = 0;
     initialDateTimeRange = widget.tileData.event.dateTimeRange;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
@@ -161,7 +162,7 @@ class _MultiDayTileGestureDetectorState<T>
     currentSteps = 0;
     initialDateTimeRange = tileData.event.dateTimeRange;
     controller.isResizing = true;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
   }
 

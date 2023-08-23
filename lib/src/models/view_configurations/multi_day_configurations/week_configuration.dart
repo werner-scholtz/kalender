@@ -3,6 +3,7 @@ import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
+/// TODO: fix first day of week errors.
 class WeekConfiguration extends MultiDayViewConfiguration {
   const WeekConfiguration({
     this.timelineWidth = 56,
@@ -124,5 +125,35 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
     }
     return visibleDateTimeRange;
+  }
+
+  WeekConfiguration copyWith({
+    double? timelineWidth,
+    double? hourlineTimelineOverlap,
+    double? multidayTileHeight,
+    SlotSize? slotSize,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    int? firstDayOfWeek,
+    bool? createNewEvents,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+  }) {
+    return WeekConfiguration(
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      hourlineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      slotSize: slotSize ?? this.slotSize,
+      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
+      eventSnapping: eventSnapping ?? this.eventSnapping,
+      timeIndicatorSnapping:
+          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+      firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+    );
   }
 }

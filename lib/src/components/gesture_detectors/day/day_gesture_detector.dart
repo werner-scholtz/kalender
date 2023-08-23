@@ -119,7 +119,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   /// Handles the onTap event.
   void _onTap(DateTimeRange dateTimeRange) async {
     // Set the selected event to a new event.
-    scope.eventsController.setSelectedEvent(
+    scope.eventsController.selectEvent(
       CalendarEvent<T>(
         dateTimeRange: dateTimeRange,
       ),
@@ -136,7 +136,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
     DateTimeRange initialDateTimeRange,
   ) {
     cursorOffset = 0;
-    scope.eventsController.setSelectedEvent(
+    scope.eventsController.selectEvent(
       CalendarEvent<T>(
         dateTimeRange: initialDateTimeRange,
       ),

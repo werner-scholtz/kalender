@@ -49,7 +49,8 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
           /// Arrange the events.
           List<PositionedMonthTileData<T>> arragedEvents =
               monthEventLayout.layoutTiles(
-            scope.eventsController.getEventsFromDateRange(visibleDateRange),
+            scope.eventsController
+                .getMonthEventsFromDateRange(visibleDateRange),
             selectedEvent: scope.eventsController.selectedEvent,
           );
 

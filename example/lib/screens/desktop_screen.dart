@@ -1,7 +1,5 @@
-import 'package:example/layout_controllers/day_layout_controller.dart';
-import 'package:example/main.dart';
+import 'package:example/widgets/calendar_customization/calendar_customization.dart';
 import 'package:example/widgets/components/calendar_header_desktop.dart';
-import 'package:example/widgets/zoom_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
@@ -13,11 +11,9 @@ class DesktopScreen extends StatefulWidget {
   const DesktopScreen({
     super.key,
     required this.eventsController,
-    required this.viewConfigurations,
   });
 
   final CalendarEventsController<Event> eventsController;
-  final List<ViewConfiguration> viewConfigurations;
 
   @override
   State<DesktopScreen> createState() => _DesktopScreenState();
@@ -34,21 +30,29 @@ class _DesktopScreenState extends State<DesktopScreen> {
   late ViewConfiguration currentConfiguration = viewConfigurations[1];
 
   /// The list of view configurations that can be used.
-  late List<ViewConfiguration> viewConfigurations = widget.viewConfigurations;
-
-  final Color highlightColor = Colors.red;
-  bool customLayoutController = false;
-  bool highlightCalendarHeader = false;
-  bool highlightDaySeperator = false;
-  bool highlighthourLine = false;
-  bool highlightDayHeader = false;
-
-  bool highlightTimeIndicator = false;
-  bool highlightTimeline = false;
-  bool highlightWeekNumber = false;
-  bool highlightMonthGrid = false;
-  bool highlightMonthCellHeaders = false;
-  bool highlightMonthHeader = false;
+  late List<ViewConfiguration> viewConfigurations = [
+    const DayConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WorkWeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Multiday',
+      numberOfDays: 2,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MonthConfiguration(
+      enableRezising: true,
+    ),
+  ];
 
   @override
   void initState() {
@@ -76,227 +80,42 @@ class _DesktopScreenState extends State<DesktopScreen> {
       children: [
         Expanded(
           flex: 3,
-          child: CalendarZoomDetector(
+          child: CalendarView<Event>(
             controller: calendarController,
-            child: CalendarView<Event>(
-              controller: calendarController,
-              eventsController: eventsController,
-              viewConfiguration: currentConfiguration,
-              tileBuilder: _tileBuilder,
-              multiDayTileBuilder: _multiDayTileBuilder,
-              monthTileBuilder: _monthEventTileBuilder,
-              components: components,
-              layoutControllers: layoutControllers,
-              style: style,
-              eventHandlers: CalendarEventHandlers<Event>(
-                onEventChanged: onEventChanged,
-                onEventTapped: onEventTapped,
-                onCreateEvent: onCreateEvent,
-                onDateTapped: onDateTapped,
-              ),
+            eventsController: eventsController,
+            viewConfiguration: currentConfiguration,
+            tileBuilder: _tileBuilder,
+            multiDayTileBuilder: _multiDayTileBuilder,
+            monthTileBuilder: _monthEventTileBuilder,
+            components: components,
+            layoutControllers: layoutControllers,
+            style: style,
+            eventHandlers: CalendarEventHandlers<Event>(
+              onEventChanged: onEventChanged,
+              onEventTapped: onEventTapped,
+              onCreateEvent: onCreateEvent,
+              onDateTapped: onDateTapped,
             ),
           ),
         ),
         Expanded(
-          flex: 1,
-          child: ListView(
-            children: [
-              ListTile(
-                title: const Text('Theme'),
-                trailing: IconButton.filledTonal(
-                  onPressed: () => MyApp.of(context)!.toggleTheme(),
-                  icon: Icon(
-                    MyApp.of(context)!.themeMode == ThemeMode.dark
-                        ? Icons.brightness_2_rounded
-                        : Icons.brightness_7_rounded,
-                  ),
-                ),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Custom Layout Controller'),
-                value: customLayoutController,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    layoutControllers = layoutControllers.copyWith(
-                      dayTileLayoutController:
-                          value ? _dayTileLayoutController : null,
-                    );
-                    customLayoutController = value;
-                  });
-                },
-              ),
-              const Divider(),
-              const ListTile(
-                title: Text('Highlight Components'),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Calendar Header'),
-                value: highlightCalendarHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      calendarHeaderBackgroundStyle:
-                          CalendarHeaderBackgroundStyle(
-                        headerElevation: 5,
-                        headerBackgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                      ),
-                    );
-                    highlightCalendarHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Day Seperator'),
-                value: highlightDaySeperator,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      daySeperatorStyle: DaySeperatorStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlightDaySeperator = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Hour Lines'),
-                value: highlighthourLine,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      hourLineStyle: HourLineStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlighthourLine = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Day Header'),
-                value: highlightDayHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      dayHeaderStyle: DayHeaderStyle(
-                        backgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    );
-                    highlightDayHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Time Indicator'),
-                value: highlightTimeIndicator,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      timeIndicatorStyle: TimeIndicatorStyle(
-                        color: value ? Colors.greenAccent : null,
-                      ),
-                    );
-                    highlightTimeIndicator = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Header'),
-                value: highlightMonthHeader,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                        monthHeaderStyle: MonthHeaderStyle(
-                            textStyle: TextStyle(
-                      color: value ? highlightColor : null,
-                    )));
-                    highlightMonthHeader = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Cell Header'),
-                value: highlightMonthCellHeaders,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      monthCellHeaderStyle: MonthCellHeaderStyle(
-                        backgroundColor:
-                            value ? highlightColor.withAlpha(100) : null,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    );
-                    highlightMonthCellHeaders = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Month Grid'),
-                value: highlightMonthGrid,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      monthGridStyle: MonthGridStyle(
-                        color: value ? highlightColor : null,
-                      ),
-                    );
-                    highlightMonthGrid = value;
-                  });
-                },
-              ),
-              const Divider(),
-              const ListTile(
-                title: Text('Change Components'),
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Timeline'),
-                value: highlightTimeline,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      timelineStyle: TimelineStyle(
-                        use24HourFormat: !value,
-                      ),
-                    );
-                    highlightTimeline = value;
-                  });
-                },
-              ),
-              CheckboxListTile.adaptive(
-                title: const Text('Week Number'),
-                value: highlightWeekNumber,
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    style = style.copyWith(
-                      weekNumberStyle: WeekNumberStyle(
-                        visualDensity: value ? VisualDensity.comfortable : null,
-                        textStyle: TextStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    );
-                    highlightWeekNumber = value;
-                  });
-                },
-              ),
-            ],
+          child: CalendarCustomization(
+            currentConfiguration: currentConfiguration,
+            components: components,
+            layoutControllers: layoutControllers,
+            style: style,
+            onComponentChange: (components) =>
+                setState(() => this.components = components),
+            onLayoutControllerChange: (layoutControllers) =>
+                setState(() => this.layoutControllers = layoutControllers),
+            onStyleChange: (style) => setState(() => this.style = style),
+            onConfigurationChange: (configuration) => setState(
+              () {
+                currentConfiguration = configuration;
+              },
+            ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -433,22 +252,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
       date: tileConfiguration.date,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
-    );
-  }
-
-  DayTileLayoutController<Event> _dayTileLayoutController({
-    required DateTimeRange visibleDateRange,
-    required List<DateTime> visibleDates,
-    required double heightPerMinute,
-    required double dayWidth,
-    required Duration verticalDurationStep,
-  }) {
-    return ExampleDayTileLayoutController<Event>(
-      visibleDateRange: visibleDateRange,
-      visibleDates: visibleDates,
-      heightPerMinute: heightPerMinute,
-      dayWidth: dayWidth,
-      verticalDurationStep: verticalDurationStep,
     );
   }
 }

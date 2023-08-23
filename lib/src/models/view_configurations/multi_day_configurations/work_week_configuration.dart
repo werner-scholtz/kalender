@@ -138,4 +138,32 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     }
     return visibleDateTimeRange;
   }
+
+  WorkWeekConfiguration copyWith({
+    double? timelineWidth,
+    double? hourlineTimelineOverlap,
+    double? multidayTileHeight,
+    SlotSize? slotSize,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    bool? createNewEvents,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+  }) {
+    return WorkWeekConfiguration(
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      hourlineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      slotSize: slotSize ?? this.slotSize,
+      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
+      eventSnapping: eventSnapping ?? this.eventSnapping,
+      timeIndicatorSnapping:
+          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+    );
+  }
 }

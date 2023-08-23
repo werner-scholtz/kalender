@@ -83,7 +83,7 @@ class _MonthCellGestureDetectorState<T>
         dateTimeRange: date.dayRange,
       );
 
-      controller.setSelectedEvent(newCalendarEvent);
+      controller.selectEvent(newCalendarEvent);
 
       await functions.onCreateEvent?.call(controller.selectedEvent!);
 
@@ -99,7 +99,7 @@ class _MonthCellGestureDetectorState<T>
 
     initialDateTimeRange = newCalendarEvent.dateTimeRange;
 
-    controller.setSelectedEvent(newCalendarEvent);
+    controller.selectEvent(newCalendarEvent);
 
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;

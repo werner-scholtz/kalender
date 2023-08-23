@@ -7,7 +7,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="100%"/> 
 
-* **Mobile & Desktop** - This package is compatible with mobile and desktop.
+* **Platforms** - Works with Web, Desktop and Mobile. 
 
 * **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
 
@@ -209,15 +209,17 @@ These are the default ViewConfiguration's:
 The CaledarView can take a CalendarEventHandlers object.
 The CalendarEventHandlers handles the user's interaction with the calendar. (Do not confuse the CalendarEventHandlers with the EventsController)
 
-There are 4 events at this time that can be handeled.
+There are 5 events at this time that can be handeled.
 
 1. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
-2. **onEventTapped**: this function is called when an event displayed on the calendar is tapped.
+2. **onEventChangeStart**: this function is called when an event is about to be changed.
 
-3. **onCreateEvent**: this function is called when a new event is created by the calendar.
+3. **onEventTapped**: this function is called when an event displayed on the calendar is tapped.
 
-4. **onDateTapped**: this function is called when a date on the calendar is tapped.
+4. **onCreateEvent**: this function is called when a new event is created by the calendar.
+
+5. **onDateTapped**: this function is called when a date on the calendar is tapped.
 
 ```dart
 CalendarEventHandlers<Event>(
@@ -250,7 +252,7 @@ CalendarEventHandlers<Event>(
     // Once this function completes the calendar will rebuild.
   },
   onDateTapped: (date) {
-    // The date is the date that was tapped. see example for use case.
+    // The date is the date header that was tapped. see example for use case.
   },
 );
 ```
@@ -267,7 +269,11 @@ The EventsController is used to store and manage CalendarEvent's.
 | removeEvent   | CalendarEvent\<T\> event  | Removes this event from the list and rebuilds the calendar view |
 | removeWhere   | bool Function(CalendarEvent\<T\> element) test  | Removes the event(s) where the test returns true  |
 | clearEvents   |   | Clears the list of stored events  |
-| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where the test returns true  | 
+| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where 
+the test returns true  | 
+| selectEvent   |  CalendarEvent<T> event | Selects the given event. |
+| deselectEvent | | Deslects the selected event. |
+| forceUpdate | | Forces the calendar to update the UI. |
 
 
 ### Calendar Controller
@@ -281,7 +287,7 @@ The CalendarController is used to control the CalendarView.
 | jumpToPage  | int page  | Jumps to the given page.  |
 | jumpToDate  | DateTime date  | Jumps to the given date.  |
 | animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided.|
-| adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view.  |
+| adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view. (Zoom level)  |
 | animateToEvent  | CalendarEvent<T> event, {Duration? duration, Curve? curve}  | Animates to the CalendarEvent.  | 
 | lockScrollPhyscis  |   | Locks the vertical scroll of the current view. | 
 | unlockScrollPhysics  | ScrollPhysics? scrollPhysics | Unlocks the vertical scroll of the current view. | 

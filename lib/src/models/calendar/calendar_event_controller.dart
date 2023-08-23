@@ -15,22 +15,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   CalendarEvent<T>? _selectedEvent;
   CalendarEvent<T>? get selectedEvent => _selectedEvent;
 
-  void deselectEvent() {
-    _selectedEvent = null;
-    _isSelectedEventMultiday = false;
-    _isResizing = false;
-    _isMoving = false;
-    notifyListeners();
-  }
-
-  void setSelectedEvent(
-    CalendarEvent<T> value,
-  ) {
-    _selectedEvent = value;
-    _isSelectedEventMultiday = value.isMultidayEvent;
-    notifyListeners();
-  }
-
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChaningEvent => _selectedEvent != null;
 
@@ -51,7 +35,26 @@ class CalendarEventsController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUI() {
+  /// Deslects the [_selectedEvent].
+  void deselectEvent() {
+    _selectedEvent = null;
+    _isSelectedEventMultiday = false;
+    _isResizing = false;
+    _isMoving = false;
+    notifyListeners();
+  }
+
+  /// Sets the [_selectedEvent].
+  void selectEvent(
+    CalendarEvent<T> event,
+  ) {
+    _selectedEvent = event;
+    _isSelectedEventMultiday = event.isMultidayEvent;
+    notifyListeners();
+  }
+
+  /// Forces an update of the calendar.
+  void forceUpdate() {
     notifyListeners();
   }
 
@@ -131,7 +134,8 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
-  Iterable<CalendarEvent<T>> getEventsFromDateRange(DateTimeRange dateRange) {
+  Iterable<CalendarEvent<T>> getMonthEventsFromDateRange(
+      DateTimeRange dateRange) {
     return _events.where(
       (CalendarEvent<T> element) => (element.start.isWithin(dateRange) ||
           element.end.isWithin(dateRange)),
@@ -154,17 +158,13 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
     Iterable<CalendarEvent<T>> eventsInDateTimeRange =
-        getEventsFromDateRange(dateRange);
+        getMonthEventsFromDateRange(dateRange);
     List<DateTime> snapPoints = <DateTime>[];
     for (CalendarEvent<T> event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
       snapPoints.add(event.end);
     }
     return snapPoints;
-  }
-
-  Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
-    return _events.where((CalendarEvent<T> element) => element.isOnDate(date));
   }
 
   @override

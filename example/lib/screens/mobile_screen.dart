@@ -99,7 +99,7 @@ class _MobileScreenState extends State<MobileScreen> {
     if (eventsController.selectedEvent == event) {
       eventsController.deselectEvent();
     } else {
-      eventsController.setSelectedEvent(event);
+      eventsController.selectEvent(event);
     }
   }
 
@@ -108,7 +108,7 @@ class _MobileScreenState extends State<MobileScreen> {
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
-    eventsController.setSelectedEvent(event);
+    eventsController.selectEvent(event);
   }
 
   /// This function is called when a date is tapped.

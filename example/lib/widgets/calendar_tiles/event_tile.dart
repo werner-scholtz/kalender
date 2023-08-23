@@ -39,9 +39,18 @@ class EventTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text(
-                event.eventData?.title ?? '',
-                style: Theme.of(context).textTheme.bodyMedium,
+              child: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                    text: event.eventData?.title ?? '',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: '\n'),
+                  TextSpan(
+                    text: event.eventData?.description ?? '',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ]),
               ),
             ),
           ],

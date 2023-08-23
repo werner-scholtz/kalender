@@ -218,7 +218,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       tileData.event,
     );
 
-    controller.updateUI();
+    controller.forceUpdate();
   }
 
   /// Handles the onPanStart event.
@@ -259,7 +259,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     controller.isResizing = true;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
   }
 
   /// Handles the onVerticalDragUpdate event (Start).
@@ -361,7 +361,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     currentHorizontalSteps = 0;
 
     controller.isMoving = true;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
     initialDateTimeRange = tileData.event.dateTimeRange;
 
     scope.functions.onEventChangeStart?.call(tileData.event);

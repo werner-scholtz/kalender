@@ -179,7 +179,7 @@ class _MonthTileGestureDetectorState<T>
     initialDateTimeRange = tileData.event.dateTimeRange;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
@@ -221,7 +221,7 @@ class _MonthTileGestureDetectorState<T>
     currentHorizontalSteps = 0;
 
     controller.isResizing = true;
-    controller.setSelectedEvent(tileData.event);
+    controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
   }
 

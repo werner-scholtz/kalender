@@ -5,7 +5,7 @@ import 'package:kalender/src/extentions.dart';
 ///
 /// [CalendarEvent] is a [ChangeNotifier] so it can be used to update the UI on changes.
 ///
-/// The [CalendarEvent] is generic and can be used to store any type of data.
+/// The [CalendarEvent] is generic and can be used to store any type of custom object.
 class CalendarEvent<T> with ChangeNotifier {
   CalendarEvent({
     required DateTimeRange dateTimeRange,
@@ -14,7 +14,7 @@ class CalendarEvent<T> with ChangeNotifier {
   }) {
     _dateTimeRange = dateTimeRange;
     _eventData = eventData;
-    _mofifyable = modifyable ?? true;
+    _canModify = modifyable ?? true;
   }
 
   /// The [DateTimeRange] of the [CalendarEvent].
@@ -62,10 +62,10 @@ class CalendarEvent<T> with ChangeNotifier {
   }
 
   /// Whether the [CalendarEvent] can be modified.
-  late bool _mofifyable;
-  bool get canModify => _mofifyable;
+  late bool _canModify;
+  bool get canModify => _canModify;
   set canModify(bool newModifyable) {
-    _mofifyable = newModifyable;
+    _canModify = newModifyable;
     notifyListeners();
   }
 
@@ -171,6 +171,7 @@ class CalendarEvent<T> with ChangeNotifier {
         'Start': start,
         'End': end,
         'Event': eventData.toString(),
+        'canModify': canModify,
       };
 
   CalendarEvent<T> copyWith({
@@ -186,13 +187,6 @@ class CalendarEvent<T> with ChangeNotifier {
     );
   }
 
-  void repalceWith({
-    required CalendarEvent<T> event,
-  }) {
-    _dateTimeRange = event.dateTimeRange;
-    _eventData = event.eventData;
-  }
-
   @override
   String toString() => toJson().toString();
 
@@ -200,9 +194,14 @@ class CalendarEvent<T> with ChangeNotifier {
   bool operator ==(Object other) {
     return other is CalendarEvent<T> &&
         other._dateTimeRange == _dateTimeRange &&
-        other.eventData == _eventData;
+        other.eventData == _eventData &&
+        other.canModify == _canModify;
   }
 
   @override
-  int get hashCode => Object.hash(_dateTimeRange, _eventData);
+  int get hashCode => Object.hash(
+        _dateTimeRange,
+        _eventData,
+        _canModify,
+      );
 }

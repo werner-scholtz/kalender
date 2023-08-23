@@ -125,7 +125,7 @@ class _MultiDayGestureDetectorState<T>
     );
 
     // Set the chaning event to the new event.
-    controller.setSelectedEvent(newCalendarEvent);
+    controller.selectEvent(newCalendarEvent);
 
     await functions.onCreateEvent?.call(controller.selectedEvent!);
 
@@ -140,7 +140,7 @@ class _MultiDayGestureDetectorState<T>
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
-    controller.setSelectedEvent(displayEvent);
+    controller.selectEvent(displayEvent);
   }
 
   void _onHorizontalDragUpdate(

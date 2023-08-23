@@ -20,25 +20,26 @@ class ViewState {
   /// The current viewConfiguration of the view.
   final ViewConfiguration viewConfiguration;
 
-  /// The pageController of the [CalendarView].
+  /// The pageController of the current view.
   final PageController pageController;
 
-  /// The scrollController of the [CalendarView].
+  /// The scrollController of the current view.
   final ScrollController scrollController;
 
+  /// The scrollPhysics of the current view.
   ScrollPhysics scrollPhysics = const ScrollPhysics();
 
-  /// The height per minute of the [CalendarView].
+  /// The height per minute of the current view.
   /// This is only used in the [SingleDayView] & [MultiDayView].
   final ValueNotifier<double>? heightPerMinute;
 
-  /// The visible dateTimeRange of the [CalendarView].
+  /// The visible dateTimeRange of the current view.
   final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
-  /// The adjusted dateTimeRange of the [CalendarView].
+  /// The adjusted dateTimeRange of the [current view.
   final DateTimeRange adjustedDateTimeRange;
 
-  /// The number of pages the [PageView] of the [CalendarView] has.
+  /// The number of pages the [PageView] of the current view has.
   final int numberOfPages;
 
   /// The current month that is displayed.

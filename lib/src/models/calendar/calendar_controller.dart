@@ -13,6 +13,8 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 /// * Can be used to animate to a specific date or page.
 /// * Can be used to jump to a specific date or page.
 /// * Can be used to navigate to a specific Event.
+/// * Can be used to change the height per minute of the view. (Zoom level)
+/// * Can be used to lock or unlock the vertical scroll of the view.
 class CalendarController<T> with ChangeNotifier {
   CalendarController({
     DateTime? initialDate,
@@ -23,7 +25,7 @@ class CalendarController<T> with ChangeNotifier {
   /// The currently selected date.
   DateTime selectedDate;
 
-  /// The dateTimeRange that the calendar can display.
+  /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
 
@@ -31,19 +33,14 @@ class CalendarController<T> with ChangeNotifier {
   ViewState? _state;
   bool get isAttached => _state != null;
 
-  /// The height per minute of the current view.
+  /// This [ValueNotifier] exposes the height per minute of the current view.
+  ///
   /// This is only available for [SingleDayView] and [MultiDayView].
-  double? get heightPerMinute => _state?.heightPerMinute?.value;
+  ValueNotifier<double>? get heightPerMinute => _state?.heightPerMinute;
 
-  /// The value notifier visible dateTimeRange of the current view.
+  /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
       _state?.visibleDateTimeRange;
-
-  /// The adjusted dateTimeRange of the current view.
-  DateTimeRange? get adjustedDateTimeRange => _state?.adjustedDateTimeRange;
-
-  /// The number of pages the [PageView] of the current view has.
-  int? get numberOfPages => _state?.numberOfPages;
 
   /// The visible month of the current view.
   DateTime? get visibleMonth => _state?.month;
@@ -162,8 +159,10 @@ class CalendarController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Changes the [heightPerMinute] of the view.
+  /// Changes the [heightPerMinute] of the view. (Zoom level)
   /// * This is only available for [SingleDayView] and [MultiDayView].
+  ///
+  /// The [heightPerMinute] must be greater than 0.
   void adjustHeightPerMinute(double heightPerMinute) {
     assert(
       _state != null,
@@ -175,6 +174,15 @@ class CalendarController<T> with ChangeNotifier {
       'The heightPerMinute must not be null.'
       'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
     );
+    assert(
+      heightPerMinute > 0,
+      'The heightPerMinute must be greater than 0',
+    );
+
+    if (heightPerMinute <= 0) {
+      return;
+    }
+
     _state?.heightPerMinute?.value = heightPerMinute;
     notifyListeners();
   }
@@ -197,7 +205,7 @@ class CalendarController<T> with ChangeNotifier {
       // Then animate to the event.
       await _state?.scrollController.animateTo(
         event.start.difference(event.start.startOfDay).inMinutes *
-            heightPerMinute!,
+            heightPerMinute!.value,
         duration: duration ?? const Duration(milliseconds: 300),
         curve: curve ?? Curves.ease,
       );
@@ -212,6 +220,7 @@ class CalendarController<T> with ChangeNotifier {
   }
 
   /// Unlocks the vertical scroll of the current view.
+  /// * If [scrollPhysics] is provided it will be used instead of the default.
   void unlockScrollPhysics({
     ScrollPhysics? scrollPhysics,
   }) {
