@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
 
-/// TODO: fix first day of week errors.
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
@@ -53,13 +52,11 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
       start: dateTimeRange.start.startOfMonth
-          .startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end:
-          dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+          .startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -90,7 +87,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
     DateTimeRange monthRange = DateTime(
       calendarStart.year,
@@ -98,8 +94,8 @@ class MonthConfiguration extends MonthViewConfiguration {
     ).monthRange;
 
     return DateTimeRange(
-      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 

@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-/// TODO: fix first day of week errors.
 class WeekConfiguration extends MultiDayViewConfiguration {
   const WeekConfiguration({
     this.timelineWidth = 56,
@@ -33,6 +34,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final Duration verticalStepDuration;
+
   @override
   final Duration verticalSnapRange;
 
@@ -59,6 +61,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
+    DateTimeRange start = date.weekRangeWithOffset(firstDayOfWeek);
+    log(start.toString(), name: 'calcualteVisibleDateTimeRange');
     return date.weekRangeWithOffset(firstDayOfWeek);
   }
 
@@ -66,11 +70,10 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -100,13 +103,20 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
+    DateTimeRange start = DateTime(
+      calendarStart.year,
+      calendarStart.month,
+      calendarStart.day + (index * DateTime.daysPerWeek),
+    ).weekRangeWithOffset(firstDayOfWeek);
+
+    log(start.toString(), name: 'calculateVisibleDateRangeForIndex');
+    log(firstDayOfWeek.toString());
     return DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
+    ).weekRangeWithOffset(firstDayOfWeek);
   }
 
   @override

@@ -71,11 +71,10 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -105,13 +104,12 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
     DateTimeRange weekRange = DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
+    ).weekRangeWithOffset(firstDayOfWeek);
 
     return DateTimeRange(
       start: weekRange.start,
