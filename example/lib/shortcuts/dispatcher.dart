@@ -1,7 +1,5 @@
 // import 'dart:developer';
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class LoggingActionDispatcher extends ActionDispatcher {
@@ -11,7 +9,6 @@ class LoggingActionDispatcher extends ActionDispatcher {
     covariant Intent intent, [
     BuildContext? context,
   ]) {
-    log('Action invoked: $action($intent) from $context');
     super.invokeAction(action, intent, context);
 
     return null;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extentions.dart';
@@ -61,8 +59,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
-    DateTimeRange start = date.weekRangeWithOffset(firstDayOfWeek);
-    log(start.toString(), name: 'calcualteVisibleDateTimeRange');
     return date.weekRangeWithOffset(firstDayOfWeek);
   }
 
@@ -104,14 +100,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     required int index,
     required DateTime calendarStart,
   }) {
-    DateTimeRange start = DateTime(
-      calendarStart.year,
-      calendarStart.month,
-      calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek);
-
-    log(start.toString(), name: 'calculateVisibleDateRangeForIndex');
-    log(firstDayOfWeek.toString());
     return DateTime(
       calendarStart.year,
       calendarStart.month,
