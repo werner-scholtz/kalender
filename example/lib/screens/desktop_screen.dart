@@ -164,7 +164,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
           dialogTitle: 'Edit Event',
           event: event,
           deleteEvent: (event) => eventsController.removeEvent(event),
-          cancelEdit: () => event.repalceWith(event: copyOfEvent),
+          cancelEdit: () => event.eventData = copyOfEvent.eventData,
         );
       },
     );
