@@ -45,8 +45,8 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
     class Event {
       final String title;
       final Color color;
-    
-      Event(this.title, this.description);
+      
+      Event(this.title, this.color);
     }
     ```
 
