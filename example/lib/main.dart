@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:example/functions/generate_calendar_eventsd.dart';
+import 'package:example/functions/generate_calendar_events.dart';
 import 'package:example/models/event.dart';
 import 'package:example/screens/desktop_screen.dart';
 import 'package:example/screens/mobile_screen.dart';
