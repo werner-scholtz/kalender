@@ -22,3 +22,18 @@
 * Added custom LayoutControllers example.
 * Added modifyable parameter to CalendarEvent.
 * Bug fixes (Getting stuck while dragging event)
+
+## 0.0.6
+
+* Added onChangeStart callback.
+* Added vertical scroll lock and unlock.
+* Fixed timeindicator snap points.
+
+## 0.0.7
+
+* Reworked Event Selection and Chaning events.
+
+## 0.0.8
+
+* Fixed FirstDayOfWeek bugs.
+* Tile stack improments.
