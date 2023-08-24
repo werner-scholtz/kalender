@@ -2,6 +2,7 @@ import 'package:example/models/event.dart';
 import 'package:example/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:example/widgets/components/calendar_header_mobile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -55,9 +56,10 @@ class _MobileScreenState extends State<MobileScreen> {
       eventSnapping: true,
       timeIndicatorSnapping: true,
     ),
-    const MonthConfiguration(
-      enableRezising: true,
-    ),
+    if (!kIsWeb)
+      const MonthConfiguration(
+        enableRezising: true,
+      ),
   ];
 
   /// The current view configuration.
