@@ -7,14 +7,22 @@ class EventEditSheet extends StatelessWidget {
   const EventEditSheet({
     super.key,
     required this.event,
+    required this.onSave,
+    required this.onDelete,
   });
   final CalendarEvent<Event> event;
+  final Function(CalendarEvent<Event>) onSave;
+  final Function(CalendarEvent<Event>) onDelete;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
         listenable: event,
         builder: (context, child) {
+          final TextEditingController textEditingController =
+              TextEditingController(
+            text: event.eventData?.title,
+          );
           return SizedBox(
             width: double.infinity,
             height: 180,
@@ -30,7 +38,7 @@ class EventEditSheet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: TextFormField(
-                            initialValue: event.eventData?.title,
+                            controller: textEditingController,
                             decoration: const InputDecoration(
                               labelText: 'Title',
                               isDense: true,
@@ -40,6 +48,23 @@ class EventEditSheet extends StatelessWidget {
                             },
                           ),
                         ),
+                        if (event.eventData == null)
+                          IconButton.filledTonal(
+                            icon: const Icon(Icons.save),
+                            onPressed: () {
+                              event.eventData = Event(
+                                title: textEditingController.text,
+                              );
+                              onSave(event);
+                            },
+                          ),
+                        if (event.eventData != null)
+                          IconButton.filledTonal(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              onDelete(event);
+                            },
+                          ),
                       ],
                     ),
                   ),

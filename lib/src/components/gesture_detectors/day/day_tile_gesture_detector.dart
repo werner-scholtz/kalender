@@ -6,7 +6,8 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class DayTileGestureDetector<T> extends StatefulWidget {
   const DayTileGestureDetector({
     super.key,
-    required this.positionedTileData,
+    required this.child,
+    required this.tileData,
     required this.visibleDateTimeRange,
     required this.verticalDurationStep,
     required this.verticalStep,
@@ -15,14 +16,16 @@ class DayTileGestureDetector<T> extends StatefulWidget {
     required this.snapPoints,
     required this.snapToTimeIndicator,
     required this.verticalSnapRange,
-    required this.isMobileDevice,
+    required this.isSelected,
   });
+
+  final Widget child;
 
   /// The visible [DateTimeRange].
   final DateTimeRange visibleDateTimeRange;
 
   /// The event that is wrapped by the [DayTileGestureDetector].
-  final PositionedTileData<T> positionedTileData;
+  final PositionedTileData<T> tileData;
 
   /// The duration of the vertical step when dragging/resizing an event.
   final Duration verticalDurationStep;
@@ -45,8 +48,8 @@ class DayTileGestureDetector<T> extends StatefulWidget {
   /// Whether to snap to the timeindicator.
   final bool snapToTimeIndicator;
 
-  /// Whether the device is a mobile device.
-  final bool isMobileDevice;
+  /// Whether the event is selected.
+  final bool isSelected;
 
   @override
   State<DayTileGestureDetector<T>> createState() =>
@@ -57,17 +60,17 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
 
-  late bool isMobileDevice;
-
   late PositionedTileData<T> tileData;
   late DateTimeRange initialDateTimeRange;
   late List<DateTime> snapPoints;
   late bool snapToTimeIndicator;
-  late bool continuesBefore;
-  late bool continuesAfter;
 
-  late bool useMobileGestures;
-  late bool useDesktopGestures;
+  bool get isMobileDevice => scope.platformData.isMobileDevice;
+
+  bool get useMobileGestures =>
+      isMobileDevice && widget.tileData.event.canModify;
+  bool get useDesktopGestures =>
+      !isMobileDevice && widget.tileData.event.canModify;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -76,12 +79,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   @override
   void initState() {
     super.initState();
-    tileData = widget.positionedTileData;
-    continuesBefore = tileData.event.continuesBefore(tileData.date);
-    continuesAfter = tileData.event.continuesAfter(tileData.date);
-    isMobileDevice = widget.isMobileDevice;
-    useMobileGestures = isMobileDevice && tileData.event.canModify;
-    useDesktopGestures = !isMobileDevice && tileData.event.canModify;
+    tileData = widget.tileData;
     initialDateTimeRange = tileData.event.dateTimeRange;
     snapPoints = widget.snapPoints;
     snapToTimeIndicator = widget.snapToTimeIndicator;
@@ -90,20 +88,18 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   @override
   void didUpdateWidget(covariant DayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (tileData != widget.positionedTileData) {
-      tileData = widget.positionedTileData;
-      continuesBefore = tileData.event.continuesBefore(tileData.date);
-      continuesAfter = tileData.event.continuesAfter(tileData.date);
-      useMobileGestures = isMobileDevice && tileData.event.canModify;
-      useDesktopGestures = !isMobileDevice && tileData.event.canModify;
+    if (tileData.event != widget.tileData.event) {
+      tileData = widget.tileData;
       initialDateTimeRange = tileData.event.dateTimeRange;
     }
+    snapPoints = widget.snapPoints;
+    snapToTimeIndicator = widget.snapToTimeIndicator;
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isMoving = controller.chaningEvent == tileData.event;
-
+    double height = tileData.height < 16 ? tileData.height : 16;
+    double width = tileData.height < 16 ? tileData.height : 16;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
@@ -123,99 +119,99 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                 ? (LongPressEndDetails details) async =>
                     _onLongPressEnd(details)
                 : null,
-            child: scope.tileComponents.tileBuilder!(
-              tileData.event,
-              TileConfiguration(
-                tileType: isMoving ? TileType.ghost : TileType.normal,
-                drawOutline: tileData.drawOutline,
-                continuesBefore: continuesBefore,
-                continuesAfter: continuesAfter,
-              ),
-            ),
+            child: widget.child,
           ),
           if (tileData.event.canModify)
-            Positioned(
-              top: 0,
-              height: 8,
-              left: 0,
-              right: 0,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeRow,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onVerticalDragStart: _onVerticalDragStart,
-                  onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                  onVerticalDragEnd: (DragEndDetails details) async =>
-                      _onVerticalDragEnd(details),
-                ),
-              ),
-            ),
+            useMobileGestures && widget.isSelected
+                ? Positioned(
+                    top: 0,
+                    right: 0,
+                    height: height,
+                    width: width,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragStart: _onVerticalDragStart,
+                      onVerticalDragUpdate: _onVerticalDragUpdateStart,
+                      onVerticalDragEnd: (DragEndDetails details) async =>
+                          _onVerticalDragEnd(details),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  )
+                : useDesktopGestures && !tileData.continuesBefore
+                    ? Positioned(
+                        top: 0,
+                        height: 8,
+                        left: 0,
+                        right: 0,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.resizeRow,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onVerticalDragStart: _onVerticalDragStart,
+                            onVerticalDragUpdate: _onVerticalDragUpdateStart,
+                            onVerticalDragEnd: (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
           if (tileData.event.canModify)
-            Positioned(
-              bottom: 0,
-              height: 8,
-              left: 0,
-              right: 0,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeRow,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onVerticalDragStart: _onVerticalDragStart,
-                  onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                  onVerticalDragEnd: (DragEndDetails details) async =>
-                      _onVerticalDragEnd(details),
-                ),
-              ),
-            ),
+            useMobileGestures && widget.isSelected
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    height: height,
+                    width: width,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onVerticalDragStart: _onVerticalDragStart,
+                      onVerticalDragUpdate: _onVerticalDragUpdateEnd,
+                      onVerticalDragEnd: (DragEndDetails details) async =>
+                          _onVerticalDragEnd(details),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  )
+                : useDesktopGestures && !tileData.continuesAfter
+                    ? Positioned(
+                        bottom: 0,
+                        height: 8,
+                        left: 0,
+                        right: 0,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.resizeRow,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onVerticalDragStart: _onVerticalDragStart,
+                            onVerticalDragUpdate: _onVerticalDragUpdateEnd,
+                            onVerticalDragEnd: (DragEndDetails details) async =>
+                                _onVerticalDragEnd(details),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
         ],
       ),
     );
   }
 
   /// Handles the onTap event.
-  void _onTap() {
-    if (isMobileDevice) {
-      _mobileTap();
-    } else {
-      _desktopTap();
-    }
-  }
-
-  /// Handles the onTap event on a desktop device.
-  Future<void> _desktopTap() async {
-    // Set the changing event.
-    scope.eventsController.chaningEvent = tileData.event;
-    scope.eventsController.isMoving = true;
-
+  Future<void> _onTap() async {
     // Call the onEventTapped function.
-    await scope.functions.onEventTapped
-        ?.call(scope.eventsController.chaningEvent!);
+    await scope.functions.onEventTapped?.call(
+      tileData.event,
+    );
 
-    // Reset the changing event.
-    scope.eventsController.isMoving = false;
-    scope.eventsController.chaningEvent = null;
-  }
-
-  /// Handles the onTap event on a mobile device.
-  Future<void> _mobileTap() async {
-    if (scope.eventsController.chaningEvent == tileData.event) {
-      // Call the onEventTapped function.
-      await scope.functions.onEventTapped?.call(
-        scope.eventsController.chaningEvent!,
-      );
-
-      // Reset the changing event.
-      scope.eventsController.isSelectedMobile = false;
-      scope.eventsController.chaningEvent = null;
-    } else {
-      // Set the changing event.
-      scope.eventsController.chaningEvent = tileData.event;
-      scope.eventsController.isSelectedMobile = true;
-
-      // Call the onEventTapped function.
-      await scope.functions.onEventTapped
-          ?.call(scope.eventsController.chaningEvent!);
-    }
+    controller.forceUpdate();
   }
 
   /// Handles the onPanStart event.
@@ -255,8 +251,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     initialDateTimeRange = tileData.event.dateTimeRange;
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
-    scope.eventsController.chaningEvent = tileData.event;
-    scope.eventsController.isResizing = true;
+    controller.isResizing = true;
+    controller.selectEvent(tileData.event);
   }
 
   /// Handles the onVerticalDragUpdate event (Start).
@@ -280,13 +276,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             element.difference(newStart).abs() <= widget.verticalSnapRange,
       );
 
-      if (scope.eventsController.chaningEvent == null) return;
+      if (scope.eventsController.selectedEvent == null) return;
 
       if (index != -1 && snapPoints[index].isBefore(tileData.event.end)) {
-        scope.eventsController.chaningEvent!.start = snapPoints[index];
+        scope.eventsController.selectedEvent!.start = snapPoints[index];
       } else {
         if (newStart.isBefore(tileData.event.end)) {
-          scope.eventsController.chaningEvent!.start = newStart;
+          scope.eventsController.selectedEvent!.start = newStart;
         }
       }
 
@@ -322,13 +318,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             element.difference(newEnd).abs() <= widget.verticalSnapRange,
       );
 
-      if (scope.eventsController.chaningEvent == null) return;
+      if (scope.eventsController.selectedEvent == null) return;
 
       if (index != -1 && snapPoints[index].isAfter(tileData.event.start)) {
-        scope.eventsController.chaningEvent!.end = snapPoints[index];
+        scope.eventsController.selectedEvent!.end = snapPoints[index];
       } else {
         if (newEnd.isAfter(tileData.event.start)) {
-          scope.eventsController.chaningEvent!.end = newEnd;
+          scope.eventsController.selectedEvent!.end = newEnd;
         }
       }
 
@@ -343,10 +339,12 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    await scope.functions.onEventChanged
-        ?.call(initialDateTimeRange, scope.eventsController.chaningEvent!);
-    scope.eventsController.isResizing = false;
-    scope.eventsController.chaningEvent = null;
+    CalendarEvent<T> selectedEvent = scope.eventsController.selectedEvent!;
+    controller.isResizing = false;
+    await scope.functions.onEventChanged?.call(
+      initialDateTimeRange,
+      selectedEvent,
+    );
   }
 
   /// Handles the onRescheduleStart event.
@@ -355,8 +353,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
 
-    scope.eventsController.isMoving = true;
-    scope.eventsController.chaningEvent = tileData.event;
+    controller.isMoving = true;
+    controller.selectEvent(tileData.event);
     initialDateTimeRange = tileData.event.dateTimeRange;
 
     scope.functions.onEventChangeStart?.call(tileData.event);
@@ -425,7 +423,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
     if (newDateTimeRange.start.isWithin(widget.visibleDateTimeRange) ||
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange)) {
-      scope.eventsController.chaningEvent!.dateTimeRange = newDateTimeRange;
+      scope.eventsController.selectedEvent!.dateTimeRange = newDateTimeRange;
     }
 
     if (snapToTimeIndicator) {
@@ -437,9 +435,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   Future<void> _onRescheduleEnd() async {
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
-      scope.eventsController.chaningEvent!,
+      scope.eventsController.selectedEvent!,
     );
-    scope.eventsController.chaningEvent = null;
-    scope.eventsController.isMoving = false;
+    controller.isMoving = false;
   }
 }

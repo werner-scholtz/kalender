@@ -25,9 +25,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final double timelineWidth;
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
-
-  @override
   final double hourlineTimelineOverlap;
 
   @override
@@ -56,6 +53,12 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   final bool createNewEvents;
+
+  @override
+  int get firstDayOfWeek => 1;
+
+  @override
+  final Duration horizontalDurationStep = const Duration(days: 1);
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
@@ -141,9 +144,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     return visibleDateTimeRange;
   }
 
-  @override
-  int get firstDayOfWeek => 1;
-
   /// Gets the four day range with the [DateTime] as the first day.
   DateTimeRange getMultiDayRange(DateTime date) {
     return DateTimeRange(
@@ -151,6 +151,37 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
       end: date.endOfDay.add(
         Duration(days: numberOfDays - 1),
       ),
+    );
+  }
+
+  MultiDayConfiguration copyWith({
+    int? numberOfDays,
+    double? timelineWidth,
+    double? hourlineTimelineOverlap,
+    double? multidayTileHeight,
+    SlotSize? slotSize,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    bool? createNewEvents,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+  }) {
+    return MultiDayConfiguration(
+      numberOfDays: numberOfDays ?? this.numberOfDays,
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      hourlineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      slotSize: slotSize ?? this.slotSize,
+      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
+      eventSnapping: eventSnapping ?? this.eventSnapping,
+      timeIndicatorSnapping:
+          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+      name: name,
     );
   }
 }

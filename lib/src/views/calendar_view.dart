@@ -29,8 +29,6 @@ import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 ///
 /// [monthTileBuilder] is a [MonthTileBuilder] used to build month event tiles.
 ///
-/// [createNewEvents] is a bool used to determine if new events can be created.
-///
 ///
 /// There are four options for constructing a [CalendarView]:
 ///

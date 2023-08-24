@@ -35,135 +35,151 @@ class MultiDayContent<T> extends StatelessWidget {
             heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
         return Expanded(
-          child: SingleChildScrollView(
-            physics: scope.state.scrollPhysics,
-            child: Stack(
-              children: <Widget>[
-                scope.components.timelineBuilder(
-                  viewConfiguration.timelineWidth,
-                  pageHeight,
-                  hourHeight,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    height: pageHeight,
-                    width:
-                        pageWidth + viewConfiguration.hourlineTimelineOverlap,
-                    child: PageView.builder(
-                      key: Key(viewConfiguration.hashCode.toString()),
-                      controller: scope.state.pageController,
-                      itemCount: scope.state.numberOfPages,
-                      onPageChanged: (int index) {
-                        DateTimeRange newVisibleDateTimeRange =
-                            viewConfiguration.calculateVisibleDateRangeForIndex(
-                          index: index,
-                          calendarStart:
-                              scope.state.adjustedDateTimeRange.start,
-                        );
-                        scope.state.visibleDateTimeRange.value =
-                            newVisibleDateTimeRange;
-                        controller.selectedDate = newVisibleDateTimeRange.start;
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        DateTimeRange pageVisibleDateRange =
-                            viewConfiguration.calculateVisibleDateRangeForIndex(
-                          index: index,
-                          calendarStart:
-                              scope.state.adjustedDateTimeRange.start,
-                        );
+          child: ValueListenableBuilder<ScrollPhysics>(
+            valueListenable: scope.state.scrollPhysics,
+            builder:
+                (BuildContext context, ScrollPhysics value, Widget? child) {
+              return SingleChildScrollView(
+                physics: value,
+                child: Stack(
+                  children: <Widget>[
+                    scope.components.timelineBuilder(
+                      viewConfiguration.timelineWidth,
+                      pageHeight,
+                      hourHeight,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: SizedBox(
+                        height: pageHeight,
+                        width: pageWidth +
+                            viewConfiguration.hourlineTimelineOverlap,
+                        child: PageView.builder(
+                          key: Key(viewConfiguration.hashCode.toString()),
+                          controller: scope.state.pageController,
+                          itemCount: scope.state.numberOfPages,
+                          onPageChanged: (int index) {
+                            DateTimeRange newVisibleDateTimeRange =
+                                viewConfiguration
+                                    .calculateVisibleDateRangeForIndex(
+                              index: index,
+                              calendarStart:
+                                  scope.state.adjustedDateTimeRange.start,
+                            );
+                            scope.state.visibleDateTimeRange.value =
+                                newVisibleDateTimeRange;
+                            controller.selectedDate =
+                                newVisibleDateTimeRange.start;
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            DateTimeRange pageVisibleDateRange =
+                                viewConfiguration
+                                    .calculateVisibleDateRangeForIndex(
+                              index: index,
+                              calendarStart:
+                                  scope.state.adjustedDateTimeRange.start,
+                            );
 
-                        DayTileLayoutController<T> tileLayoutController =
-                            scope.layoutControllers.dayTileLayoutController(
-                          visibleDateRange: pageVisibleDateRange,
-                          visibleDates: pageVisibleDateRange.datesSpanned,
-                          heightPerMinute: heightPerMinute,
-                          dayWidth: dayWidth,
-                          verticalDurationStep: const Duration(minutes: 15),
-                        );
+                            DayTileLayoutController<T> tileLayoutController =
+                                scope.layoutControllers.dayTileLayoutController(
+                              visibleDateRange: pageVisibleDateRange,
+                              visibleDates: pageVisibleDateRange.datesSpanned,
+                              heightPerMinute: heightPerMinute,
+                              dayWidth: dayWidth,
+                              verticalDurationStep: const Duration(minutes: 15),
+                            );
 
-                        return Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: pageWidth +
-                                    viewConfiguration.hourlineTimelineOverlap,
-                                height: pageHeight,
-                                child: scope.components.hourlineBuilder(
-                                  pageWidth +
-                                      viewConfiguration.hourlineTimelineOverlap,
-                                  hourHeight,
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: pageWidth,
-                                height: pageHeight,
-                                child: scope.components.daySepratorBuilder(
-                                  pageHeight,
-                                  dayWidth,
-                                  pageVisibleDateRange.dayDifference,
-                                ),
-                              ),
-                            ),
-                            if (scope.state.viewConfiguration.createNewEvents)
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: SizedBox(
-                                  width: pageWidth,
-                                  height: pageHeight,
-                                  child: DayGestureDetector<T>(
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: <Widget>[
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    width: pageWidth +
+                                        viewConfiguration
+                                            .hourlineTimelineOverlap,
                                     height: pageHeight,
-                                    width: dayWidth,
-                                    heightPerMinute: heightPerMinute,
-                                    visibleDateRange: pageVisibleDateRange,
-                                    minuteSlotSize: viewConfiguration.slotSize,
+                                    child: scope.components.hourlineBuilder(
+                                      pageWidth +
+                                          viewConfiguration
+                                              .hourlineTimelineOverlap,
+                                      hourHeight,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: SizedBox(
-                                width: pageWidth,
-                                height: pageHeight,
-                                child: PositionedTileStack<T>(
-                                  pageVisibleDateRange: pageVisibleDateRange,
-                                  tileLayoutController: tileLayoutController,
-                                  dayWidth: dayWidth,
-                                  verticalStep: verticalStep,
-                                  verticalDurationStep:
-                                      viewConfiguration.verticalStepDuration,
-                                  horizontalStep: dayWidth,
-                                  horizontalDurationStep:
-                                      viewConfiguration.horizontalDurationStep,
-                                  eventSnapping:
-                                      viewConfiguration.eventSnapping,
-                                  snapToTimeIndicator:
-                                      viewConfiguration.timeIndicatorSnapping,
-                                  verticalSnapRange:
-                                      viewConfiguration.verticalSnapRange,
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    width: pageWidth,
+                                    height: pageHeight,
+                                    child: scope.components.daySepratorBuilder(
+                                      pageHeight,
+                                      dayWidth,
+                                      pageVisibleDateRange.dayDifference,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            if (DateTime.now().isWithin(pageVisibleDateRange))
-                              scope.components.timeIndicatorBuilder(
-                                dayWidth,
-                                pageVisibleDateRange,
-                                heightPerMinute,
-                                viewConfiguration.hourlineTimelineOverlap,
-                              ),
-                          ],
-                        );
-                      },
+                                if (scope
+                                    .state.viewConfiguration.createNewEvents)
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: SizedBox(
+                                      width: pageWidth,
+                                      height: pageHeight,
+                                      child: DayGestureDetector<T>(
+                                        height: pageHeight,
+                                        width: dayWidth,
+                                        heightPerMinute: heightPerMinute,
+                                        visibleDateRange: pageVisibleDateRange,
+                                        minuteSlotSize:
+                                            viewConfiguration.slotSize,
+                                      ),
+                                    ),
+                                  ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    width: pageWidth,
+                                    height: pageHeight,
+                                    child: DayTileStack<T>(
+                                      pageVisibleDateRange:
+                                          pageVisibleDateRange,
+                                      tileLayoutController:
+                                          tileLayoutController,
+                                      dayWidth: dayWidth,
+                                      verticalStep: verticalStep,
+                                      verticalDurationStep: viewConfiguration
+                                          .verticalStepDuration,
+                                      horizontalStep: dayWidth,
+                                      horizontalDurationStep: viewConfiguration
+                                          .horizontalDurationStep,
+                                      eventSnapping:
+                                          viewConfiguration.eventSnapping,
+                                      snapToTimeIndicator: viewConfiguration
+                                          .timeIndicatorSnapping,
+                                      verticalSnapRange:
+                                          viewConfiguration.verticalSnapRange,
+                                    ),
+                                  ),
+                                ),
+                                if (DateTime.now()
+                                    .isWithin(pageVisibleDateRange))
+                                  scope.components.timeIndicatorBuilder(
+                                    dayWidth,
+                                    pageVisibleDateRange,
+                                    heightPerMinute,
+                                    viewConfiguration.hourlineTimelineOverlap,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },

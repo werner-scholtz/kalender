@@ -14,7 +14,7 @@ class DefaultMultidayLayoutController<T>
   });
 
   @override
-  PositionedMultiDayTileData<T> layoutTile(CalendarEvent<T> event) {
+  PositionedMultiDayTileData<T> layoutSelectedTile(CalendarEvent<T> event) {
     double left = calculateLeft(event.start);
     double width = calculateWidth(event.dateTimeRange);
 
@@ -28,9 +28,8 @@ class DefaultMultidayLayoutController<T>
 
   @override
   List<PositionedMultiDayTileData<T>> layoutTiles(
-    Iterable<CalendarEvent<T>> events, {
-    CalendarEvent<T>? selectedEvent,
-  }) {
+    Iterable<CalendarEvent<T>> events,
+  ) {
     stackHeight = 0;
 
     void updateStackHeight(double top) {
@@ -88,21 +87,21 @@ class DefaultMultidayLayoutController<T>
       );
     }
 
-    if (selectedEvent != null) {
-      List<PositionedMultiDayTileData<T>> selectedArrangedEvent = layedOutTiles
-          .where(
-            (PositionedMultiDayTileData<T> element) =>
-                element.event == selectedEvent,
-          )
-          .toList();
-      if (selectedArrangedEvent.isNotEmpty) {
-        layedOutTiles.removeWhere(
-          (PositionedMultiDayTileData<T> element) =>
-              element.event == selectedEvent,
-        );
-        layedOutTiles.addAll(selectedArrangedEvent);
-      }
-    }
+    // if (selectedEvent != null) {
+    //   List<PositionedMultiDayTileData<T>> selectedArrangedEvent = layedOutTiles
+    //       .where(
+    //         (PositionedMultiDayTileData<T> element) =>
+    //             element.event == selectedEvent,
+    //       )
+    //       .toList();
+    //   if (selectedArrangedEvent.isNotEmpty) {
+    //     layedOutTiles.removeWhere(
+    //       (PositionedMultiDayTileData<T> element) =>
+    //           element.event == selectedEvent,
+    //     );
+    //     layedOutTiles.addAll(selectedArrangedEvent);
+    //   }
+    // }
 
     numberOfRows = stackHeight ~/ tileHeight;
 

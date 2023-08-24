@@ -32,6 +32,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final Duration verticalStepDuration;
+
   @override
   final Duration verticalSnapRange;
 
@@ -65,11 +66,10 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -99,13 +99,12 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
     return DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
+    ).weekRangeWithOffset(firstDayOfWeek);
   }
 
   @override
@@ -124,5 +123,35 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
     }
     return visibleDateTimeRange;
+  }
+
+  WeekConfiguration copyWith({
+    double? timelineWidth,
+    double? hourlineTimelineOverlap,
+    double? multidayTileHeight,
+    SlotSize? slotSize,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    int? firstDayOfWeek,
+    bool? createNewEvents,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+  }) {
+    return WeekConfiguration(
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      hourlineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      slotSize: slotSize ?? this.slotSize,
+      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
+      eventSnapping: eventSnapping ?? this.eventSnapping,
+      timeIndicatorSnapping:
+          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+      firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+    );
   }
 }

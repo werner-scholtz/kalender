@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// A [ChangeNotifier] that manages [CalendarEvent]s.
 class CalendarEventsController<T> with ChangeNotifier {
@@ -12,21 +12,51 @@ class CalendarEventsController<T> with ChangeNotifier {
   List<CalendarEvent<T>> get events => _events;
 
   /// The moving [CalendarEvent].
-  CalendarEvent<T>? _chaningEvent;
-  CalendarEvent<T>? get chaningEvent => _chaningEvent;
-  set chaningEvent(CalendarEvent<T>? value) {
-    _chaningEvent = value;
+  CalendarEvent<T>? _selectedEvent;
+  CalendarEvent<T>? get selectedEvent => _selectedEvent;
+
+  /// Whether the [CalendarController] has a [_selectedEvent].
+  bool get hasChaningEvent => _selectedEvent != null;
+
+  bool _isSelectedEventMultiday = false;
+  bool get isSelectedEventMultiday => _isSelectedEventMultiday;
+
+  bool _isResizing = false;
+  bool get isResizing => _isResizing;
+  set isResizing(bool value) {
+    _isResizing = value;
     notifyListeners();
   }
 
-  bool isMoving = false;
-  bool isSelectedMobile = false;
-  bool isResizing = false;
-  bool isNewEvent = false;
-  bool isMultidayEvent = false;
+  bool _isMoving = false;
+  bool get isMoving => _isMoving;
+  set isMoving(bool value) {
+    _isMoving = value;
+    notifyListeners();
+  }
 
-  /// Whether the [CalendarController] has a [_chaningEvent].
-  bool get hasChaningEvent => _chaningEvent != null;
+  /// Deslects the [_selectedEvent].
+  void deselectEvent() {
+    _selectedEvent = null;
+    _isSelectedEventMultiday = false;
+    _isResizing = false;
+    _isMoving = false;
+    notifyListeners();
+  }
+
+  /// Sets the [_selectedEvent].
+  void selectEvent(
+    CalendarEvent<T> event,
+  ) {
+    _selectedEvent = event;
+    _isSelectedEventMultiday = event.isMultidayEvent;
+    notifyListeners();
+  }
+
+  /// Forces an update of the calendar.
+  void forceUpdate() {
+    notifyListeners();
+  }
 
   /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
   void addEvent(CalendarEvent<T> event) {
@@ -43,6 +73,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent<T> event) {
     _events.remove(event);
+    _selectedEvent = null;
     notifyListeners();
   }
 
@@ -103,7 +134,9 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
-  Iterable<CalendarEvent<T>> getEventsFromDateRange(DateTimeRange dateRange) {
+  Iterable<CalendarEvent<T>> getMonthEventsFromDateRange(
+    DateTimeRange dateRange,
+  ) {
     return _events.where(
       (CalendarEvent<T> element) => (element.start.isWithin(dateRange) ||
           element.end.isWithin(dateRange)),
@@ -126,17 +159,13 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
     Iterable<CalendarEvent<T>> eventsInDateTimeRange =
-        getEventsFromDateRange(dateRange);
+        getMonthEventsFromDateRange(dateRange);
     List<DateTime> snapPoints = <DateTime>[];
     for (CalendarEvent<T> event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
       snapPoints.add(event.end);
     }
     return snapPoints;
-  }
-
-  Iterable<CalendarEvent<T>> getEventsFromDate(DateTime date) {
-    return _events.where((CalendarEvent<T> element) => element.isOnDate(date));
   }
 
   @override

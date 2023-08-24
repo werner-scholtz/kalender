@@ -71,11 +71,10 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -105,13 +104,12 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
     DateTimeRange weekRange = DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek ?? 1);
+    ).weekRangeWithOffset(firstDayOfWeek);
 
     return DateTimeRange(
       start: weekRange.start,
@@ -137,5 +135,33 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
       return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
     }
     return visibleDateTimeRange;
+  }
+
+  WorkWeekConfiguration copyWith({
+    double? timelineWidth,
+    double? hourlineTimelineOverlap,
+    double? multidayTileHeight,
+    SlotSize? slotSize,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    bool? createNewEvents,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+  }) {
+    return WorkWeekConfiguration(
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      hourlineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      slotSize: slotSize ?? this.slotSize,
+      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
+      eventSnapping: eventSnapping ?? this.eventSnapping,
+      timeIndicatorSnapping:
+          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+    );
   }
 }

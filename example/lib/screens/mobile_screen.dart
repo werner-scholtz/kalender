@@ -2,6 +2,7 @@ import 'package:example/models/event.dart';
 import 'package:example/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:example/widgets/calendar_tiles/tiles_export.dart';
 import 'package:example/widgets/components/calendar_header_mobile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -9,11 +10,9 @@ class MobileScreen extends StatefulWidget {
   const MobileScreen({
     super.key,
     required this.eventsController,
-    required this.viewConfigurations,
   });
 
   final CalendarEventsController<Event> eventsController;
-  final List<ViewConfiguration> viewConfigurations;
 
   @override
   State<MobileScreen> createState() => _MobileScreenState();
@@ -26,13 +25,45 @@ class _MobileScreenState extends State<MobileScreen> {
   late CalendarEventHandlers<Event> eventHandlers;
 
   /// The list of view configurations that can be used.
-  late List<ViewConfiguration> viewConfigurations = widget.viewConfigurations;
+  List<ViewConfiguration> viewConfigurations = [
+    const DayConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const WorkWeekConfiguration(
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Two Day',
+      numberOfDays: 2,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Three Day',
+      numberOfDays: 3,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
+      name: 'Four Day',
+      numberOfDays: 4,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    if (!kIsWeb)
+      const MonthConfiguration(
+        enableRezising: true,
+      ),
+  ];
 
   /// The current view configuration.
   late ViewConfiguration currentConfiguration = viewConfigurations.first;
-
-  /// The selected event.
-  CalendarEvent<Event>? selectedEvent;
 
   @override
   void initState() {
@@ -74,9 +105,17 @@ class _MobileScreenState extends State<MobileScreen> {
       bottomSheet: ListenableBuilder(
         listenable: eventsController,
         builder: (context, child) {
-          if (eventsController.hasChaningEvent) {
+          if (eventsController.hasChaningEvent &&
+              !eventsController.isMoving &&
+              !eventsController.isResizing) {
             return EventEditSheet(
-              event: eventsController.chaningEvent!,
+              event: eventsController.selectedEvent!,
+              onSave: (event) {
+                eventsController.addEvent(event);
+              },
+              onDelete: (event) {
+                eventsController.removeEvent(event);
+              },
             );
           } else {
             return const SizedBox();
@@ -87,34 +126,15 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<CalendarEvent<Event>?> onCreateEvent(
-      CalendarEvent<Event> newEvent) async {
-    // Set the new event's eventData.
-    newEvent.eventData = Event(
-      title: 'New Event',
-      color: Colors.blue,
-    );
-
-    // Set the selected event to the new event.
-    setState(() {
-      selectedEvent = newEvent;
-    });
-
-    // return the new event. (if the user cancels the dialog, null is returned)
-    return newEvent;
-  }
+  Future<void> onCreateEvent(CalendarEvent<Event> newEvent) async {}
 
   /// This function is called when an event is tapped.
   Future<void> onEventTapped(event) async {
-    setState(() {
-      if (selectedEvent == event) {
-        // If the selected event is tapped again, set the selected event to null.
-        selectedEvent = null;
-      } else {
-        // Set the selected event to the tapped event.
-        selectedEvent = event;
-      }
-    });
+    if (eventsController.selectedEvent == event) {
+      eventsController.deselectEvent();
+    } else {
+      eventsController.selectEvent(event);
+    }
   }
 
   /// This function is called when an event is changed.
@@ -122,10 +142,7 @@ class _MobileScreenState extends State<MobileScreen> {
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
-    // Set the selected event to the changed event.
-    setState(() {
-      selectedEvent = event;
-    });
+    eventsController.selectEvent(event);
   }
 
   /// This function is called when a date is tapped.

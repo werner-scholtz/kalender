@@ -41,7 +41,7 @@ class MonthViewHeader<T> extends StatelessWidget {
                       cellWidth,
                       visibleDateTimeRange.start.add(Duration(days: index)),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

@@ -8,18 +8,20 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class MultiDayTileGestureDetector<T> extends StatefulWidget {
   const MultiDayTileGestureDetector({
     super.key,
-    required this.child,
     required this.horizontalStep,
     required this.horizontalDurationStep,
-    required this.event,
+    required this.tileData,
     required this.visibleDateRange,
+    required this.isSelected,
+    required this.child,
   });
 
   final Widget child;
   final double horizontalStep;
   final Duration horizontalDurationStep;
-  final CalendarEvent<T> event;
+  final PositionedMultiDayTileData<T> tileData;
   final DateTimeRange visibleDateRange;
+  final bool isSelected;
 
   @override
   State<MultiDayTileGestureDetector<T>> createState() =>
@@ -28,18 +30,18 @@ class MultiDayTileGestureDetector<T> extends StatefulWidget {
 
 class _MultiDayTileGestureDetectorState<T>
     extends State<MultiDayTileGestureDetector<T>> {
-  late Widget child;
-
-  late CalendarEvent<T> event;
-  late DateTimeRange initialDateTimeRange;
-
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
 
+  late PositionedMultiDayTileData<T> tileData;
+  late DateTimeRange initialDateTimeRange;
+
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.canModify;
-  bool get canBeChangedDesktop => modifyable && !isMobileDevice;
+  bool get useMobileGestures => isMobileDevice && tileData.event.canModify;
+  bool get useDesktopGestures => !isMobileDevice && tileData.event.canModify;
+
+  bool get canModify => tileData.event.canModify;
 
   double cursorOffset = 0;
   int currentSteps = 0;
@@ -47,15 +49,17 @@ class _MultiDayTileGestureDetectorState<T>
   @override
   void initState() {
     super.initState();
-    child = widget.child;
-    event = widget.event;
-    initialDateTimeRange = event.dateTimeRange;
+    tileData = widget.tileData;
+    initialDateTimeRange = tileData.event.dateTimeRange;
   }
 
   @override
   void didUpdateWidget(covariant MultiDayTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    child = widget.child;
+    if (tileData.event != widget.tileData.event) {
+      tileData = widget.tileData;
+      initialDateTimeRange = widget.tileData.event.dateTimeRange;
+    }
   }
 
   @override
@@ -63,15 +67,18 @@ class _MultiDayTileGestureDetectorState<T>
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
           GestureDetector(
-            onHorizontalDragStart: modifyable ? _onRescheduleStart : null,
-            onHorizontalDragUpdate: modifyable ? _onRescheduleUpdate : null,
-            onHorizontalDragEnd: modifyable ? _onRescheduleEnd : null,
+            onHorizontalDragStart:
+                useDesktopGestures ? _onRescheduleStart : null,
+            onHorizontalDragUpdate:
+                useDesktopGestures ? _onRescheduleUpdate : null,
+            onHorizontalDragEnd: useDesktopGestures ? _onRescheduleEnd : null,
             onTap: _onTap,
-            child: child,
+            child: widget.child,
           ),
-          if (canBeChangedDesktop)
+          if (useDesktopGestures)
             Positioned(
               left: 0,
               width: 8,
@@ -81,16 +88,13 @@ class _MultiDayTileGestureDetectorState<T>
                 cursor: SystemMouseCursors.resizeLeftRight,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onHorizontalDragStart:
-                      canBeChangedDesktop ? _onResizeStart : null,
-                  onHorizontalDragUpdate:
-                      canBeChangedDesktop ? _resizeStart : null,
-                  onHorizontalDragEnd:
-                      canBeChangedDesktop ? _onResizeEnd : null,
+                  onHorizontalDragStart: _onHorizontalDragStart,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdateStart,
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
                 ),
               ),
             ),
-          if (canBeChangedDesktop)
+          if (useDesktopGestures)
             Positioned(
               right: 0,
               width: 8,
@@ -100,12 +104,9 @@ class _MultiDayTileGestureDetectorState<T>
                 cursor: SystemMouseCursors.resizeLeftRight,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onHorizontalDragStart:
-                      canBeChangedDesktop ? _onResizeStart : null,
-                  onHorizontalDragUpdate:
-                      canBeChangedDesktop ? _resizeEnd : null,
-                  onHorizontalDragEnd:
-                      canBeChangedDesktop ? _onResizeEnd : null,
+                  onHorizontalDragStart: _onHorizontalDragStart,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdateEnd,
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
                 ),
               ),
             ),
@@ -114,29 +115,25 @@ class _MultiDayTileGestureDetectorState<T>
     );
   }
 
-  void _onTap() async {
-    controller.isMultidayEvent = true;
-    controller.chaningEvent = event;
-    await functions.onEventTapped?.call(controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMultidayEvent = false;
+  Future<void> _onTap() async {
+    await functions.onEventTapped?.call(tileData.event);
+    controller.forceUpdate();
   }
 
   void _onRescheduleStart(DragStartDetails details) {
-    event = widget.event;
-    initialDateTimeRange = event.dateTimeRange;
     cursorOffset = 0;
     currentSteps = 0;
-    controller.isMultidayEvent = true;
-    controller.chaningEvent = event;
-    scope.functions.onEventChangeStart?.call(event);
+    initialDateTimeRange = widget.tileData.event.dateTimeRange;
+    controller.selectEvent(tileData.event);
+    scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
-  void _onRescheduleEnd(DragEndDetails details) {
-    functions.onEventChanged
-        ?.call(event.dateTimeRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMultidayEvent = false;
+  Future<void> _onRescheduleEnd(DragEndDetails details) async {
+    await functions.onEventChanged?.call(
+      initialDateTimeRange,
+      controller.selectedEvent!,
+    );
+    // controller.deselectEvent();
   }
 
   void _onRescheduleUpdate(DragUpdateDetails details) {
@@ -150,61 +147,61 @@ class _MultiDayTileGestureDetectorState<T>
             initialDateTimeRange.end.add(widget.horizontalDurationStep * steps),
       );
 
-      if (controller.chaningEvent == null) return;
+      if (controller.selectedEvent == null) return;
 
       if (newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
           newDateTimeRange.end.isWithin(widget.visibleDateRange)) {
-        controller.chaningEvent?.dateTimeRange = newDateTimeRange;
+        controller.selectedEvent?.dateTimeRange = newDateTimeRange;
       }
       currentSteps = steps;
     }
   }
 
-  void _onResizeStart(DragStartDetails details) {
-    event = widget.event;
-    initialDateTimeRange = event.dateTimeRange;
+  void _onHorizontalDragStart(DragStartDetails details) {
     cursorOffset = 0;
     currentSteps = 0;
-    controller.isMultidayEvent = true;
-    controller.chaningEvent = event;
-    scope.functions.onEventChangeStart?.call(event);
+    initialDateTimeRange = tileData.event.dateTimeRange;
+    controller.isResizing = true;
+    controller.selectEvent(tileData.event);
+    scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
-  void _onResizeEnd(DragEndDetails details) async {
-    event = widget.event;
-    await functions.onEventChanged
-        ?.call(event.dateTimeRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
-    controller.isMultidayEvent = false;
-  }
-
-  void _resizeStart(DragUpdateDetails details) {
+  void _onHorizontalDragUpdateStart(DragUpdateDetails details) {
     cursorOffset += details.delta.dx;
     int steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
       DateTime newStart =
           initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
-      if (controller.chaningEvent == null) return;
+      if (controller.selectedEvent == null) return;
       if (newStart.isBefore(initialDateTimeRange.end)) {
-        controller.chaningEvent?.start = newStart;
+        controller.selectedEvent?.start = newStart;
       }
       currentSteps = steps;
     }
   }
 
-  void _resizeEnd(DragUpdateDetails details) {
+  void _onHorizontalDragUpdateEnd(DragUpdateDetails details) {
     cursorOffset += details.delta.dx;
     int steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
       DateTime newEnd =
           initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
-      if (controller.chaningEvent == null) return;
+      if (controller.selectedEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {
-        controller.chaningEvent?.end = newEnd;
+        controller.selectedEvent?.end = newEnd;
       }
 
       currentSteps = steps;
     }
+  }
+
+  Future<void> _onHorizontalDragEnd(DragEndDetails details) async {
+    await functions.onEventChanged?.call(
+      initialDateTimeRange,
+      controller.selectedEvent!,
+    );
+
+    controller.isResizing = false;
   }
 }

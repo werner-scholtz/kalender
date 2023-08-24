@@ -112,9 +112,9 @@ class _MultiDayGestureDetectorState<T>
                           createNewEvents ? _onHorizontalDragEnd : null,
                     ),
                   ),
-                )
+                ),
             ],
-          )
+          ),
       ],
     );
   }
@@ -125,22 +125,11 @@ class _MultiDayGestureDetectorState<T>
     );
 
     // Set the chaning event to the new event.
-    controller.chaningEvent = newCalendarEvent;
-    controller.isMultidayEvent = true;
+    controller.selectEvent(newCalendarEvent);
 
-    CalendarEvent<T>? newEvent =
-        await functions.onCreateEvent?.call(controller.chaningEvent!);
+    await functions.onCreateEvent?.call(controller.selectedEvent!);
 
-    // If the [newEvent] is null then set the [chaningEvent] to null.
-    if (newEvent == null) {
-      controller.chaningEvent = null;
-    } else {
-      // Add the [newEvent] to the [CalendarController].
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
-
-    controller.isMultidayEvent = false;
+    controller.deselectEvent();
   }
 
   void _onHorizontalDragStart(
@@ -148,11 +137,10 @@ class _MultiDayGestureDetectorState<T>
     DateTimeRange dateTimeRange,
   ) {
     cursorOffset = 0;
-    controller.isMultidayEvent = true;
     CalendarEvent<T> displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
-    controller.chaningEvent = displayEvent;
+    controller.selectEvent(displayEvent);
   }
 
   void _onHorizontalDragUpdate(
@@ -180,20 +168,15 @@ class _MultiDayGestureDetectorState<T>
         );
       }
 
-      controller.chaningEvent?.dateTimeRange = dateTimeRange;
+      controller.selectedEvent?.dateTimeRange = dateTimeRange;
     }
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
-    CalendarEvent<T>? newEvent =
-        await functions.onCreateEvent?.call(controller.chaningEvent!);
-    if (newEvent == null) {
-      controller.chaningEvent = null;
-    } else {
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
-    controller.isMultidayEvent = false;
+
+    await functions.onCreateEvent?.call(controller.selectedEvent!);
+
+    controller.deselectEvent();
   }
 }

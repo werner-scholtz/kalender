@@ -37,7 +37,7 @@ abstract class MonthTileLayoutController<T> {
     CalendarEvent<T>? selectedEvent,
   });
 
-  PositionedMonthTileData<T> layoutTile(CalendarEvent<T> event);
+  PositionedMonthTileData<T> layoutSelectedTile(CalendarEvent<T> event);
 }
 
 class PositionedMonthTileData<T> {

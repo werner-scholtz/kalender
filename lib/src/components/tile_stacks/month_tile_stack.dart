@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/month_cell_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/month/month_cell_gesture_detector.dart';
 
-import 'package:kalender/src/components/gesture_detectors/month_tile_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/chaning_month_tile_stack.dart';
+import 'package:kalender/src/components/gesture_detectors/month/month_tile_gesture_detector.dart';
 import 'package:kalender/src/enumerations.dart';
-
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -51,8 +49,9 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
           /// Arrange the events.
           List<PositionedMonthTileData<T>> arragedEvents =
               monthEventLayout.layoutTiles(
-            scope.eventsController.getEventsFromDateRange(visibleDateRange),
-            selectedEvent: scope.eventsController.chaningEvent,
+            scope.eventsController
+                .getMonthEventsFromDateRange(visibleDateRange),
+            selectedEvent: scope.eventsController.selectedEvent,
           );
 
           return SizedBox(
@@ -82,13 +81,13 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 ),
                 ...arragedEvents.map(
                   (PositionedMonthTileData<T> e) {
-                    return MonthTileStack<T>(
+                    return PositionedMonthTile<T>(
                       controller: scope.eventsController,
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
                       viewConfiguration: viewConfiguration,
                       monthEventLayout: monthEventLayout,
                       monthVisibleDateRange: monthVisibleDateRange,
-                      arragnedEvent: e,
+                      positionedTileData: e,
                       horizontalStep: cellWidth,
                       horizontalDurationStep: const Duration(days: 1),
                       verticalStep: cellHeight,
@@ -99,6 +98,12 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 if (scope.eventsController.hasChaningEvent)
                   ChaningMonthTileStack<T>(
                     monthEventLayout: monthEventLayout,
+                    viewConfiguration: viewConfiguration,
+                    monthVisibleDateRange: monthVisibleDateRange,
+                    horizontalStep: cellWidth,
+                    horizontalDurationStep: const Duration(days: 1),
+                    verticalStep: cellHeight,
+                    verticalDurationStep: const Duration(days: 7),
                   ),
               ],
             ),
@@ -109,15 +114,16 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
   }
 }
 
-class MonthTileStack<T> extends StatelessWidget {
-  const MonthTileStack({
+/// The [PositionedMonthTile] displays a single [PositionedMonthTileData].
+class PositionedMonthTile<T> extends StatelessWidget {
+  const PositionedMonthTile({
     super.key,
     required this.controller,
     required this.viewConfiguration,
     required this.visibleDateRange,
     required this.monthEventLayout,
     required this.monthVisibleDateRange,
-    required this.arragnedEvent,
+    required this.positionedTileData,
     required this.horizontalStep,
     required this.horizontalDurationStep,
     required this.verticalStep,
@@ -131,7 +137,7 @@ class MonthTileStack<T> extends StatelessWidget {
   final DateTimeRange visibleDateRange;
   final DateTimeRange monthVisibleDateRange;
   final MonthTileLayoutController<T> monthEventLayout;
-  final PositionedMonthTileData<T> arragnedEvent;
+  final PositionedMonthTileData<T> positionedTileData;
 
   final double horizontalStep;
   final Duration horizontalDurationStep;
@@ -141,40 +147,102 @@ class MonthTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CalendarScope<T> scope = CalendarScope.of(context);
+    bool isMoving = controller.selectedEvent == positionedTileData.event;
+    return Positioned(
+      top: positionedTileData.top,
+      left: positionedTileData.left,
+      width: positionedTileData.width,
+      height: positionedTileData.height,
+      child: MonthTileGestureDetector<T>(
+        horizontalDurationStep: horizontalDurationStep,
+        tileData: positionedTileData,
+        horizontalStep: horizontalStep,
+        verticalDurationStep: verticalDurationStep,
+        verticalStep: verticalStep,
+        visibleDateRange: monthVisibleDateRange,
+        enableResizing: viewConfiguration.enableRezising,
+        isSelected: false,
+        child: scope.tileComponents.monthTileBuilder!(
+          positionedTileData.event,
+          MonthTileConfiguration(
+            tileType: isMoving ? TileType.ghost : TileType.normal,
+            date: positionedTileData.dateRange.start,
+            continuesBefore: positionedTileData.continuesBefore,
+            continuesAfter: positionedTileData.continuesAfter,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The [ChaningMonthTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
+class ChaningMonthTileStack<T> extends StatelessWidget {
+  const ChaningMonthTileStack({
+    super.key,
+    required this.monthEventLayout,
+    required this.viewConfiguration,
+    required this.monthVisibleDateRange,
+    required this.horizontalStep,
+    required this.horizontalDurationStep,
+    required this.verticalStep,
+    required this.verticalDurationStep,
+  });
+
+  final MonthTileLayoutController<T> monthEventLayout;
+  final MonthViewConfiguration viewConfiguration;
+  final DateTimeRange monthVisibleDateRange;
+
+  final double horizontalStep;
+  final Duration horizontalDurationStep;
+
+  final double verticalStep;
+  final Duration verticalDurationStep;
+
+  @override
+  Widget build(BuildContext context) {
+    CalendarScope<T> scope = CalendarScope.of(context);
+
     return ListenableBuilder(
-      listenable: controller,
+      listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
-        bool isMoving = controller.chaningEvent == arragnedEvent.event;
-        return Stack(
-          children: <Widget>[
-            Positioned(
-              top: arragnedEvent.top,
-              left: arragnedEvent.left,
-              width: arragnedEvent.width,
-              height: arragnedEvent.height,
-              child: MonthTileGestureDetector<T>(
-                horizontalDurationStep: horizontalDurationStep,
-                event: arragnedEvent.event,
-                horizontalStep: horizontalStep,
-                verticalDurationStep: verticalDurationStep,
-                verticalStep: verticalStep,
-                visibleDateRange: monthVisibleDateRange,
-                enableResizing: viewConfiguration.enableRezising,
-                // isMultidayEvent: arragnedEvent.event.isMultidayEvent,
-                child: CalendarScope.of<T>(context)
-                    .tileComponents
-                    .monthTileBuilder!(
-                  arragnedEvent.event,
-                  MonthTileConfiguration(
-                    tileType: isMoving ? TileType.ghost : TileType.normal,
-                    date: arragnedEvent.dateRange.start,
-                    continuesBefore: arragnedEvent.continuesBefore,
-                    continuesAfter: arragnedEvent.continuesAfter,
+        PositionedMonthTileData<T> positionedTile =
+            monthEventLayout.layoutSelectedTile(
+          scope.eventsController.selectedEvent!,
+        );
+
+        return MouseRegion(
+          cursor: SystemMouseCursors.resizeColumn,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: positionedTile.top,
+                left: positionedTile.left,
+                width: positionedTile.width,
+                height: positionedTile.height,
+                child: MonthTileGestureDetector<T>(
+                  horizontalDurationStep: horizontalDurationStep,
+                  tileData: positionedTile,
+                  horizontalStep: horizontalStep,
+                  verticalDurationStep: verticalDurationStep,
+                  verticalStep: verticalStep,
+                  visibleDateRange: monthVisibleDateRange,
+                  enableResizing: viewConfiguration.enableRezising,
+                  isSelected: true,
+                  child: scope.tileComponents.monthTileBuilder!(
+                    positionedTile.event,
+                    MonthTileConfiguration(
+                      tileType: TileType.selected,
+                      date: positionedTile.dateRange.start,
+                      continuesBefore: positionedTile.continuesBefore,
+                      continuesAfter: positionedTile.continuesAfter,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

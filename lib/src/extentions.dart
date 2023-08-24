@@ -185,7 +185,7 @@ extension DateTimeExtentions on DateTime {
       243,
       273,
       304,
-      334
+      334,
     ];
     return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
   }

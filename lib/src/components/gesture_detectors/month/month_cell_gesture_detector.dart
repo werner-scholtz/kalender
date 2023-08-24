@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// A widget that detects gestures on a month cell.
@@ -75,36 +73,18 @@ class _MonthCellGestureDetectorState<T>
     );
   }
 
+  /// TODO: figure something out.
   void _onTap() async {
-    if (isMobileDevice) {
-      scope.functions.onDateTapped?.call(date);
-    } else {
-      // Create a new [CalendarEvent] with the [dateTimeRange].
-      CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+    // Set the selected event to a new event.
+    scope.eventsController.selectEvent(
+      CalendarEvent<T>(
         dateTimeRange: date.dayRange,
-      );
+      ),
+    );
 
-      // Set the chaning event to the new event.
-      controller.chaningEvent = newCalendarEvent;
-
-      // Set the [isNewEvent] to true.
-      controller.isNewEvent = true;
-
-      CalendarEvent<T>? newEvent =
-          await functions.onCreateEvent?.call(controller.chaningEvent!);
-
-      // If the [newEvent] is null then set the [chaningEvent] to null.
-      if (newEvent == null) {
-        controller.chaningEvent = null;
-      } else {
-        // Add the [newEvent] to the [CalendarController].
-        controller.addEvent(newEvent);
-        controller.chaningEvent = null;
-      }
-
-      // Set the [isNewEvent] to false.
-      controller.isNewEvent = false;
-    }
+    await scope.functions.onCreateEvent?.call(
+      scope.eventsController.selectedEvent!,
+    );
   }
 
   void _onPanStart(DragStartDetails details) {
@@ -113,12 +93,9 @@ class _MonthCellGestureDetectorState<T>
       dateTimeRange: date.dayRange,
     );
 
-    // Set the chaning event to the new event.
-    controller.chaningEvent = newCalendarEvent;
     initialDateTimeRange = newCalendarEvent.dateTimeRange;
 
-    // Set the [isNewEvent] to true.
-    controller.isNewEvent = true;
+    controller.selectEvent(newCalendarEvent);
 
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
@@ -129,20 +106,10 @@ class _MonthCellGestureDetectorState<T>
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
-    CalendarEvent<T>? newEvent =
-        await functions.onCreateEvent?.call(controller.chaningEvent!);
-    // If the [newEvent] is null then set the [chaningEvent] to null.
-    if (newEvent == null) {
-      controller.chaningEvent = null;
-    } else {
-      // Add the [newEvent] to the [CalendarController].
-      controller.addEvent(newEvent);
-      controller.chaningEvent = null;
-    }
 
-    controller.chaningEvent = null;
-    // Set the [isNewEvent] to false.
-    controller.isNewEvent = false;
+    await functions.onCreateEvent?.call(controller.selectedEvent!);
+
+    scope.eventsController.deselectEvent();
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -172,14 +139,14 @@ class _MonthCellGestureDetectorState<T>
         end: initialDateTimeRange!.end,
       );
 
-      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
     } else {
       DateTimeRange newDateTimeRange = DateTimeRange(
         start: initialDateTimeRange!.start,
         end: newEnd,
       );
 
-      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
     }
   }
 }

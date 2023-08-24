@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
-import 'package:kalender/src/components/gesture_detectors/multi_day_tile_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/chaning_multi_day_tile_stack.dart';
+import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_gesture_detector.dart';
+import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
+import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class PositionedMultiDayTileStack<T> extends StatelessWidget {
-  const PositionedMultiDayTileStack({
+class MultiDayTileStack<T> extends StatelessWidget {
+  const MultiDayTileStack({
     super.key,
     required this.pageWidth,
     required this.dayWidth,
@@ -42,7 +40,6 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
             scope.eventsController.getMultidayEventsFromDateRange(
               scope.state.visibleDateTimeRange.value,
             ),
-            selectedEvent: scope.eventsController.chaningEvent,
           );
 
           return SizedBox(
@@ -77,22 +74,20 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
                 ),
                 ...arragedEvents.map(
                   (PositionedMultiDayTileData<T> e) {
-                    return MultidayTileStack<T>(
-                      controller: scope.eventsController,
-                      onEventChanged: scope.functions.onEventChanged,
-                      onEventTapped: scope.functions.onEventTapped,
+                    return PositionedMultiDayTile<T>(
                       visibleDateRange: scope.state.visibleDateTimeRange.value,
-                      multiDayEventLayout: multiDayEventLayout,
-                      arragnedEvent: e,
+                      positionedTileData: e,
                       dayWidth: dayWidth,
                       horizontalDurationStep: const Duration(days: 1),
                     );
                   },
                 ).toList(),
-                if (scope.eventsController.hasChaningEvent &&
-                    scope.eventsController.isMultidayEvent)
+                if (showSelectedTile(scope.eventsController))
                   ChaningMultiDayTileStack<T>(
                     multiDayEventLayout: multiDayEventLayout,
+                    visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    dayWidth: dayWidth,
+                    horizontalDurationStep: const Duration(days: 1),
                   ),
               ],
             ),
@@ -101,68 +96,107 @@ class PositionedMultiDayTileStack<T> extends StatelessWidget {
       ),
     );
   }
+
+  bool showSelectedTile(CalendarEventsController<T> controller) =>
+      controller.hasChaningEvent && controller.isSelectedEventMultiday;
 }
 
-class MultidayTileStack<T> extends StatelessWidget {
-  const MultidayTileStack({
+/// The [PositionedMultiDayTile] is used to display a single [PositionedMultiDayTileData].
+class PositionedMultiDayTile<T> extends StatelessWidget {
+  const PositionedMultiDayTile({
     super.key,
-    required this.controller,
-    required this.onEventTapped,
-    required this.onEventChanged,
     required this.visibleDateRange,
-    required this.multiDayEventLayout,
-    required this.arragnedEvent,
+    required this.positionedTileData,
     required this.dayWidth,
     required this.horizontalDurationStep,
   });
 
-  final CalendarEventsController<T> controller;
-
-  /// The [Function] called when the event is changed.
-  final Function(DateTimeRange initialDateTimeRange, CalendarEvent<T> event)?
-      onEventChanged;
-
-  /// The [Function] called when the event is tapped.
-  final Function(CalendarEvent<T> event)? onEventTapped;
-
   final DateTimeRange visibleDateRange;
-  final MultiDayTileLayoutController<T> multiDayEventLayout;
-  final PositionedMultiDayTileData<T> arragnedEvent;
-
+  final PositionedMultiDayTileData<T> positionedTileData;
   final double dayWidth;
   final Duration horizontalDurationStep;
 
   @override
   Widget build(BuildContext context) {
+    CalendarScope<T> scope = CalendarScope.of(context);
+    bool isMoving =
+        scope.eventsController.selectedEvent == positionedTileData.event;
+    return Positioned(
+      top: positionedTileData.top,
+      left: positionedTileData.left,
+      width: positionedTileData.width,
+      height: positionedTileData.height,
+      child: MultiDayTileGestureDetector<T>(
+        horizontalDurationStep: horizontalDurationStep,
+        horizontalStep: dayWidth,
+        tileData: positionedTileData,
+        visibleDateRange: visibleDateRange,
+        isSelected: false,
+        child: scope.tileComponents.multiDayTileBuilder!(
+          positionedTileData.event,
+          MultiDayTileConfiguration(
+            tileType: isMoving ? TileType.ghost : TileType.normal,
+            continuesBefore: positionedTileData.continuesBefore,
+            continuesAfter: positionedTileData.continuesAfter,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The [ChaningMultiDayTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
+class ChaningMultiDayTileStack<T> extends StatelessWidget {
+  const ChaningMultiDayTileStack({
+    super.key,
+    required this.multiDayEventLayout,
+    required this.horizontalDurationStep,
+    required this.dayWidth,
+    required this.visibleDateRange,
+  });
+
+  final MultiDayTileLayoutController<T> multiDayEventLayout;
+  final Duration horizontalDurationStep;
+  final double dayWidth;
+  final DateTimeRange visibleDateRange;
+
+  @override
+  Widget build(BuildContext context) {
+    CalendarScope<T> scope = CalendarScope.of(context);
     return ListenableBuilder(
-      listenable: controller,
+      listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
-        bool isMoving = controller.chaningEvent == arragnedEvent.event;
-        return Stack(
-          children: <Widget>[
-            Positioned(
-              top: arragnedEvent.top,
-              left: arragnedEvent.left,
-              width: arragnedEvent.width,
-              height: arragnedEvent.height,
-              child: MultiDayTileGestureDetector<T>(
-                horizontalDurationStep: horizontalDurationStep,
-                horizontalStep: dayWidth,
-                event: arragnedEvent.event,
-                visibleDateRange: visibleDateRange,
-                child: CalendarScope.of<T>(context)
-                    .tileComponents
-                    .multiDayTileBuilder!(
-                  arragnedEvent.event,
-                  MultiDayTileConfiguration(
-                    tileType: isMoving ? TileType.ghost : TileType.normal,
-                    continuesBefore: arragnedEvent.continuesBefore,
-                    continuesAfter: arragnedEvent.continuesAfter,
+        PositionedMultiDayTileData<T> positionedTile =
+            multiDayEventLayout.layoutSelectedTile(
+          scope.eventsController.selectedEvent!,
+        );
+        return MouseRegion(
+          cursor: SystemMouseCursors.resizeColumn,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: positionedTile.top,
+                left: positionedTile.left,
+                width: positionedTile.width,
+                height: positionedTile.height,
+                child: MultiDayTileGestureDetector<T>(
+                  horizontalDurationStep: horizontalDurationStep,
+                  horizontalStep: dayWidth,
+                  tileData: positionedTile,
+                  visibleDateRange: visibleDateRange,
+                  isSelected: true,
+                  child: scope.tileComponents.multiDayTileBuilder!(
+                    positionedTile.event,
+                    MultiDayTileConfiguration(
+                      tileType: TileType.selected,
+                      continuesBefore: positionedTile.continuesBefore,
+                      continuesAfter: positionedTile.continuesAfter,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:example/functions/generate_calendar_eventsd.dart';
+import 'package:example/functions/generate_calendar_events.dart';
 import 'package:example/models/event.dart';
 import 'package:example/screens/desktop_screen.dart';
 import 'package:example/screens/mobile_screen.dart';
@@ -8,6 +8,8 @@ import 'package:example/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+
+import 'shortcuts/shortcuts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -76,57 +78,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (context) {
-          if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-            return DesktopScreen(
-              eventsController: eventController,
-              viewConfigurations: viewConfigurations,
-            );
-          } else {
-            return MobileScreen(
-              eventsController: eventController,
-              viewConfigurations: viewConfigurations,
-            );
-          }
-        },
+    return Shortcuts(
+      shortcuts: shortcuts,
+      child: Scaffold(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+              if (constraints.maxWidth < 500) {
+                return MobileScreen(
+                  eventsController: eventController,
+                );
+              }
+              return DesktopScreen(
+                eventsController: eventController,
+              );
+            } else {
+              return MobileScreen(
+                eventsController: eventController,
+              );
+            }
+          },
+        ),
       ),
     );
   }
-
-  /// The list of view configurations that can be used.
-  List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const WeekConfiguration(
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const WorkWeekConfiguration(
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const MultiDayConfiguration(
-      name: 'Two Day',
-      numberOfDays: 2,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const MultiDayConfiguration(
-      name: 'Three Day',
-      numberOfDays: 3,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const MultiDayConfiguration(
-      name: 'Four Day',
-      numberOfDays: 4,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const MonthConfiguration(),
-  ];
 }

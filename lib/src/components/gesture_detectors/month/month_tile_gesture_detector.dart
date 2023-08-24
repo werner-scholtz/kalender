@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// A widget that detects gestures on a month tile.
@@ -10,20 +8,19 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class MonthTileGestureDetector<T> extends StatefulWidget {
   const MonthTileGestureDetector({
     super.key,
-    required this.event,
+    required this.tileData,
     required this.visibleDateRange,
     required this.verticalDurationStep,
     required this.verticalStep,
     required this.horizontalDurationStep,
     required this.horizontalStep,
     required this.enableResizing,
+    required this.isSelected,
     required this.child,
   });
 
-  final Widget child;
-
   /// The event.
-  final CalendarEvent<T> event;
+  final PositionedMonthTileData<T> tileData;
 
   /// The visible date range.
   final DateTimeRange visibleDateRange;
@@ -43,6 +40,10 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
   /// Whether resizing is enabled.
   final bool enableResizing;
 
+  final bool isSelected;
+
+  final Widget child;
+
   @override
   State<MonthTileGestureDetector<T>> createState() =>
       _MonthTileGestureDetectorState<T>();
@@ -50,10 +51,6 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
 
 class _MonthTileGestureDetectorState<T>
     extends State<MonthTileGestureDetector<T>> {
-  late CalendarEvent<T> event;
-  late DateTimeRange initialDateTimeRange;
-  late bool enableResizing;
-
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
@@ -62,23 +59,29 @@ class _MonthTileGestureDetectorState<T>
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
 
+  late PositionedMonthTileData<T> tileData;
+  late DateTimeRange initialDateTimeRange;
+  late bool enableResizing;
+
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get modifyable => event.canModify;
+  bool get modifyable => tileData.event.canModify;
   bool get canBeChangedDesktop => modifyable && !isMobileDevice;
 
   @override
   void initState() {
     super.initState();
-    event = widget.event;
-    initialDateTimeRange = event.dateTimeRange;
+    tileData = widget.tileData;
+    initialDateTimeRange = tileData.event.dateTimeRange;
     enableResizing = widget.enableResizing;
   }
 
   @override
   void didUpdateWidget(covariant MonthTileGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    event = widget.event;
-    enableResizing = widget.enableResizing;
+    if (tileData.event != widget.tileData.event) {
+      tileData = widget.tileData;
+      enableResizing = widget.enableResizing;
+    }
   }
 
   @override
@@ -90,11 +93,8 @@ class _MonthTileGestureDetectorState<T>
           child: GestureDetector(
             behavior: HitTestBehavior.deferToChild,
             onPanStart: canBeChangedDesktop ? _onPanStart : null,
-            // isMobileDevice ? null : _onPanStart,
             onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
-            // isMobileDevice ? null : _onPanUpdate,
             onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
-            //  isMobileDevice ? null : _onPanEnd,
             onLongPressStart:
                 isMobileDevice && modifyable ? _onLongPressStart : null,
             onLongPressEnd:
@@ -146,9 +146,7 @@ class _MonthTileGestureDetectorState<T>
   }
 
   void _onTap() async {
-    controller.chaningEvent = event;
-    await functions.onEventTapped?.call(event);
-    controller.chaningEvent = null;
+    await functions.onEventTapped?.call(tileData.event);
   }
 
   void _onPanStart(DragStartDetails details) {
@@ -178,16 +176,16 @@ class _MonthTileGestureDetectorState<T>
   }
 
   void _onRescheduleStart() {
-    initialDateTimeRange = event.dateTimeRange;
+    initialDateTimeRange = tileData.event.dateTimeRange;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
-    controller.chaningEvent = event;
-    scope.functions.onEventChangeStart?.call(event);
+    controller.selectEvent(tileData.event);
+    scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
   Future<void> _onRescheduleEnd() async {
-    await functions.onEventChanged?.call(initialDateTimeRange, event);
-    controller.chaningEvent = null;
+    await functions.onEventChanged?.call(initialDateTimeRange, tileData.event);
+    scope.eventsController.deselectEvent();
   }
 
   void _onRescheduleUpdate(Offset offset) {
@@ -212,24 +210,29 @@ class _MonthTileGestureDetectorState<T>
 
     if ((newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
         newDateTimeRange.end.isWithin(widget.visibleDateRange))) {
-      controller.chaningEvent!.dateTimeRange = newDateTimeRange;
+      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
     }
   }
 
   void _onResizeStart(DragStartDetails details) {
-    event = widget.event;
-    initialDateTimeRange = event.dateTimeRange;
+    tileData = widget.tileData;
+    initialDateTimeRange = tileData.event.dateTimeRange;
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
-    controller.chaningEvent = event;
-    scope.functions.onEventChangeStart?.call(event);
+
+    controller.isResizing = true;
+    controller.selectEvent(tileData.event);
+    scope.functions.onEventChangeStart?.call(tileData.event);
   }
 
   void _onResizeEnd(DragEndDetails details) async {
-    event = widget.event;
-    await functions.onEventChanged
-        ?.call(event.dateTimeRange, controller.chaningEvent!);
-    controller.chaningEvent = null;
+    tileData = widget.tileData;
+    await functions.onEventChanged?.call(
+      tileData.event.dateTimeRange,
+      controller.selectedEvent!,
+    );
+    controller.isResizing = false;
+    scope.eventsController.deselectEvent();
   }
 
   /// TODO: If the event starts at a time other than 00:00, then the event might not allow resizing
@@ -240,9 +243,9 @@ class _MonthTileGestureDetectorState<T>
       DateTime newStart =
           initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
-      if (controller.chaningEvent == null) return;
+      if (controller.selectedEvent == null) return;
       if (newStart.isBefore(initialDateTimeRange.end)) {
-        controller.chaningEvent?.start = newStart;
+        controller.selectedEvent?.start = newStart;
       }
 
       currentHorizontalSteps = steps;
@@ -256,9 +259,9 @@ class _MonthTileGestureDetectorState<T>
     if (steps != currentHorizontalSteps) {
       DateTime newEnd =
           initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
-      if (controller.chaningEvent == null) return;
+      if (controller.selectedEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {
-        controller.chaningEvent?.end = newEnd;
+        controller.selectedEvent?.end = newEnd;
       }
 
       currentHorizontalSteps = steps;

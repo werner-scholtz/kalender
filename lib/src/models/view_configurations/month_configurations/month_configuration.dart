@@ -27,6 +27,18 @@ class MonthConfiguration extends MonthViewConfiguration {
   @override
   final bool createNewEvents;
 
+  MonthConfiguration copyWith({
+    int? firstDayOfWeek,
+    bool? enableRezising,
+    bool? createNewEvents,
+  }) {
+    return MonthConfiguration(
+      firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
+      enableRezising: enableRezising ?? this.enableRezising,
+      createNewEvents: createNewEvents ?? this.createNewEvents,
+    );
+  }
+
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
     DateTimeRange monthRange = date.monthRange;
@@ -40,13 +52,11 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
       start: dateTimeRange.start.startOfMonth
-          .startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end:
-          dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+          .startOfWeekWithOffset(firstDayOfWeek),
+      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 
@@ -77,7 +87,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateVisibleDateRangeForIndex({
     required int index,
     required DateTime calendarStart,
-    int? firstDayOfWeek,
   }) {
     DateTimeRange monthRange = DateTime(
       calendarStart.year,
@@ -85,8 +94,8 @@ class MonthConfiguration extends MonthViewConfiguration {
     ).monthRange;
 
     return DateTimeRange(
-      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek ?? 1),
-      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek ?? 1),
+      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
+      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
   }
 

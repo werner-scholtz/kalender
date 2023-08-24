@@ -7,6 +7,23 @@ import 'package:kalender/kalender.dart';
 List<CalendarEvent<Event>> generateCalendarEvents() {
   List<CalendarEvent<Event>> events = [];
 
+  List<Color> colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+  ];
+
+  Color getRadomColor() {
+    return colors[Random().nextInt(3)];
+  }
+
+  int x = 1;
+
+  String getID() {
+    x++;
+    return x.toString();
+  }
+
   for (var i = -5; i < 5; i++) {
     DateTime now = DateTime.now().add(Duration(days: i * 7));
     DateTime mondayNow = now.subtract(Duration(days: now.weekday - 1));
@@ -26,9 +43,9 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfTuesday,
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 1',
-          color: Colors.blueGrey,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -37,9 +54,9 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfWednesday,
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 2',
-          color: Colors.red,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -48,9 +65,9 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfWednesday,
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 3',
-          color: Colors.blueGrey,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -59,9 +76,9 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfMonday.add(Duration(hours: 6 + Random().nextInt(5))),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 4',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -70,9 +87,9 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfTuesday.add(Duration(hours: 7 + Random().nextInt(5))),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 5',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -81,42 +98,48 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfWednesday.add(Duration(hours: 7 + Random().nextInt(5))),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 6',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfThursday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfThursday.add(Duration(hours: 7 + Random().nextInt(6))),
+          start: startOfThursday
+              .add(Duration(hours: Random().nextInt(6), minutes: 4)),
+          end: startOfThursday
+              .add(Duration(hours: 7 + Random().nextInt(6), minutes: 4)),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 7',
-          color: Colors.green,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfFriday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfFriday.add(Duration(hours: 8 + Random().nextInt(6))),
+          start: startOfFriday
+              .add(Duration(hours: Random().nextInt(6), minutes: 7)),
+          end: startOfFriday
+              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 7)),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 8',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfSaturday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfSaturday.add(Duration(hours: 8 + Random().nextInt(6))),
+          start: startOfSaturday
+              .add(Duration(hours: Random().nextInt(6), minutes: 10)),
+          end: startOfSaturday
+              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 10)),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 9',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
@@ -125,20 +148,22 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           end: startOfSaturday.add(Duration(hours: 17 + Random().nextInt(3))),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 9',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfSunday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfSunday.add(Duration(hours: 12 + Random().nextInt(6))),
+          start: startOfSunday
+              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+          end: startOfSunday
+              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
         ),
         eventData: Event(
-          title: 'Event',
-          description: 'This is a description of event 10',
-          color: Colors.blue,
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
         ),
       ),
     ]);

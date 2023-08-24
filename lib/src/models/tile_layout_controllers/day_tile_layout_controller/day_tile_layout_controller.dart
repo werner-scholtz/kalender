@@ -39,7 +39,7 @@ abstract class DayTileLayoutController<T> {
   /// Positioned a single event on the calendar.
   ///
   /// This is mainly used for the chaning event.
-  List<PositionedTileData<T>> positionSingleEvent(CalendarEvent<T> event);
+  List<PositionedTileData<T>> layoutSelectedEvent(CalendarEvent<T> event);
 }
 
 class TileGroup<T> {
@@ -97,6 +97,10 @@ class PositionedTileData<T> {
   /// If the tile should draw an outline.
   final bool drawOutline;
 
+  final bool continuesBefore;
+
+  final bool continuesAfter;
+
   PositionedTileData({
     required this.event,
     required this.date,
@@ -105,6 +109,8 @@ class PositionedTileData<T> {
     required this.width,
     required this.height,
     required this.drawOutline,
+    required this.continuesBefore,
+    required this.continuesAfter,
   });
 
   @override

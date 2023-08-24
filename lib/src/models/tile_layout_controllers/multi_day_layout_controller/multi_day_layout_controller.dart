@@ -38,12 +38,11 @@ abstract class MultiDayTileLayoutController<T> {
 
   /// Layout a list of [events].
   List<PositionedMultiDayTileData<T>> layoutTiles(
-    Iterable<CalendarEvent<T>> events, {
-    CalendarEvent<T>? selectedEvent,
-  });
+    Iterable<CalendarEvent<T>> events,
+  );
 
   /// Layout a single [event].
-  PositionedMultiDayTileData<T> layoutTile(CalendarEvent<T> event);
+  PositionedMultiDayTileData<T> layoutSelectedTile(CalendarEvent<T> event);
 }
 
 class PositionedMultiDayTileData<T> {
