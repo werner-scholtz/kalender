@@ -105,7 +105,7 @@ class _MonthTileGestureDetectorState<T>
             child: widget.child,
           ),
         ),
-        if ((!isMobileDevice || enableResizing || modifyable))
+        if ((!isMobileDevice && enableResizing && modifyable))
           Positioned(
             left: 0,
             width: 8,
@@ -123,7 +123,7 @@ class _MonthTileGestureDetectorState<T>
               ),
             ),
           ),
-        if ((!isMobileDevice || enableResizing || modifyable))
+        if ((!isMobileDevice && enableResizing && modifyable))
           Positioned(
             right: 0,
             width: 8,
