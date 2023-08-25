@@ -36,7 +36,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
           MultiDayLayoutData<T> layedOutEvents =
-              multiDayEventLayout.layoutTiles(
+              multiDayEventLayout.layoutEvents(
             scope.eventsController.getMultidayEventsFromDateRange(
               scope.state.visibleDateTimeRange.value,
             ),
@@ -166,7 +166,7 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
       listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
         PositionedMultiDayTileData<T> positionedTile =
-            multiDayEventLayout.layoutSelectedTile(
+            multiDayEventLayout.layoutSingleEvent(
           scope.eventsController.selectedEvent!,
         );
         return MouseRegion(

@@ -11,7 +11,7 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
   });
 
   @override
-  PositionedMonthTileData<T> layoutSelectedTile(CalendarEvent<T> event) {
+  PositionedMonthTileData<T> layoutSingleEvent(CalendarEvent<T> event) {
     double left = calculateLeft(event.start);
     double width = calculateWidth(event.dateTimeRange);
 
@@ -24,7 +24,7 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
   }
 
   @override
-  List<PositionedMonthTileData<T>> layoutTiles(
+  List<PositionedMonthTileData<T>> layoutEvents(
     Iterable<CalendarEvent<T>> events, {
     CalendarEvent<T>? selectedEvent,
   }) {

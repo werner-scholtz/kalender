@@ -33,7 +33,7 @@ abstract class DayTileLayoutController<T> {
   /// Positioned a single event on the calendar.
   ///
   /// This is mainly used for the chaning event.
-  List<PositionedTileData<T>> layoutSelectedEvent(CalendarEvent<T> event);
+  List<PositionedTileData<T>> layoutSingleEvent(CalendarEvent<T> event);
 }
 
 class TileGroup<T> {

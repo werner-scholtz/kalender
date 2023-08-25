@@ -28,12 +28,13 @@ abstract class MonthTileLayoutController<T> {
   /// The number of rows in the stack.
   int numberOfRows = 0;
 
-  List<PositionedMonthTileData<T>> layoutTiles(
-    Iterable<CalendarEvent<T>> events, {
-    CalendarEvent<T>? selectedEvent,
-  });
+  /// Layout a list of [events].
+  List<PositionedMonthTileData<T>> layoutEvents(
+    Iterable<CalendarEvent<T>> events,
+  );
 
-  PositionedMonthTileData<T> layoutSelectedTile(CalendarEvent<T> event);
+  /// Layout a single [event].
+  PositionedMonthTileData<T> layoutSingleEvent(CalendarEvent<T> event);
 }
 
 class PositionedMonthTileData<T> {

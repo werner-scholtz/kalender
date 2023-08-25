@@ -12,7 +12,7 @@ class DefaultMultidayLayoutController<T>
   });
 
   @override
-  PositionedMultiDayTileData<T> layoutSelectedTile(CalendarEvent<T> event) {
+  PositionedMultiDayTileData<T> layoutSingleEvent(CalendarEvent<T> event) {
     double left = calculateLeft(event.start);
     double width = calculateWidth(event.dateTimeRange);
 
@@ -25,7 +25,7 @@ class DefaultMultidayLayoutController<T>
   }
 
   @override
-  MultiDayLayoutData<T> layoutTiles(
+  MultiDayLayoutData<T> layoutEvents(
     Iterable<CalendarEvent<T>> events,
   ) {
     double stackHeight = 0;

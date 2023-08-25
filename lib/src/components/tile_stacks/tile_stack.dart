@@ -226,7 +226,7 @@ class ChangingTileStack<T> extends StatelessWidget {
       listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
         List<PositionedTileData<T>> positionedTiles =
-            tileLayoutController.layoutSelectedEvent(
+            tileLayoutController.layoutSingleEvent(
           scope.eventsController.selectedEvent!,
         );
 

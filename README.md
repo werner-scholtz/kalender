@@ -326,19 +326,87 @@ There are three types of layout controllers: DayLayoutController, MultiDayLayout
 1. DayLayoutController
    Create your own DayLayoutController by extending the DayLayoutController class.
    ```dart
-    class DefaultDayLayoutController<T> extends DayTileLayoutController<T> {}
+    class DefaultDayLayoutController<T> extends DayTileLayoutController<T> {
+      DefaultDayTileLayoutController({
+        required super.visibleDateRange,
+        required super.visibleDates,
+        required super.heightPerMinute,
+        required super.dayWidth,
+      });
+
+      @override
+      List<TileGroup<T>> generateTileGroups(
+        Iterable<CalendarEvent<T>> events,
+      ) {
+        // This must return a list of TileGroup's.
+        // TileGroups are a collection of PositionedTileData's and are displayed as a group.
+        // The order of the PositionedTileData's in the list is the order in which they are displayed.
+      }
+
+      @override
+      List<PositionedTileData<T>> layoutSingleEvent(
+        CalendarEvent<T> event,
+      ) {
+        // This returns a single PositionedTileData that is used to display event that is moving.
+      }
+
+    }
    ```
 
 2. MultiDayLayoutController
    Create your own MultiDayLayoutController by extending the DayLayoutController class.
    ```dart
-   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {}
+  class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {
+    DefaultMultidayLayoutController({
+      required super.visibleDateRange,
+      required super.dayWidth,
+      required super.tileHeight,
+    });
+
+    @override
+    MultiDayLayoutData<T> layoutEvents(
+      Iterable<CalendarEvent<T>> events,
+    ) {
+      // This must return a MultiDayLayoutData object.
+      // The MultiDayLayoutData contains a list of PositionedTileData's.
+      // And the stack height.
+    }
+
+    @override
+    List<PositionedTileData<T>> layoutSingleEvent(
+      CalendarEvent<T> event,
+    ) {
+      // This must return a single PositionedTileData that is used to display event that is moving.
+    }
+
+   }
    ```
 
 3. MonthLayoutController 
    Create your own MonthLayoutController by extending the DayLayoutController class.
    ```dart
-   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {}
+   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {
+      DefaultMultidayLayoutController({
+        required super.visibleDateRange,
+        required super.cellWidth,
+        required super.tileHeight,
+      });
+
+      @override
+      List<PositionedMonthTileData<T>> layoutEvents(
+        Iterable<CalendarEvent<T>> events,
+      ){
+        // This must return a list of PositionedMonthTileData's.
+        // The order of the PositionedMonthTileData's in the list is the order in which they are displayed.
+      }
+
+      @override
+      List<PositionedMonthTileData<T>> layoutSingleEvent(
+        CalendarEvent<T> event,
+      ){
+        // This must return a single PositionedMonthTileData that is used to display event that is moving.
+      }
+   }
    ```
 
 

@@ -12,7 +12,7 @@ class ExampleDayTileLayoutController<Event>
   });
 
   @override
-  List<PositionedTileData<Event>> layoutSelectedEvent(
+  List<PositionedTileData<Event>> layoutSingleEvent(
     CalendarEvent<Event> event,
   ) {
     return event.datesSpanned.map(

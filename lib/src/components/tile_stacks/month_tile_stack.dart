@@ -48,10 +48,10 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
           List<PositionedMonthTileData<T>> arragedEvents =
-              monthEventLayout.layoutTiles(
-            scope.eventsController
-                .getMonthEventsFromDateRange(visibleDateRange),
-            selectedEvent: scope.eventsController.selectedEvent,
+              monthEventLayout.layoutEvents(
+            scope.eventsController.getMonthEventsFromDateRange(
+              visibleDateRange,
+            ),
           );
 
           return SizedBox(
@@ -208,7 +208,7 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
       listenable: scope.eventsController.selectedEvent!,
       builder: (BuildContext context, Widget? child) {
         PositionedMonthTileData<T> positionedTile =
-            monthEventLayout.layoutSelectedTile(
+            monthEventLayout.layoutSingleEvent(
           scope.eventsController.selectedEvent!,
         );
 
