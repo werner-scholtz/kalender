@@ -79,7 +79,6 @@ class MonthCells<T> extends StatelessWidget {
                             visibleDateRange: weekDateRange,
                             cellWidth: cellWidth,
                             tileHeight: 24,
-                            isMobileDevice: false,
                           ),
                         ),
                       ),

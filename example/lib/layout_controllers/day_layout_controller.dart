@@ -7,7 +7,6 @@ class ExampleDayTileLayoutController<Event>
   ExampleDayTileLayoutController({
     required super.visibleDateRange,
     required super.visibleDates,
-    required super.verticalDurationStep,
     required super.heightPerMinute,
     required super.dayWidth,
   });

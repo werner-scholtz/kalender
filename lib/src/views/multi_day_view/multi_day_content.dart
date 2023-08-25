@@ -86,7 +86,6 @@ class MultiDayContent<T> extends StatelessWidget {
                               visibleDates: pageVisibleDateRange.datesSpanned,
                               heightPerMinute: heightPerMinute,
                               dayWidth: dayWidth,
-                              verticalDurationStep: const Duration(minutes: 15),
                             );
 
                             return Stack(

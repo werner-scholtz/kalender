@@ -6,7 +6,6 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
   DefaultDayTileLayoutController({
     required super.visibleDateRange,
     required super.visibleDates,
-    required super.verticalDurationStep,
     required super.heightPerMinute,
     required super.dayWidth,
   });

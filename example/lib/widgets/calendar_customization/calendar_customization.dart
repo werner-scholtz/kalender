@@ -310,14 +310,12 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
     required List<DateTime> visibleDates,
     required double heightPerMinute,
     required double dayWidth,
-    required Duration verticalDurationStep,
   }) {
     return ExampleDayTileLayoutController<Event>(
       visibleDateRange: visibleDateRange,
       visibleDates: visibleDates,
       heightPerMinute: heightPerMinute,
       dayWidth: dayWidth,
-      verticalDurationStep: verticalDurationStep,
     );
   }
 }

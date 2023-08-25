@@ -35,7 +35,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
         listenable: scope.eventsController,
         builder: (BuildContext context, Widget? child) {
           /// Arrange the events.
-          List<PositionedMultiDayTileData<T>> arragedEvents =
+          MultiDayLayoutData<T> layedOutEvents =
               multiDayEventLayout.layoutTiles(
             scope.eventsController.getMultidayEventsFromDateRange(
               scope.state.visibleDateTimeRange.value,
@@ -44,8 +44,9 @@ class MultiDayTileStack<T> extends StatelessWidget {
 
           return SizedBox(
             width: pageWidth,
-            height: multiDayEventLayout.stackHeight,
+            height: layedOutEvents.stackHeight,
             child: Stack(
+              fit: StackFit.expand,
               children: <Widget>[
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -63,16 +64,14 @@ class MultiDayTileStack<T> extends StatelessWidget {
                     ),
                   ],
                 ),
-                MultiDayGestureDetector<T>(
-                  pageWidth: pageWidth,
-                  height: multiDayEventLayout.stackHeight,
-                  cellWidth: dayWidth,
-                  multidayEventHeight: multiDayEventLayout.tileHeight,
-                  numberOfRows: multiDayEventLayout.numberOfRows,
-                  visibleDates:
-                      scope.state.visibleDateTimeRange.value.datesSpanned,
-                ),
-                ...arragedEvents.map(
+                if (scope.state.viewConfiguration.createNewEvents)
+                  MultiDayGestureDetector<T>(
+                    dayWidth: dayWidth,
+                    multidayEventHeight: multiDayEventLayout.tileHeight,
+                    visibleDates:
+                        scope.state.visibleDateTimeRange.value.datesSpanned,
+                  ),
+                ...layedOutEvents.layedOutTiles.map(
                   (PositionedMultiDayTileData<T> e) {
                     return PositionedMultiDayTile<T>(
                       visibleDateRange: scope.state.visibleDateTimeRange.value,

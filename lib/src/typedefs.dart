@@ -117,7 +117,6 @@ typedef DayLayoutController<T extends Object?> = DayTileLayoutController<T>
     Function({
   required DateTimeRange visibleDateRange,
   required List<DateTime> visibleDates,
-  required Duration verticalDurationStep,
   required double heightPerMinute,
   required double dayWidth,
 });
@@ -130,8 +129,6 @@ typedef MultiDayLayoutController<T extends Object?>
   required DateTimeRange visibleDateRange,
   required double dayWidth,
   required double tileHeight,
-  required bool isMobileDevice,
-  required bool isMultidayView,
 });
 
 /// The [MonthLayoutController] is used to calculate the layout of the tiles displayed on a day.
@@ -142,5 +139,18 @@ typedef MonthLayoutController<T extends Object?> = MonthTileLayoutController<T>
   required DateTimeRange visibleDateRange,
   required double cellWidth,
   required double tileHeight,
-  required bool isMobileDevice,
+});
+
+/// The [MultiDayTilesLayoutAlgorithm] is used to calculate the layout of the tiles displayed on a multiday view.
+typedef MultiDayTilesLayoutAlgorithm<T extends Object> = MultiDayLayoutData<T>
+    Function({
+  required Iterable<CalendarEvent<dynamic>> events,
+  required double tileHeight,
+  required double dayWidth,
+  required DateTimeRange visibleDateRange,
+});
+
+typedef PositionedMultiDayTileData<T extends Object> = MultiDayLayoutData<T>
+    Function({
+  required CalendarEvent<T> event,
 });

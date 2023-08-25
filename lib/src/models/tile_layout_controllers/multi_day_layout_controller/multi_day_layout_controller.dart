@@ -6,8 +6,7 @@ abstract class MultiDayTileLayoutController<T> {
     required this.visibleDateRange,
     required this.dayWidth,
     required this.tileHeight,
-    required this.isMobileDevice,
-    required this.isMultidayView,
+    // required this.isMultidayView,
   });
 
   /// The [DateTimeRange] that is visible on the calendar.
@@ -24,25 +23,27 @@ abstract class MultiDayTileLayoutController<T> {
   /// The maximum width of the page.
   late final double maxWidth = dayWidth * (visibleDateRange.duration.inDays);
 
-  /// Whether the device is a mobile device.
-  final bool isMobileDevice;
-
   /// Whether the view is a multiday view.
-  final bool isMultidayView;
-
-  /// The maximum height of the stack.
-  double stackHeight = 0;
-
-  /// The number of rows in the stack.
-  int numberOfRows = 0;
+  // final bool isMultidayView;
 
   /// Layout a list of [events].
-  List<PositionedMultiDayTileData<T>> layoutTiles(
+  MultiDayLayoutData<T> layoutTiles(
     Iterable<CalendarEvent<T>> events,
   );
 
   /// Layout a single [event].
   PositionedMultiDayTileData<T> layoutSelectedTile(CalendarEvent<T> event);
+}
+
+class MultiDayLayoutData<T extends Object?> {
+  MultiDayLayoutData({
+    required this.layedOutTiles,
+    required this.stackHeight,
+  });
+
+  final List<PositionedMultiDayTileData<T>> layedOutTiles;
+
+  final double stackHeight;
 }
 
 class PositionedMultiDayTileData<T> {

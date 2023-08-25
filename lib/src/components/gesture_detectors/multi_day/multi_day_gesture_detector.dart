@@ -10,19 +10,13 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 class MultiDayGestureDetector<T> extends StatefulWidget {
   const MultiDayGestureDetector({
     super.key,
-    required this.pageWidth,
-    required this.cellWidth,
-    required this.height,
+    required this.dayWidth,
     required this.multidayEventHeight,
-    required this.numberOfRows,
     required this.visibleDates,
   });
 
-  final double pageWidth;
-  final double cellWidth;
-  final double height;
+  final double dayWidth;
   final double multidayEventHeight;
-  final int numberOfRows;
   final List<DateTime> visibleDates;
 
   @override
@@ -32,21 +26,14 @@ class MultiDayGestureDetector<T> extends StatefulWidget {
 
 class _MultiDayGestureDetectorState<T>
     extends State<MultiDayGestureDetector<T>> {
-  late double pageWidth;
-  late double dayWidth;
-  late double height;
-  late double multidayEventHeight;
-  late int numberOfRows;
-  late int numberOfColums;
-  late List<DateTime> visibleDates;
-
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
-
-  bool get gestureDisabled => isMobileDevice || !createNewEvents;
-  bool get createNewEvents => scope.state.viewConfiguration.createNewEvents;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
+
+  late double dayWidth;
+  late int numberOfColums;
+  late List<DateTime> visibleDates;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;
@@ -54,11 +41,7 @@ class _MultiDayGestureDetectorState<T>
   @override
   void initState() {
     super.initState();
-    pageWidth = widget.pageWidth;
-    dayWidth = widget.cellWidth;
-    height = widget.height;
-    multidayEventHeight = widget.multidayEventHeight;
-    numberOfRows = widget.numberOfRows;
+    dayWidth = widget.dayWidth;
     visibleDates = widget.visibleDates;
     numberOfColums = visibleDates.length;
   }
@@ -66,54 +49,44 @@ class _MultiDayGestureDetectorState<T>
   @override
   void didUpdateWidget(covariant MultiDayGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    pageWidth = widget.pageWidth;
-    dayWidth = widget.cellWidth;
-    height = widget.height;
-    multidayEventHeight = widget.multidayEventHeight;
-    numberOfRows = widget.numberOfRows;
+    dayWidth = widget.dayWidth;
     visibleDates = widget.visibleDates;
     numberOfColums = visibleDates.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: <Widget>[
-        for (int r = 0; r < numberOfRows; r++)
-          Row(
-            children: <Widget>[
-              for (int c = 0; c < numberOfColums; c++)
-                MouseRegion(
-                  cursor: createNewEvents
-                      ? SystemMouseCursors.click
-                      : SystemMouseCursors.basic,
-                  child: SizedBox(
-                    width: dayWidth,
-                    height: multidayEventHeight,
-                    child: GestureDetector(
-                      onTap: createNewEvents
-                          ? () => _onTap(visibleDates[c].dayRange)
-                          : null,
-                      onHorizontalDragStart: gestureDisabled
-                          ? null
-                          : (DragStartDetails details) =>
-                              _onHorizontalDragStart(
-                                details,
-                                visibleDates[c].dayRange,
-                              ),
-                      onHorizontalDragUpdate: gestureDisabled
-                          ? null
-                          : (DragUpdateDetails details) =>
-                              _onHorizontalDragUpdate(
-                                details,
-                                visibleDates[c].dayRange,
-                              ),
-                      onHorizontalDragEnd:
-                          createNewEvents ? _onHorizontalDragEnd : null,
-                    ),
-                  ),
+        for (int r = 0; r < numberOfColums; r++)
+          Positioned(
+            left: r * dayWidth,
+            width: dayWidth,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              color: Colors.red.withAlpha(100),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _onTap(visibleDates[r].dayRange),
+                  onHorizontalDragStart: isMobileDevice
+                      ? null
+                      : (DragStartDetails details) => _onHorizontalDragStart(
+                            details,
+                            visibleDates[r].dayRange,
+                          ),
+                  onHorizontalDragUpdate: isMobileDevice
+                      ? null
+                      : (DragUpdateDetails details) => _onHorizontalDragUpdate(
+                            details,
+                            visibleDates[r].dayRange,
+                          ),
+                  onHorizontalDragEnd:
+                      isMobileDevice ? null : _onHorizontalDragEnd,
                 ),
-            ],
+              ),
+            ),
           ),
       ],
     );

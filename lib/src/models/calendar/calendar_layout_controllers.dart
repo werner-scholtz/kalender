@@ -37,14 +37,12 @@ class CalendarLayoutControllers<T> {
   DayTileLayoutController<T> defaultDayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required List<DateTime> visibleDates,
-    required Duration verticalDurationStep,
     required double heightPerMinute,
     required double dayWidth,
   }) {
     return DefaultDayTileLayoutController<T>(
       visibleDateRange: visibleDateRange,
       visibleDates: visibleDates,
-      verticalDurationStep: verticalDurationStep,
       heightPerMinute: heightPerMinute,
       dayWidth: dayWidth,
     );
@@ -55,15 +53,11 @@ class CalendarLayoutControllers<T> {
     required DateTimeRange visibleDateRange,
     required double dayWidth,
     required double tileHeight,
-    required bool isMobileDevice,
-    required bool isMultidayView,
   }) {
     return DefaultMultidayLayoutController<T>(
       visibleDateRange: visibleDateRange,
       dayWidth: dayWidth,
       tileHeight: tileHeight,
-      isMobileDevice: isMobileDevice,
-      isMultidayView: isMultidayView,
     );
   }
 
@@ -72,13 +66,11 @@ class CalendarLayoutControllers<T> {
     required DateTimeRange visibleDateRange,
     required double cellWidth,
     required double tileHeight,
-    required bool isMobileDevice,
   }) {
     return DefaultMonthTileLayoutController<T>(
       visibleDateRange: visibleDateRange,
       cellWidth: cellWidth,
       tileHeight: tileHeight,
-      isMobileDevice: isMobileDevice,
     );
   }
 

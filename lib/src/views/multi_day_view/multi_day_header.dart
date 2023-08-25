@@ -81,8 +81,6 @@ class MultiDayHeader<T> extends StatelessWidget {
                         dayWidth: dayWidth,
                         visibleDateRange: visibleDateTimeRange,
                         tileHeight: viewConfiguration.multidayTileHeight,
-                        isMultidayView: false,
-                        isMobileDevice: scope.platformData.isMobileDevice,
                       ),
                     ),
                   ],

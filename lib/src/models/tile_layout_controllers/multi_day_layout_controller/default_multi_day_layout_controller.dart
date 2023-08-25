@@ -9,8 +9,6 @@ class DefaultMultidayLayoutController<T>
     required super.visibleDateRange,
     required super.dayWidth,
     required super.tileHeight,
-    required super.isMobileDevice,
-    required super.isMultidayView,
   });
 
   @override
@@ -27,11 +25,10 @@ class DefaultMultidayLayoutController<T>
   }
 
   @override
-  List<PositionedMultiDayTileData<T>> layoutTiles(
+  MultiDayLayoutData<T> layoutTiles(
     Iterable<CalendarEvent<T>> events,
   ) {
-    stackHeight = 0;
-
+    double stackHeight = 0;
     void updateStackHeight(double top) {
       if (stackHeight < top + tileHeight) {
         stackHeight = top + tileHeight;
@@ -87,36 +84,10 @@ class DefaultMultidayLayoutController<T>
       );
     }
 
-    // if (selectedEvent != null) {
-    //   List<PositionedMultiDayTileData<T>> selectedArrangedEvent = layedOutTiles
-    //       .where(
-    //         (PositionedMultiDayTileData<T> element) =>
-    //             element.event == selectedEvent,
-    //       )
-    //       .toList();
-    //   if (selectedArrangedEvent.isNotEmpty) {
-    //     layedOutTiles.removeWhere(
-    //       (PositionedMultiDayTileData<T> element) =>
-    //           element.event == selectedEvent,
-    //     );
-    //     layedOutTiles.addAll(selectedArrangedEvent);
-    //   }
-    // }
-
-    numberOfRows = stackHeight ~/ tileHeight;
-
-    if (numberOfRows == 0 && isMultidayView && isMobileDevice) {
-      numberOfRows = 1;
-      stackHeight = tileHeight * numberOfRows;
-    } else if (numberOfRows == 0 && !isMultidayView && isMobileDevice) {
-      numberOfRows = 3;
-      stackHeight = tileHeight * numberOfRows;
-    } else if (numberOfRows == 0) {
-      numberOfRows = 1;
-      stackHeight = tileHeight * numberOfRows;
-    }
-
-    return layedOutTiles;
+    return MultiDayLayoutData<T>(
+      layedOutTiles: layedOutTiles,
+      stackHeight: stackHeight,
+    );
   }
 
   PositionedMultiDayTileData<T> positionMultidayEvent({

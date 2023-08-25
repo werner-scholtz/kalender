@@ -6,7 +6,6 @@ abstract class MonthTileLayoutController<T> {
     required this.visibleDateRange,
     required this.cellWidth,
     required this.tileHeight,
-    required this.isMobileDevice,
   });
 
   /// The [DateTimeRange] that is visible on the calendar.
@@ -22,9 +21,6 @@ abstract class MonthTileLayoutController<T> {
 
   /// The maximum width of the page.
   late final double maxWidth = cellWidth * (visibleDateRange.duration.inDays);
-
-  /// Whether the device is a mobile device.
-  final bool isMobileDevice;
 
   /// The maximum height of the stack.
   double stackHeight = 0;

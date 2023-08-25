@@ -8,7 +8,6 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
     required super.visibleDateRange,
     required super.cellWidth,
     required super.tileHeight,
-    required super.isMobileDevice,
   });
 
   @override

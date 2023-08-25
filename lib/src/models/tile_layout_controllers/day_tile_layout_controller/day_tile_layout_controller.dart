@@ -5,7 +5,6 @@ abstract class DayTileLayoutController<T> {
   const DayTileLayoutController({
     required this.visibleDateRange,
     required this.visibleDates,
-    required this.verticalDurationStep,
     required this.heightPerMinute,
     required this.dayWidth,
   });
@@ -15,11 +14,6 @@ abstract class DayTileLayoutController<T> {
 
   /// The [DateTime]s that are visible on the calendar.
   final List<DateTime> visibleDates;
-
-  /// The [Duration] of a vertical duration step.
-  ///
-  /// This is used to estimate the height of the event title.
-  final Duration verticalDurationStep;
 
   /// The height of each minute.
   ///
