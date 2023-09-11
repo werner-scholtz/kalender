@@ -42,74 +42,71 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
 
-    return RepaintBoundary(
-      child: ListenableBuilder(
-        listenable: scope.eventsController,
-        builder: (BuildContext context, Widget? child) {
-          /// Arrange the events.
-          List<PositionedMonthTileData<T>> arragedEvents =
-              monthEventLayout.layoutTiles(
-            scope.eventsController
-                .getMonthEventsFromDateRange(visibleDateRange),
-            selectedEvent: scope.eventsController.selectedEvent,
-          );
+    return ListenableBuilder(
+      listenable: scope.eventsController,
+      builder: (BuildContext context, Widget? child) {
+        /// Arrange the events.
+        List<PositionedMonthTileData<T>> arragedEvents =
+            monthEventLayout.layoutTiles(
+          scope.eventsController.getMonthEventsFromDateRange(visibleDateRange),
+          selectedEvent: scope.eventsController.selectedEvent,
+        );
 
-          return SizedBox(
-            width: pageWidth,
-            height: monthEventLayout.stackHeight < cellHeight
-                ? cellHeight
-                : monthEventLayout.stackHeight,
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    for (int r = 0; r < 7; r++)
-                      if (scope.state.viewConfiguration.createNewEvents)
-                        SizedBox(
-                          width: cellWidth,
-                          height: cellHeight,
-                          child: MonthCellGestureDetector<T>(
-                            date: visibleDateRange.start.add(Duration(days: r)),
-                            visibleDateRange: visibleDateRange,
-                            verticalDurationStep: const Duration(days: 7),
-                            verticalStep: cellHeight,
-                            horizontalDurationStep: const Duration(days: 1),
-                            horizontalStep: cellWidth,
-                          ),
+        return SizedBox(
+          width: pageWidth,
+          height: monthEventLayout.stackHeight < cellHeight
+              ? cellHeight
+              : monthEventLayout.stackHeight,
+          child: Stack(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  for (int r = 0; r < 7; r++)
+                    if (scope.state.viewConfiguration.createNewEvents)
+                      SizedBox(
+                        width: cellWidth,
+                        height: cellHeight,
+                        child: MonthCellGestureDetector<T>(
+                          date: visibleDateRange.start.add(Duration(days: r)),
+                          visibleDateRange: visibleDateRange,
+                          verticalDurationStep: const Duration(days: 7),
+                          verticalStep: cellHeight,
+                          horizontalDurationStep: const Duration(days: 1),
+                          horizontalStep: cellWidth,
                         ),
-                  ],
-                ),
-                ...arragedEvents.map(
-                  (PositionedMonthTileData<T> e) {
-                    return PositionedMonthTile<T>(
-                      controller: scope.eventsController,
-                      visibleDateRange: scope.state.visibleDateTimeRange.value,
-                      viewConfiguration: viewConfiguration,
-                      monthEventLayout: monthEventLayout,
-                      monthVisibleDateRange: monthVisibleDateRange,
-                      positionedTileData: e,
-                      horizontalStep: cellWidth,
-                      horizontalDurationStep: const Duration(days: 1),
-                      verticalStep: cellHeight,
-                      verticalDurationStep: const Duration(days: 7),
-                    );
-                  },
-                ).toList(),
-                if (scope.eventsController.hasChaningEvent)
-                  ChaningMonthTileStack<T>(
-                    monthEventLayout: monthEventLayout,
+                      ),
+                ],
+              ),
+              ...arragedEvents.map(
+                (PositionedMonthTileData<T> e) {
+                  return PositionedMonthTile<T>(
+                    controller: scope.eventsController,
+                    visibleDateRange: scope.state.visibleDateTimeRange.value,
                     viewConfiguration: viewConfiguration,
+                    monthEventLayout: monthEventLayout,
                     monthVisibleDateRange: monthVisibleDateRange,
+                    positionedTileData: e,
                     horizontalStep: cellWidth,
                     horizontalDurationStep: const Duration(days: 1),
                     verticalStep: cellHeight,
                     verticalDurationStep: const Duration(days: 7),
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
+                  );
+                },
+              ).toList(),
+              if (scope.eventsController.hasChaningEvent)
+                ChaningMonthTileStack<T>(
+                  monthEventLayout: monthEventLayout,
+                  viewConfiguration: viewConfiguration,
+                  monthVisibleDateRange: monthVisibleDateRange,
+                  horizontalStep: cellWidth,
+                  horizontalDurationStep: const Duration(days: 1),
+                  verticalStep: cellHeight,
+                  verticalDurationStep: const Duration(days: 7),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

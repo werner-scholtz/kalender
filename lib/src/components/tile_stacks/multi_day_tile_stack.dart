@@ -30,69 +30,65 @@ class MultiDayTileStack<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarScope<T> scope = CalendarScope.of(context);
 
-    return RepaintBoundary(
-      child: ListenableBuilder(
-        listenable: scope.eventsController,
-        builder: (BuildContext context, Widget? child) {
-          /// Arrange the events.
-          MultiDayLayoutData<T> layedOutEvents =
-              multiDayEventLayout.layoutTiles(
-            scope.eventsController.getMultidayEventsFromDateRange(
-              scope.state.visibleDateTimeRange.value,
-            ),
-          );
+    return ListenableBuilder(
+      listenable: scope.eventsController,
+      builder: (BuildContext context, Widget? child) {
+        /// Arrange the events.
+        MultiDayLayoutData<T> layedOutEvents = multiDayEventLayout.layoutTiles(
+          scope.eventsController.getMultidayEventsFromDateRange(
+            scope.state.visibleDateTimeRange.value,
+          ),
+        );
 
-          return SizedBox(
-            width: pageWidth,
-            height: layedOutEvents.stackHeight,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        scope.components.daySepratorBuilder(
-                          15,
-                          dayWidth,
-                          scope
-                              .state.visibleDateTimeRange.value.duration.inDays,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                if (scope.state.viewConfiguration.createNewEvents)
-                  MultiDayGestureDetector<T>(
-                    dayWidth: dayWidth,
-                    multidayEventHeight: multiDayEventLayout.tileHeight,
-                    visibleDates:
-                        scope.state.visibleDateTimeRange.value.datesSpanned,
+        return SizedBox(
+          width: pageWidth,
+          height: layedOutEvents.stackHeight,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      scope.components.daySepratorBuilder(
+                        15,
+                        dayWidth,
+                        scope.state.visibleDateTimeRange.value.duration.inDays,
+                      ),
+                    ],
                   ),
-                ...layedOutEvents.layedOutTiles.map(
-                  (PositionedMultiDayTileData<T> e) {
-                    return PositionedMultiDayTile<T>(
-                      visibleDateRange: scope.state.visibleDateTimeRange.value,
-                      positionedTileData: e,
-                      dayWidth: dayWidth,
-                      horizontalDurationStep: const Duration(days: 1),
-                    );
-                  },
-                ).toList(),
-                if (showSelectedTile(scope.eventsController))
-                  ChaningMultiDayTileStack<T>(
-                    multiDayEventLayout: multiDayEventLayout,
+                ],
+              ),
+              if (scope.state.viewConfiguration.createNewEvents)
+                MultiDayGestureDetector<T>(
+                  dayWidth: dayWidth,
+                  multidayEventHeight: multiDayEventLayout.tileHeight,
+                  visibleDates:
+                      scope.state.visibleDateTimeRange.value.datesSpanned,
+                ),
+              ...layedOutEvents.layedOutTiles.map(
+                (PositionedMultiDayTileData<T> e) {
+                  return PositionedMultiDayTile<T>(
                     visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    positionedTileData: e,
                     dayWidth: dayWidth,
                     horizontalDurationStep: const Duration(days: 1),
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
+                  );
+                },
+              ).toList(),
+              if (showSelectedTile(scope.eventsController))
+                ChaningMultiDayTileStack<T>(
+                  multiDayEventLayout: multiDayEventLayout,
+                  visibleDateRange: scope.state.visibleDateTimeRange.value,
+                  dayWidth: dayWidth,
+                  horizontalDurationStep: const Duration(days: 1),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 

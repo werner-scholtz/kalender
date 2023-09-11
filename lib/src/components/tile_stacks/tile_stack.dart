@@ -144,44 +144,42 @@ class TileGroupStack<T> extends StatelessWidget {
       top: tileGroup.tileGroupTop,
       width: tileGroup.tileGroupWidth,
       height: tileGroup.tileGroupHeight,
-      child: RepaintBoundary(
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            ...tileGroup.tilePositionData.map(
-              (PositionedTileData<T> e) {
-                bool isMoving = scope.eventsController.selectedEvent == e.event;
-                return Positioned(
-                  top: e.top,
-                  left: e.left,
-                  width: e.width,
-                  height: e.height,
-                  child: DayTileGestureDetector<T>(
-                    tileData: e,
-                    visibleDateTimeRange: visibleDateRange,
-                    verticalDurationStep: verticalDurationStep,
-                    verticalStep: verticalStep,
-                    horizontalDurationStep: horizontalDurationStep,
-                    horizontalStep: horizontalStep,
-                    snapPoints: snapPoints,
-                    snapToTimeIndicator: snapToTimeIndicator,
-                    verticalSnapRange: verticalSnapRange,
-                    isSelected: false,
-                    child: scope.tileComponents.tileBuilder!(
-                      e.event,
-                      TileConfiguration(
-                        tileType: isMoving ? TileType.ghost : TileType.normal,
-                        drawOutline: e.drawOutline,
-                        continuesBefore: e.continuesBefore,
-                        continuesAfter: e.continuesAfter,
-                      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          ...tileGroup.tilePositionData.map(
+            (PositionedTileData<T> e) {
+              bool isMoving = scope.eventsController.selectedEvent == e.event;
+              return Positioned(
+                top: e.top,
+                left: e.left,
+                width: e.width,
+                height: e.height,
+                child: DayTileGestureDetector<T>(
+                  tileData: e,
+                  visibleDateTimeRange: visibleDateRange,
+                  verticalDurationStep: verticalDurationStep,
+                  verticalStep: verticalStep,
+                  horizontalDurationStep: horizontalDurationStep,
+                  horizontalStep: horizontalStep,
+                  snapPoints: snapPoints,
+                  snapToTimeIndicator: snapToTimeIndicator,
+                  verticalSnapRange: verticalSnapRange,
+                  isSelected: false,
+                  child: scope.tileComponents.tileBuilder!(
+                    e.event,
+                    TileConfiguration(
+                      tileType: isMoving ? TileType.ghost : TileType.normal,
+                      drawOutline: e.drawOutline,
+                      continuesBefore: e.continuesBefore,
+                      continuesAfter: e.continuesAfter,
                     ),
                   ),
-                );
-              },
-            ),
-          ],
-        ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

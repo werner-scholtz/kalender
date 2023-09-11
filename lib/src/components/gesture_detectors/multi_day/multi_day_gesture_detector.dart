@@ -64,27 +64,24 @@ class _MultiDayGestureDetectorState<T>
             width: dayWidth,
             top: 0,
             bottom: 0,
-            child: Container(
-              color: Colors.red.withAlpha(100),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () => _onTap(visibleDates[r].dayRange),
-                  onHorizontalDragStart: isMobileDevice
-                      ? null
-                      : (DragStartDetails details) => _onHorizontalDragStart(
-                            details,
-                            visibleDates[r].dayRange,
-                          ),
-                  onHorizontalDragUpdate: isMobileDevice
-                      ? null
-                      : (DragUpdateDetails details) => _onHorizontalDragUpdate(
-                            details,
-                            visibleDates[r].dayRange,
-                          ),
-                  onHorizontalDragEnd:
-                      isMobileDevice ? null : _onHorizontalDragEnd,
-                ),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () => _onTap(visibleDates[r].dayRange),
+                onHorizontalDragStart: isMobileDevice
+                    ? null
+                    : (DragStartDetails details) => _onHorizontalDragStart(
+                          details,
+                          visibleDates[r].dayRange,
+                        ),
+                onHorizontalDragUpdate: isMobileDevice
+                    ? null
+                    : (DragUpdateDetails details) => _onHorizontalDragUpdate(
+                          details,
+                          visibleDates[r].dayRange,
+                        ),
+                onHorizontalDragEnd:
+                    isMobileDevice ? null : _onHorizontalDragEnd,
               ),
             ),
           ),
