@@ -154,8 +154,3 @@ typedef MultiDayTilesLayoutAlgorithm<T extends Object> = MultiDayLayoutData<T>
   required double dayWidth,
   required DateTimeRange visibleDateRange,
 });
-
-typedef PositionedMultiDayTileData<T extends Object> = MultiDayLayoutData<T>
-    Function({
-  required CalendarEvent<T> event,
-});
