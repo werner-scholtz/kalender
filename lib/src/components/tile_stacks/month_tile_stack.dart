@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/month/month_cell_gesture_detector.dart';
 
@@ -159,7 +161,6 @@ class PositionedMonthTile<T> extends StatelessWidget {
         verticalStep: verticalStep,
         visibleDateRange: monthVisibleDateRange,
         enableResizing: viewConfiguration.enableRezising,
-        isSelected: false,
         child: scope.tileComponents.monthTileBuilder!(
           positionedTileData.event,
           MonthTileConfiguration(
@@ -174,7 +175,7 @@ class PositionedMonthTile<T> extends StatelessWidget {
   }
 }
 
-/// The [ChaningMonthTileStack] displays a single [PositionedMultiDayTileData] that is being modified.
+/// The [ChaningMonthTileStack] displays a single [PositionedMonthTileData] that is being modified.
 class ChaningMonthTileStack<T> extends StatelessWidget {
   const ChaningMonthTileStack({
     super.key,
@@ -208,9 +209,12 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
             monthEventLayout.layoutSelectedTile(
           scope.eventsController.selectedEvent!,
         );
+        log(scope.eventsController.isResizing.toString());
 
         return MouseRegion(
-          cursor: SystemMouseCursors.resizeColumn,
+          cursor: scope.eventsController.isResizing
+              ? SystemMouseCursors.resizeColumn
+              : SystemMouseCursors.move,
           child: Stack(
             children: <Widget>[
               Positioned(
@@ -226,7 +230,6 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
                   verticalStep: verticalStep,
                   visibleDateRange: monthVisibleDateRange,
                   enableResizing: viewConfiguration.enableRezising,
-                  isSelected: true,
                   child: scope.tileComponents.monthTileBuilder!(
                     positionedTile.event,
                     MonthTileConfiguration(

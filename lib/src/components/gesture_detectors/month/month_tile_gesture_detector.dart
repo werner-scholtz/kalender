@@ -15,7 +15,6 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
     required this.horizontalDurationStep,
     required this.horizontalStep,
     required this.enableResizing,
-    required this.isSelected,
     required this.child,
   });
 
@@ -39,8 +38,6 @@ class MonthTileGestureDetector<T> extends StatefulWidget {
 
   /// Whether resizing is enabled.
   final bool enableResizing;
-
-  final bool isSelected;
 
   final Widget child;
 
@@ -219,7 +216,6 @@ class _MonthTileGestureDetectorState<T>
     initialDateTimeRange = tileData.event.dateTimeRange;
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
-
     controller.isResizing = true;
     controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
