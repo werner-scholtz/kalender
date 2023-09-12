@@ -40,9 +40,9 @@ class ViewState {
     _visibleDateTimeRange.value = value;
     if (viewConfiguration is MonthViewConfiguration) {
       DateTime month = _visibleDateTimeRange.value.visibleMonth.startOfMonth;
-      _visibleMonth.value = month.startOfMonth;
+      _visibleMonth = month.startOfMonth;
     } else {
-      _visibleMonth.value = _visibleDateTimeRange.value.start.startOfMonth;
+      _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;
     }
   }
 
@@ -51,12 +51,10 @@ class ViewState {
       _visibleDateTimeRange;
 
   /// The visible month notifier of the current page.
-  late final ValueNotifier<DateTime> _visibleMonth = ValueNotifier<DateTime>(
-    _visibleDateTimeRange.value.start.startOfMonth,
-  );
+  late DateTime _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;
 
   /// The visible month of the current page.
-  ValueNotifier<DateTime> get visibleMonth => _visibleMonth;
+  DateTime get visibleMonth => _visibleMonth;
 
   /// The adjusted dateTimeRange of the current view.
   final DateTimeRange adjustedDateTimeRange;
