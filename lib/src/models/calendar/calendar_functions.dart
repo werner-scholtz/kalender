@@ -11,6 +11,7 @@ class CalendarEventHandlers<T> {
     this.onCreateEvent,
     this.onDateTapped,
     this.onEventChangeStart,
+    this.onPageChanged,
   });
 
   /// The [Function] called before the event is changed.
@@ -42,6 +43,11 @@ class CalendarEventHandlers<T> {
   final void Function(
     DateTime date,
   )? onDateTapped;
+
+  /// The [Function] called when the page has changed.
+  final void Function(
+    DateTimeRange visibleDateTimeRange,
+  )? onPageChanged;
 
   @override
   operator ==(Object other) {

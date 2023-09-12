@@ -251,8 +251,11 @@ CalendarEventHandlers<Event>(
 
     // Once this function completes the calendar will rebuild.
   },
-  onDateTapped: (date) {
+  onDateTapped: (DateTime date) {
     // The date is the date header that was tapped. see example for use case.
+  },
+  onPageChanged: (DateTimeRange visibleDateTimeRange) {
+    // The visibleDateTimeRange is the visible DateTimeRange of the current page.
   },
 );
 ```

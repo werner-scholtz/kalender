@@ -45,6 +45,11 @@ class MonthViewContent<T> extends StatelessWidget {
 
                 // Update the selected date.
                 controller.selectedDate = newVisibleDateTimeRange.start;
+
+                // Call the onPageChanged function.
+                scope.functions.onPageChanged?.call(
+                  newVisibleDateTimeRange,
+                );
               },
               itemBuilder: (BuildContext context, int index) {
                 DateTimeRange visibleDateRange =
