@@ -80,7 +80,12 @@ class SingleDayContent<T> extends StatelessWidget {
                           },
                           itemBuilder: (BuildContext context, int index) {
                             DateTimeRange pageVisibleDateRange =
-                                scope.state.visibleDateTimeRangeNotifier.value;
+                                viewConfiguration
+                                    .calculateVisibleDateRangeForIndex(
+                              index: index,
+                              calendarStart:
+                                  scope.state.adjustedDateTimeRange.start,
+                            );
 
                             DayTileLayoutController<T> tileLayoutController =
                                 scope.layoutControllers.dayTileLayoutController(

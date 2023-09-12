@@ -52,7 +52,10 @@ class MonthViewContent<T> extends StatelessWidget {
               },
               itemBuilder: (BuildContext context, int index) {
                 DateTimeRange visibleDateRange =
-                    scope.state.visibleDateTimeRangeNotifier.value;
+                    viewConfiguration.calculateVisibleDateRangeForIndex(
+                  index: index,
+                  calendarStart: scope.state.adjustedDateTimeRange.start,
+                );
 
                 return Stack(
                   children: <Widget>[
