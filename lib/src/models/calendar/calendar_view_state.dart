@@ -13,9 +13,9 @@ class ViewState {
     required this.scrollController,
     required this.numberOfPages,
     required this.adjustedDateTimeRange,
-    required this.visibleDateTimeRange,
+    required ValueNotifier<DateTimeRange> visibleDateTimeRange,
     this.heightPerMinute,
-  });
+  }) : _visibleDateTimeRange = visibleDateTimeRange;
 
   /// The current viewConfiguration of the view.
   final ViewConfiguration viewConfiguration;
@@ -34,33 +34,35 @@ class ViewState {
   /// This is only used in the [SingleDayView] & [MultiDayView].
   final ValueNotifier<double>? heightPerMinute;
 
-  /// The visible dateTimeRange of the current view.
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
+  /// The visible dateTimeRange of the current page.
+  final ValueNotifier<DateTimeRange> _visibleDateTimeRange;
+  set visibleDateTimeRange(DateTimeRange value) {
+    _visibleDateTimeRange.value = value;
+    if (viewConfiguration is MonthViewConfiguration) {
+      DateTime month = _visibleDateTimeRange.value.visibleMonth.startOfMonth;
+      _visibleMonth.value = month.startOfMonth;
+    } else {
+      _visibleMonth.value = _visibleDateTimeRange.value.start.startOfMonth;
+    }
+  }
 
-  /// The adjusted dateTimeRange of the [current view.
+  /// The visible dateTimeRange notifier of the current page.
+  ValueNotifier<DateTimeRange> get visibleDateTimeRangeNotifier =>
+      _visibleDateTimeRange;
+
+  /// The visible month notifier of the current page.
+  late final ValueNotifier<DateTime> _visibleMonth = ValueNotifier<DateTime>(
+    _visibleDateTimeRange.value.start.startOfMonth,
+  );
+
+  /// The visible month of the current page.
+  ValueNotifier<DateTime> get visibleMonth => _visibleMonth;
+
+  /// The adjusted dateTimeRange of the current view.
   final DateTimeRange adjustedDateTimeRange;
 
   /// The number of pages the [PageView] of the current view has.
   final int numberOfPages;
-
-  /// The current month that is displayed.
-  DateTime get month {
-    if (viewConfiguration is MonthViewConfiguration) {
-      return visibleDateTimeRange.value.visibleMonth;
-    } else {
-      return visibleDateTimeRange.value.start;
-    }
-  }
-
-  /// The current year that is displayed.
-  DateTime get year {
-    if (viewConfiguration is MonthViewConfiguration) {
-      DateTime month = visibleDateTimeRange.value.visibleMonth;
-      return DateTime(month.year);
-    } else {
-      return DateTime(visibleDateTimeRange.value.start.year);
-    }
-  }
 
   @override
   operator ==(Object other) {
@@ -69,7 +71,7 @@ class ViewState {
         pageController == other.pageController &&
         scrollController == other.scrollController &&
         heightPerMinute == other.heightPerMinute &&
-        visibleDateTimeRange == other.visibleDateTimeRange &&
+        visibleDateTimeRangeNotifier == other.visibleDateTimeRangeNotifier &&
         adjustedDateTimeRange == other.adjustedDateTimeRange &&
         numberOfPages == other.numberOfPages;
   }
@@ -80,7 +82,7 @@ class ViewState {
         pageController,
         scrollController,
         heightPerMinute?.value,
-        visibleDateTimeRange.value,
+        visibleDateTimeRangeNotifier.value,
         adjustedDateTimeRange,
         numberOfPages,
       );

@@ -45,13 +45,13 @@ class CalendarController<T> with ChangeNotifier {
 
   /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
-      _state?.visibleDateTimeRange;
+      _state?.visibleDateTimeRangeNotifier;
+
+  /// The visible month notifier of the current view.
+  ValueNotifier<DateTime>? get visibleMonthNotifier => _state?.visibleMonth;
 
   /// The visible month of the current view.
-  DateTime? get visibleMonth => _state?.month;
-
-  /// The visible year of the current view.
-  DateTime? get visibleYear => _state?.year;
+  DateTime? get visibleMonth => _state?.visibleMonth.value;
 
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {

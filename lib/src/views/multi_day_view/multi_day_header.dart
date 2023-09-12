@@ -22,7 +22,7 @@ class MultiDayHeader<T> extends StatelessWidget {
 
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
-        valueListenable: scope.state.visibleDateTimeRange,
+        valueListenable: scope.state.visibleDateTimeRangeNotifier,
         builder: (
           BuildContext context,
           DateTimeRange visibleDateTimeRange,

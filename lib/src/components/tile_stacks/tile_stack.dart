@@ -71,7 +71,8 @@ class DayTileStack<T> extends StatelessWidget {
                     horizontalStep: horizontalStep,
                     verticalDurationStep: verticalDurationStep,
                     horizontalDurationStep: horizontalDurationStep,
-                    visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    visibleDateRange:
+                        scope.state.visibleDateTimeRangeNotifier.value,
                     snapPoints: snapPoints,
                     verticalSnapRange: verticalSnapRange,
                     snapToTimeIndicator: snapToTimeIndicator,
@@ -85,7 +86,8 @@ class DayTileStack<T> extends StatelessWidget {
                 horizontalStep: horizontalStep,
                 verticalDurationStep: verticalDurationStep,
                 horizontalDurationStep: horizontalDurationStep,
-                visibleDateRange: scope.state.visibleDateTimeRange.value,
+                visibleDateRange:
+                    scope.state.visibleDateTimeRangeNotifier.value,
                 snapPoints: snapPoints,
                 verticalSnapRange: verticalSnapRange,
                 snapToTimeIndicator: snapToTimeIndicator,

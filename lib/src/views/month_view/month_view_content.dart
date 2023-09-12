@@ -40,8 +40,7 @@ class MonthViewContent<T> extends StatelessWidget {
                 );
 
                 // Update the visible date range.
-                scope.state.visibleDateTimeRange.value =
-                    newVisibleDateTimeRange;
+                scope.state.visibleDateTimeRange = newVisibleDateTimeRange;
 
                 // Update the selected date.
                 controller.selectedDate = newVisibleDateTimeRange.start;
@@ -53,7 +52,7 @@ class MonthViewContent<T> extends StatelessWidget {
               },
               itemBuilder: (BuildContext context, int index) {
                 DateTimeRange visibleDateRange =
-                    scope.state.visibleDateTimeRange.value;
+                    scope.state.visibleDateTimeRangeNotifier.value;
 
                 return Stack(
                   children: <Widget>[

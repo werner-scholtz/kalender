@@ -83,7 +83,8 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 (PositionedMonthTileData<T> e) {
                   return PositionedMonthTile<T>(
                     controller: scope.eventsController,
-                    visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    visibleDateRange:
+                        scope.state.visibleDateTimeRangeNotifier.value,
                     viewConfiguration: viewConfiguration,
                     monthEventLayout: monthEventLayout,
                     monthVisibleDateRange: monthVisibleDateRange,

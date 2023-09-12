@@ -67,7 +67,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                   scope.state.adjustedDateTimeRange.start,
                             );
                             // Update the visible date range.
-                            scope.state.visibleDateTimeRange.value =
+                            scope.state.visibleDateTimeRange =
                                 newVisibleDateTimeRange;
 
                             // Update the selected date.
@@ -81,7 +81,7 @@ class MultiDayContent<T> extends StatelessWidget {
                           },
                           itemBuilder: (BuildContext context, int index) {
                             DateTimeRange pageVisibleDateRange =
-                                scope.state.visibleDateTimeRange.value;
+                                scope.state.visibleDateTimeRangeNotifier.value;
 
                             DayTileLayoutController<T> tileLayoutController =
                                 scope.layoutControllers.dayTileLayoutController(

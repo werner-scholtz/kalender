@@ -36,7 +36,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
         /// Arrange the events.
         MultiDayLayoutData<T> layedOutEvents = multiDayEventLayout.layoutTiles(
           scope.eventsController.getMultidayEventsFromDateRange(
-            scope.state.visibleDateTimeRange.value,
+            scope.state.visibleDateTimeRangeNotifier.value,
           ),
         );
 
@@ -55,7 +55,8 @@ class MultiDayTileStack<T> extends StatelessWidget {
                       scope.components.daySepratorBuilder(
                         15,
                         dayWidth,
-                        scope.state.visibleDateTimeRange.value.duration.inDays,
+                        scope.state.visibleDateTimeRangeNotifier.value.duration
+                            .inDays,
                       ),
                     ],
                   ),
@@ -65,13 +66,14 @@ class MultiDayTileStack<T> extends StatelessWidget {
                 MultiDayGestureDetector<T>(
                   dayWidth: dayWidth,
                   multidayEventHeight: multiDayEventLayout.tileHeight,
-                  visibleDates:
-                      scope.state.visibleDateTimeRange.value.datesSpanned,
+                  visibleDates: scope
+                      .state.visibleDateTimeRangeNotifier.value.datesSpanned,
                 ),
               ...layedOutEvents.layedOutTiles.map(
                 (PositionedMultiDayTileData<T> e) {
                   return PositionedMultiDayTile<T>(
-                    visibleDateRange: scope.state.visibleDateTimeRange.value,
+                    visibleDateRange:
+                        scope.state.visibleDateTimeRangeNotifier.value,
                     positionedTileData: e,
                     dayWidth: dayWidth,
                     horizontalDurationStep: const Duration(days: 1),
@@ -81,7 +83,8 @@ class MultiDayTileStack<T> extends StatelessWidget {
               if (showSelectedTile(scope.eventsController))
                 ChaningMultiDayTileStack<T>(
                   multiDayEventLayout: multiDayEventLayout,
-                  visibleDateRange: scope.state.visibleDateTimeRange.value,
+                  visibleDateRange:
+                      scope.state.visibleDateTimeRangeNotifier.value,
                   dayWidth: dayWidth,
                   horizontalDurationStep: const Duration(days: 1),
                 ),

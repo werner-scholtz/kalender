@@ -19,16 +19,14 @@ class CalendarHeaderMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int month =
-        calendarController.visibleMonth?.month ?? dateTimeRange.start.month;
-    int year = calendarController.visibleYear?.year ?? dateTimeRange.start.year;
+    DateTime monthYear = calendarController.visibleMonth!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8),
           child: Text(
-            '$year - ${months[month - 1]}',
+            '${monthYear.year} - ${months[monthYear.month - 1]}',
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
