@@ -88,7 +88,7 @@ class _MonthTileGestureDetectorState<T>
         MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            behavior: HitTestBehavior.deferToChild,
+            behavior: HitTestBehavior.translucent,
             onPanStart: canBeChangedDesktop ? _onPanStart : null,
             onPanUpdate: canBeChangedDesktop ? _onPanUpdate : null,
             onPanEnd: canBeChangedDesktop ? _onPanEnd : null,
@@ -182,7 +182,7 @@ class _MonthTileGestureDetectorState<T>
 
   Future<void> _onRescheduleEnd() async {
     await functions.onEventChanged?.call(initialDateTimeRange, tileData.event);
-    scope.eventsController.deselectEvent();
+    // scope.eventsController.deselectEvent();
   }
 
   void _onRescheduleUpdate(Offset offset) {

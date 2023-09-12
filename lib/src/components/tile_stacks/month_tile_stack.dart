@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/month/month_cell_gesture_detector.dart';
 
@@ -210,12 +208,12 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
             monthEventLayout.layoutSelectedTile(
           scope.eventsController.selectedEvent!,
         );
-        log(scope.eventsController.isResizing.toString());
 
         return MouseRegion(
           cursor: scope.eventsController.isResizing
               ? SystemMouseCursors.resizeColumn
               : SystemMouseCursors.move,
+          opaque: false,
           child: Stack(
             children: <Widget>[
               Positioned(

@@ -172,7 +172,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// This function is called when an event is changed.
   Future<void> onEventChanged(
-    initialDateTimeRange,
+    DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
     eventsController.deselectEvent();

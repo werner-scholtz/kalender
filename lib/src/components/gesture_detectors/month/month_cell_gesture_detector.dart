@@ -75,6 +75,11 @@ class _MonthCellGestureDetectorState<T>
 
   /// TODO: figure something out.
   void _onTap() async {
+    if (controller.selectedEvent != null) {
+      controller.deselectEvent();
+      return;
+    }
+
     // Set the selected event to a new event.
     scope.eventsController.selectEvent(
       CalendarEvent<T>(

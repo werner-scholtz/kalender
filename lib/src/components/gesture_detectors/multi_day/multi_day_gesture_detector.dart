@@ -90,6 +90,11 @@ class _MultiDayGestureDetectorState<T>
   }
 
   void _onTap(DateTimeRange dateTimeRange) async {
+    if (controller.selectedEvent != null) {
+      controller.deselectEvent();
+      return;
+    }
+
     CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );

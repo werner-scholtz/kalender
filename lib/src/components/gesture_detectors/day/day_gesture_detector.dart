@@ -36,57 +36,46 @@ class DayGestureDetector<T> extends StatefulWidget {
 }
 
 class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
-  late double heightPerMinute;
-  late double height;
-  late double dayWidth;
-  late List<DateTime> visibleDates;
-  late SlotSize minuteSlotSize;
-
-  /// The height of a slot.
-  late double heightPerSlot;
-
-  /// The number of slots in a day.
-  late int slots = (hoursADay * 60) ~/ minuteSlotSize.minutes;
-
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
+  CalendarEventsController<T> get controller => scope.eventsController;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   double cursorOffset = 0;
   int numberOfSlotsSelected = 0;
 
+  late List<DateTime> visibleDates;
+
+  /// The height of a slot.
+  late double heightPerSlot;
+
+  /// The number of slots in a day.
+  late int slots = (hoursADay * 60) ~/ widget.minuteSlotSize.minutes;
+
   @override
   void initState() {
     super.initState();
-    height = widget.height;
-    dayWidth = widget.width;
-    heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
-    minuteSlotSize = widget.minuteSlotSize;
-    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    heightPerSlot = widget.minuteSlotSize.minutes * widget.heightPerMinute;
   }
 
   @override
   void didUpdateWidget(covariant DayGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    height = widget.height;
-    dayWidth = widget.width;
-    heightPerMinute = widget.heightPerMinute;
     visibleDates = widget.visibleDateRange.datesSpanned;
-    minuteSlotSize = widget.minuteSlotSize;
-    heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    heightPerSlot = widget.minuteSlotSize.minutes * widget.heightPerMinute;
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: dayWidth,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       child: Stack(
         children: <Widget>[
           for (int day = 0; day < visibleDates.length; day++)
             for (int i = 0; i < slots; i++)
               Positioned(
-                left: (dayWidth * day),
+                left: (widget.width * day),
                 top: heightPerSlot * i,
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -106,7 +95,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
                   child: SizedBox(
-                    width: dayWidth,
+                    width: widget.width,
                     height: heightPerSlot,
                   ),
                 ),
@@ -118,6 +107,11 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
 
   /// Handles the onTap event.
   void _onTap(DateTimeRange dateTimeRange) async {
+    if (controller.selectedEvent != null) {
+      controller.deselectEvent();
+      return;
+    }
+
     // Set the selected event to a new event.
     scope.eventsController.selectEvent(
       CalendarEvent<T>(
@@ -167,7 +161,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
       if (numberOfSlotsSelected.isNegative) {
         dateTimeRange = DateTimeRange(
           start: initialDateTimeRange.start.add(
-            Duration(minutes: minuteSlotSize.minutes * numberOfSlotsSelected),
+            Duration(
+                minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected),
           ),
           end: initialDateTimeRange.end,
         );
@@ -175,7 +170,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
         dateTimeRange = DateTimeRange(
           start: initialDateTimeRange.start,
           end: initialDateTimeRange.end.add(
-            Duration(minutes: minuteSlotSize.minutes * numberOfSlotsSelected),
+            Duration(
+                minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected),
           ),
         );
       }
@@ -191,14 +187,14 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
           date.month,
           date.day,
           0,
-          minuteSlotSize.minutes * i,
+          widget.minuteSlotSize.minutes * i,
         ),
         end: DateTime(
           date.year,
           date.month,
           date.day,
           0,
-          minuteSlotSize.minutes * (i + 1),
+          widget.minuteSlotSize.minutes * (i + 1),
         ),
       );
 }
