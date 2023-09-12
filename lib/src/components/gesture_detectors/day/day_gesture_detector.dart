@@ -162,7 +162,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
         dateTimeRange = DateTimeRange(
           start: initialDateTimeRange.start.add(
             Duration(
-                minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected),
+              minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected,
+            ),
           ),
           end: initialDateTimeRange.end,
         );
@@ -171,7 +172,8 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
           start: initialDateTimeRange.start,
           end: initialDateTimeRange.end.add(
             Duration(
-                minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected),
+              minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected,
+            ),
           ),
         );
       }
