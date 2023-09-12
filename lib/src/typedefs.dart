@@ -84,6 +84,11 @@ typedef TileBuilder<T extends Object?> = Widget Function(
   TileConfiguration configuration,
 );
 
+/// The [TileHandleBuilder]
+///
+/// This builder is used to build the handle displayed on the event tiles. (Mobile only)
+typedef TileHandleBuilder = Widget Function();
+
 /// The [MultiDayTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on multiple days.

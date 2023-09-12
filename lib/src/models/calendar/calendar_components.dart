@@ -5,6 +5,7 @@ import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
 import 'package:kalender/src/components/general/month_header/month_header.dart';
+import 'package:kalender/src/components/general/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
@@ -47,6 +48,7 @@ class CalendarComponents {
     MonthGridBuilder? monthGridBuilder,
     MonthCellHeaderBuilder? monthCellHeaderBuilder,
     MonthHeaderBuilder? monthHeaderBuilder,
+    TileHandleBuilder? tileHandleBuilder,
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
@@ -59,6 +61,7 @@ class CalendarComponents {
     this.monthCellHeaderBuilder =
         monthCellHeaderBuilder ?? _defaultMonthCellHeaderBuilder;
     this.monthHeaderBuilder = monthHeaderBuilder ?? _defaultMonthHeaderBuilder;
+    this.tileHandleBuilder = tileHandleBuilder ?? _defaultTileHandleBuilder;
   }
 
   /// This builder is used to build the widget displayed in the calendar's header.
@@ -88,7 +91,12 @@ class CalendarComponents {
   /// This builder is used to build the month cell header displayed on the calendar.
   late MonthCellHeaderBuilder monthCellHeaderBuilder;
 
+  /// This builder is used to build the month header displayed on the calendar.
   late MonthHeaderBuilder monthHeaderBuilder;
+
+  /// This builder is used to build the handle displayed on the event tiles. (Mobile only)
+  /// TODO: Make this usefull for mobile and desktop.
+  late TileHandleBuilder? tileHandleBuilder;
 
   Widget _defaultTimelineBuilder(
     double timelineWidth,
@@ -186,6 +194,10 @@ class CalendarComponents {
       date: date,
       dayWidth: dayWidth,
     );
+  }
+
+  Widget _defaultTileHandleBuilder() {
+    return const DefaultTileHandle();
   }
 
   @override
