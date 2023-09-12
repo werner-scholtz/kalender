@@ -133,7 +133,6 @@ class _MultiDayTileGestureDetectorState<T>
       initialDateTimeRange,
       controller.selectedEvent!,
     );
-    // controller.deselectEvent();
   }
 
   void _onRescheduleUpdate(DragUpdateDetails details) {

@@ -182,7 +182,6 @@ class _MonthTileGestureDetectorState<T>
 
   Future<void> _onRescheduleEnd() async {
     await functions.onEventChanged?.call(initialDateTimeRange, tileData.event);
-    // scope.eventsController.deselectEvent();
   }
 
   void _onRescheduleUpdate(Offset offset) {
