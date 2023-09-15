@@ -35,15 +35,12 @@ class SingleDayContent<T> extends StatelessWidget {
         return Expanded(
           child: ValueListenableBuilder<ScrollPhysics>(
             valueListenable: scope.state.scrollPhysics,
-            builder:
-                (context, value, child) {
+            builder: (context, value, child) {
               return SingleChildScrollView(
                 physics: value,
                 child: Stack(
                   children: <Widget>[
                     scope.components.timelineBuilder(
-                      viewConfiguration.timelineWidth,
-                      pageHeight,
                       hourHeight,
                     ),
                     Align(
@@ -56,9 +53,8 @@ class SingleDayContent<T> extends StatelessWidget {
                           controller: scope.state.pageController,
                           itemCount: scope.state.numberOfPages,
                           onPageChanged: (index) {
-                            final newVisibleDateTimeRange =
-                                viewConfiguration
-                                    .calculateVisibleDateRangeForIndex(
+                            final newVisibleDateTimeRange = viewConfiguration
+                                .calculateVisibleDateRangeForIndex(
                               index: index,
                               calendarStart:
                                   scope.state.adjustedDateTimeRange.start,
@@ -78,9 +74,8 @@ class SingleDayContent<T> extends StatelessWidget {
                             );
                           },
                           itemBuilder: (context, index) {
-                            final pageVisibleDateRange =
-                                viewConfiguration
-                                    .calculateVisibleDateRangeForIndex(
+                            final pageVisibleDateRange = viewConfiguration
+                                .calculateVisibleDateRangeForIndex(
                               index: index,
                               calendarStart:
                                   scope.state.adjustedDateTimeRange.start,
