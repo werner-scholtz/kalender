@@ -185,17 +185,17 @@ class _MonthTileGestureDetectorState<T>
   }
 
   void _onRescheduleUpdate(Offset offset) {
-    int verticalSteps = (offset.dy / widget.verticalStep).round();
+    final verticalSteps = (offset.dy / widget.verticalStep).round();
     if (verticalSteps != currentVerticalSteps) {
       currentVerticalSteps = verticalSteps;
     }
 
-    int horizontalSteps = (offset.dx / widget.horizontalStep).round();
+    final horizontalSteps = (offset.dx / widget.horizontalStep).round();
     if (horizontalSteps != currentHorizontalSteps) {
       currentHorizontalSteps = horizontalSteps;
     }
 
-    DateTimeRange newDateTimeRange = DateTimeRange(
+    final newDateTimeRange = DateTimeRange(
       start: initialDateTimeRange.start
           .add(widget.horizontalDurationStep * horizontalSteps)
           .add(widget.verticalDurationStep * verticalSteps),
@@ -233,9 +233,9 @@ class _MonthTileGestureDetectorState<T>
   /// TODO: If the event starts at a time other than 00:00, then the event might not allow resizing
   void _resizeStart(DragUpdateDetails details) {
     cursorOffset += details.delta;
-    int steps = (cursorOffset.dx / widget.horizontalStep).round();
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
-      DateTime newStart =
+      final newStart =
           initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
       if (controller.selectedEvent == null) return;
@@ -250,9 +250,9 @@ class _MonthTileGestureDetectorState<T>
   /// TODO: If the event ends at a time other than 00:00, then the event might not allow resizing
   void _resizeEnd(DragUpdateDetails details) {
     cursorOffset += details.delta;
-    int steps = (cursorOffset.dx / widget.horizontalStep).round();
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
-      DateTime newEnd =
+      final newEnd =
           initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
       if (controller.selectedEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {

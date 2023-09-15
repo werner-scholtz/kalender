@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
 
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -17,7 +16,7 @@ class MonthCellHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarStyle style = CalendarStyleProvider.of(context).style;
+    final style = CalendarStyleProvider.of(context).style;
     return Container(
       decoration: BoxDecoration(
         color: style.monthCellHeaderStyle?.backgroundColor,
@@ -25,7 +24,7 @@ class MonthCellHeader extends StatelessWidget {
       ),
       child: DateIconButton(
         date: date,
-        onTapped: (DateTime date) => onTapped?.call(date),
+        onTapped: (date) => onTapped?.call(date),
         visualDensity:
             style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
         textStyle: style.monthCellHeaderStyle?.textStyle,

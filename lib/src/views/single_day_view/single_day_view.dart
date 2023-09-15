@@ -127,26 +127,26 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange =
+    final adjustedDateTimeRange =
         _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
 
-    int numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
       _controller.dateTimeRange,
     );
 
-    int initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
       _controller.dateTimeRange.start,
     );
 
-    PageController pageController = PageController(
+    final pageController = PageController(
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange =
+    final visibleDateRange =
         _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
     );
@@ -175,9 +175,9 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
         tileComponents: _tileComponents,
         layoutControllers: _layoutControllers,
         child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
+          builder: (context, constraints) {
             // Calculate the width of the day.
-            double dayWidth =
+            final dayWidth =
                 constraints.maxWidth - _viewConfiguration.timelineWidth;
 
             return Column(

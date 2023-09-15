@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/date_text.dart';
-import 'package:kalender/src/components/general/month_header/month_header_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the month header.
@@ -19,7 +18,7 @@ class MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MonthHeaderStyle? monthHeaderStyle =
+    final monthHeaderStyle =
         CalendarStyleProvider.of(context).style.monthHeaderStyle;
     return SizedBox(
       width: dayWidth,

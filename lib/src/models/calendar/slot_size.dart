@@ -1,4 +1,4 @@
-/// Slot size for the calendar.
+/// Slot size for the calendar. ///TODO: replace this with a duration.
 class SlotSize {
   const SlotSize({
     required this.minutes,

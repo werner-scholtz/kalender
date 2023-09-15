@@ -22,7 +22,7 @@ class DateText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //format too EEE
-    String formattedDate = dayOfWeek[date.weekday - 1];
+    final formattedDate = dayOfWeek[date.weekday - 1];
 
     return Text(
       upperCase ? formattedDate.toUpperCase() : formattedDate,

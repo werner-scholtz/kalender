@@ -5,23 +5,17 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    # https://dart.dev/tools/linter-rules/always_use_package_imports
     always_use_package_imports: true
-    # https://dart.dev/tools/linter-rules/avoid_empty_else
     avoid_empty_else: true
-    # https://dart.dev/tools/linter-rules/always_specify_types
-    always_specify_types: true
-    # https://dart.dev/tools/linter-rules/prefer_single_quotes
+    always_specify_types: false
     prefer_single_quotes: true
-    # https://dart.dev/tools/linter-rules/sort_child_properties_last
     sort_child_properties_last: true
-    # https://dart.dev/tools/linter-rules/avoid_unnecessary_containers
     avoid_unnecessary_containers: true
-    # https://dart.dev/tools/linter-rules/use_build_context_synchronously
     use_build_context_synchronously: true
-    # https://dart.dev/tools/linter-rules/require_trailing_commas
     require_trailing_commas: true
-    # https://dart.dev/tools/linter-rules/unnecessary_lambdas
     unnecessary_lambdas: true
-    # https://dart.dev/tools/linter-rules/avoid_print
     avoid_print: true
+    omit_local_variable_types: true
+    avoid_types_on_closure_parameters: true
+    prefer_final_fields: true
+    prefer_final_locals: true

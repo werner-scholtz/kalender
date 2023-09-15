@@ -35,13 +35,13 @@ class DayTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of<T>(context);
+    final scope = CalendarScope.of<T>(context);
 
     return ListenableBuilder(
       listenable: scope.eventsController,
-      builder: (BuildContext context, Widget? child) {
+      builder: (context, child) {
         // genrate the list of tile groups.
-        Iterable<TileGroup<T>> tileGroups =
+        final Iterable<TileGroup<T>> tileGroups =
             tileLayoutController.generateTileGroups(
           scope.eventsController.getDayEventsFromDateRange(
             pageVisibleDateRange,
@@ -49,7 +49,7 @@ class DayTileStack<T> extends StatelessWidget {
         );
 
         // Get a list of snap points.
-        List<DateTime> snapPoints = <DateTime>[];
+        final snapPoints = <DateTime>[];
 
         if (eventSnapping) {
           // Add the snap points from other events.
@@ -64,7 +64,7 @@ class DayTileStack<T> extends StatelessWidget {
           children: <Widget>[
             ...tileGroups
                 .map(
-                  (TileGroup<T> tileGroup) => TileGroupStack<T>(
+                  (tileGroup) => TileGroupStack<T>(
                     tileGroup: tileGroup,
                     dayWidth: dayWidth,
                     verticalStep: verticalStep,
@@ -139,7 +139,7 @@ class TileGroupStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of<T>(context);
+    final scope = CalendarScope.of<T>(context);
 
     return Positioned(
       left: tileGroup.tileGroupLeft,
@@ -150,8 +150,8 @@ class TileGroupStack<T> extends StatelessWidget {
         fit: StackFit.expand,
         children: <Widget>[
           ...tileGroup.tilePositionData.map(
-            (PositionedTileData<T> e) {
-              bool isMoving = scope.eventsController.selectedEvent == e.event;
+            (e) {
+              final isMoving = scope.eventsController.selectedEvent == e.event;
               return Positioned(
                 top: e.top,
                 left: e.left,
@@ -221,19 +221,18 @@ class ChangingTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
     return ListenableBuilder(
       listenable: scope.eventsController.selectedEvent!,
-      builder: (BuildContext context, Widget? child) {
-        List<PositionedTileData<T>> positionedTiles =
-            tileLayoutController.layoutSelectedEvent(
+      builder: (context, child) {
+        final positionedTiles = tileLayoutController.layoutSelectedEvent(
           scope.eventsController.selectedEvent!,
         );
 
         return Stack(
           children: positionedTiles
               .map(
-                (PositionedTileData<T> e) => Positioned(
+                (e) => Positioned(
                   top: e.top,
                   left: e.left,
                   width: e.width,

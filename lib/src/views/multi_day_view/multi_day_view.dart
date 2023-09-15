@@ -133,26 +133,26 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange =
+    final adjustedDateTimeRange =
         _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
 
-    int numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    int initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
       adjustedDateTimeRange.start,
     );
 
-    PageController pageController = PageController(
+    final pageController = PageController(
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange =
+    final visibleDateRange =
         _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
     );
@@ -181,13 +181,13 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         platformData: PlatformData(),
         layoutControllers: _layoutControllers,
         child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
+          builder: (context, constraints) {
             // Calculate the width of the page.
-            double pageWidth =
+            final pageWidth =
                 constraints.maxWidth - _viewConfiguration.timelineWidth;
 
             // Calculate the width of the day.
-            double dayWidth = _viewConfiguration.calculateDayWidth(pageWidth);
+            final dayWidth = _viewConfiguration.calculateDayWidth(pageWidth);
 
             return Column(
               children: <Widget>[

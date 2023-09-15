@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the current time.
@@ -85,7 +84,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    CalendarStyle style = CalendarStyleProvider.of(context).style;
+    final style = CalendarStyleProvider.of(context).style;
     return Positioned(
       left: left,
       top: top,
@@ -120,7 +119,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   }
 
   double get top {
-    int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
+    final minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
     return minutes * _heightPerMinute - (circleRadius / 2);
   }
 

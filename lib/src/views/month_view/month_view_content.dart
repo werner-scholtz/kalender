@@ -18,12 +18,12 @@ class MonthViewContent<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
 
     return Expanded(
       child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          double cellHeight = constraints.maxHeight / 5;
+        builder: (context, constraints) {
+          final cellHeight = constraints.maxHeight / 5;
 
           return SizedBox(
             width: constraints.maxWidth,
@@ -32,8 +32,8 @@ class MonthViewContent<T> extends StatelessWidget {
               key: Key(viewConfiguration.hashCode.toString()),
               controller: scope.state.pageController,
               itemCount: scope.state.numberOfPages,
-              onPageChanged: (int index) {
-                DateTimeRange newVisibleDateTimeRange =
+              onPageChanged: (index) {
+                final newVisibleDateTimeRange =
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   index: index,
                   calendarStart: scope.state.adjustedDateTimeRange.start,
@@ -50,8 +50,8 @@ class MonthViewContent<T> extends StatelessWidget {
                   newVisibleDateTimeRange,
                 );
               },
-              itemBuilder: (BuildContext context, int index) {
-                DateTimeRange visibleDateRange =
+              itemBuilder: (context, index) {
+                final visibleDateRange =
                     viewConfiguration.calculateVisibleDateRangeForIndex(
                   index: index,
                   calendarStart: scope.state.adjustedDateTimeRange.start,

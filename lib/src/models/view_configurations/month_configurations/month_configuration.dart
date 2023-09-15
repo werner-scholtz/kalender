@@ -41,7 +41,7 @@ class MonthConfiguration extends MonthViewConfiguration {
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
-    DateTimeRange monthRange = date.monthRange;
+    final monthRange = date.monthRange;
     return DateTimeRange(
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
       end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
@@ -88,7 +88,7 @@ class MonthConfiguration extends MonthViewConfiguration {
     required int index,
     required DateTime calendarStart,
   }) {
-    DateTimeRange monthRange = DateTime(
+    final monthRange = DateTime(
       calendarStart.year,
       calendarStart.month + index,
     ).monthRange;

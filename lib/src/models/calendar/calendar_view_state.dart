@@ -39,7 +39,7 @@ class ViewState {
   set visibleDateTimeRange(DateTimeRange value) {
     _visibleDateTimeRange.value = value;
     if (viewConfiguration is MonthViewConfiguration) {
-      DateTime month = _visibleDateTimeRange.value.visibleMonth.startOfMonth;
+      final month = _visibleDateTimeRange.value.visibleMonth.startOfMonth;
       _visibleMonth = month.startOfMonth;
     } else {
       _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;

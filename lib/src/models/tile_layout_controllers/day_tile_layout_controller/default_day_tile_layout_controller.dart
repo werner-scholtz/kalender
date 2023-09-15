@@ -14,22 +14,20 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
   List<TileGroup<T>> generateTileGroups(
     Iterable<CalendarEvent<T>> events,
   ) {
-    List<TileGroup<T>> tileGroups = <TileGroup<T>>[];
+    final tileGroups = <TileGroup<T>>[];
 
     // Loop through visible Dates.
-    for (DateTime date in visibleDates) {
+    for (var date in visibleDates) {
       // Get a list of events that are visible on the current date.
-      List<CalendarEvent<T>> eventsOnDate =
-          findEventsOnDate(events, date).toList();
+      final eventsOnDate = findEventsOnDate(events, date).toList();
 
       // Sort the eventsOnDate by start time.
       eventsOnDate.sort(
-        (CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start),
+        (a, b) => a.start.compareTo(b.start),
       );
 
       // Group the events into TileGroups.
-      List<TileGroup<T>> tileGroupsOnDate =
-          generateTileGroupsOnDate(date, eventsOnDate);
+      final tileGroupsOnDate = generateTileGroupsOnDate(date, eventsOnDate);
 
       // Add the tileGroupsOnDate to the tileGroups list.
       tileGroups.addAll(tileGroupsOnDate);
@@ -42,22 +40,21 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
     DateTime date,
     List<CalendarEvent<T>> eventsOnDate,
   ) {
-    List<TileGroup<T>> tileGroupsOnDate = <TileGroup<T>>[];
+    final tileGroupsOnDate = <TileGroup<T>>[];
 
     // Calculate the left value of the group tile.
-    double tileGroupLeft = calculateLeft(date);
+    final tileGroupLeft = calculateLeft(date);
 
     // Loop through events on date.
-    for (CalendarEvent<T> event in eventsOnDate) {
+    for (var event in eventsOnDate) {
       // If the event is already in a group, skip it.
-      if (tileGroupsOnDate
-          .any((TileGroup<T> element) => element.events.contains(event))) {
+      if (tileGroupsOnDate.any((element) => element.events.contains(event))) {
         continue;
       }
 
       // Get a list of events that overlap with the initial event
       // and all events that overlap with those events.
-      List<CalendarEvent<T>> groupedEvents = findOverlappingEvents(
+      final groupedEvents = findOverlappingEvents(
         initialEvent: event,
         otherEvents: eventsOnDate,
       );
@@ -78,16 +75,14 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
         // Sort the groupedEvents by duration if the start times are the same.
         // This is to ensure that the longest event is displayed first and that it is aligned to the left of the tilegroup.
         groupedEvents.sort(
-          (CalendarEvent<T> a, CalendarEvent<T> b) =>
+          (a, b) =>
               (a.start == b.start) ? a.duration.compareTo(b.duration) * -1 : 0,
         );
 
-        List<PositionedTileData<T>> positionedTileDatas =
-            <PositionedTileData<T>>[];
+        final positionedTileDatas = <PositionedTileData<T>>[];
         void addTileData(PositionedTileData<T> positionedTileData) {
           if (positionedTileDatas.any(
-            (PositionedTileData<T> element) =>
-                element.event == positionedTileData.event,
+            (element) => element.event == positionedTileData.event,
           )) {
             return;
           }
@@ -95,10 +90,10 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
         }
 
         // Determine the Start DateTime of the tile group.
-        DateTime tileGroupStart = groupedEvents.first.start;
+        final tileGroupStart = groupedEvents.first.start;
 
         // The tile group height will be calculated by looping through the groupedEvents.
-        double tileGroupHeight = 0;
+        var tileGroupHeight = 0.0;
         void updateGroupHeight(double height) {
           if (tileGroupHeight < height) {
             tileGroupHeight = height;
@@ -106,21 +101,21 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
         }
 
         // Loop through the groupedEvents.
-        for (int i = 0; i < groupedEvents.length; i++) {
+        for (var i = 0; i < groupedEvents.length; i++) {
           // Get the event from the current index.
-          CalendarEvent<T> currentEvent = groupedEvents.elementAt(i);
+          final currentEvent = groupedEvents.elementAt(i);
 
           if (i == 0) {
-            double top = calculateTop(
+            final top = calculateTop(
               currentEvent
                   .dateTimeRangeOnDate(date)
                   .start
                   .difference(tileGroupStart),
             );
-            double height =
+            final height =
                 calculateTileHeight(currentEvent.durationOnDate(date));
-            double eventWidth = dayWidth - (dayWidth / 10);
-            PositionedTileData<T> positionedTileData = PositionedTileData<T>(
+            final eventWidth = dayWidth - (dayWidth / 10);
+            final positionedTileData = PositionedTileData<T>(
               event: currentEvent,
               date: date,
               left: 0,
@@ -140,12 +135,12 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
 
           // Check if the current event has already been added to the tile group.
           if (positionedTileDatas.any(
-            (PositionedTileData<T> element) => element.event == currentEvent,
+            (element) => element.event == currentEvent,
           )) {
             continue;
           }
           // Calculate the top value of the tile to check if it overlaps with the previous tile's title.
-          double top = calculateTop(
+          final top = calculateTop(
             currentEvent
                 .dateTimeRangeOnDate(date)
                 .start
@@ -158,9 +153,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
             positionedTileDatas[i - 1].top,
             15,
           )) {
-            Iterable<PositionedTileData<T>> eventsBehind =
-                positionedTileDatas.where(
-              (PositionedTileData<T> element) =>
+            final eventsBehind = positionedTileDatas.where(
+              (element) =>
                   currentEvent.start.isWithin(element.event.dateTimeRange) ||
                   currentEvent.start == element.event.start ||
                   currentEvent.end == element.event.end,
@@ -176,9 +170,8 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
                 : i * (dayWidth / 10);
             eventWidth = dayWidth - (dayWidth / 20);
           } else {
-            Iterable<PositionedTileData<T>> eventsBehind =
-                positionedTileDatas.where(
-              (PositionedTileData<T> element) =>
+            final eventsBehind = positionedTileDatas.where(
+              (element) =>
                   currentEvent.start.isWithin(element.event.dateTimeRange),
             );
 
@@ -192,11 +185,10 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
             tileLeftOffset = (eventBehind?.left ?? 0) + (dayWidth / 10);
           }
 
-          double height =
-              calculateTileHeight(currentEvent.durationOnDate(date));
-          bool drawOutline = true;
+          final height = calculateTileHeight(currentEvent.durationOnDate(date));
+          const drawOutline = true;
 
-          PositionedTileData<T> positionedTileData = PositionedTileData<T>(
+          final positionedTileData = PositionedTileData<T>(
             event: currentEvent,
             date: date,
             left: tileLeftOffset,
@@ -239,13 +231,13 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
     double tileGroupLeft,
   ) {
     // Determine the Start DateTime of the tile group.
-    DateTime tileGroupStart = event.dateTimeRangeOnDate(date).start;
+    final tileGroupStart = event.dateTimeRangeOnDate(date).start;
 
     // Calculate the width of the event.
-    double eventWidth = dayWidth - (dayWidth / 10);
+    final eventWidth = dayWidth - (dayWidth / 10);
 
     // Calculate the position data for the event.
-    PositionedTileData<T> positionedTileData = PositionedTileData<T>(
+    final positionedTileData = PositionedTileData<T>(
       event: event,
       date: date,
       left: 0,
@@ -278,20 +270,19 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
     required Iterable<CalendarEvent<T>> otherEvents,
     int maxIterations = 50,
   }) {
-    Set<CalendarEvent<T>> overlappingEvents = <CalendarEvent<T>>{initialEvent};
-    int previousLength = 0;
-    int iteration = 0;
+    final overlappingEvents = <CalendarEvent<T>>{initialEvent};
+    var previousLength = 0;
+    var iteration = 0;
     while (previousLength != overlappingEvents.length &&
         iteration <= maxIterations) {
-      List<CalendarEvent<T>> newOverlappingEvents = <CalendarEvent<T>>[];
-      for (CalendarEvent<T> event in overlappingEvents) {
+      final newOverlappingEvents = <CalendarEvent<T>>[];
+      for (var event in overlappingEvents) {
         newOverlappingEvents.addAll(
           otherEvents.where(
-            (CalendarEvent<T> element) =>
-                ((element.start.isWithin(event.dateTimeRange) ||
-                        element.end.isWithin(event.dateTimeRange)) ||
-                    element.start == event.start ||
-                    element.end == event.end),
+            (element) => ((element.start.isWithin(event.dateTimeRange) ||
+                    element.end.isWithin(event.dateTimeRange)) ||
+                element.start == event.start ||
+                element.end == event.end),
           ),
         );
       }
@@ -308,7 +299,7 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
   ) {
     return event.datesSpanned
         .map(
-          (DateTime e) => PositionedTileData<T>(
+          (e) => PositionedTileData<T>(
             event: event,
             date: e,
             left: calculateLeft(e),
@@ -341,8 +332,7 @@ class DefaultDayTileLayoutController<T> extends DayTileLayoutController<T> {
     DateTime date,
   ) {
     return events.where(
-      (CalendarEvent<T> element) =>
-          element.start.isSameDay(date) || element.end.isSameDay(date),
+      (element) => element.start.isSameDay(date) || element.end.isSameDay(date),
     );
   }
 

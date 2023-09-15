@@ -12,7 +12,7 @@ class CalendarStyleProvider extends InheritedWidget {
   final CalendarStyle style;
 
   static CalendarStyleProvider of(BuildContext context) {
-    CalendarStyleProvider? result =
+    final result =
         context.dependOnInheritedWidgetOfExactType<CalendarStyleProvider>();
     return result!;
   }

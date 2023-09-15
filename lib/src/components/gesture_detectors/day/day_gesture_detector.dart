@@ -83,14 +83,14 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
                       _onTap(calculateDateTimeRange(visibleDates[day], i)),
                   onVerticalDragStart: isMobileDevice
                       ? null
-                      : (DragStartDetails details) => _onVerticalDragStart(
+                      : (details) => _onVerticalDragStart(
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
                   onVerticalDragEnd: isMobileDevice ? null : _onVerticalDragEnd,
                   onVerticalDragUpdate: isMobileDevice
                       ? null
-                      : (DragUpdateDetails details) => _onVerticalDragUpdate(
+                      : (details) => _onVerticalDragUpdate(
                             details,
                             calculateDateTimeRange(visibleDates[day], i),
                           ),
@@ -153,7 +153,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   ) {
     cursorOffset += details.delta.dy;
 
-    int newNumberOfSlotsSelected = cursorOffset ~/ heightPerSlot;
+    final newNumberOfSlotsSelected = cursorOffset ~/ heightPerSlot;
     if (newNumberOfSlotsSelected != numberOfSlotsSelected) {
       numberOfSlotsSelected = newNumberOfSlotsSelected;
 

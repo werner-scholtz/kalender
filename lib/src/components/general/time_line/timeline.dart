@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/time_line/timeline_style.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -7,18 +6,14 @@ import 'package:kalender/src/providers/calendar_style.dart';
 class Timeline extends StatelessWidget {
   const Timeline({
     super.key,
-    required this.timelineWidth,
-    required this.height,
     required this.hourHeight,
   });
-  final double timelineWidth;
-  final double height;
+
   final double hourHeight;
 
   @override
   Widget build(BuildContext context) {
-    TimelineStyle? timelineStyle =
-        CalendarStyleProvider.of(context).style.timelineStyle;
+    final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
@@ -27,7 +22,6 @@ class Timeline extends StatelessWidget {
         children: <Widget>[
           for (int i = 1; i < hoursADay; i++)
             SizedBox(
-              width: timelineWidth,
               height: hourHeight,
               child: Center(
                 child: TimeText(
@@ -57,7 +51,7 @@ class TimeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String string = use24HourFormat
+    final string = use24HourFormat
         ? '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}'
         : '${((timeOfDay.hour - 1) % 12) + 1} ${timeOfDay.hour ~/ 12 == 0 ? "am" : "pm"}';
     return Text(

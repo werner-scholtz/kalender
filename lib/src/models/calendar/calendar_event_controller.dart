@@ -100,7 +100,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     bool? modifyable,
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
-    int index = _events.indexWhere((CalendarEvent<T> element) => test(element));
+    final index = _events.indexWhere((element) => test(element));
     if (index == -1) return;
     if (newEventData != null) {
       _events[index].eventData = newEventData;
@@ -121,7 +121,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     DateTimeRange dateRange,
   ) {
     return _events.where(
-      (CalendarEvent<T> element) =>
+      (element) =>
           ((element.start.isBefore(dateRange.start) &&
                   element.end.isAfter(dateRange.end)) ||
               element.start.isWithin(dateRange) ||
@@ -138,7 +138,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     DateTimeRange dateRange,
   ) {
     return _events.where(
-      (CalendarEvent<T> element) => (element.start.isWithin(dateRange) ||
+      (element) => (element.start.isWithin(dateRange) ||
           element.end.isWithin(dateRange)),
     );
   }
@@ -148,7 +148,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     DateTimeRange dateRange,
   ) {
     return _events.where(
-      (CalendarEvent<T> element) =>
+      (element) =>
           (element.start.isWithin(dateRange) ||
               element.end.isWithin(dateRange)) &&
           !element.isMultidayEvent,
@@ -158,10 +158,10 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
-    Iterable<CalendarEvent<T>> eventsInDateTimeRange =
+    final eventsInDateTimeRange =
         getMonthEventsFromDateRange(dateRange);
-    List<DateTime> snapPoints = <DateTime>[];
-    for (CalendarEvent<T> event in eventsInDateTimeRange) {
+    final snapPoints = <DateTime>[];
+    for (var event in eventsInDateTimeRange) {
       snapPoints.add(event.start);
       snapPoints.add(event.end);
     }

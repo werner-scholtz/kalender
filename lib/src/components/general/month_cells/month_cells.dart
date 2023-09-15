@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:kalender/src/components/general/month_cell_scroll_view.dart';
 import 'package:kalender/src/components/tile_stacks/month_tile_stack.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -26,8 +25,8 @@ class MonthCells<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarStyle style = CalendarStyleProvider.of(context).style;
-    CalendarScope<T> scope = CalendarScope.of<T>(context);
+    final style = CalendarStyleProvider.of(context).style;
+    final scope = CalendarScope.of<T>(context);
     return Stack(
       children: <Widget>[
         for (int c = 0; c < 5; c++)
@@ -47,7 +46,7 @@ class MonthCells<T> extends StatelessWidget {
                           child: scope.components.monthCellHeaderBuilder(
                             visibleDateRange.start
                                 .add(Duration(days: (c * 7) + r)),
-                            (DateTime date) =>
+                            (date) =>
                                 scope.functions.onDateTapped?.call(date),
                           ),
                         ),
@@ -55,13 +54,13 @@ class MonthCells<T> extends StatelessWidget {
                   ],
                 ),
                 Builder(
-                  builder: (BuildContext context) {
-                    DateTimeRange weekDateRange = DateTimeRange(
+                  builder: (context) {
+                    final weekDateRange = DateTimeRange(
                       start: visibleDateRange.start.add(Duration(days: c * 7)),
                       end: visibleDateRange.start
                           .add(Duration(days: (c * 7) + 7)),
                     );
-                    double contentHeight = cellHeight -
+                    final contentHeight = cellHeight -
                         (style.monthCellsStyle?.cellHeaderHeight ?? 32);
                     return SizedBox(
                       width: pageWidth,

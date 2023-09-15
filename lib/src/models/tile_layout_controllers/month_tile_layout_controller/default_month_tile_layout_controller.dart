@@ -12,8 +12,8 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
 
   @override
   PositionedMonthTileData<T> layoutSelectedTile(CalendarEvent<T> event) {
-    double left = calculateLeft(event.start);
-    double width = calculateWidth(event.dateTimeRange);
+    final left = calculateLeft(event.start);
+    final width = calculateWidth(event.dateTimeRange);
 
     return positionMultiDayTile(
       event: event,
@@ -36,38 +36,35 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
       }
     }
 
-    List<PositionedMonthTileData<T>> layedOutTiles =
-        <PositionedMonthTileData<T>>[];
+    final layedOutTiles = <PositionedMonthTileData<T>>[];
     void addArrangedEvent(PositionedMonthTileData<T> arragnedEvent) {
       if (layedOutTiles.contains(arragnedEvent)) return;
       layedOutTiles.add(arragnedEvent);
     }
 
-    List<CalendarEvent<T>> eventsToArrange = events.toList()
+    final eventsToArrange = events.toList()
       // Sort events by start dateTime
       ..sort(
-        (CalendarEvent<T> a, CalendarEvent<T> b) => a.start.compareTo(b.start),
+        (a, b) => a.start.compareTo(b.start),
       );
 
-    for (CalendarEvent<T> event in eventsToArrange) {
-      double left = calculateLeft(event.start);
-      double width = calculateWidth(event.dateTimeRange);
+    for (var event in eventsToArrange) {
+      final left = calculateLeft(event.start);
+      final width = calculateWidth(event.dateTimeRange);
 
-      List<DateTime> datesFilled = event.datesSpanned;
+      final datesFilled = event.datesSpanned;
 
       // Find events that fill the same dates as the current event.
-      List<PositionedMonthTileData<T>> arragedEventsAbove = layedOutTiles.where(
-        (PositionedMonthTileData<T> arragnedEvent) {
-          return arragnedEvent.event.datesSpanned
-              .any((DateTime date) => datesFilled.contains(date));
+      final arragedEventsAbove = layedOutTiles.where(
+        (arragnedEvent) {
+          return arragnedEvent.event.datesSpanned.any(datesFilled.contains);
         },
       ).toList()
         ..sort(
-          (PositionedMonthTileData<T> a, PositionedMonthTileData<T> b) =>
-              a.top.compareTo(b.top),
+          (a, b) => a.top.compareTo(b.top),
         );
 
-      double top = 0;
+      var top = 0.0;
       if (arragedEventsAbove.isNotEmpty) {
         top = arragedEventsAbove.last.top + tileHeight;
       }
@@ -85,16 +82,14 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
     }
 
     if (selectedEvent != null) {
-      List<PositionedMonthTileData<T>> selectedArrangedEvent = layedOutTiles
+      final selectedArrangedEvent = layedOutTiles
           .where(
-            (PositionedMonthTileData<T> element) =>
-                element.event == selectedEvent,
+            (element) => element.event == selectedEvent,
           )
           .toList();
       if (selectedArrangedEvent.isNotEmpty) {
         layedOutTiles.removeWhere(
-          (PositionedMonthTileData<T> element) =>
-              element.event == selectedEvent,
+          (element) => element.event == selectedEvent,
         );
         layedOutTiles.addAll(selectedArrangedEvent);
       }
@@ -116,18 +111,18 @@ class DefaultMonthTileLayoutController<T> extends MonthTileLayoutController<T> {
     required double top,
     required double width,
   }) {
-    double checkedWidth = width;
+    var checkedWidth = width;
 
-    double checkedleft = left;
-    bool continuesBefore = false;
+    var checkedleft = left;
+    var continuesBefore = false;
     if (checkedleft < 0) {
       checkedleft = 0;
       checkedWidth = width + left;
       continuesBefore = true;
     }
 
-    double checkedRight = left + width;
-    bool continuesAfter = false;
+    final checkedRight = left + width;
+    var continuesAfter = false;
     if (checkedRight > maxWidth) {
       checkedWidth = maxWidth - left;
       continuesAfter = true;

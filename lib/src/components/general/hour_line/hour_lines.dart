@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -19,7 +18,7 @@ class HourLines extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HourLineStyle? hourLineStyle =
+    final hourLineStyle =
         CalendarStyleProvider.of(context).style.hourLineStyle;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: hourHeight / 2),

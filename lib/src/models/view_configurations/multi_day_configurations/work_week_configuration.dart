@@ -58,7 +58,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
-    DateTimeRange weekRange = date.weekRangeWithOffset(firstDayOfWeek);
+    final weekRange = date.weekRangeWithOffset(firstDayOfWeek);
     return DateTimeRange(
       start: weekRange.start,
       end: weekRange.end.subtract(
@@ -105,7 +105,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     required int index,
     required DateTime calendarStart,
   }) {
-    DateTimeRange weekRange = DateTime(
+    final weekRange = DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),

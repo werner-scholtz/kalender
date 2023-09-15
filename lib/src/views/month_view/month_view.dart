@@ -127,26 +127,26 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange =
+    final adjustedDateTimeRange =
         _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
 
-    int numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    int initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
       adjustedDateTimeRange.start,
     );
 
-    PageController pageController = PageController(
+    final pageController = PageController(
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange =
+    final visibleDateRange =
         _viewConfiguration.calcualteVisibleDateTimeRange(
       _controller.selectedDate,
     );
@@ -175,10 +175,10 @@ class _MonthViewState<T> extends State<MonthView<T>> {
         platformData: PlatformData(),
         layoutControllers: _layoutControllers,
         child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double pageWidth = constraints.maxWidth;
+          builder: (context, constraints) {
+            final pageWidth = constraints.maxWidth;
 
-            double cellWidth = _viewConfiguration.calculateDayWidth(pageWidth);
+            final cellWidth = _viewConfiguration.calculateDayWidth(pageWidth);
 
             return Column(
               children: <Widget>[

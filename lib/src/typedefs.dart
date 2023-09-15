@@ -19,6 +19,8 @@ typedef DayHeaderBuilder<T extends Object?> = Widget Function(
   void Function(DateTime date)? onTapped,
 );
 
+/// TODO: remove explicit sizes where possible. ///
+
 /// The [HourlinesBuilder] is used to build the hourlines displayed on calendar's.
 typedef HourlinesBuilder<T extends Object?> = Widget Function(
   double hourlineWidth,
@@ -34,8 +36,6 @@ typedef DaySepratorBuilder<T extends Object?> = Widget Function(
 
 /// The [TimelineBuilder] is used to build the timeline displayed on the left side of the calendar.
 typedef TimelineBuilder<T extends Object?> = Widget Function(
-  double timelineWidth,
-  double height,
   double hourHeight,
 );
 

@@ -17,7 +17,7 @@ class MonthGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Theme.of(context).colorScheme.surfaceVariant;
-    double thickness =
+    final thickness =
         CalendarStyleProvider.of(context).style.monthGridStyle?.thickness ?? 1;
 
     return Stack(

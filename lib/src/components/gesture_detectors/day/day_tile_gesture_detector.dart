@@ -98,8 +98,8 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   @override
   Widget build(BuildContext context) {
-    double height = tileData.height < 16 ? tileData.height : 16;
-    double width = tileData.height < 16 ? tileData.height : 16;
+    final height = tileData.height < 16.0 ? tileData.height : 16.0;
+    final width = tileData.height < 16.0 ? tileData.height : 16.0;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
@@ -110,14 +110,13 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
             onPanStart: useDesktopGestures ? _onPanStart : null,
             onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
             onPanEnd: useDesktopGestures
-                ? (DragEndDetails details) async => _onPanEnd(details)
+                ? (details) async => _onPanEnd(details)
                 : null,
             onLongPressStart: useMobileGestures ? _onLongPressStart : null,
             onLongPressMoveUpdate:
                 useMobileGestures ? _onLongPressMoveUpdate : null,
             onLongPressEnd: useMobileGestures
-                ? (LongPressEndDetails details) async =>
-                    _onLongPressEnd(details)
+                ? (details) async => _onLongPressEnd(details)
                 : null,
             child: widget.child,
           ),
@@ -132,7 +131,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                       behavior: HitTestBehavior.translucent,
                       onVerticalDragStart: _onVerticalDragStart,
                       onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                      onVerticalDragEnd: (DragEndDetails details) async =>
+                      onVerticalDragEnd: (details) async =>
                           _onVerticalDragEnd(details),
                       child: Container(
                         decoration: BoxDecoration(
@@ -154,7 +153,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                             behavior: HitTestBehavior.translucent,
                             onVerticalDragStart: _onVerticalDragStart,
                             onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                            onVerticalDragEnd: (DragEndDetails details) async =>
+                            onVerticalDragEnd: (details) async =>
                                 _onVerticalDragEnd(details),
                           ),
                         ),
@@ -171,7 +170,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                       behavior: HitTestBehavior.translucent,
                       onVerticalDragStart: _onVerticalDragStart,
                       onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                      onVerticalDragEnd: (DragEndDetails details) async =>
+                      onVerticalDragEnd: (details) async =>
                           _onVerticalDragEnd(details),
                       child: Container(
                         decoration: BoxDecoration(
@@ -193,7 +192,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
                             behavior: HitTestBehavior.translucent,
                             onVerticalDragStart: _onVerticalDragStart,
                             onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                            onVerticalDragEnd: (DragEndDetails details) async =>
+                            onVerticalDragEnd: (details) async =>
                                 _onVerticalDragEnd(details),
                           ),
                         ),
@@ -259,20 +258,20 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   void _onVerticalDragUpdateStart(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
-    int steps = (cursorOffset.dy / widget.verticalStep).round();
+    final steps = (cursorOffset.dy / widget.verticalStep).round();
     if (steps != currentVerticalSteps) {
-      DateTime newStart = initialDateTimeRange.start.add(
+      final newStart = initialDateTimeRange.start.add(
         widget.verticalDurationStep * steps,
       );
 
       // Add now to the snap points if applicable.
-      DateTime now = DateTime.now();
+      final now = DateTime.now();
       if (snapToTimeIndicator) {
         snapPoints.add(now);
       }
 
-      int index = snapPoints.indexWhere(
-        (DateTime element) =>
+      final index = snapPoints.indexWhere(
+        (element) =>
             element.difference(newStart).abs() <= widget.verticalSnapRange,
       );
 
@@ -299,22 +298,22 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   void _onVerticalDragUpdateEnd(DragUpdateDetails details) {
     cursorOffset += details.delta;
     // Calculate the new vertical steps.
-    int steps = (cursorOffset.dy / widget.verticalStep).round();
+    final steps = (cursorOffset.dy / widget.verticalStep).round();
 
     if (steps != currentVerticalSteps) {
       // Calculate the new end time.
-      DateTime newEnd = initialDateTimeRange.end.add(
+      final newEnd = initialDateTimeRange.end.add(
         widget.verticalDurationStep * steps,
       );
 
       // Add now to the snap points if applicable.
-      DateTime now = DateTime.now();
+      final now = DateTime.now();
       if (snapToTimeIndicator) {
         snapPoints.add(now);
       }
 
-      int index = snapPoints.indexWhere(
-        (DateTime element) =>
+      final index = snapPoints.indexWhere(
+        (element) =>
             element.difference(newEnd).abs() <= widget.verticalSnapRange,
       );
 
@@ -339,7 +338,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    CalendarEvent<T> selectedEvent = scope.eventsController.selectedEvent!;
+    final selectedEvent = scope.eventsController.selectedEvent!;
     controller.isResizing = false;
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
@@ -363,48 +362,47 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
   /// Reschedules the [CalendarEvent] to the the [cursorOffset] or the nearest snap point.
   void _onReschedule(Offset cursorOffset) {
     // Calculate the new vertical steps.
-    int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
     if (verticalSteps != currentVerticalSteps) {
       currentVerticalSteps = verticalSteps;
     }
 
     // Calculate the new horizontal steps if applicable.
-    int horizontalSteps = 0;
+    var horizontalSteps = 0;
     if (widget.horizontalStep != null) {
       horizontalSteps = (cursorOffset.dx / widget.horizontalStep!).round();
       if (horizontalSteps != currentHorizontalSteps) {
         currentHorizontalSteps = horizontalSteps;
       }
     }
-    Duration horizontalDurationDelta =
+    final horizontalDurationDelta =
         (widget.horizontalDurationStep ?? const Duration(minutes: 0)) *
             horizontalSteps;
 
     // Calculate the new start time.
-    DateTime newStart = initialDateTimeRange.start
+    var newStart = initialDateTimeRange.start
         .add(horizontalDurationDelta)
         .add(widget.verticalDurationStep * verticalSteps);
 
     // Calculate the new end time.
-    DateTime newEnd = initialDateTimeRange.end
+    var newEnd = initialDateTimeRange.end
         .add(horizontalDurationDelta)
         .add(widget.verticalDurationStep * verticalSteps);
 
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     if (snapToTimeIndicator) {
       snapPoints.add(now);
     }
 
     // Find the index of the snap point that is within a duration of 15 minutes of the startTime.
-    int startIndex = snapPoints.indexWhere(
-      (DateTime element) =>
+    final startIndex = snapPoints.indexWhere(
+      (element) =>
           element.difference(newStart).abs() <= widget.verticalSnapRange,
     );
 
     // Find the index of the snap point that is within a duration of 15 minutes of the endTime.
-    int endIndex = snapPoints.indexWhere(
-      (DateTime element) =>
-          element.difference(newEnd).abs() <= widget.verticalSnapRange,
+    final endIndex = snapPoints.indexWhere(
+      (element) => element.difference(newEnd).abs() <= widget.verticalSnapRange,
     );
 
     // Check if the start or end snap points should be used.
@@ -416,7 +414,7 @@ class _DayTileGestureDetectorState<T> extends State<DayTileGestureDetector<T>> {
       newStart = newEnd.subtract(initialDateTimeRange.duration);
     }
 
-    DateTimeRange newDateTimeRange = DateTimeRange(
+    final newDateTimeRange = DateTimeRange(
       start: newStart,
       end: newEnd,
     );

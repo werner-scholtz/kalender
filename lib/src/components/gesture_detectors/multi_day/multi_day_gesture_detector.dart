@@ -70,13 +70,13 @@ class _MultiDayGestureDetectorState<T>
                 onTap: () => _onTap(visibleDates[r].dayRange),
                 onHorizontalDragStart: isMobileDevice
                     ? null
-                    : (DragStartDetails details) => _onHorizontalDragStart(
+                    : (details) => _onHorizontalDragStart(
                           details,
                           visibleDates[r].dayRange,
                         ),
                 onHorizontalDragUpdate: isMobileDevice
                     ? null
-                    : (DragUpdateDetails details) => _onHorizontalDragUpdate(
+                    : (details) => _onHorizontalDragUpdate(
                           details,
                           visibleDates[r].dayRange,
                         ),
@@ -95,7 +95,7 @@ class _MultiDayGestureDetectorState<T>
       return;
     }
 
-    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+    final newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
 
@@ -112,7 +112,7 @@ class _MultiDayGestureDetectorState<T>
     DateTimeRange dateTimeRange,
   ) {
     cursorOffset = 0;
-    CalendarEvent<T> displayEvent = CalendarEvent<T>(
+    final displayEvent = CalendarEvent<T>(
       dateTimeRange: dateTimeRange,
     );
     controller.selectEvent(displayEvent);
@@ -124,7 +124,7 @@ class _MultiDayGestureDetectorState<T>
   ) {
     cursorOffset += details.delta.dx;
 
-    int newNumberOfSlotsSelected = cursorOffset ~/ dayWidth;
+    final newNumberOfSlotsSelected = cursorOffset ~/ dayWidth;
 
     if (newNumberOfSlotsSelected != numberOfSlotsSelected) {
       numberOfSlotsSelected = newNumberOfSlotsSelected;

@@ -18,7 +18,7 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollNotification) {
+      onNotification: (scrollNotification) {
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
@@ -36,7 +36,7 @@ class _MonthCellScrollViewState extends State<MonthCellScrollView> {
         return true;
       },
       child: ShaderMask(
-        shaderCallback: (Rect rect) {
+        shaderCallback: (rect) {
           return LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

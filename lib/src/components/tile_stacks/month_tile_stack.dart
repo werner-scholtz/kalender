@@ -40,14 +40,13 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
 
     return ListenableBuilder(
       listenable: scope.eventsController,
-      builder: (BuildContext context, Widget? child) {
+      builder: (context, child) {
         /// Arrange the events.
-        List<PositionedMonthTileData<T>> arragedEvents =
-            monthEventLayout.layoutTiles(
+        final arragedEvents = monthEventLayout.layoutTiles(
           scope.eventsController.getMonthEventsFromDateRange(visibleDateRange),
           selectedEvent: scope.eventsController.selectedEvent,
         );
@@ -78,7 +77,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                 ],
               ),
               ...arragedEvents.map(
-                (PositionedMonthTileData<T> e) {
+                (e) {
                   return PositionedMonthTile<T>(
                     controller: scope.eventsController,
                     visibleDateRange:
@@ -145,8 +144,8 @@ class PositionedMonthTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
-    bool isMoving = controller.selectedEvent == positionedTileData.event;
+    final scope = CalendarScope.of<T>(context);
+    final isMoving = controller.selectedEvent == positionedTileData.event;
     return Positioned(
       top: positionedTileData.top,
       left: positionedTileData.left,
@@ -199,13 +198,12 @@ class ChaningMonthTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
 
     return ListenableBuilder(
       listenable: scope.eventsController.selectedEvent!,
-      builder: (BuildContext context, Widget? child) {
-        PositionedMonthTileData<T> positionedTile =
-            monthEventLayout.layoutSelectedTile(
+      builder: (context, child) {
+        final positionedTile = monthEventLayout.layoutSelectedTile(
           scope.eventsController.selectedEvent!,
         );
 

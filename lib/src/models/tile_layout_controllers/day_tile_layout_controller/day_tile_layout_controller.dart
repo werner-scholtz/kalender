@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
+/// TODO: Make abstarct layout controller ?
+
+/// TODO: Change the layoutcontroller to use DateTime Range and then have a single process that converts the dateTimes to pixel formats.
+
 abstract class DayTileLayoutController<T> {
   const DayTileLayoutController({
     required this.visibleDateRange,

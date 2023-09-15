@@ -16,15 +16,15 @@ class SingleDayHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
 
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRangeNotifier,
         builder: (
-          BuildContext context,
-          DateTimeRange visibleDateTimeRange,
-          Widget? child,
+          context,
+          visibleDateTimeRange,
+          child,
         ) {
           return Column(
             children: <Widget>[

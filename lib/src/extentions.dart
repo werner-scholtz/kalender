@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 extension DateTimeRangeExtensions on DateTimeRange {
   /// The difference of days between the [start] and [end] of the [DateTimeRange].
   int get dayDifference {
-    DateTime end = this.end;
+    final end = this.end;
     if (end == end.startOfDay) {
       // Subtract 1 because the dateTimeRange does not span the last day.
       return start.startOfDay.difference(end.endOfDay).inDays.abs() - 1;
@@ -15,16 +15,16 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// The difference of months between the [start] and [end] of the [DateTimeRange].
   int get monthDifference {
-    int months = ((start.year - end.year).abs() - 1) * 12;
+    var months = ((start.year - end.year).abs() - 1) * 12;
     months += end.month + (12 - start.month);
     return months;
   }
 
   /// A list of [DateTime]s that the [DateTimeRange] spannes.
   List<DateTime> get datesSpanned {
-    List<DateTime> dates = <DateTime>[];
-    for (int i = 0; i < dayDifference; i++) {
-      DateTime date = start.add(Duration(days: i));
+    final dates = <DateTime>[];
+    for (var i = 0; i < dayDifference; i++) {
+      final date = start.add(Duration(days: i));
       dates.add(DateTime(date.year, date.month, date.day));
     }
     return dates;
@@ -139,8 +139,8 @@ extension DateTimeExtentions on DateTime {
   String get timeString {
     // DateFormat('HH:mm').format(this)
 
-    String hourString = hour.toString();
-    String minuteString = minute.toString();
+    var hourString = hour.toString();
+    var minuteString = minute.toString();
 
     if (hour < 10) {
       hourString = '0$hourString';
@@ -156,7 +156,7 @@ extension DateTimeExtentions on DateTime {
   ///
   /// https://en.wikipedia.org/wiki/ISO_week_date#Algorithms
   int get weekOfYear {
-    final int weekOfYear = ((ordinalDate - weekday + 10) ~/ 7);
+    final weekOfYear = ((ordinalDate - weekday + 10) ~/ 7);
 
     if (weekOfYear == 0) {
       return DateTime(year - 1, 12, 28).weekOfYear;
@@ -173,7 +173,7 @@ extension DateTimeExtentions on DateTime {
 
   /// Get the ordinal date.
   int get ordinalDate {
-    const List<int> offsets = <int>[
+    const offsets = <int>[
       0,
       31,
       59,

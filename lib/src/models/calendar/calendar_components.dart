@@ -99,13 +99,9 @@ class CalendarComponents {
   late TileHandleBuilder? tileHandleBuilder;
 
   Widget _defaultTimelineBuilder(
-    double timelineWidth,
-    double height,
     double hourHeight,
   ) {
     return Timeline(
-      timelineWidth: timelineWidth,
-      height: height,
       hourHeight: hourHeight,
     );
   }

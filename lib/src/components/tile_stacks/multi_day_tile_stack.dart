@@ -28,13 +28,13 @@ class MultiDayTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
 
     return ListenableBuilder(
       listenable: scope.eventsController,
-      builder: (BuildContext context, Widget? child) {
+      builder: (context, child) {
         /// Arrange the events.
-        MultiDayLayoutData<T> layedOutEvents = multiDayEventLayout.layoutTiles(
+        final layedOutEvents = multiDayEventLayout.layoutTiles(
           scope.eventsController.getMultidayEventsFromDateRange(
             scope.state.visibleDateTimeRangeNotifier.value,
           ),
@@ -70,7 +70,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
                       .state.visibleDateTimeRangeNotifier.value.datesSpanned,
                 ),
               ...layedOutEvents.layedOutTiles.map(
-                (PositionedMultiDayTileData<T> e) {
+                (e) {
                   return PositionedMultiDayTile<T>(
                     visibleDateRange:
                         scope.state.visibleDateTimeRangeNotifier.value,
@@ -116,8 +116,8 @@ class PositionedMultiDayTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
-    bool isMoving =
+    final scope = CalendarScope.of<T>(context);
+    final isMoving =
         scope.eventsController.selectedEvent == positionedTileData.event;
     return Positioned(
       top: positionedTileData.top,
@@ -160,12 +160,11 @@ class ChaningMultiDayTileStack<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CalendarScope<T> scope = CalendarScope.of(context);
+    final scope = CalendarScope.of<T>(context);
     return ListenableBuilder(
       listenable: scope.eventsController.selectedEvent!,
-      builder: (BuildContext context, Widget? child) {
-        PositionedMultiDayTileData<T> positionedTile =
-            multiDayEventLayout.layoutSelectedTile(
+      builder: (context, child) {
+        final positionedTile = multiDayEventLayout.layoutSelectedTile(
           scope.eventsController.selectedEvent!,
         );
         return MouseRegion(

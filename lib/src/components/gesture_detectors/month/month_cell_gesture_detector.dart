@@ -94,7 +94,7 @@ class _MonthCellGestureDetectorState<T>
 
   void _onPanStart(DragStartDetails details) {
     // Create a new [CalendarEvent] with the [dateTimeRange].
-    CalendarEvent<T> newCalendarEvent = CalendarEvent<T>(
+    final newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: date.dayRange,
     );
 
@@ -120,33 +120,33 @@ class _MonthCellGestureDetectorState<T>
   void _onPanUpdate(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
-    int verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
     if (verticalSteps != currentVerticalSteps) {
       currentVerticalSteps = verticalSteps;
     }
 
-    int horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
+    final horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
     if (horizontalSteps != currentHorizontalSteps) {
       currentHorizontalSteps = horizontalSteps;
     }
 
-    DateTime newStart = initialDateTimeRange!.start
+    final newStart = initialDateTimeRange!.start
         .add(widget.horizontalDurationStep * horizontalSteps)
         .add(widget.verticalDurationStep * verticalSteps);
 
-    DateTime newEnd = initialDateTimeRange!.end
+    final newEnd = initialDateTimeRange!.end
         .add(widget.horizontalDurationStep * horizontalSteps)
         .add(widget.verticalDurationStep * verticalSteps);
 
     if (newStart.isBefore(initialDateTimeRange!.start)) {
-      DateTimeRange newDateTimeRange = DateTimeRange(
+      final newDateTimeRange = DateTimeRange(
         start: newStart,
         end: initialDateTimeRange!.end,
       );
 
       controller.selectedEvent!.dateTimeRange = newDateTimeRange;
     } else {
-      DateTimeRange newDateTimeRange = DateTimeRange(
+      final newDateTimeRange = DateTimeRange(
         start: initialDateTimeRange!.start,
         end: newEnd,
       );

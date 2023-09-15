@@ -137,9 +137,9 @@ class _MultiDayTileGestureDetectorState<T>
 
   void _onRescheduleUpdate(DragUpdateDetails details) {
     cursorOffset += details.delta.dx;
-    int steps = (cursorOffset / widget.horizontalStep).round();
+    final steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
-      DateTimeRange newDateTimeRange = DateTimeRange(
+      final newDateTimeRange = DateTimeRange(
         start: initialDateTimeRange.start
             .add(widget.horizontalDurationStep * steps),
         end:
@@ -167,9 +167,9 @@ class _MultiDayTileGestureDetectorState<T>
 
   void _onHorizontalDragUpdateStart(DragUpdateDetails details) {
     cursorOffset += details.delta.dx;
-    int steps = (cursorOffset / widget.horizontalStep).round();
+    final steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
-      DateTime newStart =
+      final newStart =
           initialDateTimeRange.start.add(widget.horizontalDurationStep * steps);
 
       if (controller.selectedEvent == null) return;
@@ -182,9 +182,9 @@ class _MultiDayTileGestureDetectorState<T>
 
   void _onHorizontalDragUpdateEnd(DragUpdateDetails details) {
     cursorOffset += details.delta.dx;
-    int steps = (cursorOffset / widget.horizontalStep).round();
+    final steps = (cursorOffset / widget.horizontalStep).round();
     if (steps != currentSteps) {
-      DateTime newEnd =
+      final newEnd =
           initialDateTimeRange.end.add(widget.horizontalDurationStep * steps);
       if (controller.selectedEvent == null) return;
       if (newEnd.isAfter(initialDateTimeRange.start)) {
