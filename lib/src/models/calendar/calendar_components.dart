@@ -52,9 +52,10 @@ class CalendarComponents {
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
-    this.hourlineBuilder = hourlineBuilder ?? _defaultHourLineBuilder;
+    this.hourLineBuilder = hourlineBuilder ?? _defaultHourLineBuilder;
     this.timelineBuilder = timelineBuilder ?? _defaultTimelineBuilder;
-    this.daySepratorBuilder = daySepratorBuilder ?? _defaultDaySeperatorBuilder;
+    this.daySeparatorBuilder =
+        daySepratorBuilder ?? _defaultDaySeperatorBuilder;
     this.timeIndicatorBuilder =
         timeIndicatorBuilder ?? _defaultTimeIndicatorBuilder;
     this.monthGridBuilder = monthGridBuilder ?? _defaultMonthGridBuilder;
@@ -74,13 +75,13 @@ class CalendarComponents {
   late WeekNumberBuilder weekNumberBuilder;
 
   /// This builder is used to build the hourlines displayed on calendar.
-  late HourlinesBuilder hourlineBuilder;
+  late HourlinesBuilder hourLineBuilder;
 
   /// This builder is used to build the timeline displayed on the left side of the calendar.
   late TimelineBuilder timelineBuilder;
 
   /// This builder is used to build the seperators between days.
-  late DaySepratorBuilder daySepratorBuilder;
+  late DaySepratorBuilder daySeparatorBuilder;
 
   /// This builder is used to build the time indicator displayed on the calendar.
   late TimeIndicatorBuilder timeIndicatorBuilder;
@@ -202,9 +203,9 @@ class CalendarComponents {
         other.calendarHeaderBuilder == calendarHeaderBuilder &&
         other.dayHeaderBuilder == dayHeaderBuilder &&
         other.weekNumberBuilder == weekNumberBuilder &&
-        other.hourlineBuilder == hourlineBuilder &&
+        other.hourLineBuilder == hourLineBuilder &&
         other.timelineBuilder == timelineBuilder &&
-        other.daySepratorBuilder == daySepratorBuilder;
+        other.daySeparatorBuilder == daySeparatorBuilder;
   }
 
   @override
@@ -212,8 +213,8 @@ class CalendarComponents {
         calendarHeaderBuilder,
         dayHeaderBuilder,
         weekNumberBuilder,
-        hourlineBuilder,
+        hourLineBuilder,
         timelineBuilder,
-        daySepratorBuilder,
+        daySeparatorBuilder,
       );
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/slot_size.dart';
-import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
 class MultiDayConfiguration extends MultiDayViewConfiguration {
   const MultiDayConfiguration({
@@ -61,7 +61,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final Duration horizontalDurationStep = const Duration(days: 1);
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
+  DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     return getMultiDayRange(date);
   }
 
@@ -127,7 +127,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
+  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
     return visibleDateRange.start;
   }
 

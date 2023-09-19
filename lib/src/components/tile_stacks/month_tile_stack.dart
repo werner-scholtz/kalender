@@ -93,7 +93,7 @@ class PositionedMonthTileStack<T> extends StatelessWidget {
                   );
                 },
               ).toList(),
-              if (scope.eventsController.hasChaningEvent)
+              if (scope.eventsController.hasChangingEvent)
                 ChaningMonthTileStack<T>(
                   monthEventLayout: monthEventLayout,
                   viewConfiguration: viewConfiguration,

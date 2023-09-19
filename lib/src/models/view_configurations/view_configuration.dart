@@ -54,7 +54,7 @@ abstract class ViewConfiguration {
   /// Calculates the visible [DateTimeRange] form the [date].
   ///
   /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calcualteVisibleDateTimeRange(
+  DateTimeRange calculateVisibleDateTimeRange(
     DateTime date,
   );
 
@@ -80,7 +80,7 @@ abstract class ViewConfiguration {
   /// Returns the new highlighted date.
   ///
   /// [visibleDateRange] is the visible date range.
-  DateTime getHighlighedDate(
+  DateTime getHighlightedDate(
     DateTimeRange visibleDateRange,
   );
 }

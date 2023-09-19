@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
@@ -40,7 +40,7 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
+  DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     final monthRange = date.monthRange;
     return DateTimeRange(
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
@@ -100,7 +100,7 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
+  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
     return visibleDateRange.centerDateTime.startOfMonth;
   }
 

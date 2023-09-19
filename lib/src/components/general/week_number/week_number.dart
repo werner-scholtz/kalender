@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the week number.

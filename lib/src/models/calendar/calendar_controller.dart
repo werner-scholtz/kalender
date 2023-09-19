@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 

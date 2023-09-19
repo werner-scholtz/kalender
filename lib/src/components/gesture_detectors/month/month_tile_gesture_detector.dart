@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// A widget that detects gestures on a month tile.

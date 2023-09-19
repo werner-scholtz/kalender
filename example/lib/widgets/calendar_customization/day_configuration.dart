@@ -27,7 +27,7 @@ class DayConfiguarionEditor extends StatelessWidget {
           },
         ),
         HourlineTimelineOverlap(
-          value: config.hourlineTimelineOverlap,
+          value: config.hourLineTimelineOverlap,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(

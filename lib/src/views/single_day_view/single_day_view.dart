@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/models_export.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -146,8 +146,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       initialPage: initialPage,
     );
 
-    final visibleDateRange =
-        _viewConfiguration.calcualteVisibleDateTimeRange(
+    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
       _controller.selectedDate,
     );
 

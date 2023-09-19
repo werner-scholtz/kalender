@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_gesture_detector.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day/multi_day_tile_gesture_detector.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
@@ -52,7 +52,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      scope.components.daySepratorBuilder(
+                      scope.components.daySeparatorBuilder(
                         15,
                         dayWidth,
                         scope.state.visibleDateTimeRangeNotifier.value.duration
@@ -96,7 +96,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChaningEvent && controller.isSelectedEventMultiday;
+      controller.hasChangingEvent && controller.isSelectedEventMultiday;
 }
 
 /// The [PositionedMultiDayTile] is used to display a single [PositionedMultiDayTileData].

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
+import 'package:kalender/src/components/tile_stacks/day_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 class SingleDayContent<T> extends StatelessWidget {
@@ -28,7 +28,7 @@ class SingleDayContent<T> extends StatelessWidget {
       builder: (context, heightPerMinute, child) {
         final hourHeight = heightPerMinute * minutesAnHour;
         final pageHeight = hourHeight * hoursADay;
-        final pageWidth = dayWidth + viewConfiguration.hourlineTimelineOverlap;
+        final pageWidth = dayWidth + viewConfiguration.hourLineTimelineOverlap;
         final verticalStep =
             heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
@@ -97,7 +97,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                   child: SizedBox(
                                     width: pageWidth,
                                     height: pageHeight,
-                                    child: scope.components.hourlineBuilder(
+                                    child: scope.components.hourLineBuilder(
                                       pageWidth,
                                       hourHeight,
                                     ),
@@ -108,7 +108,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                   child: SizedBox(
                                     width: dayWidth,
                                     height: pageHeight,
-                                    child: scope.components.daySepratorBuilder(
+                                    child: scope.components.daySeparatorBuilder(
                                       pageHeight,
                                       dayWidth,
                                       pageVisibleDateRange.dayDifference,
@@ -161,7 +161,7 @@ class SingleDayContent<T> extends StatelessWidget {
                                     dayWidth,
                                     pageVisibleDateRange,
                                     heightPerMinute,
-                                    viewConfiguration.hourlineTimelineOverlap,
+                                    viewConfiguration.hourLineTimelineOverlap,
                                   ),
                               ],
                             );

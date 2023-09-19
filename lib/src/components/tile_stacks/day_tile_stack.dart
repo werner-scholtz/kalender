@@ -40,7 +40,12 @@ class DayTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController,
       builder: (context, child) {
-        // genrate the list of tile groups.
+        // Get the list of events that are visible on the tile stack.
+        final visibleEvents = scope.eventsController.getDayEventsFromDateRange(
+          pageVisibleDateRange,
+        );
+
+        // Generate the list of tile groups.
         final Iterable<TileGroup<T>> tileGroups =
             tileLayoutController.generateTileGroups(
           scope.eventsController.getDayEventsFromDateRange(
@@ -99,7 +104,7 @@ class DayTileStack<T> extends StatelessWidget {
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChaningEvent && !controller.isSelectedEventMultiday;
+      controller.hasChangingEvent && !controller.isSelectedEventMultiday;
 }
 
 /// The [TileGroupStack] is used to display [PositionedTileData]'s of the events in a [TileGroup].

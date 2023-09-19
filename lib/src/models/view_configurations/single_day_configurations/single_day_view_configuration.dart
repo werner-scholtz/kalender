@@ -5,17 +5,11 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 abstract class SingleDayViewConfiguration implements ViewConfiguration {
   const SingleDayViewConfiguration();
 
-  @override
-  double calculateDayWidth(double pageWidth) {
-    /// This is unnecessary for [ViewType.singleDay]
-    throw UnimplementedError();
-  }
-
   /// The width of the timeline.
   double get timelineWidth;
 
   /// The overlap of the hourlines and the timeline.
-  double get hourlineTimelineOverlap;
+  double get hourLineTimelineOverlap;
 
   /// The height of the multiday tiles.
   double get multidayTileHeight;
@@ -36,4 +30,9 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
 
   /// Enable snapping to the time indicator.
   bool get timeIndicatorSnapping;
+
+  @override
+  double calculateDayWidth(double pageWidth) {
+    return pageWidth;
+  }
 }

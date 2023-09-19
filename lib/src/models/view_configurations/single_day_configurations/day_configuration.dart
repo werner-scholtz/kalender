@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
 
@@ -10,7 +10,7 @@ import 'package:kalender/src/models/view_configurations/single_day_configuration
 class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
-    this.hourlineTimelineOverlap = 8,
+    this.hourLineTimelineOverlap = 8,
     this.multidayTileHeight = 24,
     this.slotSize = const SlotSize(minutes: 15),
     this.eventSnapping = false,
@@ -24,7 +24,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
   final double timelineWidth;
 
   @override
-  final double hourlineTimelineOverlap;
+  final double hourLineTimelineOverlap;
 
   @override
   final double multidayTileHeight;
@@ -48,7 +48,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
   final bool createNewEvents;
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(
+  DateTimeRange calculateVisibleDateTimeRange(
     DateTime date,
   ) {
     return date.dayRange;
@@ -99,7 +99,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
   }
 
   @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
+  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
     return visibleDateRange.start;
   }
 
@@ -132,8 +132,8 @@ class DayConfiguration extends SingleDayViewConfiguration {
   }) {
     return DayConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourlineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
+      hourLineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourLineTimelineOverlap,
       multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
       slotSize: slotSize ?? this.slotSize,
       eventSnapping: eventSnapping ?? this.eventSnapping,

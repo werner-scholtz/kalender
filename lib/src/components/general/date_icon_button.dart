@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 
 /// A [IconButton] that displays the date.
 /// It display's [IconButton] when the date is not today and [IconButton.filledTonal] when the date is today.

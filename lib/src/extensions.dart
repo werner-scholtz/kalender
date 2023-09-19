@@ -20,7 +20,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return months;
   }
 
-  /// A list of [DateTime]s that the [DateTimeRange] spannes.
+  /// A list of [DateTime]s that the [DateTimeRange] spans.
   List<DateTime> get datesSpanned {
     final dates = <DateTime>[];
     for (var i = 0; i < dayDifference; i++) {
@@ -31,7 +31,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   }
 
   /// The number of years spanned by the [DateTimeRange].
-  int get numberOfyears => end.year - start.year;
+  int get numberOfYears => end.year - start.year;
 
   /// Returns a new [DateTimeRange] with the start and end dates offset by the given [duration].
   DateTimeRange rescheduleDateTime(Duration duration) {
@@ -49,7 +49,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
 }
 
 /// [DateTime] extensions.
-extension DateTimeExtentions on DateTime {
+extension DateTimeExtensions on DateTime {
   /// Gets the start of the day.
   DateTime get startOfDay => DateTime(year, month, day);
 

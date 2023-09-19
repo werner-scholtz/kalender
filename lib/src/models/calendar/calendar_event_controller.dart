@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 
 /// A [ChangeNotifier] that manages [CalendarEvent]s.
 class CalendarEventsController<T> with ChangeNotifier {
@@ -16,7 +16,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   CalendarEvent<T>? get selectedEvent => _selectedEvent;
 
   /// Whether the [CalendarController] has a [_selectedEvent].
-  bool get hasChaningEvent => _selectedEvent != null;
+  bool get hasChangingEvent => _selectedEvent != null;
 
   bool _isSelectedEventMultiday = false;
   bool get isSelectedEventMultiday => _isSelectedEventMultiday;
@@ -35,7 +35,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Deslects the [_selectedEvent].
+  /// Deselects the [_selectedEvent].
   void deselectEvent() {
     _selectedEvent = null;
     _isSelectedEventMultiday = false;
@@ -97,7 +97,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   void updateEvent({
     T? newEventData,
     DateTimeRange? newDateTimeRange,
-    bool? modifyable,
+    bool? modifiable,
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
     final index = _events.indexWhere((element) => test(element));
@@ -108,15 +108,15 @@ class CalendarEventsController<T> with ChangeNotifier {
     if (newDateTimeRange != null) {
       _events[index].dateTimeRange = newDateTimeRange;
     }
-    if (modifyable != null) {
-      _events[index].canModify = modifyable;
+    if (modifiable != null) {
+      _events[index].canModify = modifiable;
     }
 
     notifyListeners();
   }
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
-  /// * This exludes [CalendarEvent]s that are displayed on single days.
+  /// * This excludes [CalendarEvent]s that are displayed on single days.
   Iterable<CalendarEvent<T>> getMultidayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
@@ -158,8 +158,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
-    final eventsInDateTimeRange =
-        getMonthEventsFromDateRange(dateRange);
+    final eventsInDateTimeRange = getMonthEventsFromDateRange(dateRange);
     final snapPoints = <DateTime>[];
     for (var event in eventsInDateTimeRange) {
       snapPoints.add(event.start);

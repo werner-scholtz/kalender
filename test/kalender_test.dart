@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'date_time_test_object.dart';
 
 void main() {
@@ -119,10 +119,10 @@ void testDateTimeRangeExtentions() {
     });
 
     test('numberOfyears', () {
-      expect(yearRange.numberOfyears, 0);
-      expect(leapYearRange.numberOfyears, 0);
-      expect(y2Range.numberOfyears, 2);
-      expect(y3Range.numberOfyears, 3);
+      expect(yearRange.numberOfYears, 0);
+      expect(leapYearRange.numberOfYears, 0);
+      expect(y2Range.numberOfYears, 2);
+      expect(y3Range.numberOfYears, 3);
     });
 
     test('rescheduleDateTime', () {

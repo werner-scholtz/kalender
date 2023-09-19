@@ -7,7 +7,7 @@ import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/typedefs.dart';
@@ -152,8 +152,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialPage: initialPage,
     );
 
-    final visibleDateRange =
-        _viewConfiguration.calcualteVisibleDateTimeRange(
+    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
       _controller.selectedDate,
     );
 

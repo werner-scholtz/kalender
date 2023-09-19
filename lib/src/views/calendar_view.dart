@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/typedefs.dart';
 import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';

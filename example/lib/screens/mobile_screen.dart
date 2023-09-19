@@ -105,7 +105,7 @@ class _MobileScreenState extends State<MobileScreen> {
       bottomSheet: ListenableBuilder(
         listenable: eventsController,
         builder: (context, child) {
-          if (eventsController.hasChaningEvent &&
+          if (eventsController.hasChangingEvent &&
               !eventsController.isMoving &&
               !eventsController.isResizing) {
             return EventEditSheet(

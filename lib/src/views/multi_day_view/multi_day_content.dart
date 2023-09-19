@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/tile_stack.dart';
+import 'package:kalender/src/components/tile_stacks/day_tile_stack.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
@@ -100,7 +100,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                         viewConfiguration
                                             .hourlineTimelineOverlap,
                                     height: pageHeight,
-                                    child: scope.components.hourlineBuilder(
+                                    child: scope.components.hourLineBuilder(
                                       pageWidth +
                                           viewConfiguration
                                               .hourlineTimelineOverlap,
@@ -113,7 +113,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                   child: SizedBox(
                                     width: pageWidth,
                                     height: pageHeight,
-                                    child: scope.components.daySepratorBuilder(
+                                    child: scope.components.daySeparatorBuilder(
                                       pageHeight,
                                       dayWidth,
                                       pageVisibleDateRange.dayDifference,

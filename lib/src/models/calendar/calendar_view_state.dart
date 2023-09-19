@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 
 /// This is used to store state related to a view.
