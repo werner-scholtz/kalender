@@ -11,15 +11,15 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
+import 'package:kalender/src/views_old/multi_day_view/multi_day_content.dart';
+import 'package:kalender/src/views_old/multi_day_view/multi_day_header.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
 
 /// A widget that displays a multi day view.
-class MultiDayView<T> extends StatefulWidget {
-  const MultiDayView({
+class MultiDayViewOLD<T> extends StatefulWidget {
+  const MultiDayViewOLD({
     super.key,
     required this.controller,
     required this.eventsController,
@@ -60,10 +60,10 @@ class MultiDayView<T> extends StatefulWidget {
   final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
-  State<MultiDayView<T>> createState() => _MultiDayViewState<T>();
+  State<MultiDayViewOLD<T>> createState() => _MultiDayViewOLDState<T>();
 }
 
-class _MultiDayViewState<T> extends State<MultiDayView<T>> {
+class _MultiDayViewOLDState<T> extends State<MultiDayViewOLD<T>> {
   late CalendarController<T> _controller;
   late ViewState _viewState;
   late CalendarEventsController<T> _eventsController;
@@ -107,7 +107,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
+  void didUpdateWidget(covariant MultiDayViewOLD<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
 
@@ -190,12 +190,12 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
 
             return Column(
               children: <Widget>[
-                MultiDayHeader<T>(
+                MultiDayHeaderOLD<T>(
                   viewConfiguration: _viewConfiguration,
                   dayWidth: dayWidth,
                   pageWidth: pageWidth,
                 ),
-                MultiDayContent<T>(
+                MultiDayContentOLD<T>(
                   viewConfiguration: _viewConfiguration,
                   dayWidth: dayWidth,
                   pageWidth: pageWidth,

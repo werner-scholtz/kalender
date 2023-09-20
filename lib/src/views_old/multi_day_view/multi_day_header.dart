@@ -4,8 +4,8 @@ import 'package:kalender/src/components/tile_stacks/multi_day_tile_stack.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
-class MultiDayHeader<T> extends StatelessWidget {
-  const MultiDayHeader({
+class MultiDayHeaderOLD<T> extends StatelessWidget {
+  const MultiDayHeaderOLD({
     super.key,
     required this.viewConfiguration,
     required this.pageWidth,

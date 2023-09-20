@@ -26,32 +26,32 @@ class DayConfiguarionEditor extends StatelessWidget {
             );
           },
         ),
-        HourlineTimelineOverlap(
+        HourLineTimelineOverlap(
           value: config.hourLineTimelineOverlap,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                hourlineTimelineOverlap: value,
+                hourLineTimelineOverlap: value,
               ),
             );
           },
         ),
-        MultidayTileHeight(
+        MultiDayTileHeight(
           value: config.multiDayTileHeight,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                multidayTileHeight: value,
+                multiDayTileHeight: value,
               ),
             );
           },
         ),
         SlotSizeTile(
-          value: config.slotSize,
+          value: config.newEventDuration,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                slotSize: value,
+                newEventDuration: value,
               ),
             );
           },

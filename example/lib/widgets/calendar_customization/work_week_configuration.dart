@@ -26,7 +26,7 @@ class WorkWeekConfiguarionEditor extends StatelessWidget {
             );
           },
         ),
-        HourlineTimelineOverlap(
+        HourLineTimelineOverlap(
           value: config.hourLineTimelineOverlap,
           onChanged: (value) {
             onConfigChanged(
@@ -36,7 +36,7 @@ class WorkWeekConfiguarionEditor extends StatelessWidget {
             );
           },
         ),
-        MultidayTileHeight(
+        MultiDayTileHeight(
           value: config.multiDayTileHeight,
           onChanged: (value) {
             onConfigChanged(

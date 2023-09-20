@@ -14,12 +14,12 @@ import 'package:kalender/src/type_definitions.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_content_v2.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_header_v2.dart';
+import 'package:kalender/src/viewsV2/multi_day_view/multi_day_content.dart';
+import 'package:kalender/src/viewsV2/multi_day_view/multi_day_header.dart';
 
 /// A widget that displays a multi day view.
-class MultiDayViewV2<T> extends StatefulWidget {
-  const MultiDayViewV2({
+class MultiDayView<T> extends StatefulWidget {
+  const MultiDayView({
     super.key,
     required this.controller,
     required this.eventsController,
@@ -60,10 +60,10 @@ class MultiDayViewV2<T> extends StatefulWidget {
   final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
-  State<MultiDayViewV2<T>> createState() => _MultiDayViewV2State<T>();
+  State<MultiDayView<T>> createState() => _MultiDayViewState<T>();
 }
 
-class _MultiDayViewV2State<T> extends State<MultiDayViewV2<T>> {
+class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late CalendarController<T> _controller;
   late ViewState _viewState;
   late CalendarEventsController<T> _eventsController;
@@ -107,7 +107,7 @@ class _MultiDayViewV2State<T> extends State<MultiDayViewV2<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant MultiDayViewV2<T> oldWidget) {
+  void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
 
@@ -181,11 +181,11 @@ class _MultiDayViewV2State<T> extends State<MultiDayViewV2<T>> {
         layoutControllers: _layoutControllers,
         child: Column(
           children: <Widget>[
-            MultiDayHeaderV2<T>(
+            MultiDayHeader<T>(
               viewConfiguration: _viewConfiguration,
             ),
             Expanded(
-              child: MultiDayContentV2<T>(
+              child: MultiDayContent<T>(
                 controller: _controller,
                 viewConfiguration: _viewConfiguration,
               ),

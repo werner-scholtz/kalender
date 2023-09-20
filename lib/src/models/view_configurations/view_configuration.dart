@@ -14,6 +14,7 @@ abstract class ViewConfiguration {
   /// Can create new events.
   bool get createNewEvents;
 
+  /// TODO: Remove
   /// Calculates the width of each day.
   double calculateDayWidth(
     double pageWidth,

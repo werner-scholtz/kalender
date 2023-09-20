@@ -27,6 +27,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   @override
   final double hourLineTimelineOverlap;
 
+  // TODO: Remove this
   @override
   final Duration newEventDuration;
 

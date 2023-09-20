@@ -5,8 +5,7 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
-import 'package:kalender/src/views/single_day_view/single_day_view.dart';
+import 'package:kalender/src/views_old/multi_day_view/multi_day_view.dart';
 
 /// The [CalendarController] is used to control a calendar view.
 ///
@@ -40,7 +39,7 @@ class CalendarController<T> with ChangeNotifier {
 
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
-  /// This is only available for [SingleDayView] and [MultiDayView].
+  /// This is only available for [SingleDayView] and [MultiDayViewOLD].
   ValueNotifier<double>? get heightPerMinute => _state?.heightPerMinute;
 
   /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
@@ -162,7 +161,7 @@ class CalendarController<T> with ChangeNotifier {
   }
 
   /// Changes the [heightPerMinute] of the view. (Zoom level)
-  /// * This is only available for [SingleDayView] and [MultiDayView].
+  /// * This is only available for [SingleDayView] and [MultiDayViewOLD].
   ///
   /// The [heightPerMinute] must be greater than 0.
   void adjustHeightPerMinute(double heightPerMinute) {
@@ -174,7 +173,7 @@ class CalendarController<T> with ChangeNotifier {
     assert(
       _state?.heightPerMinute != null,
       'The heightPerMinute must not be null.'
-      'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
+      'Please attach the $CalendarController to a $MultiDayViewOLD.',
     );
     assert(
       heightPerMinute > 0,
@@ -202,8 +201,7 @@ class CalendarController<T> with ChangeNotifier {
       curve: curve ?? Curves.ease,
     );
 
-    if (_state?.viewConfiguration is SingleDayViewConfiguration ||
-        _state?.viewConfiguration is MultiDayViewConfiguration) {
+    if (_state?.viewConfiguration is MultiDayViewConfiguration) {
       // Then animate to the event.
       await _state?.scrollController.animateTo(
         event.start.difference(event.start.startOfDay).inMinutes *

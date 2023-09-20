@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:example/widgets/calendar_customization/calendar_customization.dart';
 import 'package:example/widgets/components/calendar_header_desktop.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// The list of view configurations that can be used.
   late List<ViewConfiguration> viewConfigurations = [
-    const DayConfiguration(
+    const MultiDayConfiguration(
+      name: 'Day',
+      numberOfDays: 1,
       eventSnapping: true,
       timeIndicatorSnapping: true,
     ),
@@ -40,12 +44,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
       timeIndicatorSnapping: true,
     ),
     const WorkWeekConfiguration(
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-    ),
-    const MultiDayConfiguration(
-      name: 'Multiday Single',
-      numberOfDays: 1,
       eventSnapping: true,
       timeIndicatorSnapping: true,
     ),
@@ -204,8 +202,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// This function is called when a date is tapped.
   void onDateTapped(date) {
+    log('message');
     // If the current view is not the single day view, change the view to the single day view.
-    if (currentConfiguration is! SingleDayViewConfiguration) {
+    if (currentConfiguration is! DayConfiguration) {
       setState(() {
         // Set the selected date to the tapped date.
         calendarController.selectedDate = date;

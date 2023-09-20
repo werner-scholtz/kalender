@@ -1,28 +1,32 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar/calendar_components.dart';
+
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
+import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/models_export.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/views/single_day_view/single_day_content.dart';
-import 'package:kalender/src/views/single_day_view/single_day_header.dart';
+import 'package:kalender/src/views_old/month_view/month_view_content.dart';
+import 'package:kalender/src/views_old/month_view/month_view_header.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
 
-/// A widget that displays a single day.
-class SingleDayView<T> extends StatefulWidget {
-  const SingleDayView({
+class MonthView<T> extends StatefulWidget {
+  const MonthView({
     super.key,
     required this.controller,
     required this.eventsController,
-    required this.tileBuilder,
-    required this.multiDayTileBuilder,
+    required this.monthTileBuilder,
+    this.monthViewConfiguration,
     this.components,
     this.style,
-    this.singleDayViewConfiguration,
     this.functions,
     this.layoutControllers,
   });
@@ -33,8 +37,8 @@ class SingleDayView<T> extends StatefulWidget {
   /// The [CalendarEventsController] used to control events.
   final CalendarEventsController<T> eventsController;
 
-  /// The [SingleDayViewConfiguration] used to configure the view.
-  final SingleDayViewConfiguration? singleDayViewConfiguration;
+  /// The [MonthViewConfiguration] used to configure the view.
+  final MonthViewConfiguration? monthViewConfiguration;
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
@@ -48,24 +52,21 @@ class SingleDayView<T> extends StatefulWidget {
   /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
   final CalendarLayoutControllers<T>? layoutControllers;
 
-  /// The [TileBuilder] used to build event tiles.
-  final TileBuilder<T> tileBuilder;
-
-  /// The [MultiDayTileBuilder] used to build multi day event tiles.
-  final MultiDayTileBuilder<T> multiDayTileBuilder;
+  /// The [MonthTileBuilder] used to build month event tiles.
+  final MonthTileBuilder<T> monthTileBuilder;
 
   @override
-  State<SingleDayView<T>> createState() => _SingleDayViewState<T>();
+  State<MonthView<T>> createState() => _MonthViewState<T>();
 }
 
-class _SingleDayViewState<T> extends State<SingleDayView<T>> {
+class _MonthViewState<T> extends State<MonthView<T>> {
   late CalendarController<T> _controller;
-  late CalendarEventsController<T> _eventsController;
   late ViewState _viewState;
+  late CalendarEventsController<T> _eventsController;
   late CalendarEventHandlers<T> _functions;
   late CalendarComponents _components;
   late CalendarTileComponents<T> _tileComponents;
-  late SingleDayViewConfiguration _viewConfiguration;
+  late MonthViewConfiguration _viewConfiguration;
   late CalendarStyle _style;
   late CalendarLayoutControllers<T> _layoutControllers;
 
@@ -73,25 +74,23 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   void initState() {
     super.initState();
     _controller = widget.controller;
-
     _eventsController = widget.eventsController;
     _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
-      tileBuilder: widget.tileBuilder,
-      multiDayTileBuilder: widget.multiDayTileBuilder,
+      monthTileBuilder: widget.monthTileBuilder,
     );
-    _style = widget.style ?? const CalendarStyle();
     _layoutControllers =
         widget.layoutControllers ?? CalendarLayoutControllers<T>();
-
     _viewConfiguration =
-        (widget.singleDayViewConfiguration ?? const DayConfiguration());
+        (widget.monthViewConfiguration ?? const MonthConfiguration());
+    _style = widget.style ?? const CalendarStyle();
     _initializeViewState();
 
     if (kDebugMode) {
-      print('');
+      print('The controller is already attached to a view. detaching first.');
     }
+    // _controller.detach();
     _controller.attach(_viewState);
   }
 
@@ -102,7 +101,7 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant SingleDayView<T> oldWidget) {
+  void didUpdateWidget(covariant MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     _eventsController = widget.eventsController;
 
@@ -110,13 +109,14 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
       _style = widget.style ?? const CalendarStyle();
     }
 
-    if (widget.singleDayViewConfiguration != null &&
-        widget.singleDayViewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.singleDayViewConfiguration!;
+    if (widget.monthViewConfiguration != null &&
+        widget.monthViewConfiguration != _viewConfiguration) {
+      _viewConfiguration = widget.monthViewConfiguration!;
       _initializeViewState();
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
+      // _controller.detach();
       _controller.attach(_viewState);
     }
 
@@ -134,12 +134,12 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
     );
 
     final numberOfPages = _viewConfiguration.calculateNumberOfPages(
-      _controller.dateTimeRange,
+      adjustedDateTimeRange,
     );
 
     final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
-      _controller.dateTimeRange.start,
+      adjustedDateTimeRange.start,
     );
 
     final pageController = PageController(
@@ -170,23 +170,23 @@ class _SingleDayViewState<T> extends State<SingleDayView<T>> {
         eventsController: _eventsController,
         functions: _functions,
         components: _components,
-        platformData: PlatformData(),
         tileComponents: _tileComponents,
+        platformData: PlatformData(),
         layoutControllers: _layoutControllers,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // Calculate the width of the day.
-            final dayWidth =
-                constraints.maxWidth - _viewConfiguration.timelineWidth;
+            final pageWidth = constraints.maxWidth;
+
+            final cellWidth = _viewConfiguration.calculateDayWidth(pageWidth);
 
             return Column(
               children: <Widget>[
-                SingleDayHeader<T>(
-                  dayWidth: dayWidth,
+                MonthViewHeader<T>(
+                  cellWidth: cellWidth,
                   viewConfiguration: _viewConfiguration,
                 ),
-                SingleDayContent<T>(
-                  dayWidth: dayWidth,
+                MonthViewContent<T>(
+                  cellWidth: cellWidth,
                   viewConfiguration: _viewConfiguration,
                   controller: _controller,
                 ),

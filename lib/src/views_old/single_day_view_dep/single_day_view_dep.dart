@@ -1,0 +1,200 @@
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+// import 'package:kalender/src/models/models_export.dart';
+// import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
+// import 'package:kalender/src/providers/calendar_scope.dart';
+// import 'package:kalender/src/providers/calendar_style.dart';
+// import 'package:kalender/src/type_definitions.dart';
+// import 'package:kalender/src/views_old/single_day_view/single_day_content_dep.dart';
+// import 'package:kalender/src/views_old/single_day_view/single_day_header.dart';
+
+// import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
+//     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
+
+// /// A widget that displays a single day.
+// class SingleDayView<T> extends StatefulWidget {
+//   const SingleDayView({
+//     super.key,
+//     required this.controller,
+//     required this.eventsController,
+//     required this.tileBuilder,
+//     required this.multiDayTileBuilder,
+//     this.components,
+//     this.style,
+//     this.singleDayViewConfiguration,
+//     this.functions,
+//     this.layoutControllers,
+//   });
+
+//   /// The [CalendarController] used to control the view.
+//   final CalendarController<T> controller;
+
+//   /// The [CalendarEventsController] used to control events.
+//   final CalendarEventsController<T> eventsController;
+
+//   /// The [SingleDayViewConfiguration] used to configure the view.
+//   final SingleDayViewConfiguration? singleDayViewConfiguration;
+
+//   /// The [CalendarComponents] used to build the components of the view.
+//   final CalendarComponents? components;
+
+//   /// The [CalendarStyle] used to style the default components.
+//   final CalendarStyle? style;
+
+//   /// The [CalendarEventHandlers] used to handle events.
+//   final CalendarEventHandlers<T>? functions;
+
+//   /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
+//   final CalendarLayoutControllers<T>? layoutControllers;
+
+//   /// The [TileBuilder] used to build event tiles.
+//   final TileBuilder<T> tileBuilder;
+
+//   /// The [MultiDayTileBuilder] used to build multi day event tiles.
+//   final MultiDayTileBuilder<T> multiDayTileBuilder;
+
+//   @override
+//   State<SingleDayView<T>> createState() => _SingleDayViewState<T>();
+// }
+
+// class _SingleDayViewState<T> extends State<SingleDayView<T>> {
+//   late CalendarController<T> _controller;
+//   late CalendarEventsController<T> _eventsController;
+//   late ViewState _viewState;
+//   late CalendarEventHandlers<T> _functions;
+//   late CalendarComponents _components;
+//   late CalendarTileComponents<T> _tileComponents;
+//   late SingleDayViewConfiguration _viewConfiguration;
+//   late CalendarStyle _style;
+//   late CalendarLayoutControllers<T> _layoutControllers;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = widget.controller;
+
+//     _eventsController = widget.eventsController;
+//     _functions = widget.functions ?? CalendarEventHandlers<T>();
+//     _components = widget.components ?? CalendarComponents();
+//     _tileComponents = CalendarTileComponents<T>(
+//       tileBuilder: widget.tileBuilder,
+//       multiDayTileBuilder: widget.multiDayTileBuilder,
+//     );
+//     _style = widget.style ?? const CalendarStyle();
+//     _layoutControllers =
+//         widget.layoutControllers ?? CalendarLayoutControllers<T>();
+
+//     _viewConfiguration =
+//         (widget.singleDayViewConfiguration ?? const DayConfiguration());
+//     _initializeViewState();
+
+//     if (kDebugMode) {
+//       print('');
+//     }
+//     _controller.attach(_viewState);
+//   }
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     _eventsController = widget.eventsController;
+//   }
+
+//   @override
+//   void didUpdateWidget(covariant SingleDayView<T> oldWidget) {
+//     super.didUpdateWidget(oldWidget);
+//     _eventsController = widget.eventsController;
+
+//     if (_style != widget.style) {
+//       _style = widget.style ?? const CalendarStyle();
+//     }
+
+//     if (widget.singleDayViewConfiguration != null &&
+//         widget.singleDayViewConfiguration != _viewConfiguration) {
+//       _viewConfiguration = widget.singleDayViewConfiguration!;
+//       _initializeViewState();
+//       if (kDebugMode) {
+//         print('The controller is already attached to a view. detaching first.');
+//       }
+//       _controller.attach(_viewState);
+//     }
+
+//     if (_layoutControllers != widget.layoutControllers) {
+//       _layoutControllers =
+//           widget.layoutControllers ?? CalendarLayoutControllers<T>();
+//     }
+//   }
+
+//   void _initializeViewState() {
+//     final adjustedDateTimeRange =
+//         _viewConfiguration.calculateAdjustedDateTimeRange(
+//       dateTimeRange: _controller.dateTimeRange,
+//       visibleStart: _controller.selectedDate,
+//     );
+
+//     final numberOfPages = _viewConfiguration.calculateNumberOfPages(
+//       _controller.dateTimeRange,
+//     );
+
+//     final initialPage = _viewConfiguration.calculateDateIndex(
+//       _controller.selectedDate,
+//       _controller.dateTimeRange.start,
+//     );
+
+//     final pageController = PageController(
+//       initialPage: initialPage,
+//     );
+
+//     final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
+//       _controller.selectedDate,
+//     );
+
+//     _viewState = ViewState(
+//       viewConfiguration: _viewConfiguration,
+//       pageController: pageController,
+//       adjustedDateTimeRange: adjustedDateTimeRange,
+//       numberOfPages: numberOfPages,
+//       scrollController: ScrollController(),
+//       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
+//       heightPerMinute: ValueNotifier<double>(0.7),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return CalendarStyleProvider(
+//       style: _style,
+//       child: CalendarScope<T>(
+//         state: _viewState,
+//         eventsController: _eventsController,
+//         functions: _functions,
+//         components: _components,
+//         platformData: PlatformData(),
+//         tileComponents: _tileComponents,
+//         layoutControllers: _layoutControllers,
+//         child: LayoutBuilder(
+//           builder: (context, constraints) {
+//             // Calculate the width of the day.
+//             final dayWidth =
+//                 constraints.maxWidth - _viewConfiguration.timelineWidth;
+
+//             return Column(
+//               children: <Widget>[
+//                 SingleDayHeader<T>(
+//                   dayWidth: dayWidth,
+//                   viewConfiguration: _viewConfiguration,
+//                 ),
+//                 SingleDayContent<T>(
+//                   dayWidth: dayWidth,
+//                   viewConfiguration: _viewConfiguration,
+//                   controller: _controller,
+//                 ),
+//               ],
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }

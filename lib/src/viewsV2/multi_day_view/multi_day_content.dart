@@ -4,8 +4,8 @@ import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/viewsV2/multi_day_view/multi_day_page_content.dart';
 
-class MultiDayContentV2<T> extends StatelessWidget {
-  const MultiDayContentV2({
+class MultiDayContent<T> extends StatelessWidget {
+  const MultiDayContent({
     super.key,
     required this.controller,
     required this.viewConfiguration,

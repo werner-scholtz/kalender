@@ -36,8 +36,8 @@ class SlotSizeTile extends StatelessWidget {
   }
 }
 
-class MultidayTileHeight extends StatelessWidget {
-  const MultidayTileHeight({
+class MultiDayTileHeight extends StatelessWidget {
+  const MultiDayTileHeight({
     super.key,
     required this.value,
     required this.onChanged,
@@ -71,8 +71,8 @@ class MultidayTileHeight extends StatelessWidget {
   }
 }
 
-class HourlineTimelineOverlap extends StatelessWidget {
-  const HourlineTimelineOverlap({
+class HourLineTimelineOverlap extends StatelessWidget {
+  const HourLineTimelineOverlap({
     super.key,
     required this.value,
     required this.onChanged,

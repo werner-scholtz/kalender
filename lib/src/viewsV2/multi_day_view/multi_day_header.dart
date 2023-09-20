@@ -3,8 +3,8 @@ import 'package:kalender/kalendar_scope.dart';
 import 'package:kalender/src/components/general/material_header/material_header.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
-class MultiDayHeaderV2<T> extends StatelessWidget {
-  const MultiDayHeaderV2({
+class MultiDayHeader<T> extends StatelessWidget {
+  const MultiDayHeader({
     super.key,
     required this.viewConfiguration,
   });

@@ -12,7 +12,7 @@ export 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_con
 export 'package:kalender/src/components/general/styles_export.dart';
 
 /// Views
-export 'package:kalender/src/views/calendar_view.dart';
+export 'package:kalender/src/viewsV2/calendar_view.dart';
 
 /// View Configurations
 export 'package:kalender/src/models/view_configurations/view_configuration_export.dart';

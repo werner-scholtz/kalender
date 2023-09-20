@@ -59,8 +59,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
     return ListView(
       children: [
         const ThemeTile(),
-        if (widget.currentConfiguration is SingleDayViewConfiguration ||
-            widget.currentConfiguration is MultiDayViewConfiguration)
+        if (widget.currentConfiguration is MultiDayViewConfiguration)
           CheckboxListTile.adaptive(
             title: const Text('Custom Layout Controller'),
             value: customLayoutController,
@@ -97,8 +96,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                 );
               },
             ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Day Seperator'),
                 value: highlightDaySeperator,
@@ -114,8 +112,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   );
                 },
               ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Hour Lines'),
                 value: highlighthourLine,
@@ -131,8 +128,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   );
                 },
               ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Day Header'),
                 value: highlightDayHeader,
@@ -150,8 +146,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   );
                 },
               ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Time Indicator'),
                 value: highlightTimeIndicator,
@@ -167,8 +162,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   );
                 },
               ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Timeline'),
                 value: highlightTimeline,
@@ -187,8 +181,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   );
                 },
               ),
-            if (widget.currentConfiguration is SingleDayViewConfiguration ||
-                widget.currentConfiguration is MultiDayViewConfiguration)
+            if (widget.currentConfiguration is MultiDayViewConfiguration)
               CheckboxListTile.adaptive(
                 title: const Text('Week Number'),
                 value: highlightWeekNumber,

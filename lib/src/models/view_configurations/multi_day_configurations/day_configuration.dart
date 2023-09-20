@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
 /// The [DayConfiguration] class contains the configuration for the [SingleDayView].
 ///
 /// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [SingleDayView].
 /// It also contains some configuration values that are used to calculate the layout of the [SingleDayView].
-class DayConfiguration extends SingleDayViewConfiguration {
+class DayConfiguration extends MultiDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
     this.hourLineTimelineOverlap = 8,
     this.multiDayTileHeight = 24,
-    this.slotSize = const Duration(minutes: 15),
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
+    this.newEventDuration = const Duration(minutes: 15),
   });
 
   @override
@@ -27,9 +27,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   @override
   final double multiDayTileHeight;
-
-  @override
-  final Duration slotSize;
 
   @override
   final Duration verticalStepDuration;
@@ -45,6 +42,24 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   @override
   final bool createNewEvents;
+
+  @override
+  final Duration newEventDuration;
+
+  @override
+  int get firstDayOfWeek => 1;
+
+  @override
+  final Duration horizontalStepDuration = const Duration(days: 1);
+
+  @override
+  int get numberOfDays => 1;
+
+  @override
+  bool get paintWeekNumber => false;
+
+  @override
+  final String name = 'Day';
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(
@@ -103,9 +118,6 @@ class DayConfiguration extends SingleDayViewConfiguration {
   }
 
   @override
-  String get name => 'Day';
-
-  @override
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
@@ -120,9 +132,9 @@ class DayConfiguration extends SingleDayViewConfiguration {
 
   DayConfiguration copyWith({
     double? timelineWidth,
-    double? hourlineTimelineOverlap,
-    double? multidayTileHeight,
-    Duration? slotSize,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? newEventDuration,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
     bool? createNewEvents,
@@ -132,9 +144,9 @@ class DayConfiguration extends SingleDayViewConfiguration {
     return DayConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
       hourLineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourLineTimelineOverlap,
-      multiDayTileHeight: multidayTileHeight ?? this.multiDayTileHeight,
-      slotSize: slotSize ?? this.slotSize,
+          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
+      newEventDuration: newEventDuration ?? this.newEventDuration,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:
           timeIndicatorSnapping ?? this.timeIndicatorSnapping,
@@ -142,5 +154,11 @@ class DayConfiguration extends SingleDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
     );
+  }
+
+  @override
+  double calculateDayWidth(double pageWidth) {
+    // TODO: implement calculateDayWidth
+    throw UnimplementedError();
   }
 }

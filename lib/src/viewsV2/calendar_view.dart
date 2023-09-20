@@ -7,10 +7,8 @@ import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/views/month_view/month_view.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
-import 'package:kalender/src/views/single_day_view/single_day_view.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_view_v2.dart';
+import 'package:kalender/src/views_old/month_view/month_view.dart';
+import 'package:kalender/src/viewsV2/multi_day_view/multi_day_view.dart';
 
 /// A navigable arrangement of events.
 ///
@@ -160,7 +158,7 @@ class CalendarView<T> extends StatelessWidget {
           'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
         ),
         assert(
-          viewConfiguration is SingleDayViewConfiguration,
+          viewConfiguration is MultiDayConfiguration,
           'SingleDayViewConfiguration must be assigned',
         );
 
@@ -238,23 +236,8 @@ class CalendarView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (viewConfiguration is SingleDayViewConfiguration) {
-      return SingleDayView<T>(
-        controller: controller,
-        eventsController: eventsController,
-        tileBuilder: tileBuilder!,
-        multiDayTileBuilder: multiDayTileBuilder!,
-        components: components,
-        functions: eventHandlers,
-        singleDayViewConfiguration:
-            viewConfiguration as SingleDayViewConfiguration,
-        style: style,
-        layoutControllers: layoutControllers,
-      );
-    }
-
     if (viewConfiguration is MultiDayViewConfiguration) {
-      return MultiDayViewV2(
+      return MultiDayView(
         controller: controller,
         eventsController: eventsController,
         tileBuilder: tileBuilder!,
