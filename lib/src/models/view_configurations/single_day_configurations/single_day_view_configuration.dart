@@ -1,4 +1,3 @@
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [SingleDayViewConfiguration]s.
@@ -8,16 +7,16 @@ abstract class SingleDayViewConfiguration implements ViewConfiguration {
   /// The width of the timeline.
   double get timelineWidth;
 
-  /// The overlap of the hourlines and the timeline.
+  /// The overlap of the hourLines and the timeline.
   double get hourLineTimelineOverlap;
 
-  /// The height of the multiday tiles.
-  double get multidayTileHeight;
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 
   /// The size of the minute slots.
   ///
   /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  SlotSize get slotSize;
+  Duration get slotSize;
 
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;

@@ -32,7 +32,7 @@ class _MultiDayGestureDetectorState<T>
   bool get isMobileDevice => scope.platformData.isMobileDevice;
 
   late double dayWidth;
-  late int numberOfColums;
+  late int numberOfColumns;
   late List<DateTime> visibleDates;
 
   double cursorOffset = 0;
@@ -43,7 +43,7 @@ class _MultiDayGestureDetectorState<T>
     super.initState();
     dayWidth = widget.dayWidth;
     visibleDates = widget.visibleDates;
-    numberOfColums = visibleDates.length;
+    numberOfColumns = visibleDates.length;
   }
 
   @override
@@ -51,14 +51,14 @@ class _MultiDayGestureDetectorState<T>
     super.didUpdateWidget(oldWidget);
     dayWidth = widget.dayWidth;
     visibleDates = widget.visibleDates;
-    numberOfColums = visibleDates.length;
+    numberOfColumns = visibleDates.length;
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        for (int r = 0; r < numberOfColums; r++)
+        for (int r = 0; r < numberOfColumns; r++)
           Positioned(
             left: r * dayWidth,
             width: dayWidth,

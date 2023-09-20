@@ -37,27 +37,27 @@ class MultiDayConfiguarionEditor extends StatelessWidget {
           },
         ),
         HourlineTimelineOverlap(
-          value: config.hourlineTimelineOverlap,
+          value: config.hourLineTimelineOverlap,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                hourlineTimelineOverlap: value,
+                hourLineTimelineOverlap: value,
               ),
             );
           },
         ),
         MultidayTileHeight(
-          value: config.multidayTileHeight,
+          value: config.multiDayTileHeight,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                multidayTileHeight: value,
+                multiDayTileHeight: value,
               ),
             );
           },
         ),
         SlotSizeTile(
-          value: config.slotSize,
+          value: config.newEventDuration,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(

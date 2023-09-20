@@ -8,22 +8,22 @@ class SlotSizeTile extends StatelessWidget {
     required this.onChanged,
   });
 
-  final SlotSize value;
-  final void Function(SlotSize value) onChanged;
+  final Duration value;
+  final void Function(Duration value) onChanged;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text('slotSize'),
-      trailing: DropdownButton<SlotSize>(
+      trailing: DropdownButton<Duration>(
         value: value,
         items: const [
           DropdownMenuItem(
-            value: SlotSize(minutes: 15),
+            value: Duration(minutes: 15),
             child: Text('15 min'),
           ),
           DropdownMenuItem(
-            value: SlotSize(minutes: 30),
+            value: Duration(minutes: 30),
             child: Text('30 min'),
           ),
         ],
@@ -158,6 +158,10 @@ class NumberOfDays extends StatelessWidget {
       trailing: DropdownButton<int>(
         value: value,
         items: const [
+          DropdownMenuItem(
+            value: 1,
+            child: Text('1'),
+          ),
           DropdownMenuItem(
             value: 2,
             child: Text('2'),

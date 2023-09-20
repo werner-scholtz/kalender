@@ -166,6 +166,19 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           color: getRadomColor(),
         ),
       ),
+      CalendarEvent<Event>(
+        dateTimeRange: DateTimeRange(
+          start: startOfSunday
+              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+          end: startOfSunday
+              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
+        ),
+        eventData: Event(
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
+        ),
+      ),
     ]);
   }
 

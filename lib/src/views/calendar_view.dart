@@ -6,10 +6,11 @@ import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 import 'package:kalender/src/views/single_day_view/single_day_view.dart';
+import 'package:kalender/src/viewsV2/multi_day_view/multi_day_view_v2.dart';
 
 /// A navigable arrangement of events.
 ///
@@ -253,7 +254,7 @@ class CalendarView<T> extends StatelessWidget {
     }
 
     if (viewConfiguration is MultiDayViewConfiguration) {
-      return MultiDayView<T>(
+      return MultiDayViewV2(
         controller: controller,
         eventsController: eventsController,
         tileBuilder: tileBuilder!,

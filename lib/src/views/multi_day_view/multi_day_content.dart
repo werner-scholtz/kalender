@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/day_tile_stack.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector_dep.dart';
+import 'package:kalender/src/components/tile_stacks/day_tile_stack_dep.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
@@ -41,15 +41,21 @@ class MultiDayContent<T> extends StatelessWidget {
                 physics: value,
                 child: Stack(
                   children: <Widget>[
-                    scope.components.timelineBuilder(
-                      hourHeight,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: viewConfiguration.timelineWidth,
+                        child: scope.components.timelineBuilder(
+                          hourHeight,
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: SizedBox(
                         height: pageHeight,
                         width: pageWidth +
-                            viewConfiguration.hourlineTimelineOverlap,
+                            viewConfiguration.hourLineTimelineOverlap,
                         child: PageView.builder(
                           key: Key(viewConfiguration.hashCode.toString()),
                           controller: scope.state.pageController,
@@ -91,33 +97,30 @@ class MultiDayContent<T> extends StatelessWidget {
                             );
 
                             return Stack(
-                              fit: StackFit.expand,
+                              fit: StackFit.passthrough,
                               children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    width: pageWidth +
-                                        viewConfiguration
-                                            .hourlineTimelineOverlap,
-                                    height: pageHeight,
-                                    child: scope.components.hourLineBuilder(
-                                      pageWidth +
-                                          viewConfiguration
-                                              .hourlineTimelineOverlap,
-                                      hourHeight,
-                                    ),
-                                  ),
-                                ),
+                                // Align(
+                                //   alignment: Alignment.centerRight,
+                                //   child: SizedBox(
+                                //     width: pageWidth +
+                                //         viewConfiguration
+                                //             .hourLineTimelineOverlap,
+                                //     height: pageHeight,
+                                //     child: scope.components.hourLineBuilder(
+                                //       pageWidth +
+                                //           viewConfiguration
+                                //               .hourLineTimelineOverlap,
+                                //       hourHeight,
+                                //     ),
+                                //   ),
+                                // ),
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: SizedBox(
                                     width: pageWidth,
                                     height: pageHeight,
                                     child: scope.components.daySeparatorBuilder(
-                                      pageHeight,
-                                      dayWidth,
-                                      pageVisibleDateRange.dayDifference,
-                                    ),
+                                        viewConfiguration.numberOfDays),
                                   ),
                                 ),
                                 if (scope
@@ -133,7 +136,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                         heightPerMinute: heightPerMinute,
                                         visibleDateRange: pageVisibleDateRange,
                                         minuteSlotSize:
-                                            viewConfiguration.slotSize,
+                                            viewConfiguration.newEventDuration,
                                       ),
                                     ),
                                   ),
@@ -153,7 +156,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                           .verticalStepDuration,
                                       horizontalStep: dayWidth,
                                       horizontalDurationStep: viewConfiguration
-                                          .horizontalDurationStep,
+                                          .horizontalStepDuration,
                                       eventSnapping:
                                           viewConfiguration.eventSnapping,
                                       snapToTimeIndicator: viewConfiguration
@@ -169,7 +172,7 @@ class MultiDayContent<T> extends StatelessWidget {
                                     dayWidth,
                                     pageVisibleDateRange,
                                     heightPerMinute,
-                                    viewConfiguration.hourlineTimelineOverlap,
+                                    viewConfiguration.hourLineTimelineOverlap,
                                   ),
                               ],
                             );

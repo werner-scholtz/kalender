@@ -2,27 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-class TileGroupController<T> {
-  const TileGroupController();
+/// A controller that generates [EventGroup]'s for a list of events.
+class EventGroupController<T> {
+  const EventGroupController();
 
-  /// Generate the [TileGroup]'s for a list of events.
-  List<TileGroup<T>> generateDayTileGroups({
+  /// Generate the [EventGroup]'s for a list of events.
+  Iterable<EventGroup<T>> generateTileGroups({
     required List<DateTime> visibleDates,
     required Iterable<CalendarEvent<T>> events,
   }) {
-    final tileGroups = <TileGroup<T>>[];
+    final tileGroups = <EventGroup<T>>[];
 
     // Loop through each date.
     for (final date in visibleDates) {
       // Get a list of events that are visible on the date.
       final eventsOnDate = _findEventsOnDate(events, date);
 
-      final tileGroupsOnDate = <TileGroup<T>>[];
+      final tileGroupsOnDate = <EventGroup<T>>[];
 
       // Loop through each event on the date.
-      for (final event in events) {
+      for (final event in eventsOnDate) {
         // If the event is already in a group, skip it.
-        if (tileGroupsOnDate.any((element) => element.containsEvent(event))) {
+        if (tileGroupsOnDate.any((element) => element.events.contains(event))) {
           continue;
         }
 
@@ -32,10 +33,25 @@ class TileGroupController<T> {
           otherEvents: eventsOnDate,
         );
 
+        final dateTimeRangeOnDate = event.dateTimeRangeOnDate(date);
+        var start = dateTimeRangeOnDate.start;
+        var end = dateTimeRangeOnDate.end;
+
+        for (final event in overlappingEvents) {
+          final dateTimeRange = event.dateTimeRangeOnDate(date);
+          if (dateTimeRange.start.isBefore(start)) {
+            start = dateTimeRange.start;
+          }
+          if (dateTimeRange.end.isAfter(end)) {
+            end = dateTimeRange.end;
+          }
+        }
+
         // Generate the tile group.
-        final tileGroup = TileGroup<T>(
+        final tileGroup = EventGroup<T>(
           date: date,
-          events: overlappingEvents,
+          events: overlappingEvents.toList(),
+          dateTimeRange: DateTimeRange(start: start, end: end),
         );
 
         // Add the tile group to the tileGroups on this date.
@@ -49,17 +65,19 @@ class TileGroupController<T> {
     return tileGroups;
   }
 
-  /// Generate the [TileGroup]'s for a single event.
-  List<TileGroup<T>> generateDayTileGroupsFromSingleEvent({
+  /// Generate the [EventGroup]'s for a single event.
+  List<EventGroup<T>> generateDayTileGroupsFromSingleEvent({
     required CalendarEvent<T> event,
   }) {
-    final dayTileGroups = <TileGroup<T>>[];
+    final dayTileGroups = <EventGroup<T>>[];
 
     for (final date in event.datesSpanned) {
+      final eventDateTimeRange = event.dateTimeRangeOnDate(date);
       dayTileGroups.add(
-        TileGroup<T>(
+        EventGroup<T>(
           date: date,
           events: [event],
+          dateTimeRange: eventDateTimeRange,
         ),
       );
     }
@@ -82,10 +100,10 @@ class TileGroupController<T> {
       for (var event in overlappingEvents) {
         newOverlappingEvents.addAll(
           otherEvents.where(
-            (element) => ((element.start.isWithin(event.dateTimeRange) ||
-                    element.end.isWithin(event.dateTimeRange)) ||
-                element.start == event.start ||
-                element.end == event.end),
+            (otherEvent) => ((otherEvent.start.isWithin(event.dateTimeRange) ||
+                    otherEvent.end.isWithin(event.dateTimeRange)) ||
+                otherEvent.start == event.start ||
+                otherEvent.end == event.end),
           ),
         );
       }
@@ -98,56 +116,38 @@ class TileGroupController<T> {
   }
 
   /// Returns a list of [CalendarEvent]'s that are visible on the [date].
-  Iterable<CalendarEvent<T>> _findEventsOnDate(
+  List<CalendarEvent<T>> _findEventsOnDate(
     Iterable<CalendarEvent<T>> events,
     DateTime date,
   ) {
-    return events.where(
-      (element) => element.start.isSameDay(date) || element.end.isSameDay(date),
-    );
+    return events
+        .where(
+          (element) =>
+              element.start.isSameDay(date) || element.end.isSameDay(date),
+        )
+        .toList()
+      ..sort((a, b) => a.start.compareTo(b.start));
   }
 }
 
-class TileGroup<T> {
-  const TileGroup({
+/// A group of [CalendarEvent]'s that are overlapping.
+class EventGroup<T> {
+  const EventGroup({
     required this.date,
     required this.events,
+    required this.dateTimeRange,
     void Function()? performLayout,
   });
 
   /// The date that the tile's will be displayed on.
   final DateTime date;
 
-  /// The [CalendarEvent]'s that are in this group.
-  final Iterable<CalendarEvent<T>> events;
-
-  /// Layout the [DayTile]'s for this group.
-  List<DayTile<T>> layoutEvents() {
-    return events
-        .map(
-          (event) => DayTile(
-            dateTimeRange: event.dateTimeRangeOnDate(date),
-            event: event,
-          ),
-        )
-        .toList();
-  }
-
-  /// Returns true if the [event] is in this group.
-  bool containsEvent(CalendarEvent<T> event) {
-    return events.contains(event);
-  }
-}
-
-class DayTile<T> {
-  const DayTile({
-    required this.dateTimeRange,
-    required this.event,
-  });
-
-  /// The [DateTimeRange] that the tile will be displayed on.
+  /// The [DateTimeRange] that the tile's will be displayed on.
   final DateTimeRange dateTimeRange;
+  DateTime get start => dateTimeRange.start;
+  DateTime get end => dateTimeRange.end;
+  Duration get duration => end.difference(start);
 
-  /// The [CalendarEvent] that this tile represents.
-  final CalendarEvent<T> event;
+  /// The [CalendarEvent]'s that are in this group.
+  final List<CalendarEvent<T>> events;
 }

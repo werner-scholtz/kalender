@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector.dart';
+
+import 'package:kalender/src/components/gesture_detectors/day/day_tile_gesture_detector_dep.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
+
+// import 'package:kalender/src/models/tile_layout_controllers/test.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
 /// The [DayTileStack] is used to display [PositionedTileData]'s of the events in a [TileGroup].
@@ -22,7 +25,7 @@ class DayTileStack<T> extends StatelessWidget {
     this.horizontalDurationStep,
   });
 
-  final DayTileLayoutController<T> tileLayoutController;
+  final DayTileLayoutControllerOLD<T> tileLayoutController;
   final DateTimeRange pageVisibleDateRange;
   final double dayWidth;
   final double verticalStep;
@@ -40,11 +43,6 @@ class DayTileStack<T> extends StatelessWidget {
     return ListenableBuilder(
       listenable: scope.eventsController,
       builder: (context, child) {
-        // Get the list of events that are visible on the tile stack.
-        final visibleEvents = scope.eventsController.getDayEventsFromDateRange(
-          pageVisibleDateRange,
-        );
-
         // Generate the list of tile groups.
         final Iterable<TileGroup<T>> tileGroups =
             tileLayoutController.generateTileGroups(
@@ -104,7 +102,7 @@ class DayTileStack<T> extends StatelessWidget {
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChangingEvent && !controller.isSelectedEventMultiday;
+      controller.hasChangingEvent && !controller.isSelectedEventMultiDay;
 }
 
 /// The [TileGroupStack] is used to display [PositionedTileData]'s of the events in a [TileGroup].
@@ -207,7 +205,7 @@ class ChangingTileStack<T> extends StatelessWidget {
     required this.snapToTimeIndicator,
   });
 
-  final DayTileLayoutController<T> tileLayoutController;
+  final DayTileLayoutControllerOLD<T> tileLayoutController;
 
   /// The visible [DateTimeRange].
   final DateTimeRange visibleDateRange;

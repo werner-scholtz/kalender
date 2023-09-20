@@ -305,7 +305,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
     );
   }
 
-  DayTileLayoutController<Event> _dayTileLayoutController({
+  DayTileLayoutControllerOLD<Event> _dayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required List<DateTime> visibleDates,
     required double heightPerMinute,

@@ -20,7 +20,7 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: color(event.eventData?.color ?? Colors.blue),
         borderRadius: BorderRadius.only(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/single_day_configurations/single_day_view_configuration.dart';
 
 /// The [DayConfiguration] class contains the configuration for the [SingleDayView].
@@ -11,8 +10,8 @@ class DayConfiguration extends SingleDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
     this.hourLineTimelineOverlap = 8,
-    this.multidayTileHeight = 24,
-    this.slotSize = const SlotSize(minutes: 15),
+    this.multiDayTileHeight = 24,
+    this.slotSize = const Duration(minutes: 15),
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
     this.createNewEvents = true,
@@ -27,10 +26,10 @@ class DayConfiguration extends SingleDayViewConfiguration {
   final double hourLineTimelineOverlap;
 
   @override
-  final double multidayTileHeight;
+  final double multiDayTileHeight;
 
   @override
-  final SlotSize slotSize;
+  final Duration slotSize;
 
   @override
   final Duration verticalStepDuration;
@@ -123,7 +122,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
     double? timelineWidth,
     double? hourlineTimelineOverlap,
     double? multidayTileHeight,
-    SlotSize? slotSize,
+    Duration? slotSize,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
     bool? createNewEvents,
@@ -134,7 +133,7 @@ class DayConfiguration extends SingleDayViewConfiguration {
       timelineWidth: timelineWidth ?? this.timelineWidth,
       hourLineTimelineOverlap:
           hourlineTimelineOverlap ?? this.hourLineTimelineOverlap,
-      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
+      multiDayTileHeight: multidayTileHeight ?? this.multiDayTileHeight,
       slotSize: slotSize ?? this.slotSize,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:

@@ -55,7 +55,7 @@ class SingleDayHeader<T> extends StatelessWidget {
                         scope.layoutControllers.multiDayTileLayoutController(
                       dayWidth: dayWidth,
                       visibleDateRange: visibleDateTimeRange,
-                      tileHeight: viewConfiguration.multidayTileHeight,
+                      tileHeight: viewConfiguration.multiDayTileHeight,
                     ),
                   ),
                 ],

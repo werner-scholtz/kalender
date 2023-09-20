@@ -27,7 +27,7 @@ class WeekConfiguarionEditor extends StatelessWidget {
           },
         ),
         HourlineTimelineOverlap(
-          value: config.hourlineTimelineOverlap,
+          value: config.hourLineTimelineOverlap,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
@@ -37,7 +37,7 @@ class WeekConfiguarionEditor extends StatelessWidget {
           },
         ),
         MultidayTileHeight(
-          value: config.multidayTileHeight,
+          value: config.multiDayTileHeight,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
@@ -47,7 +47,7 @@ class WeekConfiguarionEditor extends StatelessWidget {
           },
         ),
         SlotSizeTile(
-          value: config.slotSize,
+          value: config.newEventDuration,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(

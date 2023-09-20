@@ -29,7 +29,7 @@ class DayGestureDetector<T> extends StatefulWidget {
   final DateTimeRange visibleDateRange;
 
   /// The size of a slot.
-  final SlotSize minuteSlotSize;
+  final Duration minuteSlotSize;
 
   @override
   State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
@@ -49,20 +49,20 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   late double heightPerSlot;
 
   /// The number of slots in a day.
-  late int slots = (hoursADay * 60) ~/ widget.minuteSlotSize.minutes;
+  late int slots = (hoursADay * 60) ~/ widget.minuteSlotSize.inMinutes;
 
   @override
   void initState() {
     super.initState();
     visibleDates = widget.visibleDateRange.datesSpanned;
-    heightPerSlot = widget.minuteSlotSize.minutes * widget.heightPerMinute;
+    heightPerSlot = widget.minuteSlotSize.inMinutes * widget.heightPerMinute;
   }
 
   @override
   void didUpdateWidget(covariant DayGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     visibleDates = widget.visibleDateRange.datesSpanned;
-    heightPerSlot = widget.minuteSlotSize.minutes * widget.heightPerMinute;
+    heightPerSlot = widget.minuteSlotSize.inMinutes * widget.heightPerMinute;
   }
 
   @override
@@ -162,7 +162,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
         dateTimeRange = DateTimeRange(
           start: initialDateTimeRange.start.add(
             Duration(
-              minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected,
+              minutes: widget.minuteSlotSize.inMinutes * numberOfSlotsSelected,
             ),
           ),
           end: initialDateTimeRange.end,
@@ -172,7 +172,7 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
           start: initialDateTimeRange.start,
           end: initialDateTimeRange.end.add(
             Duration(
-              minutes: widget.minuteSlotSize.minutes * numberOfSlotsSelected,
+              minutes: widget.minuteSlotSize.inMinutes * numberOfSlotsSelected,
             ),
           ),
         );
@@ -189,14 +189,14 @@ class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
           date.month,
           date.day,
           0,
-          widget.minuteSlotSize.minutes * i,
+          widget.minuteSlotSize.inMinutes * i,
         ),
         end: DateTime(
           date.year,
           date.month,
           date.day,
           0,
-          widget.minuteSlotSize.minutes * (i + 1),
+          widget.minuteSlotSize.inMinutes * (i + 1),
         ),
       );
 }

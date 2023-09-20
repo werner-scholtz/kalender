@@ -5,10 +5,13 @@ class TimeIndicatorStyle {
   const TimeIndicatorStyle({
     this.circleRadius,
     this.color,
+    this.lineWidth,
   });
 
   /// The radius of the circle on the left.
   final double? circleRadius;
+
+  final double? lineWidth;
 
   /// The color of time indicator.
   final Color? color;

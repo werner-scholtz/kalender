@@ -3,7 +3,7 @@ import 'package:example/extentions.dart';
 import 'package:kalender/kalender.dart';
 
 class ExampleDayTileLayoutController<Event>
-    extends DayTileLayoutController<Event> {
+    extends DayTileLayoutControllerOLD<Event> {
   ExampleDayTileLayoutController({
     required super.visibleDateRange,
     required super.visibleDates,

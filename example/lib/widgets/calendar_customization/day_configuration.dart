@@ -37,7 +37,7 @@ class DayConfiguarionEditor extends StatelessWidget {
           },
         ),
         MultidayTileHeight(
-          value: config.multidayTileHeight,
+          value: config.multiDayTileHeight,
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(

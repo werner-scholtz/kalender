@@ -5,8 +5,8 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// TODO: Change the layoutcontroller to use DateTime Range and then have a single process that converts the dateTimes to pixel formats.
 
-abstract class DayTileLayoutController<T> {
-  const DayTileLayoutController({
+abstract class DayTileLayoutControllerOLD<T> {
+  const DayTileLayoutControllerOLD({
     required this.visibleDateRange,
     required this.visibleDates,
     required this.heightPerMinute,

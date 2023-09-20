@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector.dart';
-import 'package:kalender/src/components/tile_stacks/day_tile_stack.dart';
+import 'package:kalender/src/components/gesture_detectors/day/day_gesture_detector_dep.dart';
+import 'package:kalender/src/components/tile_stacks/day_tile_stack_dep.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
@@ -40,8 +40,11 @@ class SingleDayContent<T> extends StatelessWidget {
                 physics: value,
                 child: Stack(
                   children: <Widget>[
-                    scope.components.timelineBuilder(
-                      hourHeight,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: scope.components.timelineBuilder(
+                        hourHeight,
+                      ),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
@@ -92,27 +95,24 @@ class SingleDayContent<T> extends StatelessWidget {
                             return Stack(
                               fit: StackFit.expand,
                               children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    width: pageWidth,
-                                    height: pageHeight,
-                                    child: scope.components.hourLineBuilder(
-                                      pageWidth,
-                                      hourHeight,
-                                    ),
-                                  ),
-                                ),
+                                // Align(
+                                //   alignment: Alignment.centerRight,
+                                //   child: SizedBox(
+                                //     width: pageWidth,
+                                //     height: pageHeight,
+                                //     child: scope.components.hourLineBuilder(
+                                //       pageWidth,
+                                //       hourHeight,
+                                //     ),
+                                //   ),
+                                // ),
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: SizedBox(
                                     width: dayWidth,
                                     height: pageHeight,
-                                    child: scope.components.daySeparatorBuilder(
-                                      pageHeight,
-                                      dayWidth,
-                                      pageVisibleDateRange.dayDifference,
-                                    ),
+                                    child:
+                                        scope.components.daySeparatorBuilder(1),
                                   ),
                                 ),
                                 if (scope

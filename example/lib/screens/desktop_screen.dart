@@ -44,6 +44,12 @@ class _DesktopScreenState extends State<DesktopScreen> {
       timeIndicatorSnapping: true,
     ),
     const MultiDayConfiguration(
+      name: 'Multiday Single',
+      numberOfDays: 1,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
+    ),
+    const MultiDayConfiguration(
       name: 'Multiday',
       numberOfDays: 2,
       eventSnapping: true,

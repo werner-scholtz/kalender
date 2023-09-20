@@ -19,7 +19,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   bool get hasChangingEvent => _selectedEvent != null;
 
   bool _isSelectedEventMultiday = false;
-  bool get isSelectedEventMultiday => _isSelectedEventMultiday;
+  bool get isSelectedEventMultiDay => _isSelectedEventMultiday;
 
   bool _isResizing = false;
   bool get isResizing => _isResizing;

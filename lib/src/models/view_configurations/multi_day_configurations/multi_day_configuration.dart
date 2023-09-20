@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
@@ -8,9 +7,9 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     required this.name,
     this.numberOfDays = 3,
     this.timelineWidth = 56,
-    this.hourlineTimelineOverlap = 8,
-    this.multidayTileHeight = 24,
-    this.slotSize = const SlotSize(minutes: 15),
+    this.hourLineTimelineOverlap = 8,
+    this.multiDayTileHeight = 24,
+    this.newEventDuration = const Duration(minutes: 15),
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
@@ -19,16 +18,17 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     this.verticalSnapRange = const Duration(minutes: 15),
   });
 
+  @override
   final int numberOfDays;
 
   @override
   final double timelineWidth;
 
   @override
-  final double hourlineTimelineOverlap;
+  final double hourLineTimelineOverlap;
 
   @override
-  final SlotSize slotSize;
+  final Duration newEventDuration;
 
   @override
   final Duration verticalStepDuration;
@@ -37,7 +37,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final Duration verticalSnapRange;
 
   @override
-  final double multidayTileHeight;
+  final double multiDayTileHeight;
 
   @override
   final bool paintWeekNumber;
@@ -58,7 +58,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   int get firstDayOfWeek => 1;
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
+  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
@@ -157,9 +157,9 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   MultiDayConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,
-    double? hourlineTimelineOverlap,
-    double? multidayTileHeight,
-    SlotSize? slotSize,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? slotSize,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
@@ -170,10 +170,10 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     return MultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourlineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
-      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
-      slotSize: slotSize ?? this.slotSize,
+      hourLineTimelineOverlap:
+          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
+      newEventDuration: slotSize ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:

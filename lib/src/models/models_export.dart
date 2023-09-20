@@ -5,5 +5,4 @@ export 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 export 'package:kalender/src/models/calendar/calendar_functions.dart';
 export 'package:kalender/src/models/tile_configurations/tile_configuration_export.dart';
 export 'package:kalender/src/models/calendar/calendar_style.dart';
-export 'package:kalender/src/models/calendar/slot_size.dart';
 export 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';

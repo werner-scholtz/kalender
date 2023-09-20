@@ -5,7 +5,7 @@ import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_co
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/default_multi_day_layout_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 /// The [CalendarLayoutControllers] class contains layout controllers used by the calendar view.
 class CalendarLayoutControllers<T> {
@@ -34,7 +34,7 @@ class CalendarLayoutControllers<T> {
   late MonthLayoutController<T> monthTileLayoutController;
 
   /// The default [DayLayoutController] used to layout the day tiles.
-  DayTileLayoutController<T> defaultDayTileLayoutController({
+  DayTileLayoutControllerOLD<T> defaultDayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required List<DateTime> visibleDates,
     required double heightPerMinute,

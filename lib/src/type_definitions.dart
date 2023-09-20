@@ -21,16 +21,13 @@ typedef DayHeaderBuilder<T extends Object?> = Widget Function(
 
 /// TODO: remove explicit sizes where possible. ///
 
-/// The [HourlinesBuilder] is used to build the hourlines displayed on calendar's.
-typedef HourlinesBuilder<T extends Object?> = Widget Function(
-  double hourlineWidth,
+/// The [HourLinesBuilder] is used to build the hourlines displayed on calendar's.
+typedef HourLinesBuilder<T extends Object?> = Widget Function(
   double hourHeight,
 );
 
-/// The [DaySepratorBuilder] is used to build the seperators between days.
-typedef DaySepratorBuilder<T extends Object?> = Widget Function(
-  double pageHeight,
-  double dayWidth,
+/// The [DaySeparatorBuilder] is used to build the seperators between days.
+typedef DaySeparatorBuilder<T extends Object?> = Widget Function(
   int numberOfDays,
 );
 
@@ -117,8 +114,8 @@ typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
 
 /// The [DayLayoutController] is used to calculate the layout of the tiles displayed on a day.
 ///
-/// The typedef is used to create a function that returns a [DayTileLayoutController].
-typedef DayLayoutController<T extends Object?> = DayTileLayoutController<T>
+/// The typedef is used to create a function that returns a [DayTileLayoutControllerOLD].
+typedef DayLayoutController<T extends Object?> = DayTileLayoutControllerOLD<T>
     Function({
   required DateTimeRange visibleDateRange,
   required List<DateTime> visibleDates,

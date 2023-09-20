@@ -16,7 +16,7 @@ class CalendarStyle {
   const CalendarStyle({
     this.backgroundColor,
     this.calendarHeaderBackgroundStyle = const CalendarHeaderBackgroundStyle(),
-    this.daySeperatorStyle = const DaySeperatorStyle(),
+    this.daySeparatorStyle = const DaySeperatorStyle(),
     this.hourLineStyle = const HourLineStyle(),
     this.dayHeaderStyle = const DayHeaderStyle(),
     this.monthHeaderStyle = const MonthHeaderStyle(),
@@ -35,7 +35,7 @@ class CalendarStyle {
   final CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle;
 
   /// The [DaySeperatorStyle] used by the [DaySeperator].
-  final DaySeperatorStyle? daySeperatorStyle;
+  final DaySeperatorStyle? daySeparatorStyle;
 
   /// The [HourLineStyle] used by the [HourLines].
   final HourLineStyle? hourLineStyle;
@@ -69,7 +69,7 @@ class CalendarStyle {
     return other is CalendarStyle &&
         other.backgroundColor == backgroundColor &&
         other.calendarHeaderBackgroundStyle == calendarHeaderBackgroundStyle &&
-        other.daySeperatorStyle == daySeperatorStyle &&
+        other.daySeparatorStyle == daySeparatorStyle &&
         other.hourLineStyle == hourLineStyle &&
         other.dayHeaderStyle == dayHeaderStyle &&
         other.monthHeaderStyle == monthHeaderStyle &&
@@ -84,7 +84,7 @@ class CalendarStyle {
   int get hashCode => Object.hash(
         backgroundColor,
         calendarHeaderBackgroundStyle,
-        daySeperatorStyle,
+        daySeparatorStyle,
         hourLineStyle,
         dayHeaderStyle,
         monthHeaderStyle,
@@ -111,7 +111,7 @@ class CalendarStyle {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
           calendarHeaderBackgroundStyle ?? this.calendarHeaderBackgroundStyle,
-      daySeperatorStyle: daySeperatorStyle ?? this.daySeperatorStyle,
+      daySeparatorStyle: daySeperatorStyle ?? this.daySeparatorStyle,
       hourLineStyle: hourLineStyle ?? this.hourLineStyle,
       dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
       monthHeaderStyle: monthHeaderStyle ?? this.monthHeaderStyle,

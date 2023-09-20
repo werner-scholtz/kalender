@@ -11,7 +11,7 @@ import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/month_view/month_view_content.dart';
 import 'package:kalender/src/views/month_view/month_view_header.dart';
 

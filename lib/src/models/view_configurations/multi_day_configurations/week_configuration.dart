@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
 class WeekConfiguration extends MultiDayViewConfiguration {
   const WeekConfiguration({
     this.timelineWidth = 56,
-    this.hourlineTimelineOverlap = 8,
-    this.multidayTileHeight = 24,
-    this.slotSize = const SlotSize(minutes: 15),
+    this.hourLineTimelineOverlap = 8,
+    this.multiDayTileHeight = 24,
+    this.newEventDuration = const Duration(minutes: 15),
     this.paintWeekNumber = true,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
@@ -19,16 +18,19 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   });
 
   @override
+  final int numberOfDays = 7;
+
+  @override
   final double timelineWidth;
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
+  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
-  final double hourlineTimelineOverlap;
+  final double hourLineTimelineOverlap;
 
   @override
-  final SlotSize slotSize;
+  final Duration newEventDuration;
 
   @override
   final Duration verticalStepDuration;
@@ -37,7 +39,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   final Duration verticalSnapRange;
 
   @override
-  final double multidayTileHeight;
+  final double multiDayTileHeight;
 
   @override
   final bool paintWeekNumber;
@@ -129,7 +131,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     double? timelineWidth,
     double? hourlineTimelineOverlap,
     double? multidayTileHeight,
-    SlotSize? slotSize,
+    Duration? slotSize,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
@@ -140,10 +142,10 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   }) {
     return WeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourlineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
-      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
-      slotSize: slotSize ?? this.slotSize,
+      hourLineTimelineOverlap:
+          hourlineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      multiDayTileHeight: multidayTileHeight ?? this.multiDayTileHeight,
+      newEventDuration: slotSize ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:

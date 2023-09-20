@@ -9,7 +9,7 @@ import 'package:kalender/src/components/general/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 /// This class is used to provide the tile components for the calendar.
 class CalendarTileComponents<T> {
@@ -41,10 +41,10 @@ class CalendarComponents {
     this.calendarHeaderBuilder,
     DayHeaderBuilder? dayHeaderBuilder,
     WeekNumberBuilder? weekNumberBuilder,
-    HourlinesBuilder? hourlineBuilder,
+    HourLinesBuilder? hourLineBuilder,
     TimelineBuilder? timelineBuilder,
     TimeIndicatorBuilder? timeIndicatorBuilder,
-    DaySepratorBuilder? daySepratorBuilder,
+    DaySeparatorBuilder? daySeparatorBuilder,
     MonthGridBuilder? monthGridBuilder,
     MonthCellHeaderBuilder? monthCellHeaderBuilder,
     MonthHeaderBuilder? monthHeaderBuilder,
@@ -52,10 +52,10 @@ class CalendarComponents {
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
-    this.hourLineBuilder = hourlineBuilder ?? _defaultHourLineBuilder;
+    this.hourLineBuilder = hourLineBuilder ?? _defaultHourLineBuilder;
     this.timelineBuilder = timelineBuilder ?? _defaultTimelineBuilder;
     this.daySeparatorBuilder =
-        daySepratorBuilder ?? _defaultDaySeperatorBuilder;
+        daySeparatorBuilder ?? _defaultDaySeparatorBuilder;
     this.timeIndicatorBuilder =
         timeIndicatorBuilder ?? _defaultTimeIndicatorBuilder;
     this.monthGridBuilder = monthGridBuilder ?? _defaultMonthGridBuilder;
@@ -74,14 +74,14 @@ class CalendarComponents {
   /// This builder is used to build the week number displayed on the left side of the calendar above the timeline.
   late WeekNumberBuilder weekNumberBuilder;
 
-  /// This builder is used to build the hourlines displayed on calendar.
-  late HourlinesBuilder hourLineBuilder;
+  /// This builder is used to build the hourLines displayed on calendar.
+  late HourLinesBuilder hourLineBuilder;
 
   /// This builder is used to build the timeline displayed on the left side of the calendar.
   late TimelineBuilder timelineBuilder;
 
-  /// This builder is used to build the seperators between days.
-  late DaySepratorBuilder daySeparatorBuilder;
+  /// This builder is used to build the separators between days.
+  late DaySeparatorBuilder daySeparatorBuilder;
 
   /// This builder is used to build the time indicator displayed on the calendar.
   late TimeIndicatorBuilder timeIndicatorBuilder;
@@ -108,23 +108,17 @@ class CalendarComponents {
   }
 
   Widget _defaultHourLineBuilder(
-    double pageWidth,
     double hourHeight,
   ) {
     return HourLines(
-      hourlineWidth: pageWidth,
       hourHeight: hourHeight,
     );
   }
 
-  Widget _defaultDaySeperatorBuilder(
-    double pageHeight,
-    double dayWidth,
+  Widget _defaultDaySeparatorBuilder(
     int numberOfDays,
   ) {
-    return DaySeperator(
-      dayWidth: dayWidth,
-      pageHeight: pageHeight,
+    return DaySeparator(
       numberOfDays: numberOfDays,
     );
   }
@@ -154,10 +148,8 @@ class CalendarComponents {
     double timelineWidth,
   ) {
     return TimeIndicator(
-      width: timeIndicatorWidth,
       visibleDateRange: visibleDateRange,
       heightPerMinute: heightPerMinute,
-      timelineWidth: timelineWidth,
     );
   }
 

@@ -49,17 +49,17 @@ class MultiDayTileStack<T> extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      scope.components.daySeparatorBuilder(
-                        15,
-                        dayWidth,
-                        scope.state.visibleDateTimeRangeNotifier.value.duration
-                            .inDays,
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.end,
+                  //   children: <Widget>[
+                  //     scope.components.daySeparatorBuilder(
+                  //       15,
+                  //       dayWidth,
+                  //       scope.state.visibleDateTimeRangeNotifier.value.duration
+                  //           .inDays,
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
               if (scope.state.viewConfiguration.createNewEvents)
@@ -96,7 +96,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChangingEvent && controller.isSelectedEventMultiday;
+      controller.hasChangingEvent && controller.isSelectedEventMultiDay;
 }
 
 /// The [PositionedMultiDayTile] is used to display a single [PositionedMultiDayTileData].
