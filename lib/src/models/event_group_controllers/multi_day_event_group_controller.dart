@@ -19,6 +19,7 @@ class MultiDayEventGroupController<T> {
         initialEvent: event,
         otherEvents: events,
       );
+
       maxNumberOfStackedEvents = max(
         maxNumberOfStackedEvents,
         overlappingEvents.length,
@@ -64,8 +65,9 @@ class MultiDayEventGroupController<T> {
       for (var event in overlappingEvents) {
         newOverlappingEvents.addAll(
           otherEvents.where(
-            (otherEvent) => ((otherEvent.start.isWithin(event.dateTimeRange) ||
-                    otherEvent.end.isWithin(event.dateTimeRange)) ||
+            (otherEvent) => ((otherEvent.start.startOfDay
+                        .isWithin(event.dateTimeRange) ||
+                    otherEvent.end.endOfDay.isWithin(event.dateTimeRange)) ||
                 otherEvent.start == event.start ||
                 otherEvent.end == event.end),
           ),

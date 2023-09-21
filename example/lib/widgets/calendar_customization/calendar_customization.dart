@@ -1,4 +1,3 @@
-import 'package:example/layout_controllers/day_layout_controller.dart';
 import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_customization/day_configuration.dart';
 import 'package:example/widgets/calendar_customization/month_configuration.dart';
@@ -66,12 +65,9 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
             onChanged: (value) {
               if (value == null) return;
               customLayoutController = value;
-              widget.onLayoutControllerChange(
-                widget.layoutControllers.copyWith(
-                  dayTileLayoutController:
-                      value ? _dayTileLayoutController : null,
-                ),
-              );
+              // widget.onLayoutControllerChange(
+
+              // );
             },
           ),
         ExpansionTile(
@@ -295,20 +291,6 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
           ],
         )
       ],
-    );
-  }
-
-  DayTileLayoutControllerOLD<Event> _dayTileLayoutController({
-    required DateTimeRange visibleDateRange,
-    required List<DateTime> visibleDates,
-    required double heightPerMinute,
-    required double dayWidth,
-  }) {
-    return ExampleDayTileLayoutController<Event>(
-      visibleDateRange: visibleDateRange,
-      visibleDates: visibleDates,
-      heightPerMinute: heightPerMinute,
-      dayWidth: dayWidth,
     );
   }
 }

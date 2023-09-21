@@ -5,7 +5,7 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
-import 'package:kalender/src/views_old/multi_day_view/multi_day_view.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 
 /// The [CalendarController] is used to control a calendar view.
 ///
@@ -173,7 +173,7 @@ class CalendarController<T> with ChangeNotifier {
     assert(
       _state?.heightPerMinute != null,
       'The heightPerMinute must not be null.'
-      'Please attach the $CalendarController to a $MultiDayViewOLD.',
+      'Please attach the $CalendarController to a $MultiDayView.',
     );
     assert(
       heightPerMinute > 0,

@@ -327,15 +327,14 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
     // Calculate the new horizontal steps if applicable.
     var horizontalSteps = 0;
-    if (snapData.horizontalStep != null) {
-      horizontalSteps = (cursorOffset.dx / snapData.horizontalStep!).round();
-      if (horizontalSteps != currentHorizontalSteps) {
-        currentHorizontalSteps = horizontalSteps;
-      }
+
+    horizontalSteps = (cursorOffset.dx / snapData.horizontalStep).round();
+    if (horizontalSteps != currentHorizontalSteps) {
+      currentHorizontalSteps = horizontalSteps;
     }
+
     final horizontalDurationDelta =
-        (snapData.horizontalStepDuration ?? const Duration(minutes: 0)) *
-            horizontalSteps;
+        snapData.horizontalStepDuration * horizontalSteps;
 
     // Calculate the new start time.
     var newStart = initialDateTimeRange.start

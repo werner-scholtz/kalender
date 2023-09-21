@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/layout_delegates/event_group_layout.dart';
+import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
 import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed in the calendar's header.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
@@ -114,22 +114,21 @@ typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
 /// The [DayLayoutController] is used to calculate the layout of the tiles displayed on a day.
 ///
 /// The typedef is used to create a function that returns a [DayTileLayoutControllerOLD].
-typedef DayLayoutController<T extends Object?> = DayTileLayoutControllerOLD<T>
-    Function({
-  required DateTimeRange visibleDateRange,
-  required List<DateTime> visibleDates,
+typedef EventLayoutDelegateBuilder<T extends Object?>
+    = EventGroupLayoutDelegate<T> Function({
+  required List<CalendarEvent<T>> events,
+  required DateTime startOfGroup,
   required double heightPerMinute,
-  required double dayWidth,
 });
 
 /// The [MultiDayLayoutController] is used to calculate the layout of the tiles displayed on a day.
 ///
 /// The typedef is used to create a function that returns a [MultiDayTileLayoutController].
-typedef MultiDayLayoutController<T extends Object?>
-    = MultiDayTileLayoutController<T> Function({
+typedef MultiDayEventLayoutDelegateBuilder<T extends Object?>
+    = MultiDayEventGroupLayoutDelegate<T> Function({
   required DateTimeRange visibleDateRange,
-  required double dayWidth,
-  required double tileHeight,
+  required double multiDayTileHeight,
+  required List<CalendarEvent<T>> events,
 });
 
 /// The [MonthLayoutController] is used to calculate the layout of the tiles displayed on a day.
@@ -140,13 +139,4 @@ typedef MonthLayoutController<T extends Object?> = MonthTileLayoutController<T>
   required DateTimeRange visibleDateRange,
   required double cellWidth,
   required double tileHeight,
-});
-
-/// The [MultiDayTilesLayoutAlgorithm] is used to calculate the layout of the tiles displayed on a multiday view.
-typedef MultiDayTilesLayoutAlgorithm<T extends Object> = MultiDayLayoutData<T>
-    Function({
-  required Iterable<CalendarEvent<dynamic>> events,
-  required double tileHeight,
-  required double dayWidth,
-  required DateTimeRange visibleDateRange,
 });

@@ -13,12 +13,16 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.multiDayEventGroup,
     required this.multiDayTileHeight,
+    required this.horizontalStep,
+    required this.horizontalStepDuration,
   });
 
   final bool isChanging;
   final DateTimeRange visibleDateRange;
   final MultiDayEventGroup<T> multiDayEventGroup;
   final double multiDayTileHeight;
+  final double horizontalStep;
+  final Duration horizontalStepDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +39,9 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
           id: i,
           child: MultiDayEventTile(
             event: event,
+            visibleDateRange: visibleDateRange,
+            horizontalStep: horizontalStep,
+            horizontalStepDuration: horizontalStepDuration,
             tileConfiguration: MultiDayTileConfiguration(
               tileType: isChanging
                   ? TileType.selected

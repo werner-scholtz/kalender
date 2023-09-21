@@ -28,7 +28,6 @@ class MultiDayHeader<T> extends StatelessWidget {
                   visibleDateTimeRange,
                 ),
               ),
-
               if (viewConfiguration.numberOfDays == 1)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -45,17 +44,6 @@ class MultiDayHeader<T> extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    // MultiDayTileStack<T>(
-                    //   pageWidth: dayWidth,
-                    //   dayWidth: dayWidth,
-                    //   multiDayEventLayout:
-                    //       scope.layoutControllers.multiDayTileLayoutController(
-                    //     dayWidth: dayWidth,
-                    //     visibleDateRange: visibleDateTimeRange,
-                    //     tileHeight: viewConfiguration.multidayTileHeight,
-                    //   ),
-                    // ),
                   ],
                 )
               else
@@ -87,56 +75,98 @@ class MultiDayHeader<T> extends StatelessWidget {
                               ),
                             ],
                           ),
-                          ListenableBuilder(
-                            listenable: scope.eventsController,
-                            builder: (context, child) {
-                              final events = scope.eventsController
-                                  .getMultiDayEventsFromDateRange(
-                                scope.state.visibleDateTimeRangeNotifier.value,
-                              );
-
-                              final multiDayEventGroup =
-                                  MultiDayEventGroupController<T>()
-                                      .generateMultiDayEventGroup(
-                                events: events,
-                              );
-
-                              return MultiDayEventGroupWidget<T>(
-                                multiDayEventGroup: multiDayEventGroup,
-                                visibleDateRange: visibleDateTimeRange,
-                                isChanging: false,
-                                multiDayTileHeight:
-                                    viewConfiguration.multiDayTileHeight,
-                              );
-                            },
+                          AnimatedMultiDayEventsHeader<T>(
+                            viewConfiguration: viewConfiguration,
+                            visibleDateTimeRange: visibleDateTimeRange,
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              // AnimatedSize(
-              //   curve: Curves.easeIn,
-              //   duration: const Duration(milliseconds: 200),
-              //   child: Row(
-              //     children: <Widget>[
-              //       SizedBox(
-              //         width: viewConfiguration.timelineWidth,
-              //       ),
-              //       MultiDayTileStack<T>(
-              //         pageWidth: pageWidth,
-              //         dayWidth: dayWidth,
-              //         multiDayEventLayout:
-              //             scope.layoutControllers.multiDayTileLayoutController(
-              //           dayWidth: dayWidth,
-              //           visibleDateRange: visibleDateTimeRange,
-              //           tileHeight: viewConfiguration.multidayTileHeight,
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
+  const AnimatedMultiDayEventsHeader({
+    super.key,
+    required this.viewConfiguration,
+    required this.visibleDateTimeRange,
+  });
+
+  final MultiDayViewConfiguration viewConfiguration;
+  final DateTimeRange visibleDateTimeRange;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = CalendarScope.of<T>(context);
+    return AnimatedSize(
+      curve: Curves.easeIn,
+      duration: const Duration(milliseconds: 200),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final horizontalStep =
+              constraints.maxWidth / viewConfiguration.numberOfDays;
+
+          return ListenableBuilder(
+            listenable: scope.eventsController,
+            builder: (context, child) {
+              final events =
+                  scope.eventsController.getMultiDayEventsFromDateRange(
+                scope.state.visibleDateTimeRangeNotifier.value,
+              );
+
+              final multiDayEventGroup =
+                  MultiDayEventGroupController<T>().generateMultiDayEventGroup(
+                events: events,
+              );
+
+              // Generate the list of tile groups for the selected event. (if applicable)
+              final selectedEvent = scope.eventsController.selectedEvent;
+
+              return Stack(
+                clipBehavior: Clip.antiAlias,
+                children: [
+                  MultiDayEventGroupWidget<T>(
+                    multiDayEventGroup: multiDayEventGroup,
+                    visibleDateRange: visibleDateTimeRange,
+                    horizontalStep: horizontalStep,
+                    horizontalStepDuration:
+                        viewConfiguration.horizontalStepDuration,
+                    isChanging: false,
+                    multiDayTileHeight: viewConfiguration.multiDayTileHeight,
+                  ),
+                  if (selectedEvent != null &&
+                      scope.eventsController.isSelectedEventMultiDay)
+                    ListenableBuilder(
+                      listenable: scope.eventsController.selectedEvent!,
+                      builder: (context, child) {
+                        final multiDayEventGroup =
+                            MultiDayEventGroupController<T>()
+                                .generateMultiDayEventGroup(
+                          events: [selectedEvent],
+                        );
+
+                        return MultiDayEventGroupWidget<T>(
+                          multiDayEventGroup: multiDayEventGroup,
+                          visibleDateRange: visibleDateTimeRange,
+                          horizontalStep: horizontalStep,
+                          horizontalStepDuration:
+                              viewConfiguration.horizontalStepDuration,
+                          isChanging: true,
+                          multiDayTileHeight:
+                              viewConfiguration.multiDayTileHeight,
+                        );
+                      },
+                    ),
+                ],
+              );
+            },
           );
         },
       ),

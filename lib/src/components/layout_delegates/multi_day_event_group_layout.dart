@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
@@ -46,31 +44,62 @@ class MultiDayEventGroupDefaultLayoutDelegate<T>
       final id = i;
       final event = events[id];
 
+      final eventDates = event.datesSpanned;
+
+      // first visible date.
+      final firstVisibleDate = eventDates.firstWhere(
+        visibleDates.contains,
+      );
+
+      // last visible date.
+      final lastVisibleDate = eventDates.lastWhere(
+        visibleDates.contains,
+      );
+
+      final visibleEventDates = eventDates.getRange(
+        eventDates.indexOf(firstVisibleDate),
+        eventDates.indexOf(lastVisibleDate) + 1,
+      );
+
+      final dx = visibleDates.indexOf(visibleEventDates.first) * dayWidth;
+      tileDx[id] = dx;
+
       // Calculate the width of the tile.
-      final tileWidth = event.datesSpanned.length * dayWidth;
+      final tileWidth = (visibleEventDates.length) * dayWidth;
 
       // Layout the tile.
       final childSize = layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: tileWidth,
+          width: tileWidth, //tileWidth,
           height: multiDayTileHeight,
         ),
       );
       tileSizes[id] = childSize;
-
-      // Calculate the x position of the tile.
-      final dx = visibleDates.indexOf(event.datesSpanned.first) * dayWidth;
-      tileDx[id] = dx;
     }
 
     final tilePositions = <int, Offset>{};
     for (var id = 0; id < numChildren; id++) {
-      if (tilePositions.isEmpty) {
-        tilePositions[id] = Offset(tileDx[id]!, 0.0);
-      } else {
-        tilePositions[id] = Offset(tileDx[id]!, 50.0);
+      final event = events[id];
+
+      // Find events that fill the same dates as the current event.
+      final eventsAbove = tilePositions.keys.map((e) => events[e]).where(
+        (eventAbove) {
+          return eventAbove.datesSpanned.any(event.datesSpanned.contains);
+        },
+      ).toList();
+
+      var dy = 0.0;
+      if (eventsAbove.isNotEmpty) {
+        final eventAboveID = events.indexOf(eventsAbove.last);
+        dy = tilePositions[eventAboveID]!.dy + multiDayTileHeight;
       }
+
+      tilePositions[id] = Offset(
+        tileDx[id]!,
+        dy,
+        // multiDayTileHeight * (eventsAbove.length),
+      );
     }
     for (var id = 0; id < numChildren; id++) {
       positionChild(
@@ -78,21 +107,5 @@ class MultiDayEventGroupDefaultLayoutDelegate<T>
         tilePositions[id]!,
       );
     }
-
-    // final tileDy = <Object, double>{};
-    // for (var id = 0; id < numChildren; id++) {
-    //   final event = events[id];
-
-    //   final dy = id * multiDayTileHeight;
-
-    //   tileDy[id] = dy;
-    // }
-
-    // for (var id = 0; id < numChildren; id++) {
-    //   positionChild(
-    //     id,
-    //     Offset(tileDx[id]!, tileDy[id]!),
-    //   );
-    // }
   }
 }
