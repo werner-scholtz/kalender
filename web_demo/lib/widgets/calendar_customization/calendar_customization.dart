@@ -101,7 +101,7 @@ class _CalendarCustomizationState extends State<CalendarCustomization> {
                   highlightDaySeperator = value;
                   widget.onStyleChange(
                     widget.style.copyWith(
-                      daySeperatorStyle: DaySeperatorStyle(
+                      daySeparatorStyle: DaySeparatorStyle(
                         color: value ? highlightColor : null,
                       ),
                     ),

@@ -141,9 +141,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   WorkWeekConfiguration copyWith({
     double? timelineWidth,
-    double? hourlineTimelineOverlap,
-    double? multidayTileHeight,
-    Duration? slotSize,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? newEventDuration,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
@@ -154,9 +154,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     return WorkWeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
       hourLineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourLineTimelineOverlap,
-      multiDayTileHeight: multidayTileHeight ?? this.multiDayTileHeight,
-      newEventDuration: slotSize ?? this.newEventDuration,
+          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
+      newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:

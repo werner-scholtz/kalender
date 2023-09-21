@@ -16,7 +16,7 @@ class CalendarStyle {
   const CalendarStyle({
     this.backgroundColor,
     this.calendarHeaderBackgroundStyle = const CalendarHeaderBackgroundStyle(),
-    this.daySeparatorStyle = const DaySeperatorStyle(),
+    this.daySeparatorStyle = const DaySeparatorStyle(),
     this.hourLineStyle = const HourLineStyle(),
     this.dayHeaderStyle = const DayHeaderStyle(),
     this.monthHeaderStyle = const MonthHeaderStyle(),
@@ -34,8 +34,8 @@ class CalendarStyle {
   /// The background color of the [CalendarHeaderBackground] header.
   final CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle;
 
-  /// The [DaySeperatorStyle] used by the [DaySeperator].
-  final DaySeperatorStyle? daySeparatorStyle;
+  /// The [DaySeparatorStyle] used by the [DaySeperator].
+  final DaySeparatorStyle? daySeparatorStyle;
 
   /// The [HourLineStyle] used by the [HourLines].
   final HourLineStyle? hourLineStyle;
@@ -97,7 +97,7 @@ class CalendarStyle {
 
   CalendarStyle copyWith({
     CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle,
-    DaySeperatorStyle? daySeperatorStyle,
+    DaySeparatorStyle? daySeparatorStyle,
     HourLineStyle? hourLineStyle,
     DayHeaderStyle? dayHeaderStyle,
     MonthHeaderStyle? monthHeaderStyle,
@@ -111,7 +111,7 @@ class CalendarStyle {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
           calendarHeaderBackgroundStyle ?? this.calendarHeaderBackgroundStyle,
-      daySeparatorStyle: daySeperatorStyle ?? this.daySeparatorStyle,
+      daySeparatorStyle: daySeparatorStyle ?? this.daySeparatorStyle,
       hourLineStyle: hourLineStyle ?? this.hourLineStyle,
       dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
       monthHeaderStyle: monthHeaderStyle ?? this.monthHeaderStyle,

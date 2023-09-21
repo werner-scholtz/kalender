@@ -160,7 +160,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
-    Duration? slotSize,
+    Duration? newEventDuration,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
@@ -174,7 +174,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
       hourLineTimelineOverlap:
           hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
-      newEventDuration: slotSize ?? this.newEventDuration,
+      newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:

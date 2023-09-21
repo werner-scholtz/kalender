@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// The [DaySeperatorStyle] class is used by the default [DaySeperator] widget.
-class DaySeperatorStyle {
-  const DaySeperatorStyle({
+/// The [DaySeparatorStyle] class is used by the default [DaySeperator] widget.
+class DaySeparatorStyle {
+  const DaySeparatorStyle({
     this.thickness,
     this.color,
   });

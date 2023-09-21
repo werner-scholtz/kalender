@@ -61,7 +61,7 @@ class MultiDayConfiguarionEditor extends StatelessWidget {
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                slotSize: value,
+                newEventDuration: value,
               ),
             );
           },

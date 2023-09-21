@@ -31,7 +31,7 @@ class WorkWeekConfiguarionEditor extends StatelessWidget {
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                hourlineTimelineOverlap: value,
+                hourLineTimelineOverlap: value,
               ),
             );
           },
@@ -41,7 +41,7 @@ class WorkWeekConfiguarionEditor extends StatelessWidget {
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                multidayTileHeight: value,
+                multiDayTileHeight: value,
               ),
             );
           },
@@ -51,7 +51,7 @@ class WorkWeekConfiguarionEditor extends StatelessWidget {
           onChanged: (value) {
             onConfigChanged(
               config.copyWith(
-                slotSize: value,
+                newEventDuration: value,
               ),
             );
           },
