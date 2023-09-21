@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/general/material_header/material_header.dart';
+import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
 class MultiDayHeader<T> extends StatelessWidget {
@@ -58,21 +59,21 @@ class MultiDayHeader<T> extends StatelessWidget {
                   ],
                 )
               else
-                Column(
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: viewConfiguration.timelineWidth,
-                          child: Center(
-                            child: viewConfiguration.paintWeekNumber
-                                ? scope.components
-                                    .weekNumberBuilder(visibleDateTimeRange)
-                                : null,
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
+                    SizedBox(
+                      width: viewConfiguration.timelineWidth,
+                      child: Center(
+                        child: viewConfiguration.paintWeekNumber
+                            ? scope.components
+                                .weekNumberBuilder(visibleDateTimeRange)
+                            : null,
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               ...List.generate(
@@ -86,23 +87,31 @@ class MultiDayHeader<T> extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    ListenableBuilder(
-                      listenable: scope.eventsController,
-                      builder: (context, child) {
-                        final events = scope.eventsController
-                            .getMultiDayEventsFromDateRange(
-                          scope.state.visibleDateTimeRangeNotifier.value,
-                        );
+                          ListenableBuilder(
+                            listenable: scope.eventsController,
+                            builder: (context, child) {
+                              final events = scope.eventsController
+                                  .getMultiDayEventsFromDateRange(
+                                scope.state.visibleDateTimeRangeNotifier.value,
+                              );
 
-                        return MultiDayEventGroupWidget<T>(
-                          events: events,
-                          visibleDateRange: visibleDateTimeRange,
-                          isChanging: false,
-                        );
-                      },
+                              final multiDayEventGroup =
+                                  MultiDayEventGroupController<T>()
+                                      .generateMultiDayEventGroup(
+                                events: events,
+                              );
+
+                              return MultiDayEventGroupWidget<T>(
+                                multiDayEventGroup: multiDayEventGroup,
+                                visibleDateRange: visibleDateTimeRange,
+                                isChanging: false,
+                                multiDayTileHeight:
+                                    viewConfiguration.multiDayTileHeight,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

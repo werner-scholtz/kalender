@@ -9,7 +9,6 @@ class MultiDayEventGroupController<T> {
 
   /// Generate the [MultiDayEventGroup]'s for a list of events.
   MultiDayEventGroup<T> generateMultiDayEventGroup({
-    required List<DateTime> visibleDates,
     required Iterable<CalendarEvent<T>> events,
   }) {
     var maxNumberOfStackedEvents = 0;
@@ -26,8 +25,14 @@ class MultiDayEventGroupController<T> {
       );
     }
 
+    // Sort the events by start dateTime.
+    final sortedEvents = events.toList()
+      ..sort(
+        (a, b) => a.start.compareTo(b.start),
+      );
+
     final multiDayEventGroup = MultiDayEventGroup<T>(
-      events: events.toList(),
+      events: sortedEvents,
       maxNumberOfStackedEvents: maxNumberOfStackedEvents,
     );
 
@@ -75,13 +80,14 @@ class MultiDayEventGroupController<T> {
   }
 }
 
-/// A group of [CalendarEvent]'s that are overlapping.
+/// A group of [CalendarEvent]'s that will be stacked on top of each other.
 class MultiDayEventGroup<T> {
   const MultiDayEventGroup({
     required this.events,
     required this.maxNumberOfStackedEvents,
   });
 
+  /// The maximum number of [CalendarEvent]'s that are stacked on top of each other.
   final int maxNumberOfStackedEvents;
 
   /// The [CalendarEvent]'s that are in this group.

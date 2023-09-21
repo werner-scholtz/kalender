@@ -50,7 +50,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfTuesday,
+          start: startOfMonday,
           end: startOfWednesday,
         ),
         eventData: Event(
@@ -61,7 +61,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfTuesday,
+          start: startOfMonday.add(const Duration(hours: 12)),
           end: startOfWednesday,
         ),
         eventData: Event(
@@ -72,8 +72,8 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfMonday.add(Duration(hours: Random().nextInt(5))),
-          end: startOfMonday.add(Duration(hours: 6 + Random().nextInt(5))),
+          start: startOfTuesday.add(const Duration(hours: 12)),
+          end: startOfThursday,
         ),
         eventData: Event(
           title: 'Event ${getID()}',
@@ -83,8 +83,8 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfTuesday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfTuesday.add(Duration(hours: 7 + Random().nextInt(5))),
+          start: startOfTuesday.add(const Duration(hours: 12)),
+          end: startOfThursday.add(const Duration(hours: 12)),
         ),
         eventData: Event(
           title: 'Event ${getID()}',
@@ -94,84 +94,8 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
       ),
       CalendarEvent<Event>(
         dateTimeRange: DateTimeRange(
-          start: startOfWednesday.add(Duration(hours: Random().nextInt(6))),
-          end: startOfWednesday.add(Duration(hours: 7 + Random().nextInt(5))),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfThursday
-              .add(Duration(hours: Random().nextInt(6), minutes: 4)),
-          end: startOfThursday
-              .add(Duration(hours: 7 + Random().nextInt(6), minutes: 4)),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfFriday
-              .add(Duration(hours: Random().nextInt(6), minutes: 7)),
-          end: startOfFriday
-              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 7)),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfSaturday
-              .add(Duration(hours: Random().nextInt(6), minutes: 10)),
-          end: startOfSaturday
-              .add(Duration(hours: 8 + Random().nextInt(6), minutes: 10)),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfSaturday.add(Duration(hours: 14 + Random().nextInt(2))),
-          end: startOfSaturday.add(Duration(hours: 17 + Random().nextInt(3))),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfSunday
-              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
-          end: startOfSunday
-              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
-        ),
-        eventData: Event(
-          title: 'Event ${getID()}',
-          description: 'Description',
-          color: getRadomColor(),
-        ),
-      ),
-      CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(
-          start: startOfSunday
-              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
-          end: startOfSunday
-              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
+          start: startOfFriday.add(const Duration(hours: 12)),
+          end: startOfSaturday.add(const Duration(hours: 12)),
         ),
         eventData: Event(
           title: 'Event ${getID()}',
@@ -180,6 +104,151 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
       ),
     ]);
+
+    // events.addAll([
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfMonday,
+    //       end: startOfTuesday,
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfTuesday,
+    //       end: startOfWednesday,
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfTuesday,
+    //       end: startOfWednesday,
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfMonday.add(Duration(hours: Random().nextInt(5))),
+    //       end: startOfMonday.add(Duration(hours: 6 + Random().nextInt(5))),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfTuesday.add(Duration(hours: Random().nextInt(6))),
+    //       end: startOfTuesday.add(Duration(hours: 7 + Random().nextInt(5))),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfWednesday.add(Duration(hours: Random().nextInt(6))),
+    //       end: startOfWednesday.add(Duration(hours: 7 + Random().nextInt(5))),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfThursday
+    //           .add(Duration(hours: Random().nextInt(6), minutes: 4)),
+    //       end: startOfThursday
+    //           .add(Duration(hours: 7 + Random().nextInt(6), minutes: 4)),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfFriday
+    //           .add(Duration(hours: Random().nextInt(6), minutes: 7)),
+    //       end: startOfFriday
+    //           .add(Duration(hours: 8 + Random().nextInt(6), minutes: 7)),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfSaturday
+    //           .add(Duration(hours: Random().nextInt(6), minutes: 10)),
+    //       end: startOfSaturday
+    //           .add(Duration(hours: 8 + Random().nextInt(6), minutes: 10)),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfSaturday.add(Duration(hours: 14 + Random().nextInt(2))),
+    //       end: startOfSaturday.add(Duration(hours: 17 + Random().nextInt(3))),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfSunday
+    //           .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+    //       end: startOfSunday
+    //           .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    //   CalendarEvent<Event>(
+    //     dateTimeRange: DateTimeRange(
+    //       start: startOfSunday
+    //           .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+    //       end: startOfSunday
+    //           .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
+    //     ),
+    //     eventData: Event(
+    //       title: 'Event ${getID()}',
+    //       description: 'Description',
+    //       color: getRadomColor(),
+    //     ),
+    //   ),
+    // ]);
   }
 
   return events;
