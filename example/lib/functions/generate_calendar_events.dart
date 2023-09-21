@@ -9,7 +9,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
 
   List<Color> colors = [
     Colors.blue,
-    Colors.red,
+    Colors.indigo,
     Colors.green,
   ];
 

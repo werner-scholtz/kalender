@@ -166,14 +166,14 @@ class MultiDayContentOLD<T> extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                if (DateTime.now()
-                                    .isWithin(pageVisibleDateRange))
-                                  scope.components.timeIndicatorBuilder(
-                                    dayWidth,
-                                    pageVisibleDateRange,
-                                    heightPerMinute,
-                                    viewConfiguration.hourLineTimelineOverlap,
-                                  ),
+                                // if (DateTime.now()
+                                //     .isWithin(pageVisibleDateRange))
+                                //   scope.components.timeIndicatorBuilder(
+                                //     dayWidth,
+                                //     pageVisibleDateRange,
+                                //     heightPerMinute,
+                                //     viewConfiguration.hourLineTimelineOverlap,
+                                //   ),
                               ],
                             );
                           },

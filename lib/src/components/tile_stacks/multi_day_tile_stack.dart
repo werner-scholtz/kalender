@@ -35,7 +35,7 @@ class MultiDayTileStack<T> extends StatelessWidget {
       builder: (context, child) {
         /// Arrange the events.
         final layedOutEvents = multiDayEventLayout.layoutTiles(
-          scope.eventsController.getMultidayEventsFromDateRange(
+          scope.eventsController.getMultiDayEventsFromDateRange(
             scope.state.visibleDateTimeRangeNotifier.value,
           ),
         );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-/// The base MultiChildLayoutDelegate for [TileGroupLayoutDelegate]'s
+/// The base MultiChildLayoutDelegate for [EventGroupLayoutDelegate]'s
 ///
-abstract class TileGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
-  TileGroupLayoutDelegate({
+abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
+  EventGroupLayoutDelegate({
     required this.events,
     required this.startOfGroup,
     required this.heightPerMinute,
@@ -15,14 +15,14 @@ abstract class TileGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
   final List<CalendarEvent<T>> events;
 
   @override
-  bool shouldRelayout(covariant TileGroupLayoutDelegate oldDelegate) {
+  bool shouldRelayout(covariant EventGroupLayoutDelegate oldDelegate) {
     return oldDelegate.events != events;
   }
 }
 
-/// A [TileGroupLayoutDelegate] that lays out the tiles on top of each other.
-class TileGroupLayoutDelegateOverlap<T> extends TileGroupLayoutDelegate<T> {
-  TileGroupLayoutDelegateOverlap({
+/// A [EventGroupLayoutDelegate] that lays out the tiles on top of each other.
+class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
+  EventGroupOverlapLayoutDelegate({
     required super.events,
     required super.startOfGroup,
     required super.heightPerMinute,
@@ -69,9 +69,9 @@ class TileGroupLayoutDelegateOverlap<T> extends TileGroupLayoutDelegate<T> {
   }
 }
 
-/// A [TileGroupLayoutDelegate] that lays out the tiles next to each other.
-class TileGroupLayoutDelegateBasic<T> extends TileGroupLayoutDelegate<T> {
-  TileGroupLayoutDelegateBasic({
+/// A [EventGroupLayoutDelegate] that lays out the tiles next to each other.
+class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
+  EventGroupBasicLayoutDelegate({
     required super.events,
     required super.startOfGroup,
     required super.heightPerMinute,

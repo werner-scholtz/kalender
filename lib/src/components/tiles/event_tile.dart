@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalendar_scope.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_page_content.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
 class EventTile<T> extends StatefulWidget {
   const EventTile({

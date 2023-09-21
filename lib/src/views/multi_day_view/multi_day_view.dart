@@ -14,8 +14,8 @@ import 'package:kalender/src/type_definitions.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_content.dart';
-import 'package:kalender/src/viewsV2/multi_day_view/multi_day_header.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
 
 /// A widget that displays a multi day view.
 class MultiDayView<T> extends StatefulWidget {

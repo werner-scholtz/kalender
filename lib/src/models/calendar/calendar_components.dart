@@ -142,13 +142,13 @@ class CalendarComponents {
   }
 
   Widget _defaultTimeIndicatorBuilder(
-    double timeIndicatorWidth,
-    DateTimeRange visibleDateRange,
+    List<DateTime> visibleDates,
     double heightPerMinute,
-    double timelineWidth,
+    double dayWidth,
   ) {
     return TimeIndicator(
-      visibleDateRange: visibleDateRange,
+      visibleDates: visibleDates,
+      dayWidth: dayWidth,
       heightPerMinute: heightPerMinute,
     );
   }

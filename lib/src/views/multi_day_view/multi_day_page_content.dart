@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalendar_scope.dart';
-import 'package:kalender/src/components/general/time_indicator/time_indicator_v2.dart';
-import 'package:kalender/src/components/gesture_detectors/day_gesture_detector_v2.dart';
-import 'package:kalender/src/components/layout_delegates/tile_group_layout.dart';
-import 'package:kalender/src/components/tiles/event_tile.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
+import 'package:kalender/src/components/event_groups/event_group_widget.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
-import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
 class MultiDayPageContent<T> extends StatelessWidget {
@@ -79,7 +75,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 scope.components.daySeparatorBuilder(
                   viewConfiguration.numberOfDays,
                 ),
-                DayGestureDetectorV2(
+                DayGestureDetector(
                   viewConfiguration: viewConfiguration,
                   visibleDates: visibleDateRange.datesSpanned,
                 ),
@@ -95,7 +91,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                       tileGroup.duration,
                       heightPerMinute,
                     ),
-                    child: TileGroup<T>(
+                    child: EventGroupWidget<T>(
                       tileGroup: tileGroup,
                       snapData: snapData,
                       isChanging: false,
@@ -125,7 +121,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                                 tileGroup.duration,
                                 heightPerMinute,
                               ),
-                              child: TileGroup<T>(
+                              child: EventGroupWidget<T>(
                                 tileGroup: tileGroup,
                                 snapData: snapData,
                                 isChanging: true,
@@ -137,9 +133,10 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     },
                   ),
                 if (DateTime.now().isWithin(visibleDateRange))
-                  TimeIndicatorV2<T>(
-                    visibleDates: visibleDates,
-                    dayWidth: dayWidth,
+                  scope.components.timeIndicatorBuilder.call(
+                    visibleDates,
+                    heightPerMinute,
+                    dayWidth,
                   ),
               ],
             );
@@ -161,65 +158,6 @@ class MultiDayPageContent<T> extends StatelessWidget {
       controller.hasChangingEvent &&
       !controller.isSelectedEventMultiDay &&
       (controller.isMoving || controller.isResizing);
-}
-
-class TileGroup<T> extends StatelessWidget {
-  const TileGroup({
-    super.key,
-    required this.tileGroup,
-    required this.isChanging,
-    required this.snapData,
-  });
-
-  final EventGroup<T> tileGroup;
-  final MultiDayPageData snapData;
-  final bool isChanging;
-
-  @override
-  Widget build(BuildContext context) {
-    final scope = CalendarScope.of<T>(context);
-
-    final children = <LayoutId>[];
-    for (var i = 0; i < tileGroup.events.length; i++) {
-      final event = tileGroup.events[i];
-
-      // Check if the event is currently being moved.
-      final isMoving = scope.eventsController.selectedEvent == event;
-      children.add(
-        LayoutId(
-          id: i,
-          child: EventTile(
-            event: event,
-            tileConfiguration: TileConfiguration(
-              tileType: isChanging
-                  ? TileType.selected
-                  : isMoving
-                      ? TileType.ghost
-                      : TileType.normal,
-              drawOutline: i >= 1,
-              continuesBefore: event.start.isBefore(tileGroup.start),
-              continuesAfter: event.end.isAfter(tileGroup.end),
-            ),
-            snapData: snapData,
-            isChanging: isChanging,
-          ),
-        ),
-      );
-    }
-
-    return CustomMultiChildLayout(
-      delegate: TileGroupLayoutDelegateOverlap(
-        startOfGroup: tileGroup.start,
-        events: tileGroup.events,
-        heightPerMinute: scope.state.heightPerMinute!.value,
-      ),
-      children: children,
-    );
-  }
-
-  double calculateHeight(Duration duration, double heightPerMinute) {
-    return duration.inMinutes * heightPerMinute;
-  }
 }
 
 class MultiDayPageData {

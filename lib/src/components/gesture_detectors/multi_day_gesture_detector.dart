@@ -5,8 +5,8 @@ import 'package:kalender/kalendar_scope.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
 
-class DayGestureDetectorV2<T> extends StatefulWidget {
-  const DayGestureDetectorV2({
+class DayGestureDetector<T> extends StatefulWidget {
+  const DayGestureDetector({
     super.key,
     required this.viewConfiguration,
     required this.visibleDates,
@@ -16,11 +16,10 @@ class DayGestureDetectorV2<T> extends StatefulWidget {
   final List<DateTime> visibleDates;
 
   @override
-  State<DayGestureDetectorV2<T>> createState() =>
-      _DayGestureDetectorV2State<T>();
+  State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
 }
 
-class _DayGestureDetectorV2State<T> extends State<DayGestureDetectorV2<T>> {
+class _DayGestureDetectorState<T> extends State<DayGestureDetector<T>> {
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   int get newEventDurationInMinutes =>
       widget.viewConfiguration.newEventDuration.inMinutes;

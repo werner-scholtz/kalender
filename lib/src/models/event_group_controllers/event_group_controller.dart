@@ -136,7 +136,6 @@ class EventGroup<T> {
     required this.date,
     required this.events,
     required this.dateTimeRange,
-    void Function()? performLayout,
   });
 
   /// The date that the tile's will be displayed on.
