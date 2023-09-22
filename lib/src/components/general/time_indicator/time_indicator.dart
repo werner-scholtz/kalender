@@ -1,70 +1,42 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
+import 'package:kalender/kalender_scope.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-/// A widget that displays the current time.
-class TimeIndicator extends StatefulWidget {
+class TimeIndicator<T> extends StatefulWidget {
   const TimeIndicator({
     super.key,
-    required this.width,
-    required this.visibleDateRange,
+    required this.visibleDates,
+    required this.dayWidth,
     required this.heightPerMinute,
-    required this.timelineWidth,
   });
-
-  /// Width of indicator
-  final double width;
-
-  /// The width of the timeline.
-  final double timelineWidth;
-
-  /// The visible date range.
-  final DateTimeRange visibleDateRange;
-
-  /// The height per minute.
+  final List<DateTime> visibleDates;
+  final double dayWidth;
   final double heightPerMinute;
 
   @override
-  State<TimeIndicator> createState() => _TimeIndicatorState();
+  State<TimeIndicator<T>> createState() => _TimeIndicatorState<T>();
 }
 
-class _TimeIndicatorState extends State<TimeIndicator> {
+class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
   late Timer _timer;
   late DateTime _currentDate;
-  late DateTimeRange _visibleDateRange;
-  late double _heightPerMinute;
-  double circleRadius = 9;
+  late CalendarScope<T> scope = CalendarScope.of<T>(context);
 
   @override
   void initState() {
     super.initState();
-    _visibleDateRange = widget.visibleDateRange;
     _currentDate = DateTime.now();
-    _heightPerMinute = widget.heightPerMinute;
-    _timer = Timer(const Duration(seconds: 1), setTimer);
-  }
-
-  @override
-  void didUpdateWidget(covariant TimeIndicator oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _timer.cancel();
-    _visibleDateRange = widget.visibleDateRange;
-    _currentDate = DateTime.now();
-    _heightPerMinute = widget.heightPerMinute;
-    _timer.cancel();
-    _timer = Timer(const Duration(seconds: 1), setTimer);
-  }
-
-  @override
-  void didChangeDependencies() {
-    circleRadius = CalendarStyleProvider.of(context)
-            .style
-            .timeIndicatorStyle
-            ?.circleRadius ??
-        9;
-    super.didChangeDependencies();
+    _timer = Timer.periodic(
+      const Duration(seconds: 15),
+      (timer) {
+        setState(() {
+          _currentDate = DateTime.now();
+        });
+      },
+    );
   }
 
   @override
@@ -73,64 +45,55 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     super.dispose();
   }
 
-  /// Creates an recursive timer that that runs every 1 seconds.
-  void setTimer() {
-    if (mounted) {
-      setState(() {
-        _currentDate = DateTime.now();
-        _timer = Timer(const Duration(seconds: 1), setTimer);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    CalendarStyle style = CalendarStyleProvider.of(context).style;
-    return Positioned(
-      left: left,
-      top: top,
-      child: SizedBox(
-        width: widget.width + circleRadius / 2,
-        height: circleRadius,
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                width: circleRadius,
-                height: circleRadius,
-                decoration: BoxDecoration(
-                  color: style.timeIndicatorStyle?.color ?? Colors.red,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+    final style = CalendarStyleProvider.of(context).style;
+    final circleRadius = style.timeIndicatorStyle?.circleRadius ?? 4.5;
+    final circleSize = Size(circleRadius * 2, circleRadius * 2);
+
+    return Stack(
+      children: [
+        Positioned(
+          top: top - (style.timeIndicatorStyle?.lineWidth ?? 1) / 2,
+          left: left,
+          width: widget.dayWidth,
+          child: SizedBox(
+            height: style.timeIndicatorStyle?.lineWidth ?? 1,
+            child: Container(
+              color: style.timeIndicatorStyle?.color ?? Colors.red,
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                width: widget.width + circleRadius * 2,
-                height: 2,
-                color: style.timeIndicatorStyle?.color ?? Colors.red,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          top: top,
+          left: left,
+          width: 0,
+          height: 0,
+          child: OverflowBox(
+            minWidth: circleSize.width,
+            maxWidth: circleSize.width,
+            minHeight: circleSize.height,
+            maxHeight: circleSize.height,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: style.timeIndicatorStyle?.color ?? Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
+  /// Returns the top position of the time indicator.
   double get top {
-    int minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
-    return minutes * _heightPerMinute - (circleRadius / 2);
+    final minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
+    return minutes * widget.heightPerMinute;
   }
 
   double get left {
-    return (_visibleDateRange.start.startOfDay
-                .difference(_currentDate)
-                .inDays
-                .abs() *
-            widget.width) +
-        widget.timelineWidth -
-        circleRadius / 2;
+    final index = widget.visibleDates.lastIndexOf(_currentDate.startOfDay);
+    return index * widget.dayWidth;
   }
 }

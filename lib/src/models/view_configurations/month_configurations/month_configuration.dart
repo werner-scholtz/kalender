@@ -1,47 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
-    this.enableRezising = false,
-    this.createNewEvents = true,
+    this.enableResizing = true,
+    this.createMultiDayEvents = true,
+    this.multiDayTileHeight = 24,
   });
 
   @override
   String get name => 'Month';
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
+  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
-  final Duration verticalDurationStep = const Duration(days: 7);
+  final Duration verticalStepDuration = const Duration(days: 7);
 
   @override
   final int firstDayOfWeek;
 
   @override
-  final bool enableRezising;
+  final bool enableResizing;
 
   @override
-  final bool createNewEvents;
+  final bool createMultiDayEvents;
+
+  @override
+  final double multiDayTileHeight;
 
   MonthConfiguration copyWith({
     int? firstDayOfWeek,
-    bool? enableRezising,
-    bool? createNewEvents,
+    bool? enableResizing,
+    bool? createMultiDayEvents,
+    double? multiDayTileHeight,
   }) {
     return MonthConfiguration(
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      enableRezising: enableRezising ?? this.enableRezising,
-      createNewEvents: createNewEvents ?? this.createNewEvents,
+      enableResizing: enableResizing ?? this.enableResizing,
+      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
+      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
     );
   }
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
-    DateTimeRange monthRange = date.monthRange;
+  DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
+    final monthRange = date.monthRange;
     return DateTimeRange(
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
       end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
@@ -66,11 +72,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / DateTime.daysPerWeek);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return DateTimeRange(
       start: calendarStart,
@@ -88,7 +89,7 @@ class MonthConfiguration extends MonthViewConfiguration {
     required int index,
     required DateTime calendarStart,
   }) {
-    DateTimeRange monthRange = DateTime(
+    final monthRange = DateTime(
       calendarStart.year,
       calendarStart.month + index,
     ).monthRange;
@@ -97,11 +98,6 @@ class MonthConfiguration extends MonthViewConfiguration {
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
       end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
-  }
-
-  @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.centerDateTime.startOfMonth;
   }
 
   @override

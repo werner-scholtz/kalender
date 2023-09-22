@@ -8,10 +8,10 @@ import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/month_view/month_view_content.dart';
 import 'package:kalender/src/views/month_view/month_view_header.dart';
 
@@ -23,7 +23,7 @@ class MonthView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
-    required this.monthTileBuilder,
+    required this.multiDayTileBuilder,
     this.monthViewConfiguration,
     this.components,
     this.style,
@@ -53,7 +53,7 @@ class MonthView<T> extends StatefulWidget {
   final CalendarLayoutControllers<T>? layoutControllers;
 
   /// The [MonthTileBuilder] used to build month event tiles.
-  final MonthTileBuilder<T> monthTileBuilder;
+  final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
   State<MonthView<T>> createState() => _MonthViewState<T>();
@@ -78,7 +78,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
-      monthTileBuilder: widget.monthTileBuilder,
+      multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _layoutControllers =
         widget.layoutControllers ?? CalendarLayoutControllers<T>();
@@ -127,27 +127,26 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange =
+    final adjustedDateTimeRange =
         _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
 
-    int numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    int initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
       adjustedDateTimeRange.start,
     );
 
-    PageController pageController = PageController(
+    final pageController = PageController(
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange =
-        _viewConfiguration.calcualteVisibleDateTimeRange(
+    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
       _controller.selectedDate,
     );
 
@@ -174,26 +173,16 @@ class _MonthViewState<T> extends State<MonthView<T>> {
         tileComponents: _tileComponents,
         platformData: PlatformData(),
         layoutControllers: _layoutControllers,
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double pageWidth = constraints.maxWidth;
-
-            double cellWidth = _viewConfiguration.calculateDayWidth(pageWidth);
-
-            return Column(
-              children: <Widget>[
-                MonthViewHeader<T>(
-                  cellWidth: cellWidth,
-                  viewConfiguration: _viewConfiguration,
-                ),
-                MonthViewContent<T>(
-                  cellWidth: cellWidth,
-                  viewConfiguration: _viewConfiguration,
-                  controller: _controller,
-                ),
-              ],
-            );
-          },
+        child: Column(
+          children: <Widget>[
+            MonthViewHeader<T>(
+              viewConfiguration: _viewConfiguration,
+            ),
+            MonthViewContent<T>(
+              viewConfiguration: _viewConfiguration,
+              controller: _controller,
+            ),
+          ],
         ),
       ),
     );

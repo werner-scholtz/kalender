@@ -225,10 +225,12 @@ There are 5 events at this time that can be handeled.
 CalendarEventHandlers<Event>(
   onEventChangeStart: (CalendarEvent<T> event) {
     // This function is called when an event is about to be changed.
+
+    // Usefull on mobile for haptic feedback.
   }
   onEventChanged: (DateTimeRange initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
-    // The initialDateTimeRange is the original DateTimeRange of the event.
-    // The event is a reference to the event that was changed.
+    // The initialDateTimeRange is the original DateTimeRange of the event so if the user wants to undo the change you can use this value.
+    // The event is a reference to the event that was changed so you can update the event here.
 
     // This is a async function, so you can do any async work here.
 
@@ -251,8 +253,11 @@ CalendarEventHandlers<Event>(
 
     // Once this function completes the calendar will rebuild.
   },
-  onDateTapped: (date) {
+  onDateTapped: (DateTime date) {
     // The date is the date header that was tapped. see example for use case.
+  },
+  onPageChanged: (DateTimeRange visibleDateTimeRange) {
+    // The visibleDateTimeRange is the visible DateTimeRange of the current page.
   },
 );
 ```
@@ -473,5 +478,4 @@ Each of these components can be customized in the CalendarStyle object or by pas
     <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_grid.png" width="75%" height="75%"/>
 
     (MonthGrid)
-
 

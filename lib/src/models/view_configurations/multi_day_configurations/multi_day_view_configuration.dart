@@ -1,26 +1,23 @@
-import 'package:kalender/src/models/calendar/slot_size.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [MultiDayViewConfiguration]s.
 abstract class MultiDayViewConfiguration extends ViewConfiguration {
   const MultiDayViewConfiguration();
 
+  /// The number of days to display.
+  int get numberOfDays;
+
   /// The width of the timeline.
   double get timelineWidth;
 
-  /// The overlap of the hourlines and the timeline.
-  double get hourlineTimelineOverlap;
-
-  /// The height of the multiday tiles.
-  double get multidayTileHeight;
+  /// The overlap of the hourLines and the timeline.
+  double get hourLineTimelineOverlap;
 
   /// The vertical step duration.
-  Duration get horizontalDurationStep;
+  Duration get horizontalStepDuration;
 
-  /// The size of the minute slots.
-  ///
-  /// This determines the initial [DateTimeRange] of a new [CalendarEvent].
-  SlotSize get slotSize;
+  /// The duration of a new event.
+  Duration get newEventDuration;
 
   /// Paint the week number.
   bool get paintWeekNumber;
@@ -37,6 +34,29 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// The first day of the week.
   int get firstDayOfWeek;
 
+  /// Can create new events.
+  bool get createEvents;
+  @override
+  bool get createMultiDayEvents;
+
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;
+
+  double get hourLineLeftOffset => timelineWidth - hourLineTimelineOverlap;
+
+  MultiDayViewConfiguration copyWith({
+    int? numberOfDays,
+    double? timelineWidth,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+    Duration? newEventDuration,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    int? firstDayOfWeek,
+    bool? createEvents,
+    bool? createMultiDayEvents,
+  });
 }

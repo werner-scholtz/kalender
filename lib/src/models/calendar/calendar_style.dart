@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header/day_header_style.dart';
-import 'package:kalender/src/components/general/day_seperator/day_seperator_style.dart';
+import 'package:kalender/src/components/general/day_separator/day_separator_style.dart';
 import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
 import 'package:kalender/src/components/general/material_header/material_header_style.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';
-import 'package:kalender/src/components/general/month_cells/month_cells_style.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
 import 'package:kalender/src/components/general/month_header/month_header_style.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
@@ -16,7 +15,7 @@ class CalendarStyle {
   const CalendarStyle({
     this.backgroundColor,
     this.calendarHeaderBackgroundStyle = const CalendarHeaderBackgroundStyle(),
-    this.daySeperatorStyle = const DaySeperatorStyle(),
+    this.daySeparatorStyle = const DaySeparatorStyle(),
     this.hourLineStyle = const HourLineStyle(),
     this.dayHeaderStyle = const DayHeaderStyle(),
     this.monthHeaderStyle = const MonthHeaderStyle(),
@@ -25,7 +24,6 @@ class CalendarStyle {
     this.weekNumberStyle = const WeekNumberStyle(),
     this.monthCellHeaderStyle = const MonthCellHeaderStyle(),
     this.monthGridStyle = const MonthGridStyle(),
-    this.monthCellsStyle = const MonthCellsStyle(),
   });
 
   /// The background color of the [CalendarView].
@@ -34,8 +32,8 @@ class CalendarStyle {
   /// The background color of the [CalendarHeaderBackground] header.
   final CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle;
 
-  /// The [DaySeperatorStyle] used by the [DaySeperator].
-  final DaySeperatorStyle? daySeperatorStyle;
+  /// The [DaySeparatorStyle] used by the [DaySeperator].
+  final DaySeparatorStyle? daySeparatorStyle;
 
   /// The [HourLineStyle] used by the [HourLines].
   final HourLineStyle? hourLineStyle;
@@ -55,9 +53,6 @@ class CalendarStyle {
   /// The [MonthGridStyle] used by the [MonthGrid].
   final MonthGridStyle? monthGridStyle;
 
-  /// The [MonthCellsStyle] used by the [MonthCells].
-  final MonthCellsStyle? monthCellsStyle;
-
   /// The [MonthHeaderStyle] used by the [MonthHeader].
   final MonthHeaderStyle? monthHeaderStyle;
 
@@ -69,7 +64,7 @@ class CalendarStyle {
     return other is CalendarStyle &&
         other.backgroundColor == backgroundColor &&
         other.calendarHeaderBackgroundStyle == calendarHeaderBackgroundStyle &&
-        other.daySeperatorStyle == daySeperatorStyle &&
+        other.daySeparatorStyle == daySeparatorStyle &&
         other.hourLineStyle == hourLineStyle &&
         other.dayHeaderStyle == dayHeaderStyle &&
         other.monthHeaderStyle == monthHeaderStyle &&
@@ -84,7 +79,7 @@ class CalendarStyle {
   int get hashCode => Object.hash(
         backgroundColor,
         calendarHeaderBackgroundStyle,
-        daySeperatorStyle,
+        daySeparatorStyle,
         hourLineStyle,
         dayHeaderStyle,
         monthHeaderStyle,
@@ -97,7 +92,7 @@ class CalendarStyle {
 
   CalendarStyle copyWith({
     CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle,
-    DaySeperatorStyle? daySeperatorStyle,
+    DaySeparatorStyle? daySeparatorStyle,
     HourLineStyle? hourLineStyle,
     DayHeaderStyle? dayHeaderStyle,
     MonthHeaderStyle? monthHeaderStyle,
@@ -106,12 +101,11 @@ class CalendarStyle {
     WeekNumberStyle? weekNumberStyle,
     MonthCellHeaderStyle? monthCellHeaderStyle,
     MonthGridStyle? monthGridStyle,
-    MonthCellsStyle? monthCellsStyle,
   }) {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
           calendarHeaderBackgroundStyle ?? this.calendarHeaderBackgroundStyle,
-      daySeperatorStyle: daySeperatorStyle ?? this.daySeperatorStyle,
+      daySeparatorStyle: daySeparatorStyle ?? this.daySeparatorStyle,
       hourLineStyle: hourLineStyle ?? this.hourLineStyle,
       dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
       monthHeaderStyle: monthHeaderStyle ?? this.monthHeaderStyle,
@@ -120,7 +114,6 @@ class CalendarStyle {
       weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
       monthCellHeaderStyle: monthCellHeaderStyle ?? this.monthCellHeaderStyle,
       monthGridStyle: monthGridStyle ?? this.monthGridStyle,
-      monthCellsStyle: monthCellsStyle ?? this.monthCellsStyle,
     );
   }
 }

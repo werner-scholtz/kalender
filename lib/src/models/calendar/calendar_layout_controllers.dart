@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/day_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/day_tile_layout_controller/default_day_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/default_month_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/default_multi_day_layout_controller.dart';
-import 'package:kalender/src/models/tile_layout_controllers/multi_day_layout_controller/multi_day_layout_controller.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 /// The [CalendarLayoutControllers] class contains layout controllers used by the calendar view.
 class CalendarLayoutControllers<T> {
   CalendarLayoutControllers({
-    DayLayoutController<T>? dayTileLayoutController,
-    MultiDayLayoutController<T>? multiDayTileLayoutController,
-    MonthLayoutController<T>? monthTileLayoutController,
+    EventLayoutDelegateBuilder<T>? dayTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
     this.dayTileLayoutController =
         dayTileLayoutController ?? defaultDayTileLayoutController;
@@ -25,52 +20,50 @@ class CalendarLayoutControllers<T> {
   }
 
   /// The [DayLayoutController] used to layout the day tiles.
-  late DayLayoutController<T> dayTileLayoutController;
+  late EventLayoutDelegateBuilder<T> dayTileLayoutController;
 
-  /// The [MultiDayLayoutController] used to layout the multiday tiles.
-  late MultiDayLayoutController<T> multiDayTileLayoutController;
+  /// The [MultiDayLayoutController] used to layout the multi day tiles.
+  late MultiDayEventLayoutDelegateBuilder<T> multiDayTileLayoutController;
 
   /// The [MonthLayoutController] used to layout the month tiles.
-  late MonthLayoutController<T> monthTileLayoutController;
+  late MultiDayEventLayoutDelegateBuilder<T> monthTileLayoutController;
 
-  /// The default [DayLayoutController] used to layout the day tiles.
-  DayTileLayoutController<T> defaultDayTileLayoutController({
-    required DateTimeRange visibleDateRange,
-    required List<DateTime> visibleDates,
+  /// The default [EventGroupLayoutDelegate] used to layout the day tiles.
+  EventGroupLayoutDelegate<T> defaultDayTileLayoutController({
+    required List<CalendarEvent<T>> events,
+    required DateTime startOfGroup,
     required double heightPerMinute,
-    required double dayWidth,
   }) {
-    return DefaultDayTileLayoutController<T>(
-      visibleDateRange: visibleDateRange,
-      visibleDates: visibleDates,
+    return EventGroupOverlapLayoutDelegate(
+      events: events,
+      startOfGroup: startOfGroup,
       heightPerMinute: heightPerMinute,
-      dayWidth: dayWidth,
     );
   }
 
-  /// The default [MultiDayLayoutController] used to layout the multiday tiles.
-  MultiDayTileLayoutController<T> defaultMultiDayTileLayoutController({
+  /// The default [MultiDayEventGroupLayoutDelegate] used to layout the multi day tiles.
+  MultiDayEventGroupLayoutDelegate<T> defaultMultiDayTileLayoutController({
     required DateTimeRange visibleDateRange,
-    required double dayWidth,
-    required double tileHeight,
+    required double multiDayTileHeight,
+    required List<CalendarEvent<T>> events,
   }) {
-    return DefaultMultidayLayoutController<T>(
+    return MultiDayEventGroupDefaultLayoutDelegate(
+      events: events,
       visibleDateRange: visibleDateRange,
-      dayWidth: dayWidth,
-      tileHeight: tileHeight,
+      multiDayTileHeight: multiDayTileHeight,
     );
   }
 
   /// The default [MonthLayoutController] used to layout the month tiles.
-  MonthTileLayoutController<T> defaultMonthTileLayoutController({
+  MultiDayEventGroupLayoutDelegate<T> defaultMonthTileLayoutController({
     required DateTimeRange visibleDateRange,
-    required double cellWidth,
-    required double tileHeight,
+    required double multiDayTileHeight,
+    required List<CalendarEvent<T>> events,
   }) {
-    return DefaultMonthTileLayoutController<T>(
+    return MultiDayEventGroupDefaultLayoutDelegate(
+      events: events,
       visibleDateRange: visibleDateRange,
-      cellWidth: cellWidth,
-      tileHeight: tileHeight,
+      multiDayTileHeight: multiDayTileHeight,
     );
   }
 
@@ -90,9 +83,9 @@ class CalendarLayoutControllers<T> {
       );
 
   CalendarLayoutControllers<T> copyWith({
-    DayLayoutController<T>? dayTileLayoutController,
-    MultiDayLayoutController<T>? multiDayTileLayoutController,
-    MonthLayoutController<T>? monthTileLayoutController,
+    EventLayoutDelegateBuilder<T>? dayTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
     return CalendarLayoutControllers<T>(
       dayTileLayoutController: dayTileLayoutController,

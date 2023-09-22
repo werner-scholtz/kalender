@@ -7,15 +7,15 @@ import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-import 'package:kalender/src/typedefs.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
+import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
 
 /// A widget that displays a multi day view.
 class MultiDayView<T> extends StatefulWidget {
@@ -119,6 +119,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         widget.multiDayViewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.multiDayViewConfiguration!;
       _initializeViewState();
+
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
@@ -133,27 +134,26 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   void _initializeViewState() {
-    DateTimeRange adjustedDateTimeRange =
+    final adjustedDateTimeRange =
         _viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: _controller.dateTimeRange,
       visibleStart: _controller.selectedDate,
     );
 
-    int numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    int initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = _viewConfiguration.calculateDateIndex(
       _controller.selectedDate,
       adjustedDateTimeRange.start,
     );
 
-    PageController pageController = PageController(
+    final pageController = PageController(
       initialPage: initialPage,
     );
 
-    DateTimeRange visibleDateRange =
-        _viewConfiguration.calcualteVisibleDateTimeRange(
+    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
       _controller.selectedDate,
     );
 
@@ -180,31 +180,18 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         tileComponents: _tileComponents,
         platformData: PlatformData(),
         layoutControllers: _layoutControllers,
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            // Calculate the width of the page.
-            double pageWidth =
-                constraints.maxWidth - _viewConfiguration.timelineWidth;
-
-            // Calculate the width of the day.
-            double dayWidth = _viewConfiguration.calculateDayWidth(pageWidth);
-
-            return Column(
-              children: <Widget>[
-                MultiDayHeader<T>(
-                  viewConfiguration: _viewConfiguration,
-                  dayWidth: dayWidth,
-                  pageWidth: pageWidth,
-                ),
-                MultiDayContent<T>(
-                  viewConfiguration: _viewConfiguration,
-                  dayWidth: dayWidth,
-                  pageWidth: pageWidth,
-                  controller: _controller,
-                ),
-              ],
-            );
-          },
+        child: Column(
+          children: <Widget>[
+            MultiDayHeader<T>(
+              viewConfiguration: _viewConfiguration,
+            ),
+            Expanded(
+              child: MultiDayContent<T>(
+                controller: _controller,
+                viewConfiguration: _viewConfiguration,
+              ),
+            ),
+          ],
         ),
       ),
     );

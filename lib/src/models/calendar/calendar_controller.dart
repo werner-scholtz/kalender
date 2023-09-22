@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
-import 'package:kalender/src/views/single_day_view/single_day_view.dart';
 
 /// The [CalendarController] is used to control a calendar view.
 ///
@@ -19,11 +18,16 @@ class CalendarController<T> with ChangeNotifier {
   CalendarController({
     DateTime? initialDate,
     DateTimeRange? calendarDateTimeRange,
-  })  : selectedDate = initialDate ?? DateTime.now(),
+  })  : _selectedDate = initialDate ?? DateTime.now(),
         _dateTimeRange = calendarDateTimeRange ?? defaultDateRange;
 
   /// The currently selected date.
-  DateTime selectedDate;
+  DateTime _selectedDate;
+  DateTime get selectedDate => _selectedDate;
+  set selectedDate(DateTime value) {
+    _selectedDate = value;
+    notifyListeners();
+  }
 
   /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
@@ -35,18 +39,15 @@ class CalendarController<T> with ChangeNotifier {
 
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
-  /// This is only available for [SingleDayView] and [MultiDayView].
+  /// This is only available for [SingleDayView] and [MultiDayViewOLD].
   ValueNotifier<double>? get heightPerMinute => _state?.heightPerMinute;
 
   /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
-      _state?.visibleDateTimeRange;
+      _state?.visibleDateTimeRangeNotifier;
 
   /// The visible month of the current view.
-  DateTime? get visibleMonth => _state?.month;
-
-  /// The visible year of the current view.
-  DateTime? get visibleYear => _state?.year;
+  DateTime? get visibleMonth => _state?.visibleMonth;
 
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {
@@ -160,7 +161,7 @@ class CalendarController<T> with ChangeNotifier {
   }
 
   /// Changes the [heightPerMinute] of the view. (Zoom level)
-  /// * This is only available for [SingleDayView] and [MultiDayView].
+  /// * This is only available for [SingleDayView] and [MultiDayViewOLD].
   ///
   /// The [heightPerMinute] must be greater than 0.
   void adjustHeightPerMinute(double heightPerMinute) {
@@ -172,7 +173,7 @@ class CalendarController<T> with ChangeNotifier {
     assert(
       _state?.heightPerMinute != null,
       'The heightPerMinute must not be null.'
-      'Please attach the $CalendarController to a $SingleDayView or $MultiDayView.',
+      'Please attach the $CalendarController to a $MultiDayView.',
     );
     assert(
       heightPerMinute > 0,
@@ -200,8 +201,7 @@ class CalendarController<T> with ChangeNotifier {
       curve: curve ?? Curves.ease,
     );
 
-    if (_state?.viewConfiguration is SingleDayViewConfiguration ||
-        _state?.viewConfiguration is MultiDayViewConfiguration) {
+    if (_state?.viewConfiguration is MultiDayViewConfiguration) {
       // Then animate to the event.
       await _state?.scrollController.animateTo(
         event.start.difference(event.start.startOfDay).inMinutes *

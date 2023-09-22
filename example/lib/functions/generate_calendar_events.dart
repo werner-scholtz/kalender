@@ -9,7 +9,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
 
   List<Color> colors = [
     Colors.blue,
-    Colors.red,
+    Colors.indigo,
     Colors.green,
   ];
 
@@ -146,6 +146,19 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         dateTimeRange: DateTimeRange(
           start: startOfSaturday.add(Duration(hours: 14 + Random().nextInt(2))),
           end: startOfSaturday.add(Duration(hours: 17 + Random().nextInt(3))),
+        ),
+        eventData: Event(
+          title: 'Event ${getID()}',
+          description: 'Description',
+          color: getRadomColor(),
+        ),
+      ),
+      CalendarEvent<Event>(
+        dateTimeRange: DateTimeRange(
+          start: startOfSunday
+              .add(Duration(hours: Random().nextInt(6), minutes: 5)),
+          end: startOfSunday
+              .add(Duration(hours: 12 + Random().nextInt(6), minutes: 5)),
         ),
         eventData: Event(
           title: 'Event ${getID()}',

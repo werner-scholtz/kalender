@@ -11,13 +11,11 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   String get name;
 
-  /// Can create new events.
-  bool get createNewEvents;
+  /// Can create new multi day events.
+  bool get createMultiDayEvents;
 
-  /// Calculates the width of each day.
-  double calculateDayWidth(
-    double pageWidth,
-  );
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 
   /// Returns the visible[DateTimeRange] for the [index].
   ///
@@ -54,7 +52,7 @@ abstract class ViewConfiguration {
   /// Calculates the visible [DateTimeRange] form the [date].
   ///
   /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calcualteVisibleDateTimeRange(
+  DateTimeRange calculateVisibleDateTimeRange(
     DateTime date,
   );
 
@@ -75,12 +73,5 @@ abstract class ViewConfiguration {
   int calculateDateIndex(
     DateTime date,
     DateTime startDate,
-  );
-
-  /// Returns the new highlighted date.
-  ///
-  /// [visibleDateRange] is the visible date range.
-  DateTime getHighlighedDate(
-    DateTimeRange visibleDateRange,
   );
 }

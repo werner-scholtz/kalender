@@ -1,5 +1,5 @@
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/typedefs.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 /// The [TileConfiguration] class is passed to the [TileBuilder].
 ///

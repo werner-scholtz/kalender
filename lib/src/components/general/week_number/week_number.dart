@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/week_number/week_number_style.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the week number.
@@ -14,7 +13,7 @@ class WeekNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WeekNumberStyle? weekNumberStyle =
+    final weekNumberStyle =
         CalendarStyleProvider.of(context).style.weekNumberStyle;
     return IconButton.filledTonal(
       tooltip: weekNumberStyle?.tooltip ?? 'Week Number',

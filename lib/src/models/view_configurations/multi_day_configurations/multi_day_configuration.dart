@@ -1,34 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar/slot_size.dart';
-import 'package:kalender/src/extentions.dart';
-import 'package:kalender/src/models/view_configurations/view_confiuration_export.dart';
+import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
 class MultiDayConfiguration extends MultiDayViewConfiguration {
   const MultiDayConfiguration({
     required this.name,
     this.numberOfDays = 3,
     this.timelineWidth = 56,
-    this.hourlineTimelineOverlap = 8,
-    this.multidayTileHeight = 24,
-    this.slotSize = const SlotSize(minutes: 15),
+    this.hourLineTimelineOverlap = 8,
+    this.multiDayTileHeight = 24,
+    this.newEventDuration = const Duration(minutes: 15),
     this.paintWeekNumber = true,
-    this.eventSnapping = false,
-    this.timeIndicatorSnapping = false,
-    this.createNewEvents = true,
+    this.eventSnapping = true,
+    this.timeIndicatorSnapping = true,
+    this.createMultiDayEvents = true,
+    this.createEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
   });
 
+  @override
   final int numberOfDays;
 
   @override
   final double timelineWidth;
 
   @override
-  final double hourlineTimelineOverlap;
+  final double hourLineTimelineOverlap;
 
   @override
-  final SlotSize slotSize;
+  final Duration newEventDuration;
 
   @override
   final Duration verticalStepDuration;
@@ -37,7 +38,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final Duration verticalSnapRange;
 
   @override
-  final double multidayTileHeight;
+  final double multiDayTileHeight;
 
   @override
   final bool paintWeekNumber;
@@ -52,16 +53,19 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final String name;
 
   @override
-  final bool createNewEvents;
+  final bool createMultiDayEvents;
+
+  @override
+  final bool createEvents;
 
   @override
   int get firstDayOfWeek => 1;
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
+  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
-  DateTimeRange calcualteVisibleDateTimeRange(DateTime date) {
+  DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     return getMultiDayRange(date);
   }
 
@@ -97,11 +101,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / numberOfDays);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return visibleStart.difference(calendarStart).inDays ~/ numberOfDays;
   }
@@ -127,11 +126,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTime getHighlighedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
-  }
-
-  @override
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
@@ -154,31 +148,35 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     );
   }
 
+  @override
   MultiDayConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,
-    double? hourlineTimelineOverlap,
-    double? multidayTileHeight,
-    SlotSize? slotSize,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+    Duration? newEventDuration,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
-    bool? createNewEvents,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
+    int? firstDayOfWeek,
+    bool? createEvents,
+    bool? createMultiDayEvents,
   }) {
     return MultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourlineTimelineOverlap:
-          hourlineTimelineOverlap ?? this.hourlineTimelineOverlap,
-      multidayTileHeight: multidayTileHeight ?? this.multidayTileHeight,
-      slotSize: slotSize ?? this.slotSize,
+      hourLineTimelineOverlap:
+          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
+      newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:
           timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createNewEvents: createNewEvents ?? this.createNewEvents,
+      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
+      createEvents: createEvents ?? this.createEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name,

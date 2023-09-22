@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kalender/src/extentions.dart';
+import 'package:kalender/src/extensions.dart';
 import 'date_time_test_object.dart';
 
 void main() {
@@ -11,62 +11,62 @@ void main() {
 
 void testDateTimeRangeExtentions() {
   group('DateTimeRangeExtensions Tests', () {
-    DateTimeRange yearRange = DateTimeRange(
+    final yearRange = DateTimeRange(
       start: DateTime(2023, 1, 1),
       end: DateTime(2023, 12, 31),
     );
 
-    DateTimeRange leapYearRange = DateTimeRange(
+    final leapYearRange = DateTimeRange(
       start: DateTime(2020, 1, 1),
       end: DateTime(2020, 12, 31),
     );
 
-    DateTimeRange y2Range = DateTimeRange(
+    final y2Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2023, 12, 31),
     );
 
-    DateTimeRange y3Range = DateTimeRange(
+    final y3Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2024, 12, 31),
     );
 
-    DateTimeRange monthRange = DateTimeRange(
+    final monthRange = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 31),
     );
 
-    DateTimeRange m2Range = DateTimeRange(
+    final m2Range = DateTimeRange(
       start: DateTime(2021, 1),
       end: DateTime(2021, 2),
     );
 
-    DateTimeRange m3Range = DateTimeRange(
+    final m3Range = DateTimeRange(
       start: DateTime(2021, 1, 15),
       end: DateTime(2021, 1, 16),
     );
 
-    DateTimeRange d2Range = DateTimeRange(
+    final d2Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 3),
     );
 
-    DateTimeRange d7Range = DateTimeRange(
+    final d7Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 8),
     );
 
-    DateTimeRange d7Range2 = DateTimeRange(
+    final d7Range2 = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 7, 23, 59, 59),
     );
 
-    DateTimeRange d8Range = DateTimeRange(
+    final d8Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 9),
     );
 
-    DateTimeRange d14Range = DateTimeRange(
+    final d14Range = DateTimeRange(
       start: DateTime(2021, 1, 1),
       end: DateTime(2021, 1, 15),
     );
@@ -119,10 +119,10 @@ void testDateTimeRangeExtentions() {
     });
 
     test('numberOfyears', () {
-      expect(yearRange.numberOfyears, 0);
-      expect(leapYearRange.numberOfyears, 0);
-      expect(y2Range.numberOfyears, 2);
-      expect(y3Range.numberOfyears, 3);
+      expect(yearRange.numberOfYears, 0);
+      expect(leapYearRange.numberOfYears, 0);
+      expect(y2Range.numberOfYears, 2);
+      expect(y3Range.numberOfYears, 3);
     });
 
     test('rescheduleDateTime', () {
@@ -169,7 +169,7 @@ void testDateTimeRangeExtentions() {
 
 void testDateTimeExtentions() {
   group('DateTimeExtentions Tests', () {
-    for (DateTimeTestObject object in dateTimeTestObjects) {
+    for (var object in dateTimeTestObjects) {
       test('weekNumber $object', () {
         expect(object.date.weekOfYear, object.weekNumber);
       });

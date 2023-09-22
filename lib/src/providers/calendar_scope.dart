@@ -45,7 +45,7 @@ class CalendarScope<T> extends InheritedWidget {
   });
 
   static CalendarScope<T> of<T>(BuildContext context) {
-    CalendarScope<T>? result =
+    final result =
         context.dependOnInheritedWidgetOfExactType<CalendarScope<T>>();
     assert(
         result != null,
