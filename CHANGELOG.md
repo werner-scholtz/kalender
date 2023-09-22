@@ -1,3 +1,6 @@
+## 0.1.1
+* Fixed custom layout delegate.
+
 ## 0.1.0
 
 #### Breaking Changes:
