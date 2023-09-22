@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the month grid.

@@ -4,6 +4,7 @@ import 'package:example/models/event.dart';
 import 'package:example/functions/generate_calendar_events.dart';
 import 'package:example/screens/desktop.dart';
 import 'package:example/screens/mobile.dart';
+import 'package:example/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -20,8 +21,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kalender Example',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        colorScheme: lightColorScheme,
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: darkColorScheme,
       ),
       home: const MyHomePage(),
     );
@@ -47,23 +52,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
-          if (constraints.maxWidth < 500) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+            if (constraints.maxWidth < 500) {
+              return MobileScreen(
+                eventsController: eventController,
+              );
+            }
+            return DesktopScreen(
+              eventsController: eventController,
+            );
+          } else {
             return MobileScreen(
               eventsController: eventController,
             );
           }
-          return DesktopScreen(
-            eventsController: eventController,
-          );
-        } else {
-          return MobileScreen(
-            eventsController: eventController,
-          );
-        }
-      },
+        },
+      ),
     );
   }
 }

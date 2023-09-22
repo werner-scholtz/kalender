@@ -129,9 +129,11 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   Future<void> _onRescheduleEnd(DragEndDetails details) async {
+    final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.deselectEvent();
     await functions.onEventChanged?.call(
       initialDateTimeRange,
-      controller.selectedEvent!,
+      selectedEvent,
     );
   }
 
@@ -210,11 +212,13 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   Future<void> _onHorizontalDragEnd(DragEndDetails details) async {
+    controller.isResizing = false;
+    final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.deselectEvent();
+
     await functions.onEventChanged?.call(
       initialDateTimeRange,
-      controller.selectedEvent!,
+      selectedEvent,
     );
-
-    controller.isResizing = false;
   }
 }

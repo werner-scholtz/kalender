@@ -204,7 +204,6 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   /// This function is called when a date is tapped.
   void onDateTapped(date) {
-    log('message');
     // If the current view is not the single day view, change the view to the single day view.
     if (currentConfiguration is! DayConfiguration) {
       setState(() {

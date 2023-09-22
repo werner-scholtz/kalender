@@ -38,4 +38,9 @@ class Event {
 
   @override
   int get hashCode => Object.hash(title, description, color);
+
+  @override
+  String toString() {
+    return 'title: $title, description: $description, color: ${color.toString()}';
+  }
 }

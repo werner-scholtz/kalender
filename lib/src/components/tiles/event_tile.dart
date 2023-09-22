@@ -294,8 +294,11 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    final selectedEvent = scope.eventsController.selectedEvent!;
     controller.isResizing = false;
+
+    final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.deselectEvent();
+
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,
@@ -387,10 +390,14 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onRescheduleUpdate event.
   Future<void> _onRescheduleEnd() async {
+    controller.isMoving = false;
+
+    final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.deselectEvent();
+
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
-      scope.eventsController.selectedEvent!,
+      selectedEvent,
     );
-    controller.isMoving = false;
   }
 }

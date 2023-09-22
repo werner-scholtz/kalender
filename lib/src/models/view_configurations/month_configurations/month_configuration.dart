@@ -5,7 +5,7 @@ import 'package:kalender/src/extensions.dart';
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
-    this.enableResizing = false,
+    this.enableResizing = true,
     this.createNewEvents = true,
     this.multiDayTileHeight = 24,
   });
