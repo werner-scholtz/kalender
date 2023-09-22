@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/layout_delegates/event_group_layout.dart';
 import 'package:kalender/src/components/tiles/event_tile.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
@@ -50,14 +49,14 @@ class EventGroupWidget<T> extends StatelessWidget {
         ),
       );
     }
-    scope.layoutControllers.dayTileLayoutController.call(
+    scope.layoutControllers.tileLayoutController.call(
       startOfGroup: eventGroup.start,
       events: eventGroup.events,
       heightPerMinute: scope.state.heightPerMinute!.value,
     );
 
     return CustomMultiChildLayout(
-      delegate: EventGroupOverlapLayoutDelegate(
+      delegate: scope.layoutControllers.tileLayoutController(
         startOfGroup: eventGroup.start,
         events: eventGroup.events,
         heightPerMinute: scope.state.heightPerMinute!.value,

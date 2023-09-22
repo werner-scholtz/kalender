@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/customize/theme_tile.dart';
 
 class CalendarCustomize extends StatefulWidget {
@@ -7,12 +8,17 @@ class CalendarCustomize extends StatefulWidget {
     super.key,
     required this.currentConfiguration,
     required this.onStyleChange,
+    required this.layoutDelegates,
     required this.style,
+    required this.onCalendarLayoutChange,
   });
 
   final ViewConfiguration currentConfiguration;
   final CalendarStyle style;
+  final CalendarLayoutDelegates layoutDelegates;
   final Function(CalendarStyle newStyle) onStyleChange;
+  final Function(CalendarLayoutDelegates<Event> newLayout)
+      onCalendarLayoutChange;
 
   @override
   State<CalendarCustomize> createState() => _CalendarCustomizeState();
@@ -48,6 +54,27 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
               onChanged: (value) {
                 if (value == null) return;
                 customLayoutController = value;
+
+                if (value) {
+                  widget.onCalendarLayoutChange(
+                    CalendarLayoutDelegates<Event>(
+                      dayTileLayoutController: ({
+                        required events,
+                        required heightPerMinute,
+                        required startOfGroup,
+                      }) =>
+                          EventGroupBasicLayoutDelegate(
+                        events: events,
+                        startOfGroup: startOfGroup,
+                        heightPerMinute: heightPerMinute,
+                      ),
+                    ),
+                  );
+                } else {
+                  widget.onCalendarLayoutChange(
+                    CalendarLayoutDelegates<Event>(),
+                  );
+                }
               },
             ),
           ExpansionTile(

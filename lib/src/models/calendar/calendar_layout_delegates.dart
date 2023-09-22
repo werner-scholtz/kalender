@@ -9,7 +9,7 @@ class CalendarLayoutDelegates<T> {
     MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
-    this.dayTileLayoutController =
+    this.tileLayoutController =
         dayTileLayoutController ?? defaultDayTileLayoutController;
 
     this.multiDayTileLayoutController =
@@ -20,7 +20,7 @@ class CalendarLayoutDelegates<T> {
   }
 
   /// The [DayLayoutController] used to layout the day tiles.
-  late EventLayoutDelegateBuilder<T> dayTileLayoutController;
+  late EventLayoutDelegateBuilder<T> tileLayoutController;
 
   /// The [MultiDayLayoutController] used to layout the multi day tiles.
   late MultiDayEventLayoutDelegateBuilder<T> multiDayTileLayoutController;
@@ -69,15 +69,15 @@ class CalendarLayoutDelegates<T> {
 
   @override
   operator ==(Object other) {
-    return other is CalendarLayoutDelegates &&
-        other.dayTileLayoutController == dayTileLayoutController &&
+    return other is CalendarLayoutDelegates<T> &&
+        other.tileLayoutController == tileLayoutController &&
         other.multiDayTileLayoutController == multiDayTileLayoutController &&
         other.monthTileLayoutController == monthTileLayoutController;
   }
 
   @override
   int get hashCode => Object.hash(
-        dayTileLayoutController,
+        tileLayoutController,
         multiDayTileLayoutController,
         monthTileLayoutController,
       );

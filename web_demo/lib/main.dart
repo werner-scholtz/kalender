@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late CalendarComponents calendarComponents;
   late CalendarStyle calendarStyle;
+  late CalendarLayoutDelegates<Event> calendarLayoutDelegates;
 
   int currentConfiguration = 2;
   List<ViewConfiguration> viewConfigurations = [
@@ -92,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
       calendarHeaderBuilder: _calendarHeaderBuilder,
     );
     calendarStyle = const CalendarStyle();
+    calendarLayoutDelegates = CalendarLayoutDelegates();
   }
 
   @override
@@ -105,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
             calendarComponents: calendarComponents,
             calendarStyle: calendarStyle,
             currentConfiguration: viewConfigurations[currentConfiguration],
+            calendarLayoutDelegates: calendarLayoutDelegates,
           );
 
           if (constraints.maxWidth < 500) {
@@ -127,9 +130,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           currentConfiguration:
                               viewConfigurations[currentConfiguration],
                           style: calendarStyle,
+                          layoutDelegates: calendarLayoutDelegates,
                           onStyleChange: (newStyle) {
                             setState(() {
                               calendarStyle = newStyle;
+                            });
+                          },
+                          onCalendarLayoutChange: (newLayout) {
+                            setState(() {
+                              calendarLayoutDelegates = newLayout;
                             });
                           },
                         ),

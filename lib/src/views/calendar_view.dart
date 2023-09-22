@@ -105,7 +105,7 @@ class CalendarView<T> extends StatelessWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.layoutControllers,
+    this.layoutDelegates,
   }) : assert(
           tileBuilder != null && multiDayTileBuilder != null,
           'All Event Tile builders must be assigned',
@@ -121,7 +121,7 @@ class CalendarView<T> extends StatelessWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.layoutControllers,
+    this.layoutDelegates,
   })  : assert(
           tileBuilder != null && multiDayTileBuilder != null,
           'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
@@ -140,7 +140,7 @@ class CalendarView<T> extends StatelessWidget {
     this.components,
     this.style,
     this.eventHandlers,
-    this.layoutControllers,
+    this.layoutDelegates,
   })  : tileBuilder = null,
         assert(
           multiDayTileBuilder != null,
@@ -170,7 +170,7 @@ class CalendarView<T> extends StatelessWidget {
   final CalendarEventHandlers<T>? eventHandlers;
 
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
-  final CalendarLayoutDelegates<T>? layoutControllers;
+  final CalendarLayoutDelegates<T>? layoutDelegates;
 
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T>? tileBuilder;
@@ -191,7 +191,7 @@ class CalendarView<T> extends StatelessWidget {
         multiDayViewConfiguration:
             viewConfiguration as MultiDayViewConfiguration,
         style: style,
-        layoutControllers: layoutControllers,
+        layoutControllers: layoutDelegates,
       );
     }
 
@@ -204,7 +204,7 @@ class CalendarView<T> extends StatelessWidget {
         functions: eventHandlers,
         monthViewConfiguration: viewConfiguration as MonthViewConfiguration,
         style: style,
-        layoutControllers: layoutControllers,
+        layoutControllers: layoutDelegates,
       );
     }
     return Container();

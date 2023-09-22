@@ -13,6 +13,7 @@ class CalendarWidget extends StatefulWidget {
     required this.calendarController,
     required this.calendarComponents,
     required this.calendarStyle,
+    required this.calendarLayoutDelegates,
     required this.currentConfiguration,
   });
 
@@ -20,6 +21,7 @@ class CalendarWidget extends StatefulWidget {
   final CalendarController<Event> calendarController;
   final CalendarComponents calendarComponents;
   final CalendarStyle calendarStyle;
+  final CalendarLayoutDelegates<Event> calendarLayoutDelegates;
 
   final ViewConfiguration currentConfiguration;
 
@@ -38,6 +40,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       multiDayTileBuilder: _multiDayTileBuilder,
       components: widget.calendarComponents,
       style: widget.calendarStyle,
+      layoutDelegates: widget.calendarLayoutDelegates,
       eventHandlers: CalendarEventHandlers<Event>(
         onEventChanged: onEventChanged,
         onEventTapped: onEventTapped,

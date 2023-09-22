@@ -65,7 +65,7 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
     }
 
     return CustomMultiChildLayout(
-      delegate: MultiDayEventGroupDefaultLayoutDelegate(
+      delegate: scope.layoutControllers.multiDayTileLayoutController(
         events: multiDayEventGroup.events,
         visibleDateRange: visibleDateRange,
         multiDayTileHeight: multiDayTileHeight,
