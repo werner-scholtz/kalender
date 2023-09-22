@@ -131,19 +131,21 @@ class MonthViewPageContent<T> extends StatelessWidget {
                                                 if (selectedEvent
                                                         .dateTimeRange.start
                                                         .isWithin(
-                                                            weekDateRange) ||
+                                                      weekDateRange,
+                                                    ) ||
                                                     selectedEvent
                                                         .dateTimeRange.end
                                                         .isWithin(
-                                                            weekDateRange) ||
+                                                      weekDateRange,
+                                                    ) ||
                                                     (selectedEvent.start
                                                             .isBefore(
-                                                                weekDateRange
-                                                                    .start) &&
+                                                          weekDateRange.start,
+                                                        ) &&
                                                         selectedEvent.end
                                                             .isAfter(
-                                                                weekDateRange
-                                                                    .end))) {
+                                                          weekDateRange.end,
+                                                        ))) {
                                                   final multiDayEventGroup =
                                                       MultiDayEventGroupController<
                                                               T>()
@@ -191,7 +193,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
               ],
             );
           },
-        )
+        ),
       ],
     );
   }

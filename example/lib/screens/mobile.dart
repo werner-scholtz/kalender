@@ -56,10 +56,7 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<void> onCreateEvent(newEvent) async {
-    print('Create new event:');
-    print(newEvent.toString());
-  }
+  Future<void> onCreateEvent(newEvent) async {}
 
   /// This function is called when an event is tapped.
   Future<void> onEventTapped(event) async {}

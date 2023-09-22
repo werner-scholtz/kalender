@@ -133,6 +133,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     return visibleDateTimeRange;
   }
 
+  @override
   WorkWeekConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,

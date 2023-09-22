@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-/// A widget that displays the day seperators.
+/// A widget that displays the day separators.
 class DaySeparator extends StatelessWidget {
   const DaySeparator({
     super.key,

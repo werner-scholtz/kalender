@@ -55,16 +55,10 @@ class _DesktopScreenState extends State<DesktopScreen> {
   }
 
   /// This function is called when a new event is created.
-  Future<void> onCreateEvent(newEvent) async {
-    print('Create new event:');
-    print(newEvent.toString());
-  }
+  Future<void> onCreateEvent(newEvent) async {}
 
   /// This function is called when an event is tapped.
-  Future<void> onEventTapped(event) async {
-    print('Event tapped:');
-    print(event.toString());
-  }
+  Future<void> onEventTapped(event) async {}
 
   /// This function is called when an event is changed.
   Future<void> onEventChanged(

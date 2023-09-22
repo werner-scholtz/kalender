@@ -36,7 +36,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// Can create new events.
   bool get createEvents;
-
+  @override
   bool get createMultiDayEvents;
 
   /// The duration of the vertical drag step.

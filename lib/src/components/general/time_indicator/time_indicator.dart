@@ -5,8 +5,6 @@ import 'package:kalender/kalender_scope.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-// TODO: add custom time indicator.
-
 class TimeIndicator<T> extends StatefulWidget {
   const TimeIndicator({
     super.key,

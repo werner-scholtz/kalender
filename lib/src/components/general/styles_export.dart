@@ -1,5 +1,5 @@
 export 'package:kalender/src/components/general/day_header/day_header_style.dart';
-export 'package:kalender/src/components/general/day_seperator/day_separetor_style.dart';
+export 'package:kalender/src/components/general/day_separator/day_separator_style.dart';
 export 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
 export 'package:kalender/src/components/general/material_header/material_header_style.dart';
 export 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';

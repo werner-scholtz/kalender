@@ -104,9 +104,10 @@ class MultiDayPageContent<T> extends StatelessWidget {
                   ListenableBuilder(
                     listenable: selectedEvent,
                     builder: (context, child) {
-                      final selectedDayTileGroup = EventGroupController<T>()
-                          .generateDayTileGroupsFromSingleEvent(
-                        event: selectedEvent,
+                      final selectedDayTileGroup =
+                          EventGroupController<T>().generateTileGroups(
+                        visibleDates: visibleDates,
+                        events: [selectedEvent],
                       );
                       return Stack(
                         children: [

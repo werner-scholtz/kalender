@@ -148,6 +148,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     );
   }
 
+  @override
   MultiDayConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,

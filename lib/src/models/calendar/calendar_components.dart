@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header/day_header.dart';
-import 'package:kalender/src/components/general/day_seperator/day_separetor.dart';
+import 'package:kalender/src/components/general/day_separator/day_separator.dart';
 import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
@@ -92,7 +92,7 @@ class CalendarComponents {
   late MonthHeaderBuilder monthHeaderBuilder;
 
   /// This builder is used to build the handle displayed on the event tiles. (Mobile only)
-  /// TODO: Make this usefull for mobile and desktop.
+  /// TODO: Make this use full for mobile and desktop.
   late TileHandleBuilder? tileHandleBuilder;
 
   Widget _defaultTimelineBuilder(

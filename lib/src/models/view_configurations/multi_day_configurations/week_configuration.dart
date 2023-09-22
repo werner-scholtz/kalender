@@ -121,6 +121,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     return visibleDateTimeRange;
   }
 
+  @override
   WeekConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,

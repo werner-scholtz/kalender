@@ -6,13 +6,27 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 class EventGroupController<T> {
   const EventGroupController();
 
-  /// TODO: remove single event method.
   /// Generate the [EventGroup]'s for a list of events.
   Iterable<EventGroup<T>> generateTileGroups({
     required List<DateTime> visibleDates,
     required Iterable<CalendarEvent<T>> events,
   }) {
     final tileGroups = <EventGroup<T>>[];
+
+    if (events.length == 1) {
+      for (final date in events.first.datesSpanned) {
+        final eventDateTimeRange = events.first.dateTimeRangeOnDate(date);
+        tileGroups.add(
+          EventGroup<T>(
+            date: date,
+            events: [events.first],
+            dateTimeRange: eventDateTimeRange,
+          ),
+        );
+      }
+
+      return tileGroups;
+    }
 
     // Loop through each date.
     for (final date in visibleDates) {
@@ -70,26 +84,6 @@ class EventGroupController<T> {
     }
 
     return tileGroups;
-  }
-
-  /// Generate the [EventGroup]'s for a single event.
-  List<EventGroup<T>> generateDayTileGroupsFromSingleEvent({
-    required CalendarEvent<T> event,
-  }) {
-    final dayTileGroups = <EventGroup<T>>[];
-
-    for (final date in event.datesSpanned) {
-      final eventDateTimeRange = event.dateTimeRangeOnDate(date);
-      dayTileGroups.add(
-        EventGroup<T>(
-          date: date,
-          events: [event],
-          dateTimeRange: eventDateTimeRange,
-        ),
-      );
-    }
-
-    return dayTileGroups;
   }
 
   /// Finds events that overlap with the [initialEvent] from the [otherEvents], and all events that overlap with those events etc..
