@@ -25,9 +25,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
     final scope = CalendarScope.of<T>(context);
     return Stack(
       children: <Widget>[
-        Positioned.fill(
-          child: scope.components.monthGridBuilder(),
-        ),
+        scope.components.monthGridBuilder(),
         ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {

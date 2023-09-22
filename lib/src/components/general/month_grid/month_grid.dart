@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the month grid.
@@ -9,9 +10,9 @@ class MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Theme.of(context).colorScheme.surfaceVariant;
-    final thickness =
-        CalendarStyleProvider.of(context).style.monthGridStyle?.thickness ?? 0;
+    final style = CalendarStyleProvider.of(context).style.monthGridStyle;
+    final thickness = style?.thickness ?? 0;
+    final color = style?.color;
 
     return Stack(
       children: <Widget>[
@@ -22,6 +23,7 @@ class MonthGrid extends StatelessWidget {
               VerticalDivider(
                 width: thickness,
                 thickness: thickness,
+                color: color,
               ),
           ],
         ),
@@ -32,6 +34,7 @@ class MonthGrid extends StatelessWidget {
               Divider(
                 height: thickness,
                 thickness: thickness,
+                color: color,
               ),
           ],
         ),
