@@ -18,6 +18,8 @@ jobs:
 
       # For Flutter package
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable' 
