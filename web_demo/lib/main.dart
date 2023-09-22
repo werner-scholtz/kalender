@@ -70,8 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
   late CalendarStyle calendarStyle;
   late CalendarLayoutDelegates<Event> calendarLayoutDelegates;
 
-  int currentConfiguration = 2;
+  int currentConfiguration = 0;
   List<ViewConfiguration> viewConfigurations = [
+    const ScheduleConfiguration(),
     const CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,

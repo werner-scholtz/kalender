@@ -18,9 +18,10 @@ class ViewConfigurationCustomize extends StatelessWidget {
       title: const Text('View Configuration'),
       initiallyExpanded: true,
       children: [
-        ...(currentConfiguration is MultiDayViewConfiguration)
-            ? multiDayConfig(currentConfiguration as MultiDayViewConfiguration)
-            : monthConfig(currentConfiguration as MonthConfiguration)
+        if (currentConfiguration is MultiDayViewConfiguration)
+          ...multiDayConfig(currentConfiguration as MultiDayViewConfiguration),
+        if (currentConfiguration is MonthConfiguration)
+          ...monthConfig(currentConfiguration as MonthConfiguration)
       ],
     );
   }

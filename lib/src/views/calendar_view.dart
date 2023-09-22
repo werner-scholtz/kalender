@@ -9,6 +9,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/month_view/month_view.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
+import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 
 /// A navigable arrangement of events.
 ///
@@ -207,6 +208,20 @@ class CalendarView<T> extends StatelessWidget {
         layoutControllers: layoutDelegates,
       );
     }
+
+    if (viewConfiguration is ScheduleViewConfiguration) {
+      return ScheduleView(
+        controller: controller,
+        eventsController: eventsController,
+        components: components,
+        functions: eventHandlers,
+        scheduleViewConfiguration:
+            viewConfiguration as ScheduleViewConfiguration,
+        style: style,
+        layoutControllers: layoutDelegates,
+      );
+    }
+
     return Container();
   }
 }

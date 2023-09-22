@@ -255,10 +255,11 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 ),
             ],
           ),
-          ...(widget.currentConfiguration is MultiDayViewConfiguration)
-              ? multiDayConfig(
-                  widget.currentConfiguration as MultiDayViewConfiguration)
-              : monthConfig(widget.currentConfiguration as MonthConfiguration)
+          if (widget.currentConfiguration is MultiDayViewConfiguration)
+            ...multiDayConfig(
+                widget.currentConfiguration as MultiDayViewConfiguration),
+          if (widget.currentConfiguration is MonthViewConfiguration)
+            ...monthConfig(widget.currentConfiguration as MonthConfiguration)
         ],
       ),
     );
