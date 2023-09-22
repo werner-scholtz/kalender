@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 
-/// The [CalendarLayoutControllers] class contains layout controllers used by the calendar view.
-class CalendarLayoutControllers<T> {
-  CalendarLayoutControllers({
+/// The [CalendarLayoutDelegates] class contains layout controllers used by the calendar view.
+class CalendarLayoutDelegates<T> {
+  CalendarLayoutDelegates({
     EventLayoutDelegateBuilder<T>? dayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
@@ -69,7 +69,7 @@ class CalendarLayoutControllers<T> {
 
   @override
   operator ==(Object other) {
-    return other is CalendarLayoutControllers &&
+    return other is CalendarLayoutDelegates &&
         other.dayTileLayoutController == dayTileLayoutController &&
         other.multiDayTileLayoutController == multiDayTileLayoutController &&
         other.monthTileLayoutController == monthTileLayoutController;
@@ -82,12 +82,12 @@ class CalendarLayoutControllers<T> {
         monthTileLayoutController,
       );
 
-  CalendarLayoutControllers<T> copyWith({
+  CalendarLayoutDelegates<T> copyWith({
     EventLayoutDelegateBuilder<T>? dayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
-    return CalendarLayoutControllers<T>(
+    return CalendarLayoutDelegates<T>(
       dayTileLayoutController: dayTileLayoutController,
       multiDayTileLayoutController: multiDayTileLayoutController,
       monthTileLayoutController: monthTileLayoutController,

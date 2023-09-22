@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
@@ -26,7 +26,7 @@ class CalendarScope<T> extends InheritedWidget {
 
   final CalendarEventHandlers<T> functions;
 
-  final CalendarLayoutControllers<T> layoutControllers;
+  final CalendarLayoutDelegates<T> layoutControllers;
 
   final ViewState state;
 

@@ -57,7 +57,7 @@ class ViewConfigurationCustomize extends StatelessWidget {
           );
         },
       ),
-      if (config is MultiDayConfiguration)
+      if (config is CustomMultiDayConfiguration)
         NumberOfDays(
           value: config.numberOfDays,
           onChanged: (value) {

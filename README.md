@@ -15,17 +15,17 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Resize** - Resize events by dragging the edges of an event. [Try it out](https://werner-scholtz.github.io/kalender/)
 
-* **Event Handeling** - When a there is interaction with a tile or component the event can be handeled by you. [Find out more](#event-handling)
+* **Event Handling** - When a there is interaction with a tile or component the event can be handled by you. [Find out more](#event-handling)
 
 * **Flexible View's** - Each of the Calendar View's takes a ViewConfiguration, this has some parameters you can change, OR you can create your own. [Find out more](#view-configuration)
 
-* **Custom Object** - CaledarEvent's can contain any object of your choosing. [Find out more](#custom-object)
+* **Custom Object** - CalendarEvent's can contain any object of your choosing. [Find out more](#custom-object)
 
 * **Appearance** - You can change the style of the calendar and default components. [Find out more](#appearance)
 
 * **Custom Builders** - You can create your own builders for different components of the calendar. [Find out more](#appearance)
 
-* **Custom LayoutControllers** - You can create your own algorithm to layout tiles. [Find out more](#layoutcontrollers)
+* **Custom Layout Delegates** - You can create your own algorithm to layout tiles. [Find out more](#calendar-layout-delegates)
 
 ## Installation
 
@@ -78,7 +78,6 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
    ```dart
    Widget _tileBuilder(event, tileConfiguration) => Widget()
    Widget _multiDayTileBuilder(event, tileConfiguration) => Widget()
-   Widget _monthEventTileBuilder(event, tileConfiguration) => Widget()
    ```
 
 5. Create a CalendarView
@@ -88,7 +87,6 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
       calendarController: calendarController,
       tileBuilder: _tileBuilder(),
       multiDayTileBuilder: _multiDayTileBuilder(),
-      monthTileBuilder: _monthEventTileBuilder(),
     )       
     ```
     
@@ -100,116 +98,161 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 ### Calendar Views
 There are a few constructors that you can choose from to create a CalendarView.
 
-1. **Default Constructor** - this constructor will build the correct view (Day, MultiDay, Month) based on the ViewConfiguration you pass it.
+1. **Default Constructor** - this constructor will build the correct view (MultiDay, Month) based on the ViewConfiguration you pass it.
 
-2. **DayView** - this constructor will build a DayView and does not need the monthTileBuilder.
+2. **MultiDayView** - this constructor will build a MultiDayView.
 
-3. **MultiDayView** - this constructor will build a MultiDayView and does not need the monthTileBuilder.
-
-4. **MonthView** - this constructor will build a MonthView and does not need the tileBuilder or multiDayTileBuilder.
+3. **MonthView** - this constructor will build a MonthView and does not need the multiDayTileBuilder.
 
 ### View Configuration
-The CaledarView takes a ViewConfiguration object.
+The CalendarView takes a ViewConfiguration object.
 
-There are 3 'Types' of ViewConfiguration's: DayViewConfiguration, MultiDayViewConfiguration, and MonthViewConfiguration.
+There are 2 'Types' of ViewConfiguration's: MultiDayViewConfiguration, and MonthViewConfiguration.
 * You can create a Custom ViewConfiguration by extending one of these 'Types'.
 
 These are the default ViewConfiguration's:
 
-1. **DayConfiguration** - This configuration is used to configure the SingleDayView.
-    ```dart
-    DayConfiguration(
-      // The width of the timeline on the left of the page.
-      timelineWidth: 56,
-      // The overlap between the timeline and hourlines.
-      hourlineTimelineOverlap: 8,
-      // The height of the multi day tiles.
-      multidayTileHeight: 24,
-      // The size of one slot in the calendar.
-      slotSize: SlotSize(minutes: 15),
-      // Allow EventTiles to snap to each other.
-      eventSnapping: true,
-      // Allow EventTiles snap to the time indicator.
-      timeIndicatorSnapping: true,
-      // Allow the view to create new events.
-      createNewEvents: true,
-      // The duration of the vertical step while dragging.
-      verticalStepDuration: Duration(minutes: 15),
-      // The vertical snap range while dragging.
-      verticalSnapRange: Duration(minutes: 15),
-    ),
-    ```
 
-2. **MultiDayConfiguration** - This configuration is used to configure the MultiDayView and can display any number of days.
-    ```dart
-    MultiDayConfiguration(
-      name: 'Two Day',
-      numberOfDays: 2,
-      timelineWidth: 56,
-      hourlineTimelineOverlap: 8,
-      multidayTileHeight: 24,
-      slotSize: SlotSize(minutes: 15),
-      paintWeekNumber: true,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      createNewEvents: true,
-      verticalStepDuration: Duration(minutes: 15),
-      verticalSnapRange: Duration(minutes: 15),
-    ),
-    ```
 
-3. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
+
+
+1. **DayConfiguration** - This configuration is used to configure the MultiDayView for a single day.
+    <details><summary>Example</summary>
+
+      ```dart
+      DayConfiguration(
+        timelineWidth: 56,
+        hourLineTimelineOverlap: 8,
+        multiDayTileHeight: 24,
+        eventSnapping: false,
+        timeIndicatorSnapping: false,
+        createEvents: true,
+        createMultiDayEvents: true,
+        verticalStepDuration: const Duration(minutes: 15),
+        verticalSnapRange: const Duration(minutes: 15),
+        newEventDuration: const Duration(minutes: 15),
+      );
+      ```
+
+    </details>
+
+2. **WeekConfiguration** - This configuration is used to configure the MultiDayView and displays 7 days that starts on the firstDayOfWeek.
+    <details><summary>Example</summary>
+
     ```dart
     WeekConfiguration(
       timelineWidth: 56,
-      hourlineTimelineOverlap: 8,
-      multidayTileHeight: 24,
-      slotSize: SlotSize(minutes: 15),
+      hourLineTimelineOverlap: 8,
+      multiDayTileHeight: 24,
+      eventSnapping: false,
+      timeIndicatorSnapping: false,
+      createEvents: true,
+      createMultiDayEvents: true,
+      verticalStepDuration: const Duration(minutes: 15),
+      verticalSnapRange: const Duration(minutes: 15),
+      newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      // The first day of the week.
-      firstDayOfWeek: DateTime.monday,
-      createNewEvents: true,
-      verticalStepDuration: Duration(minutes: 15),
-      verticalSnapRange: Duration(minutes: 15),
-    ),
+      firstDayOfWeek: 1, 
+    );
     ```
+      
+    </details>
+  
 
-4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+3. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+
+    <details><summary>Example</summary>
+
     ```dart
     WorkWeekConfiguration(
       timelineWidth: 56,
-      hourlineTimelineOverlap: 8,
-      multidayTileHeight: 24,
-      slotSize: SlotSize(minutes: 15),
+      hourLineTimelineOverlap: 8,
+      multiDayTileHeight: 24,
+      eventSnapping: false,
+      timeIndicatorSnapping: false,
+      createEvents: true,
+      createMultiDayEvents: true,
+      verticalStepDuration: const Duration(minutes: 15),
+      verticalSnapRange: const Duration(minutes: 15),
+      newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      createNewEvents: true,
-      verticalStepDuration: Duration(minutes: 15),
-      verticalSnapRange: Duration(minutes: 15),
-    )
+    );
     ```
 
-5. **MonthConfiguration** - this configuration is used to configure the MonthView.
+    </details>
+
+4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+
+    <details><summary>Example</summary>
+
+    ```dart
+    WorkWeekConfiguration(
+      timelineWidth: 56,
+      hourLineTimelineOverlap: 8,
+      multiDayTileHeight: 24,
+      eventSnapping: false,
+      timeIndicatorSnapping: false,
+      createEvents: true,
+      createMultiDayEvents: true,
+      verticalStepDuration: const Duration(minutes: 15),
+      verticalSnapRange: const Duration(minutes: 15),
+      newEventDuration: const Duration(minutes: 15),
+      paintWeekNumber: true,
+    );
+    ```
+      
+    </details>
+
+
+5. **CustomMultiDayConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+
+    <details><summary>Example</summary>
+
+    ```dart
+    CustomMultiDayConfiguration(
+      name: 'Custom Name',
+      numberOfDays: 3,
+      timelineWidth: 56,
+      hourLineTimelineOverlap: 8,
+      multiDayTileHeight: 24,
+      eventSnapping: false,
+      timeIndicatorSnapping: false,
+      createEvents: true,
+      createMultiDayEvents: true,
+      verticalStepDuration: const Duration(minutes: 15),
+      verticalSnapRange: const Duration(minutes: 15),
+      newEventDuration: const Duration(minutes: 15),
+      paintWeekNumber: true,
+    );
+
+    ```
+      
+    </details>
+
+6. **MonthConfiguration** - this configuration is used to configure the MonthView.
+
+    <details><summary>Example</summary>
+
     ```dart
     MonthConfiguration(
-      firstDayOfWeek: DateTime.monday,
-      // Can events be resized.
-      enableRezising: true,
-      createNewEvents: true,
-    )
+      firstDayOfWeek: 1,
+      multiDayTileHeight: 24,
+      enableResizing: true,
+      createMultiDayEvents: true,
+    );
     ```
+      
+    </details>
+   
 
 
 
 
 ### Event Handling
-The CaledarView can take a CalendarEventHandlers object.
+The CalendarView can take a CalendarEventHandlers object.
 The CalendarEventHandlers handles the user's interaction with the calendar. (Do not confuse the CalendarEventHandlers with the EventsController)
 
-There are 5 events at this time that can be handeled.
+There are 5 events at this time that can be handled.
 
 1. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
@@ -221,49 +264,56 @@ There are 5 events at this time that can be handeled.
 
 5. **onDateTapped**: this function is called when a date on the calendar is tapped.
 
-```dart
-CalendarEventHandlers<Event>(
-  onEventChangeStart: (CalendarEvent<T> event) {
-    // This function is called when an event is about to be changed.
+  <details><summary>Example Code</summary>
 
-    // Usefull on mobile for haptic feedback.
-  }
-  onEventChanged: (DateTimeRange initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
-    // The initialDateTimeRange is the original DateTimeRange of the event so if the user wants to undo the change you can use this value.
-    // The event is a reference to the event that was changed so you can update the event here.
+  ```dart
+  CalendarEventHandlers<Event>(
+    onEventChangeStart: (CalendarEvent<T> event) {
+      // This function is called when an event is about to be changed.
 
-    // This is a async function, so you can do any async work here.
+      // Use full on mobile for haptic feedback.
+    }
+    onEventChanged: (DateTimeRange initialDateTimeRange, CalendarEvent<Event> calendarEvent) async {
+      // The initialDateTimeRange is the original DateTimeRange of the event so if the user wants to undo the change you can use this value.
+      // The event is a reference to the event that was changed so you can update the event here.
 
-    // Once this function is complete the calendar will rebuild.
-  },
-  onEventTapped: (CalendarEvent<Event> calendarEvent) async {
-    // The calendarEvent is a reference to the event that was tapped.
+      // This is a async function, so you can do any async work here.
 
-    // This is a async function, so you can do any async work here.
+      // Once this function is complete the calendar will rebuild.
+    },
+    onEventTapped: (CalendarEvent<Event> calendarEvent) async {
+      // The calendarEvent is a reference to the event that was tapped.
 
-    // Once this function is complete the calendar will rebuild.
-  },
-  onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
-    // The calendarEvent is a empty event and is not yet added to the list of events.
+      // This is a async function, so you can do any async work here.
 
-    // This is a async function, so you can do any async work here.
+      // Once this function is complete the calendar will rebuild.
+    },
+    onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
+      // The calendarEvent is a empty event and is not yet added to the list of events.
 
-    // If you want to add the event to the calendar 
-    eventsController.addEvent(event);
+      // This is a async function, so you can do any async work here.
 
-    // Once this function completes the calendar will rebuild.
-  },
-  onDateTapped: (DateTime date) {
-    // The date is the date header that was tapped. see example for use case.
-  },
-  onPageChanged: (DateTimeRange visibleDateTimeRange) {
-    // The visibleDateTimeRange is the visible DateTimeRange of the current page.
-  },
-);
-```
+      // If you want to add the event to the calendar 
+      eventsController.addEvent(event);
+
+      // Once this function completes the calendar will rebuild.
+    },
+    onDateTapped: (DateTime date) {
+      // The date is the date header that was tapped. see example for use case.
+    },
+    onPageChanged: (DateTimeRange visibleDateTimeRange) {
+      // The visibleDateTimeRange is the visible DateTimeRange of the current page.
+    },
+  );
+  ```
+    
+  </details>
+  
+
+
 
 ### Events Controller
-The CaledarView takes a EventsController object.
+The CalendarView takes a EventsController object.
 The EventsController is used to store and manage CalendarEvent's.
 (Do not confuse the EventsController with EventHandling)
 
@@ -277,12 +327,12 @@ The EventsController is used to store and manage CalendarEvent's.
 | updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where 
 the test returns true  | 
 | selectEvent   |  CalendarEvent<T> event | Selects the given event. |
-| deselectEvent | | Deslects the selected event. |
+| deselectEvent | | Deselects the selected event. |
 | forceUpdate | | Forces the calendar to update the UI. |
 
 
 ### Calendar Controller
-The CaledarView takes a CalendarController object.
+The CalendarView takes a CalendarController object.
 The CalendarController is used to control the CalendarView.
 
 | Function      | Parameters    | Description   |
@@ -294,7 +344,7 @@ The CalendarController is used to control the CalendarView.
 | animateToDate  | DateTime date, {Duration? duration, Curve? curve,}  | Animates to the DateTime provided.|
 | adjustHeightPerMinute  | double heightPerMinute  | Changes the heightPerMinute of the view. (Zoom level)  |
 | animateToEvent  | CalendarEvent<T> event, {Duration? duration, Curve? curve}  | Animates to the CalendarEvent.  | 
-| lockScrollPhyscis  |   | Locks the vertical scroll of the current view. | 
+| lockScrollPhysics  |   | Locks the vertical scroll of the current view. | 
 | unlockScrollPhysics  | ScrollPhysics? scrollPhysics | Unlocks the vertical scroll of the current view. | 
 
 
@@ -323,96 +373,40 @@ Widget _tileBuilder(CalendarEvent<Event> event, tileConfiguration) {
 }
 ```
 
-### LayoutControllers
+### Calendar Layout Delegates
 There are three types of layout controllers: DayLayoutController, MultiDayLayoutController, and MonthLayoutController.
 
-(See the example app for examples)
-
-1. DayLayoutController
-   Create your own DayLayoutController by extending the DayLayoutController class.
-   ```dart
-    class DefaultDayLayoutController<T> extends DayTileLayoutController<T> {
-      DefaultDayTileLayoutController({
-        required super.visibleDateRange,
-        required super.visibleDates,
-        required super.heightPerMinute,
-        required super.dayWidth,
-      });
-
-      @override
-      List<TileGroup<T>> generateTileGroups(
-        Iterable<CalendarEvent<T>> events,
-      ) {
-        // This must return a list of TileGroup's.
-        // TileGroups are a collection of PositionedTileData's and are displayed as a group.
-        // The order of the PositionedTileData's in the list is the order in which they are displayed.
-      }
-
-      @override
-      List<PositionedTileData<T>> layoutSingleEvent(
-        CalendarEvent<T> event,
-      ) {
-        // This returns a single PositionedTileData that is used to display event that is moving.
-      }
-
-    }
-   ```
-
-2. MultiDayLayoutController
-   Create your own MultiDayLayoutController by extending the DayLayoutController class.
-   ```dart
-  class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {
-    DefaultMultidayLayoutController({
-      required super.visibleDateRange,
-      required super.dayWidth,
-      required super.tileHeight,
+1. EventGroupLayoutDelegate 
+   Create your own EventGroupLayoutDelegate by extending the EventGroupLayoutDelegate class.
+  ```dart
+  class CustomLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
+    CustomLayoutDelegate({
+      required super.events, // The events that are in the group.
+      required super.startOfGroup, // The datetime that the group starts.
+      required super.heightPerMinute, // The height per minute of the view.
     });
-
+    
     @override
-    MultiDayLayoutData<T> layoutEvents(
-      Iterable<CalendarEvent<T>> events,
-    ) {
-      // This must return a MultiDayLayoutData object.
-      // The MultiDayLayoutData contains a list of PositionedTileData's.
-      // And the stack height.
-    }
+    void performLayout(Size size) {}
+  }
+  ```
 
+2. MultiDayEventGroupLayoutDelegate
+   Create your own MultiDayLayoutDelegate by extending the MultiDayEventGroupLayoutDelegate class.
+  ```dart
+  class CustomLayoutDelegate<T> extends MultiDayEventGroupLayoutDelegate<T> {
+    CustomLayoutDelegate({
+      required super.events, // The events that are in the group.
+      required super.visibleDateRange, // The visible date range of the view.
+      required super.multiDayTileHeight, // The height of the multi day tile.
+    });
+    
     @override
-    List<PositionedTileData<T>> layoutSingleEvent(
-      CalendarEvent<T> event,
-    ) {
-      // This must return a single PositionedTileData that is used to display event that is moving.
-    }
+    void performLayout(Size size) {}
+  }
+  ```
 
-   }
-   ```
 
-3. MonthLayoutController 
-   Create your own MonthLayoutController by extending the DayLayoutController class.
-   ```dart
-   class DefaultMultidayLayoutController<T> extends MultiDayTileLayoutController<T> {
-      DefaultMultidayLayoutController({
-        required super.visibleDateRange,
-        required super.cellWidth,
-        required super.tileHeight,
-      });
-
-      @override
-      List<PositionedMonthTileData<T>> layoutEvents(
-        Iterable<CalendarEvent<T>> events,
-      ){
-        // This must return a list of PositionedMonthTileData's.
-        // The order of the PositionedMonthTileData's in the list is the order in which they are displayed.
-      }
-
-      @override
-      List<PositionedMonthTileData<T>> layoutSingleEvent(
-        CalendarEvent<T> event,
-      ){
-        // This must return a single PositionedMonthTileData that is used to display event that is moving.
-      }
-   }
-   ```
 
 
 ### Appearance
@@ -437,17 +431,17 @@ Each of these components can be customized in the CalendarStyle object or by pas
 
     (WeekNumber)
 
-4. DaySeprator - This widget is displayed between days in the calendar.
+4. DaySeparator - This widget is displayed between days in the calendar.
     
     <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/day_seperator.png" width="75%" height="75%"/>
 
-    (DaySeprator)
+    (DaySeparator)
 
-5. Hourlines - This widget is displayes the hourlines in the calendar.
+5. HourLines - This widget is displays the hour lines in the calendar.
     
     <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/hourlines.png" width="75%" height="75%"/>
 
-    (Hourlines)
+    (HourLines)
 
 6. Timeline - This widget is displayed on the left side of the calendar to show the time.
     

@@ -22,11 +22,11 @@ class _MobileScreenState extends State<MobileScreen> {
       CalendarController<Event>();
   late ViewConfiguration currentConfiguration = viewConfigurations[1];
   late List<ViewConfiguration> viewConfigurations = [
-    const MultiDayConfiguration(
+    const CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const MultiDayConfiguration(
+    const CustomMultiDayConfiguration(
       name: '2 Days',
       numberOfDays: 2,
     ),

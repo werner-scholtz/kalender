@@ -3,7 +3,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/type_definitions.dart';
@@ -26,25 +26,18 @@ import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 ///
 /// [multiDayTileBuilder] is a [MultiDayTileBuilder] used to build multi day event tiles.
 ///
-///
-/// There are four options for constructing a [CalendarView]:
+/// There are a few options for constructing a [CalendarView]:
 ///
 ///  1. The default constructor can display any view configuration and will update when a
 ///     new view configuration is assigned.
 ///
-///  2. The [CalendarView.singleDay] displays a single day and takes:
-///     * [SingleDayViewConfiguration] which is used to configure the view.
-///     * [TileBuilder] which is used to build tiles in the main view.
-///     * [MultiDayTileBuilder] which is used to build tiles above the main view.
-///
-///  3. The [CalendarView.multiDay] displays multiple days and takes:
+///  2. The [CalendarView.multiDay] displays multiple days and takes:
 ///     * [MultiDayViewConfiguration] which is used to configure the view.
 ///     * [TileBuilder] which is used to build tiles in the main view.
 ///     * [MultiDayTileBuilder] which is used to build tiles above the main view.
 ///
-///  4. The [CalendarView.month] displays a month.
+///  3. The [CalendarView.month] displays a month.
 ///     * [MonthViewConfiguration] which is used to configure the view.
-///     * [MonthTileBuilder] which is used to build month event tiles.
 ///
 /// Default constructor example:
 ///
@@ -65,25 +58,6 @@ import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 ///   ),
 /// );
 /// '''
-///
-/// SingleDay constructor example:
-///
-/// {@tool snippet}
-/// '''dart
-/// CalendarView.singleDay(
-///   controller: controller,
-///   eventsController: eventsController,
-///   viewConfiguration: DayConfiguration(),
-///   tileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
-///     color: Colors.blue,
-///   ),
-///   multiDayTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
-///     color: Colors.blue,
-///   ),
-/// );
-/// '''
-/// {@end-tool}
-///
 ///
 /// MultiDay constructor example:
 ///
@@ -119,6 +93,7 @@ import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 /// );
 /// '''
 /// {@end-tool}
+///
 class CalendarView<T> extends StatelessWidget {
   const CalendarView({
     super.key,
@@ -134,26 +109,6 @@ class CalendarView<T> extends StatelessWidget {
   }) : assert(
           tileBuilder != null && multiDayTileBuilder != null,
           'All Event Tile builders must be assigned',
-        );
-
-  const CalendarView.singleDay({
-    super.key,
-    required this.controller,
-    required this.eventsController,
-    required this.viewConfiguration,
-    required this.tileBuilder,
-    required this.multiDayTileBuilder,
-    this.components,
-    this.style,
-    this.eventHandlers,
-    this.layoutControllers,
-  })  : assert(
-          tileBuilder != null && multiDayTileBuilder != null,
-          'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
-        ),
-        assert(
-          viewConfiguration is MultiDayConfiguration,
-          'SingleDayViewConfiguration must be assigned',
         );
 
   const CalendarView.multiDay({
@@ -181,12 +136,16 @@ class CalendarView<T> extends StatelessWidget {
     required this.controller,
     required this.eventsController,
     required this.viewConfiguration,
+    required this.multiDayTileBuilder,
     this.components,
     this.style,
     this.eventHandlers,
     this.layoutControllers,
   })  : tileBuilder = null,
-        multiDayTileBuilder = null,
+        assert(
+          multiDayTileBuilder != null,
+          'MultiDayEventTileBuilder must be assigned',
+        ),
         assert(
           viewConfiguration is MonthViewConfiguration,
           'MonthViewConfiguration must be assigned',
@@ -210,8 +169,8 @@ class CalendarView<T> extends StatelessWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? eventHandlers;
 
-  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
-  final CalendarLayoutControllers<T>? layoutControllers;
+  /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
+  final CalendarLayoutDelegates<T>? layoutControllers;
 
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T>? tileBuilder;

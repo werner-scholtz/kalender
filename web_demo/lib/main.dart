@@ -71,11 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int currentConfiguration = 2;
   List<ViewConfiguration> viewConfigurations = [
-    const MultiDayConfiguration(
+    const CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const MultiDayConfiguration(
+    const CustomMultiDayConfiguration(
       name: 'Custom',
       numberOfDays: 2,
     ),

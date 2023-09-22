@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
-class MultiDayConfiguration extends MultiDayViewConfiguration {
-  const MultiDayConfiguration({
+class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
+  const CustomMultiDayConfiguration({
     required this.name,
     this.numberOfDays = 3,
     this.timelineWidth = 56,
@@ -149,7 +149,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  MultiDayConfiguration copyWith({
+  CustomMultiDayConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
@@ -164,7 +164,7 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     bool? createEvents,
     bool? createMultiDayEvents,
   }) {
-    return MultiDayConfiguration(
+    return CustomMultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
       timelineWidth: timelineWidth ?? this.timelineWidth,
       hourLineTimelineOverlap:

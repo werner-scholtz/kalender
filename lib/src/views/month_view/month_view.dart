@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_layout_controllers.dart';
+import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
@@ -49,8 +49,8 @@ class MonthView<T> extends StatefulWidget {
   /// The [CalendarEventHandlers] used to handle events.
   final CalendarEventHandlers<T>? functions;
 
-  /// The [CalendarLayoutControllers] used to layout the calendar's tiles.
-  final CalendarLayoutControllers<T>? layoutControllers;
+  /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
+  final CalendarLayoutDelegates<T>? layoutControllers;
 
   /// The [MonthTileBuilder] used to build month event tiles.
   final MultiDayTileBuilder<T> multiDayTileBuilder;
@@ -68,7 +68,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   late CalendarTileComponents<T> _tileComponents;
   late MonthViewConfiguration _viewConfiguration;
   late CalendarStyle _style;
-  late CalendarLayoutControllers<T> _layoutControllers;
+  late CalendarLayoutDelegates<T> _layoutControllers;
 
   @override
   void initState() {
@@ -81,7 +81,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
       multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _layoutControllers =
-        widget.layoutControllers ?? CalendarLayoutControllers<T>();
+        widget.layoutControllers ?? CalendarLayoutDelegates<T>();
     _viewConfiguration =
         (widget.monthViewConfiguration ?? const MonthConfiguration());
     _style = widget.style ?? const CalendarStyle();
@@ -122,7 +122,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
 
     if (_layoutControllers != widget.layoutControllers) {
       _layoutControllers =
-          widget.layoutControllers ?? CalendarLayoutControllers<T>();
+          widget.layoutControllers ?? CalendarLayoutDelegates<T>();
     }
   }
 
