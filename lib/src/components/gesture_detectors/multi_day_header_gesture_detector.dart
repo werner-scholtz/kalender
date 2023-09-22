@@ -4,16 +4,19 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
   const MultiDayHeaderGestureDetector({
     super.key,
+    required this.viewConfiguration,
     required this.visibleDateRange,
     required this.horizontalStep,
     this.verticalStep,
   });
 
   final DateTimeRange visibleDateRange;
+  final ViewConfiguration viewConfiguration;
   final double horizontalStep;
   final double? verticalStep;
 
@@ -28,6 +31,7 @@ class _MultiDayHeaderGestureDetectorState<T>
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get createEvents => widget.viewConfiguration.createMultiDayEvents;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;
@@ -37,18 +41,24 @@ class _MultiDayHeaderGestureDetectorState<T>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (final date in widget.visibleDateRange.datesSpanned)
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _onTap(date),
-              onPanStart: (details) => _onPanStart(details, date),
-              onPanUpdate: _onPanUpdate,
-              onPanEnd: _onPanEnd,
+    return MouseRegion(
+      cursor:
+          createEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      child: Row(
+        children: [
+          for (final date in widget.visibleDateRange.datesSpanned)
+            Expanded(
+              child: GestureDetector(
+                onTap: () => _onTap(date),
+                onPanStart: createEvents
+                    ? (details) => _onPanStart(details, date)
+                    : null,
+                onPanUpdate: createEvents ? _onPanUpdate : null,
+                onPanEnd: createEvents ? _onPanEnd : null,
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -57,6 +67,8 @@ class _MultiDayHeaderGestureDetectorState<T>
       controller.deselectEvent();
       return;
     }
+
+    if (!createEvents) return;
 
     final newCalendarEvent = CalendarEvent<T>(
       dateTimeRange: DateTimeRange(start: date, end: date.endOfDay),

@@ -65,6 +65,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
+        fit: StackFit.expand,
         children: [
           GestureDetector(
             onPanStart: useDesktopGestures ? _onRescheduleStart : null,

@@ -11,8 +11,11 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   String get name;
 
-  /// Can create new events.
-  bool get createNewEvents;
+  /// Can create new multi day events.
+  bool get createMultiDayEvents;
+
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 
   /// Returns the visible[DateTimeRange] for the [index].
   ///

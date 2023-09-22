@@ -75,6 +75,7 @@ class MultiDayEventGroupDefaultLayoutDelegate<T>
           height: multiDayTileHeight,
         ),
       );
+
       tileSizes[id] = childSize;
     }
 

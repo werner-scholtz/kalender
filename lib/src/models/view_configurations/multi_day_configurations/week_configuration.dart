@@ -12,7 +12,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.eventSnapping = true,
     this.timeIndicatorSnapping = true,
     this.firstDayOfWeek = 1,
-    this.createNewEvents = true,
+    this.createEvents = true,
+    this.createMultiDayEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
   });
@@ -57,7 +58,10 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   final String name = 'Week';
 
   @override
-  final bool createNewEvents;
+  final bool createEvents;
+
+  @override
+  final bool createMultiDayEvents;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
@@ -118,17 +122,19 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   }
 
   WeekConfiguration copyWith({
+    int? numberOfDays,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
     Duration? newEventDuration,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
     int? firstDayOfWeek,
-    bool? createNewEvents,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
+    bool? createEvents,
+    bool? createMultiDayEvents,
   }) {
     return WeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
@@ -141,7 +147,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       timeIndicatorSnapping:
           timeIndicatorSnapping ?? this.timeIndicatorSnapping,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      createNewEvents: createNewEvents ?? this.createNewEvents,
+      createEvents: createEvents ?? this.createEvents,
+      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
     );

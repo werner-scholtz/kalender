@@ -95,6 +95,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                               child: Stack(
                                 children: [
                                   MultiDayHeaderGestureDetector<T>(
+                                    viewConfiguration: viewConfiguration,
                                     visibleDateRange: weekDateRange,
                                     horizontalStep: horizontalStep,
                                     verticalStep: verticalStep,

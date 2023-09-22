@@ -13,7 +13,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
     this.multiDayTileHeight = 24,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
-    this.createNewEvents = true,
+    this.createEvents = true,
+    this.createMultiDayEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
     this.newEventDuration = const Duration(minutes: 15),
@@ -41,7 +42,10 @@ class DayConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
-  final bool createNewEvents;
+  final bool createEvents;
+
+  @override
+  final bool createMultiDayEvents;
 
   @override
   final Duration newEventDuration;
@@ -125,16 +129,21 @@ class DayConfiguration extends MultiDayViewConfiguration {
     return visibleDateTimeRange;
   }
 
-  DayConfiguration copyWith({
+  @override
+  MultiDayViewConfiguration copyWith({
+    int? numberOfDays,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
-    Duration? newEventDuration,
-    bool? eventSnapping,
-    bool? timeIndicatorSnapping,
-    bool? createNewEvents,
     Duration? verticalStepDuration,
     Duration? verticalSnapRange,
+    Duration? newEventDuration,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    int? firstDayOfWeek,
+    bool? createEvents,
+    bool? createMultiDayEvents,
   }) {
     return DayConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
@@ -145,9 +154,38 @@ class DayConfiguration extends MultiDayViewConfiguration {
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:
           timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createNewEvents: createNewEvents ?? this.createNewEvents,
+      createEvents: createEvents ?? this.createEvents,
+      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
     );
   }
+
+  // @override
+  // DayConfiguration copyWith({
+  //   int? numberOfDays,
+  //   double? timelineWidth,
+  //   double? hourLineTimelineOverlap,
+  //   double? multiDayTileHeight,
+  //   Duration? newEventDuration,
+  //   bool? eventSnapping,
+  //   bool? timeIndicatorSnapping,
+  //   bool? createNewEvents,
+  //   Duration? verticalStepDuration,
+  //   Duration? verticalSnapRange,
+  // }) {
+  //   return DayConfiguration(
+  //     timelineWidth: timelineWidth ?? this.timelineWidth,
+  //     hourLineTimelineOverlap:
+  //         hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+  //     multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
+  //     newEventDuration: newEventDuration ?? this.newEventDuration,
+  //     eventSnapping: eventSnapping ?? this.eventSnapping,
+  //     timeIndicatorSnapping:
+  //         timeIndicatorSnapping ?? this.timeIndicatorSnapping,
+  //     createNewEvents: createNewEvents ?? this.createNewEvents,
+  //     verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
+  //     verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+  //   );
+  // }
 }

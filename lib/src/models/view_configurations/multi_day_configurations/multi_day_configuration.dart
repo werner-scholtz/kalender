@@ -13,7 +13,8 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     this.paintWeekNumber = true,
     this.eventSnapping = true,
     this.timeIndicatorSnapping = true,
-    this.createNewEvents = true,
+    this.createMultiDayEvents = true,
+    this.createEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
   });
@@ -27,7 +28,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   @override
   final double hourLineTimelineOverlap;
 
-  // TODO: Remove this
   @override
   final Duration newEventDuration;
 
@@ -53,7 +53,10 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   final String name;
 
   @override
-  final bool createNewEvents;
+  final bool createMultiDayEvents;
+
+  @override
+  final bool createEvents;
 
   @override
   int get firstDayOfWeek => 1;
@@ -150,13 +153,15 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
     Duration? newEventDuration,
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
-    bool? createNewEvents,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
+    int? firstDayOfWeek,
+    bool? createEvents,
+    bool? createMultiDayEvents,
   }) {
     return MultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
@@ -169,7 +174,8 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
       eventSnapping: eventSnapping ?? this.eventSnapping,
       timeIndicatorSnapping:
           timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createNewEvents: createNewEvents ?? this.createNewEvents,
+      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
+      createEvents: createEvents ?? this.createEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name,

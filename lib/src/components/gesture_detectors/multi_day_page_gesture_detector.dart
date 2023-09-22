@@ -29,6 +29,7 @@ class _MultiDayPageGestureDetectorState<T>
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get controller => scope.eventsController;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
+  bool get createEvents => widget.viewConfiguration.createEvents;
 
   int get newEventDurationInMinutes =>
       widget.viewConfiguration.newEventDuration.inMinutes;
@@ -38,47 +39,52 @@ class _MultiDayPageGestureDetectorState<T>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        for (final date in widget.visibleDates)
-          Expanded(
-            child: Column(
-              children: List.generate(
-                (hoursADay * 60) ~/ newEventDurationInMinutes,
-                (slotIndex) => Expanded(
-                  child: SizedBox.expand(
-                    child: GestureDetector(
-                      onTap: () => _onTap(
-                        calculateNewEventDateTimeRange(date, slotIndex),
+    return MouseRegion(
+      cursor:
+          createEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          for (final date in widget.visibleDates)
+            Expanded(
+              child: Column(
+                children: List.generate(
+                  (hoursADay * 60) ~/ newEventDurationInMinutes,
+                  (slotIndex) => Expanded(
+                    child: SizedBox.expand(
+                      child: GestureDetector(
+                        onTap: () => _onTap(
+                          calculateNewEventDateTimeRange(date, slotIndex),
+                        ),
+                        onVerticalDragStart: isMobileDevice || !createEvents
+                            ? null
+                            : (details) => _onVerticalDragStart(
+                                  details,
+                                  calculateNewEventDateTimeRange(
+                                    date,
+                                    slotIndex,
+                                  ),
+                                ),
+                        onVerticalDragEnd: isMobileDevice || !createEvents
+                            ? null
+                            : _onVerticalDragEnd,
+                        onVerticalDragUpdate: isMobileDevice || !createEvents
+                            ? null
+                            : (details) => _onVerticalDragUpdate(
+                                  details,
+                                  calculateNewEventDateTimeRange(
+                                    date,
+                                    slotIndex,
+                                  ),
+                                ),
                       ),
-                      onVerticalDragStart: isMobileDevice
-                          ? null
-                          : (details) => _onVerticalDragStart(
-                                details,
-                                calculateNewEventDateTimeRange(
-                                  date,
-                                  slotIndex,
-                                ),
-                              ),
-                      onVerticalDragEnd:
-                          isMobileDevice ? null : _onVerticalDragEnd,
-                      onVerticalDragUpdate: isMobileDevice
-                          ? null
-                          : (details) => _onVerticalDragUpdate(
-                                details,
-                                calculateNewEventDateTimeRange(
-                                  date,
-                                  slotIndex,
-                                ),
-                              ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -89,6 +95,8 @@ class _MultiDayPageGestureDetectorState<T>
       controller.deselectEvent();
       return;
     }
+
+    if (!createEvents) return;
 
     // Set the selected event to a new event.
     scope.eventsController.selectEvent(
@@ -162,11 +170,14 @@ class _MultiDayPageGestureDetectorState<T>
   void _onVerticalDragEnd(DragEndDetails details) async {
     cursorOffset = 0;
 
-    scope.eventsController.isResizing = false;
+    final selectedEvent = scope.eventsController.selectedEvent!;
 
     await scope.functions.onCreateEvent?.call(
-      scope.eventsController.selectedEvent!,
+      selectedEvent,
     );
+
+    scope.eventsController.isResizing = false;
+    scope.eventsController.deselectEvent();
   }
 
   ///

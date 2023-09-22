@@ -13,9 +13,6 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// The overlap of the hourLines and the timeline.
   double get hourLineTimelineOverlap;
 
-  /// The height of the multiDay tiles.
-  double get multiDayTileHeight;
-
   /// The vertical step duration.
   Duration get horizontalStepDuration;
 
@@ -37,8 +34,29 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// The first day of the week.
   int get firstDayOfWeek;
 
+  /// Can create new events.
+  bool get createEvents;
+
+  bool get createMultiDayEvents;
+
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;
 
   double get hourLineLeftOffset => timelineWidth - hourLineTimelineOverlap;
+
+  MultiDayViewConfiguration copyWith({
+    int? numberOfDays,
+    double? timelineWidth,
+    double? hourLineTimelineOverlap,
+    double? multiDayTileHeight,
+    Duration? verticalStepDuration,
+    Duration? verticalSnapRange,
+    Duration? newEventDuration,
+    bool? paintWeekNumber,
+    bool? eventSnapping,
+    bool? timeIndicatorSnapping,
+    int? firstDayOfWeek,
+    bool? createEvents,
+    bool? createMultiDayEvents,
+  });
 }
