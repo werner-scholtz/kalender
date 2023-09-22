@@ -101,6 +101,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
     final index = _events.indexWhere((element) => test(element));
+
     if (index == -1) return;
     if (newEventData != null) {
       _events[index].eventData = newEventData;
@@ -136,7 +137,7 @@ class CalendarEventsController<T> with ChangeNotifier {
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
-  Iterable<CalendarEvent<T>> getMonthEventsFromDateRange(
+  Iterable<CalendarEvent<T>> getEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
     return _events.where(
@@ -160,7 +161,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]
   /// of the [CalendarEvent]s that are visible on the given date range.
   Iterable<DateTime> getSnapPointsFromDateTimeRange(DateTimeRange dateRange) {
-    final eventsInDateTimeRange = getMonthEventsFromDateRange(dateRange);
+    final eventsInDateTimeRange = getEventsFromDateRange(dateRange);
     final snapPoints = <DateTime>[];
     for (var event in eventsInDateTimeRange) {
       snapPoints.add(event.start);

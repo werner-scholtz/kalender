@@ -54,7 +54,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
       timeIndicatorSnapping: true,
     ),
     const MonthConfiguration(
-      enableRezising: true,
+      enableResizing: true,
     ),
   ];
 
@@ -84,21 +84,23 @@ class _DesktopScreenState extends State<DesktopScreen> {
       children: [
         Expanded(
           flex: 3,
-          child: CalendarView<Event>(
-            controller: calendarController,
-            eventsController: eventsController,
-            viewConfiguration: currentConfiguration,
-            tileBuilder: _tileBuilder,
-            multiDayTileBuilder: _multiDayTileBuilder,
-            monthTileBuilder: _monthEventTileBuilder,
-            components: components,
-            layoutControllers: layoutControllers,
-            style: style,
-            eventHandlers: CalendarEventHandlers<Event>(
-              onEventChanged: onEventChanged,
-              onEventTapped: onEventTapped,
-              onCreateEvent: onCreateEvent,
-              onDateTapped: onDateTapped,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: CalendarView<Event>(
+              controller: calendarController,
+              eventsController: eventsController,
+              viewConfiguration: currentConfiguration,
+              tileBuilder: _tileBuilder,
+              multiDayTileBuilder: _multiDayTileBuilder,
+              components: components,
+              layoutControllers: layoutControllers,
+              style: style,
+              eventHandlers: CalendarEventHandlers<Event>(
+                onEventChanged: onEventChanged,
+                onEventTapped: onEventTapped,
+                onCreateEvent: onCreateEvent,
+                onDateTapped: onDateTapped,
+              ),
             ),
           ),
         ),
@@ -254,12 +256,12 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   Widget _monthEventTileBuilder(
     CalendarEvent<Event> event,
-    MonthTileConfiguration tileConfiguration,
+    MultiDayTileConfiguration tileConfiguration,
   ) {
     return MonthEventTile(
       event: event,
       tileType: tileConfiguration.tileType,
-      date: tileConfiguration.date,
+      date: event.dateTimeRange.start,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
     );

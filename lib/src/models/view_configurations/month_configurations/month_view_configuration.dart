@@ -5,14 +5,17 @@ abstract class MonthViewConfiguration implements ViewConfiguration {
   const MonthViewConfiguration();
 
   /// The duration of one vertical step.
-  Duration get verticalDurationStep;
+  Duration get verticalStepDuration;
 
   /// The duration of one horizontal step.
-  Duration get horizontalDurationStep;
+  Duration get horizontalStepDuration;
 
   /// The first day of the week.
   int get firstDayOfWeek;
 
   /// Whether the events can be resized.
-  bool get enableRezising;
+  bool get enableResizing;
+
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 }

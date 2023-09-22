@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header/day_header_style.dart';
-import 'package:kalender/src/components/general/day_seperator/day_seperator_style.dart';
+import 'package:kalender/src/components/general/day_seperator/day_separetor_style.dart';
 import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
 import 'package:kalender/src/components/general/material_header/material_header_style.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';
-import 'package:kalender/src/components/general/month_cells/month_cells_style.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
 import 'package:kalender/src/components/general/month_header/month_header_style.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
@@ -25,7 +24,6 @@ class CalendarStyle {
     this.weekNumberStyle = const WeekNumberStyle(),
     this.monthCellHeaderStyle = const MonthCellHeaderStyle(),
     this.monthGridStyle = const MonthGridStyle(),
-    this.monthCellsStyle = const MonthCellsStyle(),
   });
 
   /// The background color of the [CalendarView].
@@ -54,9 +52,6 @@ class CalendarStyle {
 
   /// The [MonthGridStyle] used by the [MonthGrid].
   final MonthGridStyle? monthGridStyle;
-
-  /// The [MonthCellsStyle] used by the [MonthCells].
-  final MonthCellsStyle? monthCellsStyle;
 
   /// The [MonthHeaderStyle] used by the [MonthHeader].
   final MonthHeaderStyle? monthHeaderStyle;
@@ -106,7 +101,6 @@ class CalendarStyle {
     WeekNumberStyle? weekNumberStyle,
     MonthCellHeaderStyle? monthCellHeaderStyle,
     MonthGridStyle? monthGridStyle,
-    MonthCellsStyle? monthCellsStyle,
   }) {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
@@ -120,7 +114,6 @@ class CalendarStyle {
       weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
       monthCellHeaderStyle: monthCellHeaderStyle ?? this.monthCellHeaderStyle,
       monthGridStyle: monthGridStyle ?? this.monthGridStyle,
-      monthCellsStyle: monthCellsStyle ?? this.monthCellsStyle,
     );
   }
 }

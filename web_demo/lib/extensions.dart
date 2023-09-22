@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// [DateTime] extensions.
-extension DateTimeExtentions on DateTime {
+extension DateTimeExtensions on DateTime {
   /// Gets the start of the day.
   DateTime get startOfDay => DateTime(year, month, day);
 

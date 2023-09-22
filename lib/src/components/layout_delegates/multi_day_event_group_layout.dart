@@ -71,7 +71,7 @@ class MultiDayEventGroupDefaultLayoutDelegate<T>
       final childSize = layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: tileWidth, //tileWidth,
+          width: tileWidth,
           height: multiDayTileHeight,
         ),
       );
@@ -98,7 +98,6 @@ class MultiDayEventGroupDefaultLayoutDelegate<T>
       tilePositions[id] = Offset(
         tileDx[id]!,
         dy,
-        // multiDayTileHeight * (eventsAbove.length),
       );
     }
     for (var id = 0; id < numChildren; id++) {

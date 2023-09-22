@@ -7,12 +7,9 @@ class MonthViewHeader<T> extends StatelessWidget {
   const MonthViewHeader({
     super.key,
     required this.viewConfiguration,
-    required this.cellWidth,
   });
 
   final MonthViewConfiguration viewConfiguration;
-
-  final double cellWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +31,11 @@ class MonthViewHeader<T> extends StatelessWidget {
                 ),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   ...List<Widget>.generate(
                     7,
                     (index) => scope.components.monthHeaderBuilder(
-                      cellWidth,
                       visibleDateTimeRange.start.add(Duration(days: index)),
                     ),
                   ),

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/month_cells/month_cells.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
+import 'package:kalender/src/views/month_view/month_view_page_content.dart';
 
 class MonthViewContent<T> extends StatelessWidget {
   const MonthViewContent({
     super.key,
     required this.viewConfiguration,
     required this.controller,
-    required this.cellWidth,
   });
 
   final MonthViewConfiguration viewConfiguration;
   final CalendarController<T> controller;
-  final double cellWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,8 @@ class MonthViewContent<T> extends StatelessWidget {
     return Expanded(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cellHeight = constraints.maxHeight / 5;
+          final horizontalStep = constraints.maxWidth / 7;
+          final verticalStep = constraints.maxHeight / 5;
 
           return SizedBox(
             width: constraints.maxWidth,
@@ -57,21 +56,11 @@ class MonthViewContent<T> extends StatelessWidget {
                   calendarStart: scope.state.adjustedDateTimeRange.start,
                 );
 
-                return Stack(
-                  children: <Widget>[
-                    scope.components.monthGridBuilder(
-                      constraints.maxHeight,
-                      cellHeight,
-                      cellWidth,
-                    ),
-                    MonthCells<T>(
-                      cellHeight: cellHeight,
-                      cellWidth: cellWidth,
-                      pageWidth: constraints.maxWidth,
-                      visibleDateRange: visibleDateRange,
-                      viewConfiguration: viewConfiguration,
-                    ),
-                  ],
+                return MonthViewPageContent<T>(
+                  viewConfiguration: viewConfiguration,
+                  visibleDateRange: visibleDateRange,
+                  horizontalStep: horizontalStep,
+                  verticalStep: verticalStep,
                 );
               },
             ),

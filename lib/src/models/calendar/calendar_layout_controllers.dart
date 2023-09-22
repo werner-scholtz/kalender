@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/layout_delegates/event_group_layout.dart';
 import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/default_month_tile_layout_controller.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 /// The [CalendarLayoutControllers] class contains layout controllers used by the calendar view.
@@ -10,7 +9,7 @@ class CalendarLayoutControllers<T> {
   CalendarLayoutControllers({
     EventLayoutDelegateBuilder<T>? dayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
-    MonthLayoutController<T>? monthTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
     this.dayTileLayoutController =
         dayTileLayoutController ?? defaultDayTileLayoutController;
@@ -29,7 +28,7 @@ class CalendarLayoutControllers<T> {
   late MultiDayEventLayoutDelegateBuilder<T> multiDayTileLayoutController;
 
   /// The [MonthLayoutController] used to layout the month tiles.
-  late MonthLayoutController<T> monthTileLayoutController;
+  late MultiDayEventLayoutDelegateBuilder<T> monthTileLayoutController;
 
   /// The default [EventGroupLayoutDelegate] used to layout the day tiles.
   EventGroupLayoutDelegate<T> defaultDayTileLayoutController({
@@ -58,15 +57,15 @@ class CalendarLayoutControllers<T> {
   }
 
   /// The default [MonthLayoutController] used to layout the month tiles.
-  MonthTileLayoutController<T> defaultMonthTileLayoutController({
+  MultiDayEventGroupLayoutDelegate<T> defaultMonthTileLayoutController({
     required DateTimeRange visibleDateRange,
-    required double cellWidth,
-    required double tileHeight,
+    required double multiDayTileHeight,
+    required List<CalendarEvent<T>> events,
   }) {
-    return DefaultMonthTileLayoutController<T>(
+    return MultiDayEventGroupDefaultLayoutDelegate(
+      events: events,
       visibleDateRange: visibleDateRange,
-      cellWidth: cellWidth,
-      tileHeight: tileHeight,
+      multiDayTileHeight: multiDayTileHeight,
     );
   }
 
@@ -88,7 +87,7 @@ class CalendarLayoutControllers<T> {
   CalendarLayoutControllers<T> copyWith({
     EventLayoutDelegateBuilder<T>? dayTileLayoutController,
     MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
-    MonthLayoutController<T>? monthTileLayoutController,
+    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
     return CalendarLayoutControllers<T>(
       dayTileLayoutController: dayTileLayoutController,

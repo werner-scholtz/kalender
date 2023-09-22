@@ -6,12 +6,8 @@ import 'package:kalender/src/providers/calendar_style.dart';
 class MonthHeader extends StatelessWidget {
   const MonthHeader({
     super.key,
-    required this.dayWidth,
     required this.date,
   });
-
-  /// The width of the day cell.
-  final double dayWidth;
 
   /// The date to display.
   final DateTime date;
@@ -21,7 +17,6 @@ class MonthHeader extends StatelessWidget {
     final monthHeaderStyle =
         CalendarStyleProvider.of(context).style.monthHeaderStyle;
     return SizedBox(
-      width: dayWidth,
       child: Padding(
         padding: monthHeaderStyle?.padding ??
             const EdgeInsets.symmetric(vertical: 2),

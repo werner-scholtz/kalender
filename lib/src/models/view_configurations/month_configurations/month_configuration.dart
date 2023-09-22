@@ -5,36 +5,40 @@ import 'package:kalender/src/extensions.dart';
 class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
-    this.enableRezising = false,
+    this.enableResizing = false,
     this.createNewEvents = true,
+    this.multiDayTileHeight = 24,
   });
 
   @override
   String get name => 'Month';
 
   @override
-  final Duration horizontalDurationStep = const Duration(days: 1);
+  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
-  final Duration verticalDurationStep = const Duration(days: 7);
+  final Duration verticalStepDuration = const Duration(days: 7);
 
   @override
   final int firstDayOfWeek;
 
   @override
-  final bool enableRezising;
+  final bool enableResizing;
 
   @override
   final bool createNewEvents;
 
+  @override
+  final double multiDayTileHeight;
+
   MonthConfiguration copyWith({
     int? firstDayOfWeek,
-    bool? enableRezising,
+    bool? enableResizing,
     bool? createNewEvents,
   }) {
     return MonthConfiguration(
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      enableRezising: enableRezising ?? this.enableRezising,
+      enableResizing: enableResizing ?? this.enableResizing,
       createNewEvents: createNewEvents ?? this.createNewEvents,
     );
   }
@@ -66,11 +70,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / DateTime.daysPerWeek);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return DateTimeRange(
       start: calendarStart,
@@ -97,11 +96,6 @@ class MonthConfiguration extends MonthViewConfiguration {
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
       end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
-  }
-
-  @override
-  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.centerDateTime.startOfMonth;
   }
 
   @override

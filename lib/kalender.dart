@@ -4,7 +4,7 @@ library kalender;
 export 'package:kalender/src/models/models_export.dart';
 
 /// Layout Controllers
-export 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
+export 'package:kalender/src/components/layout_delegates/layout_delegates_export.dart';
 
 /// Styles
 export 'package:kalender/src/components/general/styles_export.dart';

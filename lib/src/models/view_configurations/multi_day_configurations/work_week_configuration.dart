@@ -86,11 +86,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / 5);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return (visibleStart.difference(calendarStart).inDays /
             DateTime.daysPerWeek)
@@ -119,11 +114,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
         const Duration(days: 2),
       ),
     );
-  }
-
-  @override
-  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
   }
 
   @override

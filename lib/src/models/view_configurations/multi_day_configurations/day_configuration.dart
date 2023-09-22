@@ -113,11 +113,6 @@ class DayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
-  }
-
-  @override
   DateTimeRange regulateVisibleDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTimeRange visibleDateTimeRange,
@@ -154,11 +149,5 @@ class DayConfiguration extends MultiDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
     );
-  }
-
-  @override
-  double calculateDayWidth(double pageWidth) {
-    // TODO: implement calculateDayWidth
-    throw UnimplementedError();
   }
 }

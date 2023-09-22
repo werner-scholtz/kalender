@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalendar_scope.dart';
+import 'package:kalender/kalender_scope.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
 import 'package:kalender/src/components/tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
@@ -15,14 +14,21 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
     required this.multiDayTileHeight,
     required this.horizontalStep,
     required this.horizontalStepDuration,
+    this.verticalStep,
+    this.verticalStepDuration,
+    this.rescheduleDateRange,
   });
 
   final bool isChanging;
   final DateTimeRange visibleDateRange;
+
+  final DateTimeRange? rescheduleDateRange;
   final MultiDayEventGroup<T> multiDayEventGroup;
   final double multiDayTileHeight;
   final double horizontalStep;
   final Duration horizontalStepDuration;
+  final double? verticalStep;
+  final Duration? verticalStepDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +45,11 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
           id: i,
           child: MultiDayEventTile(
             event: event,
-            visibleDateRange: visibleDateRange,
+            rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
             horizontalStep: horizontalStep,
             horizontalStepDuration: horizontalStepDuration,
+            verticalStep: verticalStep,
+            verticalStepDuration: verticalStepDuration,
             tileConfiguration: MultiDayTileConfiguration(
               tileType: isChanging
                   ? TileType.selected
@@ -56,16 +64,13 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
       );
     }
 
-    return SizedBox(
-      height: multiDayTileHeight * multiDayEventGroup.maxNumberOfStackedEvents,
-      child: CustomMultiChildLayout(
-        delegate: MultiDayEventGroupDefaultLayoutDelegate(
-          events: multiDayEventGroup.events,
-          visibleDateRange: visibleDateRange,
-          multiDayTileHeight: multiDayTileHeight,
-        ),
-        children: children,
+    return CustomMultiChildLayout(
+      delegate: MultiDayEventGroupDefaultLayoutDelegate(
+        events: multiDayEventGroup.events,
+        visibleDateRange: visibleDateRange,
+        multiDayTileHeight: multiDayTileHeight,
       ),
+      children: children,
     );
   }
 

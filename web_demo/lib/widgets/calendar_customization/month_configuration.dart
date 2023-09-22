@@ -28,12 +28,12 @@ class MonthConfiguarionEditor extends StatelessWidget {
         ),
         CheckboxListTile.adaptive(
           title: const Text('enableRezising'),
-          value: config.enableRezising,
+          value: config.enableResizing,
           onChanged: (bool? value) {
             if (value == null) return;
             onConfigChanged(
               config.copyWith(
-                enableRezising: value,
+                enableResizing: value,
               ),
             );
           },

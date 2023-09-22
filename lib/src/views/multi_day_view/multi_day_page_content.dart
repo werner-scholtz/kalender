@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalendar_scope.dart';
-import 'package:kalender/src/components/gesture_detectors/multi_day_gesture_detector.dart';
+import 'package:kalender/kalender_scope.dart';
+import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture_detector.dart';
 import 'package:kalender/src/components/event_groups/event_group_widget.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
@@ -38,7 +38,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
             );
 
             // Generate the list of tile groups.
-            final dayTileGroups = EventGroupController<T>().generateTileGroups(
+            final eventGroups = EventGroupController<T>().generateTileGroups(
               visibleDates: visibleDates,
               events: visibleEvents,
             );
@@ -75,11 +75,13 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 scope.components.daySeparatorBuilder(
                   viewConfiguration.numberOfDays,
                 ),
-                DayGestureDetector(
+                MultiDayPageGestureDetector<T>(
                   viewConfiguration: viewConfiguration,
                   visibleDates: visibleDateRange.datesSpanned,
+                  heightPerMinute: heightPerMinute,
+                  verticalStep: verticalStep,
                 ),
-                ...dayTileGroups.map(
+                ...eventGroups.map(
                   (tileGroup) => Positioned(
                     left: visibleDates.indexOf(tileGroup.date) * dayWidth,
                     width: dayWidth,
@@ -92,7 +94,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                       heightPerMinute,
                     ),
                     child: EventGroupWidget<T>(
-                      tileGroup: tileGroup,
+                      eventGroup: tileGroup,
                       snapData: snapData,
                       isChanging: false,
                     ),
@@ -122,7 +124,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                                 heightPerMinute,
                               ),
                               child: EventGroupWidget<T>(
-                                tileGroup: tileGroup,
+                                eventGroup: tileGroup,
                                 snapData: snapData,
                                 isChanging: true,
                               ),

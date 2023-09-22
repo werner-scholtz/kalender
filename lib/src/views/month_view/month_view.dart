@@ -12,8 +12,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/views_old/month_view/month_view_content.dart';
-import 'package:kalender/src/views_old/month_view/month_view_header.dart';
+import 'package:kalender/src/views/month_view/month_view_content.dart';
+import 'package:kalender/src/views/month_view/month_view_header.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
@@ -23,7 +23,7 @@ class MonthView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
-    required this.monthTileBuilder,
+    required this.multiDayTileBuilder,
     this.monthViewConfiguration,
     this.components,
     this.style,
@@ -53,7 +53,7 @@ class MonthView<T> extends StatefulWidget {
   final CalendarLayoutControllers<T>? layoutControllers;
 
   /// The [MonthTileBuilder] used to build month event tiles.
-  final MonthTileBuilder<T> monthTileBuilder;
+  final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
   State<MonthView<T>> createState() => _MonthViewState<T>();
@@ -78,7 +78,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     _functions = widget.functions ?? CalendarEventHandlers<T>();
     _components = widget.components ?? CalendarComponents();
     _tileComponents = CalendarTileComponents<T>(
-      monthTileBuilder: widget.monthTileBuilder,
+      multiDayTileBuilder: widget.multiDayTileBuilder,
     );
     _layoutControllers =
         widget.layoutControllers ?? CalendarLayoutControllers<T>();
@@ -173,26 +173,16 @@ class _MonthViewState<T> extends State<MonthView<T>> {
         tileComponents: _tileComponents,
         platformData: PlatformData(),
         layoutControllers: _layoutControllers,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final pageWidth = constraints.maxWidth;
-
-            final cellWidth = _viewConfiguration.calculateDayWidth(pageWidth);
-
-            return Column(
-              children: <Widget>[
-                MonthViewHeader<T>(
-                  cellWidth: cellWidth,
-                  viewConfiguration: _viewConfiguration,
-                ),
-                MonthViewContent<T>(
-                  cellWidth: cellWidth,
-                  viewConfiguration: _viewConfiguration,
-                  controller: _controller,
-                ),
-              ],
-            );
-          },
+        child: Column(
+          children: <Widget>[
+            MonthViewHeader<T>(
+              viewConfiguration: _viewConfiguration,
+            ),
+            MonthViewContent<T>(
+              viewConfiguration: _viewConfiguration,
+              controller: _controller,
+            ),
+          ],
         ),
       ),
     );

@@ -58,7 +58,7 @@ class _MobileScreenState extends State<MobileScreen> {
     ),
     if (!kIsWeb)
       const MonthConfiguration(
-        enableRezising: true,
+        enableResizing: true,
       ),
   ];
 
@@ -90,7 +90,6 @@ class _MobileScreenState extends State<MobileScreen> {
           viewConfiguration: currentConfiguration,
           tileBuilder: _tileBuilder,
           multiDayTileBuilder: _multiDayTileBuilder,
-          monthTileBuilder: _monthEventTileBuilder,
           components: CalendarComponents(
             calendarHeaderBuilder: _calendarHeader,
           ),
@@ -198,12 +197,12 @@ class _MobileScreenState extends State<MobileScreen> {
 
   Widget _monthEventTileBuilder(
     CalendarEvent<Event> event,
-    MonthTileConfiguration tileConfiguration,
+    MultiDayTileConfiguration tileConfiguration,
   ) {
     return MonthEventTile(
       event: event,
       tileType: tileConfiguration.tileType,
-      date: tileConfiguration.date,
+      date: event.dateTimeRange.start,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
     );

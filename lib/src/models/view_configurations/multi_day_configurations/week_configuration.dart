@@ -81,11 +81,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / DateTime.daysPerWeek);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return (visibleStart.difference(calendarStart).inDays /
             DateTime.daysPerWeek)
@@ -107,11 +102,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
     ).weekRangeWithOffset(firstDayOfWeek);
-  }
-
-  @override
-  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
   }
 
   @override

@@ -14,12 +14,6 @@ abstract class ViewConfiguration {
   /// Can create new events.
   bool get createNewEvents;
 
-  /// TODO: Remove
-  /// Calculates the width of each day.
-  double calculateDayWidth(
-    double pageWidth,
-  );
-
   /// Returns the visible[DateTimeRange] for the [index].
   ///
   /// [calendarStart] is the start of the calendar.
@@ -76,12 +70,5 @@ abstract class ViewConfiguration {
   int calculateDateIndex(
     DateTime date,
     DateTime startDate,
-  );
-
-  /// Returns the new highlighted date.
-  ///
-  /// [visibleDateRange] is the visible date range.
-  DateTime getHighlightedDate(
-    DateTimeRange visibleDateRange,
   );
 }

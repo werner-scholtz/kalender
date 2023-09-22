@@ -98,11 +98,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  double calculateDayWidth(double pageWidth) {
-    return (pageWidth / numberOfDays);
-  }
-
-  @override
   int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
     return visibleStart.difference(calendarStart).inDays ~/ numberOfDays;
   }
@@ -125,11 +120,6 @@ class MultiDayConfiguration extends MultiDayViewConfiguration {
         calendarStart.day + (index * numberOfDays),
       ),
     );
-  }
-
-  @override
-  DateTime getHighlightedDate(DateTimeRange visibleDateRange) {
-    return visibleDateRange.start;
   }
 
   @override

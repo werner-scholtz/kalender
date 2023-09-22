@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalendar_scope.dart';
+import 'package:kalender/kalender_scope.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
@@ -11,16 +11,22 @@ class MultiDayEventTile<T> extends StatefulWidget {
     super.key,
     required this.event,
     required this.tileConfiguration,
-    required this.visibleDateRange,
+    required this.rescheduleDateRange,
     required this.horizontalStep,
     required this.horizontalStepDuration,
+    this.verticalStepDuration,
+    this.verticalStep,
   });
 
   final CalendarEvent<T> event;
   final MultiDayTileConfiguration tileConfiguration;
-  final DateTimeRange visibleDateRange;
+  final DateTimeRange rescheduleDateRange;
+
   final double horizontalStep;
   final Duration horizontalStepDuration;
+
+  final Duration? verticalStepDuration;
+  final double? verticalStep;
 
   @override
   State<MultiDayEventTile<T>> createState() => _MultiDayEventTileState<T>();
@@ -36,8 +42,9 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   bool get canModify => widget.event.canModify;
   late DateTimeRange initialDateTimeRange;
 
-  double cursorOffset = 0;
-  int currentSteps = 0;
+  Offset cursorOffset = Offset.zero;
+  int currentVerticalSteps = 0;
+  int currentHorizontalSteps = 0;
 
   @override
   void initState() {
@@ -60,11 +67,9 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
       child: Stack(
         children: [
           GestureDetector(
-            onHorizontalDragStart:
-                useDesktopGestures ? _onRescheduleStart : null,
-            onHorizontalDragUpdate:
-                useDesktopGestures ? _onRescheduleUpdate : null,
-            onHorizontalDragEnd: useDesktopGestures ? _onRescheduleEnd : null,
+            onPanStart: useDesktopGestures ? _onRescheduleStart : null,
+            onPanUpdate: useDesktopGestures ? _onRescheduleUpdate : null,
+            onPanEnd: useDesktopGestures ? _onRescheduleEnd : null,
             onTap: _onTap,
             child: scope.tileComponents.multiDayTileBuilder!(
               widget.event,
@@ -114,8 +119,10 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   void _onRescheduleStart(DragStartDetails details) {
-    cursorOffset = 0;
-    currentSteps = 0;
+    cursorOffset = Offset.zero;
+    currentVerticalSteps = 0;
+    currentHorizontalSteps = 0;
+
     initialDateTimeRange = widget.event.dateTimeRange;
     controller.selectEvent(widget.event);
     scope.functions.onEventChangeStart?.call(widget.event);
@@ -129,29 +136,43 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   void _onRescheduleUpdate(DragUpdateDetails details) {
-    cursorOffset += details.delta.dx;
-    final steps = (cursorOffset / widget.horizontalStep).round();
-    if (steps != currentSteps) {
-      final newDateTimeRange = DateTimeRange(
-        start: initialDateTimeRange.start
-            .add(widget.horizontalStepDuration * steps),
-        end:
-            initialDateTimeRange.end.add(widget.horizontalStepDuration * steps),
-      );
+    cursorOffset += details.delta;
 
-      if (controller.selectedEvent == null) return;
+    final horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
+    final verticalSteps = widget.verticalStep != null
+        ? (cursorOffset.dy / widget.verticalStep!).round()
+        : 0;
 
-      if (newDateTimeRange.start.isWithin(widget.visibleDateRange) ||
-          newDateTimeRange.end.isWithin(widget.visibleDateRange)) {
-        controller.selectedEvent?.dateTimeRange = newDateTimeRange;
-      }
-      currentSteps = steps;
+    if (widget.verticalStep != null &&
+        currentHorizontalSteps == horizontalSteps &&
+        currentVerticalSteps == verticalSteps) {
+      return;
+    } else if (widget.verticalStep == null &&
+        currentHorizontalSteps == horizontalSteps) {
+      return;
     }
+
+    final dHorizontal = widget.horizontalStepDuration * horizontalSteps;
+    final dVertical =
+        (widget.verticalStepDuration ?? Duration.zero) * verticalSteps;
+
+    final newDateTimeRange = DateTimeRange(
+      start: initialDateTimeRange.start.add(dHorizontal).add(dVertical),
+      end: initialDateTimeRange.end.add(dHorizontal).add(dVertical),
+    );
+
+    if ((newDateTimeRange.start.isWithin(widget.rescheduleDateRange) ||
+        newDateTimeRange.end.isWithin(widget.rescheduleDateRange))) {
+      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
+    }
+
+    currentHorizontalSteps = horizontalSteps;
+    currentVerticalSteps = verticalSteps;
   }
 
   void _onHorizontalDragStart(DragStartDetails details) {
-    cursorOffset = 0;
-    currentSteps = 0;
+    cursorOffset = Offset.zero;
+    currentHorizontalSteps = 0;
     initialDateTimeRange = widget.event.dateTimeRange;
     controller.isResizing = true;
     controller.selectEvent(widget.event);
@@ -159,9 +180,9 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   void _onHorizontalDragUpdateStart(DragUpdateDetails details) {
-    cursorOffset += details.delta.dx;
-    final steps = (cursorOffset / widget.horizontalStep).round();
-    if (steps != currentSteps) {
+    cursorOffset += details.delta;
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
+    if (steps != currentHorizontalSteps) {
       final newStart =
           initialDateTimeRange.start.add(widget.horizontalStepDuration * steps);
 
@@ -169,14 +190,14 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
       if (newStart.isBefore(initialDateTimeRange.end)) {
         controller.selectedEvent?.start = newStart;
       }
-      currentSteps = steps;
+      currentHorizontalSteps = steps;
     }
   }
 
   void _onHorizontalDragUpdateEnd(DragUpdateDetails details) {
-    cursorOffset += details.delta.dx;
-    final steps = (cursorOffset / widget.horizontalStep).round();
-    if (steps != currentSteps) {
+    cursorOffset += details.delta;
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
+    if (steps != currentHorizontalSteps) {
       final newEnd =
           initialDateTimeRange.end.add(widget.horizontalStepDuration * steps);
       if (controller.selectedEvent == null) return;
@@ -184,7 +205,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
         controller.selectedEvent?.end = newEnd;
       }
 
-      currentSteps = steps;
+      currentHorizontalSteps = steps;
     }
   }
 

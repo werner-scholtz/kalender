@@ -3,10 +3,8 @@ import 'package:kalender/src/components/layout_delegates/event_group_layout.dart
 import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-import 'package:kalender/src/models/tile_configurations/month_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
-import 'package:kalender/src/models/tile_layout_controllers/month_tile_layout_controller/month_tile_layout_controller.dart';
 
 /// The [CalendarHeaderBuilder] is used to build the header displayed in the calendar's header.
 typedef CalendarHeaderBuilder<T extends Object?> = Widget Function(
@@ -47,11 +45,7 @@ typedef TimeIndicatorBuilder = Widget Function(
 );
 
 /// The [MonthGridBuilder] is used to build the month grid displayed on the calendar.
-typedef MonthGridBuilder = Widget Function(
-  double pageHeight,
-  double cellHeight,
-  double cellWidth,
-);
+typedef MonthGridBuilder = Widget Function();
 
 /// The [MonthCellHeaderBuilder] is used to build the header displayed above a day.
 typedef MonthCellHeaderBuilder = Widget Function(
@@ -61,7 +55,6 @@ typedef MonthCellHeaderBuilder = Widget Function(
 
 /// The [MonthHeaderBuilder] is used to build the header displayed above the month grid.
 typedef MonthHeaderBuilder = Widget Function(
-  double dayWidth,
   DateTime date,
 );
 
@@ -96,10 +89,10 @@ typedef MultiDayTileBuilder<T extends Object?> = Widget Function(
 /// The [MonthTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on a specific date.
-typedef MonthTileBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> event,
-  MonthTileConfiguration configuration,
-);
+// typedef MonthTileBuilder<T extends Object?> = Widget Function(
+//   CalendarEvent<T> event,
+//   MonthTileConfiguration configuration,
+// );
 
 /// The [ScheduleEventTileBuilder]
 ///
@@ -127,14 +120,4 @@ typedef MultiDayEventLayoutDelegateBuilder<T extends Object?>
   required DateTimeRange visibleDateRange,
   required double multiDayTileHeight,
   required List<CalendarEvent<T>> events,
-});
-
-/// The [MonthLayoutController] is used to calculate the layout of the tiles displayed on a day.
-///
-/// The typedef is used to create a function that returns a [MonthTileLayoutController].
-typedef MonthLayoutController<T extends Object?> = MonthTileLayoutController<T>
-    Function({
-  required DateTimeRange visibleDateRange,
-  required double cellWidth,
-  required double tileHeight,
 });

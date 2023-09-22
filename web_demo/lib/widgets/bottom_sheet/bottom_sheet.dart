@@ -1,4 +1,4 @@
-import 'package:example/extentions.dart';
+import 'package:example/extensions.dart';
 import 'package:example/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/_remove/month_tile_layout_controller.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 
@@ -176,6 +177,7 @@ class _MonthTileGestureDetectorState<T>
     initialDateTimeRange = tileData.event.dateTimeRange;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
+
     controller.selectEvent(tileData.event);
     scope.functions.onEventChangeStart?.call(tileData.event);
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/day_header/day_header.dart';
-import 'package:kalender/src/components/general/day_seperator/day_seperator.dart';
+import 'package:kalender/src/components/general/day_seperator/day_separetor.dart';
 import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
@@ -15,7 +15,6 @@ import 'package:kalender/src/type_definitions.dart';
 class CalendarTileComponents<T> {
   const CalendarTileComponents({
     this.tileBuilder,
-    this.monthTileBuilder,
     this.scheduleTileBuilder,
     this.multiDayTileBuilder,
   });
@@ -25,9 +24,6 @@ class CalendarTileComponents<T> {
 
   /// The [MultiDayTileBuilder] is used to build event tiles that are displayed on multiple days.
   final MultiDayTileBuilder<T>? multiDayTileBuilder;
-
-  /// The [MonthTileBuilder] is used to build event tiles that are displayed on [MonthView] days.
-  final MonthTileBuilder<T>? monthTileBuilder;
 
   /// The [ScheduleEventTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
   final ScheduleEventTileBuilder<T>? scheduleTileBuilder;
@@ -153,16 +149,8 @@ class CalendarComponents {
     );
   }
 
-  Widget _defaultMonthGridBuilder(
-    double pageHeight,
-    double cellHeight,
-    double cellWidth,
-  ) {
-    return MonthGrid(
-      pageHeight: pageHeight,
-      cellHeight: cellHeight,
-      cellWidth: cellWidth,
-    );
+  Widget _defaultMonthGridBuilder() {
+    return const MonthGrid();
   }
 
   Widget _defaultMonthCellHeaderBuilder(
@@ -176,12 +164,10 @@ class CalendarComponents {
   }
 
   Widget _defaultMonthHeaderBuilder(
-    double dayWidth,
     DateTime date,
   ) {
     return MonthHeader(
       date: date,
-      dayWidth: dayWidth,
     );
   }
 

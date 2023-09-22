@@ -6,6 +6,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 class EventGroupController<T> {
   const EventGroupController();
 
+  /// TODO: remove single event method.
   /// Generate the [EventGroup]'s for a list of events.
   Iterable<EventGroup<T>> generateTileGroups({
     required List<DateTime> visibleDates,
@@ -31,7 +32,7 @@ class EventGroupController<T> {
         final overlappingEvents = _findOverlappingEvents(
           initialEvent: event,
           otherEvents: eventsOnDate,
-        );
+        ).toList();
 
         final dateTimeRangeOnDate = event.dateTimeRangeOnDate(date);
         var start = dateTimeRangeOnDate.start;
@@ -47,10 +48,16 @@ class EventGroupController<T> {
           }
         }
 
+        // Sort the events by duration.
+        final events = overlappingEvents
+          ..sort(
+            (a, b) => b.duration.compareTo(a.duration),
+          );
+
         // Generate the tile group.
         final tileGroup = EventGroup<T>(
           date: date,
-          events: overlappingEvents.toList(),
+          events: events,
           dateTimeRange: DateTimeRange(start: start, end: end),
         );
 

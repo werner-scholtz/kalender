@@ -1,6 +1,5 @@
-import 'dart:math';
+import 'dart:math' hide log;
 
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// A controller that generates [MultiDayEventGroup]'s for a list of events.
@@ -14,15 +13,16 @@ class MultiDayEventGroupController<T> {
     var maxNumberOfStackedEvents = 0;
     // Loop through each event on the date.
     for (final event in events) {
-      // Get a list of events that overlap with each other.
-      final overlappingEvents = _findOverlappingEvents(
-        initialEvent: event,
-        otherEvents: events,
+      // Find all events that overlap with the current event.
+      final eventsAbove = events.where(
+        (eventAbove) {
+          return eventAbove.datesSpanned.any(event.datesSpanned.contains);
+        },
       );
 
       maxNumberOfStackedEvents = max(
         maxNumberOfStackedEvents,
-        overlappingEvents.length,
+        eventsAbove.length,
       );
     }
 
@@ -30,6 +30,9 @@ class MultiDayEventGroupController<T> {
     final sortedEvents = events.toList()
       ..sort(
         (a, b) => a.start.compareTo(b.start),
+      )
+      ..sort(
+        (a, b) => b.end.compareTo(a.end),
       );
 
     final multiDayEventGroup = MultiDayEventGroup<T>(
@@ -48,37 +51,6 @@ class MultiDayEventGroupController<T> {
       events: [event],
       maxNumberOfStackedEvents: 1,
     );
-  }
-
-  /// Finds events that overlap with the [initialEvent] from the [otherEvents], and all events that overlap with those events etc..
-  Iterable<CalendarEvent<T>> _findOverlappingEvents({
-    required CalendarEvent<T> initialEvent,
-    required Iterable<CalendarEvent<T>> otherEvents,
-    int maxIterations = 25,
-  }) {
-    final overlappingEvents = <CalendarEvent<T>>{initialEvent};
-    var previousLength = 0;
-    var iteration = 0;
-    while (previousLength != overlappingEvents.length &&
-        iteration <= maxIterations) {
-      final newOverlappingEvents = <CalendarEvent<T>>[];
-      for (var event in overlappingEvents) {
-        newOverlappingEvents.addAll(
-          otherEvents.where(
-            (otherEvent) => ((otherEvent.start.startOfDay
-                        .isWithin(event.dateTimeRange) ||
-                    otherEvent.end.endOfDay.isWithin(event.dateTimeRange)) ||
-                otherEvent.start == event.start ||
-                otherEvent.end == event.end),
-          ),
-        );
-      }
-      previousLength = overlappingEvents.length;
-      overlappingEvents.addAll(newOverlappingEvents);
-      iteration++;
-    }
-
-    return overlappingEvents;
   }
 }
 

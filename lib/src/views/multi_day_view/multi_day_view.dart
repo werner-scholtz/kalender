@@ -119,6 +119,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         widget.multiDayViewConfiguration != _viewConfiguration) {
       _viewConfiguration = widget.multiDayViewConfiguration!;
       _initializeViewState();
+
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
