@@ -4,19 +4,19 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
   const MultiDayHeaderGestureDetector({
     super.key,
-    required this.viewConfiguration,
     required this.visibleDateRange,
     required this.horizontalStep,
     this.verticalStep,
+    required this.createMultiDayEvents,
   });
 
   final DateTimeRange visibleDateRange;
-  final ViewConfiguration viewConfiguration;
+
+  final bool createMultiDayEvents;
   final double horizontalStep;
   final double? verticalStep;
 
@@ -31,7 +31,7 @@ class _MultiDayHeaderGestureDetectorState<T>
   CalendarEventsController<T> get controller => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
-  bool get createEvents => widget.viewConfiguration.createMultiDayEvents;
+  bool get createEvents => widget.createMultiDayEvents;
 
   Offset cursorOffset = Offset.zero;
   int currentVerticalSteps = 0;

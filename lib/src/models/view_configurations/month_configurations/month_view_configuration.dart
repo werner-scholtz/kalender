@@ -15,4 +15,9 @@ abstract class MonthViewConfiguration implements ViewConfiguration {
 
   /// Whether the events can be resized.
   bool get enableResizing;
+
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
+
+  bool get createMultiDayEvents;
 }

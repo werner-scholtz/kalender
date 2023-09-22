@@ -36,8 +36,11 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// Can create new events.
   bool get createEvents;
-  @override
+
   bool get createMultiDayEvents;
+
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;

@@ -140,7 +140,8 @@ class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   children: [
                     MultiDayHeaderGestureDetector<T>(
-                      viewConfiguration: viewConfiguration,
+                      createMultiDayEvents:
+                          viewConfiguration.createMultiDayEvents,
                       visibleDateRange: visibleDateRange,
                       horizontalStep: horizontalStep,
                     ),
