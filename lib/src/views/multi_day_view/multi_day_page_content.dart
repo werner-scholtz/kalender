@@ -28,6 +28,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
         final verticalStep =
             heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
+        final newEventVerticalStep =
+            heightPerMinute * viewConfiguration.newEventDuration.inMinutes;
+
         return ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {
@@ -79,7 +82,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                   viewConfiguration: viewConfiguration,
                   visibleDates: visibleDateRange.datesSpanned,
                   heightPerMinute: heightPerMinute,
-                  verticalStep: verticalStep,
+                  verticalStep: newEventVerticalStep,
                 ),
                 ...eventGroups.map(
                   (tileGroup) => Positioned(
