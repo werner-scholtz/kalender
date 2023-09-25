@@ -172,12 +172,12 @@ class _MultiDayPageGestureDetectorState<T>
 
     final selectedEvent = scope.eventsController.selectedEvent!;
 
+    scope.eventsController.isResizing = false;
+    scope.eventsController.deselectEvent();
+
     await scope.functions.onCreateEvent?.call(
       selectedEvent,
     );
-
-    scope.eventsController.isResizing = false;
-    scope.eventsController.deselectEvent();
   }
 
   ///
