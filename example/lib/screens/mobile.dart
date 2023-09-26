@@ -75,7 +75,7 @@ class _MobileScreenState extends State<MobileScreen> {
     if (currentConfiguration is! DayConfiguration) {
       setState(() {
         // Set the selected date to the tapped date.
-
+        calendarController.selectedDate = date;
         currentConfiguration = viewConfigurations.first;
       });
     }
