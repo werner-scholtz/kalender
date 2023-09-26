@@ -55,26 +55,30 @@ class CalendarHeader extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: IconButton.filledTonal(
-                  onPressed: () {
-                    calendarController.animateToPreviousPage();
-                  },
-                  icon: const Icon(Icons.chevron_left),
-                  tooltip: 'Previous Page',
+              if (viewConfigurations[currentConfiguration]
+                  is! ScheduleViewConfiguration)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: IconButton.filledTonal(
+                    onPressed: () {
+                      calendarController.animateToPreviousPage();
+                    },
+                    icon: const Icon(Icons.chevron_left),
+                    tooltip: 'Previous Page',
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: IconButton.filledTonal(
-                  onPressed: () {
-                    calendarController.animateToNextPage();
-                  },
-                  icon: const Icon(Icons.chevron_right),
-                  tooltip: 'Next Page',
+              if (viewConfigurations[currentConfiguration]
+                  is! ScheduleViewConfiguration)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: IconButton.filledTonal(
+                    onPressed: () {
+                      calendarController.animateToNextPage();
+                    },
+                    icon: const Icon(Icons.chevron_right),
+                    tooltip: 'Next Page',
+                  ),
                 ),
-              ),
               if (viewConfigurations[currentConfiguration]
                   is ScheduleViewConfiguration)
                 Padding(
