@@ -168,22 +168,6 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
         },
       ),
       CheckboxListTile.adaptive(
-        title: const Text('Day Header'),
-        value: highlightDayHeader,
-        onChanged: (value) {
-          if (value == null) return;
-          highlightDayHeader = value;
-          widget.onStyleChange(
-            widget.style.copyWith(
-              dayHeaderStyle: DayHeaderStyle(
-                backgroundColor: value ? highlightColor.withAlpha(100) : null,
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          );
-        },
-      ),
-      CheckboxListTile.adaptive(
         title: const Text('ScheduleDateTile margin'),
         value: scheduleTilePaddingVertical,
         onChanged: (value) {
