@@ -41,6 +41,8 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
   bool highlightMonthCellHeaders = false;
   bool highlightMonthHeader = false;
 
+  bool scheduleDateTilePadding = false;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -104,12 +106,36 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                     widget.currentConfiguration as MultiDayViewConfiguration),
               if (widget.currentConfiguration is MonthViewConfiguration)
                 ...monthConfig(
-                    widget.currentConfiguration as MonthConfiguration)
+                    widget.currentConfiguration as MonthConfiguration),
+              if (widget.currentConfiguration is ScheduleConfiguration)
+                ...scheduleConfig(
+                    widget.currentConfiguration as ScheduleConfiguration)
             ],
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> scheduleConfig(ScheduleConfiguration config) {
+    return [
+      CheckboxListTile.adaptive(
+        title: const Text('Day Header'),
+        value: highlightDayHeader,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightDayHeader = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              dayHeaderStyle: DayHeaderStyle(
+                backgroundColor: value ? highlightColor.withAlpha(100) : null,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          );
+        },
+      ),
+    ];
   }
 
   List<Widget> multiDayConfig(MultiDayViewConfiguration config) {

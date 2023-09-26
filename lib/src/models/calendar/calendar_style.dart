@@ -100,6 +100,8 @@ class CalendarStyle {
     WeekNumberStyle? weekNumberStyle,
     MonthCellHeaderStyle? monthCellHeaderStyle,
     MonthGridStyle? monthGridStyle,
+    ScheduleMonthHeaderStyle? scheduleMonthHeaderStyle,
+    ScheduleDateTileStyle? scheduleDateTileStyle,
   }) {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
@@ -113,6 +115,10 @@ class CalendarStyle {
       weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
       monthCellHeaderStyle: monthCellHeaderStyle ?? this.monthCellHeaderStyle,
       monthGridStyle: monthGridStyle ?? this.monthGridStyle,
+      scheduleMonthHeaderStyle:
+          scheduleMonthHeaderStyle ?? this.scheduleMonthHeaderStyle,
+      scheduleDateTileStyle:
+          scheduleDateTileStyle ?? this.scheduleDateTileStyle,
     );
   }
 }
