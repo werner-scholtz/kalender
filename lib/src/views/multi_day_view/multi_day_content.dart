@@ -30,6 +30,7 @@ class MultiDayContent<T> extends StatelessWidget {
           valueListenable: state.scrollPhysics,
           builder: (context, value, child) {
             return SingleChildScrollView(
+              controller: (scope.state as MultiDayViewState).scrollController,
               physics: value,
               child: SizedBox(
                 height: pageHeight,
