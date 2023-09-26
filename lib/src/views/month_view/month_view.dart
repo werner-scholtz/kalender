@@ -76,39 +76,35 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeViewState();
+  void didUpdateWidget(covariant MonthView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
+    if (_viewState.viewConfiguration != widget.monthViewConfiguration) {
+      _initializeViewState();
+
+      if (kDebugMode) {
+        print('The controller is already attached to a view. detaching first.');
+      }
+
+      widget.controller.attach(_viewState);
     }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
   }
 
   @override
-  void dispose() {
+  void deactivate() {
     widget.controller.detach();
-    super.dispose();
+    super.deactivate();
   }
-  // @override
-  // void didUpdateWidget(covariant MonthView<T> oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-
-  //   _initializeViewState();
-  //   if (kDebugMode) {
-  //     print('The controller is already attached to a view. detaching first.');
-  //   }
-  //   // _controller.detach();
-  //   widget.controller.attach(_viewState);
-  // }
 
   void _initializeViewState() {
+    final initialDate =
+        widget.controller.previousState?.visibleDateTimeRange.start ??
+            DateTime.now();
+
     final adjustedDateTimeRange =
         widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: widget.controller.selectedDate,
+      visibleStart: initialDate,
     );
 
     final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
@@ -116,7 +112,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     );
 
     final initialPage = widget.monthViewConfiguration.calculateDateIndex(
-      widget.controller.selectedDate,
+      initialDate,
       adjustedDateTimeRange.start,
     );
 
@@ -126,7 +122,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
 
     final visibleDateRange =
         widget.monthViewConfiguration.calculateVisibleDateTimeRange(
-      widget.controller.selectedDate,
+      initialDate,
     );
 
     _viewState = MonthViewState(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -79,21 +81,19 @@ class CalendarHeader extends StatelessWidget {
                     tooltip: 'Next Page',
                   ),
                 ),
-              if (viewConfigurations[currentConfiguration]
-                  is ScheduleViewConfiguration)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: IconButton.filledTonal(
-                    onPressed: () {
-                      calendarController.animateToDate(
-                        DateTime.now(),
-                        duration: const Duration(milliseconds: 800),
-                      );
-                    },
-                    icon: const Icon(Icons.today),
-                    tooltip: 'Today',
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: IconButton.filledTonal(
+                  onPressed: () {
+                    calendarController.animateToDate(
+                      DateTime.now(),
+                      duration: const Duration(milliseconds: 800),
+                    );
+                  },
+                  icon: const Icon(Icons.today),
+                  tooltip: 'Today',
                 ),
+              ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,

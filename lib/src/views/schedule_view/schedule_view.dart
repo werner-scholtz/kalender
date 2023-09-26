@@ -74,37 +74,42 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
     widget.controller.attach(_viewState);
   }
 
-  // @override
-  // void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
+  @override
+  void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-  //   _initializeViewState();
+    if (_viewState.viewConfiguration != widget.scheduleViewConfiguration) {
+      _initializeViewState();
 
-  //   widget.controller.attach(_viewState);
-  // }
+      if (kDebugMode) {
+        print('The controller is already attached to a view. detaching first.');
+      }
+      // _controller.detach();
+      widget.controller.attach(_viewState);
+    }
+  }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeViewState();
-
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
+  void deactivate() {
+    widget.controller.detach();
+    super.deactivate();
   }
 
   void _initializeViewState() {
+    final initialDate =
+        widget.controller.previousState?.visibleDateTimeRange.start ??
+            DateTime.now();
+
     final adjustedDateTimeRange =
         widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: widget.controller.selectedDate,
+      visibleStart: initialDate,
     );
 
     final visibleDateRange =
         widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
-      widget.controller.selectedDate,
+      initialDate,
+      // widget.controller.selectedDate,
     );
 
     _viewState = ScheduleViewState<T>(
@@ -114,12 +119,6 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
       itemScrollController: itemScrollController,
       itemPositionsListener: itemPositionsListener,
     );
-  }
-
-  @override
-  void dispose() {
-    widget.controller.detach();
-    super.dispose();
   }
 
   @override

@@ -16,6 +16,7 @@ abstract class ViewStateV2 {
   final ValueNotifier<DateTimeRange> _visibleDateTimeRange;
   ValueNotifier<DateTimeRange> get visibleDateTimeRangeNotifier =>
       _visibleDateTimeRange;
+  DateTimeRange get visibleDateTimeRange => _visibleDateTimeRange.value;
 
   set visibleDateTimeRange(DateTimeRange value);
 

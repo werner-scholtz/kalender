@@ -44,7 +44,7 @@ class MonthViewContent<T> extends StatelessWidget {
                 scope.state.visibleDateTimeRange = newVisibleDateTimeRange;
 
                 // Update the selected date.
-                controller.selectedDate = newVisibleDateTimeRange.start;
+                // controller.selectedDate = newVisibleDateTimeRange.start;
 
                 // Call the onPageChanged function.
                 scope.functions.onPageChanged?.call(

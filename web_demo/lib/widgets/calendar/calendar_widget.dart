@@ -129,7 +129,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     // If the current view is not the single day view, change the view to the single day view.
     if (widget.currentConfiguration is! DayConfiguration) {
       // Set the selected date to the tapped date.
-      widget.calendarController.selectedDate = date;
+      // widget.calendarController.selectedDate = date;
       widget.onDateTapped();
       // widget.currentConfiguration = widget.viewConfigurations.first;
     }
