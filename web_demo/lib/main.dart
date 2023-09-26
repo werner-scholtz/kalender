@@ -72,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int currentConfiguration = 0;
   List<ViewConfiguration> viewConfigurations = [
-    const ScheduleConfiguration(),
     const CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
@@ -84,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
     const MonthConfiguration(),
+    const ScheduleConfiguration(),
   ];
 
   @override

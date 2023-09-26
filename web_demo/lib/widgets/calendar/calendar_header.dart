@@ -86,7 +86,7 @@ class CalendarHeader extends StatelessWidget {
                         duration: const Duration(milliseconds: 800),
                       );
                     },
-                    icon: const Icon(Icons.today),
+                    icon: const Icon(Icons.today_rounded),
                     tooltip: 'Today',
                   ),
                 ),
