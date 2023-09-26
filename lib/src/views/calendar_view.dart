@@ -27,6 +27,8 @@ import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 ///
 /// [multiDayTileBuilder] is a [MultiDayTileBuilder] used to build multi day event tiles.
 ///
+/// [scheduleTileBuilder] is a [ScheduleTileBuilder] used to build schedule event tiles.
+///
 /// There are a few options for constructing a [CalendarView]:
 ///
 ///  1. The default constructor can display any view configuration and will update when a
@@ -39,6 +41,11 @@ import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 ///
 ///  3. The [CalendarView.month] displays a month.
 ///     * [MonthViewConfiguration] which is used to configure the view.
+///     * [MultiDayTileBuilder] which is used to build tiles above the main view.
+///
+///  4. The [CalendarView.schedule] displays a schedule.
+///     * [ScheduleViewConfiguration] which is used to configure the view.
+///     * [ScheduleTileBuilder] which is used to build tiles in the main view.
 ///
 /// Default constructor example:
 ///
@@ -68,10 +75,10 @@ import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 ///   controller: controller,
 ///   eventsController: eventsController,
 ///   viewConfiguration: WeekConfiguration(),
-///   tileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///   tileBuilder: (context, event) => Container(
 ///     color: Colors.blue,
 ///   ),
-///   multiDayTileBuilder: (event, tileType, continuesBefore, continuesAfter) => Container(
+///   multiDayTileBuilder:(event, configuration) => Container(
 ///     color: Colors.blue,
 ///   ),
 /// );
@@ -86,15 +93,23 @@ import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 /// CalendarView.month(
 ///   controller: controller,
 ///   eventsController: eventsController,
-///   tileBuilder: (context, event) => Container(),
-///   viewConfiguration: MonthViewConfiguration(),
-///   multiDayTileBuilder: (context, event) => Container(
+///   multiDayTileBuilder: (event, configuration) => Container(
 ///     color: Colors.blue,
 ///   ),
 /// );
 /// '''
 /// {@end-tool}
 ///
+/// Schedule constructor example:
+/// '''dart
+/// CalendarView.schedule(
+///   controller: controller,
+///   eventsController: eventsController,
+///   scheduleTileBuilder: (event, date) => Container(
+///    color: Colors.blue,
+///   ),
+/// );
+/// '''
 class CalendarView<T> extends StatelessWidget {
   const CalendarView({
     super.key,

@@ -72,14 +72,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return DateTimeRange(
-      start: calendarStart,
-      end: visibleStart,
-    ).monthDifference;
-  }
-
-  @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
     return calendarDateTimeRange.monthDifference;
   }
@@ -98,20 +90,5 @@ class MonthConfiguration extends MonthViewConfiguration {
       start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
       end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
     );
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.monthRange.start
-          .weekRangeWithOffset(firstDayOfWeek);
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.monthRange.end
-          .weekRangeWithOffset(firstDayOfWeek);
-    }
-    return visibleDateTimeRange;
   }
 }

@@ -20,23 +20,13 @@ abstract class ViewConfiguration {
     required DateTime calendarStart,
   });
 
-  /// Calculates the index of the [visibleStart]
-  ///
-  /// [calendarStart] is the start of the calendar.
-  int calculateIndex(
-    DateTime calendarStart,
-    DateTime visibleStart,
-  );
-
-  /// Regulates the [visibleDateTimeRange] to be within the [dateTimeRange].
-  ///
-  /// [dateTimeRange] is the range of the calendar.
-  /// [visibleDateTimeRange] is the visible range of the calendar.
-  /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  );
+  // /// Calculates the index of the [visibleStart]
+  // ///
+  // /// [calendarStart] is the start of the calendar.
+  // int calculateIndex(
+  //   DateTime calendarStart,
+  //   DateTime visibleStart,
+  // );
 
   /// Calculates the number of pages for the [calendarDateTimeRange].
   int calculateNumberOfPages(

@@ -101,11 +101,6 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return visibleStart.difference(calendarStart).inDays ~/ numberOfDays;
-  }
-
-  @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
     return calendarDateTimeRange.dayDifference ~/ numberOfDays;
   }
@@ -123,19 +118,6 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
         calendarStart.day + (index * numberOfDays),
       ),
     );
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return getMultiDayRange(dateTimeRange.start);
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return getMultiDayRange(dateTimeRange.end);
-    }
-    return visibleDateTimeRange;
   }
 
   /// Gets the four day range with the [DateTime] as the first day.
