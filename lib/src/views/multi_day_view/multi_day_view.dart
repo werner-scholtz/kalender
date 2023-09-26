@@ -95,9 +95,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   void _initializeViewState() {
-    final initialDate =
-        widget.controller.previousState?.visibleDateTimeRange.start ??
-            DateTime.now();
+    final initialDate = widget.controller.selectedDate;
 
     final adjustedDateTimeRange =
         widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(

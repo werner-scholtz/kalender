@@ -19,16 +19,16 @@ class CalendarController<T> with ChangeNotifier {
   CalendarController({
     DateTime? initialDate,
     DateTimeRange? calendarDateTimeRange,
-  }) : _dateTimeRange = calendarDateTimeRange ??
-            defaultDateRange; //_selectedDate = initialDate ?? DateTime.now(),
+  })  : _dateTimeRange = calendarDateTimeRange ?? defaultDateRange,
+        _initialDate = initialDate ?? DateTime.now();
 
   /// The currently selected date.
-  // DateTime _selectedDate;
-  // DateTime get selectedDate => _selectedDate;
-  // set selectedDate(DateTime value) {
-  //   _selectedDate = value;
-  //   notifyListeners();
-  // }
+  DateTime _initialDate;
+  DateTime get selectedDate => _initialDate;
+  set selectedDate(DateTime value) {
+    _initialDate = value;
+    notifyListeners();
+  }
 
   /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
