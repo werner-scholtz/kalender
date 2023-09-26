@@ -37,6 +37,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// Can create new events.
   bool get createEvents;
 
+  /// Can create new multiDay events.
   bool get createMultiDayEvents;
 
   /// The height of the multiDay tiles.

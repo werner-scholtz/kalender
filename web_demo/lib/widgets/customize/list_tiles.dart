@@ -48,7 +48,7 @@ class MultiDayTileHeight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('multidayTileHeight'),
+      title: const Text('multiDayTileHeight'),
       trailing: DropdownButton<double>(
         value: value,
         items: const [
@@ -83,7 +83,7 @@ class HourLineTimelineOverlap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('hourlineTimelineOverlap'),
+      title: const Text('hourLineTimelineOverlap'),
       trailing: DropdownButton<double>(
         value: value,
         items: const [

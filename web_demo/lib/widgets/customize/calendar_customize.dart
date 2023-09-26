@@ -100,176 +100,168 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 },
               ),
               if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Day Seperator'),
-                  value: highlightDaySeparator,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightDaySeparator = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        daySeparatorStyle: DaySeparatorStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Hour Lines'),
-                  value: highlightHourLine,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightHourLine = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        hourLineStyle: HourLineStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Day Header'),
-                  value: highlightDayHeader,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightDayHeader = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        dayHeaderStyle: DayHeaderStyle(
-                          backgroundColor:
-                              value ? highlightColor.withAlpha(100) : null,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Time Indicator'),
-                  value: highlightTimeIndicator,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightTimeIndicator = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        timeIndicatorStyle: TimeIndicatorStyle(
-                          color: value ? Colors.greenAccent : null,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Timeline'),
-                  value: highlightTimeline,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightTimeline = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                          timelineStyle: TimelineStyle(
-                        textStyle: highlightTimeline
-                            ? TextStyle(
-                                color: highlightColor,
-                              )
-                            : null,
-                      )),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MultiDayViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Week Number'),
-                  value: highlightWeekNumber,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightWeekNumber = value;
-                    widget.onStyleChange(widget.style.copyWith(
-                      weekNumberStyle: WeekNumberStyle(
-                        visualDensity: value ? VisualDensity.comfortable : null,
-                        textStyle: TextStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    ));
-                  },
-                ),
+                ...multiDayConfig(
+                    widget.currentConfiguration as MultiDayViewConfiguration),
               if (widget.currentConfiguration is MonthViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Month Header'),
-                  value: highlightMonthHeader,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightMonthHeader = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        monthHeaderStyle: MonthHeaderStyle(
-                          textStyle: TextStyle(
-                            color: value ? highlightColor : null,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MonthViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Month Cell Header'),
-                  value: highlightMonthCellHeaders,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightMonthCellHeaders = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        monthCellHeaderStyle: MonthCellHeaderStyle(
-                          backgroundColor:
-                              value ? highlightColor.withAlpha(100) : null,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (widget.currentConfiguration is MonthViewConfiguration)
-                CheckboxListTile.adaptive(
-                  title: const Text('Month Grid'),
-                  value: highlightMonthGrid,
-                  onChanged: (value) {
-                    if (value == null) return;
-                    highlightMonthGrid = value;
-                    widget.onStyleChange(
-                      widget.style.copyWith(
-                        monthGridStyle: MonthGridStyle(
-                          color: value ? highlightColor : null,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                ...monthConfig(
+                    widget.currentConfiguration as MonthConfiguration)
             ],
           ),
-          if (widget.currentConfiguration is MultiDayViewConfiguration)
-            ...multiDayConfig(
-                widget.currentConfiguration as MultiDayViewConfiguration),
-          if (widget.currentConfiguration is MonthViewConfiguration)
-            ...monthConfig(widget.currentConfiguration as MonthConfiguration)
         ],
       ),
     );
   }
 
   List<Widget> multiDayConfig(MultiDayViewConfiguration config) {
-    return [];
+    return [
+      CheckboxListTile.adaptive(
+        title: const Text('Day Separator'),
+        value: highlightDaySeparator,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightDaySeparator = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              daySeparatorStyle: DaySeparatorStyle(
+                color: value ? highlightColor : null,
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Hour Lines'),
+        value: highlightHourLine,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightHourLine = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              hourLineStyle: HourLineStyle(
+                color: value ? highlightColor : null,
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Day Header'),
+        value: highlightDayHeader,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightDayHeader = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              dayHeaderStyle: DayHeaderStyle(
+                backgroundColor: value ? highlightColor.withAlpha(100) : null,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Time Indicator'),
+        value: highlightTimeIndicator,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightTimeIndicator = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              timeIndicatorStyle: TimeIndicatorStyle(
+                color: value ? Colors.greenAccent : null,
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Timeline'),
+        value: highlightTimeline,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightTimeline = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+                timelineStyle: TimelineStyle(
+              textStyle: highlightTimeline
+                  ? TextStyle(
+                      color: highlightColor,
+                    )
+                  : null,
+            )),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Week Number'),
+        value: highlightWeekNumber,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightWeekNumber = value;
+          widget.onStyleChange(widget.style.copyWith(
+            weekNumberStyle: WeekNumberStyle(
+              visualDensity: value ? VisualDensity.comfortable : null,
+              textStyle: TextStyle(
+                color: value ? highlightColor : null,
+              ),
+            ),
+          ));
+        },
+      ),
+    ];
   }
 
   List<Widget> monthConfig(MonthConfiguration config) {
-    return [];
+    return [
+      CheckboxListTile.adaptive(
+        title: const Text('Month Header'),
+        value: highlightMonthHeader,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightMonthHeader = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              monthHeaderStyle: MonthHeaderStyle(
+                textStyle: TextStyle(
+                  color: value ? highlightColor : null,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Month Cell Header'),
+        value: highlightMonthCellHeaders,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightMonthCellHeaders = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              monthCellHeaderStyle: MonthCellHeaderStyle(
+                backgroundColor: value ? highlightColor.withAlpha(100) : null,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Month Grid'),
+        value: highlightMonthGrid,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightMonthGrid = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              monthGridStyle: MonthGridStyle(
+                color: value ? highlightColor : null,
+              ),
+            ),
+          );
+        },
+      ),
+    ];
   }
 }
