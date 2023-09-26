@@ -91,6 +91,12 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     widget.controller.attach(_viewState);
   }
 
+  @override
+  void dispose() {
+    widget.controller.detach();
+    super.dispose();
+  }
+
   void _initializeViewState() {
     final adjustedDateTimeRange =
         widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(

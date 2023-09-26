@@ -117,6 +117,12 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   }
 
   @override
+  void dispose() {
+    widget.controller.detach();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CalendarStyleProvider(
       style: widget.style ?? const CalendarStyle(),

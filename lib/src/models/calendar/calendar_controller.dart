@@ -35,6 +35,8 @@ class CalendarController<T> with ChangeNotifier {
   ViewStateV2? _state;
   bool get isAttached => _state != null;
 
+  ViewStateV2? _previousState;
+
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
   /// This is only available for [SingleDayView] and [MultiDayViewOLD].
@@ -44,14 +46,22 @@ class CalendarController<T> with ChangeNotifier {
 
   /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
-      _state?.visibleDateTimeRangeNotifier;
+      _state?.visibleDateTimeRangeNotifier ??
+      _previousState?.visibleDateTimeRangeNotifier;
 
   /// The visible month of the current view.
-  DateTime? get visibleMonth => _state?.visibleMonth;
+  DateTime? get visibleMonth =>
+      _state?.visibleMonth ?? _previousState?.visibleMonth;
 
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewStateV2 viewState) {
     _state = viewState;
+  }
+
+  /// Detaches the [CalendarController] from a [CalendarView].
+  void detach() {
+    _previousState = _state;
+    _state = null;
   }
 
   /// Animates to the next page.

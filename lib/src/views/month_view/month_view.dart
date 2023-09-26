@@ -87,6 +87,11 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     widget.controller.attach(_viewState);
   }
 
+  @override
+  void dispose() {
+    widget.controller.detach();
+    super.dispose();
+  }
   // @override
   // void didUpdateWidget(covariant MonthView<T> oldWidget) {
   //   super.didUpdateWidget(oldWidget);
