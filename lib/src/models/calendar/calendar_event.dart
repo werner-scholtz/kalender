@@ -10,11 +10,11 @@ class CalendarEvent<T> with ChangeNotifier {
   CalendarEvent({
     required DateTimeRange dateTimeRange,
     T? eventData,
-    bool? modifyable,
+    bool? modifiable,
   }) {
     _dateTimeRange = dateTimeRange;
     _eventData = eventData;
-    _canModify = modifyable ?? true;
+    _canModify = modifiable ?? true;
   }
 
   /// The [DateTimeRange] of the [CalendarEvent].
@@ -64,8 +64,8 @@ class CalendarEvent<T> with ChangeNotifier {
   /// Whether the [CalendarEvent] can be modified.
   late bool _canModify;
   bool get canModify => _canModify;
-  set canModify(bool newModifyable) {
-    _canModify = newModifyable;
+  set canModify(bool newModifiable) {
+    _canModify = newModifiable;
     notifyListeners();
   }
 
