@@ -17,16 +17,16 @@ class CalendarController<T> with ChangeNotifier {
   CalendarController({
     DateTime? initialDate,
     DateTimeRange? calendarDateTimeRange,
-  })  : _selectedDate = initialDate ?? DateTime.now(),
-        _dateTimeRange = calendarDateTimeRange ?? defaultDateRange;
+  }) : _dateTimeRange = calendarDateTimeRange ??
+            defaultDateRange; //_selectedDate = initialDate ?? DateTime.now(),
 
   /// The currently selected date.
-  DateTime _selectedDate;
-  DateTime get selectedDate => _selectedDate;
-  set selectedDate(DateTime value) {
-    _selectedDate = value;
-    notifyListeners();
-  }
+  // DateTime _selectedDate;
+  // DateTime get selectedDate => _selectedDate;
+  // set selectedDate(DateTime value) {
+  //   _selectedDate = value;
+  //   notifyListeners();
+  // }
 
   /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
@@ -37,6 +37,7 @@ class CalendarController<T> with ChangeNotifier {
   bool get isAttached => _state != null;
 
   ViewStateV2? _previousState;
+  ViewStateV2? get previousState => _previousState;
 
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
@@ -61,7 +62,9 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Detaches the [CalendarController] from a [CalendarView].
   void detach() {
-    _previousState = _state;
+    if (_state != null) {
+      _previousState = _state;
+    }
     _state = null;
   }
 

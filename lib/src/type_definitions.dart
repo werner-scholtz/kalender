@@ -91,14 +91,6 @@ typedef MultiDayTileBuilder<T extends Object?> = Widget Function(
   MultiDayTileConfiguration configuration,
 );
 
-/// The [MonthTileBuilder]
-///
-/// This builder is used to build event tiles that are displayed on a specific date.
-// typedef MonthTileBuilder<T extends Object?> = Widget Function(
-//   CalendarEvent<T> event,
-//   MonthTileConfiguration configuration,
-// );
-
 /// The [ScheduleTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on a specific date.

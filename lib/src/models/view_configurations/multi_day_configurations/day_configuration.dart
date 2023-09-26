@@ -93,14 +93,6 @@ class DayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateIndex(
-    DateTime calendarStart,
-    DateTime visibleStart,
-  ) {
-    return visibleStart.difference(calendarStart).inDays;
-  }
-
-  @override
   int calculateNumberOfPages(
     DateTimeRange calendarDateTimeRange,
   ) {
@@ -114,19 +106,6 @@ class DayConfiguration extends MultiDayViewConfiguration {
     int? firstDayOfWeek,
   }) {
     return calendarStart.add(Duration(days: index)).dayRange;
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.dayRange;
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.dayRange;
-    }
-    return visibleDateTimeRange;
   }
 
   @override

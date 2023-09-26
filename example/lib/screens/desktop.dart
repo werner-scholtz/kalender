@@ -74,7 +74,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
     if (currentConfiguration is! DayConfiguration) {
       setState(() {
         // Set the selected date to the tapped date.
-        calendarController.selectedDate = date;
+
         currentConfiguration = viewConfigurations.first;
       });
     }

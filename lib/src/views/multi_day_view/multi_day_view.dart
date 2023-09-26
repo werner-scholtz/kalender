@@ -80,28 +80,29 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeViewState();
+  void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
+    if (_viewState.viewConfiguration != widget.multiDayViewConfiguration) {
+      _initializeViewState();
+
+      if (kDebugMode) {
+        print('The controller is already attached to a view. detaching first.');
+      }
+      // _controller.detach();
+      widget.controller.attach(_viewState);
     }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
-  }
-
-  @override
-  void dispose() {
-    widget.controller.detach();
-    super.dispose();
   }
 
   void _initializeViewState() {
+    final initialDate =
+        widget.controller.previousState?.visibleDateTimeRange.start ??
+            DateTime.now();
+
     final adjustedDateTimeRange =
         widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: widget.controller.selectedDate,
+      visibleStart: initialDate,
     );
 
     final numberOfPages =
@@ -110,7 +111,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     );
 
     final initialPage = widget.multiDayViewConfiguration.calculateDateIndex(
-      widget.controller.selectedDate,
+      initialDate,
       adjustedDateTimeRange.start,
     );
 
@@ -120,7 +121,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
 
     final visibleDateRange =
         widget.multiDayViewConfiguration.calculateVisibleDateTimeRange(
-      widget.controller.selectedDate,
+      initialDate,
     );
 
     _viewState = MultiDayViewState(
@@ -132,6 +133,12 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
       heightPerMinute: ValueNotifier<double>(0.7),
     );
+  }
+
+  @override
+  void deactivate() {
+    widget.controller.detach();
+    super.deactivate();
   }
 
   @override

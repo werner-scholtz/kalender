@@ -90,13 +90,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return (visibleStart.difference(calendarStart).inDays /
-            DateTime.daysPerWeek)
-        .floor();
-  }
-
-  @override
   int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
     return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
   }
@@ -118,19 +111,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
         const Duration(days: 2),
       ),
     );
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.weekRangeWithOffset(firstDayOfWeek);
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.weekRangeWithOffset(firstDayOfWeek);
-    }
-    return visibleDateTimeRange;
   }
 
   @override

@@ -78,6 +78,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
    ```dart
    Widget _tileBuilder(event, tileConfiguration) => Widget()
    Widget _multiDayTileBuilder(event, tileConfiguration) => Widget()
+   Widget _scheduleTileBuilder(event, date) => Widget()
    ```
 
 5. Create a CalendarView
@@ -87,6 +88,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
       calendarController: calendarController,
       tileBuilder: _tileBuilder(),
       multiDayTileBuilder: _multiDayTileBuilder(),
+      scheduleTileBuilder _scheduleTileBuilder(),
     )       
     ```
     

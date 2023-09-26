@@ -20,53 +20,11 @@ class ScheduleConfiguration extends ScheduleViewConfiguration {
   }
 
   @override
-  int calculateDateIndex(DateTime date, DateTime startDate) {
-    return DateTimeRange(start: startDate, end: date).monthDifference;
-  }
-
-  @override
-  int calculateIndex(DateTime calendarStart, DateTime visibleStart) {
-    return DateTimeRange(
-      start: calendarStart,
-      end: visibleStart,
-    ).monthDifference;
-  }
-
-  @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.monthDifference;
-  }
-
-  @override
-  DateTimeRange calculateVisibleDateRangeForIndex({
-    required int index,
-    required DateTime calendarStart,
-  }) {
-    return DateTime(
-      calendarStart.year,
-      calendarStart.month + index,
-    ).monthRange;
-  }
-
-  @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     final monthRange = date.monthRange;
     return DateTimeRange(
       start: monthRange.start,
       end: monthRange.end,
     );
-  }
-
-  @override
-  DateTimeRange regulateVisibleDateTimeRange(
-    DateTimeRange dateTimeRange,
-    DateTimeRange visibleDateTimeRange,
-  ) {
-    if (visibleDateTimeRange.start.isBefore(dateTimeRange.start)) {
-      return dateTimeRange.start.monthRange;
-    } else if (visibleDateTimeRange.end.isAfter(dateTimeRange.end)) {
-      return dateTimeRange.end.monthRange;
-    }
-    return visibleDateTimeRange;
   }
 }
