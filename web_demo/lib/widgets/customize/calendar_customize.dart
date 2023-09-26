@@ -41,7 +41,9 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
   bool highlightMonthCellHeaders = false;
   bool highlightMonthHeader = false;
 
-  bool scheduleDateTilePadding = false;
+  bool scheduleMonthHeader = false;
+  bool scheduleTilePaddingVertical = false;
+  bool scheduleTilePaddingHorizontal = false;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +132,88 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
               dayHeaderStyle: DayHeaderStyle(
                 backgroundColor: value ? highlightColor.withAlpha(100) : null,
                 borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Schedule Month Header'),
+        value: scheduleMonthHeader,
+        onChanged: (value) {
+          if (value == null) return;
+          scheduleMonthHeader = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              scheduleMonthHeaderStyle: value
+                  ? const ScheduleMonthHeaderStyle(
+                      monthColors: {
+                        1: Colors.red,
+                        2: Colors.red,
+                        3: Colors.red,
+                        4: Colors.red,
+                        5: Colors.red,
+                        6: Colors.red,
+                        7: Colors.red,
+                        8: Colors.red,
+                        9: Colors.red,
+                        10: Colors.red,
+                        11: Colors.red,
+                        12: Colors.red,
+                      },
+                    )
+                  : const ScheduleMonthHeaderStyle(),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Day Header'),
+        value: highlightDayHeader,
+        onChanged: (value) {
+          if (value == null) return;
+          highlightDayHeader = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              dayHeaderStyle: DayHeaderStyle(
+                backgroundColor: value ? highlightColor.withAlpha(100) : null,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('ScheduleDateTile margin'),
+        value: scheduleTilePaddingVertical,
+        onChanged: (value) {
+          if (value == null) return;
+          scheduleTilePaddingVertical = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              scheduleDateTileStyle: ScheduleDateTileStyle(
+                margin: value
+                    ? const EdgeInsets.symmetric(vertical: 16)
+                    : const EdgeInsets.symmetric(vertical: 4),
+                tilePadding: widget.style.scheduleDateTileStyle?.tilePadding,
+              ),
+            ),
+          );
+        },
+      ),
+      CheckboxListTile.adaptive(
+        title: const Text('Schedule Tile Padding'),
+        value: scheduleTilePaddingHorizontal,
+        onChanged: (value) {
+          if (value == null) return;
+          scheduleTilePaddingHorizontal = value;
+          widget.onStyleChange(
+            widget.style.copyWith(
+              scheduleDateTileStyle: ScheduleDateTileStyle(
+                tilePadding: value
+                    ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
+                    : const EdgeInsets.symmetric(horizontal: 8),
+                margin: widget.style.scheduleDateTileStyle?.margin,
               ),
             ),
           );
