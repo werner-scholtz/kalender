@@ -76,16 +76,28 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant MonthView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _initializeViewState();
+
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
     // _controller.detach();
     widget.controller.attach(_viewState);
   }
+
+  // @override
+  // void didUpdateWidget(covariant MonthView<T> oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+
+  //   _initializeViewState();
+  //   if (kDebugMode) {
+  //     print('The controller is already attached to a view. detaching first.');
+  //   }
+  //   // _controller.detach();
+  //   widget.controller.attach(_viewState);
+  // }
 
   void _initializeViewState() {
     final adjustedDateTimeRange =

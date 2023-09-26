@@ -80,9 +80,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _initializeViewState();
 
     if (kDebugMode) {

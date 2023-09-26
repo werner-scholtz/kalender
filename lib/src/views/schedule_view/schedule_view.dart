@@ -74,12 +74,24 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
     widget.controller.attach(_viewState);
   }
 
-  @override
-  void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  // @override
+  // void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
 
+  //   _initializeViewState();
+
+  //   widget.controller.attach(_viewState);
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _initializeViewState();
 
+    if (kDebugMode) {
+      print('The controller is already attached to a view. detaching first.');
+    }
+    // _controller.detach();
     widget.controller.attach(_viewState);
   }
 
