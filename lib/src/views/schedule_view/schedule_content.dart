@@ -80,18 +80,21 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
   void _jumpToStartDate() {
     if (widget.viewState.scheduleGroups.isEmpty) return;
 
+    final date = DateTime.now();
+
     var index = widget.viewState.scheduleGroups.indexWhere(
-      (group) => group.date.isToday,
+      (group) => group.date.isSameDay(date),
     );
 
     if (index == -1) {
-      final now = DateTime.now();
       index = widget.viewState.scheduleGroups.indexWhere(
-        (group) {
-          return group.date.isWithin(
-            DateTimeRange(start: now.startOfWeek, end: now.endOfWeek),
-          );
-        },
+        (group) => group.date.startOfWeek == date.startOfWeek,
+      );
+    }
+
+    if (index == -1) {
+      index = widget.viewState.scheduleGroups.indexWhere(
+        (group) => group.date.startOfMonth == date.startOfMonth,
       );
     }
 
