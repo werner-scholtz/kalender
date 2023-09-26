@@ -1,3 +1,8 @@
+## 0.1.2
+#### Breaking Changes:
+* Added schedule view (so CalendarView now requires schedule widget)
+* Fixed typo in CalendarEvent (modifyable => modifiable)
+
 ## 0.1.1
 * Fixed custom layout delegate.
 
