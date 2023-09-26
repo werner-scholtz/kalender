@@ -177,7 +177,6 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
     initialDateTimeRange = widget.event.dateTimeRange;
-    controller.isResizing = true;
     controller.selectEvent(widget.event);
     scope.functions.onEventChangeStart?.call(widget.event);
   }
@@ -213,7 +212,6 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   Future<void> _onHorizontalDragEnd(DragEndDetails details) async {
-    controller.isResizing = false;
     final selectedEvent = scope.eventsController.selectedEvent!;
     controller.deselectEvent();
 

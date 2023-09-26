@@ -109,6 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
             calendarStyle: calendarStyle,
             currentConfiguration: viewConfigurations[currentConfiguration],
             calendarLayoutDelegates: calendarLayoutDelegates,
+            onDateTapped: () {
+              setState(() {
+                currentConfiguration = 1;
+              });
+            },
           );
 
           if (constraints.maxWidth < 500) {

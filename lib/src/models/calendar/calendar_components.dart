@@ -5,6 +5,7 @@ import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
 import 'package:kalender/src/components/general/month_cell_header/month_cell_header.dart';
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
 import 'package:kalender/src/components/general/month_header/month_header.dart';
+import 'package:kalender/src/components/general/schedule_month_header/schedule_month_header.dart';
 import 'package:kalender/src/components/general/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
@@ -25,8 +26,8 @@ class CalendarTileComponents<T> {
   /// The [MultiDayTileBuilder] is used to build event tiles that are displayed on multiple days.
   final MultiDayTileBuilder<T>? multiDayTileBuilder;
 
-  /// The [ScheduleEventTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
-  final ScheduleEventTileBuilder<T>? scheduleTileBuilder;
+  /// The [ScheduleTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
+  final ScheduleTileBuilder<T>? scheduleTileBuilder;
 }
 
 /// This class is used to provide the components for the calendar.
@@ -45,6 +46,7 @@ class CalendarComponents {
     MonthCellHeaderBuilder? monthCellHeaderBuilder,
     MonthHeaderBuilder? monthHeaderBuilder,
     TileHandleBuilder? tileHandleBuilder,
+    ScheduleMonthHeaderBuilder? scheduleMonthHeaderBuilder,
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
@@ -59,6 +61,8 @@ class CalendarComponents {
         monthCellHeaderBuilder ?? _defaultMonthCellHeaderBuilder;
     this.monthHeaderBuilder = monthHeaderBuilder ?? _defaultMonthHeaderBuilder;
     this.tileHandleBuilder = tileHandleBuilder ?? _defaultTileHandleBuilder;
+    this.scheduleMonthHeaderBuilder =
+        scheduleMonthHeaderBuilder ?? _defaultScheduleMonthHeaderBuilder;
   }
 
   /// This builder is used to build the widget displayed in the calendar's header.
@@ -90,6 +94,9 @@ class CalendarComponents {
 
   /// This builder is used to build the month header displayed on the calendar.
   late MonthHeaderBuilder monthHeaderBuilder;
+
+  /// This builder is used to build the month header displayed on the schedule view.
+  late ScheduleMonthHeaderBuilder scheduleMonthHeaderBuilder;
 
   /// This builder is used to build the handle displayed on the event tiles. (Mobile only)
   /// TODO: Make this use full for mobile and desktop.
@@ -167,6 +174,14 @@ class CalendarComponents {
     DateTime date,
   ) {
     return MonthHeader(
+      date: date,
+    );
+  }
+
+  Widget _defaultScheduleMonthHeaderBuilder(
+    DateTime date,
+  ) {
+    return ScheduleMonthHeader(
       date: date,
     );
   }

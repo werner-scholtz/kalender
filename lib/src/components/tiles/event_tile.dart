@@ -206,7 +206,6 @@ class _EventTileState<T> extends State<EventTile<T>> {
     initialDateTimeRange = widget.event.dateTimeRange;
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
-    controller.isResizing = true;
     controller.selectEvent(widget.event);
   }
 
@@ -294,8 +293,6 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    controller.isResizing = false;
-
     final selectedEvent = scope.eventsController.selectedEvent!;
     controller.deselectEvent();
 
@@ -310,7 +307,6 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
 
-    controller.isMoving = true;
     controller.selectEvent(widget.event);
     initialDateTimeRange = widget.event.dateTimeRange;
 
@@ -390,8 +386,6 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onRescheduleUpdate event.
   Future<void> _onRescheduleEnd() async {
-    controller.isMoving = false;
-
     final selectedEvent = scope.eventsController.selectedEvent!;
     controller.deselectEvent();
 

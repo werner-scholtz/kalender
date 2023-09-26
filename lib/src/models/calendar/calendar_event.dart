@@ -69,8 +69,8 @@ class CalendarEvent<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether the [CalendarEvent] is a multiday event.
-  bool get isMultidayEvent => duration.inDays >= 1;
+  /// Whether the [CalendarEvent] is a multi day event.
+  bool get isMultiDayEvent => duration.inHours >= 24;
 
   /// Whether the [CalendarEvent] is split across days.
   bool get isSplitAcrossDays {

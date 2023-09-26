@@ -4,8 +4,6 @@ import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_view.dart';
 
 /// The [CalendarController] is used to control a calendar view.
 ///
@@ -34,13 +32,15 @@ class CalendarController<T> with ChangeNotifier {
   DateTimeRange get dateTimeRange => _dateTimeRange;
 
   /// The current [_state] of the view this controller is linked to.
-  ViewState? _state;
+  ViewStateV2? _state;
   bool get isAttached => _state != null;
 
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
   /// This is only available for [SingleDayView] and [MultiDayViewOLD].
-  ValueNotifier<double>? get heightPerMinute => _state?.heightPerMinute;
+  ValueNotifier<double>? get heightPerMinute => (_state is MultiDayViewState)
+      ? (_state as MultiDayViewState).heightPerMinute
+      : null;
 
   /// This [ValueNotifier] exposes the visible dateTimeRange of the current view.
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange =>
@@ -50,7 +50,7 @@ class CalendarController<T> with ChangeNotifier {
   DateTime? get visibleMonth => _state?.visibleMonth;
 
   /// Attaches the [CalendarController] to a [CalendarView].
-  void attach(ViewState viewState) {
+  void attach(ViewStateV2 viewState) {
     _state = viewState;
   }
 
@@ -66,11 +66,27 @@ class CalendarController<T> with ChangeNotifier {
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
-    await _state?.pageController.nextPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+    if (_state == null) return;
+    assert(
+      _state is MonthViewState || _state is MultiDayViewState,
+      'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
     );
-    notifyListeners();
+    if (_state is! MonthViewState && _state is! MultiDayViewState) return;
+
+    if (_state is MonthViewState) {
+      await (_state as MonthViewState).pageController?.nextPage(
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+
+      notifyListeners();
+    } else if (_state is MultiDayViewState) {
+      await (_state as MultiDayViewState).pageController?.nextPage(
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+      notifyListeners();
+    }
   }
 
   /// Animates to the previous page.
@@ -85,11 +101,27 @@ class CalendarController<T> with ChangeNotifier {
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
-    await _state?.pageController.previousPage(
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
+    if (_state == null) return;
+    assert(
+      _state is MonthViewState || _state is MultiDayViewState,
+      'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
     );
-    notifyListeners();
+    if (_state is! MonthViewState && _state is! MultiDayViewState) return;
+
+    if (_state is MonthViewState) {
+      await (_state as MonthViewState).pageController?.previousPage(
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+
+      notifyListeners();
+    } else if (_state is MultiDayViewState) {
+      await (_state as MultiDayViewState).pageController?.previousPage(
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+      notifyListeners();
+    }
   }
 
   /// Jumps to the [page].
@@ -100,8 +132,21 @@ class CalendarController<T> with ChangeNotifier {
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
-    _state?.pageController.jumpToPage(page);
-    notifyListeners();
+    if (_state == null) return;
+
+    assert(
+      _state is MonthViewState || _state is MultiDayViewState,
+      'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
+    );
+    if (_state is! MonthViewState && _state is! MultiDayViewState) return;
+
+    if (_state is MonthViewState) {
+      (_state as MonthViewState).pageController?.jumpToPage(page);
+      notifyListeners();
+    } else if (_state is MultiDayViewState) {
+      (_state as MultiDayViewState).pageController?.jumpToPage(page);
+      notifyListeners();
+    }
   }
 
   /// Jumps to the [date].
@@ -119,13 +164,44 @@ class CalendarController<T> with ChangeNotifier {
     );
     if (!date.isWithin(_state!.adjustedDateTimeRange)) return;
 
-    _state!.pageController.jumpToPage(
-      _state!.viewConfiguration.calculateDateIndex(
-        date,
-        _state!.adjustedDateTimeRange.start,
-      ),
-    );
-    notifyListeners();
+    if (_state is MonthViewState) {
+      (_state as MonthViewState).pageController?.jumpToPage(
+            _state!.viewConfiguration.calculateDateIndex(
+              date,
+              _state!.adjustedDateTimeRange.start,
+            ),
+          );
+      notifyListeners();
+    } else if (_state is MultiDayViewState) {
+      (_state as MultiDayViewState).pageController?.jumpToPage(
+            _state!.viewConfiguration.calculateDateIndex(
+              date,
+              _state!.adjustedDateTimeRange.start,
+            ),
+          );
+      notifyListeners();
+    } else if (_state is ScheduleViewState) {
+      final state = _state as ScheduleViewState;
+
+      var index = state.scheduleGroups.indexWhere(
+        (group) => group.date.isSameDay(date),
+      );
+
+      if (index == -1) {
+        index = state.scheduleGroups.indexWhere(
+          (group) => group.date.startOfWeek == date.startOfWeek,
+        );
+      }
+
+      if (index == -1) {
+        index = state.scheduleGroups.indexWhere(
+          (group) => group.date.startOfMonth == date.startOfMonth,
+        );
+      }
+
+      (_state as ScheduleViewState).itemScrollController.jumpTo(index: index);
+      notifyListeners();
+    }
   }
 
   /// Animates to the [DateTime] provided.
@@ -149,15 +225,52 @@ class CalendarController<T> with ChangeNotifier {
     );
     if (!date.isWithin(_state!.adjustedDateTimeRange)) return;
 
-    await _state!.pageController.animateToPage(
-      _state!.viewConfiguration.calculateDateIndex(
-        date,
-        _state!.adjustedDateTimeRange.start,
-      ),
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
-    );
-    notifyListeners();
+    if (_state is MonthViewState) {
+      (_state as MonthViewState).pageController?.animateToPage(
+            _state!.viewConfiguration.calculateDateIndex(
+              date,
+              _state!.adjustedDateTimeRange.start,
+            ),
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+      notifyListeners();
+    } else if (_state is MultiDayViewState) {
+      (_state as MultiDayViewState).pageController?.animateToPage(
+            _state!.viewConfiguration.calculateDateIndex(
+              date,
+              _state!.adjustedDateTimeRange.start,
+            ),
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.easeInOut,
+          );
+      notifyListeners();
+    } else if (_state is ScheduleViewState) {
+      final state = _state as ScheduleViewState;
+
+      var index = state.scheduleGroups.indexWhere(
+        (group) => group.date.isSameDay(date),
+      );
+
+      if (index == -1) {
+        index = state.scheduleGroups.indexWhere(
+          (group) => group.date.startOfWeek == date.startOfWeek,
+        );
+      }
+
+      if (index == -1) {
+        index = state.scheduleGroups.indexWhere(
+          (group) => group.date.startOfMonth == date.startOfMonth,
+        );
+      }
+
+      (_state as ScheduleViewState).itemScrollController.scrollTo(
+            index: index,
+            duration: duration ?? const Duration(milliseconds: 500),
+            curve: curve ?? Curves.easeInOut,
+          );
+      notifyListeners();
+    }
   }
 
   /// Changes the [heightPerMinute] of the view. (Zoom level)
@@ -170,21 +283,19 @@ class CalendarController<T> with ChangeNotifier {
       'The $_state must not be null.'
       'Please attach the $CalendarController to a view.',
     );
+    if (_state == null) return;
     assert(
-      _state?.heightPerMinute != null,
-      'The heightPerMinute must not be null.'
-      'Please attach the $CalendarController to a $MultiDayView.',
+      _state is MultiDayViewState,
+      'The $_state must be a $MultiDayViewState.',
     );
+    if (_state is! MultiDayViewState) return;
     assert(
       heightPerMinute > 0,
       'The heightPerMinute must be greater than 0',
     );
+    if (heightPerMinute <= 0) return;
 
-    if (heightPerMinute <= 0) {
-      return;
-    }
-
-    _state?.heightPerMinute?.value = heightPerMinute;
+    (_state as MultiDayViewState).heightPerMinute?.value = heightPerMinute;
     notifyListeners();
   }
 
@@ -201,21 +312,33 @@ class CalendarController<T> with ChangeNotifier {
       curve: curve ?? Curves.ease,
     );
 
-    if (_state?.viewConfiguration is MultiDayViewConfiguration) {
-      // Then animate to the event.
-      await _state?.scrollController.animateTo(
-        event.start.difference(event.start.startOfDay).inMinutes *
-            heightPerMinute!.value,
-        duration: duration ?? const Duration(milliseconds: 300),
-        curve: curve ?? Curves.ease,
-      );
+    if (_state is MultiDayViewState) {
+      (_state as MultiDayViewState).scrollController.animateTo(
+            event.start.difference(event.start.startOfDay).inMinutes *
+                heightPerMinute!.value,
+            duration: duration ?? const Duration(milliseconds: 300),
+            curve: curve ?? Curves.ease,
+          );
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   /// Locks the vertical scroll of the current view.
   void lockScrollPhysics() {
-    _state?.scrollPhysics.value = const NeverScrollableScrollPhysics();
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a view.',
+    );
+    if (_state == null) return;
+    assert(
+      _state is MultiDayViewState,
+      'The $_state must be a $MultiDayViewState.',
+    );
+    if (_state is! MultiDayViewState) return;
+
+    (_state as MultiDayViewState).scrollPhysics.value =
+        const NeverScrollableScrollPhysics();
     notifyListeners();
   }
 
@@ -224,7 +347,19 @@ class CalendarController<T> with ChangeNotifier {
   void unlockScrollPhysics({
     ScrollPhysics? scrollPhysics,
   }) {
-    _state?.scrollPhysics.value = scrollPhysics ?? const ScrollPhysics();
+    assert(
+      _state != null,
+      'The $_state must not be null.'
+      'Please attach the $CalendarController to a view.',
+    );
+    if (_state == null) return;
+    assert(
+      _state is MultiDayViewState,
+      'The $_state must be a $MultiDayViewState.',
+    );
+    if (_state is! MultiDayViewState) return;
+    (_state as MultiDayViewState).scrollPhysics.value =
+        scrollPhysics ?? const ScrollPhysics();
     notifyListeners();
   }
 }

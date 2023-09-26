@@ -24,7 +24,7 @@ class MonthView<T> extends StatefulWidget {
     required this.controller,
     required this.eventsController,
     required this.multiDayTileBuilder,
-    this.monthViewConfiguration,
+    this.monthViewConfiguration = const MonthConfiguration(),
     this.components,
     this.style,
     this.functions,
@@ -38,7 +38,7 @@ class MonthView<T> extends StatefulWidget {
   final CalendarEventsController<T> eventsController;
 
   /// The [MonthViewConfiguration] used to configure the view.
-  final MonthViewConfiguration? monthViewConfiguration;
+  final MonthViewConfiguration monthViewConfiguration;
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
@@ -60,85 +60,46 @@ class MonthView<T> extends StatefulWidget {
 }
 
 class _MonthViewState<T> extends State<MonthView<T>> {
-  late CalendarController<T> _controller;
-  late ViewState _viewState;
-  late CalendarEventsController<T> _eventsController;
-  late CalendarEventHandlers<T> _functions;
-  late CalendarComponents _components;
-  late CalendarTileComponents<T> _tileComponents;
-  late MonthViewConfiguration _viewConfiguration;
-  late CalendarStyle _style;
-  late CalendarLayoutDelegates<T> _layoutControllers;
+  late MonthViewState _viewState;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller;
-    _eventsController = widget.eventsController;
-    _functions = widget.functions ?? CalendarEventHandlers<T>();
-    _components = widget.components ?? CalendarComponents();
-    _tileComponents = CalendarTileComponents<T>(
-      multiDayTileBuilder: widget.multiDayTileBuilder,
-    );
-    _layoutControllers =
-        widget.layoutControllers ?? CalendarLayoutDelegates<T>();
-    _viewConfiguration =
-        (widget.monthViewConfiguration ?? const MonthConfiguration());
-    _style = widget.style ?? const CalendarStyle();
+
     _initializeViewState();
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
     // _controller.detach();
-    _controller.attach(_viewState);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _eventsController = widget.eventsController;
+    widget.controller.attach(_viewState);
   }
 
   @override
   void didUpdateWidget(covariant MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _eventsController = widget.eventsController;
 
-    if (_style != widget.style) {
-      _style = widget.style ?? const CalendarStyle();
+    _initializeViewState();
+    if (kDebugMode) {
+      print('The controller is already attached to a view. detaching first.');
     }
-
-    if (widget.monthViewConfiguration != null &&
-        widget.monthViewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.monthViewConfiguration!;
-      _initializeViewState();
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
-      // _controller.detach();
-      _controller.attach(_viewState);
-    }
-
-    if (_layoutControllers != widget.layoutControllers) {
-      _layoutControllers =
-          widget.layoutControllers ?? CalendarLayoutDelegates<T>();
-    }
+    // _controller.detach();
+    widget.controller.attach(_viewState);
   }
 
   void _initializeViewState() {
     final adjustedDateTimeRange =
-        _viewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: _controller.dateTimeRange,
-      visibleStart: _controller.selectedDate,
+        widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
+      dateTimeRange: widget.controller.dateTimeRange,
+      visibleStart: widget.controller.selectedDate,
     );
 
-    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    final initialPage = _viewConfiguration.calculateDateIndex(
-      _controller.selectedDate,
+    final initialPage = widget.monthViewConfiguration.calculateDateIndex(
+      widget.controller.selectedDate,
       adjustedDateTimeRange.start,
     );
 
@@ -146,41 +107,42 @@ class _MonthViewState<T> extends State<MonthView<T>> {
       initialPage: initialPage,
     );
 
-    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
-      _controller.selectedDate,
+    final visibleDateRange =
+        widget.monthViewConfiguration.calculateVisibleDateTimeRange(
+      widget.controller.selectedDate,
     );
 
-    _viewState = ViewState(
-      viewConfiguration: _viewConfiguration,
+    _viewState = MonthViewState(
+      viewConfiguration: widget.monthViewConfiguration,
       pageController: pageController,
       adjustedDateTimeRange: adjustedDateTimeRange,
       numberOfPages: numberOfPages,
-      scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: ValueNotifier<double>(0.7),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return CalendarStyleProvider(
-      style: _style,
+      style: widget.style ?? const CalendarStyle(),
       child: CalendarScope<T>(
         state: _viewState,
-        eventsController: _eventsController,
-        functions: _functions,
-        components: _components,
-        tileComponents: _tileComponents,
+        eventsController: widget.eventsController,
+        functions: widget.functions ?? CalendarEventHandlers<T>(),
+        components: widget.components ?? CalendarComponents(),
+        tileComponents: CalendarTileComponents(
+          multiDayTileBuilder: widget.multiDayTileBuilder,
+        ),
         platformData: PlatformData(),
-        layoutControllers: _layoutControllers,
+        layoutDelegates: widget.layoutControllers ?? CalendarLayoutDelegates(),
         child: Column(
           children: <Widget>[
             MonthViewHeader<T>(
-              viewConfiguration: _viewConfiguration,
+              viewConfiguration: widget.monthViewConfiguration,
             ),
             MonthViewContent<T>(
-              viewConfiguration: _viewConfiguration,
-              controller: _controller,
+              viewConfiguration: widget.monthViewConfiguration,
+              controller: widget.controller,
             ),
           ],
         ),

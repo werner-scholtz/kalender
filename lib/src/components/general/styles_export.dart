@@ -8,3 +8,5 @@ export 'package:kalender/src/components/general/month_header/month_header_style.
 export 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
 export 'package:kalender/src/components/general/time_line/timeline_style.dart';
 export 'package:kalender/src/components/general/week_number/week_number_style.dart';
+export 'package:kalender/src/components/general/schedule_month_header/schedule_month_header_style.dart';
+export 'package:kalender/src/components/general/schedule_date_tile/schedule_date_tile_style.dart';

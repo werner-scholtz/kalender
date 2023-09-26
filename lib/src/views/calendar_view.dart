@@ -103,6 +103,7 @@ class CalendarView<T> extends StatelessWidget {
     required this.viewConfiguration,
     required this.tileBuilder,
     required this.multiDayTileBuilder,
+    required this.scheduleTileBuilder,
     this.components,
     this.style,
     this.eventHandlers,
@@ -123,7 +124,8 @@ class CalendarView<T> extends StatelessWidget {
     this.style,
     this.eventHandlers,
     this.layoutDelegates,
-  })  : assert(
+  })  : scheduleTileBuilder = null,
+        assert(
           tileBuilder != null && multiDayTileBuilder != null,
           'EventTileBuilder and MultiDayEventTileBuilder must be assigned',
         ),
@@ -143,6 +145,7 @@ class CalendarView<T> extends StatelessWidget {
     this.eventHandlers,
     this.layoutDelegates,
   })  : tileBuilder = null,
+        scheduleTileBuilder = null,
         assert(
           multiDayTileBuilder != null,
           'MultiDayEventTileBuilder must be assigned',
@@ -150,6 +153,23 @@ class CalendarView<T> extends StatelessWidget {
         assert(
           viewConfiguration is MonthViewConfiguration,
           'MonthViewConfiguration must be assigned',
+        );
+
+  const CalendarView.schedule({
+    super.key,
+    required this.controller,
+    required this.eventsController,
+    required this.viewConfiguration,
+    required this.scheduleTileBuilder,
+    this.components,
+    this.style,
+    this.eventHandlers,
+    this.layoutDelegates,
+  })  : tileBuilder = null,
+        multiDayTileBuilder = null,
+        assert(
+          scheduleTileBuilder != null,
+          'ScheduleTileBuilder must be assigned',
         );
 
   /// The [CalendarController] used to control the view.
@@ -178,6 +198,9 @@ class CalendarView<T> extends StatelessWidget {
 
   /// The [MultiDayTileBuilder] used to build multi day event tiles.
   final MultiDayTileBuilder<T>? multiDayTileBuilder;
+
+  /// The [ScheduleTileBuilder] used to build schedule event tiles.
+  final ScheduleTileBuilder<T>? scheduleTileBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +241,8 @@ class CalendarView<T> extends StatelessWidget {
         scheduleViewConfiguration:
             viewConfiguration as ScheduleViewConfiguration,
         style: style,
-        layoutControllers: layoutDelegates,
+        layoutDelegates: layoutDelegates,
+        scheduleTileBuilder: scheduleTileBuilder!,
       );
     }
 

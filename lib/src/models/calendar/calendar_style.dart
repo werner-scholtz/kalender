@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/day_header/day_header_style.dart';
-import 'package:kalender/src/components/general/day_separator/day_separator_style.dart';
-import 'package:kalender/src/components/general/hour_line/hour_line_style.dart';
-import 'package:kalender/src/components/general/material_header/material_header_style.dart';
-import 'package:kalender/src/components/general/month_cell_header/month_cell_header_style.dart';
-import 'package:kalender/src/components/general/month_grid/month_grid_style.dart';
-import 'package:kalender/src/components/general/month_header/month_header_style.dart';
-import 'package:kalender/src/components/general/time_indicator/time_indicator_style.dart';
-import 'package:kalender/src/components/general/time_line/timeline_style.dart';
-import 'package:kalender/src/components/general/week_number/week_number_style.dart';
+import 'package:kalender/src/components/general/styles_export.dart';
 
 /// The [CalendarStyle] class is used to store custom style's for the [CalendarComponents].
 class CalendarStyle {
@@ -24,6 +15,8 @@ class CalendarStyle {
     this.weekNumberStyle = const WeekNumberStyle(),
     this.monthCellHeaderStyle = const MonthCellHeaderStyle(),
     this.monthGridStyle = const MonthGridStyle(),
+    this.scheduleMonthHeaderStyle = const ScheduleMonthHeaderStyle(),
+    this.scheduleDateTileStyle = const ScheduleDateTileStyle(),
   });
 
   /// The background color of the [CalendarView].
@@ -32,7 +25,7 @@ class CalendarStyle {
   /// The background color of the [CalendarHeaderBackground] header.
   final CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle;
 
-  /// The [DaySeparatorStyle] used by the [DaySeperator].
+  /// The [DaySeparatorStyle] used by the [DaySeparator].
   final DaySeparatorStyle? daySeparatorStyle;
 
   /// The [HourLineStyle] used by the [HourLines].
@@ -58,6 +51,12 @@ class CalendarStyle {
 
   /// The [MonthCellHeaderStyle] used by the [MonthCellHeader]
   final MonthCellHeaderStyle? monthCellHeaderStyle;
+
+  /// The [ScheduleMonthHeaderStyle] used by the [ScheduleMonthHeader]
+  final ScheduleMonthHeaderStyle? scheduleMonthHeaderStyle;
+
+  /// The [ScheduleDateTileStyle] used by the [ScheduleDateTile]
+  final ScheduleDateTileStyle? scheduleDateTileStyle;
 
   @override
   operator ==(Object other) {

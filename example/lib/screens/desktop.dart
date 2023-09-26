@@ -2,6 +2,7 @@ import 'package:example/models/event.dart';
 import 'package:example/widgets/calendar_header.dart';
 import 'package:example/widgets/event_tile.dart';
 import 'package:example/widgets/multi_day_event_tile.dart';
+import 'package:example/widgets/schedule_event_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -42,6 +43,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
       viewConfiguration: currentConfiguration,
       tileBuilder: _tileBuilder,
       multiDayTileBuilder: _multiDayTileBuilder,
+      scheduleTileBuilder: _scheduleTileBuilder,
       components: CalendarComponents(
         calendarHeaderBuilder: _calendarHeaderBuilder,
       ),
@@ -114,6 +116,16 @@ class _DesktopScreenState extends State<DesktopScreen> {
       tileType: tileConfiguration.tileType,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
+    );
+  }
+
+  Widget _scheduleTileBuilder(
+    CalendarEvent<Event> event,
+    DateTime date,
+  ) {
+    return ScheduleTile(
+      event: event,
+      date: date,
     );
   }
 }

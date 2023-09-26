@@ -154,7 +154,7 @@ class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
                       multiDayTileHeight: multiDayTileHeight,
                     ),
                     if (selectedEvent != null &&
-                        scope.eventsController.isSelectedEventMultiDay)
+                        scope.eventsController.selectedEvent!.isMultiDayEvent)
                       ListenableBuilder(
                         listenable: scope.eventsController.selectedEvent!,
                         builder: (context, child) {

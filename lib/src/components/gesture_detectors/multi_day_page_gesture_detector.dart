@@ -105,14 +105,14 @@ class _MultiDayPageGestureDetectorState<T>
       ),
     );
 
-    scope.eventsController.isMoving = true;
+    // scope.eventsController.isMoving = true;
 
     // Call the onCreateEvent callback.
     await scope.functions.onCreateEvent?.call(
       scope.eventsController.selectedEvent!,
     );
 
-    scope.eventsController.isMoving = false;
+    // scope.eventsController.isMoving = false;
   }
 
   /// Handles the vertical drag start event.
@@ -122,7 +122,7 @@ class _MultiDayPageGestureDetectorState<T>
   ) {
     cursorOffset = 0;
     currentVerticalSteps = 0;
-    scope.eventsController.isResizing = true;
+    // scope.eventsController.isResizing = true;
     scope.eventsController.selectEvent(
       CalendarEvent<T>(
         dateTimeRange: initialDateTimeRange,
@@ -172,7 +172,7 @@ class _MultiDayPageGestureDetectorState<T>
 
     final selectedEvent = scope.eventsController.selectedEvent!;
 
-    scope.eventsController.isResizing = false;
+    // scope.eventsController.isResizing = false;
     scope.eventsController.deselectEvent();
 
     await scope.functions.onCreateEvent?.call(

@@ -1,36 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_components.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
-import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
-import 'package:kalender/src/models/calendar/calendar_style.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
-import 'package:kalender/src/type_definitions.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
     if (dart.library.io) 'package:kalender/src/models/calendar/platform_data/io_platform_data.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_content.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_header.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/schedule_view/schedule_header.dart';
-import 'package:kalender/src/views/schedule_view/schule_content.dart';
+import 'package:kalender/src/views/schedule_view/schedule_content.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-/// TODO: implement ScheduleView.
 class ScheduleView<T> extends StatefulWidget {
   const ScheduleView({
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.scheduleTileBuilder,
     this.components,
     this.style,
-    this.scheduleViewConfiguration,
+    this.scheduleViewConfiguration = const ScheduleConfiguration(),
     this.functions,
-    this.layoutControllers,
+    this.layoutDelegates,
   });
 
   /// The [CalendarController] used to control the view.
@@ -40,7 +32,7 @@ class ScheduleView<T> extends StatefulWidget {
   final CalendarEventsController<T> eventsController;
 
   /// The [MultiDayViewConfiguration] used to configure the view.
-  final ScheduleViewConfiguration? scheduleViewConfiguration;
+  final ScheduleViewConfiguration scheduleViewConfiguration;
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
@@ -52,22 +44,27 @@ class ScheduleView<T> extends StatefulWidget {
   final CalendarEventHandlers<T>? functions;
 
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
-  final CalendarLayoutDelegates<T>? layoutControllers;
+  final CalendarLayoutDelegates<T>? layoutDelegates;
+
+  final ScheduleTileBuilder<T> scheduleTileBuilder;
 
   @override
   State<ScheduleView<T>> createState() => _ScheduleViewState<T>();
 }
 
 class _ScheduleViewState<T> extends State<ScheduleView<T>> {
-  late ViewState _viewState;
-  late ScheduleViewConfiguration _viewConfiguration;
+  late ScheduleViewState<T> _viewState;
+
+  /// The ItemScrollController of the current view.
+  final itemScrollController = ItemScrollController();
+
+  /// The ItemPositionsListener of the current view.
+  final itemPositionsListener = ItemPositionsListener.create();
 
   @override
   void initState() {
     super.initState();
 
-    _viewConfiguration =
-        (widget.scheduleViewConfiguration ?? ScheduleConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
@@ -81,51 +78,29 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.scheduleViewConfiguration != null &&
-        widget.scheduleViewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.scheduleViewConfiguration!;
-      _initializeViewState();
+    _initializeViewState();
 
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
-      // _controller.detach();
-      widget.controller.attach(_viewState);
-    }
+    widget.controller.attach(_viewState);
   }
 
   void _initializeViewState() {
     final adjustedDateTimeRange =
-        _viewConfiguration.calculateAdjustedDateTimeRange(
+        widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
       visibleStart: widget.controller.selectedDate,
     );
 
-    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
-      adjustedDateTimeRange,
-    );
-
-    final initialPage = _viewConfiguration.calculateDateIndex(
-      widget.controller.selectedDate,
-      adjustedDateTimeRange.start,
-    );
-
-    final pageController = PageController(
-      initialPage: initialPage,
-    );
-
-    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
+    final visibleDateRange =
+        widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
       widget.controller.selectedDate,
     );
 
-    _viewState = ViewState(
-      viewConfiguration: _viewConfiguration,
-      pageController: pageController,
+    _viewState = ScheduleViewState<T>(
+      viewConfiguration: widget.scheduleViewConfiguration,
       adjustedDateTimeRange: adjustedDateTimeRange,
-      numberOfPages: numberOfPages,
-      scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: ValueNotifier<double>(0.7),
+      itemScrollController: itemScrollController,
+      itemPositionsListener: itemPositionsListener,
     );
   }
 
@@ -138,18 +113,31 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
         eventsController: widget.eventsController,
         functions: widget.functions ?? CalendarEventHandlers<T>(),
         components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents<T>(),
+        tileComponents: CalendarTileComponents<T>(
+          scheduleTileBuilder: widget.scheduleTileBuilder,
+        ),
         platformData: PlatformData(),
-        layoutControllers:
-            widget.layoutControllers ?? CalendarLayoutDelegates<T>(),
+        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
         child: Column(
           children: <Widget>[
             ScheduleHeader<T>(
-              viewConfiguration: _viewConfiguration,
+              viewConfiguration: widget.scheduleViewConfiguration,
+              viewState: _viewState,
             ),
-            ScheduleContent(
-              controller: widget.controller,
-              viewConfiguration: _viewConfiguration,
+            Expanded(
+              child: ListenableBuilder(
+                listenable: widget.eventsController,
+                builder: (context, child) {
+                  _viewState.scheduleGroups =
+                      widget.eventsController.getScheduleGroups().toList();
+
+                  return ScheduleContent<T>(
+                    controller: widget.controller,
+                    viewConfiguration: widget.scheduleViewConfiguration,
+                    viewState: _viewState,
+                  );
+                },
+              ),
             ),
           ],
         ),

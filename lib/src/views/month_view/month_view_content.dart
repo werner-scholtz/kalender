@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/views/month_view/month_view_page_content.dart';
@@ -17,6 +18,7 @@ class MonthViewContent<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+    final state = scope.state as MonthViewState;
 
     return Expanded(
       child: LayoutBuilder(
@@ -29,8 +31,8 @@ class MonthViewContent<T> extends StatelessWidget {
             height: constraints.maxHeight,
             child: PageView.builder(
               key: Key(viewConfiguration.hashCode.toString()),
-              controller: scope.state.pageController,
-              itemCount: scope.state.numberOfPages,
+              controller: state.pageController,
+              itemCount: state.numberOfPages,
               onPageChanged: (index) {
                 final newVisibleDateTimeRange =
                     viewConfiguration.calculateVisibleDateRangeForIndex(

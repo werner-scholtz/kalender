@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/schedule_group.dart';
 
 /// A [ChangeNotifier] that manages [CalendarEvent]s.
 class CalendarEventsController<T> with ChangeNotifier {
@@ -18,29 +19,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChangingEvent => _selectedEvent != null;
 
-  bool _isSelectedEventMultiday = false;
-  bool get isSelectedEventMultiDay => _isSelectedEventMultiday;
-
-  bool _isResizing = false;
-  bool get isResizing => _isResizing;
-  set isResizing(bool value) {
-    _isResizing = value;
-    notifyListeners();
-  }
-
-  bool _isMoving = false;
-  bool get isMoving => _isMoving;
-  set isMoving(bool value) {
-    _isMoving = value;
-    notifyListeners();
-  }
-
   /// Deselects the [_selectedEvent].
   void deselectEvent() {
     _selectedEvent = null;
-    _isSelectedEventMultiday = false;
-    _isResizing = false;
-    _isMoving = false;
     notifyListeners();
   }
 
@@ -49,7 +30,6 @@ class CalendarEventsController<T> with ChangeNotifier {
     CalendarEvent<T> event,
   ) {
     _selectedEvent = event;
-    _isSelectedEventMultiday = event.isMultidayEvent;
     notifyListeners();
   }
 
@@ -61,19 +41,24 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
   void addEvent(CalendarEvent<T> event) {
     _events.add(event);
+    _events.sort((a, b) => a.start.compareTo(b.start));
     notifyListeners();
   }
 
   /// Adds a list of [CalendarEvent]s to the list of [CalendarEvent]s.
   void addEvents(List<CalendarEvent<T>> events) {
     _events.addAll(events);
+    _events.sort((a, b) => a.start.compareTo(b.start));
     notifyListeners();
   }
 
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent<T> event) {
+    if (selectedEvent == event) {
+      _selectedEvent = null;
+    }
     _events.remove(event);
-    _selectedEvent = null;
+    _events.sort((a, b) => a.start.compareTo(b.start));
     notifyListeners();
   }
 
@@ -82,12 +67,14 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// The events will be removed where [test] returns true.
   void removeWhere(bool Function(CalendarEvent<T> element) test) {
     _events.removeWhere(test);
+    _events.sort((a, b) => a.start.compareTo(b.start));
     notifyListeners();
   }
 
   /// Removes all [CalendarEvent]s from [_events].
   void clearEvents() {
     _events.clear();
+
     notifyListeners();
   }
 
@@ -130,7 +117,7 @@ class CalendarEventsController<T> with ChangeNotifier {
                   element.end.isWithin(dateRange) ||
                   element.start == dateRange.start ||
                   element.end == dateRange.end) &&
-              element.isMultidayEvent,
+              element.isMultiDayEvent,
         )
         .toList();
   }
@@ -154,7 +141,7 @@ class CalendarEventsController<T> with ChangeNotifier {
       (element) =>
           (element.start.isWithin(dateRange) ||
               element.end.isWithin(dateRange)) &&
-          !element.isMultidayEvent,
+          !element.isMultiDayEvent,
     );
   }
 
@@ -168,6 +155,37 @@ class CalendarEventsController<T> with ChangeNotifier {
       snapPoints.add(event.end);
     }
     return snapPoints;
+  }
+
+  /// Returns a iterable of [ScheduleGroup]s.
+  /// * A [ScheduleGroup] is a group of [CalendarEvent]s that are on the same date.
+  Iterable<ScheduleGroup<T>> getScheduleGroups() {
+    final scheduleGroups = <ScheduleGroup<T>>[];
+
+    for (final event in _events) {
+      for (final date in event.datesSpanned) {
+        final index = scheduleGroups.indexWhere(
+          (element) => element.date == date,
+        );
+
+        if (index == -1) {
+          final isFirstOfMonth = !scheduleGroups.any(
+            (group) => group.date.startOfMonth == date.startOfMonth,
+          );
+
+          scheduleGroups.add(
+            ScheduleGroup(
+              date: date,
+              events: [event],
+              isFirstOfMonth: isFirstOfMonth,
+            ),
+          );
+        } else {
+          scheduleGroups[index].addEvent(event);
+        }
+      }
+    }
+    return scheduleGroups;
   }
 
   @override

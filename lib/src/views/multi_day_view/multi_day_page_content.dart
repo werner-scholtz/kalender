@@ -4,6 +4,7 @@ import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture
 import 'package:kalender/src/components/event_groups/event_group_widget.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
+import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
@@ -24,7 +25,8 @@ class MultiDayPageContent<T> extends StatelessWidget {
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
         final dayWidth = constraints.maxWidth / visibleDates.length;
-        final heightPerMinute = scope.state.heightPerMinute!.value;
+        final heightPerMinute =
+            (scope.state as MultiDayViewState).heightPerMinute!.value;
         final verticalStep =
             heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
@@ -161,9 +163,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChangingEvent &&
-      !controller.isSelectedEventMultiDay &&
-      (controller.isMoving || controller.isResizing);
+      controller.hasChangingEvent && !controller.selectedEvent!.isMultiDayEvent;
 }
 
 class MultiDayPageData {

@@ -23,7 +23,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
     return x.toString();
   }
 
-  for (var i = -5; i < 5; i++) {
+  for (var i = -50; i < 50; i++) {
     DateTime now = DateTime.now().add(Duration(days: i * 7));
     DateTime mondayNow = now.subtract(Duration(days: now.weekday - 1));
     DateTime startOfMonday =

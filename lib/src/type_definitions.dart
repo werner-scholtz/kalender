@@ -58,6 +58,11 @@ typedef MonthHeaderBuilder = Widget Function(
   DateTime date,
 );
 
+/// The [ScheduleMonthHeaderBuilder] is used to build the header displayed above a month in the schedule view.
+typedef ScheduleMonthHeaderBuilder = Widget Function(
+  DateTime date,
+);
+
 /// The [TileBuilder]
 ///
 /// The [drawOutline] parameter is used to indicate whether the event should be drawn with an outline.
@@ -94,10 +99,10 @@ typedef MultiDayTileBuilder<T extends Object?> = Widget Function(
 //   MonthTileConfiguration configuration,
 // );
 
-/// The [ScheduleEventTileBuilder]
+/// The [ScheduleTileBuilder]
 ///
 /// This builder is used to build event tiles that are displayed on a specific date.
-typedef ScheduleEventTileBuilder<T extends Object?> = Widget Function(
+typedef ScheduleTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTime date,
 );

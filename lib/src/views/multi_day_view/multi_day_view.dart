@@ -27,7 +27,7 @@ class MultiDayView<T> extends StatefulWidget {
     required this.multiDayTileBuilder,
     this.components,
     this.style,
-    this.multiDayViewConfiguration,
+    this.multiDayViewConfiguration = const WeekConfiguration(),
     this.functions,
     this.layoutControllers,
   });
@@ -39,7 +39,7 @@ class MultiDayView<T> extends StatefulWidget {
   final CalendarEventsController<T> eventsController;
 
   /// The [MultiDayViewConfiguration] used to configure the view.
-  final MultiDayViewConfiguration? multiDayViewConfiguration;
+  final MultiDayViewConfiguration multiDayViewConfiguration;
 
   /// The [CalendarComponents] used to build the components of the view.
   final CalendarComponents? components;
@@ -64,15 +64,12 @@ class MultiDayView<T> extends StatefulWidget {
 }
 
 class _MultiDayViewState<T> extends State<MultiDayView<T>> {
-  late ViewState _viewState;
-  late MultiDayViewConfiguration _viewConfiguration;
+  late MultiDayViewState _viewState;
 
   @override
   void initState() {
     super.initState();
 
-    _viewConfiguration =
-        (widget.multiDayViewConfiguration ?? const WeekConfiguration());
     _initializeViewState();
 
     if (kDebugMode) {
@@ -86,31 +83,28 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.multiDayViewConfiguration != null &&
-        widget.multiDayViewConfiguration != _viewConfiguration) {
-      _viewConfiguration = widget.multiDayViewConfiguration!;
-      _initializeViewState();
+    _initializeViewState();
 
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
-      // _controller.detach();
-      widget.controller.attach(_viewState);
+    if (kDebugMode) {
+      print('The controller is already attached to a view. detaching first.');
     }
+    // _controller.detach();
+    widget.controller.attach(_viewState);
   }
 
   void _initializeViewState() {
     final adjustedDateTimeRange =
-        _viewConfiguration.calculateAdjustedDateTimeRange(
+        widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
       visibleStart: widget.controller.selectedDate,
     );
 
-    final numberOfPages = _viewConfiguration.calculateNumberOfPages(
+    final numberOfPages =
+        widget.multiDayViewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
 
-    final initialPage = _viewConfiguration.calculateDateIndex(
+    final initialPage = widget.multiDayViewConfiguration.calculateDateIndex(
       widget.controller.selectedDate,
       adjustedDateTimeRange.start,
     );
@@ -119,12 +113,13 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialPage: initialPage,
     );
 
-    final visibleDateRange = _viewConfiguration.calculateVisibleDateTimeRange(
+    final visibleDateRange =
+        widget.multiDayViewConfiguration.calculateVisibleDateTimeRange(
       widget.controller.selectedDate,
     );
 
-    _viewState = ViewState(
-      viewConfiguration: _viewConfiguration,
+    _viewState = MultiDayViewState(
+      viewConfiguration: widget.multiDayViewConfiguration,
       pageController: pageController,
       adjustedDateTimeRange: adjustedDateTimeRange,
       numberOfPages: numberOfPages,
@@ -148,17 +143,17 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
           multiDayTileBuilder: widget.multiDayTileBuilder,
         ),
         platformData: PlatformData(),
-        layoutControllers:
+        layoutDelegates:
             widget.layoutControllers ?? CalendarLayoutDelegates<T>(),
         child: Column(
           children: <Widget>[
             MultiDayHeader<T>(
-              viewConfiguration: _viewConfiguration,
+              viewConfiguration: widget.multiDayViewConfiguration,
             ),
             Expanded(
               child: MultiDayContent<T>(
                 controller: widget.controller,
-                viewConfiguration: _viewConfiguration,
+                viewConfiguration: widget.multiDayViewConfiguration,
               ),
             ),
           ],

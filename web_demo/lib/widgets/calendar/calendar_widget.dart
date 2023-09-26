@@ -5,6 +5,7 @@ import 'package:web_demo/widgets/dialogs/event_edit_dialog.dart';
 import 'package:web_demo/widgets/dialogs/new_event_dialog.dart';
 import 'package:web_demo/widgets/event_tiles/event_tile.dart';
 import 'package:web_demo/widgets/event_tiles/multi_day_event_tile.dart';
+import 'package:web_demo/widgets/event_tiles/schedule_event_tile.dart';
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({
@@ -15,6 +16,7 @@ class CalendarWidget extends StatefulWidget {
     required this.calendarStyle,
     required this.calendarLayoutDelegates,
     required this.currentConfiguration,
+    required this.onDateTapped,
   });
 
   final CalendarEventsController<Event> eventsController;
@@ -24,6 +26,7 @@ class CalendarWidget extends StatefulWidget {
   final CalendarLayoutDelegates<Event> calendarLayoutDelegates;
 
   final ViewConfiguration currentConfiguration;
+  final VoidCallback onDateTapped;
 
   @override
   State<CalendarWidget> createState() => _CalendarWidgetState();
@@ -38,6 +41,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       viewConfiguration: widget.currentConfiguration,
       tileBuilder: _tileBuilder,
       multiDayTileBuilder: _multiDayTileBuilder,
+      scheduleTileBuilder: _scheduleTileBuilder,
       components: widget.calendarComponents,
       style: widget.calendarStyle,
       layoutDelegates: widget.calendarLayoutDelegates,
@@ -126,6 +130,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     if (widget.currentConfiguration is! DayConfiguration) {
       // Set the selected date to the tapped date.
       widget.calendarController.selectedDate = date;
+      widget.onDateTapped();
       // widget.currentConfiguration = widget.viewConfigurations.first;
     }
   }
@@ -152,6 +157,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       tileType: tileConfiguration.tileType,
       continuesBefore: tileConfiguration.continuesBefore,
       continuesAfter: tileConfiguration.continuesAfter,
+    );
+  }
+
+  Widget _scheduleTileBuilder(
+    CalendarEvent<Event> event,
+    DateTime date,
+  ) {
+    return ScheduleTile(
+      event: event,
+      date: date,
     );
   }
 }
