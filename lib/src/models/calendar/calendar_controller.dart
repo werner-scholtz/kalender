@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:kalender/src/constants.dart';
@@ -71,12 +72,15 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
       'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
@@ -106,12 +110,16 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
+
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
       'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
@@ -137,12 +145,15 @@ class CalendarController<T> with ChangeNotifier {
   /// Jumps to the [page].
   ///  The [page] must be within the [numberOfPages].
   void jumpToPage(int page) {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
 
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
@@ -161,12 +172,15 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Jumps to the [date].
   void jumpToDate(DateTime date) {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
 
     assert(
       !date.isWithin(_state!.adjustedDateTimeRange),
@@ -222,12 +236,15 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
 
     assert(
       date.isWithin(_state!.adjustedDateTimeRange),
@@ -288,12 +305,16 @@ class CalendarController<T> with ChangeNotifier {
   ///
   /// The [heightPerMinute] must be greater than 0.
   void adjustHeightPerMinute(double heightPerMinute) {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
+
     assert(
       _state is MultiDayViewState,
       'The $_state must be a $MultiDayViewState.',
@@ -335,12 +356,16 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Locks the vertical scroll of the current view.
   void lockScrollPhysics() {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
+
     assert(
       _state is MultiDayViewState,
       'The $_state must be a $MultiDayViewState.',
@@ -357,12 +382,16 @@ class CalendarController<T> with ChangeNotifier {
   void unlockScrollPhysics({
     ScrollPhysics? scrollPhysics,
   }) {
-    assert(
-      _state != null,
-      'The $_state must not be null.'
-      'Please attach the $CalendarController to a view.',
-    );
-    if (_state == null) return;
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return;
+    }
+
     assert(
       _state is MultiDayViewState,
       'The $_state must be a $MultiDayViewState.',
