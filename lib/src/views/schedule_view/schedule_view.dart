@@ -96,9 +96,7 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   }
 
   void _initializeViewState() {
-    final initialDate =
-        widget.controller.previousState?.visibleDateTimeRange.start ??
-            DateTime.now();
+    final initialDate = widget.controller.selectedDate;
 
     final adjustedDateTimeRange =
         widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(

@@ -69,8 +69,8 @@ class MultiDayContent<T> extends StatelessWidget {
                               newVisibleDateTimeRange;
 
                           // Update the selected date.
-                          // controller.selectedDate =
-                          //     newVisibleDateTimeRange.start;
+                          controller.selectedDate =
+                              newVisibleDateTimeRange.start;
 
                           // Call the onPageChanged function.
                           scope.functions.onPageChanged?.call(

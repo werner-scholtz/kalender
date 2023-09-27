@@ -97,9 +97,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
   }
 
   void _initializeViewState() {
-    final initialDate =
-        widget.controller.previousState?.visibleDateTimeRange.start ??
-            DateTime.now();
+    final initialDate = widget.controller.selectedDate;
 
     final adjustedDateTimeRange =
         widget.monthViewConfiguration.calculateAdjustedDateTimeRange(

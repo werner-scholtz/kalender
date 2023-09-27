@@ -130,7 +130,7 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
       widget.viewState.visibleDateTimeRange = visibleDateRange;
 
       // Update the selected date.
-      // widget.controller.selectedDate = visibleDateRange.start;
+      widget.controller.selectedDate = visibleDateRange.start;
     }
   }
 }
