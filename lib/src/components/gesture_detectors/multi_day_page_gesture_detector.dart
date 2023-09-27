@@ -3,6 +3,7 @@ import 'package:kalender/kalender_scope.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
 
+/// This widget is used to detect gestures on the [MultiDayPageWidget].
 class MultiDayPageGestureDetector<T> extends StatefulWidget {
   const MultiDayPageGestureDetector({
     super.key,

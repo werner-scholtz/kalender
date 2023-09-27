@@ -7,6 +7,7 @@ import 'package:kalender/src/models/tile_configurations/tile_configuration.dart'
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
+/// A widget that displays a group of events as [EventTile]s using the [CustomMultiChildLayout] widget.
 class EventGroupWidget<T> extends StatelessWidget {
   const EventGroupWidget({
     super.key,

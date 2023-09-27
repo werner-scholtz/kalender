@@ -5,6 +5,7 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 
+/// This widget is used to detect gestures on the [MultiDayHeaderWidget] and [MonthViewPageContent].
 class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
   const MultiDayHeaderGestureDetector({
     super.key,

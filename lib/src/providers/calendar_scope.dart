@@ -28,7 +28,7 @@ class CalendarScope<T> extends InheritedWidget {
 
   final CalendarLayoutDelegates<T> layoutDelegates;
 
-  final ViewStateV2 state;
+  final ViewState state;
 
   final PlatformData platformData;
 

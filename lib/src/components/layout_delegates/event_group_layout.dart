@@ -3,6 +3,33 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 
 /// The base MultiChildLayoutDelegate for [EventGroupLayoutDelegate]'s
 ///
+/// This class is used to layout the [CalendarEvent]'s in a [EventGroupWidget].
+///
+/// [events] is the list of [CalendarEvent]'s that should be laid out.
+///
+/// [heightPerMinute] is the height of a minute in the [EventGroupWidget].
+///
+/// [startOfGroup] is the [DateTime] start of the group of events.
+/// * this is used to calculate the offset of the [CalendarEvent] from the top of the [EventGroupWidget].
+///
+///  _________The start of the group.
+/// |       ↑
+/// |       | this can be calculated using
+/// |       | (event.dateTimeRangeOnDate(startOfGroup).start.difference(startOfGroup).inMinutes * heightPerMinute)
+/// |       ↓
+/// | ________The start of the event.
+/// | |
+/// | |
+/// | |
+/// | |
+/// | |
+/// | |
+/// | |
+/// | |________
+/// |
+/// |
+/// |__________
+///
 abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
   EventGroupLayoutDelegate({
     required this.events,

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/schedule_group.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-abstract class ViewStateV2 {
-  ViewStateV2({
+/// The base class for the viewStates.
+abstract class ViewState {
+  ViewState({
     required ValueNotifier<DateTimeRange> visibleDateTimeRange,
   }) : _visibleDateTimeRange = visibleDateTimeRange;
 
@@ -34,7 +34,8 @@ abstract class ViewStateV2 {
   int get hashCode;
 }
 
-class ScheduleViewState<T> extends ViewStateV2 {
+/// The viewState for the [ScheduleView].
+class ScheduleViewState<T> extends ViewState {
   ScheduleViewState({
     required super.visibleDateTimeRange,
     required this.viewConfiguration,
@@ -77,7 +78,8 @@ class ScheduleViewState<T> extends ViewStateV2 {
   final DateTimeRange adjustedDateTimeRange;
 }
 
-class MultiDayViewState extends ViewStateV2 {
+/// The viewState for the [MultiDayView].
+class MultiDayViewState extends ViewState {
   MultiDayViewState({
     required super.visibleDateTimeRange,
     required this.viewConfiguration,
@@ -95,7 +97,6 @@ class MultiDayViewState extends ViewStateV2 {
 
   @override
   set visibleDateTimeRange(DateTimeRange value) {
-    // TODO: implement visibleDateTimeRange
     _visibleDateTimeRange.value = value;
     _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;
   }
@@ -124,7 +125,8 @@ class MultiDayViewState extends ViewStateV2 {
   int get hashCode;
 }
 
-class MonthViewState extends ViewStateV2 {
+/// The viewState for the [DayView].
+class MonthViewState extends ViewState {
   MonthViewState({
     required super.visibleDateTimeRange,
     required this.viewConfiguration,
@@ -158,87 +160,4 @@ class MonthViewState extends ViewStateV2 {
 
   @override
   int get hashCode;
-}
-
-/// This is used to store state related to a view.
-///
-/// This state is shared with the [CalendarController]
-class ViewState {
-  ViewState({
-    required this.viewConfiguration,
-    required this.pageController,
-    required this.scrollController,
-    required this.numberOfPages,
-    required this.adjustedDateTimeRange,
-    required ValueNotifier<DateTimeRange> visibleDateTimeRange,
-    this.heightPerMinute,
-  }) : _visibleDateTimeRange = visibleDateTimeRange;
-
-  /// The current viewConfiguration of the view.
-  final ViewConfiguration viewConfiguration;
-
-  /// The pageController of the current view.
-  final PageController? pageController;
-
-  /// The scrollController of the current view.
-  final ScrollController scrollController;
-
-  /// The scrollPhysics of the current view.
-  ValueNotifier<ScrollPhysics> scrollPhysics =
-      ValueNotifier<ScrollPhysics>(const ScrollPhysics());
-
-  /// The height per minute of the current view.
-  /// This is only used in the [MultiDayView].
-  final ValueNotifier<double>? heightPerMinute;
-
-  /// The visible dateTimeRange of the current page.
-  final ValueNotifier<DateTimeRange> _visibleDateTimeRange;
-  set visibleDateTimeRange(DateTimeRange value) {
-    _visibleDateTimeRange.value = value;
-    if (viewConfiguration is MonthViewConfiguration) {
-      final month = _visibleDateTimeRange.value.visibleMonth.startOfMonth;
-      _visibleMonth = month.startOfMonth;
-    } else {
-      _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;
-    }
-  }
-
-  /// The visible dateTimeRange notifier of the current page.
-  ValueNotifier<DateTimeRange> get visibleDateTimeRangeNotifier =>
-      _visibleDateTimeRange;
-
-  /// The visible month notifier of the current page.
-  late DateTime _visibleMonth = _visibleDateTimeRange.value.start.startOfMonth;
-
-  /// The visible month of the current page.
-  DateTime get visibleMonth => _visibleMonth;
-
-  /// The adjusted dateTimeRange of the current view.
-  final DateTimeRange adjustedDateTimeRange;
-
-  /// The number of pages the [PageView] of the current view has.
-  final int numberOfPages;
-
-  @override
-  operator ==(Object other) {
-    return other is ViewState &&
-        viewConfiguration == other.viewConfiguration &&
-        pageController == other.pageController &&
-        scrollController == other.scrollController &&
-        heightPerMinute == other.heightPerMinute &&
-        visibleDateTimeRangeNotifier == other.visibleDateTimeRangeNotifier &&
-        adjustedDateTimeRange == other.adjustedDateTimeRange &&
-        numberOfPages == other.numberOfPages;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-        viewConfiguration,
-        pageController,
-        scrollController,
-        heightPerMinute?.value,
-        visibleDateTimeRangeNotifier.value,
-        adjustedDateTimeRange,
-        numberOfPages,
-      );
 }

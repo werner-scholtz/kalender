@@ -5,6 +5,7 @@ import 'package:kalender/src/components/tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 
+/// A widget that displays a group of events as [MultiDayEventTile]s using the [CustomMultiChildLayout] widget.
 class MultiDayEventGroupWidget<T> extends StatelessWidget {
   const MultiDayEventGroupWidget({
     super.key,

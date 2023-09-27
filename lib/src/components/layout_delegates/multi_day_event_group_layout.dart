@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-/// The base MultiChildLayoutDelegate for [MultiDayEventGroupLayoutDelegate]'s
+/// The base MultiChildLayoutDelegate for [MultiDayEventsLayoutDelegate]'s
 ///
-abstract class MultiDayEventGroupLayoutDelegate<T>
+/// [events] is the list of [CalendarEvent]'s that should be laid out.
+///
+/// [visibleDateRange] is the [DateTimeRange] of the visible dates.
+///
+/// [multiDayTileHeight] is the height of a tile in the [MultiDayEventGroupWidget].
+///
+abstract class MultiDayEventsLayoutDelegate<T>
     extends MultiChildLayoutDelegate {
-  MultiDayEventGroupLayoutDelegate({
+  MultiDayEventsLayoutDelegate({
     required this.events,
     required this.visibleDateRange,
     required this.multiDayTileHeight,
@@ -17,14 +23,14 @@ abstract class MultiDayEventGroupLayoutDelegate<T>
   final double multiDayTileHeight;
 
   @override
-  bool shouldRelayout(covariant MultiDayEventGroupLayoutDelegate oldDelegate) {
+  bool shouldRelayout(covariant MultiDayEventsLayoutDelegate oldDelegate) {
     return oldDelegate.events != events;
   }
 }
 
-class MultiDayEventGroupDefaultLayoutDelegate<T>
-    extends MultiDayEventGroupLayoutDelegate<T> {
-  MultiDayEventGroupDefaultLayoutDelegate({
+class MultiDayEventsDefaultLayoutDelegate<T>
+    extends MultiDayEventsLayoutDelegate<T> {
+  MultiDayEventsDefaultLayoutDelegate({
     required super.events,
     required super.visibleDateRange,
     required super.multiDayTileHeight,

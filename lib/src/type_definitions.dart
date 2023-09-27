@@ -113,7 +113,7 @@ typedef EventLayoutDelegateBuilder<T extends Object?>
 ///
 /// The typedef is used to create a function that returns a [MultiDayTileLayoutController].
 typedef MultiDayEventLayoutDelegateBuilder<T extends Object?>
-    = MultiDayEventGroupLayoutDelegate<T> Function({
+    = MultiDayEventsLayoutDelegate<T> Function({
   required DateTimeRange visibleDateRange,
   required double multiDayTileHeight,
   required List<CalendarEvent<T>> events,

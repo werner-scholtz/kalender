@@ -41,13 +41,13 @@ class CalendarLayoutDelegates<T> {
     );
   }
 
-  /// The default [MultiDayEventGroupLayoutDelegate] used to layout the multi day tiles.
-  MultiDayEventGroupLayoutDelegate<T> defaultMultiDayTileLayoutController({
+  /// The default [MultiDayEventsLayoutDelegate] used to layout the multi day tiles.
+  MultiDayEventsLayoutDelegate<T> defaultMultiDayTileLayoutController({
     required DateTimeRange visibleDateRange,
     required double multiDayTileHeight,
     required List<CalendarEvent<T>> events,
   }) {
-    return MultiDayEventGroupDefaultLayoutDelegate(
+    return MultiDayEventsDefaultLayoutDelegate(
       events: events,
       visibleDateRange: visibleDateRange,
       multiDayTileHeight: multiDayTileHeight,
@@ -55,12 +55,12 @@ class CalendarLayoutDelegates<T> {
   }
 
   /// The default [MonthLayoutController] used to layout the month tiles.
-  MultiDayEventGroupLayoutDelegate<T> defaultMonthTileLayoutController({
+  MultiDayEventsLayoutDelegate<T> defaultMonthTileLayoutController({
     required DateTimeRange visibleDateRange,
     required double multiDayTileHeight,
     required List<CalendarEvent<T>> events,
   }) {
-    return MultiDayEventGroupDefaultLayoutDelegate(
+    return MultiDayEventsDefaultLayoutDelegate(
       events: events,
       visibleDateRange: visibleDateRange,
       multiDayTileHeight: multiDayTileHeight,

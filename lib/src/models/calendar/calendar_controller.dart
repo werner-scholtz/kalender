@@ -33,11 +33,11 @@ class CalendarController<T> with ChangeNotifier {
   DateTimeRange get dateTimeRange => _dateTimeRange;
 
   /// The current [_state] of the view this controller is linked to.
-  ViewStateV2? _state;
+  ViewState? _state;
   bool get isAttached => _state != null;
 
-  ViewStateV2? _previousState;
-  ViewStateV2? get previousState => _previousState;
+  ViewState? _previousState;
+  ViewState? get previousState => _previousState;
 
   /// This [ValueNotifier] exposes the height per minute of the current view.
   ///
@@ -56,7 +56,7 @@ class CalendarController<T> with ChangeNotifier {
       _state?.visibleMonth ?? _previousState?.visibleMonth;
 
   /// Attaches the [CalendarController] to a [CalendarView].
-  void attach(ViewStateV2 viewState) {
+  void attach(ViewState viewState) {
     _state = viewState;
   }
 
