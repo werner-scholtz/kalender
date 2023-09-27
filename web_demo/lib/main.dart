@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
             calendarLayoutDelegates: calendarLayoutDelegates,
             onDateTapped: () {
               setState(() {
-                currentConfiguration = 1;
+                currentConfiguration = 0;
               });
             },
           );
