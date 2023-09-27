@@ -1,4 +1,8 @@
 ## 0.1.3
+* Updated web_demo.
+* Fixed selected date.
+
+## 0.1.3
 * Updated example.
 * Renamed MultiDayEventGroupLayoutController to MultiDayEventsLayoutController.
 
