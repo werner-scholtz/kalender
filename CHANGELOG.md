@@ -1,3 +1,7 @@
+## 0.1.3
+* Updated example.
+* Renamed MultiDayEventGroupLayoutController to MultiDayEventsLayoutController.
+
 ## 0.1.2
 #### Breaking Changes:
 * Added schedule view (so CalendarView now requires schedule widget)

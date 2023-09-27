@@ -11,7 +11,12 @@ class MultiDayTileConfiguration {
     required this.continuesAfter,
   });
 
+  /// The type of the tile.
   final TileType tileType;
+
+  /// Whether the tile continues before the visible date range.
   final bool continuesBefore;
+
+  /// Whether the tile continues after the visible date range.
   final bool continuesAfter;
 }

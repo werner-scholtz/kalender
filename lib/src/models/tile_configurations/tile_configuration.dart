@@ -12,8 +12,15 @@ class TileConfiguration {
     required this.continuesAfter,
   });
 
+  /// The type of the tile.
   final TileType tileType;
+
+  /// Whether the tile should draw an outline.
   final bool drawOutline;
+
+  /// Whether the tile continues before the visible date range.
   final bool continuesBefore;
+
+  /// Whether the tile continues after the visible date range.
   final bool continuesAfter;
 }
