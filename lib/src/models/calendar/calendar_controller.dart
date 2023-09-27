@@ -75,15 +75,8 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
+
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
       'The $_state must be either a $MonthViewState or a $MultiDayViewState.',
@@ -113,15 +106,7 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
@@ -148,15 +133,7 @@ class CalendarController<T> with ChangeNotifier {
   /// Jumps to the [page].
   ///  The [page] must be within the [numberOfPages].
   void jumpToPage(int page) {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       _state is MonthViewState || _state is MultiDayViewState,
@@ -175,15 +152,7 @@ class CalendarController<T> with ChangeNotifier {
 
   /// Jumps to the [date].
   void jumpToDate(DateTime date) {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       !date.isWithin(_state!.adjustedDateTimeRange),
@@ -239,15 +208,7 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       date.isWithin(_state!.adjustedDateTimeRange),
@@ -308,15 +269,7 @@ class CalendarController<T> with ChangeNotifier {
   ///
   /// The [heightPerMinute] must be greater than 0.
   void adjustHeightPerMinute(double heightPerMinute) {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       _state is MultiDayViewState,
@@ -339,6 +292,8 @@ class CalendarController<T> with ChangeNotifier {
     Duration? duration,
     Curve? curve,
   }) async {
+    if (!hasState) return;
+
     // First animate to the date of the event.
     await animateToDate(
       event.dateTimeRange.start,
@@ -357,17 +312,25 @@ class CalendarController<T> with ChangeNotifier {
     }
   }
 
+  double? get scrollOffset {
+    return (_state as MultiDayViewState).scrollController.offset;
+  }
+
+  void jumpTo(double offset) {
+    if (!hasState) return;
+
+    assert(
+      _state is MultiDayViewState,
+      'The $_state must be a $MultiDayViewState.',
+    );
+    if (_state is! MultiDayViewState) return;
+
+    (_state as MultiDayViewState).scrollController.jumpTo(offset);
+  }
+
   /// Locks the vertical scroll of the current view.
   void lockScrollPhysics() {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       _state is MultiDayViewState,
@@ -385,15 +348,7 @@ class CalendarController<T> with ChangeNotifier {
   void unlockScrollPhysics({
     ScrollPhysics? scrollPhysics,
   }) {
-    if (_state == null) {
-      if (kDebugMode) {
-        print(
-          'The $_state must not be null.'
-          'Please attach the $CalendarController to a view.',
-        );
-      }
-      return;
-    }
+    if (!hasState) return;
 
     assert(
       _state is MultiDayViewState,
@@ -403,5 +358,18 @@ class CalendarController<T> with ChangeNotifier {
     (_state as MultiDayViewState).scrollPhysics.value =
         scrollPhysics ?? const ScrollPhysics();
     notifyListeners();
+  }
+
+  bool get hasState {
+    if (_state == null) {
+      if (kDebugMode) {
+        print(
+          'The $_state must not be null.'
+          'Please attach the $CalendarController to a view.',
+        );
+      }
+      return false;
+    }
+    return true;
   }
 }
