@@ -1,4 +1,3 @@
-import 'package:example/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -15,11 +14,14 @@ class MyApp extends StatelessWidget {
       title: 'Kalender Example',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: lightColorScheme,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorScheme: darkColorScheme,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
       ),
       home: const MyHomePage(),
     );
