@@ -55,6 +55,12 @@ class CalendarController<T> with ChangeNotifier {
   DateTime? get visibleMonth =>
       _state?.visibleMonth ?? _previousState?.visibleMonth;
 
+  ScrollController? get scrollController {
+    if (!hasState) return null;
+    if (_state is! MultiDayViewState) return null;
+    return (_state as MultiDayViewState).scrollController;
+  }
+
   /// Attaches the [CalendarController] to a [CalendarView].
   void attach(ViewState viewState) {
     _state = viewState;
@@ -310,22 +316,6 @@ class CalendarController<T> with ChangeNotifier {
           );
       notifyListeners();
     }
-  }
-
-  double? get scrollOffset {
-    return (_state as MultiDayViewState).scrollController.offset;
-  }
-
-  void jumpTo(double offset) {
-    if (!hasState) return;
-
-    assert(
-      _state is MultiDayViewState,
-      'The $_state must be a $MultiDayViewState.',
-    );
-    if (_state is! MultiDayViewState) return;
-
-    (_state as MultiDayViewState).scrollController.jumpTo(offset);
   }
 
   /// Locks the vertical scroll of the current view.
