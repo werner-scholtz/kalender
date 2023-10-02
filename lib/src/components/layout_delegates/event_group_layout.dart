@@ -65,12 +65,13 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final id = i;
       final event = events[id];
       final childHeight =
-          event.durationOnDate(startOfGroup).inMinutes * heightPerMinute;
+          (event.durationOnDate(startOfGroup).inMinutes * heightPerMinute)
+              .floorToDouble();
 
       final childSize = layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: tileWidth - ((i * tileWidth) / 5),
+          width: (tileWidth - ((i * tileWidth) / 5)).floorToDouble(),
           height: childHeight,
         ),
       );
@@ -81,12 +82,13 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
     for (var id = 0; id < numChildren; id++) {
       final event = events[id];
       final dx = 0.0 + ((id * tileWidth) / 5);
-      final dy = event
-              .dateTimeRangeOnDate(startOfGroup)
-              .start
-              .difference(startOfGroup)
-              .inMinutes *
-          heightPerMinute;
+      final dy = (event
+                  .dateTimeRangeOnDate(startOfGroup)
+                  .start
+                  .difference(startOfGroup)
+                  .inMinutes *
+              heightPerMinute)
+          .floorToDouble();
 
       positionChild(
         id,
@@ -121,9 +123,10 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final childSize = layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: size.width / numChildren,
+          width: (size.width / numChildren).roundToDouble(),
           height:
-              event.durationOnDate(startOfGroup).inMinutes * heightPerMinute,
+              (event.durationOnDate(startOfGroup).inMinutes * heightPerMinute)
+                  .roundToDouble(),
         ),
       );
 

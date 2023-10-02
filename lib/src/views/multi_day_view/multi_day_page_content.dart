@@ -88,16 +88,17 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 ),
                 ...eventGroups.map(
                   (tileGroup) => Positioned(
-                    left: visibleDates.indexOf(tileGroup.date) * dayWidth,
-                    width: dayWidth,
+                    left: (visibleDates.indexOf(tileGroup.date) * dayWidth)
+                        .ceilToDouble(),
+                    width: dayWidth.floorToDouble(),
                     top: calculateTop(
                       tileGroup.start.difference(tileGroup.date),
                       heightPerMinute,
-                    ),
+                    ).floorToDouble(),
                     height: calculateHeight(
                       tileGroup.duration,
                       heightPerMinute,
-                    ),
+                    ).floorToDouble(),
                     child: EventGroupWidget<T>(
                       eventGroup: tileGroup,
                       snapData: snapData,
@@ -118,17 +119,18 @@ class MultiDayPageContent<T> extends StatelessWidget {
                         children: [
                           ...selectedDayTileGroup.map(
                             (tileGroup) => Positioned(
-                              left: visibleDates.indexOf(tileGroup.date) *
-                                  dayWidth,
-                              width: dayWidth,
+                              left: (visibleDates.indexOf(tileGroup.date) *
+                                      dayWidth)
+                                  .ceilToDouble(),
+                              width: dayWidth.floorToDouble(),
                               top: calculateTop(
                                 tileGroup.start.difference(tileGroup.date),
                                 heightPerMinute,
-                              ),
+                              ).floorToDouble(),
                               height: calculateHeight(
                                 tileGroup.duration,
                                 heightPerMinute,
-                              ),
+                              ).floorToDouble(),
                               child: EventGroupWidget<T>(
                                 eventGroup: tileGroup,
                                 snapData: snapData,
