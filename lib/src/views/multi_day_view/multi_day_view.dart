@@ -135,12 +135,12 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
           (widget.controller.state as MultiDayViewState).heightPerMinute?.value;
     }
 
-    final initialScrollOffset =
-        (widget.controller.previousState is MultiDayViewState)
-            ? (widget.controller.previousState as MultiDayViewState)
-                .scrollController
-                .offset
-            : 0.0;
+    var initialScrollOffset = 0.0;
+    final previousState = widget.controller.previousState;
+    if (previousState is MultiDayViewState &&
+        previousState.scrollController.hasClients) {
+      initialScrollOffset = previousState.scrollController.offset;
+    }
 
     _viewState = MultiDayViewState(
       viewConfiguration: widget.multiDayViewConfiguration,
