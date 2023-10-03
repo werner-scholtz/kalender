@@ -1,3 +1,9 @@
+## 0.1.5
+* Added event tileHandleBuilder for mobile.
+* Added mobile reschedule / resize docs.
+* Changed event tile layout to use integer values.
+* Bug fixes.
+
 ## 0.1.4
 * Fixed selected date.
 
