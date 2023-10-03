@@ -100,28 +100,27 @@ The only way for events to be resized on mobile is by keeping them selected so t
 To do this you can do the following:
 
 Configure the event handlers like so. 
-
-    ```dart
-    CalendarView(
-      eventHandlers: CalendarEventHandlers(
-        onEventTapped: (event) async {
-          // Check if the event that was tapped is is currently selected.
-          eventController.selectedEvent == event
-            // If it is selected, deselect it.
-            ? eventController.deselectEvent()
-            // If it is not selected, select it.
-            : eventController.selectEvent(event);
-        },
-        onEventChanged: (initialDateTimeRange, event) async {
-          // If you want to deselect the event after it has been resized/rescheduled. uncomment the following line.
-          // eventController.deselectEvent();
-        },
-        onEventChangeStart: (event) {
-          // You can give the user some haptic feedback here.
-        },
-      ),
-    )       
-    ```
+```dart
+ CalendarView(
+  eventHandlers: CalendarEventHandlers(
+    onEventTapped: (event) async {
+      // Check if the event that was tapped is is currently selected.
+      eventController.selectedEvent == event
+        // If it is selected, deselect it.
+        ? eventController.deselectEvent()
+        // If it is not selected, select it.
+        : eventController.selectEvent(event);
+    },
+    onEventChanged: (initialDateTimeRange, event) async {
+      // If you want to deselect the event after it has been resized/rescheduled. uncomment the following line.
+      // eventController.deselectEvent();
+    },
+    onEventChangeStart: (event) {
+      // You can give the user some haptic feedback here.
+    },
+  ),
+)       
+```
 
 
 ## Additional information
