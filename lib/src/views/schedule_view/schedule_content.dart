@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:kalender/kalender_scope.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/general/schedule_date_tile/schedule_date_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';

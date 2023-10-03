@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_scope.dart';
+import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture_detector.dart';
 import 'package:kalender/src/components/event_groups/event_group_widget.dart';
 import 'package:kalender/src/extensions.dart';
