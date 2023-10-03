@@ -1,4 +1,4 @@
-This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay, and Month views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
+This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
 
 ## Web Example
 Try it out [here](https://werner-scholtz.github.io/kalender/)
@@ -134,6 +134,8 @@ There are a few constructors that you can choose from to create a CalendarView.
 2. **MultiDayView** - this constructor will build a MultiDayView.
 
 3. **MonthView** - this constructor will build a MonthView and does not need the multiDayTileBuilder.
+
+4. **ScheduleView** - this constructor will build a ScheduleView and does not need the multiDayTileBuilder.
 
 ### View Configuration
 The CalendarView takes a ViewConfiguration object.
