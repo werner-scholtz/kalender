@@ -59,6 +59,7 @@ class MultiDayContent<T> extends StatelessWidget {
                             key: Key(viewConfiguration.hashCode.toString()),
                             controller: state.pageController,
                             itemCount: state.numberOfPages,
+                            physics: value,
                             clipBehavior: Clip.none,
                             onPageChanged: (index) {
                               final newVisibleDateTimeRange = viewConfiguration
