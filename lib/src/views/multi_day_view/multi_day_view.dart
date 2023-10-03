@@ -89,6 +89,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
+
       // _controller.detach();
       widget.controller.attach(_viewState);
     }
@@ -129,7 +130,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       numberOfPages: numberOfPages,
       scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: ValueNotifier<double>(0.7),
+      heightPerMinute: _viewState.heightPerMinute,
     );
   }
 

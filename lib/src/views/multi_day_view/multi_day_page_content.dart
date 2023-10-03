@@ -89,16 +89,16 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 ...eventGroups.map(
                   (tileGroup) => Positioned(
                     left: (visibleDates.indexOf(tileGroup.date) * dayWidth)
-                        .ceilToDouble(),
-                    width: dayWidth.floorToDouble(),
+                        .roundToDouble(),
+                    width: dayWidth.roundToDouble(),
                     top: calculateTop(
                       tileGroup.start.difference(tileGroup.date),
                       heightPerMinute,
-                    ).floorToDouble(),
+                    ).roundToDouble(),
                     height: calculateHeight(
                       tileGroup.duration,
                       heightPerMinute,
-                    ).floorToDouble(),
+                    ).roundToDouble(),
                     child: EventGroupWidget<T>(
                       eventGroup: tileGroup,
                       snapData: snapData,
@@ -121,16 +121,16 @@ class MultiDayPageContent<T> extends StatelessWidget {
                             (tileGroup) => Positioned(
                               left: (visibleDates.indexOf(tileGroup.date) *
                                       dayWidth)
-                                  .ceilToDouble(),
-                              width: dayWidth.floorToDouble(),
+                                  .roundToDouble(),
+                              width: dayWidth.roundToDouble(),
                               top: calculateTop(
                                 tileGroup.start.difference(tileGroup.date),
                                 heightPerMinute,
-                              ).floorToDouble(),
+                              ).roundToDouble(),
                               height: calculateHeight(
                                 tileGroup.duration,
                                 heightPerMinute,
-                              ).floorToDouble(),
+                              ).roundToDouble(),
                               child: EventGroupWidget<T>(
                                 eventGroup: tileGroup,
                                 snapData: snapData,
