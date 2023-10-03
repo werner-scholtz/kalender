@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/layout_delegates/event_group_layout.dart';
 import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
@@ -61,6 +62,11 @@ typedef MonthHeaderBuilder = Widget Function(
 /// The [ScheduleMonthHeaderBuilder] is used to build the header displayed above a month in the schedule view.
 typedef ScheduleMonthHeaderBuilder = Widget Function(
   DateTime date,
+);
+
+/// The [CalendarZoomDetector] is layed on top of the multi day calendar area to detect zoom gestures.
+typedef CalendarZoomDetector<T extends Object?> = Widget Function(
+  CalendarController controller,
 );
 
 /// The [TileBuilder]

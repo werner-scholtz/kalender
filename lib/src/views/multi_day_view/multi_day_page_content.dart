@@ -3,6 +3,7 @@ import 'package:kalender/kalender_scope.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture_detector.dart';
 import 'package:kalender/src/components/event_groups/event_group_widget.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
@@ -13,10 +14,12 @@ class MultiDayPageContent<T> extends StatelessWidget {
     super.key,
     required this.viewConfiguration,
     required this.visibleDateRange,
+    required this.controller,
   });
 
   final MultiDayViewConfiguration viewConfiguration;
   final DateTimeRange visibleDateRange;
+  final CalendarController controller;
 
   @override
   Widget build(BuildContext context) {

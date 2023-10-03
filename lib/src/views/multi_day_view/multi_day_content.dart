@@ -29,72 +29,81 @@ class MultiDayContent<T> extends StatelessWidget {
         return ValueListenableBuilder<ScrollPhysics>(
           valueListenable: state.scrollPhysics,
           builder: (context, value, child) {
-            return SingleChildScrollView(
-              controller: (scope.state as MultiDayViewState).scrollController,
-              physics: value,
-              child: SizedBox(
-                height: pageHeight,
-                child: Stack(
-                  fit: StackFit.expand,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned.fill(
-                      left: viewConfiguration.hourLineLeftOffset,
-                      child: scope.components.hourLineBuilder(
-                        hourHeight,
-                      ),
-                    ),
-                    Positioned(
-                      width: viewConfiguration.timelineWidth,
-                      child: scope.components.timelineBuilder(
-                        hourHeight,
-                      ),
-                    ),
-                    Positioned.fill(
-                      left: viewConfiguration.timelineWidth,
-                      child: PageView.builder(
-                        key: Key(viewConfiguration.hashCode.toString()),
-                        controller: state.pageController,
-                        itemCount: state.numberOfPages,
-                        clipBehavior: Clip.none,
-                        onPageChanged: (index) {
-                          final newVisibleDateTimeRange = viewConfiguration
-                              .calculateVisibleDateRangeForIndex(
-                            index: index,
-                            calendarStart:
-                                scope.state.adjustedDateTimeRange.start,
-                          );
-                          // Update the visible date range.
-                          scope.state.visibleDateTimeRange =
-                              newVisibleDateTimeRange;
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  controller:
+                      (scope.state as MultiDayViewState).scrollController,
+                  physics: value,
+                  child: SizedBox(
+                    height: pageHeight,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned.fill(
+                          left: viewConfiguration.hourLineLeftOffset,
+                          child: scope.components.hourLineBuilder(
+                            hourHeight,
+                          ),
+                        ),
+                        Positioned(
+                          width: viewConfiguration.timelineWidth,
+                          child: scope.components.timelineBuilder(
+                            hourHeight,
+                          ),
+                        ),
+                        Positioned.fill(
+                          left: viewConfiguration.timelineWidth,
+                          child: PageView.builder(
+                            key: Key(viewConfiguration.hashCode.toString()),
+                            controller: state.pageController,
+                            itemCount: state.numberOfPages,
+                            clipBehavior: Clip.none,
+                            onPageChanged: (index) {
+                              final newVisibleDateTimeRange = viewConfiguration
+                                  .calculateVisibleDateRangeForIndex(
+                                index: index,
+                                calendarStart:
+                                    scope.state.adjustedDateTimeRange.start,
+                              );
+                              // Update the visible date range.
+                              scope.state.visibleDateTimeRange =
+                                  newVisibleDateTimeRange;
 
-                          // Update the selected date.
-                          controller.selectedDate =
-                              newVisibleDateTimeRange.start;
+                              // Update the selected date.
+                              controller.selectedDate =
+                                  newVisibleDateTimeRange.start;
 
-                          // Call the onPageChanged function.
-                          scope.functions.onPageChanged?.call(
-                            newVisibleDateTimeRange,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          final visibleDateRange = viewConfiguration
-                              .calculateVisibleDateRangeForIndex(
-                            index: index,
-                            calendarStart:
-                                scope.state.adjustedDateTimeRange.start,
-                          );
+                              // Call the onPageChanged function.
+                              scope.functions.onPageChanged?.call(
+                                newVisibleDateTimeRange,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              final visibleDateRange = viewConfiguration
+                                  .calculateVisibleDateRangeForIndex(
+                                index: index,
+                                calendarStart:
+                                    scope.state.adjustedDateTimeRange.start,
+                              );
 
-                          return MultiDayPageContent<T>(
-                            viewConfiguration: viewConfiguration,
-                            visibleDateRange: visibleDateRange,
-                          );
-                        },
-                      ),
+                              return MultiDayPageContent<T>(
+                                viewConfiguration: viewConfiguration,
+                                visibleDateRange: visibleDateRange,
+                                controller: controller,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Positioned.fill(
+                  child: scope.components.calendarZoomDetector.call(controller),
+                ),
+              ],
             );
           },
         );

@@ -34,6 +34,7 @@ class CalendarController<T> with ChangeNotifier {
 
   /// The current [_state] of the view this controller is linked to.
   ViewState? _state;
+  ViewState? get state => _state;
   bool get isAttached => _state != null;
 
   ViewState? _previousState;

@@ -75,6 +75,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
+
     // _controller.detach();
     widget.controller.attach(_viewState);
   }
@@ -123,12 +124,16 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialDate,
     );
 
-    final heightPerMinute =
-        (widget.controller.previousState is MultiDayViewState)
-            ? (widget.controller.previousState as MultiDayViewState)
-                .heightPerMinute
-                ?.value
-            : 0.7;
+    double? heightPerMinute;
+    if (widget.controller.previousState is MultiDayViewState) {
+      heightPerMinute = (widget.controller.previousState as MultiDayViewState)
+          .heightPerMinute
+          ?.value;
+    }
+    if (widget.controller.state is MultiDayViewState) {
+      heightPerMinute =
+          (widget.controller.state as MultiDayViewState).heightPerMinute?.value;
+    }
 
     final initialScrollOffset =
         (widget.controller.previousState is MultiDayViewState)
