@@ -130,12 +130,21 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
                 ?.value
             : 0.7;
 
+    final initialScrollOffset =
+        (widget.controller.previousState is MultiDayViewState)
+            ? (widget.controller.previousState as MultiDayViewState)
+                .scrollController
+                .offset
+            : 0.0;
+
     _viewState = MultiDayViewState(
       viewConfiguration: widget.multiDayViewConfiguration,
       pageController: pageController,
       adjustedDateTimeRange: adjustedDateTimeRange,
       numberOfPages: numberOfPages,
-      scrollController: ScrollController(),
+      scrollController: ScrollController(
+        initialScrollOffset: initialScrollOffset,
+      ),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
       heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
     );
