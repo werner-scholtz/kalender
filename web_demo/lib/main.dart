@@ -102,72 +102,74 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final calendarWidget = CalendarWidget(
-            eventsController: eventsController,
-            calendarController: calendarController,
-            calendarComponents: calendarComponents,
-            calendarStyle: calendarStyle,
-            currentConfiguration: viewConfigurations[currentConfiguration],
-            calendarLayoutDelegates: calendarLayoutDelegates,
-            onDateTapped: () {
-              setState(() {
-                currentConfiguration = 0;
-              });
-            },
-          );
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final calendarWidget = CalendarWidget(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              calendarComponents: calendarComponents,
+              calendarStyle: calendarStyle,
+              currentConfiguration: viewConfigurations[currentConfiguration],
+              calendarLayoutDelegates: calendarLayoutDelegates,
+              onDateTapped: () {
+                setState(() {
+                  currentConfiguration = 0;
+                });
+              },
+            );
 
-          if (constraints.maxWidth < 500) {
-            return calendarWidget;
-          } else {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: calendarWidget,
-                ),
-                Flexible(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CalendarCustomize(
-                          currentConfiguration:
-                              viewConfigurations[currentConfiguration],
-                          style: calendarStyle,
-                          layoutDelegates: calendarLayoutDelegates,
-                          onStyleChange: (newStyle) {
-                            setState(() {
-                              calendarStyle = newStyle;
-                            });
-                          },
-                          onCalendarLayoutChange: (newLayout) {
-                            setState(() {
-                              calendarLayoutDelegates = newLayout;
-                            });
-                          },
-                        ),
-                        ViewConfigurationCustomize(
-                          currentConfiguration:
-                              viewConfigurations[currentConfiguration],
-                          onViewConfigChanged: (newConfig) {
-                            setState(() {
-                              viewConfigurations[currentConfiguration] =
-                                  newConfig;
-                            });
-                          },
-                        ),
-                      ],
+            if (constraints.maxWidth < 500) {
+              return calendarWidget;
+            } else {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: calendarWidget,
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CalendarCustomize(
+                            currentConfiguration:
+                                viewConfigurations[currentConfiguration],
+                            style: calendarStyle,
+                            layoutDelegates: calendarLayoutDelegates,
+                            onStyleChange: (newStyle) {
+                              setState(() {
+                                calendarStyle = newStyle;
+                              });
+                            },
+                            onCalendarLayoutChange: (newLayout) {
+                              setState(() {
+                                calendarLayoutDelegates = newLayout;
+                              });
+                            },
+                          ),
+                          ViewConfigurationCustomize(
+                            currentConfiguration:
+                                viewConfigurations[currentConfiguration],
+                            onViewConfigChanged: (newConfig) {
+                              setState(() {
+                                viewConfigurations[currentConfiguration] =
+                                    newConfig;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-        },
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }

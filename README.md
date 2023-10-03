@@ -96,10 +96,10 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 To reschedule events on mobile the user needs to trigger a longPress and then drag the event to the desired location.
 
-The only way for events to be resized on mobile is by keeping them selected so the handlebars built.
+The only way for events to be resized on mobile is by keeping them selected so the handlebars are built, only one handle bar can be used at a time.
 To do this you can do the following:
 
-1. Configure the event handlers like so. 
+Configure the event handlers like so. 
     ```dart
     CalendarView(
       eventHandlers: CalendarEventHandlers(

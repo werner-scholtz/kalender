@@ -25,6 +25,8 @@ class CalendarHeader extends StatelessWidget {
             constraints.maxWidth < 600 ? monthsMobile : monthsDesktop;
         final buttonWidth = constraints.maxWidth < 600 ? 120.0 : 250.0;
         final viewWidth = constraints.maxWidth < 600 ? 80.0 : 150.0;
+        final padding = constraints.maxWidth < 600 ? 0.0 : 4.0;
+        final buttonHeight = constraints.maxWidth < 600 ? 40.0 : 48.0;
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -34,7 +36,7 @@ class CalendarHeader extends StatelessWidget {
               FilledButton.tonal(
                 style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all<Size>(
-                    Size(buttonWidth, 48),
+                    Size(buttonWidth, buttonHeight),
                   ),
                 ),
                 onPressed: () async {
@@ -58,7 +60,7 @@ class CalendarHeader extends StatelessWidget {
               if (viewConfigurations[currentConfiguration]
                   is! ScheduleViewConfiguration)
                 Padding(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: EdgeInsets.only(left: padding),
                   child: IconButton.filledTonal(
                     onPressed: () {
                       calendarController.animateToPreviousPage();
@@ -70,7 +72,7 @@ class CalendarHeader extends StatelessWidget {
               if (viewConfigurations[currentConfiguration]
                   is! ScheduleViewConfiguration)
                 Padding(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: EdgeInsets.only(left: padding),
                   child: IconButton.filledTonal(
                     onPressed: () {
                       calendarController.animateToNextPage();
@@ -80,7 +82,7 @@ class CalendarHeader extends StatelessWidget {
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.only(left: 4),
+                padding: EdgeInsets.only(left: padding),
                 child: IconButton.filledTonal(
                   onPressed: () {
                     calendarController.animateToDate(
@@ -97,7 +99,7 @@ class CalendarHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      padding: EdgeInsets.symmetric(horizontal: padding),
                       child: DropdownMenu<int>(
                         width: viewWidth,
                         initialSelection: currentConfiguration,

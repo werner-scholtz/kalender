@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
@@ -82,21 +85,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   /// This function is called when an event is tapped.
   Future<void> onEventTapped(CalendarEvent<Event> event) async {
-    // Make a copy of the event to restore it if the user cancels the changes.
-    CalendarEvent<Event> copyOfEvent = event.copyWith();
+    if (isMobile) {
+      widget.eventsController.selectedEvent == event
+          ? widget.eventsController.deselectEvent()
+          : widget.eventsController.selectEvent(event);
+    } else {
+      // Make a copy of the event to restore it if the user cancels the changes.
+      CalendarEvent<Event> copyOfEvent = event.copyWith();
 
-    // Show the edit dialog.
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EventEditDialog(
-          dialogTitle: 'Edit Event',
-          event: event,
-          deleteEvent: widget.eventsController.removeEvent,
-          cancelEdit: () => event.eventData = copyOfEvent.eventData,
-        );
-      },
-    );
+      // Show the edit dialog.
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EventEditDialog(
+            dialogTitle: 'Edit Event',
+            event: event,
+            deleteEvent: widget.eventsController.removeEvent,
+            cancelEdit: () => event.eventData = copyOfEvent.eventData,
+          );
+        },
+      );
+    }
   }
 
   /// This function is called when an event is changed.
@@ -169,4 +178,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       date: date,
     );
   }
+
+  bool get isMobile => kIsWeb ? false : Platform.isAndroid || Platform.isIOS;
 }
