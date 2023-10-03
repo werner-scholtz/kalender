@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/styles_export.dart';
+import 'package:kalender/src/components/general/tile_handle/tile_handle_style.dart';
 
 /// The [CalendarStyle] class is used to store custom style's for the [CalendarComponents].
 class CalendarStyle {
@@ -17,6 +18,7 @@ class CalendarStyle {
     this.monthGridStyle = const MonthGridStyle(),
     this.scheduleMonthHeaderStyle = const ScheduleMonthHeaderStyle(),
     this.scheduleDateTileStyle = const ScheduleDateTileStyle(),
+    this.tileHandleStyle = const TileHandleStyle(),
   });
 
   /// The background color of the [CalendarView].
@@ -57,6 +59,9 @@ class CalendarStyle {
 
   /// The [ScheduleDateTileStyle] used by the [ScheduleDateTile]
   final ScheduleDateTileStyle? scheduleDateTileStyle;
+
+  /// The [TileHandleStyle] used by the [TileHandle]
+  final TileHandleStyle? tileHandleStyle;
 
   @override
   operator ==(Object other) {
@@ -102,6 +107,7 @@ class CalendarStyle {
     MonthGridStyle? monthGridStyle,
     ScheduleMonthHeaderStyle? scheduleMonthHeaderStyle,
     ScheduleDateTileStyle? scheduleDateTileStyle,
+    TileHandleStyle? tileHandleStyle,
   }) {
     return CalendarStyle(
       calendarHeaderBackgroundStyle:
@@ -119,6 +125,7 @@ class CalendarStyle {
           scheduleMonthHeaderStyle ?? this.scheduleMonthHeaderStyle,
       scheduleDateTileStyle:
           scheduleDateTileStyle ?? this.scheduleDateTileStyle,
+      tileHandleStyle: tileHandleStyle ?? this.tileHandleStyle,
     );
   }
 }

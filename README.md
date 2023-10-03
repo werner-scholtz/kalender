@@ -13,7 +13,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Reschedule** - Drag and Drop events to your liking. [Try it out](https://werner-scholtz.github.io/kalender/)
 
-* **Resize** - Resize events by dragging the edges of an event. [Try it out](https://werner-scholtz.github.io/kalender/)
+* **Resize** - Resize events by dragging the edges of an event. [Special Case for Mobile](#mobile-rescheduling-/-resizing). [Try it out](https://werner-scholtz.github.io/kalender/)
 
 * **Event Handling** - When a there is interaction with a tile or component the event can be handled by you. [Find out more](#event-handling)
 
@@ -92,6 +92,35 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
     )       
     ```
     
+### Mobile rescheduling / resizing
+
+To reschedule events on mobile the user needs to trigger a longPress and then drag the event to the desired location.
+
+The only way for events to be resized on mobile is by keeping them selected so the handlebars built.
+To do this you can do the following:
+
+1. Configure the event handlers like so. 
+    ```dart
+    CalendarView(
+      eventHandlers: CalendarEventHandlers(
+        onEventTapped: (event) async {
+          // Check if the event that was tapped is is currently selected.
+          eventController.selectedEvent == event
+            // If it is selected, deselect it.
+            ? eventController.deselectEvent()
+            // If it is not selected, select it.
+            : eventController.selectEvent(event);
+        },
+        onEventChanged: (initialDateTimeRange, event) async {
+          // If you want to deselect the event after it has been resized/rescheduled. uncomment the following line.
+          // eventController.deselectEvent();
+        },
+        onEventChangeStart: (event) {
+          // You can give the user some haptic feedback here.
+        },
+      ),
+    )       
+    ```
 
 
 ## Additional information
@@ -113,10 +142,6 @@ There are 2 'Types' of ViewConfiguration's: MultiDayViewConfiguration, and Month
 * You can create a Custom ViewConfiguration by extending one of these 'Types'.
 
 These are the default ViewConfiguration's:
-
-
-
-
 
 1. **DayConfiguration** - This configuration is used to configure the MultiDayView for a single day.
     <details><summary>Example</summary>

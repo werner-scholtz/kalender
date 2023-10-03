@@ -6,7 +6,7 @@ import 'package:kalender/src/components/general/month_cell_header/month_cell_hea
 import 'package:kalender/src/components/general/month_grid/month_grid.dart';
 import 'package:kalender/src/components/general/month_header/month_header.dart';
 import 'package:kalender/src/components/general/schedule_month_header/schedule_month_header.dart';
-import 'package:kalender/src/components/general/tile_handle.dart';
+import 'package:kalender/src/components/general/tile_handle/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
@@ -103,8 +103,7 @@ class CalendarComponents {
   late ScheduleMonthHeaderBuilder scheduleMonthHeaderBuilder;
 
   /// This builder is used to build the handle displayed on the event tiles. (Mobile only)
-  /// TODO: Make this use full for mobile and desktop.
-  late TileHandleBuilder? tileHandleBuilder;
+  late TileHandleBuilder tileHandleBuilder;
 
   /// This builder is used to detect zoom gestures on the multi day calendar area.
   late CalendarZoomDetector calendarZoomDetector;
@@ -193,8 +192,10 @@ class CalendarComponents {
     );
   }
 
-  Widget _defaultTileHandleBuilder() {
-    return const DefaultTileHandle();
+  Widget _defaultTileHandleBuilder(bool enabled) {
+    return DefaultTileHandle(
+      enabled: enabled,
+    );
   }
 
   Widget _defaultCalendarZoomDetector(

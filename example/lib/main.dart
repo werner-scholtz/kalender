@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -76,8 +79,31 @@ class _MyHomePageState extends State<MyHomePage> {
         tileBuilder: _tileBuilder,
         multiDayTileBuilder: _multiDayTileBuilder,
         scheduleTileBuilder: _scheduleTileBuilder,
+        eventHandlers: CalendarEventHandlers(
+          onEventTapped: _onEventTapped,
+          onEventChanged: _onEventChanged,
+        ),
       ),
     );
+  }
+
+  Future<void> _onEventTapped(
+    CalendarEvent<Event> event,
+  ) async {
+    if (isMobile) {
+      eventController.selectedEvent == event
+          ? eventController.deselectEvent()
+          : eventController.selectEvent(event);
+    }
+  }
+
+  Future<void> _onEventChanged(
+    DateTimeRange initialDateTimeRange,
+    CalendarEvent<Event> event,
+  ) async {
+    if (isMobile) {
+      eventController.deselectEvent();
+    }
   }
 
   Widget _tileBuilder(
@@ -141,6 +167,10 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         return color;
     }
+  }
+
+  bool get isMobile {
+    return kIsWeb ? false : Platform.isAndroid || Platform.isIOS;
   }
 }
 
