@@ -13,7 +13,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Reschedule** - Drag and Drop events to your liking. [Try it out](https://werner-scholtz.github.io/kalender/)
 
-* **Resize** - Resize events by dragging the edges of an event. [Special Case for Mobile](#mobile-rescheduling-/-resizing). [Try it out](https://werner-scholtz.github.io/kalender/)
+* **Resize** - Resize events by dragging the edges of an event (Special Case on [Mobile](#mobile-rescheduling,-resizing)). [Try it out](https://werner-scholtz.github.io/kalender/)
 
 * **Event Handling** - When a there is interaction with a tile or component the event can be handled by you. [Find out more](#event-handling)
 
@@ -92,7 +92,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
     )       
     ```
     
-### Mobile rescheduling / resizing
+### Mobile rescheduling, resizing
 
 To reschedule events on mobile the user needs to trigger a longPress and then drag the event to the desired location.
 
