@@ -64,7 +64,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final handleSize = (constraints.maxHeight * 0.8).clamp(0.0, 24.0);
+        final handleSize = (constraints.maxHeight * 0.8).clamp(0.0, 16.0);
 
         return MouseRegion(
           cursor: SystemMouseCursors.click,
