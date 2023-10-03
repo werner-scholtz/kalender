@@ -123,6 +123,13 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialDate,
     );
 
+    final heightPerMinute =
+        (widget.controller.previousState is MultiDayViewState)
+            ? (widget.controller.previousState as MultiDayViewState)
+                .heightPerMinute
+                ?.value
+            : 0.7;
+
     _viewState = MultiDayViewState(
       viewConfiguration: widget.multiDayViewConfiguration,
       pageController: pageController,
@@ -130,7 +137,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       numberOfPages: numberOfPages,
       scrollController: ScrollController(),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: _viewState.heightPerMinute,
+      heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
     );
   }
 
