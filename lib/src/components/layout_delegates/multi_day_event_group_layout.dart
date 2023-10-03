@@ -67,11 +67,12 @@ class MultiDayEventsDefaultLayoutDelegate<T>
         eventDates.indexOf(lastVisibleDate) + 1,
       );
 
-      final dx = visibleDates.indexOf(visibleEventDates.first) * dayWidth;
+      final dx = (visibleDates.indexOf(visibleEventDates.first) * dayWidth)
+          .roundToDouble();
       tileDx[id] = dx;
 
       // Calculate the width of the tile.
-      final tileWidth = (visibleEventDates.length) * dayWidth;
+      final tileWidth = ((visibleEventDates.length) * dayWidth).roundToDouble();
 
       // Layout the tile.
       final childSize = layoutChild(
@@ -104,7 +105,7 @@ class MultiDayEventsDefaultLayoutDelegate<T>
 
       tilePositions[id] = Offset(
         tileDx[id]!,
-        dy,
+        dy.roundToDouble(),
       );
     }
     for (var id = 0; id < numChildren; id++) {
