@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/kalender.dart';
@@ -38,8 +40,11 @@ class _EventTileState<T> extends State<EventTile<T>> {
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
 
-  ValueNotifier<bool> canResizeTop = ValueNotifier(true);
-  ValueNotifier<bool> canResizeBottom = ValueNotifier(true);
+  Offset cursorOffsetBottom = Offset.zero;
+  int currentVerticalStepsBottom = 0;
+
+  ValueNotifier<bool> isResizingTop = ValueNotifier(true);
+  ValueNotifier<bool> isResizingBottom = ValueNotifier(true);
 
   @override
   void initState() {
@@ -59,7 +64,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final handleSize = (constraints.maxHeight * 0.8).clamp(0.0, 16.0);
+        final handleSize = (constraints.maxHeight * 0.8).clamp(0.0, 24.0);
 
         return MouseRegion(
           cursor: SystemMouseCursors.click,
@@ -92,23 +97,23 @@ class _EventTileState<T> extends State<EventTile<T>> {
                         right: 0,
                         height: handleSize,
                         width: handleSize,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onVerticalDragStart: (details) {
-                            _onVerticalDragStart(details);
-                            canResizeBottom.value = false;
+                        child: ValueListenableBuilder(
+                          valueListenable: isResizingTop,
+                          builder: (context, value, child) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onVerticalDragStart: (details) {
+                                _onVerticalDragStartTop(details);
+                                isResizingBottom.value = false;
+                              },
+                              onVerticalDragUpdate: _onVerticalDragUpdateStart,
+                              onVerticalDragEnd: (details) async {
+                                isResizingBottom.value = true;
+                                _onVerticalDragEnd(details);
+                              },
+                              child: scope.components.tileHandleBuilder(value),
+                            );
                           },
-                          onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                          onVerticalDragEnd: (details) async {
-                            _onVerticalDragEnd(details);
-                            canResizeBottom.value = true;
-                          },
-                          child: ValueListenableBuilder(
-                            valueListenable: canResizeTop,
-                            builder: (context, value, child) {
-                              return scope.components.tileHandleBuilder(value);
-                            },
-                          ),
                         ),
                       )
                     : useDesktopGestures
@@ -138,23 +143,23 @@ class _EventTileState<T> extends State<EventTile<T>> {
                         left: 0,
                         height: handleSize,
                         width: handleSize,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onVerticalDragStart: (details) {
-                            _onVerticalDragStart(details);
-                            canResizeTop.value = false;
+                        child: ValueListenableBuilder(
+                          valueListenable: isResizingBottom,
+                          builder: (context, value, child) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onVerticalDragStart: (details) {
+                                _onVerticalDragStartBottom(details);
+                                isResizingTop.value = false;
+                              },
+                              onVerticalDragUpdate: _onVerticalDragUpdateEnd,
+                              onVerticalDragEnd: (details) async {
+                                isResizingTop.value = true;
+                                _onVerticalDragEnd(details);
+                              },
+                              child: scope.components.tileHandleBuilder(value),
+                            );
                           },
-                          onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                          onVerticalDragEnd: (details) async {
-                            _onVerticalDragEnd(details);
-                            canResizeTop.value = true;
-                          },
-                          child: ValueListenableBuilder(
-                            valueListenable: canResizeBottom,
-                            builder: (context, value, child) {
-                              return scope.components.tileHandleBuilder(value);
-                            },
-                          ),
                         ),
                       )
                     : useDesktopGestures
@@ -222,6 +227,26 @@ class _EventTileState<T> extends State<EventTile<T>> {
     await _onRescheduleEnd();
   }
 
+  void _onVerticalDragStartTop(DragStartDetails details) {
+    cursorOffset = Offset.zero;
+    currentVerticalSteps = 0;
+
+    if (!isResizingTop.value && !isResizingBottom.value) {
+      initialDateTimeRange = widget.event.dateTimeRange;
+      controller.selectEvent(widget.event);
+    }
+  }
+
+  void _onVerticalDragStartBottom(DragStartDetails details) {
+    cursorOffsetBottom = Offset.zero;
+    currentVerticalStepsBottom = 0;
+
+    if (!isResizingTop.value && !isResizingBottom.value) {
+      initialDateTimeRange = widget.event.dateTimeRange;
+      controller.selectEvent(widget.event);
+    }
+  }
+
   /// Handles the onVerticalDragStart event.
   void _onVerticalDragStart(DragStartDetails details) {
     initialDateTimeRange = widget.event.dateTimeRange;
@@ -272,9 +297,10 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onVerticalDragUpdate event (End).
   void _onVerticalDragUpdateEnd(DragUpdateDetails details) {
-    cursorOffset += details.delta;
+    cursorOffsetBottom += details.delta;
     // Calculate the new vertical steps.
-    final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
+    final verticalSteps =
+        (cursorOffsetBottom.dy / snapData.verticalStep).round();
 
     if (verticalSteps == currentVerticalSteps) return;
 
@@ -304,7 +330,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
       }
     }
 
-    currentVerticalSteps = verticalSteps;
+    currentVerticalStepsBottom = verticalSteps;
 
     // Remove now from the snap points if applicable.
     if (snapData.snapToTimeIndicator) {
@@ -314,13 +340,15 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    final selectedEvent = scope.eventsController.selectedEvent!;
-    controller.deselectEvent();
+    if (!isResizingTop.value || !isResizingBottom.value) {
+      final selectedEvent = scope.eventsController.selectedEvent!;
+      controller.deselectEvent();
 
-    await scope.functions.onEventChanged?.call(
-      initialDateTimeRange,
-      selectedEvent,
-    );
+      await scope.functions.onEventChanged?.call(
+        initialDateTimeRange,
+        selectedEvent,
+      );
+    }
   }
 
   /// Handles the onRescheduleStart event.
@@ -405,7 +433,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentVerticalSteps = verticalSteps;
   }
 
-  /// Handles the onRescheduleUpdate event.
+  /// Handles the onRescheduleEnd event.
   Future<void> _onRescheduleEnd() async {
     final selectedEvent = scope.eventsController.selectedEvent!;
     controller.deselectEvent();
