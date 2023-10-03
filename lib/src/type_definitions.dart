@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/layout_delegates/event_group_layout.dart';
 import 'package:kalender/src/components/layout_delegates/multi_day_event_group_layout.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
-
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 
@@ -18,12 +17,12 @@ typedef DayHeaderBuilder<T extends Object?> = Widget Function(
   void Function(DateTime date)? onTapped,
 );
 
-/// The [HourLinesBuilder] is used to build the hourlines displayed on calendar's.
+/// The [HourLinesBuilder] is used to build the hour lines displayed on calendar's.
 typedef HourLinesBuilder<T extends Object?> = Widget Function(
   double hourHeight,
 );
 
-/// The [DaySeparatorBuilder] is used to build the seperators between days.
+/// The [DaySeparatorBuilder] is used to build the separators between days.
 typedef DaySeparatorBuilder<T extends Object?> = Widget Function(
   int numberOfDays,
 );
