@@ -75,6 +75,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
+
     // _controller.detach();
     widget.controller.attach(_viewState);
   }
@@ -89,6 +90,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
+
       // _controller.detach();
       widget.controller.attach(_viewState);
     }
@@ -122,14 +124,34 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       initialDate,
     );
 
+    double? heightPerMinute;
+    if (widget.controller.previousState is MultiDayViewState) {
+      heightPerMinute = (widget.controller.previousState as MultiDayViewState)
+          .heightPerMinute
+          ?.value;
+    }
+    if (widget.controller.state is MultiDayViewState) {
+      heightPerMinute =
+          (widget.controller.state as MultiDayViewState).heightPerMinute?.value;
+    }
+
+    final initialScrollOffset =
+        (widget.controller.previousState is MultiDayViewState)
+            ? (widget.controller.previousState as MultiDayViewState)
+                .scrollController
+                .offset
+            : 0.0;
+
     _viewState = MultiDayViewState(
       viewConfiguration: widget.multiDayViewConfiguration,
       pageController: pageController,
       adjustedDateTimeRange: adjustedDateTimeRange,
       numberOfPages: numberOfPages,
-      scrollController: ScrollController(),
+      scrollController: ScrollController(
+        initialScrollOffset: initialScrollOffset,
+      ),
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: ValueNotifier<double>(0.7),
+      heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
     );
   }
 

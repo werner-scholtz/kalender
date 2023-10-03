@@ -10,6 +10,7 @@ import 'package:kalender/src/components/general/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 /// This class is used to provide the tile components for the calendar.
@@ -47,6 +48,7 @@ class CalendarComponents {
     MonthHeaderBuilder? monthHeaderBuilder,
     TileHandleBuilder? tileHandleBuilder,
     ScheduleMonthHeaderBuilder? scheduleMonthHeaderBuilder,
+    CalendarZoomDetector? calendarZoomDetector,
   }) {
     this.dayHeaderBuilder = dayHeaderBuilder ?? _defaultDayHeaderBuilder;
     this.weekNumberBuilder = weekNumberBuilder ?? _defaultWeekNumberBuilder;
@@ -63,6 +65,8 @@ class CalendarComponents {
     this.tileHandleBuilder = tileHandleBuilder ?? _defaultTileHandleBuilder;
     this.scheduleMonthHeaderBuilder =
         scheduleMonthHeaderBuilder ?? _defaultScheduleMonthHeaderBuilder;
+    this.calendarZoomDetector =
+        calendarZoomDetector ?? _defaultCalendarZoomDetector;
   }
 
   /// This builder is used to build the widget displayed in the calendar's header.
@@ -101,6 +105,9 @@ class CalendarComponents {
   /// This builder is used to build the handle displayed on the event tiles. (Mobile only)
   /// TODO: Make this use full for mobile and desktop.
   late TileHandleBuilder? tileHandleBuilder;
+
+  /// This builder is used to detect zoom gestures on the multi day calendar area.
+  late CalendarZoomDetector calendarZoomDetector;
 
   Widget _defaultTimelineBuilder(
     double hourHeight,
@@ -188,6 +195,12 @@ class CalendarComponents {
 
   Widget _defaultTileHandleBuilder() {
     return const DefaultTileHandle();
+  }
+
+  Widget _defaultCalendarZoomDetector(
+    CalendarController controller,
+  ) {
+    return const SizedBox();
   }
 
   @override

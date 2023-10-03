@@ -5,6 +5,7 @@ import 'package:web_demo/widgets/calendar/calendar_widget.dart';
 import 'package:web_demo/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/widgets/calendar/calendar_zoom.dart';
 import 'package:web_demo/widgets/customize/calendar_customize.dart';
 import 'package:web_demo/widgets/customize/view_customize.dart';
 
@@ -92,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
     eventsController.addEvents(generateCalendarEvents());
     calendarComponents = CalendarComponents(
       calendarHeaderBuilder: _calendarHeaderBuilder,
+      calendarZoomDetector: _calendarZoomDetectorBuilder,
     );
     calendarStyle = const CalendarStyle();
     calendarLayoutDelegates = CalendarLayoutDelegates();
@@ -181,6 +183,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       },
       visibleDateTimeRange: visibleDateTimeRange,
+    );
+  }
+
+  Widget _calendarZoomDetectorBuilder(CalendarController controller) {
+    return CalendarZoomDetector(
+      controller: controller,
     );
   }
 }
