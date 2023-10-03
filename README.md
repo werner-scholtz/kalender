@@ -100,6 +100,7 @@ The only way for events to be resized on mobile is by keeping them selected so t
 To do this you can do the following:
 
 Configure the event handlers like so. 
+
     ```dart
     CalendarView(
       eventHandlers: CalendarEventHandlers(
