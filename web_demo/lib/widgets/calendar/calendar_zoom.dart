@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +9,11 @@ class CalendarZoomDetector extends StatefulWidget {
   const CalendarZoomDetector({
     super.key,
     required this.controller,
+    required this.child,
   });
 
   final CalendarController controller;
+  final Widget child;
 
   @override
   State<CalendarZoomDetector> createState() => _CalendarZoomDetectorState();
@@ -22,6 +23,7 @@ class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
   bool _isCtrlPressed = false;
   double _pointerY = 0.0;
   double _currentZoom = 0.7;
+  double _initialZoom = 0.7;
 
   @override
   void initState() {
@@ -54,40 +56,50 @@ class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
           _pointerY = event.localPosition.dy;
         });
       },
-      child: GestureDetector(
-        behavior: HitTestBehavior.deferToChild,
-        onScaleStart: kIsWeb
-            ? null
-            : (details) {
-                _startZoom();
-              },
-        onScaleUpdate: kIsWeb
-            ? null
-            : (details) {
-                setState(() {
-                  final oldZoom = _currentZoom;
-                  _currentZoom = details.scale;
-                  final scrollController = widget.controller.scrollController;
-                  if (scrollController != null) {
-                    final newPosition = calculateScrollPosition(
+      child: RawGestureDetector(
+        behavior: HitTestBehavior.translucent,
+        gestures: {
+          AllowMultipleGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+              AllowMultipleGestureRecognizer>(
+            AllowMultipleGestureRecognizer.new, //constructor
+            (instance) {
+              instance.onStart = (details) {
+                _initialZoom = _currentZoom;
+
+                if (details.pointerCount <= 1) return;
+                widget.controller.lockScrollPhysics();
+              };
+              instance.onUpdate = (details) {
+                if (details.pointerCount <= 1) return;
+
+                final oldZoom = _currentZoom;
+                _currentZoom =
+                    (_initialZoom * details.verticalScale).clamp(0.3, 6.0);
+
+                final scrollController = widget.controller.scrollController;
+                if (scrollController == null) return;
+                final newPosition = calculateScrollPosition(
                       scrollController,
                       oldZoom,
-                    );
+                    ).clamp(
+                      scrollController.position.minScrollExtent,
+                      scrollController.position.maxScrollExtent,
+                    ) -
+                    details.focalPointDelta.dy;
 
-                    if (newPosition.isFinite) {
-                      scrollController.jumpTo(newPosition);
-                    }
-                  }
-                  widget.controller.adjustHeightPerMinute(_currentZoom);
-                });
-              },
-        onScaleEnd: kIsWeb
-            ? null
-            : (details) {
-                _endZoom();
-              },
+                if (newPosition.isFinite) {
+                  scrollController.jumpTo(newPosition);
+                }
+
+                widget.controller.adjustHeightPerMinute(_currentZoom);
+              };
+              instance.onEnd = (details) {
+                widget.controller.unlockScrollPhysics();
+              };
+            },
+          ),
+        },
         child: Listener(
-          behavior: HitTestBehavior.translucent,
           onPointerSignal: (event) {
             if (_isCtrlPressed) {
               if (event is PointerScrollEvent) {
@@ -147,6 +159,7 @@ class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
               }
             }
           },
+          child: widget.child,
         ),
       ),
     );
@@ -207,5 +220,16 @@ class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
 
         // This part ensures that the pointer's position within the viewport stays the same.
         pointerPosition * scrollController.position.viewportDimension;
+  }
+}
+
+// Custom Gesture Recognizer.
+// rejectGesture() is overridden. When a gesture is rejected, this is the function that is called. By default, it disposes of the
+// Recognizer and runs clean up. However we modified it so that instead the Recognizer is disposed of, it is actually manually added.
+// The result is instead you have one Recognizer winning the Arena, you have two. It is a win-win.
+class AllowMultipleGestureRecognizer extends ScaleGestureRecognizer {
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
   }
 }

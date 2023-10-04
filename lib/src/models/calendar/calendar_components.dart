@@ -200,8 +200,9 @@ class CalendarComponents {
 
   Widget _defaultCalendarZoomDetector(
     CalendarController controller,
+    Widget child,
   ) {
-    return const SizedBox();
+    return child;
   }
 
   @override

@@ -15,11 +15,13 @@ class MultiDayPageContent<T> extends StatelessWidget {
     required this.viewConfiguration,
     required this.visibleDateRange,
     required this.controller,
+    required this.hourHeight,
   });
 
   final MultiDayViewConfiguration viewConfiguration;
   final DateTimeRange visibleDateRange;
   final CalendarController controller;
+  final double hourHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
-        final dayWidth = constraints.maxWidth / visibleDates.length;
+        final dayWidth =
+            (constraints.maxWidth - viewConfiguration.hourLineTimelineOverlap) /
+                visibleDates.length;
         final heightPerMinute =
             (scope.state as MultiDayViewState).heightPerMinute!.value;
         final verticalStep =
@@ -79,78 +83,106 @@ class MultiDayPageContent<T> extends StatelessWidget {
             );
 
             return Stack(
+              clipBehavior: Clip.hardEdge,
               children: [
-                scope.components.daySeparatorBuilder(
-                  viewConfiguration.numberOfDays,
+                Positioned.fill(
+                  left: viewConfiguration.hourLineTimelineOverlap,
+                  child: scope.components.daySeparatorBuilder(
+                    viewConfiguration.numberOfDays,
+                  ),
                 ),
-                MultiDayPageGestureDetector<T>(
-                  viewConfiguration: viewConfiguration,
-                  visibleDates: visibleDateRange.datesSpanned,
-                  heightPerMinute: heightPerMinute,
-                  verticalStep: newEventVerticalStep,
+                Positioned.fill(
+                  left: 0,
+                  child: scope.components.hourLineBuilder(
+                    hourHeight,
+                  ),
                 ),
-                ...eventGroups.map(
-                  (tileGroup) => Positioned(
-                    left: (visibleDates.indexOf(tileGroup.date) * dayWidth)
-                        .roundToDouble(),
-                    width: dayWidth.roundToDouble(),
-                    top: calculateTop(
-                      tileGroup.start.difference(tileGroup.date),
+                Positioned.fill(
+                  left: viewConfiguration.hourLineTimelineOverlap,
+                  child: Stack(
+                    children: [
+                      MultiDayPageGestureDetector<T>(
+                        viewConfiguration: viewConfiguration,
+                        visibleDates: visibleDateRange.datesSpanned,
+                        heightPerMinute: heightPerMinute,
+                        verticalStep: newEventVerticalStep,
+                      ),
+                      ...eventGroups.map(
+                        (tileGroup) => Positioned(
+                          left:
+                              (visibleDates.indexOf(tileGroup.date) * dayWidth)
+                                  .roundToDouble(),
+                          width: dayWidth.roundToDouble(),
+                          top: calculateTop(
+                            tileGroup.start.difference(tileGroup.date),
+                            heightPerMinute,
+                          ).roundToDouble(),
+                          height: calculateHeight(
+                            tileGroup.duration,
+                            heightPerMinute,
+                          ).roundToDouble(),
+                          child: EventGroupWidget<T>(
+                            eventGroup: tileGroup,
+                            snapData: snapData,
+                            isChanging: false,
+                          ),
+                        ),
+                      ),
+                      if (selectedEvent != null)
+                        ListenableBuilder(
+                          listenable: selectedEvent,
+                          builder: (context, child) {
+                            final selectedDayTileGroup =
+                                EventGroupController<T>().generateTileGroups(
+                              visibleDates: visibleDates,
+                              events: [selectedEvent],
+                            );
+                            return Stack(
+                              children: [
+                                ...selectedDayTileGroup.map(
+                                  (tileGroup) => Positioned(
+                                    left:
+                                        (visibleDates.indexOf(tileGroup.date) *
+                                                dayWidth)
+                                            .roundToDouble(),
+                                    width: dayWidth.roundToDouble(),
+                                    top: calculateTop(
+                                      tileGroup.start
+                                          .difference(tileGroup.date),
+                                      heightPerMinute,
+                                    ).roundToDouble(),
+                                    height: calculateHeight(
+                                      tileGroup.duration,
+                                      heightPerMinute,
+                                    ).roundToDouble(),
+                                    child: EventGroupWidget<T>(
+                                      eventGroup: tileGroup,
+                                      snapData: snapData,
+                                      isChanging: true,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                if (DateTime.now().isWithin(visibleDateRange))
+                  Positioned.fill(
+                    left: viewConfiguration.hourLineTimelineOverlap,
+                    child: scope.components.timeIndicatorBuilder.call(
+                      visibleDates,
                       heightPerMinute,
-                    ).roundToDouble(),
-                    height: calculateHeight(
-                      tileGroup.duration,
-                      heightPerMinute,
-                    ).roundToDouble(),
-                    child: EventGroupWidget<T>(
-                      eventGroup: tileGroup,
-                      snapData: snapData,
-                      isChanging: false,
+                      dayWidth,
                     ),
                   ),
-                ),
-                if (selectedEvent != null)
-                  ListenableBuilder(
-                    listenable: selectedEvent,
-                    builder: (context, child) {
-                      final selectedDayTileGroup =
-                          EventGroupController<T>().generateTileGroups(
-                        visibleDates: visibleDates,
-                        events: [selectedEvent],
-                      );
-                      return Stack(
-                        children: [
-                          ...selectedDayTileGroup.map(
-                            (tileGroup) => Positioned(
-                              left: (visibleDates.indexOf(tileGroup.date) *
-                                      dayWidth)
-                                  .roundToDouble(),
-                              width: dayWidth.roundToDouble(),
-                              top: calculateTop(
-                                tileGroup.start.difference(tileGroup.date),
-                                heightPerMinute,
-                              ).roundToDouble(),
-                              height: calculateHeight(
-                                tileGroup.duration,
-                                heightPerMinute,
-                              ).roundToDouble(),
-                              child: EventGroupWidget<T>(
-                                eventGroup: tileGroup,
-                                snapData: snapData,
-                                isChanging: true,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                if (DateTime.now().isWithin(visibleDateRange))
-                  scope.components.timeIndicatorBuilder.call(
-                    visibleDates,
-                    heightPerMinute,
-                    dayWidth,
-                  ),
+                // Positioned.fill(
+                //   child: scope.components.calendarZoomDetector.call(
+                //     controller,
+                //   ),
+                // ),
               ],
             );
           },

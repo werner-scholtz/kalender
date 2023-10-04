@@ -45,6 +45,12 @@ class MultiDayHeader<T> extends StatelessWidget {
                         ),
                       ],
                     ),
+                    Expanded(
+                      child: AnimatedMultiDayEventsHeader<T>(
+                        viewConfiguration: viewConfiguration,
+                        visibleDateRange: visibleDateTimeRange,
+                      ),
+                    ),
                   ],
                 )
               else

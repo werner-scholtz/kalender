@@ -15,24 +15,29 @@ class Timeline extends StatelessWidget {
   Widget build(BuildContext context) {
     final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          for (int i = 1; i < hoursADay; i++)
-            SizedBox(
-              height: hourHeight,
-              child: Center(
-                child: TimeText(
-                  timeOfDay: TimeOfDay(hour: i, minute: 0),
-                  textStyle: timelineStyle?.textStyle,
-                  use24HourFormat: timelineStyle?.use24HourFormat ??
-                      MediaQuery.of(context).alwaysUse24HourFormat,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            for (int i = 1; i < hoursADay; i++)
+              SizedBox(
+                height: hourHeight,
+                child: Center(
+                  child: TimeText(
+                    timeOfDay: TimeOfDay(hour: i, minute: 0),
+                    textStyle: timelineStyle?.textStyle,
+                    use24HourFormat: timelineStyle?.use24HourFormat ??
+                        MediaQuery.of(context).alwaysUse24HourFormat,
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -66,6 +66,7 @@ typedef ScheduleMonthHeaderBuilder = Widget Function(
 /// The [CalendarZoomDetector] is layed on top of the multi day calendar area to detect zoom gestures.
 typedef CalendarZoomDetector<T extends Object?> = Widget Function(
   CalendarController controller,
+  Widget child,
 );
 
 /// The [TileBuilder]

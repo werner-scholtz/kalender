@@ -188,9 +188,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _calendarZoomDetectorBuilder(CalendarController controller) {
+  Widget _calendarZoomDetectorBuilder(
+      CalendarController controller, Widget child) {
     return CalendarZoomDetector(
       controller: controller,
+      child: child,
     );
   }
 }
