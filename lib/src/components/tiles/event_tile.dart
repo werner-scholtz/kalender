@@ -66,119 +66,123 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
         return MouseRegion(
           cursor: SystemMouseCursors.click,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              GestureDetector(
-                onTap: _onTap,
-                onPanStart: useDesktopGestures ? _onPanStart : null,
-                onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
-                onPanEnd: useDesktopGestures
-                    ? (details) async => _onPanEnd(details)
-                    : null,
-                onLongPressStart: useMobileGestures ? _onLongPressStart : null,
-                onLongPressMoveUpdate:
-                    useMobileGestures ? _onLongPressMoveUpdate : null,
-                onLongPressEnd: useMobileGestures
-                    ? (details) async => _onLongPressEnd(details)
-                    : null,
-                child: scope.tileComponents.tileBuilder!(
+          child: GestureDetector(
+            onTap: _onTap,
+            onPanStart: useDesktopGestures ? _onPanStart : null,
+            onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
+            onPanEnd: useDesktopGestures
+                ? (details) async => _onPanEnd(details)
+                : null,
+            onLongPressStart: useMobileGestures ? _onLongPressStart : null,
+            onLongPressMoveUpdate:
+                useMobileGestures ? _onLongPressMoveUpdate : null,
+            onLongPressEnd: useMobileGestures
+                ? (details) async => _onLongPressEnd(details)
+                : null,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                scope.tileComponents.tileBuilder!(
                   widget.event,
                   widget.tileConfiguration,
                 ),
-              ),
-              if (widget.event.canModify &&
-                  !widget.tileConfiguration.continuesBefore)
-                useMobileGestures && widget.isChanging
-                    ? Positioned(
-                        top: 0,
-                        right: 0,
-                        height: handleSize,
-                        width: handleSize,
-                        child: ValueListenableBuilder(
-                          valueListenable: isResizingTop,
-                          builder: (context, value, child) {
-                            return GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onVerticalDragStart: (details) {
-                                _onVerticalDragStartTop(details);
-                                isResizingBottom.value = false;
-                              },
-                              onVerticalDragUpdate: _onVerticalDragUpdateStart,
-                              onVerticalDragEnd: (details) async {
-                                isResizingBottom.value = true;
-                                _onVerticalDragEnd(details);
-                              },
-                              child: scope.components.tileHandleBuilder(value),
-                            );
-                          },
-                        ),
-                      )
-                    : useDesktopGestures
-                        ? Positioned(
-                            top: 0,
-                            height: 16,
-                            left: 0,
-                            right: 0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.resizeRow,
-                              child: GestureDetector(
+                if (widget.event.canModify &&
+                    !widget.tileConfiguration.continuesBefore)
+                  useMobileGestures && widget.isChanging
+                      ? Positioned(
+                          top: 0,
+                          right: 0,
+                          height: handleSize,
+                          width: handleSize,
+                          child: ValueListenableBuilder(
+                            valueListenable: isResizingTop,
+                            builder: (context, value, child) {
+                              return GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: _onVerticalDragStart,
+                                onVerticalDragStart: (details) {
+                                  _onVerticalDragStartTop(details);
+                                  isResizingBottom.value = false;
+                                },
                                 onVerticalDragUpdate:
                                     _onVerticalDragUpdateStart,
-                                onVerticalDragEnd: (details) async =>
-                                    _onVerticalDragEnd(details),
+                                onVerticalDragEnd: (details) async {
+                                  isResizingBottom.value = true;
+                                  _onVerticalDragEnd(details);
+                                },
+                                child:
+                                    scope.components.tileHandleBuilder(value),
+                              );
+                            },
+                          ),
+                        )
+                      : useDesktopGestures
+                          ? Positioned(
+                              top: 0,
+                              height: 16,
+                              left: 0,
+                              right: 0,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.resizeRow,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onVerticalDragStart: _onVerticalDragStart,
+                                  onVerticalDragUpdate:
+                                      _onVerticalDragUpdateStart,
+                                  onVerticalDragEnd: (details) async =>
+                                      _onVerticalDragEnd(details),
+                                ),
                               ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-              if (widget.event.canModify &&
-                  !widget.tileConfiguration.continuesAfter)
-                useMobileGestures && widget.isChanging
-                    ? Positioned(
-                        bottom: 0,
-                        left: 0,
-                        height: handleSize,
-                        width: handleSize,
-                        child: ValueListenableBuilder(
-                          valueListenable: isResizingBottom,
-                          builder: (context, value, child) {
-                            return GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onVerticalDragStart: (details) {
-                                _onVerticalDragStartBottom(details);
-                                isResizingTop.value = false;
-                              },
-                              onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                              onVerticalDragEnd: (details) async {
-                                isResizingTop.value = true;
-                                _onVerticalDragEnd(details);
-                              },
-                              child: scope.components.tileHandleBuilder(value),
-                            );
-                          },
-                        ),
-                      )
-                    : useDesktopGestures
-                        ? Positioned(
-                            bottom: 0,
-                            height: 8,
-                            left: 0,
-                            right: 0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.resizeRow,
-                              child: GestureDetector(
+                            )
+                          : const SizedBox.shrink(),
+                if (widget.event.canModify &&
+                    !widget.tileConfiguration.continuesAfter)
+                  useMobileGestures && widget.isChanging
+                      ? Positioned(
+                          bottom: 0,
+                          left: 0,
+                          height: handleSize,
+                          width: handleSize,
+                          child: ValueListenableBuilder(
+                            valueListenable: isResizingBottom,
+                            builder: (context, value, child) {
+                              return GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: _onVerticalDragStart,
+                                onVerticalDragStart: (details) {
+                                  _onVerticalDragStartBottom(details);
+                                  isResizingTop.value = false;
+                                },
                                 onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                                onVerticalDragEnd: (details) async =>
-                                    _onVerticalDragEnd(details),
+                                onVerticalDragEnd: (details) async {
+                                  isResizingTop.value = true;
+                                  _onVerticalDragEnd(details);
+                                },
+                                child:
+                                    scope.components.tileHandleBuilder(value),
+                              );
+                            },
+                          ),
+                        )
+                      : useDesktopGestures
+                          ? Positioned(
+                              bottom: 0,
+                              height: 8,
+                              left: 0,
+                              right: 0,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.resizeRow,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onVerticalDragStart: _onVerticalDragStart,
+                                  onVerticalDragUpdate:
+                                      _onVerticalDragUpdateEnd,
+                                  onVerticalDragEnd: (details) async =>
+                                      _onVerticalDragEnd(details),
+                                ),
                               ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-            ],
+                            )
+                          : const SizedBox.shrink(),
+              ],
+            ),
           ),
         );
       },
