@@ -216,16 +216,19 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onLongPressStart event.
   void _onLongPressStart(LongPressStartDetails details) {
+    if (!isResizingTop.value && !isResizingBottom.value) return;
     _onRescheduleStart();
   }
 
   /// Handles the onLongPressMoveUpdate event.
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    if (!isResizingTop.value && !isResizingBottom.value) return;
     _onReschedule(details.localOffsetFromOrigin);
   }
 
   /// Handles the onLongPressEnd event.
   Future<void> _onLongPressEnd(LongPressEndDetails details) async {
+    if (!isResizingTop.value && !isResizingBottom.value) return;
     await _onRescheduleEnd();
   }
 
