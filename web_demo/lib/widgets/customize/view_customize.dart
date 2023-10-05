@@ -39,7 +39,7 @@ class ViewConfigurationCustomize extends StatelessWidget {
         },
       ),
       HourLineTimelineOverlap(
-        value: config.hourLineTimelineOverlap,
+        value: config.daySeparatorLeftOffset,
         onChanged: (value) {
           onViewConfigChanged(
             config.copyWith(

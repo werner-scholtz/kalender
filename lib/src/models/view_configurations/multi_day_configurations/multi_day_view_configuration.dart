@@ -11,7 +11,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   double get timelineWidth;
 
   /// The overlap of the hourLines and the timeline.
-  double get hourLineTimelineOverlap;
+  double get daySeparatorLeftOffset;
 
   /// The vertical step duration.
   Duration get horizontalStepDuration;
@@ -45,8 +45,6 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The duration of the vertical drag step.
   Duration get verticalStepDuration;
-
-  double get hourLineLeftOffset => timelineWidth - hourLineTimelineOverlap;
 
   MultiDayViewConfiguration copyWith({
     int? numberOfDays,

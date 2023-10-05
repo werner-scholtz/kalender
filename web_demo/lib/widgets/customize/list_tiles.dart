@@ -83,7 +83,7 @@ class HourLineTimelineOverlap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text('hourLineTimelineOverlap'),
+      title: const Text('daySeparatorLeftOffset'),
       trailing: DropdownButton<double>(
         value: value,
         items: const [

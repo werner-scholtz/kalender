@@ -42,7 +42,7 @@ class MultiDayContent<T> extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       Positioned.fill(
-                        left: viewConfiguration.hourLineLeftOffset,
+                        left: 0,
                         child: scope.components.hourLineBuilder(
                           hourHeight,
                         ),

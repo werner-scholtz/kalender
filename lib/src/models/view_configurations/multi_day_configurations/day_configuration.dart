@@ -9,7 +9,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 class DayConfiguration extends MultiDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
-    this.hourLineTimelineOverlap = 8,
+    this.daySeparatorLeftOffset = 8,
     this.multiDayTileHeight = 24,
     this.eventSnapping = false,
     this.timeIndicatorSnapping = false,
@@ -25,7 +25,7 @@ class DayConfiguration extends MultiDayViewConfiguration {
   final double timelineWidth;
 
   @override
-  final double hourLineTimelineOverlap;
+  final double daySeparatorLeftOffset;
 
   @override
   final double multiDayTileHeight;
@@ -130,8 +130,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
   }) {
     return DayConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourLineTimelineOverlap:
-          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      daySeparatorLeftOffset:
+          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       eventSnapping: eventSnapping ?? this.eventSnapping,

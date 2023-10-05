@@ -5,7 +5,7 @@ import 'package:kalender/src/models/view_configurations/multi_day_configurations
 class WorkWeekConfiguration extends MultiDayViewConfiguration {
   const WorkWeekConfiguration({
     this.timelineWidth = 56,
-    this.hourLineTimelineOverlap = 8,
+    this.daySeparatorLeftOffset = 8,
     this.multiDayTileHeight = 24,
     this.newEventDuration = const Duration(minutes: 15),
     this.paintWeekNumber = true,
@@ -28,7 +28,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
-  final double hourLineTimelineOverlap;
+  final double daySeparatorLeftOffset;
 
   @override
   final Duration newEventDuration;
@@ -134,8 +134,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }) {
     return WorkWeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourLineTimelineOverlap:
-          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      daySeparatorLeftOffset:
+          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,

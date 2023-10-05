@@ -7,7 +7,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     required this.name,
     this.numberOfDays = 3,
     this.timelineWidth = 56,
-    this.hourLineTimelineOverlap = 8,
+    this.daySeparatorLeftOffset = 8,
     this.multiDayTileHeight = 24,
     this.newEventDuration = const Duration(minutes: 15),
     this.paintWeekNumber = true,
@@ -26,7 +26,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   final double timelineWidth;
 
   @override
-  final double hourLineTimelineOverlap;
+  final double daySeparatorLeftOffset;
 
   @override
   final Duration newEventDuration;
@@ -150,8 +150,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     return CustomMultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
       timelineWidth: timelineWidth ?? this.timelineWidth,
-      hourLineTimelineOverlap:
-          hourLineTimelineOverlap ?? this.hourLineTimelineOverlap,
+      daySeparatorLeftOffset:
+          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
