@@ -38,12 +38,6 @@ class _EventTileState<T> extends State<EventTile<T>> {
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
 
-  Offset cursorOffsetBottom = Offset.zero;
-  int currentVerticalStepsBottom = 0;
-
-  ValueNotifier<bool> isResizingTop = ValueNotifier(true);
-  ValueNotifier<bool> isResizingBottom = ValueNotifier(true);
-
   @override
   void initState() {
     super.initState();
@@ -64,21 +58,77 @@ class _EventTileState<T> extends State<EventTile<T>> {
       builder: (context, constraints) {
         final handleSize = (constraints.maxHeight * 0.8).clamp(0.0, 16.0);
 
+        // Get the onTap function.
+        final onTap = _onTap;
+
+        // Get the onPanStart, onPanUpdate, and onPanEnd functions.
+        void Function(DragStartDetails details)? onPanStart;
+        void Function(DragUpdateDetails details)? onPanUpdate;
+        Future<void> Function(DragEndDetails details)? onPanEnd;
+        if (useDesktopGestures) {
+          onPanStart = _onPanStart;
+          onPanUpdate = _onPanUpdate;
+          onPanEnd = _onPanEnd;
+        }
+
+        // Get the onLongPressStart, onLongPressMoveUpdate, and onLongPressEnd functions.
+        void Function(LongPressStartDetails details)? onLongPressStart;
+        void Function(LongPressMoveUpdateDetails details)?
+            onLongPressMoveUpdate;
+        Future<void> Function(LongPressEndDetails details)? onLongPressEnd;
+        if (useMobileGestures &&
+            !controller.isResizingBottom &&
+            !controller.isResizingTop) {
+          onLongPressStart = _onLongPressStart;
+          onLongPressMoveUpdate = _onLongPressMoveUpdate;
+          onLongPressEnd = _onLongPressEnd;
+        }
+
+        // Assign the resize buttons
+        Widget? resizeTopWidget;
+        Widget? resizeBottomWidget;
+
+        // Check if the event can be modified and if the event is being rescheduled.
+        if (widget.event.canModify && !controller.isRescheduling) {
+          if (useDesktopGestures) {
+            // Assign the resize buttons to use desktop gestures.
+            if (constraints.maxHeight > 24) {
+              resizeTopWidget = _resizeTopDesktopWidget();
+            }
+
+            resizeBottomWidget = _resizeBottomDesktopWidget();
+          } else if (useMobileGestures && widget.isChanging) {
+            // Assign the resize buttons to use mobile gestures.
+
+            // Check if the event continues before the visible date range.
+            if (!widget.tileConfiguration.continuesBefore) {
+              resizeTopWidget = resizeTopMobileWidget(
+                handleSize: handleSize,
+                enabled: !controller.isResizingBottom,
+              );
+            }
+
+            // Check if the event continues after the visible date range.
+            if (!widget.tileConfiguration.continuesAfter) {
+              resizeBottomWidget = resizeBottomMobileWidget(
+                handleSize: handleSize,
+                enabled: !controller.isResizingTop,
+              );
+            }
+          }
+        }
+
         return MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: _onTap,
-            onPanStart: useDesktopGestures ? _onPanStart : null,
-            onPanUpdate: useDesktopGestures ? _onPanUpdate : null,
-            onPanEnd: useDesktopGestures
-                ? (details) async => _onPanEnd(details)
-                : null,
-            onLongPressStart: useMobileGestures ? _onLongPressStart : null,
-            onLongPressMoveUpdate:
-                useMobileGestures ? _onLongPressMoveUpdate : null,
-            onLongPressEnd: useMobileGestures
-                ? (details) async => _onLongPressEnd(details)
-                : null,
+            onTap: onTap,
+            onPanStart: onPanStart,
+            onPanUpdate: onPanUpdate,
+            onPanEnd: (details) async => await onPanEnd?.call(details),
+            onLongPressStart: onLongPressStart,
+            onLongPressMoveUpdate: onLongPressMoveUpdate,
+            onLongPressEnd: (details) async =>
+                await onLongPressEnd?.call(details),
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -86,101 +136,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
                   widget.event,
                   widget.tileConfiguration,
                 ),
-                if (widget.event.canModify &&
-                    !widget.tileConfiguration.continuesBefore)
-                  useMobileGestures && widget.isChanging
-                      ? Positioned(
-                          top: 0,
-                          right: 0,
-                          height: handleSize,
-                          width: handleSize,
-                          child: ValueListenableBuilder(
-                            valueListenable: isResizingTop,
-                            builder: (context, value, child) {
-                              return GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: (details) {
-                                  _onVerticalDragStartTop(details);
-                                  isResizingBottom.value = false;
-                                },
-                                onVerticalDragUpdate:
-                                    _onVerticalDragUpdateStart,
-                                onVerticalDragEnd: (details) async {
-                                  isResizingBottom.value = true;
-                                  _onVerticalDragEnd(details);
-                                },
-                                child:
-                                    scope.components.tileHandleBuilder(value),
-                              );
-                            },
-                          ),
-                        )
-                      : useDesktopGestures
-                          ? Positioned(
-                              top: 0,
-                              height: 16,
-                              left: 0,
-                              right: 0,
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.resizeRow,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onVerticalDragStart: _onVerticalDragStart,
-                                  onVerticalDragUpdate:
-                                      _onVerticalDragUpdateStart,
-                                  onVerticalDragEnd: (details) async =>
-                                      _onVerticalDragEnd(details),
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                if (widget.event.canModify &&
-                    !widget.tileConfiguration.continuesAfter)
-                  useMobileGestures && widget.isChanging
-                      ? Positioned(
-                          bottom: 0,
-                          left: 0,
-                          height: handleSize,
-                          width: handleSize,
-                          child: ValueListenableBuilder(
-                            valueListenable: isResizingBottom,
-                            builder: (context, value, child) {
-                              return GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onVerticalDragStart: (details) {
-                                  _onVerticalDragStartBottom(details);
-                                  isResizingTop.value = false;
-                                },
-                                onVerticalDragUpdate: _onVerticalDragUpdateEnd,
-                                onVerticalDragEnd: (details) async {
-                                  isResizingTop.value = true;
-                                  _onVerticalDragEnd(details);
-                                },
-                                child:
-                                    scope.components.tileHandleBuilder(value),
-                              );
-                            },
-                          ),
-                        )
-                      : useDesktopGestures
-                          ? Positioned(
-                              bottom: 0,
-                              height: 8,
-                              left: 0,
-                              right: 0,
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.resizeRow,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onVerticalDragStart: _onVerticalDragStart,
-                                  onVerticalDragUpdate:
-                                      _onVerticalDragUpdateEnd,
-                                  onVerticalDragEnd: (details) async =>
-                                      _onVerticalDragEnd(details),
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
+                if (resizeTopWidget != null) resizeTopWidget,
+                if (resizeBottomWidget != null) resizeBottomWidget,
               ],
             ),
           ),
@@ -191,10 +148,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onTap event.
   Future<void> _onTap() async {
-    // Call the onEventTapped function.
     await scope.functions.onEventTapped?.call(widget.event);
-
-    // controller.forceUpdate();
   }
 
   /// Handles the onPanStart event.
@@ -216,19 +170,16 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onLongPressStart event.
   void _onLongPressStart(LongPressStartDetails details) {
-    if (!isResizingTop.value && !isResizingBottom.value) return;
     _onRescheduleStart();
   }
 
   /// Handles the onLongPressMoveUpdate event.
   void _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    if (!isResizingTop.value && !isResizingBottom.value) return;
     _onReschedule(details.localOffsetFromOrigin);
   }
 
   /// Handles the onLongPressEnd event.
   Future<void> _onLongPressEnd(LongPressEndDetails details) async {
-    if (!isResizingTop.value && !isResizingBottom.value) return;
     await _onRescheduleEnd();
   }
 
@@ -236,20 +187,18 @@ class _EventTileState<T> extends State<EventTile<T>> {
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
 
-    if (!isResizingTop.value && !isResizingBottom.value) {
-      initialDateTimeRange = widget.event.dateTimeRange;
-      controller.selectEvent(widget.event);
-    }
+    initialDateTimeRange = widget.event.dateTimeRange;
+    controller.selectEvent(widget.event);
+    controller.isResizingTop = true;
   }
 
   void _onVerticalDragStartBottom(DragStartDetails details) {
-    cursorOffsetBottom = Offset.zero;
-    currentVerticalStepsBottom = 0;
+    cursorOffset = Offset.zero;
+    currentVerticalSteps = 0;
 
-    if (!isResizingTop.value && !isResizingBottom.value) {
-      initialDateTimeRange = widget.event.dateTimeRange;
-      controller.selectEvent(widget.event);
-    }
+    initialDateTimeRange = widget.event.dateTimeRange;
+    controller.selectEvent(widget.event);
+    controller.isResizingBottom = true;
   }
 
   /// Handles the onVerticalDragStart event.
@@ -261,7 +210,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
   }
 
   /// Handles the onVerticalDragUpdate event (Start).
-  void _onVerticalDragUpdateStart(DragUpdateDetails details) {
+  void _onVerticalDragUpdateTop(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
     final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
@@ -301,11 +250,10 @@ class _EventTileState<T> extends State<EventTile<T>> {
   }
 
   /// Handles the onVerticalDragUpdate event (End).
-  void _onVerticalDragUpdateEnd(DragUpdateDetails details) {
-    cursorOffsetBottom += details.delta;
+  void _onVerticalDragUpdateBottom(DragUpdateDetails details) {
+    cursorOffset += details.delta;
     // Calculate the new vertical steps.
-    final verticalSteps =
-        (cursorOffsetBottom.dy / snapData.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
 
     if (verticalSteps == currentVerticalSteps) return;
 
@@ -335,7 +283,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
       }
     }
 
-    currentVerticalStepsBottom = verticalSteps;
+    currentVerticalSteps = verticalSteps;
 
     // Remove now from the snap points if applicable.
     if (snapData.snapToTimeIndicator) {
@@ -345,15 +293,15 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    if (!isResizingTop.value || !isResizingBottom.value) {
-      final selectedEvent = scope.eventsController.selectedEvent!;
-      controller.deselectEvent();
+    final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.isResizingBottom = false;
+    controller.isResizingTop = false;
+    controller.deselectEvent();
 
-      await scope.functions.onEventChanged?.call(
-        initialDateTimeRange,
-        selectedEvent,
-      );
-    }
+    await scope.functions.onEventChanged?.call(
+      initialDateTimeRange,
+      selectedEvent,
+    );
   }
 
   /// Handles the onRescheduleStart event.
@@ -362,6 +310,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentHorizontalSteps = 0;
 
     controller.selectEvent(widget.event);
+    scope.eventsController.isRescheduling = true;
     initialDateTimeRange = widget.event.dateTimeRange;
 
     scope.functions.onEventChangeStart?.call(widget.event);
@@ -441,11 +390,94 @@ class _EventTileState<T> extends State<EventTile<T>> {
   /// Handles the onRescheduleEnd event.
   Future<void> _onRescheduleEnd() async {
     final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.isRescheduling = false;
     controller.deselectEvent();
 
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,
+    );
+  }
+
+  Positioned resizeTopMobileWidget({
+    required double handleSize,
+    required bool enabled,
+  }) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      height: handleSize,
+      width: handleSize,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onVerticalDragStart: enabled ? _onVerticalDragStartTop : null,
+        onVerticalDragUpdate: enabled ? _onVerticalDragUpdateTop : null,
+        onVerticalDragEnd: enabled
+            ? (details) async {
+                _onVerticalDragEnd(details);
+              }
+            : null,
+        child: scope.components.tileHandleBuilder(enabled),
+      ),
+    );
+  }
+
+  Positioned _resizeTopDesktopWidget() {
+    return Positioned(
+      top: 0,
+      height: 16,
+      left: 0,
+      right: 0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeRow,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onVerticalDragStart: _onVerticalDragStart,
+          onVerticalDragUpdate: _onVerticalDragUpdateTop,
+          onVerticalDragEnd: (details) async => _onVerticalDragEnd(details),
+        ),
+      ),
+    );
+  }
+
+  Positioned _resizeBottomDesktopWidget() {
+    return Positioned(
+      bottom: 0,
+      height: 8,
+      left: 0,
+      right: 0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeRow,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onVerticalDragStart: _onVerticalDragStart,
+          onVerticalDragUpdate: _onVerticalDragUpdateBottom,
+          onVerticalDragEnd: (details) async => _onVerticalDragEnd(details),
+        ),
+      ),
+    );
+  }
+
+  Positioned resizeBottomMobileWidget({
+    required double handleSize,
+    required bool enabled,
+  }) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      height: handleSize,
+      width: handleSize,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onVerticalDragStart: _onVerticalDragStartBottom,
+        onVerticalDragUpdate: _onVerticalDragUpdateBottom,
+        onVerticalDragEnd: (details) async {
+          _onVerticalDragEnd(details);
+        },
+        child: scope.components.tileHandleBuilder(
+          enabled,
+        ),
+      ),
     );
   }
 }

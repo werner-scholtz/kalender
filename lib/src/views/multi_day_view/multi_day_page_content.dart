@@ -65,7 +65,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     .toList()
                 : <DateTime>[];
 
-            // Generate the snap data.
+            // Create the snap data.
             final snapData = MultiDayPageData(
               snapPoints: snapPoints,
               snapToTimeIndicator: viewConfiguration.timeIndicatorSnapping,
@@ -89,25 +89,12 @@ class MultiDayPageContent<T> extends StatelessWidget {
                   heightPerMinute: heightPerMinute,
                   verticalStep: newEventVerticalStep,
                 ),
-                ...eventGroups.map(
-                  (tileGroup) => Positioned(
-                    left: (visibleDates.indexOf(tileGroup.date) * dayWidth)
-                        .roundToDouble(),
-                    width: dayWidth.roundToDouble(),
-                    top: calculateTop(
-                      tileGroup.start.difference(tileGroup.date),
-                      heightPerMinute,
-                    ).roundToDouble(),
-                    height: calculateHeight(
-                      tileGroup.duration,
-                      heightPerMinute,
-                    ).roundToDouble(),
-                    child: EventGroupWidget<T>(
-                      eventGroup: tileGroup,
-                      snapData: snapData,
-                      isChanging: false,
-                    ),
-                  ),
+                ...generateEventGroups(
+                  eventGroups: eventGroups,
+                  visibleDates: visibleDates,
+                  dayWidth: dayWidth,
+                  heightPerMinute: heightPerMinute,
+                  snapData: snapData,
                 ),
                 if (selectedEvent != null)
                   ListenableBuilder(
@@ -120,26 +107,13 @@ class MultiDayPageContent<T> extends StatelessWidget {
                       );
                       return Stack(
                         children: [
-                          ...selectedDayTileGroup.map(
-                            (tileGroup) => Positioned(
-                              left: (visibleDates.indexOf(tileGroup.date) *
-                                      dayWidth)
-                                  .roundToDouble(),
-                              width: dayWidth.roundToDouble(),
-                              top: calculateTop(
-                                tileGroup.start.difference(tileGroup.date),
-                                heightPerMinute,
-                              ).roundToDouble(),
-                              height: calculateHeight(
-                                tileGroup.duration,
-                                heightPerMinute,
-                              ).roundToDouble(),
-                              child: EventGroupWidget<T>(
-                                eventGroup: tileGroup,
-                                snapData: snapData,
-                                isChanging: true,
-                              ),
-                            ),
+                          ...generateEventGroups(
+                            eventGroups: selectedDayTileGroup,
+                            visibleDates: visibleDates,
+                            dayWidth: dayWidth,
+                            heightPerMinute: heightPerMinute,
+                            snapData: snapData,
+                            isChanging: true,
                           ),
                         ],
                       );
@@ -156,6 +130,35 @@ class MultiDayPageContent<T> extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Iterable<Widget> generateEventGroups({
+    required Iterable<EventGroup<T>> eventGroups,
+    required List<DateTime> visibleDates,
+    required double dayWidth,
+    required double heightPerMinute,
+    required MultiDayPageData snapData,
+    bool isChanging = false,
+  }) {
+    return eventGroups.map(
+      (tileGroup) => Positioned(
+        left: (visibleDates.indexOf(tileGroup.date) * dayWidth).roundToDouble(),
+        width: dayWidth.roundToDouble(),
+        top: calculateTop(
+          tileGroup.start.difference(tileGroup.date),
+          heightPerMinute,
+        ).roundToDouble(),
+        height: calculateHeight(
+          tileGroup.duration,
+          heightPerMinute,
+        ).roundToDouble(),
+        child: EventGroupWidget<T>(
+          eventGroup: tileGroup,
+          snapData: snapData,
+          isChanging: isChanging,
+        ),
+      ),
     );
   }
 
