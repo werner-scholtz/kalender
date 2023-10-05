@@ -15,6 +15,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.createMultiDayEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
+    this.name = 'Work Week',
   });
 
   @override
@@ -54,7 +55,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   final int firstDayOfWeek = 1;
 
   @override
-  final String name = 'Work Week';
+  final String name;
 
   @override
   final bool createEvents;
@@ -115,7 +116,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   WorkWeekConfiguration copyWith({
-    int? numberOfDays,
+    String? name,
+    int? numberOfDays = 5,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
@@ -125,9 +127,10 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     bool? paintWeekNumber,
     bool? eventSnapping,
     bool? timeIndicatorSnapping,
-    int? firstDayOfWeek,
     bool? createEvents,
     bool? createMultiDayEvents,
+    // ignore: avoid_init_to_null
+    int? firstDayOfWeek = null,
   }) {
     return WorkWeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
@@ -142,6 +145,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
       createEvents: createEvents ?? this.createEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+      name: name ?? this.name,
     );
   }
 }

@@ -6,6 +6,8 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 
+// TODO: Add resize and reschedule for mobile.
+
 class MultiDayEventTile<T> extends StatefulWidget {
   const MultiDayEventTile({
     super.key,
@@ -62,53 +64,33 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final onTap = _onTap;
+
+    Widget? resizeLeft;
+    Widget? resizeRight;
+
+    if (useDesktopGestures) {
+      resizeLeft = resizeLeftWidget();
+      resizeRight = resizeRightWidget();
+    }
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Stack(
         fit: StackFit.expand,
         children: [
           GestureDetector(
-            onPanStart: useDesktopGestures ? _onRescheduleStart : null,
-            onPanUpdate: useDesktopGestures ? _onRescheduleUpdate : null,
-            onPanEnd: useDesktopGestures ? _onRescheduleEnd : null,
-            onTap: _onTap,
+            onPanStart: _onRescheduleStart,
+            onPanUpdate: _onRescheduleUpdate,
+            onPanEnd: (details) async => await _onRescheduleEnd(details),
+            onTap: onTap,
             child: scope.tileComponents.multiDayTileBuilder!(
               widget.event,
               widget.tileConfiguration,
             ),
           ),
-          if (useDesktopGestures)
-            Positioned(
-              left: 0,
-              width: 8,
-              top: 0,
-              bottom: 0,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeLeftRight,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onHorizontalDragStart: _onHorizontalDragStart,
-                  onHorizontalDragUpdate: _onHorizontalDragUpdateStart,
-                  onHorizontalDragEnd: _onHorizontalDragEnd,
-                ),
-              ),
-            ),
-          if (useDesktopGestures)
-            Positioned(
-              right: 0,
-              width: 8,
-              top: 0,
-              bottom: 0,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.resizeLeftRight,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onHorizontalDragStart: _onHorizontalDragStart,
-                  onHorizontalDragUpdate: _onHorizontalDragUpdateEnd,
-                  onHorizontalDragEnd: _onHorizontalDragEnd,
-                ),
-              ),
-            ),
+          if (resizeLeft != null) resizeLeft,
+          if (resizeRight != null) resizeRight,
         ],
       ),
     );
@@ -116,7 +98,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
 
   Future<void> _onTap() async {
     await functions.onEventTapped?.call(widget.event);
-    controller.forceUpdate();
+    // controller.forceUpdate();
   }
 
   void _onRescheduleStart(DragStartDetails details) {
@@ -125,13 +107,16 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     currentHorizontalSteps = 0;
 
     initialDateTimeRange = widget.event.dateTimeRange;
+    controller.isRescheduling = true;
     controller.selectEvent(widget.event);
     scope.functions.onEventChangeStart?.call(widget.event);
   }
 
   Future<void> _onRescheduleEnd(DragEndDetails details) async {
     final selectedEvent = scope.eventsController.selectedEvent!;
+    controller.isRescheduling = false;
     controller.deselectEvent();
+
     await functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,
@@ -173,6 +158,16 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     currentVerticalSteps = verticalSteps;
   }
 
+  void _onHorizontalDragStartLeft(DragStartDetails details) {
+    controller.isResizingTop = true;
+    _onHorizontalDragStart(details);
+  }
+
+  void _onHorizontalDragStartRight(DragStartDetails details) {
+    controller.isResizingBottom = true;
+    _onHorizontalDragStart(details);
+  }
+
   void _onHorizontalDragStart(DragStartDetails details) {
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
@@ -181,7 +176,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     scope.functions.onEventChangeStart?.call(widget.event);
   }
 
-  void _onHorizontalDragUpdateStart(DragUpdateDetails details) {
+  void _onHorizontalDragUpdateLeft(DragUpdateDetails details) {
     cursorOffset += details.delta;
     final steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
@@ -196,7 +191,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     }
   }
 
-  void _onHorizontalDragUpdateEnd(DragUpdateDetails details) {
+  void _onHorizontalDragUpdateRight(DragUpdateDetails details) {
     cursorOffset += details.delta;
     final steps = (cursorOffset.dx / widget.horizontalStep).round();
     if (steps != currentHorizontalSteps) {
@@ -214,10 +209,51 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   Future<void> _onHorizontalDragEnd(DragEndDetails details) async {
     final selectedEvent = scope.eventsController.selectedEvent!;
     controller.deselectEvent();
+    controller.isResizingTop = false;
+    controller.isResizingBottom = false;
 
     await functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,
+    );
+  }
+
+  Positioned resizeLeftWidget() {
+    return Positioned(
+      left: 0,
+      width: 8,
+      top: 0,
+      bottom: 0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeLeftRight,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragStart: _onHorizontalDragStartLeft,
+          onHorizontalDragUpdate: _onHorizontalDragUpdateLeft,
+          onHorizontalDragEnd: (details) async => await _onHorizontalDragEnd(
+            details,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Positioned resizeRightWidget() {
+    return Positioned(
+      right: 0,
+      width: 8,
+      top: 0,
+      bottom: 0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeLeftRight,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragStart: _onHorizontalDragStartRight,
+          onHorizontalDragUpdate: _onHorizontalDragUpdateRight,
+          onHorizontalDragEnd: (details) async =>
+              await _onHorizontalDragEnd(details),
+        ),
+      ),
     );
   }
 }
