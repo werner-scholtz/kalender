@@ -62,5 +62,6 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? createEvents,
     bool? createMultiDayEvents,
+    String? name,
   });
 }
