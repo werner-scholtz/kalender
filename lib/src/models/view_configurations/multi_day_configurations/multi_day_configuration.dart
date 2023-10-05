@@ -132,6 +132,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   CustomMultiDayConfiguration copyWith({
+    String? name,
     int? numberOfDays,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
@@ -161,7 +162,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
       createEvents: createEvents ?? this.createEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
-      name: name,
+      name: name ?? this.name,
     );
   }
 }

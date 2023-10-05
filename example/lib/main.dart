@@ -43,6 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
   final CalendarEventsController<Event> eventController =
       CalendarEventsController<Event>();
 
+  late ViewConfiguration currentConfiguration = viewConfigurations[0];
+  List<ViewConfiguration> viewConfigurations = [
+    const CustomMultiDayConfiguration(
+      name: 'Day',
+      numberOfDays: 1,
+    ),
+    const CustomMultiDayConfiguration(
+      name: 'Custom',
+      numberOfDays: 2,
+    ),
+    const WeekConfiguration(),
+    const WorkWeekConfiguration(),
+    const MonthConfiguration(),
+    const ScheduleConfiguration(),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -53,35 +69,44 @@ class _MyHomePageState extends State<MyHomePage> {
           start: now,
           end: now.add(const Duration(hours: 1)),
         ),
+        eventData: Event(title: 'Event 1'),
       ),
       CalendarEvent(
         dateTimeRange: DateTimeRange(
           start: now.add(const Duration(hours: 2)),
           end: now.add(const Duration(hours: 5)),
         ),
+        eventData: Event(title: 'Event 2'),
       ),
       CalendarEvent(
         dateTimeRange: DateTimeRange(
-          start: now,
-          end: now.add(const Duration(days: 1)),
+          start: DateTime(now.year, now.month, now.day),
+          end: DateTime(now.year, now.month, now.day)
+              .add(const Duration(days: 2)),
         ),
+        eventData: Event(title: 'Event 3'),
       ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CalendarView<Event>(
-        controller: controller,
-        eventsController: eventController,
-        viewConfiguration: const WeekConfiguration(),
-        tileBuilder: _tileBuilder,
-        multiDayTileBuilder: _multiDayTileBuilder,
-        scheduleTileBuilder: _scheduleTileBuilder,
-        eventHandlers: CalendarEventHandlers(
-          onEventTapped: _onEventTapped,
-          onEventChanged: _onEventChanged,
+    return SafeArea(
+      child: Scaffold(
+        body: CalendarView<Event>(
+          controller: controller,
+          eventsController: eventController,
+          viewConfiguration: currentConfiguration,
+          tileBuilder: _tileBuilder,
+          multiDayTileBuilder: _multiDayTileBuilder,
+          scheduleTileBuilder: _scheduleTileBuilder,
+          components: CalendarComponents(
+            calendarHeaderBuilder: _calendarHeader,
+          ),
+          eventHandlers: CalendarEventHandlers(
+            onEventTapped: _onEventTapped,
+            onEventChanged: _onEventChanged,
+          ),
         ),
       ),
     );
@@ -110,14 +135,16 @@ class _MyHomePageState extends State<MyHomePage> {
     CalendarEvent<Event> event,
     TileConfiguration configuration,
   ) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: _getTileColor(
-          event.eventData?.color ?? Colors.blue,
-          configuration.tileType,
-        ),
+    final color = event.eventData?.color ?? Colors.blue;
+    return Card(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+      margin: EdgeInsets.zero,
+      elevation: configuration.tileType == TileType.ghost ? 0 : 8,
+      color: configuration.tileType != TileType.ghost
+          ? color
+          : color.withAlpha(100),
       child: Center(
         child: configuration.tileType != TileType.ghost
             ? Text(event.eventData?.title ?? 'New Event')
@@ -130,14 +157,13 @@ class _MyHomePageState extends State<MyHomePage> {
     CalendarEvent<Event> event,
     MultiDayTileConfiguration configuration,
   ) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: _getTileColor(
-          event.eventData?.color ?? Colors.blue,
-          configuration.tileType,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
+    final color = event.eventData?.color ?? Colors.blue;
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      elevation: configuration.tileType == TileType.selected ? 8 : 0,
+      color: configuration.tileType == TileType.ghost
+          ? color.withAlpha(100)
+          : color,
       child: Center(
         child: configuration.tileType != TileType.ghost
             ? Text(event.eventData?.title ?? 'New Event')
@@ -156,17 +182,31 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Color _getTileColor(Color color, TileType tileType) {
-    switch (tileType) {
-      case TileType.normal:
-        return color.withAlpha(200);
-      case TileType.selected:
-        return color;
-      case TileType.ghost:
-        return color.withAlpha(100);
-      default:
-        return color;
-    }
+  Widget _calendarHeader(DateTimeRange dateTimeRange) {
+    return Row(
+      children: [
+        DropdownMenu(
+          onSelected: (value) {
+            if (value == null) return;
+            setState(() {
+              currentConfiguration = value;
+            });
+          },
+          initialSelection: currentConfiguration,
+          dropdownMenuEntries: viewConfigurations
+              .map((e) => DropdownMenuEntry(value: e, label: e.name))
+              .toList(),
+        ),
+        IconButton.filledTonal(
+          onPressed: controller.animateToPreviousPage,
+          icon: const Icon(Icons.navigate_before_rounded),
+        ),
+        IconButton.filledTonal(
+          onPressed: controller.animateToNextPage,
+          icon: const Icon(Icons.navigate_next_rounded),
+        ),
+      ],
+    );
   }
 
   bool get isMobile {

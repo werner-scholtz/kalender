@@ -16,6 +16,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.createMultiDayEvents = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
+    this.name = 'Week',
   });
 
   @override
@@ -55,7 +56,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   final int firstDayOfWeek;
 
   @override
-  final String name = 'Week';
+  final String name;
 
   @override
   final bool createEvents;
@@ -103,7 +104,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   WeekConfiguration copyWith({
-    int? numberOfDays,
+    String? name,
+    int? numberOfDays = 7,
     double? timelineWidth,
     double? hourLineTimelineOverlap,
     double? multiDayTileHeight,
@@ -132,6 +134,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
+      name: name ?? this.name,
     );
   }
 }

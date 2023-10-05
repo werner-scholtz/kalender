@@ -19,6 +19,33 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChangingEvent => _selectedEvent != null;
 
+  /// Is resizing selectedEvent top.
+  /// If true the selectedEvent will not allow resizing bottom and rescheduling.
+  bool _isResizingTop = false;
+  bool get isResizingTop => _isResizingTop;
+  set isResizingTop(bool value) {
+    _isResizingTop = value;
+    notifyListeners();
+  }
+
+  // Is resizing selectedEvent bottom.
+  /// If true the selectedEvent will not allow resizing top and rescheduling.
+  bool _isResizingBottom = false;
+  bool get isResizingBottom => _isResizingBottom;
+  set isResizingBottom(bool value) {
+    _isResizingBottom = value;
+    notifyListeners();
+  }
+
+  // Is rescheduling selectedEvent.
+  // If true the selectedEvent will not allow resizing top and bottom.
+  bool _isRescheduling = false;
+  bool get isRescheduling => _isRescheduling;
+  set isRescheduling(bool value) {
+    _isRescheduling = value;
+    notifyListeners();
+  }
+
   /// Deselects the [_selectedEvent].
   void deselectEvent() {
     _selectedEvent = null;
