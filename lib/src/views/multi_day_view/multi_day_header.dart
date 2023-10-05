@@ -37,7 +37,8 @@ class MultiDayHeader<T> extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                          width: viewConfiguration.timelineWidth,
+                          width: viewConfiguration.timelineWidth +
+                              viewConfiguration.hourLineTimelineOverlap,
                           child: scope.components.dayHeaderBuilder(
                             visibleDateTimeRange.start,
                             null,
@@ -57,7 +58,8 @@ class MultiDayHeader<T> extends StatelessWidget {
                 Row(
                   children: [
                     SizedBox(
-                      width: viewConfiguration.timelineWidth,
+                      width: viewConfiguration.timelineWidth +
+                          viewConfiguration.hourLineTimelineOverlap,
                       child: Center(
                         child: viewConfiguration.paintWeekNumber
                             ? scope.components
