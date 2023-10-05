@@ -29,7 +29,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
-        final dayWidth = (constraints.maxWidth) / visibleDates.length;
+        final dayWidth =
+            (constraints.maxWidth - viewConfiguration.hourLineTimelineOverlap) /
+                visibleDates.length;
         final heightPerMinute =
             (scope.state as MultiDayViewState).heightPerMinute!.value;
         final verticalStep =
@@ -84,6 +86,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
               clipBehavior: Clip.hardEdge,
               children: [
                 Positioned.fill(
+                  left: viewConfiguration.hourLineTimelineOverlap,
                   child: scope.components.daySeparatorBuilder(
                     viewConfiguration.numberOfDays,
                   ),
@@ -151,8 +154,10 @@ class MultiDayPageContent<T> extends StatelessWidget {
   }) {
     return eventGroups.map(
       (tileGroup) => Positioned(
-        left: (visibleDates.indexOf(tileGroup.date) * dayWidth).roundToDouble(),
-        width: dayWidth.roundToDouble(),
+        left: ((visibleDates.indexOf(tileGroup.date) * dayWidth) +
+                viewConfiguration.hourLineTimelineOverlap)
+            .roundToDouble(),
+        width: (dayWidth).roundToDouble(),
         top: calculateTop(
           tileGroup.start.difference(tileGroup.date),
           heightPerMinute,

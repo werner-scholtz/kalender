@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
@@ -38,8 +39,14 @@ class MultiDayContent<T> extends StatelessWidget {
                   height: pageHeight,
                   child: Stack(
                     fit: StackFit.expand,
-                    clipBehavior: Clip.hardEdge,
+                    clipBehavior: Clip.none,
                     children: [
+                      Positioned.fill(
+                        left: viewConfiguration.hourLineLeftOffset,
+                        child: scope.components.hourLineBuilder(
+                          hourHeight,
+                        ),
+                      ),
                       Positioned.fill(
                         left: viewConfiguration.timelineWidth,
                         child: PageView.builder(
@@ -78,25 +85,11 @@ class MultiDayContent<T> extends StatelessWidget {
                                   scope.state.adjustedDateTimeRange.start,
                             );
 
-                            return Stack(
-                              children: [
-                                Positioned.fill(
-                                  left: 0,
-                                  child: scope.components.hourLineBuilder(
-                                    hourHeight,
-                                  ),
-                                ),
-                                Positioned.fill(
-                                  left:
-                                      viewConfiguration.hourLineTimelineOverlap,
-                                  child: MultiDayPageContent<T>(
-                                    viewConfiguration: viewConfiguration,
-                                    visibleDateRange: visibleDateRange,
-                                    controller: controller,
-                                    hourHeight: hourHeight,
-                                  ),
-                                ),
-                              ],
+                            return MultiDayPageContent<T>(
+                              viewConfiguration: viewConfiguration,
+                              visibleDateRange: visibleDateRange,
+                              controller: controller,
+                              hourHeight: hourHeight,
                             );
                           },
                         ),
