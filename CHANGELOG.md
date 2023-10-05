@@ -1,3 +1,8 @@
+## 0.1.6
+* Fixed some gesture bugs.
+* Added name parameter to pre-defined multi day configurations.
+* Fixed time indicator bug.
+
 ## 0.1.5
 * Added event tileHandleBuilder for mobile.
 * Added mobile reschedule / resize docs.
