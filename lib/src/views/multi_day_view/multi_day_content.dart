@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 

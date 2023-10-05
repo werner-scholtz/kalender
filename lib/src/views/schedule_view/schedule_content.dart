@@ -106,6 +106,10 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
   }
 
   void _updateVisibleDateRange() {
+    if (widget.viewState.itemPositionsListener.itemPositions.value.isEmpty) {
+      return;
+    }
+
     final startIndex =
         widget.viewState.itemPositionsListener.itemPositions.value.reduce(
       (value, item) => value.index < item.index ? value : item,
