@@ -29,9 +29,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
-        final dayWidth =
-            (constraints.maxWidth - viewConfiguration.hourLineTimelineOverlap) /
-                visibleDates.length;
+        final dayWidth = (constraints.maxWidth) / visibleDates.length;
         final heightPerMinute =
             (scope.state as MultiDayViewState).heightPerMinute!.value;
         final verticalStep =
@@ -85,8 +83,10 @@ class MultiDayPageContent<T> extends StatelessWidget {
             return Stack(
               clipBehavior: Clip.hardEdge,
               children: [
-                scope.components.daySeparatorBuilder(
-                  viewConfiguration.numberOfDays,
+                Positioned.fill(
+                  child: scope.components.daySeparatorBuilder(
+                    viewConfiguration.numberOfDays,
+                  ),
                 ),
                 MultiDayPageGestureDetector<T>(
                   viewConfiguration: viewConfiguration,
@@ -133,11 +133,6 @@ class MultiDayPageContent<T> extends StatelessWidget {
                       dayWidth,
                     ),
                   ),
-                // Positioned.fill(
-                //   child: scope.components.calendarZoomDetector.call(
-                //     controller,
-                //   ),
-                // ),
               ],
             );
           },

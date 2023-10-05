@@ -78,11 +78,25 @@ class MultiDayContent<T> extends StatelessWidget {
                                   scope.state.adjustedDateTimeRange.start,
                             );
 
-                            return MultiDayPageContent<T>(
-                              viewConfiguration: viewConfiguration,
-                              visibleDateRange: visibleDateRange,
-                              controller: controller,
-                              hourHeight: hourHeight,
+                            return Stack(
+                              children: [
+                                Positioned.fill(
+                                  left: 0,
+                                  child: scope.components.hourLineBuilder(
+                                    hourHeight,
+                                  ),
+                                ),
+                                Positioned.fill(
+                                  left:
+                                      viewConfiguration.hourLineTimelineOverlap,
+                                  child: MultiDayPageContent<T>(
+                                    viewConfiguration: viewConfiguration,
+                                    visibleDateRange: visibleDateRange,
+                                    controller: controller,
+                                    hourHeight: hourHeight,
+                                  ),
+                                ),
+                              ],
                             );
                           },
                         ),
