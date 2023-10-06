@@ -135,7 +135,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     String? name,
     int? numberOfDays,
     double? timelineWidth,
-    double? hourLineTimelineOverlap,
+    double? daySeparatorLeftOffset,
     double? multiDayTileHeight,
     Duration? verticalStepDuration,
     Duration? verticalSnapRange,
@@ -151,7 +151,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
       numberOfDays: numberOfDays ?? this.numberOfDays,
       timelineWidth: timelineWidth ?? this.timelineWidth,
       daySeparatorLeftOffset:
-          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
+          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,

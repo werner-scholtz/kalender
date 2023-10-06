@@ -49,7 +49,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration copyWith({
     int? numberOfDays,
     double? timelineWidth,
-    double? hourLineTimelineOverlap,
+    double? daySeparatorLeftOffset,
     double? multiDayTileHeight,
     Duration? verticalStepDuration,
     Duration? verticalSnapRange,

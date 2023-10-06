@@ -114,7 +114,7 @@ class DayConfiguration extends MultiDayViewConfiguration {
     String? name,
     int? numberOfDays = 1,
     double? timelineWidth,
-    double? hourLineTimelineOverlap,
+    double? daySeparatorLeftOffset,
     double? multiDayTileHeight,
     Duration? verticalStepDuration,
     Duration? verticalSnapRange,
@@ -131,7 +131,7 @@ class DayConfiguration extends MultiDayViewConfiguration {
     return DayConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
       daySeparatorLeftOffset:
-          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
+          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       eventSnapping: eventSnapping ?? this.eventSnapping,

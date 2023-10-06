@@ -107,7 +107,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     String? name,
     int? numberOfDays = 7,
     double? timelineWidth,
-    double? hourLineTimelineOverlap,
+    double? daySeparatorLeftOffset,
     double? multiDayTileHeight,
     Duration? verticalStepDuration,
     Duration? verticalSnapRange,
@@ -122,7 +122,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     return WeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
       daySeparatorLeftOffset:
-          hourLineTimelineOverlap ?? this.daySeparatorLeftOffset,
+          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
