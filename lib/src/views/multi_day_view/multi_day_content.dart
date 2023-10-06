@@ -41,8 +41,11 @@ class MultiDayContent<T> extends StatelessWidget {
                     fit: StackFit.expand,
                     clipBehavior: Clip.none,
                     children: [
-                      Positioned.fill(
+                      Positioned(
                         left: 0,
+                        right: 0,
+                        top: 0,
+                        height: pageHeight.roundToDouble(),
                         child: scope.components.hourLineBuilder(
                           hourHeight,
                         ),

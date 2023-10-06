@@ -126,9 +126,11 @@ class CalendarComponents {
 
   Widget _defaultDaySeparatorBuilder(
     int numberOfDays,
+    double dayWidth,
   ) {
     return DaySeparator(
       numberOfDays: numberOfDays,
+      dayWidth: dayWidth,
     );
   }
 

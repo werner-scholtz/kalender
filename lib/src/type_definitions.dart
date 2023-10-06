@@ -25,6 +25,7 @@ typedef HourLinesBuilder<T extends Object?> = Widget Function(
 /// The [DaySeparatorBuilder] is used to build the separators between days.
 typedef DaySeparatorBuilder<T extends Object?> = Widget Function(
   int numberOfDays,
+  double dayWidth,
 );
 
 /// The [TimelineBuilder] is used to build the timeline displayed on the left side of the calendar.

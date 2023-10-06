@@ -29,9 +29,16 @@ class MultiDayPageContent<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
-        final dayWidth =
-            (constraints.maxWidth - viewConfiguration.daySeparatorLeftOffset) /
-                visibleDates.length;
+
+        final dayWidth = (((constraints.maxWidth -
+                        viewConfiguration.daySeparatorLeftOffset) /
+                    visibleDates.length) -
+                1)
+            .truncateToDouble();
+
+        final daySeparatorWidth =
+            dayWidth * visibleDates.length + (visibleDates.length + 1);
+
         final heightPerMinute =
             (scope.state as MultiDayViewState).heightPerMinute!.value;
         final verticalStep =
@@ -85,10 +92,14 @@ class MultiDayPageContent<T> extends StatelessWidget {
             return Stack(
               clipBehavior: Clip.hardEdge,
               children: [
-                Positioned.fill(
-                  left: viewConfiguration.daySeparatorLeftOffset,
+                Positioned(
+                  left: viewConfiguration.daySeparatorLeftOffset.toDouble(),
+                  width: daySeparatorWidth,
+                  top: 0,
+                  bottom: 0,
                   child: scope.components.daySeparatorBuilder(
                     viewConfiguration.numberOfDays,
+                    dayWidth,
                   ),
                 ),
                 MultiDayPageGestureDetector<T>(
@@ -153,34 +164,36 @@ class MultiDayPageContent<T> extends StatelessWidget {
     bool isChanging = false,
   }) {
     return eventGroups.map(
-      (tileGroup) => Positioned(
-        left: ((visibleDates.indexOf(tileGroup.date) * dayWidth) +
-                viewConfiguration.daySeparatorLeftOffset)
-            .roundToDouble(),
-        width: (dayWidth).roundToDouble(),
-        top: calculateTop(
-          tileGroup.start.difference(tileGroup.date),
-          heightPerMinute,
-        ).roundToDouble(),
-        height: calculateHeight(
-          tileGroup.duration,
-          heightPerMinute,
-        ).roundToDouble(),
-        child: EventGroupWidget<T>(
-          eventGroup: tileGroup,
-          snapData: snapData,
-          isChanging: isChanging,
-        ),
-      ),
+      (tileGroup) {
+        final dayIndex = visibleDates.indexOf(tileGroup.date);
+        return Positioned(
+          left: ((dayIndex * dayWidth + (dayIndex + 1)) +
+              viewConfiguration.daySeparatorLeftOffset),
+          width: dayWidth,
+          top: calculateTop(
+            tileGroup.start.difference(tileGroup.date),
+            heightPerMinute,
+          ),
+          height: calculateHeight(
+            tileGroup.duration,
+            heightPerMinute,
+          ),
+          child: EventGroupWidget<T>(
+            eventGroup: tileGroup,
+            snapData: snapData,
+            isChanging: isChanging,
+          ),
+        );
+      },
     );
   }
 
   double calculateTop(Duration timeBeforeStart, double heightPerMinute) {
-    return timeBeforeStart.inMinutes * heightPerMinute;
+    return (timeBeforeStart.inMinutes * heightPerMinute).roundToDouble();
   }
 
   double calculateHeight(Duration duration, double heightPerMinute) {
-    return duration.inMinutes * heightPerMinute;
+    return (duration.inMinutes * heightPerMinute).roundToDouble();
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
