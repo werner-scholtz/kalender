@@ -294,10 +294,15 @@ class CalendarController<T> with ChangeNotifier {
   }
 
   /// Animates to the [CalendarEvent].
+  ///
+  /// The [duration] and [curve] can be provided to customize the animation.
+  ///
+  /// * If [centerEvent] is true, the event will be centered in the viewport if the event is smaller than the viewport.
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
     Duration? duration,
     Curve? curve,
+    bool centerEvent = true,
   }) async {
     if (!hasState) return;
 
@@ -308,13 +313,41 @@ class CalendarController<T> with ChangeNotifier {
       curve: curve ?? Curves.ease,
     );
 
+    // Then scroll to the event position if applicable.
     if (_state is MultiDayViewState) {
-      (_state as MultiDayViewState).scrollController.animateTo(
-            event.start.difference(event.start.startOfDay).inMinutes *
-                heightPerMinute!.value,
-            duration: duration ?? const Duration(milliseconds: 300),
-            curve: curve ?? Curves.ease,
-          );
+      // Get the scrollController of the current view.
+      final scrollController = (_state as MultiDayViewState).scrollController;
+
+      // Calculate the event position.
+      final eventPosition =
+          event.start.difference(event.start.startOfDay).inMinutes *
+              heightPerMinute!.value;
+
+      double scrollPosition;
+
+      if (centerEvent) {
+        // Calculate the event height.
+        final eventHeight = event.duration.inMinutes * heightPerMinute!.value;
+
+        // If the event is smaller than the viewport, center the event.
+        if (eventHeight < scrollController.position.viewportDimension) {
+          // Calculate the scroll position to center the event.
+          scrollPosition = eventPosition -
+              (scrollController.position.viewportDimension - eventHeight) / 2;
+        } else {
+          scrollPosition = eventPosition;
+        }
+      } else {
+        scrollPosition = eventPosition;
+      }
+
+      // Animate to the event position.
+      scrollController.animateTo(
+        scrollPosition,
+        duration: duration ?? const Duration(milliseconds: 300),
+        curve: curve ?? Curves.ease,
+      );
+
       notifyListeners();
     }
   }
