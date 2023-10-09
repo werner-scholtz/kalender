@@ -115,20 +115,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _onEventTapped(
     CalendarEvent<Event> event,
   ) async {
-    // if (isMobile) {
-    eventController.selectedEvent == event
-        ? eventController.deselectEvent()
-        : eventController.selectEvent(event);
-    // }
+    if (isMobile) {
+      eventController.selectedEvent == event
+          ? eventController.deselectEvent()
+          : eventController.selectEvent(event);
+    }
   }
 
   Future<void> _onEventChanged(
     DateTimeRange initialDateTimeRange,
     CalendarEvent<Event> event,
   ) async {
-    // if (isMobile) {
-    eventController.deselectEvent();
-    // }
+    if (isMobile) {
+      eventController.deselectEvent();
+    }
   }
 
   Widget _tileBuilder(

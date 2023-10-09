@@ -189,12 +189,11 @@ class MultiDayPageContent<T> extends StatelessWidget {
   }
 
   double calculateTop(Duration timeBeforeStart, double heightPerMinute) {
-    return (timeBeforeStart.inMinutes * heightPerMinute).roundToDouble();
+    return (timeBeforeStart.inMinutes * heightPerMinute).floorToDouble();
   }
 
   double calculateHeight(Duration duration, double heightPerMinute) {
-    return ((duration.inSeconds / 60).roundToDouble() * heightPerMinute)
-        .roundToDouble();
+    return ((duration.inSeconds / 60) * heightPerMinute).floorToDouble();
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
