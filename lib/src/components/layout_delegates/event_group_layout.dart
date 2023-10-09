@@ -123,10 +123,10 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final childSize = layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: (size.width / numChildren).roundToDouble(),
+          width: (size.width / numChildren).floorToDouble(),
           height:
               (event.durationOnDate(startOfGroup).inMinutes * heightPerMinute)
-                  .roundToDouble(),
+                  .floorToDouble(),
         ),
       );
 
@@ -136,12 +136,13 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
     for (var id = 0; id < numChildren; id++) {
       final event = events[id];
       final dx = id * tileConstraints.maxWidth;
-      final dy = event
-              .dateTimeRangeOnDate(startOfGroup)
-              .start
-              .difference(startOfGroup)
-              .inMinutes *
-          heightPerMinute;
+      final dy = (event
+                  .dateTimeRangeOnDate(startOfGroup)
+                  .start
+                  .difference(startOfGroup)
+                  .inMinutes *
+              heightPerMinute)
+          .floorToDouble();
 
       positionChild(
         id,
