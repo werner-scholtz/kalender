@@ -14,7 +14,7 @@ class EventGroupController<T> {
     final tileGroups = <EventGroup<T>>[];
 
     if (events.length == 1) {
-      for (final date in events.first.datesSpanned) {
+      for (final date in visibleDates) {
         final eventDateTimeRange = events.first.dateTimeRangeOnDate(date);
         tileGroups.add(
           EventGroup<T>(
