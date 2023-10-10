@@ -126,7 +126,7 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
           width: (size.width / numChildren).floorToDouble(),
           height:
               (event.durationOnDate(startOfGroup).inMinutes * heightPerMinute)
-                  .floorToDouble(),
+                  .ceilToDouble(),
         ),
       );
 
@@ -142,7 +142,7 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
                   .difference(startOfGroup)
                   .inMinutes *
               heightPerMinute)
-          .floorToDouble();
+          .ceilToDouble();
 
       positionChild(
         id,

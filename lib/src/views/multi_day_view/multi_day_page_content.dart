@@ -189,7 +189,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
   }
 
   double calculateTop(Duration timeBeforeStart, double heightPerMinute) {
-    return (timeBeforeStart.inMinutes * heightPerMinute).floorToDouble();
+    return (timeBeforeStart.inMinutes * heightPerMinute).ceilToDouble();
   }
 
   double calculateHeight(Duration duration, double heightPerMinute) {

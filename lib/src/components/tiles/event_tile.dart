@@ -91,12 +91,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
         // Check if the event can be modified and if the event is being rescheduled.
         if (widget.event.canModify && !controller.isRescheduling) {
           if (useDesktopGestures) {
-            // Assign the resize buttons to use desktop gestures.
-            if (constraints.maxHeight > 24) {
-              resizeTopWidget = _resizeTopDesktopWidget();
-            }
-
             resizeBottomWidget = _resizeBottomDesktopWidget();
+            resizeTopWidget = _resizeTopDesktopWidget();
           } else if (useMobileGestures && widget.isChanging) {
             // Assign the resize buttons to use mobile gestures.
 
