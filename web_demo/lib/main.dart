@@ -83,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     const WeekConfiguration(),
     const WorkWeekConfiguration(),
+    const MultiWeekConfiguration(),
     const MonthConfiguration(),
     const ScheduleConfiguration(),
   ];
