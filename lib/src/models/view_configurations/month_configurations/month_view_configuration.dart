@@ -13,11 +13,15 @@ abstract class MonthViewConfiguration implements ViewConfiguration {
   /// The first day of the week.
   int get firstDayOfWeek;
 
-  /// Whether the events can be resized.
-  bool get enableResizing;
-
   /// The height of the multiDay tiles.
   double get multiDayTileHeight;
 
+  /// Create new events.
   bool get createMultiDayEvents;
+
+  /// Enable rescheduling of events.
+  bool get enableRescheduling;
+
+  /// Whether the events can be resized.
+  bool get enableResizing;
 }

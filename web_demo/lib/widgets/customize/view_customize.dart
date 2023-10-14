@@ -28,6 +28,26 @@ class ViewConfigurationCustomize extends StatelessWidget {
 
   List<Widget> multiDayConfig(MultiDayViewConfiguration config) {
     return [
+      EnableReschedule(
+        value: config.enableRescheduling,
+        onChanged: (value) {
+          onViewConfigChanged(
+            config.copyWith(
+              enableRescheduling: value,
+            ),
+          );
+        },
+      ),
+      EnableResize(
+        value: config.enableResizing,
+        onChanged: (value) {
+          onViewConfigChanged(
+            config.copyWith(
+              enableResizing: value,
+            ),
+          );
+        },
+      ),
       MultiDayTileHeight(
         value: config.multiDayTileHeight,
         onChanged: (value) {
@@ -105,6 +125,26 @@ class ViewConfigurationCustomize extends StatelessWidget {
 
   List<Widget> monthConfig(MonthConfiguration config) {
     return [
+      EnableReschedule(
+        value: config.enableRescheduling,
+        onChanged: (value) {
+          onViewConfigChanged(
+            config.copyWith(
+              enableRescheduling: value,
+            ),
+          );
+        },
+      ),
+      EnableResize(
+        value: config.enableResizing,
+        onChanged: (value) {
+          onViewConfigChanged(
+            config.copyWith(
+              enableResizing: value,
+            ),
+          );
+        },
+      ),
       MultiDayTileHeight(
         value: config.multiDayTileHeight,
         onChanged: (value) {

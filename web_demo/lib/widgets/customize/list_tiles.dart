@@ -331,3 +331,43 @@ class VerticalSnapRange extends StatelessWidget {
     );
   }
 }
+
+class EnableResize extends StatelessWidget {
+  const EnableResize({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final void Function(bool? value) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile.adaptive(
+      title: const Text('Enable Resize'),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+}
+
+class EnableReschedule extends StatelessWidget {
+  const EnableReschedule({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final void Function(bool? value) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile.adaptive(
+      title: const Text('Enable Reschedule'),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+}

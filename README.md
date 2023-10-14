@@ -160,6 +160,8 @@ These are the default ViewConfiguration's:
         verticalStepDuration: const Duration(minutes: 15),
         verticalSnapRange: const Duration(minutes: 15),
         newEventDuration: const Duration(minutes: 15),
+        enableRescheduling: true,
+        enableResizing: true,
       );
       ```
 
@@ -182,6 +184,8 @@ These are the default ViewConfiguration's:
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
       firstDayOfWeek: 1, 
+      enableRescheduling: true,
+      enableResizing: true,
     );
     ```
       
@@ -205,6 +209,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      enableRescheduling: true,
+      enableResizing: true,
     );
     ```
 
@@ -227,6 +233,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      enableRescheduling: true,
+      enableResizing: true,
     );
     ```
       
@@ -252,6 +260,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      enableRescheduling: true,
+      enableResizing: true,
     );
 
     ```
@@ -268,6 +278,8 @@ These are the default ViewConfiguration's:
       multiDayTileHeight: 24,
       enableResizing: true,
       createMultiDayEvents: true,
+      enableRescheduling: true,
+      enableResizing: true,
     );
     ```
       

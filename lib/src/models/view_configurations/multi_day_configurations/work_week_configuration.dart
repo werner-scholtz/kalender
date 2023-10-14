@@ -13,6 +13,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     this.timeIndicatorSnapping = true,
     this.createEvents = true,
     this.createMultiDayEvents = true,
+    this.enableResizing = true,
+    this.enableRescheduling = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
     this.name = 'Work Week',
@@ -62,6 +64,12 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final bool createMultiDayEvents;
+
+  @override
+  final bool enableRescheduling;
+
+  @override
+  final bool enableResizing;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
@@ -129,6 +137,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     bool? timeIndicatorSnapping,
     bool? createEvents,
     bool? createMultiDayEvents,
+    bool? enableRescheduling,
+    bool? enableResizing,
     // ignore: avoid_init_to_null
     int? firstDayOfWeek = null,
   }) {
@@ -146,6 +156,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name ?? this.name,
+      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
+      enableResizing: enableResizing ?? this.enableResizing,
     );
   }
 }

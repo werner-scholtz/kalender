@@ -14,6 +14,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.firstDayOfWeek = 1,
     this.createEvents = true,
     this.createMultiDayEvents = true,
+    this.enableResizing = true,
+    this.enableRescheduling = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
     this.name = 'Week',
@@ -63,6 +65,12 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final bool createMultiDayEvents;
+
+  @override
+  final bool enableRescheduling;
+
+  @override
+  final bool enableResizing;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
@@ -118,6 +126,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     int? firstDayOfWeek,
     bool? createEvents,
     bool? createMultiDayEvents,
+    bool? enableRescheduling,
+    bool? enableResizing,
   }) {
     return WeekConfiguration(
       timelineWidth: timelineWidth ?? this.timelineWidth,
@@ -135,6 +145,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name ?? this.name,
+      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
+      enableResizing: enableResizing ?? this.enableResizing,
     );
   }
 }
