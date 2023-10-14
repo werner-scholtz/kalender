@@ -15,14 +15,30 @@ class WeekNumber extends StatelessWidget {
   Widget build(BuildContext context) {
     final weekNumberStyle =
         CalendarStyleProvider.of(context).style.weekNumberStyle;
+
+    final tooltip = weekNumberStyle?.tooltip ?? 'Week Number';
+
+    final visualDensity =
+        weekNumberStyle?.visualDensity ?? VisualDensity.comfortable;
+
+    final textStyle =
+        weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
+
+    final String text;
+    if (visibleDateRange.duration > const Duration(days: 7)) {
+      text =
+          '${visibleDateRange.start.weekOfYear} - ${visibleDateRange.end.weekOfYear}';
+    } else {
+      text = visibleDateRange.start.startOfWeek.weekOfYear.toString();
+    }
+
     return IconButton.filledTonal(
-      tooltip: weekNumberStyle?.tooltip ?? 'Week Number',
+      tooltip: tooltip,
       onPressed: null,
-      visualDensity: weekNumberStyle?.visualDensity ?? VisualDensity.compact,
+      visualDensity: visualDensity,
       icon: Text(
-        visibleDateRange.start.startOfWeek.weekOfYear.toString(),
-        style: weekNumberStyle?.textStyle ??
-            Theme.of(context).textTheme.bodyMedium,
+        text,
+        style: textStyle,
       ),
     );
   }

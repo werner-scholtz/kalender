@@ -20,14 +20,6 @@ abstract class ViewConfiguration {
     required DateTime calendarStart,
   });
 
-  // /// Calculates the index of the [visibleStart]
-  // ///
-  // /// [calendarStart] is the start of the calendar.
-  // int calculateIndex(
-  //   DateTime calendarStart,
-  //   DateTime visibleStart,
-  // );
-
   /// Calculates the number of pages for the [calendarDateTimeRange].
   int calculateNumberOfPages(
     DateTimeRange calendarDateTimeRange,
