@@ -153,12 +153,10 @@ class CalendarComponents {
   }
 
   Widget _defaultTimeIndicatorBuilder(
-    List<DateTime> visibleDates,
     double heightPerMinute,
     double dayWidth,
   ) {
     return TimeIndicator(
-      visibleDates: visibleDates,
       dayWidth: dayWidth,
       heightPerMinute: heightPerMinute,
     );

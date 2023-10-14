@@ -8,11 +8,10 @@ import 'package:kalender/src/providers/calendar_style.dart';
 class TimeIndicator<T> extends StatefulWidget {
   const TimeIndicator({
     super.key,
-    required this.visibleDates,
     required this.dayWidth,
     required this.heightPerMinute,
   });
-  final List<DateTime> visibleDates;
+
   final double dayWidth;
   final double heightPerMinute;
 
@@ -55,7 +54,7 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
       children: [
         Positioned(
           top: top - (style.timeIndicatorStyle?.lineWidth ?? 1) / 2,
-          left: left,
+          left: 0,
           width: widget.dayWidth,
           child: SizedBox(
             height: style.timeIndicatorStyle?.lineWidth ?? 1,
@@ -66,7 +65,7 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
         ),
         Positioned(
           top: top,
-          left: left,
+          left: 0,
           width: 0,
           height: 0,
           child: OverflowBox(
@@ -90,10 +89,5 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
   double get top {
     final minutes = _currentDate.difference(_currentDate.startOfDay).inMinutes;
     return minutes * widget.heightPerMinute;
-  }
-
-  double get left {
-    final index = widget.visibleDates.lastIndexOf(_currentDate.startOfDay);
-    return index * widget.dayWidth;
   }
 }

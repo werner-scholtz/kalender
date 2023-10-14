@@ -41,6 +41,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
 
         final heightPerMinute =
             (scope.state as MultiDayViewState).heightPerMinute!.value;
+
         final verticalStep =
             heightPerMinute * viewConfiguration.verticalStepDuration.inMinutes;
 
@@ -139,10 +140,15 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     },
                   ),
                 if (DateTime.now().isWithin(visibleDateRange))
-                  Positioned.fill(
-                    left: viewConfiguration.daySeparatorLeftOffset,
+                  Positioned(
+                    left: left(
+                      visibleDates.indexOf(DateTime.now().startOfDay),
+                      dayWidth,
+                    ),
+                    top: 0,
+                    bottom: 0,
+                    width: dayWidth,
                     child: scope.components.timeIndicatorBuilder.call(
-                      visibleDates,
                       heightPerMinute,
                       dayWidth,
                     ),
@@ -167,8 +173,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
       (tileGroup) {
         final dayIndex = visibleDates.indexOf(tileGroup.date);
         return Positioned(
-          left: ((dayIndex * dayWidth + (dayIndex + 1)) +
-              viewConfiguration.daySeparatorLeftOffset),
+          left: left(dayIndex, dayWidth),
           width: dayWidth,
           top: calculateTop(
             tileGroup.start.difference(tileGroup.date),
@@ -186,6 +191,11 @@ class MultiDayPageContent<T> extends StatelessWidget {
         );
       },
     );
+  }
+
+  double left(int dayIndex, double dayWidth) {
+    return ((dayIndex * dayWidth + (dayIndex + 1)) +
+        viewConfiguration.daySeparatorLeftOffset);
   }
 
   double calculateTop(Duration timeBeforeStart, double heightPerMinute) {

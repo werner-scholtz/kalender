@@ -40,7 +40,6 @@ typedef WeekNumberBuilder<T extends Object?> = Widget Function(
 
 /// The [TimeIndicatorBuilder] is used to build the time indicator displayed on current day.
 typedef TimeIndicatorBuilder = Widget Function(
-  List<DateTime> visibleDates,
   double heightPerMinute,
   double dayWidth,
 );
