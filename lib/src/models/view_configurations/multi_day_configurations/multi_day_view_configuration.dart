@@ -7,11 +7,17 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// The number of days to display.
   int get numberOfDays;
 
+  /// The first day of the week.
+  int get firstDayOfWeek;
+
   /// The width of the timeline.
   double get timelineWidth;
 
-  /// The overlap of the hourLines and the timeline.
+  /// The left offset of the day separator.
   double get daySeparatorLeftOffset;
+
+  /// The height of the multiDay tiles.
+  double get multiDayTileHeight;
 
   /// The vertical step duration.
   Duration get horizontalStepDuration;
@@ -19,11 +25,14 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// The duration of a new event.
   Duration get newEventDuration;
 
-  /// Paint the week number.
-  bool get paintWeekNumber;
-
   /// The duration where the vertical drag will snap to.
   Duration get verticalSnapRange;
+
+  /// The duration of the vertical drag step.
+  Duration get verticalStepDuration;
+
+  /// Paint the week number.
+  bool get paintWeekNumber;
 
   /// Enable snapping to events.
   bool get eventSnapping;
@@ -31,20 +40,17 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// Enable snapping to the time indicator.
   bool get timeIndicatorSnapping;
 
-  /// The first day of the week.
-  int get firstDayOfWeek;
-
   /// Can create new events.
   bool get createEvents;
 
   /// Can create new multiDay events.
   bool get createMultiDayEvents;
 
-  /// The height of the multiDay tiles.
-  double get multiDayTileHeight;
+  /// Enable rescheduling of events.
+  bool get enableRescheduling;
 
-  /// The duration of the vertical drag step.
-  Duration get verticalStepDuration;
+  /// Whether the events can be resized.
+  bool get enableResizing;
 
   MultiDayViewConfiguration copyWith({
     int? numberOfDays,
@@ -60,6 +66,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? createEvents,
     bool? createMultiDayEvents,
+    bool? enableRescheduling,
+    bool? enableResizing,
     String? name,
   });
 }

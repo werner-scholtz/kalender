@@ -15,6 +15,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
     this.timeIndicatorSnapping = false,
     this.createEvents = true,
     this.createMultiDayEvents = true,
+    this.enableRescheduling = true,
+    this.enableResizing = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
     this.newEventDuration = const Duration(minutes: 15),
@@ -43,13 +45,19 @@ class DayConfiguration extends MultiDayViewConfiguration {
   final bool timeIndicatorSnapping;
 
   @override
+  final Duration newEventDuration;
+
+  @override
   final bool createEvents;
 
   @override
   final bool createMultiDayEvents;
 
   @override
-  final Duration newEventDuration;
+  final bool enableRescheduling;
+
+  @override
+  final bool enableResizing;
 
   @override
   int get firstDayOfWeek => 1;
@@ -123,6 +131,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
     bool? timeIndicatorSnapping,
     bool? createEvents,
     bool? createMultiDayEvents,
+    bool? enableRescheduling,
+    bool? enableResizing,
     // ignore: avoid_init_to_null
     int? firstDayOfWeek = null, // ignore
     // ignore: avoid_init_to_null
@@ -142,6 +152,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name ?? this.name,
+      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
+      enableResizing: enableResizing ?? this.enableResizing,
     );
   }
 }

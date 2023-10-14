@@ -15,6 +15,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     this.timeIndicatorSnapping = true,
     this.createMultiDayEvents = true,
     this.createEvents = true,
+    this.enableResizing = true,
+    this.enableRescheduling = true,
     this.verticalStepDuration = const Duration(minutes: 15),
     this.verticalSnapRange = const Duration(minutes: 15),
   });
@@ -57,6 +59,12 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   final bool createEvents;
+
+  @override
+  final bool enableRescheduling;
+
+  @override
+  final bool enableResizing;
 
   @override
   int get firstDayOfWeek => 1;
@@ -146,6 +154,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     int? firstDayOfWeek,
     bool? createEvents,
     bool? createMultiDayEvents,
+    bool? enableRescheduling,
+    bool? enableResizing,
   }) {
     return CustomMultiDayConfiguration(
       numberOfDays: numberOfDays ?? this.numberOfDays,
@@ -163,6 +173,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
       verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
       verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
       name: name ?? this.name,
+      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
+      enableResizing: enableResizing ?? this.enableResizing,
     );
   }
 }

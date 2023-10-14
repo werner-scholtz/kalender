@@ -32,6 +32,24 @@ class _EventTileState<T> extends State<EventTile<T>> {
   bool get useMobileGestures => isMobileDevice && widget.event.canModify;
   bool get useDesktopGestures => !isMobileDevice && widget.event.canModify;
 
+  bool get canResize {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableResizing;
+    } else {
+      return true;
+    }
+  }
+
+  bool get canReschedule {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableRescheduling;
+    } else {
+      return true;
+    }
+  }
+
   late DateTimeRange initialDateTimeRange;
 
   Offset cursorOffset = Offset.zero;
@@ -65,7 +83,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
         void Function(DragStartDetails details)? onPanStart;
         void Function(DragUpdateDetails details)? onPanUpdate;
         Future<void> Function(DragEndDetails details)? onPanEnd;
-        if (useDesktopGestures) {
+        if (useDesktopGestures && canReschedule) {
           onPanStart = _onPanStart;
           onPanUpdate = _onPanUpdate;
           onPanEnd = _onPanEnd;
@@ -78,7 +96,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
         Future<void> Function(LongPressEndDetails details)? onLongPressEnd;
         if (useMobileGestures &&
             !controller.isResizingBottom &&
-            !controller.isResizingTop) {
+            !controller.isResizingTop &&
+            canReschedule) {
           onLongPressStart = _onLongPressStart;
           onLongPressMoveUpdate = _onLongPressMoveUpdate;
           onLongPressEnd = _onLongPressEnd;
@@ -89,7 +108,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
         Widget? resizeBottomWidget;
 
         // Check if the event can be modified and if the event is being rescheduled.
-        if (widget.event.canModify && !controller.isRescheduling) {
+        if (widget.event.canModify && !controller.isRescheduling && canResize) {
           if (useDesktopGestures) {
             resizeBottomWidget = _resizeBottomDesktopWidget();
             resizeTopWidget = _resizeTopDesktopWidget();

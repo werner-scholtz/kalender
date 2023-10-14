@@ -6,6 +6,7 @@ class MonthConfiguration extends MonthViewConfiguration {
   const MonthConfiguration({
     this.firstDayOfWeek = 1,
     this.enableResizing = true,
+    this.enableRescheduling = true,
     this.createMultiDayEvents = true,
     this.multiDayTileHeight = 24,
   });
@@ -23,6 +24,9 @@ class MonthConfiguration extends MonthViewConfiguration {
   final int firstDayOfWeek;
 
   @override
+  final bool enableRescheduling;
+
+  @override
   final bool enableResizing;
 
   @override
@@ -34,12 +38,14 @@ class MonthConfiguration extends MonthViewConfiguration {
   MonthConfiguration copyWith({
     int? firstDayOfWeek,
     bool? enableResizing,
+    bool? enableRescheduling,
     bool? createMultiDayEvents,
     double? multiDayTileHeight,
   }) {
     return MonthConfiguration(
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       enableResizing: enableResizing ?? this.enableResizing,
+      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
       createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
       multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
     );
