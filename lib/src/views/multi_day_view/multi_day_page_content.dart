@@ -51,6 +51,8 @@ class MultiDayPageContent<T> extends StatelessWidget {
         return ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {
+            // controller.state.
+
             // Get the list of events that are visible on the tile stack.
             final visibleEvents =
                 scope.eventsController.getDayEventsFromDateRange(

@@ -76,7 +76,6 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       print('The controller is already attached to a view. detaching first.');
     }
 
-    // _controller.detach();
     widget.controller.attach(_viewState);
   }
 
@@ -91,7 +90,6 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         print('The controller is already attached to a view. detaching first.');
       }
 
-      // _controller.detach();
       widget.controller.attach(_viewState);
     }
   }
@@ -103,7 +101,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
       visibleStart: initialDate,
-    );
+    ); //
 
     final numberOfPages =
         widget.multiDayViewConfiguration.calculateNumberOfPages(

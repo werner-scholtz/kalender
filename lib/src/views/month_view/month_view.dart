@@ -59,7 +59,8 @@ class MonthView<T> extends StatefulWidget {
   State<MonthView<T>> createState() => _MonthViewState<T>();
 }
 
-class _MonthViewState<T> extends State<MonthView<T>> {
+class _MonthViewState<T> extends State<MonthView<T>>
+    with SingleTickerProviderStateMixin {
   late MonthViewState _viewState;
 
   @override
@@ -103,7 +104,7 @@ class _MonthViewState<T> extends State<MonthView<T>> {
         widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: widget.controller.dateTimeRange,
       visibleStart: initialDate,
-    );
+    ); //
 
     final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
       adjustedDateTimeRange,

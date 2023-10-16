@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
-/// The [DayConfiguration] class contains the configuration for the [SingleDayView].
+/// The [DayConfiguration] class contains the configuration for the [MultiDayView].
 ///
-/// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [SingleDayView].
-/// It also contains some configuration values that are used to calculate the layout of the [SingleDayView].
+/// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [MultiDayView].
+/// It also contains some configuration values that are used to calculate the layout of the [MultiDayView].
 class DayConfiguration extends MultiDayViewConfiguration {
   const DayConfiguration({
     this.timelineWidth = 56,
