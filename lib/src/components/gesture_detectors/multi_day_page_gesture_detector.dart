@@ -91,29 +91,38 @@ class _MultiDayPageGestureDetectorState<T>
 
   /// Handles the onTap event.
   void _onTap(DateTimeRange dateTimeRange) async {
-    // If the selected event is not null, deselect it.
-    if (controller.selectedEvent != null) {
-      controller.deselectEvent();
-      return;
-    }
-
+    // If the create events flag is false, return.
     if (!createEvents) return;
 
-    // Set the selected event to a new event.
-    scope.eventsController.selectEvent(
-      CalendarEvent<T>(
-        dateTimeRange: dateTimeRange,
-      ),
+    // Call the onEventCreate callback.
+    final newEvent = scope.functions.onEventCreate?.call(
+      dateTimeRange,
     );
 
-    // scope.eventsController.isMoving = true;
+    // If the new event is null, return.
+    if (newEvent == null) return;
 
-    // Call the onCreateEvent callback.
-    await scope.functions.onCreateEvent?.call(
-      scope.eventsController.selectedEvent!,
+    // Call the onEventCreated callback.
+    await scope.functions.onEventCreated?.call(
+      newEvent,
     );
 
-    // scope.eventsController.isMoving = false;
+    // // If the selected event is not null, deselect it.
+    // if (controller.selectedEvent != null) {
+    //   controller.deselectEvent();
+    //   return;
+    // }
+
+    // // Set the selected event to a new event.
+    // scope.eventsController.selectEvent(
+    //   CalendarEvent<T>(
+    //     dateTimeRange: dateTimeRange,
+    //   ),
+    // );
+    // // Call the onCreateEvent callback.
+    // await scope.functions.onCreateEvent?.call(
+    //   scope.eventsController.selectedEvent!,
+    // );
   }
 
   /// Handles the vertical drag start event.
@@ -123,11 +132,17 @@ class _MultiDayPageGestureDetectorState<T>
   ) {
     cursorOffset = 0;
     currentVerticalSteps = 0;
-    // scope.eventsController.isResizing = true;
+
+    // Call the onEventCreate callback.
+    final newEvent = scope.functions.onEventCreate?.call(
+      initialDateTimeRange,
+    );
+
+    // If the new event is null, return.
+    if (newEvent == null) return;
+
     scope.eventsController.selectEvent(
-      CalendarEvent<T>(
-        dateTimeRange: initialDateTimeRange,
-      ),
+      newEvent,
     );
   }
 
@@ -136,6 +151,8 @@ class _MultiDayPageGestureDetectorState<T>
     DragUpdateDetails details,
     DateTimeRange initialDateTimeRange,
   ) {
+    if (scope.eventsController.selectedEvent == null) return;
+
     cursorOffset += details.delta.dy;
 
     final verticalSteps = cursorOffset ~/ widget.verticalStep;
@@ -169,16 +186,21 @@ class _MultiDayPageGestureDetectorState<T>
 
   /// Handles the vertical drag end event.
   void _onVerticalDragEnd(DragEndDetails details) async {
+    if (scope.eventsController.selectedEvent == null) return;
+
     cursorOffset = 0;
 
     final selectedEvent = scope.eventsController.selectedEvent!;
 
-    // scope.eventsController.isResizing = false;
-    scope.eventsController.deselectEvent();
-
-    await scope.functions.onCreateEvent?.call(
+    await scope.functions.onEventCreated?.call(
       selectedEvent,
     );
+
+    // scope.eventsController.deselectEvent();
+
+    // await scope.functions.onCreateEvent?.call(
+    //   selectedEvent,
+    // );
   }
 
   ///
