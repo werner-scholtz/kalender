@@ -44,7 +44,7 @@ class CalendarEventHandlers<T> {
   ///   The event returned by this function is then modified according to the drag gesture if it is not null.
   ///   And then passed to [onEventChanged].
   ///
-  final CalendarEvent<T> Function(
+  final CalendarEvent<T>? Function(
     DateTimeRange dateTimeRange,
   )? onCreateEvent;
 
