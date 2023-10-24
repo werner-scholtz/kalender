@@ -118,6 +118,7 @@ Configure the event handlers like so.
     onEventChangeStart: (event) {
       // You can give the user some haptic feedback here.
     },
+
   ),
 )       
 ```
@@ -291,7 +292,9 @@ There are 5 events at this time that can be handled.
 
 4. **onCreateEvent**: this function is called when a new event is created by the calendar.
 
-5. **onDateTapped**: this function is called when a date on the calendar is tapped.
+5. **onEventCreated**: this function is called once all operations on the event is complete.
+
+6. **onDateTapped**: this function is called when a date on the calendar is tapped.
 
   <details><summary>Example Code</summary>
 
@@ -317,15 +320,31 @@ There are 5 events at this time that can be handled.
 
       // Once this function is complete the calendar will rebuild.
     },
-    onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
-      // The calendarEvent is a empty event and is not yet added to the list of events.
+    onCreateEvent: (DateTimeRange dateTimeRange) {
+      // The dateTimeRange is the range that the user has selected.
+
+      // If the event was created by with a "drag" gesture then
+      // the dateTimeRange assigned here will be modified by the drag gesture before
+      // the onEventCreated function is called.
+
+      // Return the new calendar event.
+      return CalendarEvent(
+        dateTimeRange: dateTimeRange,
+        eventData: Event(
+          title: 'Event 1',
+          color: Colors.blue,
+        ),
+      );
+    }
+    onEventCreated: (CalendarEvent<Event> calendarEvent) async {
+      // The calendarEvent is the new event that was created.
 
       // This is a async function, so you can do any async work here.
 
-      // If you want to add the event to the calendar 
-      eventsController.addEvent(event);
+      // add the event to the eventsController.
+      eventsController.addEvent(calendarEvent);
 
-      // Once this function completes the calendar will rebuild.
+      // Once this function is complete the calendar will rebuild.
     },
     onDateTapped: (DateTime date) {
       // The date is the date header that was tapped. see example for use case.

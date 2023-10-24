@@ -109,10 +109,29 @@ class _MyHomePageState extends State<MyHomePage> {
           eventHandlers: CalendarEventHandlers(
             onEventTapped: _onEventTapped,
             onEventChanged: _onEventChanged,
+            onCreateEvent: _onCreateEvent,
+            onEventCreated: _onEventCreated,
           ),
         ),
       ),
     );
+  }
+
+  CalendarEvent<Event> _onCreateEvent(DateTimeRange dateTimeRange) {
+    return CalendarEvent(
+      dateTimeRange: dateTimeRange,
+      eventData: Event(
+        title: 'New Event',
+      ),
+    );
+  }
+
+  Future<void> _onEventCreated(CalendarEvent<Event> event) async {
+    // Add the event to the events controller.
+    eventController.addEvent(event);
+
+    // Deselect the event.
+    eventController.deselectEvent();
   }
 
   Future<void> _onEventTapped(

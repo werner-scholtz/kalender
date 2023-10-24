@@ -8,7 +8,6 @@ class CalendarEventHandlers<T> {
   const CalendarEventHandlers({
     this.onEventChanged,
     this.onEventTapped,
-    // this.onCreateEvent,
     this.onDateTapped,
     this.onEventChangeStart,
     this.onPageChanged,
@@ -34,18 +33,23 @@ class CalendarEventHandlers<T> {
     CalendarEvent<T> event,
   )? onEventTapped;
 
-  /// The [Function] called when a new event can be created.
+  /// The [Function] called when a new event is created.
+  ///
+  /// The [dateTimeRange] is the date and time range that the user has selected.
   ///
   /// * When the user taps an empty space on the calendar.
-  /// * When the user initiates a drag event on an empty space (Desktop).
+  ///   The event returned by this function is then passed to [onEventCreated] if it is not null.
   ///
-  /// The event returned by this function is used to create a new event,
-  /// in the case of a drag event, the returned event's date time range will be modified accordingly.
+  /// * When the user initiates a drag event on an empty space (Desktop).
+  ///   The event returned by this function is then modified according to the drag gesture if it is not null.
+  ///   And then passed to [onEventChanged].
+  ///
   final CalendarEvent<T> Function(
-    DateTimeRange initialDateTimeRange,
+    DateTimeRange dateTimeRange,
   )? onCreateEvent;
 
-  /// The [Function] called once the new event has been created.
+  /// The [Function] is called once all operations on the newEvent is complete.
+  /// * Make sure to call eventController.addEvent(newEvent) to add the event to the calendar.
   ///
   /// The [Function] must return a [Future] so the UI can update on completion.
   final Future<void> Function(

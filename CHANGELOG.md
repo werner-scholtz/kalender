@@ -1,3 +1,7 @@
+## 0.1.8
+#### Breaking Changes:
+* onCreateEvent is now split into onCreateEvent and onEventCreated.
+
 ## 0.1.7
 * Fixed alignment issues.
 * Changes to layout.
