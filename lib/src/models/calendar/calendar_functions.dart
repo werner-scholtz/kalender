@@ -8,11 +8,11 @@ class CalendarEventHandlers<T> {
   const CalendarEventHandlers({
     this.onEventChanged,
     this.onEventTapped,
-    this.onCreateEvent,
+    // this.onCreateEvent,
     this.onDateTapped,
     this.onEventChangeStart,
     this.onPageChanged,
-    this.onEventCreate,
+    this.onCreateEvent,
     this.onEventCreated,
   });
 
@@ -34,17 +34,20 @@ class CalendarEventHandlers<T> {
     CalendarEvent<T> event,
   )? onEventTapped;
 
-  /// The [Function] called when an event is created.
+  /// The [Function] called when a new event can be created.
   ///
-  /// The [Function] must return a [Future] so the UI can update on completion.
-  final Future<void> Function(
-    CalendarEvent<T> newEvent,
-  )? onCreateEvent;
-
+  /// * When the user taps an empty space on the calendar.
+  /// * When the user initiates a drag event on an empty space (Desktop).
+  ///
+  /// The event returned by this function is used to create a new event,
+  /// in the case of a drag event, the returned event's date time range will be modified accordingly.
   final CalendarEvent<T> Function(
     DateTimeRange initialDateTimeRange,
-  )? onEventCreate;
+  )? onCreateEvent;
 
+  /// The [Function] called once the new event has been created.
+  ///
+  /// The [Function] must return a [Future] so the UI can update on completion.
   final Future<void> Function(
     CalendarEvent<T> newEvent,
   )? onEventCreated;
@@ -65,6 +68,7 @@ class CalendarEventHandlers<T> {
         other.onEventChanged == onEventChanged &&
         other.onEventTapped == onEventTapped &&
         other.onCreateEvent == onCreateEvent &&
+        other.onEventCreated == onEventCreated &&
         other.onDateTapped == onDateTapped;
   }
 
@@ -73,6 +77,7 @@ class CalendarEventHandlers<T> {
         onEventChanged,
         onEventTapped,
         onCreateEvent,
+        onEventCreated,
         onDateTapped,
       );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 
@@ -42,9 +41,11 @@ class _MultiDayHeaderGestureDetectorState<T>
 
   @override
   Widget build(BuildContext context) {
+    final cursor =
+        createEvents ? SystemMouseCursors.click : SystemMouseCursors.basic;
+
     return MouseRegion(
-      cursor:
-          createEvents ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      cursor: cursor,
       child: Row(
         children: [
           for (final date in widget.visibleDateRange.datesSpanned)
@@ -64,31 +65,36 @@ class _MultiDayHeaderGestureDetectorState<T>
   }
 
   void _onTap(DateTime date) async {
-    if (controller.selectedEvent != null) {
-      controller.deselectEvent();
-      return;
-    }
-
+    // If the create events flag is false, return.
     if (!createEvents) return;
 
-    final newCalendarEvent = CalendarEvent<T>(
-      dateTimeRange: DateTimeRange(start: date, end: date.endOfDay),
+    // Call the onEventCreate callback.
+    final newEvent = scope.functions.onCreateEvent?.call(
+      DateTimeRange(start: date, end: date.endOfDay),
     );
 
-    controller.selectEvent(newCalendarEvent);
+    // If the new event is null, return.
+    if (newEvent == null) return;
 
-    await functions.onCreateEvent?.call(controller.selectedEvent!);
-
-    controller.deselectEvent();
+    // Call the onEventCreated callback.
+    await scope.functions.onEventCreated?.call(
+      newEvent,
+    );
   }
 
   void _onPanStart(DragStartDetails details, DateTime date) {
     cursorOffset = Offset.zero;
     initialDateTimeRange = DateTimeRange(start: date, end: date.endOfDay);
-    final displayEvent = CalendarEvent<T>(
-      dateTimeRange: initialDateTimeRange!,
+
+    // Call the onEventCreate callback.
+    final newEvent = scope.functions.onCreateEvent?.call(
+      initialDateTimeRange!,
     );
-    controller.selectEvent(displayEvent);
+
+    // If the new event is null, return.
+    if (newEvent == null) return;
+
+    controller.selectEvent(newEvent);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -136,7 +142,12 @@ class _MultiDayHeaderGestureDetectorState<T>
   }
 
   void _onPanEnd(DragEndDetails details) async {
-    await functions.onCreateEvent?.call(controller.selectedEvent!);
-    controller.deselectEvent();
+    if (scope.eventsController.selectedEvent == null) return;
+
+    final selectedEvent = scope.eventsController.selectedEvent!;
+
+    await scope.functions.onEventCreated?.call(
+      selectedEvent,
+    );
   }
 }

@@ -95,7 +95,7 @@ class _MultiDayPageGestureDetectorState<T>
     if (!createEvents) return;
 
     // Call the onEventCreate callback.
-    final newEvent = scope.functions.onEventCreate?.call(
+    final newEvent = scope.functions.onCreateEvent?.call(
       dateTimeRange,
     );
 
@@ -134,7 +134,7 @@ class _MultiDayPageGestureDetectorState<T>
     currentVerticalSteps = 0;
 
     // Call the onEventCreate callback.
-    final newEvent = scope.functions.onEventCreate?.call(
+    final newEvent = scope.functions.onCreateEvent?.call(
       initialDateTimeRange,
     );
 
@@ -195,12 +195,6 @@ class _MultiDayPageGestureDetectorState<T>
     await scope.functions.onEventCreated?.call(
       selectedEvent,
     );
-
-    // scope.eventsController.deselectEvent();
-
-    // await scope.functions.onCreateEvent?.call(
-    //   selectedEvent,
-    // );
   }
 
   ///
