@@ -100,6 +100,10 @@ class _MultiDayHeaderGestureDetectorState<T>
   void _onPanUpdate(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
+    final selectedEvent = controller.selectedEvent;
+
+    if (selectedEvent == null) return;
+
     final horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
     final verticalSteps = widget.verticalStep != null
         ? (cursorOffset.dy / widget.verticalStep!).round()
@@ -127,14 +131,14 @@ class _MultiDayHeaderGestureDetectorState<T>
         end: initialDateTimeRange!.end,
       );
 
-      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
+      selectedEvent.dateTimeRange = newDateTimeRange;
     } else {
       final newDateTimeRange = DateTimeRange(
         start: initialDateTimeRange!.start,
         end: newEnd,
       );
 
-      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
+      selectedEvent.dateTimeRange = newDateTimeRange;
     }
 
     currentHorizontalSteps = horizontalSteps;
