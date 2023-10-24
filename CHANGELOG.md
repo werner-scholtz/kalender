@@ -1,3 +1,8 @@
+## 0.1.7
+* Fixed alignment issues.
+* Changes to layout.
+* Added options to enable/disable Resizing and Rescheduling.
+
 ## 0.1.6
 * Fixed some gesture bugs.
 * Added name parameter to pre-defined multi day configurations.
