@@ -74,7 +74,6 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
           start: startOfMonday.add(Duration(hours: Random().nextInt(5))),
           end: startOfMonday.add(Duration(hours: 6 + Random().nextInt(5))),
         ),
-        forcedHeight: 50,
         eventData: Event(
           title: 'Event ${getID()}',
           description: 'Forced Height',

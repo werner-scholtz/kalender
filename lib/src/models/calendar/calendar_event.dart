@@ -11,7 +11,6 @@ class CalendarEvent<T> with ChangeNotifier {
     required DateTimeRange dateTimeRange,
     T? eventData,
     bool? modifiable,
-    double? forcedHeight,
   }) {
     _dateTimeRange = dateTimeRange;
     _eventData = eventData;
