@@ -116,6 +116,7 @@ class CalendarEventsController<T> with ChangeNotifier {
     T? newEventData,
     DateTimeRange? newDateTimeRange,
     bool? modifiable,
+    double? forcedHeight,
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
     final index = _events.indexWhere((element) => test(element));
@@ -129,6 +130,9 @@ class CalendarEventsController<T> with ChangeNotifier {
     }
     if (modifiable != null) {
       _events[index].canModify = modifiable;
+    }
+    if (forcedHeight != null) {
+      _events[index].forcedHeight = forcedHeight;
     }
 
     notifyListeners();
