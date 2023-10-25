@@ -65,11 +65,11 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                       dayTileLayoutController: ({
                         required events,
                         required heightPerMinute,
-                        required startOfGroup,
+                        required date,
                       }) =>
                           EventGroupBasicLayoutDelegate(
                         events: events,
-                        startOfGroup: startOfGroup,
+                        date: date,
                         heightPerMinute: heightPerMinute,
                       ),
                     ),

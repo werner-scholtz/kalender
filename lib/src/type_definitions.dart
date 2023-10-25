@@ -112,7 +112,7 @@ typedef ScheduleTileBuilder<T extends Object?> = Widget Function(
 typedef EventLayoutDelegateBuilder<T extends Object?>
     = EventGroupLayoutDelegate<T> Function({
   required List<CalendarEvent<T>> events,
-  required DateTime startOfGroup,
+  required DateTime date,
   required double heightPerMinute,
 });
 

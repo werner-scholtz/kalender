@@ -16,13 +16,17 @@ class EventGroupController<T> {
     if (events.length == 1) {
       for (final date in visibleDates) {
         final eventDateTimeRange = events.first.dateTimeRangeOnDate(date);
-        tileGroups.add(
-          EventGroup<T>(
-            date: date,
-            events: [events.first],
-            dateTimeRange: eventDateTimeRange,
-          ),
-        );
+
+        if (events.first.start.isWithin(date.dayRange) ||
+            events.first.end.isWithin(date.dayRange)) {
+          tileGroups.add(
+            EventGroup<T>(
+              date: date,
+              events: [events.first],
+              dateTimeRange: eventDateTimeRange,
+            ),
+          );
+        }
       }
 
       return tileGroups;
@@ -146,7 +150,6 @@ class EventGroup<T> {
   final DateTimeRange dateTimeRange;
   DateTime get start => dateTimeRange.start;
   DateTime get end => dateTimeRange.end;
-  Duration get duration => end.difference(start);
 
   /// The [CalendarEvent]'s that are in this group.
   final List<CalendarEvent<T>> events;

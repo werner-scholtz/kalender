@@ -31,12 +31,12 @@ class CalendarLayoutDelegates<T> {
   /// The default [EventGroupLayoutDelegate] used to layout the day tiles.
   EventGroupLayoutDelegate<T> defaultDayTileLayoutController({
     required List<CalendarEvent<T>> events,
-    required DateTime startOfGroup,
+    required DateTime date,
     required double heightPerMinute,
   }) {
     return EventGroupOverlapLayoutDelegate(
       events: events,
-      startOfGroup: startOfGroup,
+      date: date,
       heightPerMinute: heightPerMinute,
     );
   }

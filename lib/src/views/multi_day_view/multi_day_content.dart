@@ -32,6 +32,69 @@ class MultiDayContent<T> extends StatelessWidget {
           ValueListenableBuilder<ScrollPhysics>(
             valueListenable: state.scrollPhysics,
             builder: (context, value, child) {
+              final hourLine = Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                height: pageHeight.roundToDouble(),
+                child: scope.components.hourLineBuilder(
+                  hourHeight,
+                ),
+              );
+
+              final pageView = Positioned.fill(
+                left: viewConfiguration.timelineWidth,
+                child: PageView.builder(
+                  // This key is used to force the page view to rebuild when the view configuration changes.
+                  key: Key(viewConfiguration.hashCode.toString()),
+                  controller: state.pageController,
+                  itemCount: state.numberOfPages,
+                  physics: value,
+                  clipBehavior: Clip.none,
+                  onPageChanged: (index) {
+                    // Calculate the new visible date range.
+                    final newVisibleDateTimeRange =
+                        viewConfiguration.calculateVisibleDateRangeForIndex(
+                      index: index,
+                      calendarStart: scope.state.adjustedDateTimeRange.start,
+                    );
+
+                    // Update the visible date range.
+                    scope.state.visibleDateTimeRange = newVisibleDateTimeRange;
+
+                    // Update the selected date.
+                    controller.selectedDate = newVisibleDateTimeRange.start;
+
+                    // Call the onPageChanged function.
+                    scope.functions.onPageChanged?.call(
+                      newVisibleDateTimeRange,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    // Calculate the visible date range for the page at the given index.
+                    final visibleDateRange =
+                        viewConfiguration.calculateVisibleDateRangeForIndex(
+                      index: index,
+                      calendarStart: scope.state.adjustedDateTimeRange.start,
+                    );
+
+                    return MultiDayPageContent<T>(
+                      viewConfiguration: viewConfiguration,
+                      visibleDateRange: visibleDateRange,
+                      controller: controller,
+                      hourHeight: hourHeight,
+                    );
+                  },
+                ),
+              );
+
+              final timeline = Positioned(
+                width: viewConfiguration.timelineWidth,
+                child: scope.components.timelineBuilder(
+                  hourHeight,
+                ),
+              );
+
               return SingleChildScrollView(
                 controller: state.scrollController,
                 physics: value,
@@ -41,68 +104,9 @@ class MultiDayContent<T> extends StatelessWidget {
                     fit: StackFit.expand,
                     clipBehavior: Clip.none,
                     children: [
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        height: pageHeight.roundToDouble(),
-                        child: scope.components.hourLineBuilder(
-                          hourHeight,
-                        ),
-                      ),
-                      Positioned.fill(
-                        left: viewConfiguration.timelineWidth,
-                        child: PageView.builder(
-                          key: Key(
-                            viewConfiguration.hashCode.toString(),
-                          ),
-                          controller: state.pageController,
-                          itemCount: state.numberOfPages,
-                          physics: value,
-                          clipBehavior: Clip.none,
-                          onPageChanged: (index) {
-                            final newVisibleDateTimeRange = viewConfiguration
-                                .calculateVisibleDateRangeForIndex(
-                              index: index,
-                              calendarStart:
-                                  scope.state.adjustedDateTimeRange.start,
-                            );
-                            // Update the visible date range.
-                            scope.state.visibleDateTimeRange =
-                                newVisibleDateTimeRange;
-
-                            // Update the selected date.
-                            controller.selectedDate =
-                                newVisibleDateTimeRange.start;
-
-                            // Call the onPageChanged function.
-                            scope.functions.onPageChanged?.call(
-                              newVisibleDateTimeRange,
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            final visibleDateRange = viewConfiguration
-                                .calculateVisibleDateRangeForIndex(
-                              index: index,
-                              calendarStart:
-                                  scope.state.adjustedDateTimeRange.start,
-                            );
-
-                            return MultiDayPageContent<T>(
-                              viewConfiguration: viewConfiguration,
-                              visibleDateRange: visibleDateRange,
-                              controller: controller,
-                              hourHeight: hourHeight,
-                            );
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        width: viewConfiguration.timelineWidth,
-                        child: scope.components.timelineBuilder(
-                          hourHeight,
-                        ),
-                      ),
+                      hourLine,
+                      pageView,
+                      timeline,
                     ],
                   ),
                 ),

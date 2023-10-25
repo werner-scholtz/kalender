@@ -30,21 +30,26 @@ class EventGroupWidget<T> extends StatelessWidget {
 
       // Check if the event is currently being moved.
       final isMoving = scope.eventsController.selectedEvent == event;
+
+      final tileType = isChanging
+          ? TileType.selected
+          : isMoving
+              ? TileType.ghost
+              : TileType.normal;
+
+      final tileConfiguration = TileConfiguration(
+        tileType: tileType,
+        drawOutline: i >= 1,
+        continuesBefore: event.start.isBefore(eventGroup.start),
+        continuesAfter: event.end.isAfter(eventGroup.end),
+      );
+
       children.add(
         LayoutId(
           id: i,
           child: EventTile(
             event: event,
-            tileConfiguration: TileConfiguration(
-              tileType: isChanging
-                  ? TileType.selected
-                  : isMoving
-                      ? TileType.ghost
-                      : TileType.normal,
-              drawOutline: i >= 1,
-              continuesBefore: event.start.isBefore(eventGroup.start),
-              continuesAfter: event.end.isAfter(eventGroup.end),
-            ),
+            tileConfiguration: tileConfiguration,
             snapData: snapData,
             isChanging: isChanging,
           ),
@@ -56,14 +61,14 @@ class EventGroupWidget<T> extends StatelessWidget {
         (scope.state as MultiDayViewState).heightPerMinute.value;
 
     scope.layoutDelegates.tileLayoutController.call(
-      startOfGroup: eventGroup.start,
+      date: eventGroup.date,
       events: eventGroup.events,
       heightPerMinute: heightPerMinute,
     );
 
     return CustomMultiChildLayout(
       delegate: scope.layoutDelegates.tileLayoutController(
-        startOfGroup: eventGroup.start,
+        date: eventGroup.date,
         events: eventGroup.events,
         heightPerMinute: heightPerMinute,
       ),

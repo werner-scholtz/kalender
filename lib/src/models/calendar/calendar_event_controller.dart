@@ -17,6 +17,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   CalendarEvent<T>? _selectedEvent;
   CalendarEvent<T>? get selectedEvent => _selectedEvent;
 
+  // List<CalendarEvent<T>>? _selectedEvents = [];
+  // List<CalendarEvent<T>>? get selectedEvents => _selectedEvents;
+
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChangingEvent => _selectedEvent != null;
 

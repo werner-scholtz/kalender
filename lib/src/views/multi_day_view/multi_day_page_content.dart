@@ -92,69 +92,86 @@ class MultiDayPageContent<T> extends StatelessWidget {
               heightPerMinute: heightPerMinute,
             );
 
+            final daySeparator = Positioned(
+              left: viewConfiguration.daySeparatorLeftOffset.toDouble(),
+              width: daySeparatorWidth,
+              top: 0,
+              bottom: 0,
+              child: scope.components.daySeparatorBuilder(
+                viewConfiguration.numberOfDays,
+                dayWidth,
+              ),
+            );
+
+            final gestureDetector = MultiDayPageGestureDetector<T>(
+              viewConfiguration: viewConfiguration,
+              visibleDates: visibleDateRange.datesSpanned,
+              heightPerMinute: heightPerMinute,
+              verticalStep: newEventVerticalStep,
+            );
+
+            final eventWidgetGroups = generateEventGroupWidgets(
+              eventGroups: eventGroups,
+              visibleDates: visibleDates,
+              dayWidth: dayWidth,
+              heightPerMinute: heightPerMinute,
+              snapData: snapData,
+            );
+
+            Widget? changingEventGroup;
+            if (selectedEvent != null) {
+              changingEventGroup = ListenableBuilder(
+                listenable: selectedEvent,
+                builder: (context, child) {
+                  final selectedEventWidgetGroups =
+                      EventGroupController<T>().generateTileGroups(
+                    visibleDates: visibleDates,
+                    events: [selectedEvent],
+                  );
+
+                  return Stack(
+                    clipBehavior: Clip.hardEdge,
+                    fit: StackFit.expand,
+                    children: [
+                      ...generateEventGroupWidgets(
+                        eventGroups: selectedEventWidgetGroups,
+                        visibleDates: visibleDates,
+                        dayWidth: dayWidth,
+                        heightPerMinute: heightPerMinute,
+                        snapData: snapData,
+                        isChanging: true,
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+
+            Widget? timeIndicator;
+            if (DateTime.now().isWithin(visibleDateRange)) {
+              timeIndicator = Positioned(
+                left: left(
+                  visibleDates.indexOf(DateTime.now().startOfDay),
+                  dayWidth,
+                ),
+                top: 0,
+                bottom: 0,
+                width: dayWidth,
+                child: scope.components.timeIndicatorBuilder.call(
+                  heightPerMinute,
+                  dayWidth,
+                ),
+              );
+            }
+
             return Stack(
               clipBehavior: Clip.hardEdge,
               children: [
-                Positioned(
-                  left: viewConfiguration.daySeparatorLeftOffset.toDouble(),
-                  width: daySeparatorWidth,
-                  top: 0,
-                  bottom: 0,
-                  child: scope.components.daySeparatorBuilder(
-                    viewConfiguration.numberOfDays,
-                    dayWidth,
-                  ),
-                ),
-                MultiDayPageGestureDetector<T>(
-                  viewConfiguration: viewConfiguration,
-                  visibleDates: visibleDateRange.datesSpanned,
-                  heightPerMinute: heightPerMinute,
-                  verticalStep: newEventVerticalStep,
-                ),
-                ...generateEventGroups(
-                  eventGroups: eventGroups,
-                  visibleDates: visibleDates,
-                  dayWidth: dayWidth,
-                  heightPerMinute: heightPerMinute,
-                  snapData: snapData,
-                ),
-                if (selectedEvent != null)
-                  ListenableBuilder(
-                    listenable: selectedEvent,
-                    builder: (context, child) {
-                      final selectedDayTileGroup =
-                          EventGroupController<T>().generateTileGroups(
-                        visibleDates: visibleDates,
-                        events: [selectedEvent],
-                      );
-                      return Stack(
-                        children: [
-                          ...generateEventGroups(
-                            eventGroups: selectedDayTileGroup,
-                            visibleDates: visibleDates,
-                            dayWidth: dayWidth,
-                            heightPerMinute: heightPerMinute,
-                            snapData: snapData,
-                            isChanging: true,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                if (DateTime.now().isWithin(visibleDateRange))
-                  Positioned(
-                    left: left(
-                      visibleDates.indexOf(DateTime.now().startOfDay),
-                      dayWidth,
-                    ),
-                    top: 0,
-                    bottom: 0,
-                    width: dayWidth,
-                    child: scope.components.timeIndicatorBuilder.call(
-                      heightPerMinute,
-                      dayWidth,
-                    ),
-                  ),
+                daySeparator,
+                gestureDetector,
+                ...eventWidgetGroups,
+                if (changingEventGroup != null) changingEventGroup,
+                if (timeIndicator != null) timeIndicator,
               ],
             );
           },
@@ -163,7 +180,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> generateEventGroups({
+  Iterable<Widget> generateEventGroupWidgets({
     required Iterable<EventGroup<T>> eventGroups,
     required List<DateTime> visibleDates,
     required double dayWidth,
@@ -177,14 +194,8 @@ class MultiDayPageContent<T> extends StatelessWidget {
         return Positioned(
           left: left(dayIndex, dayWidth),
           width: dayWidth,
-          top: calculateTop(
-            tileGroup.start.difference(tileGroup.date),
-            heightPerMinute,
-          ),
-          height: calculateHeight(
-            tileGroup.duration,
-            heightPerMinute,
-          ),
+          top: 0,
+          bottom: 0,
           child: EventGroupWidget<T>(
             eventGroup: tileGroup,
             snapData: snapData,
@@ -198,14 +209,6 @@ class MultiDayPageContent<T> extends StatelessWidget {
   double left(int dayIndex, double dayWidth) {
     return ((dayIndex * dayWidth + (dayIndex + 1)) +
         viewConfiguration.daySeparatorLeftOffset);
-  }
-
-  double calculateTop(Duration timeBeforeStart, double heightPerMinute) {
-    return (timeBeforeStart.inMinutes * heightPerMinute).ceilToDouble();
-  }
-
-  double calculateHeight(Duration duration, double heightPerMinute) {
-    return ((duration.inSeconds / 60) * heightPerMinute).floorToDouble();
   }
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>

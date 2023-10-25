@@ -11,10 +11,12 @@ class CalendarEvent<T> with ChangeNotifier {
     required DateTimeRange dateTimeRange,
     T? eventData,
     bool? modifiable,
+    double? forcedHeight,
   }) {
     _dateTimeRange = dateTimeRange;
     _eventData = eventData;
     _canModify = modifiable ?? true;
+    _forcedHeight = forcedHeight;
   }
 
   /// The [DateTimeRange] of the [CalendarEvent].
@@ -66,6 +68,16 @@ class CalendarEvent<T> with ChangeNotifier {
   bool get canModify => _canModify;
   set canModify(bool newModifiable) {
     _canModify = newModifiable;
+    notifyListeners();
+  }
+
+  /// The forced height of the [CalendarEvent] in pixels.
+  ///
+  /// This is useful if you want to force the height of the [CalendarEvent].
+  late double? _forcedHeight;
+  double? get forcedHeight => _forcedHeight;
+  set forcedHeight(double? newHeight) {
+    _forcedHeight = newHeight;
     notifyListeners();
   }
 
