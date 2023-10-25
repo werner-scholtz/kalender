@@ -137,10 +137,14 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final event = events[id];
 
       // Calculate the height of the tile.
-      final childHeight = calculateHeight(
+      var childHeight = calculateHeight(
         event.durationOnDate(date),
         heightPerMinute,
       );
+
+      if (event.forcedHeight != null) {
+        childHeight = event.forcedHeight!;
+      }
 
       final childSize = layoutChild(
         id,
