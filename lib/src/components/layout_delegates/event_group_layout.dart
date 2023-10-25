@@ -74,14 +74,10 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final event = events[id];
 
       // Calculate the height of the tile.
-      var childHeight = calculateHeight(
+      final childHeight = calculateHeight(
         event.durationOnDate(date),
         heightPerMinute,
       );
-
-      if (event.forcedHeight != null) {
-        childHeight = event.forcedHeight!;
-      }
 
       // Layout the tile.
       final childSize = layoutChild(
@@ -137,14 +133,10 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final event = events[id];
 
       // Calculate the height of the tile.
-      var childHeight = calculateHeight(
+      final childHeight = calculateHeight(
         event.durationOnDate(date),
         heightPerMinute,
       );
-
-      if (event.forcedHeight != null) {
-        childHeight = event.forcedHeight!;
-      }
 
       final childSize = layoutChild(
         id,

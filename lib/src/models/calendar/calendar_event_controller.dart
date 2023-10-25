@@ -131,9 +131,6 @@ class CalendarEventsController<T> with ChangeNotifier {
     if (modifiable != null) {
       _events[index].canModify = modifiable;
     }
-    if (forcedHeight != null) {
-      _events[index].forcedHeight = forcedHeight;
-    }
 
     notifyListeners();
   }
