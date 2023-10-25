@@ -12,7 +12,8 @@ class CalendarEventsController<T> with ChangeNotifier {
   final List<CalendarEvent<T>> _events = <CalendarEvent<T>>[];
   List<CalendarEvent<T>> get events => _events;
 
-  /// The moving [CalendarEvent].
+  /// The [CalendarEvent] that is selected.
+  /// TODO: Make this a list of events.
   CalendarEvent<T>? _selectedEvent;
   CalendarEvent<T>? get selectedEvent => _selectedEvent;
 

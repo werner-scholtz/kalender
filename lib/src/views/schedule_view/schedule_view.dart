@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -10,7 +10,6 @@ import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dar
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/schedule_view/schedule_header.dart';
 import 'package:kalender/src/views/schedule_view/schedule_content.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScheduleView<T> extends StatefulWidget {
   const ScheduleView({
@@ -54,38 +53,39 @@ class ScheduleView<T> extends StatefulWidget {
 
 class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   late ScheduleViewState<T> _viewState;
-
-  /// The ItemScrollController of the current view.
-  final itemScrollController = ItemScrollController();
-
-  /// The ItemPositionsListener of the current view.
-  final itemPositionsListener = ItemPositionsListener.create();
+  late ScheduleViewConfiguration _scheduleViewConfiguration;
 
   @override
   void initState() {
     super.initState();
 
-    _initializeViewState();
+    _scheduleViewConfiguration = widget.scheduleViewConfiguration;
+    // _initializeViewState();
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
+
+    widget.controller.attach(_scheduleViewConfiguration);
     // _controller.detach();
-    widget.controller.attach(_viewState);
+    // widget.controller.attach(_viewState);
   }
 
   @override
   void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_viewState.viewConfiguration != widget.scheduleViewConfiguration) {
-      _initializeViewState();
+    if (_scheduleViewConfiguration != oldWidget.scheduleViewConfiguration) {
+      _scheduleViewConfiguration = widget.scheduleViewConfiguration;
+      // _initializeViewState();
 
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
+
+      widget.controller.attach(_scheduleViewConfiguration);
       // _controller.detach();
-      widget.controller.attach(_viewState);
+      // widget.controller.attach(_viewState);
     }
   }
 
@@ -93,30 +93,6 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   void deactivate() {
     widget.controller.detach();
     super.deactivate();
-  }
-
-  void _initializeViewState() {
-    final initialDate = widget.controller.selectedDate;
-
-    final adjustedDateTimeRange =
-        widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: initialDate,
-    );
-
-    final visibleDateRange =
-        widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
-      initialDate,
-      // widget.controller.selectedDate,
-    );
-
-    _viewState = ScheduleViewState<T>(
-      viewConfiguration: widget.scheduleViewConfiguration,
-      adjustedDateTimeRange: adjustedDateTimeRange,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      itemScrollController: itemScrollController,
-      itemPositionsListener: itemPositionsListener,
-    );
   }
 
   @override
@@ -159,4 +135,28 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
       ),
     );
   }
+
+  // void _initializeViewState() {
+  //   _scheduleViewConfiguration = widget.scheduleViewConfiguration;
+  //   final initialDate = widget.controller.selectedDate;
+
+  //   final adjustedDateTimeRange =
+  //       widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
+  //     dateTimeRange: widget.controller.dateTimeRange,
+  //     visibleStart: initialDate,
+  //   );
+
+  //   final visibleDateRange =
+  //       widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
+  //     initialDate,
+  //   );
+
+  //   _viewState = ScheduleViewState<T>(
+  //     viewConfiguration: _scheduleViewConfiguration,
+  //     adjustedDateTimeRange: adjustedDateTimeRange,
+  //     visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
+  //     itemScrollController: itemScrollController,
+  //     itemPositionsListener: itemPositionsListener,
+  //   );
+  // }
 }

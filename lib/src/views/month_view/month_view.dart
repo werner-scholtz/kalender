@@ -7,7 +7,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/view_state/month_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -62,32 +62,35 @@ class MonthView<T> extends StatefulWidget {
 class _MonthViewState<T> extends State<MonthView<T>>
     with SingleTickerProviderStateMixin {
   late MonthViewState _viewState;
+  late MonthViewConfiguration _monthViewConfiguration;
 
   @override
   void initState() {
     super.initState();
 
-    _initializeViewState();
+    _monthViewConfiguration = widget.monthViewConfiguration;
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
+
+    _viewState =
+        widget.controller.attach(_monthViewConfiguration) as MonthViewState;
   }
 
   @override
   void didUpdateWidget(covariant MonthView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_viewState.viewConfiguration != widget.monthViewConfiguration) {
-      _initializeViewState();
+    if (_monthViewConfiguration != widget.monthViewConfiguration) {
+      _monthViewConfiguration = widget.monthViewConfiguration;
 
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
 
-      widget.controller.attach(_viewState);
+      _viewState =
+          widget.controller.attach(_monthViewConfiguration) as MonthViewState;
     }
   }
 
@@ -95,42 +98,6 @@ class _MonthViewState<T> extends State<MonthView<T>>
   void deactivate() {
     widget.controller.detach();
     super.deactivate();
-  }
-
-  void _initializeViewState() {
-    final initialDate = widget.controller.selectedDate;
-
-    final adjustedDateTimeRange =
-        widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: initialDate,
-    ); //
-
-    final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
-      adjustedDateTimeRange,
-    );
-
-    final initialPage = widget.monthViewConfiguration.calculateDateIndex(
-      initialDate,
-      adjustedDateTimeRange.start,
-    );
-
-    final pageController = PageController(
-      initialPage: initialPage,
-    );
-
-    final visibleDateRange =
-        widget.monthViewConfiguration.calculateVisibleDateTimeRange(
-      initialDate,
-    );
-
-    _viewState = MonthViewState(
-      viewConfiguration: widget.monthViewConfiguration,
-      pageController: pageController,
-      adjustedDateTimeRange: adjustedDateTimeRange,
-      numberOfPages: numberOfPages,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-    );
   }
 
   @override
@@ -161,4 +128,41 @@ class _MonthViewState<T> extends State<MonthView<T>>
       ),
     );
   }
+
+  //   void _initializeViewState() {
+  //   _monthViewConfiguration = widget.monthViewConfiguration;
+  //   final initialDate = widget.controller.selectedDate;
+
+  //   final adjustedDateTimeRange =
+  //       widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
+  //     dateTimeRange: widget.controller.dateTimeRange,
+  //     visibleStart: initialDate,
+  //   ); //
+
+  //   final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
+  //     adjustedDateTimeRange,
+  //   );
+
+  //   final initialPage = widget.monthViewConfiguration.calculateDateIndex(
+  //     initialDate,
+  //     adjustedDateTimeRange.start,
+  //   );
+
+  //   final pageController = PageController(
+  //     initialPage: initialPage,
+  //   );
+
+  //   final visibleDateRange =
+  //       widget.monthViewConfiguration.calculateVisibleDateTimeRange(
+  //     initialDate,
+  //   );
+
+  //   _viewState = MonthViewState(
+  //     viewConfiguration: _monthViewConfiguration,
+  //     pageController: pageController,
+  //     adjustedDateTimeRange: adjustedDateTimeRange,
+  //     numberOfPages: numberOfPages,
+  //     visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
+  //   );
+  // }
 }

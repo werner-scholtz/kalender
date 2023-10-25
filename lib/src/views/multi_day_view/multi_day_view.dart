@@ -6,7 +6,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -65,93 +65,41 @@ class MultiDayView<T> extends StatefulWidget {
 
 class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late MultiDayViewState _viewState;
+  late MultiDayViewConfiguration _multiDayViewConfiguration;
 
   @override
   void initState() {
     super.initState();
 
-    _initializeViewState();
+    _multiDayViewConfiguration = widget.multiDayViewConfiguration;
+    _viewState = widget.controller.attach(_multiDayViewConfiguration)
+        as MultiDayViewState;
 
     if (kDebugMode) {
       print('The controller is already attached to a view. detaching first.');
     }
-
-    widget.controller.attach(_viewState);
   }
 
   @override
   void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_viewState.viewConfiguration != widget.multiDayViewConfiguration) {
-      _initializeViewState();
+    if (_multiDayViewConfiguration != widget.multiDayViewConfiguration) {
+      _multiDayViewConfiguration = widget.multiDayViewConfiguration;
+
+      _viewState = widget.controller.attach(_multiDayViewConfiguration)!
+          as MultiDayViewState;
 
       if (kDebugMode) {
         print('The controller is already attached to a view. detaching first.');
       }
-
-      widget.controller.attach(_viewState);
     }
-  }
-
-  void _initializeViewState() {
-    final initialDate = widget.controller.selectedDate;
-
-    final adjustedDateTimeRange =
-        widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: initialDate,
-    ); //
-
-    final numberOfPages =
-        widget.multiDayViewConfiguration.calculateNumberOfPages(
-      adjustedDateTimeRange,
-    );
-
-    final initialPage = widget.multiDayViewConfiguration.calculateDateIndex(
-      initialDate,
-      adjustedDateTimeRange.start,
-    );
-
-    final pageController = PageController(
-      initialPage: initialPage,
-    );
-
-    final visibleDateRange =
-        widget.multiDayViewConfiguration.calculateVisibleDateTimeRange(
-      initialDate,
-    );
-
-    double? heightPerMinute;
-    if (widget.controller.previousState is MultiDayViewState) {
-      heightPerMinute = (widget.controller.previousState as MultiDayViewState)
-          .heightPerMinute
-          ?.value;
-    }
-    if (widget.controller.state is MultiDayViewState) {
-      heightPerMinute =
-          (widget.controller.state as MultiDayViewState).heightPerMinute?.value;
-    }
-
-    var scrollController = ScrollController(keepScrollOffset: true);
-    final previousState = widget.controller.previousState;
-    if (previousState is MultiDayViewState) {
-      scrollController = previousState.scrollController;
-    }
-
-    _viewState = MultiDayViewState(
-      viewConfiguration: widget.multiDayViewConfiguration,
-      pageController: pageController,
-      adjustedDateTimeRange: adjustedDateTimeRange,
-      numberOfPages: numberOfPages,
-      scrollController: scrollController,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
-    );
   }
 
   @override
   void deactivate() {
+    widget.controller.scrollController
+        ?.removeListener(updateLastKnownScrollPosition);
     widget.controller.detach();
     super.deactivate();
   }
@@ -188,4 +136,60 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       ),
     );
   }
+
+  void updateLastKnownScrollPosition() {
+    widget.controller.lastKnowScrollOffset =
+        widget.controller.scrollController?.offset;
+  }
+
+  // void _initializeViewState() {
+  //   _multiDayViewConfiguration = widget.multiDayViewConfiguration;
+  //   final initialDate = widget.controller.selectedDate;
+
+  //   final adjustedDateTimeRange =
+  //       widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
+  //     dateTimeRange: widget.controller.dateTimeRange,
+  //     visibleStart: initialDate,
+  //   ); //
+
+  //   final numberOfPages =
+  //       widget.multiDayViewConfiguration.calculateNumberOfPages(
+  //     adjustedDateTimeRange,
+  //   );
+
+  //   final initialPage = widget.multiDayViewConfiguration.calculateDateIndex(
+  //     initialDate,
+  //     adjustedDateTimeRange.start,
+  //   );
+
+  //   final pageController = PageController(
+  //     initialPage: initialPage,
+  //   );
+
+  //   final visibleDateRange =
+  //       widget.multiDayViewConfiguration.calculateVisibleDateTimeRange(
+  //     initialDate,
+  //   );
+
+  //   final heightPerMinute = widget.controller.heightPerMinute?.value ??
+  //       widget.controller.previousState?.heightPerMinute?.value;
+
+  //   var scrollController = ScrollController(keepScrollOffset: true);
+  //   final previousState = widget.controller.previousState;
+  //   if (previousState is MultiDayViewState) {
+  //     scrollController = previousState.scrollController;
+  //   }
+
+  //   scrollController.addListener(updateLastKnownScrollPosition);
+
+  //   // _viewState = MultiDayViewState(
+  //   //   viewConfiguration: _multiDayViewConfiguration,
+  //   //   pageController: pageController,
+  //   //   adjustedDateTimeRange: adjustedDateTimeRange,
+  //   //   numberOfPages: numberOfPages,
+  //   //   scrollController: scrollController,
+  //   //   visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
+  //   //   heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
+  //   // );
+  // }
 }

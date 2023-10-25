@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
 
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/general/schedule_date_tile/schedule_date_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/schedule_group.dart';
 import 'package:kalender/src/models/view_configurations/schedule_configurations/schedule_view_configuration.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
