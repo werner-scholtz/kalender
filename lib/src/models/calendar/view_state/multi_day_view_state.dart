@@ -46,10 +46,14 @@ class MultiDayViewState extends ViewState {
       selectedDate,
     );
 
-    var scrollController = ScrollController(keepScrollOffset: true);
-    if (previousState is MultiDayViewState) {
-      scrollController = previousState.scrollController;
-    }
+    final scrollController = ScrollController(
+      keepScrollOffset: true,
+      initialScrollOffset: previousState?.lastKnowScrollOffset ?? 0.0,
+    );
+
+    scrollController.addListener(() {
+      previousState?.lastKnowScrollOffset = scrollController.offset;
+    });
 
     return MultiDayViewState(
       visibleDateTimeRange: ValueNotifier(visibleDateRange),
@@ -76,6 +80,7 @@ class MultiDayViewState extends ViewState {
 
   /// The scrollController of the current view.
   final ScrollController scrollController;
+  double lastKnowScrollOffset = 0.0;
 
   /// The height per minute of the current view.
   final ValueNotifier<double> heightPerMinute;
