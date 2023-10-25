@@ -30,17 +30,6 @@ class CalendarController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// The last know scroll offset of the view.
-  double _lastKnowScrollOffset = 0.0;
-  double get lastKnowScrollOffset => _lastKnowScrollOffset;
-  set lastKnowScrollOffset(double? value) {
-    if (value == null) return;
-    _lastKnowScrollOffset = value;
-  }
-
-  /// The last know height per minute of the view.
-  double lastKnowHeightPerMinute = 0.7;
-
   /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
@@ -206,7 +195,6 @@ class CalendarController<T> with ChangeNotifier {
   void adjustHeightPerMinute(double heightPerMinute) {
     if (!hasState) return;
     _state?.adjustHeightPerMinute(heightPerMinute);
-    lastKnowHeightPerMinute = heightPerMinute;
     notifyListeners();
   }
 

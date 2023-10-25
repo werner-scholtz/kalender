@@ -98,8 +98,6 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
 
   @override
   void deactivate() {
-    widget.controller.scrollController
-        ?.removeListener(updateLastKnownScrollPosition);
     widget.controller.detach();
     super.deactivate();
   }
@@ -135,11 +133,6 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
         ),
       ),
     );
-  }
-
-  void updateLastKnownScrollPosition() {
-    widget.controller.lastKnowScrollOffset =
-        widget.controller.scrollController?.offset;
   }
 
   // void _initializeViewState() {
