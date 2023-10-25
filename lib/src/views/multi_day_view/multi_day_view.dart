@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
@@ -29,7 +28,7 @@ class MultiDayView<T> extends StatefulWidget {
     this.style,
     this.multiDayViewConfiguration = const WeekConfiguration(),
     this.functions,
-    this.layoutControllers,
+    this.layoutDelegates,
   });
 
   /// The [CalendarController] used to control the view.
@@ -51,7 +50,7 @@ class MultiDayView<T> extends StatefulWidget {
   final CalendarEventHandlers<T>? functions;
 
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
-  final CalendarLayoutDelegates<T>? layoutControllers;
+  final CalendarLayoutDelegates<T>? layoutDelegates;
 
   /// The [TileBuilder] used to build event tiles.
   final TileBuilder<T> tileBuilder;
@@ -72,12 +71,9 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
     super.initState();
 
     _multiDayViewConfiguration = widget.multiDayViewConfiguration;
+
     _viewState = widget.controller.attach(_multiDayViewConfiguration)
         as MultiDayViewState;
-
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
   }
 
   @override
@@ -89,10 +85,6 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
 
       _viewState = widget.controller.attach(_multiDayViewConfiguration)!
           as MultiDayViewState;
-
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
     }
   }
 
@@ -116,8 +108,7 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
           multiDayTileBuilder: widget.multiDayTileBuilder,
         ),
         platformData: PlatformData(),
-        layoutDelegates:
-            widget.layoutControllers ?? CalendarLayoutDelegates<T>(),
+        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
         child: Column(
           children: <Widget>[
             MultiDayHeader<T>(
@@ -134,55 +125,4 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
       ),
     );
   }
-
-  // void _initializeViewState() {
-  //   _multiDayViewConfiguration = widget.multiDayViewConfiguration;
-  //   final initialDate = widget.controller.selectedDate;
-
-  //   final adjustedDateTimeRange =
-  //       widget.multiDayViewConfiguration.calculateAdjustedDateTimeRange(
-  //     dateTimeRange: widget.controller.dateTimeRange,
-  //     visibleStart: initialDate,
-  //   ); //
-
-  //   final numberOfPages =
-  //       widget.multiDayViewConfiguration.calculateNumberOfPages(
-  //     adjustedDateTimeRange,
-  //   );
-
-  //   final initialPage = widget.multiDayViewConfiguration.calculateDateIndex(
-  //     initialDate,
-  //     adjustedDateTimeRange.start,
-  //   );
-
-  //   final pageController = PageController(
-  //     initialPage: initialPage,
-  //   );
-
-  //   final visibleDateRange =
-  //       widget.multiDayViewConfiguration.calculateVisibleDateTimeRange(
-  //     initialDate,
-  //   );
-
-  //   final heightPerMinute = widget.controller.heightPerMinute?.value ??
-  //       widget.controller.previousState?.heightPerMinute?.value;
-
-  //   var scrollController = ScrollController(keepScrollOffset: true);
-  //   final previousState = widget.controller.previousState;
-  //   if (previousState is MultiDayViewState) {
-  //     scrollController = previousState.scrollController;
-  //   }
-
-  //   scrollController.addListener(updateLastKnownScrollPosition);
-
-  //   // _viewState = MultiDayViewState(
-  //   //   viewConfiguration: _multiDayViewConfiguration,
-  //   //   pageController: pageController,
-  //   //   adjustedDateTimeRange: adjustedDateTimeRange,
-  //   //   numberOfPages: numberOfPages,
-  //   //   scrollController: scrollController,
-  //   //   visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-  //   //   heightPerMinute: ValueNotifier<double>(heightPerMinute ?? 0.7),
-  //   // );
-  // }
 }

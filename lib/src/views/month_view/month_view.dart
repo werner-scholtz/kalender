@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 
@@ -28,7 +27,7 @@ class MonthView<T> extends StatefulWidget {
     this.components,
     this.style,
     this.functions,
-    this.layoutControllers,
+    this.layoutDelegates,
   });
 
   /// The [CalendarController] used to control the view.
@@ -50,7 +49,7 @@ class MonthView<T> extends StatefulWidget {
   final CalendarEventHandlers<T>? functions;
 
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
-  final CalendarLayoutDelegates<T>? layoutControllers;
+  final CalendarLayoutDelegates<T>? layoutDelegates;
 
   /// The [MonthTileBuilder] used to build month event tiles.
   final MultiDayTileBuilder<T> multiDayTileBuilder;
@@ -70,10 +69,6 @@ class _MonthViewState<T> extends State<MonthView<T>>
 
     _monthViewConfiguration = widget.monthViewConfiguration;
 
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
-
     _viewState =
         widget.controller.attach(_monthViewConfiguration) as MonthViewState;
   }
@@ -84,10 +79,6 @@ class _MonthViewState<T> extends State<MonthView<T>>
 
     if (_monthViewConfiguration != widget.monthViewConfiguration) {
       _monthViewConfiguration = widget.monthViewConfiguration;
-
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
 
       _viewState =
           widget.controller.attach(_monthViewConfiguration) as MonthViewState;
@@ -113,7 +104,7 @@ class _MonthViewState<T> extends State<MonthView<T>>
           multiDayTileBuilder: widget.multiDayTileBuilder,
         ),
         platformData: PlatformData(),
-        layoutDelegates: widget.layoutControllers ?? CalendarLayoutDelegates(),
+        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates(),
         child: Column(
           children: <Widget>[
             MonthViewHeader<T>(
@@ -128,41 +119,4 @@ class _MonthViewState<T> extends State<MonthView<T>>
       ),
     );
   }
-
-  //   void _initializeViewState() {
-  //   _monthViewConfiguration = widget.monthViewConfiguration;
-  //   final initialDate = widget.controller.selectedDate;
-
-  //   final adjustedDateTimeRange =
-  //       widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
-  //     dateTimeRange: widget.controller.dateTimeRange,
-  //     visibleStart: initialDate,
-  //   ); //
-
-  //   final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
-  //     adjustedDateTimeRange,
-  //   );
-
-  //   final initialPage = widget.monthViewConfiguration.calculateDateIndex(
-  //     initialDate,
-  //     adjustedDateTimeRange.start,
-  //   );
-
-  //   final pageController = PageController(
-  //     initialPage: initialPage,
-  //   );
-
-  //   final visibleDateRange =
-  //       widget.monthViewConfiguration.calculateVisibleDateTimeRange(
-  //     initialDate,
-  //   );
-
-  //   _viewState = MonthViewState(
-  //     viewConfiguration: _monthViewConfiguration,
-  //     pageController: pageController,
-  //     adjustedDateTimeRange: adjustedDateTimeRange,
-  //     numberOfPages: numberOfPages,
-  //     visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-  //   );
-  // }
 }

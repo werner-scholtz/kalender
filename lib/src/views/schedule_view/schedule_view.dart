@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
@@ -60,15 +59,8 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
     super.initState();
 
     _scheduleViewConfiguration = widget.scheduleViewConfiguration;
-    // _initializeViewState();
-
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
 
     widget.controller.attach(_scheduleViewConfiguration);
-    // _controller.detach();
-    // widget.controller.attach(_viewState);
   }
 
   @override
@@ -77,15 +69,8 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
 
     if (_scheduleViewConfiguration != oldWidget.scheduleViewConfiguration) {
       _scheduleViewConfiguration = widget.scheduleViewConfiguration;
-      // _initializeViewState();
-
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
 
       widget.controller.attach(_scheduleViewConfiguration);
-      // _controller.detach();
-      // widget.controller.attach(_viewState);
     }
   }
 
@@ -135,28 +120,4 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
       ),
     );
   }
-
-  // void _initializeViewState() {
-  //   _scheduleViewConfiguration = widget.scheduleViewConfiguration;
-  //   final initialDate = widget.controller.selectedDate;
-
-  //   final adjustedDateTimeRange =
-  //       widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
-  //     dateTimeRange: widget.controller.dateTimeRange,
-  //     visibleStart: initialDate,
-  //   );
-
-  //   final visibleDateRange =
-  //       widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
-  //     initialDate,
-  //   );
-
-  //   _viewState = ScheduleViewState<T>(
-  //     viewConfiguration: _scheduleViewConfiguration,
-  //     adjustedDateTimeRange: adjustedDateTimeRange,
-  //     visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-  //     itemScrollController: itemScrollController,
-  //     itemPositionsListener: itemPositionsListener,
-  //   );
-  // }
 }

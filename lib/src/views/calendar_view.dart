@@ -230,7 +230,7 @@ class CalendarView<T> extends StatelessWidget {
         multiDayViewConfiguration:
             viewConfiguration as MultiDayViewConfiguration,
         style: style,
-        layoutControllers: layoutDelegates,
+        layoutDelegates: layoutDelegates,
       );
     }
 
@@ -243,7 +243,7 @@ class CalendarView<T> extends StatelessWidget {
         functions: eventHandlers,
         monthViewConfiguration: viewConfiguration as MonthViewConfiguration,
         style: style,
-        layoutControllers: layoutDelegates,
+        layoutDelegates: layoutDelegates,
       );
     }
 
