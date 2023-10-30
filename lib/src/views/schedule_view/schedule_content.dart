@@ -19,7 +19,7 @@ class ScheduleContent<T> extends StatefulWidget {
 
   final CalendarController<T> controller;
   final ScheduleViewConfiguration viewConfiguration;
-  final ScheduleViewState<T> viewState;
+  final ScheduleViewState viewState;
 
   @override
   State<ScheduleContent<T>> createState() => _ScheduleContentState<T>();
@@ -41,7 +41,7 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ScheduleGroup<T>>>(
+    return ValueListenableBuilder<List<ScheduleGroup>>(
       valueListenable: widget.viewState.scheduleGroupsNotifier,
       builder: (context, value, child) {
         return ScrollConfiguration(

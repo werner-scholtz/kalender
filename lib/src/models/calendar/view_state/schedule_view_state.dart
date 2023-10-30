@@ -8,7 +8,7 @@ import 'package:kalender/src/models/view_configurations/schedule_configurations/
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 /// The viewState for the [ScheduleView].
-class ScheduleViewState<T> extends ViewState {
+class ScheduleViewState extends ViewState {
   ScheduleViewState({
     required super.visibleDateTimeRange,
     required this.adjustedDateTimeRange,
@@ -32,7 +32,7 @@ class ScheduleViewState<T> extends ViewState {
       selectedDate,
     );
 
-    return ScheduleViewState<T>(
+    return ScheduleViewState(
       viewConfiguration: viewConfiguration,
       adjustedDateTimeRange: adjustedDateTimeRange,
       visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
@@ -55,12 +55,11 @@ class ScheduleViewState<T> extends ViewState {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
-  final ValueNotifier<List<ScheduleGroup<T>>> _scheduleGroups =
-      ValueNotifier([]);
-  ValueNotifier<List<ScheduleGroup<T>>> get scheduleGroupsNotifier =>
+  final ValueNotifier<List<ScheduleGroup>> _scheduleGroups = ValueNotifier([]);
+  ValueNotifier<List<ScheduleGroup>> get scheduleGroupsNotifier =>
       _scheduleGroups;
-  List<ScheduleGroup<T>> get scheduleGroups => _scheduleGroups.value;
-  set scheduleGroups(List<ScheduleGroup<T>> value) {
+  List<ScheduleGroup> get scheduleGroups => _scheduleGroups.value;
+  set scheduleGroups(List<ScheduleGroup> value) {
     _scheduleGroups.value = value;
   }
 

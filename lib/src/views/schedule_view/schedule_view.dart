@@ -51,7 +51,7 @@ class ScheduleView<T> extends StatefulWidget {
 }
 
 class _ScheduleViewState<T> extends State<ScheduleView<T>> {
-  late ScheduleViewState<T> _viewState;
+  late ScheduleViewState _viewState;
   late ScheduleViewConfiguration _scheduleViewConfiguration;
 
   @override
@@ -60,7 +60,8 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
 
     _scheduleViewConfiguration = widget.scheduleViewConfiguration;
 
-    widget.controller.attach(_scheduleViewConfiguration);
+    _viewState = widget.controller.attach(_scheduleViewConfiguration)
+        as ScheduleViewState;
   }
 
   @override
@@ -70,7 +71,8 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
     if (_scheduleViewConfiguration != oldWidget.scheduleViewConfiguration) {
       _scheduleViewConfiguration = widget.scheduleViewConfiguration;
 
-      widget.controller.attach(_scheduleViewConfiguration);
+      _viewState = widget.controller.attach(_scheduleViewConfiguration)
+          as ScheduleViewState;
     }
   }
 
