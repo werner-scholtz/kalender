@@ -116,6 +116,8 @@ typedef EventLayoutDelegateBuilder<T extends Object?>
   required List<CalendarEvent<T>> events,
   required DateTime date,
   required double heightPerMinute,
+  required int startHour,
+  required int endHour,
 });
 
 /// The [MultiDayLayoutController] is used to calculate the layout of the tiles displayed on a day.

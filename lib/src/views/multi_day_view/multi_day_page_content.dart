@@ -118,9 +118,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
               snapData: snapData,
             );
 
-            Widget? changingEventGroup;
+            Widget? changingEventGroups;
             if (selectedEvent != null) {
-              changingEventGroup = ListenableBuilder(
+              changingEventGroups = ListenableBuilder(
                 listenable: selectedEvent,
                 builder: (context, child) {
                   final selectedEventWidgetGroups =
@@ -170,7 +170,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 daySeparator,
                 gestureDetector,
                 ...eventWidgetGroups,
-                if (changingEventGroup != null) changingEventGroup,
+                if (changingEventGroups != null) changingEventGroups,
                 if (timeIndicator != null) timeIndicator,
               ],
             );

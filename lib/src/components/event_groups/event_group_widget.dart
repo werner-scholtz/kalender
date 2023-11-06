@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/tiles/event_tile.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
@@ -60,17 +61,19 @@ class EventGroupWidget<T> extends StatelessWidget {
     final heightPerMinute =
         (scope.state as MultiDayViewState).heightPerMinute.value;
 
-    scope.layoutDelegates.tileLayoutController.call(
-      date: eventGroup.date,
-      events: eventGroup.events,
-      heightPerMinute: heightPerMinute,
-    );
+    final startHour =
+        (scope.state.viewConfiguration as MultiDayViewConfiguration).startHour;
+
+    final endHour =
+        (scope.state.viewConfiguration as MultiDayViewConfiguration).endHour;
 
     return CustomMultiChildLayout(
-      delegate: scope.layoutDelegates.tileLayoutController(
+      delegate: scope.layoutDelegates.tileLayoutDelegate.call(
         date: eventGroup.date,
         events: eventGroup.events,
         heightPerMinute: heightPerMinute,
+        startHour: startHour,
+        endHour: endHour,
       ),
       children: children,
     );

@@ -62,15 +62,19 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 if (value) {
                   widget.onCalendarLayoutChange(
                     CalendarLayoutDelegates<Event>(
-                      dayTileLayoutController: ({
+                      tileLayoutDelegate: ({
                         required events,
                         required heightPerMinute,
                         required date,
+                        required startHour,
+                        required endHour,
                       }) =>
                           EventGroupBasicLayoutDelegate(
                         events: events,
                         date: date,
                         heightPerMinute: heightPerMinute,
+                        startHour: startHour,
+                        endHour: endHour,
                       ),
                     ),
                   );

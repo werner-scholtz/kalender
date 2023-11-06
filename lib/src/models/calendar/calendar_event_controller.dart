@@ -138,24 +138,30 @@ class CalendarEventsController<T> with ChangeNotifier {
   }
 
   /// Reschedules the [_selectedEvent] by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEvent(
     Duration duration,
-    TimeOfDay start,
-    TimeOfDay end,
+    int start,
+    int end,
   ) {}
 
   /// Reschedules the [_selectedEvent]'s start by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEventStart(
     Duration duration,
-    TimeOfDay start,
-    TimeOfDay end,
+    int start,
+    int end,
   ) {}
 
   /// Reschedules the [_selectedEvent]'s end by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEventEnd(
     Duration duration,
-    TimeOfDay start,
-    TimeOfDay end,
+    int start,
+    int end,
   ) {}
 
   /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.

@@ -9,10 +9,10 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 ///
 /// [heightPerMinute] is the height of a minute in the [EventGroupWidget].
 ///
-/// [date] is the start of the day/
+/// [date] is the start of the day.
 /// * this is used to calculate the offset of the [CalendarEvent] from the start of the day.
 ///
-///  _________ The start of the day
+///  _________ The start of the day ()
 /// |       ↑
 /// |       | this can be calculated using
 /// |       | (event.dateTimeRangeOnDate(startOfGroup).start.difference(startOfGroup).inMinutes * heightPerMinute)
@@ -35,24 +35,54 @@ abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
     required this.events,
     required this.date,
     required this.heightPerMinute,
+    required this.startHour,
+    required this.endHour,
   });
 
   final DateTime date;
   final double heightPerMinute;
   final List<CalendarEvent<T>> events;
+  final int startHour;
+  final int endHour;
 
   @override
   bool shouldRelayout(covariant EventGroupLayoutDelegate oldDelegate) {
     return oldDelegate.events != events;
   }
 
-  double calculateTop(Duration timeBeforeStart, double heightPerMinute) {
+  double calculateYPosition(Duration timeBeforeStart, double heightPerMinute) {
     return (timeBeforeStart.inMinutes * heightPerMinute).ceilToDouble();
   }
 
   double calculateHeight(Duration duration, double heightPerMinute) {
     return ((duration.inSeconds / 60) * heightPerMinute).floorToDouble();
   }
+
+  /// The y position of the start hour.
+  double get startHourPosition => calculateYPosition(
+        Duration(hours: startHour),
+        heightPerMinute,
+      );
+
+  /// The y position of the end hour.
+  double get endHourPosition => calculateYPosition(
+        Duration(hours: endHour),
+        heightPerMinute,
+      );
+
+  late DateTime startTime = DateTime(
+    date.year,
+    date.month,
+    date.day,
+    startHour,
+  );
+
+  late DateTime endTime = DateTime(
+    date.year,
+    date.month,
+    date.day,
+    endHour,
+  );
 }
 
 /// A [EventGroupLayoutDelegate] that lays out the tiles on top of each other.
@@ -61,26 +91,54 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
     required super.events,
     required super.date,
     required super.heightPerMinute,
+    required super.startHour,
+    required super.endHour,
   });
 
   @override
   void performLayout(Size size) {
+    final startDy = startHourPosition;
+    final endDy = endHourPosition;
+
     final numChildren = events.length;
     final tileWidth = size.width;
 
-    final tileSizes = <Object, Size>{};
     for (var i = 0; i < numChildren; i++) {
       final id = i;
       final event = events[id];
 
+      // Calculate width of the child.
+      final childWidth = ((id * tileWidth) / 5);
+
+      // Calculate the top offset of the tile.
+      final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
+      final start =
+          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
+
+      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
+      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
+
+      final timeBeforeStart = eventStartOnDate.difference(date);
+
+      // Clamp the y position to the start and end hour.
+      final dy = calculateYPosition(
+        timeBeforeStart,
+        heightPerMinute,
+      ).clamp(startDy, endDy);
+
       // Calculate the height of the tile.
-      final childHeight = calculateHeight(
-        event.durationOnDate(date),
+      var childHeight = calculateHeight(
+        end.difference(start),
         heightPerMinute,
       );
 
+      // if the child height is less than 0, make it invisible.
+      if (childHeight < 0) {
+        childHeight = 0.0001;
+      }
+
       // Layout the tile.
-      final childSize = layoutChild(
+      layoutChild(
         id,
         BoxConstraints.tightFor(
           width: (tileWidth - ((i * tileWidth) / 5)).floorToDouble(),
@@ -88,22 +146,9 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
         ),
       );
 
-      // tileSizes[id] = childSize;
-      tileSizes[id] = BoxConstraints.tight(size).constrain(childSize);
-    }
-
-    for (var id = 0; id < numChildren; id++) {
-      final event = events[id];
-      final dx = 0.0 + ((id * tileWidth) / 5);
-
-      // Calculate the top offset of the tile.
-      final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
-      final timeBeforeStart = eventStartOnDate.difference(date);
-      final dy = calculateTop(timeBeforeStart, heightPerMinute);
-
       positionChild(
         id,
-        Offset(dx, dy),
+        Offset(childWidth, dy),
       );
     }
   }
@@ -115,10 +160,15 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
     required super.events,
     required super.date,
     required super.heightPerMinute,
+    required super.startHour,
+    required super.endHour,
   });
 
   @override
   void performLayout(Size size) {
+    final startDy = startHourPosition;
+    final endDy = endHourPosition;
+
     final numChildren = events.length;
 
     final tileConstraints = BoxConstraints.expand(
@@ -126,37 +176,47 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       height: size.height,
     );
 
-    final tileSizes = <Object, Size>{};
-
     for (var i = 0; i < numChildren; i++) {
       final id = i;
       final event = events[id];
 
-      // Calculate the height of the tile.
-      final childHeight = calculateHeight(
-        event.durationOnDate(date),
-        heightPerMinute,
-      );
-
-      final childSize = layoutChild(
-        id,
-        BoxConstraints.tightFor(
-          width: (size.width / numChildren).floorToDouble(),
-          height: childHeight,
-        ),
-      );
-
-      tileSizes[id] = BoxConstraints.tight(size).constrain(childSize);
-    }
-
-    for (var id = 0; id < numChildren; id++) {
-      final event = events[id];
+      final childWidth = (size.width / numChildren).floorToDouble();
       final dx = id * tileConstraints.maxWidth;
 
       // Calculate the top offset of the tile.
       final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
+      final start =
+          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
+
+      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
+      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
+
       final timeBeforeStart = eventStartOnDate.difference(date);
-      final dy = calculateTop(timeBeforeStart, heightPerMinute);
+
+      // Clamp the y position to the start and end hour.
+      final dy = calculateYPosition(
+        timeBeforeStart,
+        heightPerMinute,
+      ).clamp(startDy, endDy);
+
+      // Calculate the height of the tile.
+      var childHeight = calculateHeight(
+        end.difference(start),
+        heightPerMinute,
+      );
+
+      // if the child height is less than 0, make it invisible.
+      if (childHeight < 0) {
+        childHeight = 0.0001;
+      }
+
+      layoutChild(
+        id,
+        BoxConstraints.tightFor(
+          width: childWidth,
+          height: childHeight,
+        ),
+      );
 
       positionChild(
         id,

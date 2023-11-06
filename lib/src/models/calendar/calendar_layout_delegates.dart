@@ -5,39 +5,43 @@ import 'package:kalender/src/type_definitions.dart';
 /// The [CalendarLayoutDelegates] class contains layout controllers used by the calendar view.
 class CalendarLayoutDelegates<T> {
   CalendarLayoutDelegates({
-    EventLayoutDelegateBuilder<T>? dayTileLayoutController,
-    MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutController,
-    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
+    EventLayoutDelegateBuilder<T>? tileLayoutDelegate,
+    MultiDayEventLayoutDelegateBuilder<T>? multiDayTileLayoutDelegate,
+    MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutDelegate,
   }) {
-    this.tileLayoutController =
-        dayTileLayoutController ?? defaultDayTileLayoutController;
+    this.tileLayoutDelegate =
+        tileLayoutDelegate ?? defaultDayTileLayoutController;
 
-    this.multiDayTileLayoutController =
-        multiDayTileLayoutController ?? defaultMultiDayTileLayoutController;
+    this.multiDayTileLayoutDelegate =
+        multiDayTileLayoutDelegate ?? defaultMultiDayTileLayoutController;
 
-    this.monthTileLayoutController =
-        monthTileLayoutController ?? defaultMonthTileLayoutController;
+    this.monthTileLayoutDelegate =
+        monthTileLayoutDelegate ?? defaultMonthTileLayoutController;
   }
 
-  /// The [DayLayoutController] used to layout the day tiles.
-  late EventLayoutDelegateBuilder<T> tileLayoutController;
+  ///
+  late EventLayoutDelegateBuilder<T> tileLayoutDelegate;
 
-  /// The [MultiDayLayoutController] used to layout the multi day tiles.
-  late MultiDayEventLayoutDelegateBuilder<T> multiDayTileLayoutController;
+  ///
+  late MultiDayEventLayoutDelegateBuilder<T> multiDayTileLayoutDelegate;
 
-  /// The [MonthLayoutController] used to layout the month tiles.
-  late MultiDayEventLayoutDelegateBuilder<T> monthTileLayoutController;
+  ///
+  late MultiDayEventLayoutDelegateBuilder<T> monthTileLayoutDelegate;
 
   /// The default [EventGroupLayoutDelegate] used to layout the day tiles.
   EventGroupLayoutDelegate<T> defaultDayTileLayoutController({
     required List<CalendarEvent<T>> events,
     required DateTime date,
     required double heightPerMinute,
+    required int startHour,
+    required int endHour,
   }) {
     return EventGroupOverlapLayoutDelegate(
       events: events,
       date: date,
       heightPerMinute: heightPerMinute,
+      startHour: startHour,
+      endHour: endHour,
     );
   }
 
@@ -70,16 +74,16 @@ class CalendarLayoutDelegates<T> {
   @override
   operator ==(Object other) {
     return other is CalendarLayoutDelegates<T> &&
-        other.tileLayoutController == tileLayoutController &&
-        other.multiDayTileLayoutController == multiDayTileLayoutController &&
-        other.monthTileLayoutController == monthTileLayoutController;
+        other.tileLayoutDelegate == tileLayoutDelegate &&
+        other.multiDayTileLayoutDelegate == multiDayTileLayoutDelegate &&
+        other.monthTileLayoutDelegate == monthTileLayoutDelegate;
   }
 
   @override
   int get hashCode => Object.hash(
-        tileLayoutController,
-        multiDayTileLayoutController,
-        monthTileLayoutController,
+        tileLayoutDelegate,
+        multiDayTileLayoutDelegate,
+        monthTileLayoutDelegate,
       );
 
   CalendarLayoutDelegates<T> copyWith({
@@ -88,9 +92,9 @@ class CalendarLayoutDelegates<T> {
     MultiDayEventLayoutDelegateBuilder<T>? monthTileLayoutController,
   }) {
     return CalendarLayoutDelegates<T>(
-      dayTileLayoutController: dayTileLayoutController,
-      multiDayTileLayoutController: multiDayTileLayoutController,
-      monthTileLayoutController: monthTileLayoutController,
+      tileLayoutDelegate: dayTileLayoutController,
+      multiDayTileLayoutDelegate: multiDayTileLayoutController,
+      monthTileLayoutDelegate: monthTileLayoutController,
     );
   }
 }

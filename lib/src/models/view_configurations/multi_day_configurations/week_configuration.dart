@@ -4,18 +4,6 @@ import 'package:kalender/src/models/view_configurations/multi_day_configurations
 
 class WeekConfiguration extends MultiDayViewConfiguration {
   WeekConfiguration({
-    // this.timelineWidth = 56,
-    // this.daySeparatorLeftOffset = 8,
-    // this.multiDayTileHeight = 24,
-    // this.newEventDuration = const Duration(minutes: 15),
-    // this.paintWeekNumber = true,
-    // this.eventSnapping = true,
-    // this.timeIndicatorSnapping = true,
-    // this.firstDayOfWeek = 1,
-    // this.createEvents = true,
-    // this.createMultiDayEvents = true,
-    // this.verticalStepDuration = const Duration(minutes: 15),
-    // this.verticalSnapRange = const Duration(minutes: 15),
     this.name = 'Week',
     super.timelineWidth = 56,
     super.daySeparatorLeftOffset = 8,
@@ -35,6 +23,9 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final String name;
+
+  @override
+  int get numberOfDays => 7;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {

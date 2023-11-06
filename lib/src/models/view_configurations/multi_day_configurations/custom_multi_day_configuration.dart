@@ -18,18 +18,6 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     super.verticalSnapRange = const Duration(minutes: 15),
     super.horizontalStepDuration = const Duration(days: 1),
     super.newEventDuration = const Duration(minutes: 15),
-    // this.numberOfDays = 3,
-    // this.timelineWidth = 56,
-    // this.daySeparatorLeftOffset = 8,
-    // this.multiDayTileHeight = 24,
-    // this.newEventDuration = const Duration(minutes: 15),
-    // this.paintWeekNumber = true,
-    // this.eventSnapping = true,
-    // this.timeIndicatorSnapping = true,
-    // this.createMultiDayEvents = true,
-    // this.createEvents = true,
-    // this.verticalStepDuration = const Duration(minutes: 15),
-    // this.verticalSnapRange = const Duration(minutes: 15),
   });
 
   @override

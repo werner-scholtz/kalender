@@ -5,7 +5,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 /// The [DayConfiguration] class contains the configuration for the [MultiDayView].
 ///
 /// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [MultiDayView].
-/// It also contains some configuration values that are used to calculate the layout of the [MultiDayView].
+/// It also contains some configuration values that are used to layout of the [MultiDayView].
 class DayConfiguration extends MultiDayViewConfiguration {
   DayConfiguration({
     this.name = 'Day',
@@ -21,16 +21,22 @@ class DayConfiguration extends MultiDayViewConfiguration {
     super.horizontalStepDuration = const Duration(days: 1),
     super.newEventDuration = const Duration(minutes: 15),
   }) {
-    // The number of days is always 1 for the [DayConfiguration].
     super.numberOfDays = 1;
-    // The first day of the week is always Monday for the [DayConfiguration].
     super.firstDayOfWeek = 1;
-    // The [DayConfiguration] does not paint the week number.
     super.paintWeekNumber = false;
   }
 
   @override
   final String name;
+
+  @override
+  int get numberOfDays => 1;
+
+  @override
+  int get firstDayOfWeek => 1;
+
+  @override
+  bool get paintWeekNumber => false;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(

@@ -18,9 +18,14 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     required Duration verticalStepDuration,
     required Duration verticalSnapRange,
     int startHour = 0,
-    int endHour = 23,
+    int endHour = 24,
   }) {
     _numberOfDays = numberOfDays ?? 1;
+    assert(
+      _numberOfDays >= 1,
+      'Number of days must be greater than 0',
+    );
+
     _timelineWidth = timelineWidth;
     _daySeparatorLeftOffset = daySeparatorLeftOffset;
     _horizontalStepDuration = horizontalStepDuration;
@@ -35,17 +40,33 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _firstDayOfWeek = firstDayOfWeek ?? 1;
     _paintWeekNumber = paintWeekNumber ?? false;
+
+    assert(
+      startHour >= 0 && startHour <= 23,
+      'Start hour must be between 0 and 22',
+    );
     _startHour = startHour;
+
+    assert(
+      endHour >= 1 && endHour <= 24,
+      'End hour must be between 1 and 24',
+    );
     _endHour = endHour;
 
-    assert(startHour >= 0 && startHour <= 22);
-    assert(endHour >= 1 && endHour <= 23);
+    assert(
+      startHour < endHour,
+      'Start hour must be before end hour',
+    );
   }
 
   /// The number of days to display.
   late int _numberOfDays;
   int get numberOfDays => _numberOfDays;
   set numberOfDays(int value) {
+    assert(
+      value >= 1,
+      'Number of days must be greater than 0',
+    );
     _numberOfDays = value;
     notifyListeners();
   }
@@ -157,6 +178,14 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   late int _startHour;
   int get startHour => _startHour;
   set startHour(int value) {
+    assert(
+      startHour >= 0 && startHour <= 23,
+      'Start hour must be between 0 and 22',
+    );
+    assert(
+      value < _endHour,
+      'Start hour must be before end hour',
+    );
     _startHour = value;
     notifyListeners();
   }
@@ -164,7 +193,18 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   late int _endHour;
   int get endHour => _endHour;
   set endHour(int value) {
+    assert(
+      startHour >= 0 && startHour <= 23,
+      'Start hour must be between 0 and 22',
+    );
+    assert(
+      value > _startHour,
+      'End hour must be greater than start hour',
+    );
+
     _endHour = value;
     notifyListeners();
   }
+
+  bool get customStartEndHour => _startHour != 0 && _endHour != 24;
 }

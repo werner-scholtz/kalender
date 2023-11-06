@@ -4,17 +4,6 @@ import 'package:kalender/src/models/view_configurations/multi_day_configurations
 
 class WorkWeekConfiguration extends MultiDayViewConfiguration {
   WorkWeekConfiguration({
-    // this.timelineWidth = 56,
-    // this.daySeparatorLeftOffset = 8,
-    // this.multiDayTileHeight = 24,
-    // this.newEventDuration = const Duration(minutes: 15),
-    // this.paintWeekNumber = true,
-    // this.eventSnapping = true,
-    // this.timeIndicatorSnapping = true,
-    // this.createEvents = true,
-    // this.createMultiDayEvents = true,
-    // this.verticalStepDuration = const Duration(minutes: 15),
-    // this.verticalSnapRange = const Duration(minutes: 15),
     this.name = 'Work Week',
     super.timelineWidth = 56,
     super.daySeparatorLeftOffset = 8,
@@ -34,6 +23,9 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   final String name;
+
+  @override
+  int get numberOfDays => 5;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {

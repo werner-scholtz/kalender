@@ -19,11 +19,19 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
     super.horizontalStepDuration = const Duration(days: 1),
     super.newEventDuration = const Duration(minutes: 15),
   }) {
+    _numberOfWeeks = numberOfWeeks;
     super.numberOfDays = numberOfWeeks * 7;
   }
 
   @override
   final String name;
+
+  late int _numberOfWeeks;
+  int get numberOfWeeks => _numberOfWeeks;
+  set numberOfWeeks(int value) {
+    _numberOfWeeks = value;
+    super.numberOfDays = value * 7;
+  }
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
