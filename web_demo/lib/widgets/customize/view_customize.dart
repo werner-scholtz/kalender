@@ -6,11 +6,9 @@ class ViewConfigurationCustomize extends StatelessWidget {
   const ViewConfigurationCustomize({
     super.key,
     required this.currentConfiguration,
-    required this.onViewConfigChanged,
   });
 
   final ViewConfiguration currentConfiguration;
-  final Function(ViewConfiguration newConfig) onViewConfigChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +74,18 @@ class ViewConfigurationCustomize extends StatelessWidget {
         verticalSnapRange: config.verticalSnapRange,
         onChanged: (value) {
           config.verticalSnapRange = value;
+        },
+      ),
+      VisibleHourStart(
+        hour: config.startHour,
+        onChanged: (hour) {
+          config.startHour = hour;
+        },
+      ),
+      VisibleHourEnd(
+        hour: config.endHour,
+        onChanged: (hour) {
+          config.endHour = hour;
         },
       ),
     ];

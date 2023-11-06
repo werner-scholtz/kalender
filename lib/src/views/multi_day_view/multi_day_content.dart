@@ -27,6 +27,10 @@ class MultiDayContent<T> extends StatelessWidget {
         final hourHeight = heightPerMinute * minutesAnHour;
         final pageHeight = hourHeight * hoursADay;
 
+        // The height of the content after clipping.
+        // The +1 is to show the last hour line.
+        final clippedHeight = (viewConfiguration.endHour * hourHeight) + 2;
+
         return scope.components.calendarZoomDetector(
           controller,
           ValueListenableBuilder<ScrollPhysics>(
@@ -89,9 +93,13 @@ class MultiDayContent<T> extends StatelessWidget {
               );
 
               final timeline = Positioned(
+                top: 0,
+                height: pageHeight.roundToDouble(),
                 width: viewConfiguration.timelineWidth,
                 child: scope.components.timelineBuilder(
                   hourHeight,
+                  viewConfiguration.startHour,
+                  viewConfiguration.endHour,
                 ),
               );
 
@@ -99,14 +107,27 @@ class MultiDayContent<T> extends StatelessWidget {
                 controller: state.scrollController,
                 physics: value,
                 child: SizedBox(
-                  height: pageHeight,
+                  height: clippedHeight,
                   child: Stack(
-                    fit: StackFit.expand,
-                    clipBehavior: Clip.none,
                     children: [
-                      hourLine,
-                      pageView,
-                      timeline,
+                      Positioned(
+                        top: -viewConfiguration.startHour * hourHeight,
+                        left: 0,
+                        right: 0,
+                        child: ClipRect(
+                          child: SizedBox(
+                            height: clippedHeight,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                hourLine,
+                                pageView,
+                                timeline,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

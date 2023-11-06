@@ -31,6 +31,8 @@ typedef DaySeparatorBuilder<T extends Object?> = Widget Function(
 /// The [TimelineBuilder] is used to build the timeline displayed on the left side of the calendar.
 typedef TimelineBuilder<T extends Object?> = Widget Function(
   double hourHeight,
+  int startHour,
+  int endHour,
 );
 
 /// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.

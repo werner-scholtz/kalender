@@ -7,13 +7,41 @@ class Timeline extends StatelessWidget {
   const Timeline({
     super.key,
     required this.hourHeight,
+    required this.startHour,
+    required this.endHour,
   });
 
   final double hourHeight;
+  final int startHour;
+  final int endHour;
 
   @override
   Widget build(BuildContext context) {
     final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
+
+    final timeline = Stack(
+      fit: StackFit.expand,
+      clipBehavior: Clip.hardEdge,
+      children: [
+        for (int i = 0; i <= hoursADay; i++)
+          Positioned(
+            left: 0,
+            right: 0,
+            height: hourHeight,
+            top: (i * hourHeight),
+            child: i == startHour - 1 || i == endHour - 1
+                ? const SizedBox()
+                : Center(
+                    child: TimeText(
+                      timeOfDay: TimeOfDay(hour: i + 1, minute: 0),
+                      textStyle: timelineStyle?.textStyle,
+                      use24HourFormat: timelineStyle?.use24HourFormat ??
+                          MediaQuery.of(context).alwaysUse24HourFormat,
+                    ),
+                  ),
+          ),
+      ],
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -21,23 +49,7 @@ class Timeline extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            for (int i = 1; i < hoursADay; i++)
-              SizedBox(
-                height: hourHeight,
-                child: Center(
-                  child: TimeText(
-                    timeOfDay: TimeOfDay(hour: i, minute: 0),
-                    textStyle: timelineStyle?.textStyle,
-                    use24HourFormat: timelineStyle?.use24HourFormat ??
-                        MediaQuery.of(context).alwaysUse24HourFormat,
-                  ),
-                ),
-              ),
-          ],
-        ),
+        child: timeline,
       ),
     );
   }

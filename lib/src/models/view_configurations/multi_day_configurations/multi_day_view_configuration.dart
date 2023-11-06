@@ -17,6 +17,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     required double multiDayTileHeight,
     required Duration verticalStepDuration,
     required Duration verticalSnapRange,
+    int startHour = 0,
+    int endHour = 23,
   }) {
     _numberOfDays = numberOfDays ?? 1;
     _timelineWidth = timelineWidth;
@@ -33,6 +35,11 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _firstDayOfWeek = firstDayOfWeek ?? 1;
     _paintWeekNumber = paintWeekNumber ?? false;
+    _startHour = startHour;
+    _endHour = endHour;
+
+    assert(startHour >= 0 && startHour <= 22);
+    assert(endHour >= 1 && endHour <= 23);
   }
 
   /// The number of days to display.
@@ -144,6 +151,20 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   Duration get verticalStepDuration => _verticalStepDuration;
   set verticalStepDuration(Duration value) {
     _verticalStepDuration = value;
+    notifyListeners();
+  }
+
+  late int _startHour;
+  int get startHour => _startHour;
+  set startHour(int value) {
+    _startHour = value;
+    notifyListeners();
+  }
+
+  late int _endHour;
+  int get endHour => _endHour;
+  set endHour(int value) {
+    _endHour = value;
     notifyListeners();
   }
 }

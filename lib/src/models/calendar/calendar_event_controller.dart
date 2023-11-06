@@ -96,6 +96,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Removes a list of [CalendarEvent]s from the list of [CalendarEvent]s.
   ///
   /// The events will be removed where [test] returns true.
+  ///
   void removeWhere(bool Function(CalendarEvent<T> element) test) {
     _events.removeWhere(test);
     _events.sort((a, b) => a.start.compareTo(b.start));
@@ -112,6 +113,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Updates an [CalendarEvent] in the list of [CalendarEvent]s.
   ///
   /// The event where [test] returns true will be updated.
+  ///
   void updateEvent({
     T? newEventData,
     DateTimeRange? newDateTimeRange,
@@ -135,8 +137,31 @@ class CalendarEventsController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  /// Reschedules the [_selectedEvent] by the given [duration].
+  void rescheduleSelectedEvent(
+    Duration duration,
+    TimeOfDay start,
+    TimeOfDay end,
+  ) {}
+
+  /// Reschedules the [_selectedEvent]'s start by the given [duration].
+  void rescheduleSelectedEventStart(
+    Duration duration,
+    TimeOfDay start,
+    TimeOfDay end,
+  ) {}
+
+  /// Reschedules the [_selectedEvent]'s end by the given [duration].
+  void rescheduleSelectedEventEnd(
+    Duration duration,
+    TimeOfDay start,
+    TimeOfDay end,
+  ) {}
+
+  /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.
+  ///
   /// * This excludes [CalendarEvent]s that are displayed on single days.
+  ///
   List<CalendarEvent<T>> getMultiDayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
@@ -154,8 +179,10 @@ class CalendarEventsController<T> with ChangeNotifier {
         .toList();
   }
 
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.
+  ///
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
+  ///
   Iterable<CalendarEvent<T>> getEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
@@ -166,6 +193,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   }
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  ///
+  /// * This does not exclude any [CalendarEvent]s.
+  ///
   Iterable<CalendarEvent<T>> getDayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
