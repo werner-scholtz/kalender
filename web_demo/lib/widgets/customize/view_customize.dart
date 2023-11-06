@@ -38,34 +38,18 @@ class ViewConfigurationCustomize extends StatelessWidget {
         value: config.multiDayTileHeight,
         onChanged: (value) {
           config.multiDayTileHeight = value;
-          // onViewConfigChanged(
-
-          //     // config.copyWith(
-          //     //   multiDayTileHeight: value,
-          //     // ),
-          //     );
         },
       ),
       HourLineTimelineOverlap(
         value: config.daySeparatorLeftOffset,
         onChanged: (value) {
           config.daySeparatorLeftOffset = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     daySeparatorLeftOffset: value,
-          //   ),
-          // );
         },
       ),
       TimelineWidth(
         value: config.timelineWidth,
         onChanged: (value) {
           config.timelineWidth = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     timelineWidth: value,
-          //   ),
-          // );
         },
       ),
       if (config is CustomMultiDayConfiguration)
@@ -73,11 +57,6 @@ class ViewConfigurationCustomize extends StatelessWidget {
           value: config.numberOfDays,
           onChanged: (value) {
             config.numberOfDays = value;
-            // onViewConfigChanged(
-            //   config.copyWith(
-            //     numberOfDays: value,
-            //   ),
-            // );
           },
         ),
       if (config is WeekConfiguration)
@@ -85,33 +64,18 @@ class ViewConfigurationCustomize extends StatelessWidget {
           value: config.firstDayOfWeek,
           onChanged: (value) {
             config.firstDayOfWeek = value;
-            // onViewConfigChanged(
-            //   config.copyWith(
-            //     firstDayOfWeek: value,
-            //   ),
-            // );
           },
         ),
       VerticalStepDuration(
         verticalStepDuration: config.verticalStepDuration,
         onChanged: (value) {
           config.verticalStepDuration = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     verticalStepDuration: value,
-          //   ),
-          // );
         },
       ),
       VerticalSnapRange(
         verticalSnapRange: config.verticalSnapRange,
         onChanged: (value) {
           config.verticalSnapRange = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     verticalSnapRange: value,
-          //   ),
-          // );
         },
       ),
     ];
@@ -123,22 +87,12 @@ class ViewConfigurationCustomize extends StatelessWidget {
         value: config.multiDayTileHeight,
         onChanged: (value) {
           config.multiDayTileHeight = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     multiDayTileHeight: value,
-          //   ),
-          // );
         },
       ),
       FirstDayOfWeek(
         value: config.firstDayOfWeek,
         onChanged: (value) {
           config.firstDayOfWeek = value;
-          // onViewConfigChanged(
-          //   config.copyWith(
-          //     firstDayOfWeek: value,
-          //   ),
-          // );
         },
       ),
     ];
