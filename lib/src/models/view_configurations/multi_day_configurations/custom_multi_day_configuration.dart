@@ -3,66 +3,37 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
 class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
-  const CustomMultiDayConfiguration({
+  CustomMultiDayConfiguration({
     required this.name,
-    this.numberOfDays = 3,
-    this.timelineWidth = 56,
-    this.daySeparatorLeftOffset = 8,
-    this.multiDayTileHeight = 24,
-    this.newEventDuration = const Duration(minutes: 15),
-    this.paintWeekNumber = true,
-    this.eventSnapping = true,
-    this.timeIndicatorSnapping = true,
-    this.createMultiDayEvents = true,
-    this.createEvents = true,
-    this.verticalStepDuration = const Duration(minutes: 15),
-    this.verticalSnapRange = const Duration(minutes: 15),
+    super.numberOfDays = 3,
+    super.timelineWidth = 56,
+    super.daySeparatorLeftOffset = 8,
+    super.multiDayTileHeight = 24,
+    super.paintWeekNumber = true,
+    super.eventSnapping = false,
+    super.timeIndicatorSnapping = false,
+    super.createEvents = true,
+    super.createMultiDayEvents = true,
+    super.verticalStepDuration = const Duration(minutes: 15),
+    super.verticalSnapRange = const Duration(minutes: 15),
+    super.horizontalStepDuration = const Duration(days: 1),
+    super.newEventDuration = const Duration(minutes: 15),
+    // this.numberOfDays = 3,
+    // this.timelineWidth = 56,
+    // this.daySeparatorLeftOffset = 8,
+    // this.multiDayTileHeight = 24,
+    // this.newEventDuration = const Duration(minutes: 15),
+    // this.paintWeekNumber = true,
+    // this.eventSnapping = true,
+    // this.timeIndicatorSnapping = true,
+    // this.createMultiDayEvents = true,
+    // this.createEvents = true,
+    // this.verticalStepDuration = const Duration(minutes: 15),
+    // this.verticalSnapRange = const Duration(minutes: 15),
   });
 
   @override
-  final int numberOfDays;
-
-  @override
-  final double timelineWidth;
-
-  @override
-  final double daySeparatorLeftOffset;
-
-  @override
-  final Duration newEventDuration;
-
-  @override
-  final Duration verticalStepDuration;
-
-  @override
-  final Duration verticalSnapRange;
-
-  @override
-  final double multiDayTileHeight;
-
-  @override
-  final bool paintWeekNumber;
-
-  @override
-  final bool eventSnapping;
-
-  @override
-  final bool timeIndicatorSnapping;
-
-  @override
   final String name;
-
-  @override
-  final bool createMultiDayEvents;
-
-  @override
-  final bool createEvents;
-
-  @override
-  int get firstDayOfWeek => 1;
-
-  @override
-  final Duration horizontalStepDuration = const Duration(days: 1);
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
@@ -127,42 +98,6 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
       end: date.endOfDay.add(
         Duration(days: numberOfDays - 1),
       ),
-    );
-  }
-
-  @override
-  CustomMultiDayConfiguration copyWith({
-    String? name,
-    int? numberOfDays,
-    double? timelineWidth,
-    double? daySeparatorLeftOffset,
-    double? multiDayTileHeight,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
-    Duration? newEventDuration,
-    bool? paintWeekNumber,
-    bool? eventSnapping,
-    bool? timeIndicatorSnapping,
-    int? firstDayOfWeek,
-    bool? createEvents,
-    bool? createMultiDayEvents,
-  }) {
-    return CustomMultiDayConfiguration(
-      numberOfDays: numberOfDays ?? this.numberOfDays,
-      timelineWidth: timelineWidth ?? this.timelineWidth,
-      daySeparatorLeftOffset:
-          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
-      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
-      newEventDuration: newEventDuration ?? this.newEventDuration,
-      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
-      eventSnapping: eventSnapping ?? this.eventSnapping,
-      timeIndicatorSnapping:
-          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
-      createEvents: createEvents ?? this.createEvents,
-      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
-      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
-      name: name ?? this.name,
     );
   }
 }

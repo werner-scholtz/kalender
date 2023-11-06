@@ -22,8 +22,8 @@ class MonthView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.monthViewConfiguration,
     required this.multiDayTileBuilder,
-    this.monthViewConfiguration = const MonthConfiguration(),
     this.components,
     this.style,
     this.functions,
@@ -51,7 +51,7 @@ class MonthView<T> extends StatefulWidget {
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
   final CalendarLayoutDelegates<T>? layoutDelegates;
 
-  /// The [MonthTileBuilder] used to build month event tiles.
+  /// The [MultiDayTileBuilder] used to build month event tiles.
   final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
@@ -61,29 +61,6 @@ class MonthView<T> extends StatefulWidget {
 class _MonthViewState<T> extends State<MonthView<T>>
     with SingleTickerProviderStateMixin {
   late MonthViewState _viewState;
-  late MonthViewConfiguration _monthViewConfiguration;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _monthViewConfiguration = widget.monthViewConfiguration;
-
-    _viewState =
-        widget.controller.attach(_monthViewConfiguration) as MonthViewState;
-  }
-
-  @override
-  void didUpdateWidget(covariant MonthView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_monthViewConfiguration != widget.monthViewConfiguration) {
-      _monthViewConfiguration = widget.monthViewConfiguration;
-
-      _viewState =
-          widget.controller.attach(_monthViewConfiguration) as MonthViewState;
-    }
-  }
 
   @override
   void deactivate() {
@@ -93,30 +70,40 @@ class _MonthViewState<T> extends State<MonthView<T>>
 
   @override
   Widget build(BuildContext context) {
-    return CalendarStyleProvider(
-      style: widget.style ?? const CalendarStyle(),
-      child: CalendarScope<T>(
-        state: _viewState,
-        eventsController: widget.eventsController,
-        functions: widget.functions ?? CalendarEventHandlers<T>(),
-        components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents(
-          multiDayTileBuilder: widget.multiDayTileBuilder,
-        ),
-        platformData: PlatformData(),
-        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates(),
-        child: Column(
-          children: <Widget>[
-            MonthViewHeader<T>(
-              viewConfiguration: widget.monthViewConfiguration,
+    return ListenableBuilder(
+      listenable: widget.monthViewConfiguration,
+      builder: (context, child) {
+        _viewState = widget.controller.attach(
+          widget.monthViewConfiguration,
+        ) as MonthViewState;
+
+        return CalendarStyleProvider(
+          style: widget.style ?? const CalendarStyle(),
+          child: CalendarScope<T>(
+            state: _viewState,
+            eventsController: widget.eventsController,
+            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            components: widget.components ?? CalendarComponents(),
+            tileComponents: CalendarTileComponents(
+              multiDayTileBuilder: widget.multiDayTileBuilder,
             ),
-            MonthViewContent<T>(
-              viewConfiguration: widget.monthViewConfiguration,
-              controller: widget.controller,
+            platformData: PlatformData(),
+            layoutDelegates:
+                widget.layoutDelegates ?? CalendarLayoutDelegates(),
+            child: Column(
+              children: <Widget>[
+                MonthViewHeader<T>(
+                  viewConfiguration: widget.monthViewConfiguration,
+                ),
+                MonthViewContent<T>(
+                  viewConfiguration: widget.monthViewConfiguration,
+                  controller: widget.controller,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

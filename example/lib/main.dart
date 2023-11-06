@@ -45,19 +45,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late ViewConfiguration currentConfiguration = viewConfigurations[0];
   List<ViewConfiguration> viewConfigurations = [
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Custom',
       numberOfDays: 2,
     ),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MonthConfiguration(),
-    const ScheduleConfiguration(),
-    const MultiWeekConfiguration(
+    WeekConfiguration(),
+    WorkWeekConfiguration(),
+    MonthConfiguration(),
+    ScheduleConfiguration(),
+    MultiWeekConfiguration(
       numberOfWeeks: 3,
     ),
   ];

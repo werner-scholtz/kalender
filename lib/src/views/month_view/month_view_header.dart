@@ -18,29 +18,29 @@ class MonthViewHeader<T> extends StatelessWidget {
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRangeNotifier,
-        builder: (
-          context,
-          visibleDateTimeRange,
-          child,
-        ) {
-          return Column(
+        builder: (context, value, child) {
+          final calendarHeader = RepaintBoundary(
+            child: scope.components.calendarHeaderBuilder?.call(
+              value,
+            ),
+          );
+
+          final monthHeader = Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              RepaintBoundary(
-                child: scope.components.calendarHeaderBuilder?.call(
-                  visibleDateTimeRange,
+              ...List<Widget>.generate(
+                7,
+                (index) => scope.components.monthHeaderBuilder(
+                  value.start.add(Duration(days: index)),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  ...List<Widget>.generate(
-                    7,
-                    (index) => scope.components.monthHeaderBuilder(
-                      visibleDateTimeRange.start.add(Duration(days: index)),
-                    ),
-                  ),
-                ],
-              ),
+            ],
+          );
+
+          return Column(
+            children: <Widget>[
+              calendarHeader,
+              monthHeader,
             ],
           );
         },

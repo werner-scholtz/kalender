@@ -15,10 +15,10 @@ class ScheduleView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.scheduleViewConfiguration,
     required this.scheduleTileBuilder,
     this.components,
     this.style,
-    this.scheduleViewConfiguration = const ScheduleConfiguration(),
     this.functions,
     this.layoutDelegates,
   });
@@ -52,29 +52,6 @@ class ScheduleView<T> extends StatefulWidget {
 
 class _ScheduleViewState<T> extends State<ScheduleView<T>> {
   late ScheduleViewState _viewState;
-  late ScheduleViewConfiguration _scheduleViewConfiguration;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scheduleViewConfiguration = widget.scheduleViewConfiguration;
-
-    _viewState = widget.controller.attach(_scheduleViewConfiguration)
-        as ScheduleViewState;
-  }
-
-  @override
-  void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_scheduleViewConfiguration != oldWidget.scheduleViewConfiguration) {
-      _scheduleViewConfiguration = widget.scheduleViewConfiguration;
-
-      _viewState = widget.controller.attach(_scheduleViewConfiguration)
-          as ScheduleViewState;
-    }
-  }
 
   @override
   void deactivate() {
@@ -84,42 +61,52 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarStyleProvider(
-      style: widget.style ?? const CalendarStyle(),
-      child: CalendarScope<T>(
-        state: _viewState,
-        eventsController: widget.eventsController,
-        functions: widget.functions ?? CalendarEventHandlers<T>(),
-        components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents<T>(
-          scheduleTileBuilder: widget.scheduleTileBuilder,
-        ),
-        platformData: PlatformData(),
-        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
-        child: Column(
-          children: <Widget>[
-            ScheduleHeader<T>(
-              viewConfiguration: widget.scheduleViewConfiguration,
-              viewState: _viewState,
-            ),
-            Expanded(
-              child: ListenableBuilder(
-                listenable: widget.eventsController,
-                builder: (context, child) {
-                  _viewState.scheduleGroups =
-                      widget.eventsController.getScheduleGroups().toList();
+    return ListenableBuilder(
+      listenable: widget.scheduleViewConfiguration,
+      builder: (context, child) {
+        _viewState = widget.controller.attach(
+          widget.scheduleViewConfiguration,
+        ) as ScheduleViewState;
 
-                  return ScheduleContent<T>(
-                    controller: widget.controller,
-                    viewConfiguration: widget.scheduleViewConfiguration,
-                    viewState: _viewState,
-                  );
-                },
-              ),
+        return CalendarStyleProvider(
+          style: widget.style ?? const CalendarStyle(),
+          child: CalendarScope<T>(
+            state: _viewState,
+            eventsController: widget.eventsController,
+            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            components: widget.components ?? CalendarComponents(),
+            tileComponents: CalendarTileComponents<T>(
+              scheduleTileBuilder: widget.scheduleTileBuilder,
             ),
-          ],
-        ),
-      ),
+            platformData: PlatformData(),
+            layoutDelegates:
+                widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
+            child: Column(
+              children: <Widget>[
+                ScheduleHeader<T>(
+                  viewConfiguration: widget.scheduleViewConfiguration,
+                  viewState: _viewState,
+                ),
+                Expanded(
+                  child: ListenableBuilder(
+                    listenable: widget.eventsController,
+                    builder: (context, child) {
+                      _viewState.scheduleGroups =
+                          widget.eventsController.getScheduleGroups().toList();
+
+                      return ScheduleContent<T>(
+                        controller: widget.controller,
+                        viewConfiguration: widget.scheduleViewConfiguration,
+                        viewState: _viewState,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

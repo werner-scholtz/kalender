@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 ///
 /// It contains all the methods that are used to calculate:
 /// * The visible date range and indices.
-abstract class ViewConfiguration {
-  const ViewConfiguration();
+abstract class ViewConfiguration with ChangeNotifier {
+  ViewConfiguration();
 
   /// The name of the [ViewConfiguration].
   String get name;

@@ -22,11 +22,11 @@ class MultiDayView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.multiDayViewConfiguration,
     required this.tileBuilder,
     required this.multiDayTileBuilder,
     this.components,
     this.style,
-    this.multiDayViewConfiguration = const WeekConfiguration(),
     this.functions,
     this.layoutDelegates,
   });
@@ -64,29 +64,6 @@ class MultiDayView<T> extends StatefulWidget {
 
 class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late MultiDayViewState _viewState;
-  late MultiDayViewConfiguration _multiDayViewConfiguration;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _multiDayViewConfiguration = widget.multiDayViewConfiguration;
-
-    _viewState = widget.controller.attach(_multiDayViewConfiguration)
-        as MultiDayViewState;
-  }
-
-  @override
-  void didUpdateWidget(covariant MultiDayView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_multiDayViewConfiguration != widget.multiDayViewConfiguration) {
-      _multiDayViewConfiguration = widget.multiDayViewConfiguration;
-
-      _viewState = widget.controller.attach(_multiDayViewConfiguration)!
-          as MultiDayViewState;
-    }
-  }
 
   @override
   void deactivate() {
@@ -96,33 +73,43 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarStyleProvider(
-      style: widget.style ?? const CalendarStyle(),
-      child: CalendarScope<T>(
-        state: _viewState,
-        eventsController: widget.eventsController,
-        functions: widget.functions ?? CalendarEventHandlers<T>(),
-        components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents<T>(
-          tileBuilder: widget.tileBuilder,
-          multiDayTileBuilder: widget.multiDayTileBuilder,
-        ),
-        platformData: PlatformData(),
-        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
-        child: Column(
-          children: <Widget>[
-            MultiDayHeader<T>(
-              viewConfiguration: widget.multiDayViewConfiguration,
+    return ListenableBuilder(
+      listenable: widget.multiDayViewConfiguration,
+      builder: (context, child) {
+        _viewState = widget.controller.attach(
+          widget.multiDayViewConfiguration,
+        )! as MultiDayViewState;
+
+        return CalendarStyleProvider(
+          style: widget.style ?? const CalendarStyle(),
+          child: CalendarScope<T>(
+            state: _viewState,
+            eventsController: widget.eventsController,
+            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            components: widget.components ?? CalendarComponents(),
+            tileComponents: CalendarTileComponents<T>(
+              tileBuilder: widget.tileBuilder,
+              multiDayTileBuilder: widget.multiDayTileBuilder,
             ),
-            Expanded(
-              child: MultiDayContent<T>(
-                controller: widget.controller,
-                viewConfiguration: widget.multiDayViewConfiguration,
-              ),
+            platformData: PlatformData(),
+            layoutDelegates:
+                widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
+            child: Column(
+              children: <Widget>[
+                MultiDayHeader<T>(
+                  viewConfiguration: widget.multiDayViewConfiguration,
+                ),
+                Expanded(
+                  child: MultiDayContent<T>(
+                    controller: widget.controller,
+                    viewConfiguration: widget.multiDayViewConfiguration,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
