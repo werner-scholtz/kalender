@@ -161,6 +161,8 @@ These are the default ViewConfiguration's:
         verticalStepDuration: const Duration(minutes: 15),
         verticalSnapRange: const Duration(minutes: 15),
         newEventDuration: const Duration(minutes: 15),
+        startHour: 0,
+        endHour: 24,
       );
       ```
 
@@ -183,6 +185,8 @@ These are the default ViewConfiguration's:
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
       firstDayOfWeek: 1, 
+      startHour: 0,
+      endHour: 24,
     );
     ```
       
@@ -206,6 +210,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      startHour: 0,
+      endHour: 24,
     );
     ```
 
@@ -228,6 +234,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      startHour: 0,
+      endHour: 24,
     );
     ```
       
@@ -253,6 +261,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
+      startHour: 0,
+      endHour: 24,
     );
 
     ```

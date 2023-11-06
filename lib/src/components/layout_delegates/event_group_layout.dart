@@ -12,7 +12,11 @@ import 'package:kalender/src/models/calendar/calendar_event.dart';
 /// [date] is the start of the day.
 /// * this is used to calculate the offset of the [CalendarEvent] from the start of the day.
 ///
-///  _________ The start of the day ()
+/// [startHour] is the start hour of the day.
+///
+/// [endHour] is the end hour of the day.
+///
+///  _________ The start of the day (StartHour)
 /// |       ↑
 /// |       | this can be calculated using
 /// |       | (event.dateTimeRangeOnDate(startOfGroup).start.difference(startOfGroup).inMinutes * heightPerMinute)
@@ -112,12 +116,6 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
 
       // Calculate the top offset of the tile.
       final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
-      final start =
-          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
-
-      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
-      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
-
       final timeBeforeStart = eventStartOnDate.difference(date);
 
       // Clamp the y position to the start and end hour.
@@ -125,6 +123,11 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
         timeBeforeStart,
         heightPerMinute,
       ).clamp(startDy, endDy);
+
+      final start =
+          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
+      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
+      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
 
       // Calculate the height of the tile.
       var childHeight = calculateHeight(
@@ -185,11 +188,6 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
 
       // Calculate the top offset of the tile.
       final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
-      final start =
-          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
-
-      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
-      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
 
       final timeBeforeStart = eventStartOnDate.difference(date);
 
@@ -198,6 +196,11 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
         timeBeforeStart,
         heightPerMinute,
       ).clamp(startDy, endDy);
+
+      final start =
+          eventStartOnDate.isBefore(startTime) ? startTime : eventStartOnDate;
+      final eventEndOnDate = event.dateTimeRangeOnDate(date).end;
+      final end = eventEndOnDate.isAfter(endTime) ? endTime : eventEndOnDate;
 
       // Calculate the height of the tile.
       var childHeight = calculateHeight(
