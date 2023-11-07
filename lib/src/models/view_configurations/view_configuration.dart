@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 /// This is the base class for all [ViewConfiguration]s.
 ///
 /// It contains all the methods that are used to calculate:
-/// * The layout of the calendar.
 /// * The visible date range and indices.
-abstract class ViewConfiguration {
-  const ViewConfiguration();
+abstract class ViewConfiguration with ChangeNotifier {
+  ViewConfiguration();
 
   /// The name of the [ViewConfiguration].
   String get name;

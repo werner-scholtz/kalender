@@ -73,19 +73,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int currentConfiguration = 0;
   List<ViewConfiguration> viewConfigurations = [
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Custom',
       numberOfDays: 2,
     ),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MultiWeekConfiguration(),
-    const MonthConfiguration(),
-    const ScheduleConfiguration(),
+    WeekConfiguration(),
+    WorkWeekConfiguration(),
+    MonthConfiguration(),
+    ScheduleConfiguration(),
+    MultiWeekConfiguration(),
   ];
 
   @override
@@ -120,6 +120,26 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
 
+            final calendarCustomize = CalendarCustomize(
+              currentConfiguration: viewConfigurations[currentConfiguration],
+              style: calendarStyle,
+              layoutDelegates: calendarLayoutDelegates,
+              onStyleChange: (newStyle) {
+                setState(() {
+                  calendarStyle = newStyle;
+                });
+              },
+              onCalendarLayoutChange: (newLayout) {
+                setState(() {
+                  calendarLayoutDelegates = newLayout;
+                });
+              },
+            );
+
+            final viewConfigurationCustomize = ViewConfigurationCustomize(
+              currentConfiguration: viewConfigurations[currentConfiguration],
+            );
+
             if (constraints.maxWidth < 500) {
               return calendarWidget;
             } else {
@@ -136,32 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CalendarCustomize(
-                            currentConfiguration:
-                                viewConfigurations[currentConfiguration],
-                            style: calendarStyle,
-                            layoutDelegates: calendarLayoutDelegates,
-                            onStyleChange: (newStyle) {
-                              setState(() {
-                                calendarStyle = newStyle;
-                              });
-                            },
-                            onCalendarLayoutChange: (newLayout) {
-                              setState(() {
-                                calendarLayoutDelegates = newLayout;
-                              });
-                            },
-                          ),
-                          ViewConfigurationCustomize(
-                            currentConfiguration:
-                                viewConfigurations[currentConfiguration],
-                            onViewConfigChanged: (newConfig) {
-                              setState(() {
-                                viewConfigurations[currentConfiguration] =
-                                    newConfig;
-                              });
-                            },
-                          ),
+                          calendarCustomize,
+                          viewConfigurationCustomize,
                         ],
                       ),
                     ),

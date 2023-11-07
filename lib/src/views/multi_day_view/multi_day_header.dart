@@ -22,81 +22,124 @@ class MultiDayHeader<T> extends StatelessWidget {
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRangeNotifier,
         builder: (context, visibleDateTimeRange, child) {
+          final calendarHeader = RepaintBoundary(
+            child: scope.components.calendarHeaderBuilder?.call(
+              visibleDateTimeRange,
+            ),
+          );
+
+          final StatelessWidget dayHeader;
+          if (viewConfiguration.numberOfDays == 1) {
+            dayHeader = SingleDayHeader<T>(
+              viewConfiguration: viewConfiguration,
+              visibleDateTimeRange: visibleDateTimeRange,
+            );
+          } else {
+            dayHeader = MultipleDayHeader<T>(
+              viewConfiguration: viewConfiguration,
+              visibleDateTimeRange: visibleDateTimeRange,
+            );
+          }
+
           return Column(
             children: <Widget>[
-              RepaintBoundary(
-                child: scope.components.calendarHeaderBuilder?.call(
-                  visibleDateTimeRange,
-                ),
-              ),
-              if (viewConfiguration.numberOfDays == 1)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                          width: viewConfiguration.timelineWidth +
-                              viewConfiguration.daySeparatorLeftOffset,
-                          child: scope.components.dayHeaderBuilder(
-                            visibleDateTimeRange.start,
-                            null,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: AnimatedMultiDayEventsHeader<T>(
-                        viewConfiguration: viewConfiguration,
-                        visibleDateRange: visibleDateTimeRange,
-                      ),
-                    ),
-                  ],
-                )
-              else
-                Row(
-                  children: [
-                    SizedBox(
-                      width: viewConfiguration.timelineWidth +
-                          viewConfiguration.daySeparatorLeftOffset,
-                      child: Center(
-                        child: viewConfiguration.paintWeekNumber
-                            ? scope.components
-                                .weekNumberBuilder(visibleDateTimeRange)
-                            : null,
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ...List.generate(
-                                viewConfiguration.numberOfDays,
-                                (index) => scope.components.dayHeaderBuilder(
-                                  visibleDateTimeRange.start
-                                      .add(Duration(days: index)),
-                                  (date) =>
-                                      scope.functions.onDateTapped?.call(date),
-                                ),
-                              ),
-                            ],
-                          ),
-                          AnimatedMultiDayEventsHeader<T>(
-                            viewConfiguration: viewConfiguration,
-                            visibleDateRange: visibleDateTimeRange,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              calendarHeader,
+              dayHeader,
             ],
           );
         },
       ),
+    );
+  }
+}
+
+class MultipleDayHeader<T> extends StatelessWidget {
+  const MultipleDayHeader({
+    super.key,
+    required this.viewConfiguration,
+    required this.visibleDateTimeRange,
+  });
+
+  final MultiDayViewConfiguration viewConfiguration;
+  final DateTimeRange visibleDateTimeRange;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = CalendarScope.of<T>(context);
+    return Row(
+      children: [
+        SizedBox(
+          width: viewConfiguration.timelineWidth +
+              viewConfiguration.daySeparatorLeftOffset,
+          child: Center(
+            child: viewConfiguration.paintWeekNumber
+                ? scope.components.weekNumberBuilder(visibleDateTimeRange)
+                : null,
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ...List.generate(
+                    viewConfiguration.numberOfDays,
+                    (index) => scope.components.dayHeaderBuilder(
+                      visibleDateTimeRange.start.add(Duration(days: index)),
+                      (date) => scope.functions.onDateTapped?.call(date),
+                    ),
+                  ),
+                ],
+              ),
+              AnimatedMultiDayEventsHeader<T>(
+                viewConfiguration: viewConfiguration,
+                visibleDateRange: visibleDateTimeRange,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SingleDayHeader<T> extends StatelessWidget {
+  const SingleDayHeader({
+    super.key,
+    required this.viewConfiguration,
+    required this.visibleDateTimeRange,
+  });
+
+  final MultiDayViewConfiguration viewConfiguration;
+  final DateTimeRange visibleDateTimeRange;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = CalendarScope.of<T>(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              width: viewConfiguration.timelineWidth +
+                  viewConfiguration.daySeparatorLeftOffset,
+              child: scope.components.dayHeaderBuilder(
+                visibleDateTimeRange.start,
+                null,
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: AnimatedMultiDayEventsHeader<T>(
+            viewConfiguration: viewConfiguration,
+            visibleDateRange: visibleDateTimeRange,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -2,69 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 
-/// The [DayConfiguration] class contains the configuration for the [SingleDayView].
+/// The [DayConfiguration] class contains the configuration for the [MultiDayView].
 ///
-/// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [SingleDayView].
-/// It also contains some configuration values that are used to calculate the layout of the [SingleDayView].
+/// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [MultiDayView].
+/// It also contains some configuration values that are used to layout of the [MultiDayView].
 class DayConfiguration extends MultiDayViewConfiguration {
-  const DayConfiguration({
-    this.timelineWidth = 56,
-    this.daySeparatorLeftOffset = 8,
-    this.multiDayTileHeight = 24,
-    this.eventSnapping = false,
-    this.timeIndicatorSnapping = false,
-    this.createEvents = true,
-    this.createMultiDayEvents = true,
-    this.verticalStepDuration = const Duration(minutes: 15),
-    this.verticalSnapRange = const Duration(minutes: 15),
-    this.newEventDuration = const Duration(minutes: 15),
+  DayConfiguration({
     this.name = 'Day',
-  });
+    super.timelineWidth = 56,
+    super.daySeparatorLeftOffset = 8,
+    super.eventSnapping = false,
+    super.timeIndicatorSnapping = false,
+    super.createEvents = true,
+    super.createMultiDayEvents = true,
+    super.multiDayTileHeight = 24,
+    super.verticalStepDuration = const Duration(minutes: 15),
+    super.verticalSnapRange = const Duration(minutes: 15),
+    super.horizontalStepDuration = const Duration(days: 1),
+    super.newEventDuration = const Duration(minutes: 15),
+  }) {
+    super.numberOfDays = 1;
+    super.firstDayOfWeek = 1;
+    super.paintWeekNumber = false;
+  }
 
   @override
-  final double timelineWidth;
-
-  @override
-  final double daySeparatorLeftOffset;
-
-  @override
-  final double multiDayTileHeight;
-
-  @override
-  final Duration verticalStepDuration;
-
-  @override
-  final Duration verticalSnapRange;
-
-  @override
-  final bool eventSnapping;
-
-  @override
-  final bool timeIndicatorSnapping;
-
-  @override
-  final bool createEvents;
-
-  @override
-  final bool createMultiDayEvents;
-
-  @override
-  final Duration newEventDuration;
-
-  @override
-  int get firstDayOfWeek => 1;
-
-  @override
-  final Duration horizontalStepDuration = const Duration(days: 1);
+  final String name;
 
   @override
   int get numberOfDays => 1;
 
   @override
-  bool get paintWeekNumber => false;
+  int get firstDayOfWeek => 1;
 
   @override
-  final String name;
+  bool get paintWeekNumber => false;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(
@@ -107,41 +79,5 @@ class DayConfiguration extends MultiDayViewConfiguration {
     int? firstDayOfWeek,
   }) {
     return calendarStart.add(Duration(days: index)).dayRange;
-  }
-
-  @override
-  MultiDayViewConfiguration copyWith({
-    String? name,
-    int? numberOfDays = 1,
-    double? timelineWidth,
-    double? daySeparatorLeftOffset,
-    double? multiDayTileHeight,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
-    Duration? newEventDuration,
-    bool? eventSnapping,
-    bool? timeIndicatorSnapping,
-    bool? createEvents,
-    bool? createMultiDayEvents,
-    // ignore: avoid_init_to_null
-    int? firstDayOfWeek = null, // ignore
-    // ignore: avoid_init_to_null
-    bool? paintWeekNumber = null, // ignore
-  }) {
-    return DayConfiguration(
-      timelineWidth: timelineWidth ?? this.timelineWidth,
-      daySeparatorLeftOffset:
-          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
-      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
-      newEventDuration: newEventDuration ?? this.newEventDuration,
-      eventSnapping: eventSnapping ?? this.eventSnapping,
-      timeIndicatorSnapping:
-          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createEvents: createEvents ?? this.createEvents,
-      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
-      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
-      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
-      name: name ?? this.name,
-    );
   }
 }

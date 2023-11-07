@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar/calendar_components.dart';
 
@@ -7,7 +6,7 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/calendar/calendar_layout_delegates.dart';
 import 'package:kalender/src/models/calendar/calendar_style.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/view_state/month_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -23,12 +22,12 @@ class MonthView<T> extends StatefulWidget {
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.monthViewConfiguration,
     required this.multiDayTileBuilder,
-    this.monthViewConfiguration = const MonthConfiguration(),
     this.components,
     this.style,
     this.functions,
-    this.layoutControllers,
+    this.layoutDelegates,
   });
 
   /// The [CalendarController] used to control the view.
@@ -50,45 +49,18 @@ class MonthView<T> extends StatefulWidget {
   final CalendarEventHandlers<T>? functions;
 
   /// The [CalendarLayoutDelegates] used to layout the calendar's tiles.
-  final CalendarLayoutDelegates<T>? layoutControllers;
+  final CalendarLayoutDelegates<T>? layoutDelegates;
 
-  /// The [MonthTileBuilder] used to build month event tiles.
+  /// The [MultiDayTileBuilder] used to build month event tiles.
   final MultiDayTileBuilder<T> multiDayTileBuilder;
 
   @override
   State<MonthView<T>> createState() => _MonthViewState<T>();
 }
 
-class _MonthViewState<T> extends State<MonthView<T>> {
+class _MonthViewState<T> extends State<MonthView<T>>
+    with SingleTickerProviderStateMixin {
   late MonthViewState _viewState;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initializeViewState();
-
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
-  }
-
-  @override
-  void didUpdateWidget(covariant MonthView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_viewState.viewConfiguration != widget.monthViewConfiguration) {
-      _initializeViewState();
-
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
-
-      widget.controller.attach(_viewState);
-    }
-  }
 
   @override
   void deactivate() {
@@ -96,68 +68,42 @@ class _MonthViewState<T> extends State<MonthView<T>> {
     super.deactivate();
   }
 
-  void _initializeViewState() {
-    final initialDate = widget.controller.selectedDate;
-
-    final adjustedDateTimeRange =
-        widget.monthViewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: initialDate,
-    );
-
-    final numberOfPages = widget.monthViewConfiguration.calculateNumberOfPages(
-      adjustedDateTimeRange,
-    );
-
-    final initialPage = widget.monthViewConfiguration.calculateDateIndex(
-      initialDate,
-      adjustedDateTimeRange.start,
-    );
-
-    final pageController = PageController(
-      initialPage: initialPage,
-    );
-
-    final visibleDateRange =
-        widget.monthViewConfiguration.calculateVisibleDateTimeRange(
-      initialDate,
-    );
-
-    _viewState = MonthViewState(
-      viewConfiguration: widget.monthViewConfiguration,
-      pageController: pageController,
-      adjustedDateTimeRange: adjustedDateTimeRange,
-      numberOfPages: numberOfPages,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return CalendarStyleProvider(
-      style: widget.style ?? const CalendarStyle(),
-      child: CalendarScope<T>(
-        state: _viewState,
-        eventsController: widget.eventsController,
-        functions: widget.functions ?? CalendarEventHandlers<T>(),
-        components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents(
-          multiDayTileBuilder: widget.multiDayTileBuilder,
-        ),
-        platformData: PlatformData(),
-        layoutDelegates: widget.layoutControllers ?? CalendarLayoutDelegates(),
-        child: Column(
-          children: <Widget>[
-            MonthViewHeader<T>(
-              viewConfiguration: widget.monthViewConfiguration,
+    return ListenableBuilder(
+      listenable: widget.monthViewConfiguration,
+      builder: (context, child) {
+        _viewState = widget.controller.attach(
+          widget.monthViewConfiguration,
+        ) as MonthViewState;
+
+        return CalendarStyleProvider(
+          style: widget.style ?? const CalendarStyle(),
+          child: CalendarScope<T>(
+            state: _viewState,
+            eventsController: widget.eventsController,
+            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            components: widget.components ?? CalendarComponents(),
+            tileComponents: CalendarTileComponents(
+              multiDayTileBuilder: widget.multiDayTileBuilder,
             ),
-            MonthViewContent<T>(
-              viewConfiguration: widget.monthViewConfiguration,
-              controller: widget.controller,
+            platformData: PlatformData(),
+            layoutDelegates:
+                widget.layoutDelegates ?? CalendarLayoutDelegates(),
+            child: Column(
+              children: <Widget>[
+                MonthViewHeader<T>(
+                  viewConfiguration: widget.monthViewConfiguration,
+                ),
+                MonthViewContent<T>(
+                  viewConfiguration: widget.monthViewConfiguration,
+                  controller: widget.controller,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
