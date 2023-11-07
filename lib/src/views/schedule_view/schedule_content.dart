@@ -145,6 +145,11 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
       end: endTime.endOfDay,
     );
 
+    final visibleEvents = scope.eventsController.getEventsFromDateRange(
+      visibleDateRange,
+    );
+    scope.eventsController.updateVisibleEvents(visibleEvents);
+
     if (widget.viewState.visibleDateTimeRangeNotifier.value !=
         visibleDateRange) {
       // Update the selected date.
