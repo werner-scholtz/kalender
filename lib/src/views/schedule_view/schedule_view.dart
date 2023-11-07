@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
+import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -10,17 +9,16 @@ import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dar
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/views/schedule_view/schedule_header.dart';
 import 'package:kalender/src/views/schedule_view/schedule_content.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScheduleView<T> extends StatefulWidget {
   const ScheduleView({
     super.key,
     required this.controller,
     required this.eventsController,
+    required this.scheduleViewConfiguration,
     required this.scheduleTileBuilder,
     this.components,
     this.style,
-    this.scheduleViewConfiguration = const ScheduleConfiguration(),
     this.functions,
     this.layoutDelegates,
   });
@@ -53,41 +51,7 @@ class ScheduleView<T> extends StatefulWidget {
 }
 
 class _ScheduleViewState<T> extends State<ScheduleView<T>> {
-  late ScheduleViewState<T> _viewState;
-
-  /// The ItemScrollController of the current view.
-  final itemScrollController = ItemScrollController();
-
-  /// The ItemPositionsListener of the current view.
-  final itemPositionsListener = ItemPositionsListener.create();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initializeViewState();
-
-    if (kDebugMode) {
-      print('The controller is already attached to a view. detaching first.');
-    }
-    // _controller.detach();
-    widget.controller.attach(_viewState);
-  }
-
-  @override
-  void didUpdateWidget(covariant ScheduleView<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_viewState.viewConfiguration != widget.scheduleViewConfiguration) {
-      _initializeViewState();
-
-      if (kDebugMode) {
-        print('The controller is already attached to a view. detaching first.');
-      }
-      // _controller.detach();
-      widget.controller.attach(_viewState);
-    }
-  }
+  late ScheduleViewState _viewState;
 
   @override
   void deactivate() {
@@ -95,68 +59,46 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
     super.deactivate();
   }
 
-  void _initializeViewState() {
-    final initialDate = widget.controller.selectedDate;
-
-    final adjustedDateTimeRange =
-        widget.scheduleViewConfiguration.calculateAdjustedDateTimeRange(
-      dateTimeRange: widget.controller.dateTimeRange,
-      visibleStart: initialDate,
-    );
-
-    final visibleDateRange =
-        widget.scheduleViewConfiguration.calculateVisibleDateTimeRange(
-      initialDate,
-      // widget.controller.selectedDate,
-    );
-
-    _viewState = ScheduleViewState<T>(
-      viewConfiguration: widget.scheduleViewConfiguration,
-      adjustedDateTimeRange: adjustedDateTimeRange,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
-      itemScrollController: itemScrollController,
-      itemPositionsListener: itemPositionsListener,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return CalendarStyleProvider(
-      style: widget.style ?? const CalendarStyle(),
-      child: CalendarScope<T>(
-        state: _viewState,
-        eventsController: widget.eventsController,
-        functions: widget.functions ?? CalendarEventHandlers<T>(),
-        components: widget.components ?? CalendarComponents(),
-        tileComponents: CalendarTileComponents<T>(
-          scheduleTileBuilder: widget.scheduleTileBuilder,
-        ),
-        platformData: PlatformData(),
-        layoutDelegates: widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
-        child: Column(
-          children: <Widget>[
-            ScheduleHeader<T>(
-              viewConfiguration: widget.scheduleViewConfiguration,
-              viewState: _viewState,
-            ),
-            Expanded(
-              child: ListenableBuilder(
-                listenable: widget.eventsController,
-                builder: (context, child) {
-                  _viewState.scheduleGroups =
-                      widget.eventsController.getScheduleGroups().toList();
+    return ListenableBuilder(
+      listenable: widget.scheduleViewConfiguration,
+      builder: (context, child) {
+        _viewState = widget.controller.attach(
+          widget.scheduleViewConfiguration,
+        ) as ScheduleViewState;
 
-                  return ScheduleContent<T>(
+        return CalendarStyleProvider(
+          style: widget.style ?? const CalendarStyle(),
+          child: CalendarScope<T>(
+            state: _viewState,
+            eventsController: widget.eventsController,
+            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            components: widget.components ?? CalendarComponents(),
+            tileComponents: CalendarTileComponents<T>(
+              scheduleTileBuilder: widget.scheduleTileBuilder,
+            ),
+            platformData: PlatformData(),
+            layoutDelegates:
+                widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
+            child: Column(
+              children: <Widget>[
+                ScheduleHeader<T>(
+                  viewConfiguration: widget.scheduleViewConfiguration,
+                  viewState: _viewState,
+                ),
+                Expanded(
+                  child: ScheduleContent<T>(
                     controller: widget.controller,
                     viewConfiguration: widget.scheduleViewConfiguration,
                     viewState: _viewState,
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

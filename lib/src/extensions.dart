@@ -195,3 +195,12 @@ extension DateTimeExtensions on DateTime {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 }
+
+extension TimeOfDayExtension on TimeOfDay {
+  TimeOfDay difference(TimeOfDay other) {
+    final hourDifference = hour - other.hour;
+    final minuteDifference = minute - other.minute;
+
+    return TimeOfDay(hour: hourDifference, minute: minuteDifference);
+  }
+}

@@ -51,10 +51,26 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       eventHandlers: CalendarEventHandlers<Event>(
         onEventChanged: onEventChanged,
         onEventTapped: onEventTapped,
-        onCreateEvent: onCreateEvent,
         onDateTapped: onDateTapped,
+        onCreateEvent: onEventCreate,
+        onEventCreated: onEventCreated,
       ),
     );
+  }
+
+  CalendarEvent<Event> onEventCreate(DateTimeRange dateTimeRange) {
+    return CalendarEvent<Event>(
+      dateTimeRange: dateTimeRange,
+      eventData: Event(
+        title: 'New Event',
+        color: Colors.blue,
+      ),
+    );
+  }
+
+  Future<void> onEventCreated(CalendarEvent<Event> event) async {
+    widget.eventsController.addEvent(event);
+    widget.eventsController.deselectEvent();
   }
 
   /// This function is called when a new event is created.

@@ -12,9 +12,13 @@ class CalendarEventsController<T> with ChangeNotifier {
   final List<CalendarEvent<T>> _events = <CalendarEvent<T>>[];
   List<CalendarEvent<T>> get events => _events;
 
-  /// The moving [CalendarEvent].
+  /// The [CalendarEvent] that is selected.
+  /// TODO: Make this a list of events.
   CalendarEvent<T>? _selectedEvent;
   CalendarEvent<T>? get selectedEvent => _selectedEvent;
+
+  // List<CalendarEvent<T>>? _selectedEvents = [];
+  // List<CalendarEvent<T>>? get selectedEvents => _selectedEvents;
 
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChangingEvent => _selectedEvent != null;
@@ -92,6 +96,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Removes a list of [CalendarEvent]s from the list of [CalendarEvent]s.
   ///
   /// The events will be removed where [test] returns true.
+  ///
   void removeWhere(bool Function(CalendarEvent<T> element) test) {
     _events.removeWhere(test);
     _events.sort((a, b) => a.start.compareTo(b.start));
@@ -108,6 +113,7 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Updates an [CalendarEvent] in the list of [CalendarEvent]s.
   ///
   /// The event where [test] returns true will be updated.
+  ///
   void updateEvent({
     T? newEventData,
     DateTimeRange? newDateTimeRange,
@@ -130,8 +136,56 @@ class CalendarEventsController<T> with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  /// Reschedules the [_selectedEvent] by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
+  void rescheduleSelectedEvent(
+    Duration duration,
+  ) {
+    if (selectedEvent == null) return;
+    final newDateTimeRange = DateTimeRange(
+      start: selectedEvent!.start.add(duration),
+      end: selectedEvent!.end.add(duration),
+    );
+
+    selectedEvent!.dateTimeRange = newDateTimeRange;
+  }
+
+  /// Reschedules the [_selectedEvent]'s start by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
+  void rescheduleSelectedEventStart(
+    Duration duration,
+  ) {
+    if (selectedEvent == null) return;
+
+    final newDateTimeRange = DateTimeRange(
+      start: selectedEvent!.start.add(duration),
+      end: selectedEvent!.end,
+    );
+
+    selectedEvent!.dateTimeRange = newDateTimeRange;
+  }
+
+  /// Reschedules the [_selectedEvent]'s end by the given [duration].
+  ///
+  /// * The [start] and [end] are the start and end hours of the day.
+  void rescheduleSelectedEventEnd(
+    Duration duration,
+  ) {
+    if (selectedEvent == null) return;
+
+    final newDateTimeRange = DateTimeRange(
+      start: selectedEvent!.start,
+      end: selectedEvent!.end.add(duration),
+    );
+    selectedEvent!.dateTimeRange = newDateTimeRange;
+  }
+
+  /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.
+  ///
   /// * This excludes [CalendarEvent]s that are displayed on single days.
+  ///
   List<CalendarEvent<T>> getMultiDayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
@@ -150,17 +204,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   }
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  ///
   /// * This excludes [CalendarEvent]s that are displayed on multiple days.
-  Iterable<CalendarEvent<T>> getEventsFromDateRange(
-    DateTimeRange dateRange,
-  ) {
-    return _events.where(
-      (element) => (element.start.isWithin(dateRange) ||
-          element.end.isWithin(dateRange)),
-    );
-  }
-
-  /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
+  ///
   Iterable<CalendarEvent<T>> getDayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
@@ -169,6 +215,19 @@ class CalendarEventsController<T> with ChangeNotifier {
           (element.start.isWithin(dateRange) ||
               element.end.isWithin(dateRange)) &&
           !element.isMultiDayEvent,
+    );
+  }
+
+  /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.
+  ///
+  /// * This does not exclude any [CalendarEvent]s.
+  ///
+  Iterable<CalendarEvent<T>> getEventsFromDateRange(
+    DateTimeRange dateRange,
+  ) {
+    return _events.where(
+      (element) => (element.start.isWithin(dateRange) ||
+          element.end.isWithin(dateRange)),
     );
   }
 

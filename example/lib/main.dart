@@ -45,19 +45,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late ViewConfiguration currentConfiguration = viewConfigurations[0];
   List<ViewConfiguration> viewConfigurations = [
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Custom',
       numberOfDays: 2,
     ),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MonthConfiguration(),
-    const ScheduleConfiguration(),
-    const MultiWeekConfiguration(),
+    WeekConfiguration(),
+    WorkWeekConfiguration(),
+    MonthConfiguration(),
+    ScheduleConfiguration(),
+    MultiWeekConfiguration(
+      numberOfWeeks: 3,
+    ),
   ];
 
   @override
@@ -107,10 +109,29 @@ class _MyHomePageState extends State<MyHomePage> {
           eventHandlers: CalendarEventHandlers(
             onEventTapped: _onEventTapped,
             onEventChanged: _onEventChanged,
+            onCreateEvent: _onCreateEvent,
+            onEventCreated: _onEventCreated,
           ),
         ),
       ),
     );
+  }
+
+  CalendarEvent<Event> _onCreateEvent(DateTimeRange dateTimeRange) {
+    return CalendarEvent(
+      dateTimeRange: dateTimeRange,
+      eventData: Event(
+        title: 'New Event',
+      ),
+    );
+  }
+
+  Future<void> _onEventCreated(CalendarEvent<Event> event) async {
+    // Add the event to the events controller.
+    eventController.addEvent(event);
+
+    // Deselect the event.
+    eventController.deselectEvent();
   }
 
   Future<void> _onEventTapped(

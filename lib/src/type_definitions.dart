@@ -31,6 +31,8 @@ typedef DaySeparatorBuilder<T extends Object?> = Widget Function(
 /// The [TimelineBuilder] is used to build the timeline displayed on the left side of the calendar.
 typedef TimelineBuilder<T extends Object?> = Widget Function(
   double hourHeight,
+  int startHour,
+  int endHour,
 );
 
 /// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.
@@ -112,8 +114,10 @@ typedef ScheduleTileBuilder<T extends Object?> = Widget Function(
 typedef EventLayoutDelegateBuilder<T extends Object?>
     = EventGroupLayoutDelegate<T> Function({
   required List<CalendarEvent<T>> events,
-  required DateTime startOfGroup,
+  required DateTime date,
   required double heightPerMinute,
+  required int startHour,
+  required int endHour,
 });
 
 /// The [MultiDayLayoutController] is used to calculate the layout of the tiles displayed on a day.

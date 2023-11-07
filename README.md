@@ -1,6 +1,10 @@
 This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
 
+## Note
+- This is a WIP package so there will be some breaking changes until version 1.0.0.
+
 ## Web Example
+
 Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
@@ -9,7 +13,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Platforms** - Works with Web, Desktop and Mobile. 
 
-* **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
+* **Calendar Views** - There are 3 calendar views available, MultiDay, Month and Schedule. [Find out more](#calendar-views)
 
 * **Reschedule** - Drag and Drop events to your liking. [Try it out](https://werner-scholtz.github.io/kalender/)
 
@@ -60,8 +64,9 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
     ```dart
     eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange()
-        eventData: Event(  
+        dateTimeRange: DateTimeRange(), // The DateTimeRange of the event.
+        modifiable: true, // Change this to false if you do not want the user to modify the event.
+        eventData: Event(  // The custom object that you want to link to the event.
             title: 'Event 1',
             color: Colors.blue,
         ),
@@ -118,6 +123,7 @@ Configure the event handlers like so.
     onEventChangeStart: (event) {
       // You can give the user some haptic feedback here.
     },
+
   ),
 )       
 ```
@@ -129,7 +135,7 @@ Configure the event handlers like so.
 ### Calendar Views
 There are a few constructors that you can choose from to create a CalendarView.
 
-1. **Default Constructor** - this constructor will build the correct view (MultiDay, Month) based on the ViewConfiguration you pass it.
+1. **Default Constructor** - this constructor will build the correct view (MultiDay, Month, Schedule) based on the ViewConfiguration you pass it.
 
 2. **MultiDayView** - this constructor will build a MultiDayView.
 
@@ -138,9 +144,15 @@ There are a few constructors that you can choose from to create a CalendarView.
 4. **ScheduleView** - this constructor will build a ScheduleView and does not need the multiDayTileBuilder.
 
 ### View Configuration
-The CalendarView takes a ViewConfiguration object.
+The CalendarView takes a ViewConfiguration object, which allows you to configure the view to your liking.
+The view configuration serves the following purposes:
+- It contains the functions that calculate the date indices that are used by the PageView's/ScrollablePositionedList.
+- It contains various parameters that are used by the CalendarView:
+  1. To layout event tiles.
+  2. To determine user interaction with the calendar.
 
-There are 2 'Types' of ViewConfiguration's: MultiDayViewConfiguration, and MonthViewConfiguration.
+
+There are 3 'Types' of ViewConfiguration's: MultiDayViewConfiguration, MonthViewConfiguration and ScheduleViewConfiguration.
 * You can create a Custom ViewConfiguration by extending one of these 'Types'.
 
 These are the default ViewConfiguration's:
@@ -160,8 +172,8 @@ These are the default ViewConfiguration's:
         verticalStepDuration: const Duration(minutes: 15),
         verticalSnapRange: const Duration(minutes: 15),
         newEventDuration: const Duration(minutes: 15),
-        enableRescheduling: true,
-        enableResizing: true,
+        startHour: 0,
+        endHour: 24,
       );
       ```
 
@@ -184,8 +196,8 @@ These are the default ViewConfiguration's:
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
       firstDayOfWeek: 1, 
-      enableRescheduling: true,
-      enableResizing: true,
+      startHour: 0,
+      endHour: 24,
     );
     ```
       
@@ -209,8 +221,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
-      enableRescheduling: true,
-      enableResizing: true,
+      startHour: 0,
+      endHour: 24,
     );
     ```
 
@@ -233,8 +245,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
-      enableRescheduling: true,
-      enableResizing: true,
+      startHour: 0,
+      endHour: 24,
     );
     ```
       
@@ -260,8 +272,8 @@ These are the default ViewConfiguration's:
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
       paintWeekNumber: true,
-      enableRescheduling: true,
-      enableResizing: true,
+      startHour: 0,
+      endHour: 24,
     );
 
     ```
@@ -274,6 +286,7 @@ These are the default ViewConfiguration's:
 
     ```dart
     MonthConfiguration(
+      name: 'Month',
       firstDayOfWeek: 1,
       multiDayTileHeight: 24,
       enableResizing: true,
@@ -285,7 +298,17 @@ These are the default ViewConfiguration's:
       
     </details>
    
+7. **ScheduleConfiguration** - this configuration is used to configure the ScheduleView.
 
+    <details><summary>Example</summary>
+
+    ```dart
+    ScheduleConfiguration(
+      name: 'Schedule',
+    );
+    ```
+      
+    </details>
 
 
 
@@ -295,15 +318,24 @@ The CalendarEventHandlers handles the user's interaction with the calendar. (Do 
 
 There are 5 events at this time that can be handled.
 
-1. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
-2. **onEventChangeStart**: this function is called when an event is about to be changed.
+**Group 1:**
+
+1. **onEventChangeStart**: this function is called when an event is about to be changed.
+
+2. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
 3. **onEventTapped**: this function is called when an event displayed on the calendar is tapped.
 
-4. **onCreateEvent**: this function is called when a new event is created by the calendar.
+**Group 2:**
 
-5. **onDateTapped**: this function is called when a date on the calendar is tapped.
+1. **onCreateEvent**: this function is called when a new event is created by the calendar.
+
+2. **onEventCreated**: this function is called once all operations on the new event is complete.
+
+**Other:**
+
+1. **onDateTapped**: this function is called when a date on the calendar is tapped.
 
   <details><summary>Example Code</summary>
 
@@ -329,15 +361,31 @@ There are 5 events at this time that can be handled.
 
       // Once this function is complete the calendar will rebuild.
     },
-    onCreateEvent: (CalendarEvent<Event> calendarEvent) async {
-      // The calendarEvent is a empty event and is not yet added to the list of events.
+    onCreateEvent: (DateTimeRange dateTimeRange) {
+      // The dateTimeRange is the range that the user has selected.
+
+      // If the event was created by with a "drag" gesture then
+      // the dateTimeRange assigned here will be modified by the drag gesture before
+      // the onEventCreated function is called.
+
+      // Return the new calendar event.
+      return CalendarEvent(
+        dateTimeRange: dateTimeRange,
+        eventData: Event(
+          title: 'Event 1',
+          color: Colors.blue,
+        ),
+      );
+    }
+    onEventCreated: (CalendarEvent<Event> calendarEvent) async {
+      // The calendarEvent is the new event that was created.
 
       // This is a async function, so you can do any async work here.
 
-      // If you want to add the event to the calendar 
-      eventsController.addEvent(event);
+      // add the event to the eventsController.
+      eventsController.addEvent(calendarEvent);
 
-      // Once this function completes the calendar will rebuild.
+      // Once this function is complete the calendar will rebuild.
     },
     onDateTapped: (DateTime date) {
       // The date is the date header that was tapped. see example for use case.
@@ -365,8 +413,7 @@ The EventsController is used to store and manage CalendarEvent's.
 | removeEvent   | CalendarEvent\<T\> event  | Removes this event from the list and rebuilds the calendar view |
 | removeWhere   | bool Function(CalendarEvent\<T\> element) test  | Removes the event(s) where the test returns true  |
 | clearEvents   |   | Clears the list of stored events  |
-| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where 
-the test returns true  | 
+| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool modifiable,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData and/or newDateTimeRange and/or modifiable (if provided), of the event where the test returns true  | 
 | selectEvent   |  CalendarEvent<T> event | Selects the given event. |
 | deselectEvent | | Deselects the selected event. |
 | forceUpdate | | Forces the calendar to update the UI. |
@@ -425,6 +472,8 @@ There are three types of layout controllers: DayLayoutController, MultiDayLayout
       required super.events, // The events that are in the group.
       required super.startOfGroup, // The datetime that the group starts.
       required super.heightPerMinute, // The height per minute of the view.
+      required super.startHour, // The start hour of the view.
+      required super.endHour, // The end hour of the view.
     });
     
     @override

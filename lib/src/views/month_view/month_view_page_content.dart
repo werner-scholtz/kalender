@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
@@ -13,12 +14,14 @@ class MonthViewPageContent<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.horizontalStep,
     required this.verticalStep,
+    required this.controller,
   });
 
   final DateTimeRange visibleDateRange;
   final MonthViewConfiguration viewConfiguration;
   final double horizontalStep;
   final double verticalStep;
+  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                       final end = visibleDateRange.start.add(
                         Duration(days: (c * 7) + 7),
                       );
+
                       // Create a date range from the start and end dates.
                       final weekDateRange = DateTimeRange(
                         start: start,
@@ -54,6 +58,9 @@ class MonthViewPageContent<T> extends StatelessWidget {
                           scope.eventsController.getEventsFromDateRange(
                         weekDateRange,
                       );
+
+                      controller.visibleEvents =
+                          controller.visibleEvents.followedBy(events);
 
                       // Create a multi day event group from the events.
                       final multiDayEventGroup =
@@ -75,6 +82,26 @@ class MonthViewPageContent<T> extends StatelessWidget {
                       final height = multiDayTileHeight *
                           (multiDayEventGroup.maxNumberOfStackedEvents + 1);
 
+                      final gestureDetector = MultiDayHeaderGestureDetector<T>(
+                        createMultiDayEvents:
+                            viewConfiguration.createMultiDayEvents,
+                        visibleDateRange: weekDateRange,
+                        horizontalStep: horizontalStep,
+                        verticalStep: verticalStep,
+                      );
+
+                      final eventGroup = MultiDayEventGroupWidget<T>(
+                        multiDayEventGroup: multiDayEventGroup,
+                        visibleDateRange: weekDateRange,
+                        horizontalStep: horizontalStep,
+                        horizontalStepDuration: horizontalStepDuration,
+                        verticalStep: verticalStep,
+                        verticalStepDuration: verticalStepDuration,
+                        isChanging: false,
+                        multiDayTileHeight: multiDayTileHeight,
+                        rescheduleDateRange: visibleDateRange,
+                      );
+
                       return Expanded(
                         child: Column(
                           children: [
@@ -92,98 +119,67 @@ class MonthViewPageContent<T> extends StatelessWidget {
                               ],
                             ),
                             Expanded(
-                              child: Stack(
-                                children: [
-                                  MultiDayHeaderGestureDetector<T>(
-                                    createMultiDayEvents:
-                                        viewConfiguration.createMultiDayEvents,
-                                    visibleDateRange: weekDateRange,
-                                    horizontalStep: horizontalStep,
-                                    verticalStep: verticalStep,
-                                  ),
-                                  SingleChildScrollView(
-                                    child: SizedBox(
-                                      height: height,
-                                      child: Stack(
-                                        children: [
-                                          MultiDayEventGroupWidget<T>(
-                                            multiDayEventGroup:
-                                                multiDayEventGroup,
-                                            visibleDateRange: weekDateRange,
-                                            horizontalStep: horizontalStep,
-                                            horizontalStepDuration:
-                                                horizontalStepDuration,
-                                            verticalStep: verticalStep,
-                                            verticalStepDuration:
-                                                verticalStepDuration,
-                                            isChanging: false,
-                                            multiDayTileHeight:
-                                                multiDayTileHeight,
-                                            rescheduleDateRange:
-                                                visibleDateRange,
-                                          ),
-                                          if (selectedEvent != null &&
-                                              scope.eventsController
-                                                  .hasChangingEvent)
-                                            ListenableBuilder(
-                                              listenable: scope.eventsController
-                                                  .selectedEvent!,
-                                              builder: (context, child) {
-                                                if (selectedEvent
-                                                        .dateTimeRange.start
-                                                        .isWithin(
-                                                      weekDateRange,
-                                                    ) ||
-                                                    selectedEvent
-                                                        .dateTimeRange.end
-                                                        .isWithin(
-                                                      weekDateRange,
-                                                    ) ||
-                                                    (selectedEvent.start
-                                                            .isBefore(
-                                                          weekDateRange.start,
-                                                        ) &&
-                                                        selectedEvent.end
-                                                            .isAfter(
-                                                          weekDateRange.end,
-                                                        ))) {
-                                                  final multiDayEventGroup =
-                                                      MultiDayEventGroupController<
-                                                              T>()
-                                                          .generateMultiDayEventGroup(
-                                                    events: [selectedEvent],
-                                                  );
+                              child: SingleChildScrollView(
+                                child: SizedBox(
+                                  height: height,
+                                  child: Stack(
+                                    children: [
+                                      gestureDetector,
+                                      eventGroup,
+                                      if (selectedEvent != null &&
+                                          scope.eventsController
+                                              .hasChangingEvent)
+                                        ListenableBuilder(
+                                          listenable: scope
+                                              .eventsController.selectedEvent!,
+                                          builder: (context, child) {
+                                            if (selectedEvent
+                                                    .dateTimeRange.start
+                                                    .isWithin(
+                                                  weekDateRange,
+                                                ) ||
+                                                selectedEvent.dateTimeRange.end
+                                                    .isWithin(
+                                                  weekDateRange,
+                                                ) ||
+                                                (selectedEvent.start.isBefore(
+                                                      weekDateRange.start,
+                                                    ) &&
+                                                    selectedEvent.end.isAfter(
+                                                      weekDateRange.end,
+                                                    ))) {
+                                              final multiDayEventGroup =
+                                                  MultiDayEventGroupController<
+                                                          T>()
+                                                      .generateMultiDayEventGroup(
+                                                events: [selectedEvent],
+                                              );
 
-                                                  return MultiDayEventGroupWidget<
-                                                      T>(
-                                                    multiDayEventGroup:
-                                                        multiDayEventGroup,
-                                                    visibleDateRange:
-                                                        weekDateRange,
-                                                    horizontalStep:
-                                                        horizontalStep,
-                                                    horizontalStepDuration:
-                                                        horizontalStepDuration,
-                                                    verticalStep: verticalStep,
-                                                    verticalStepDuration:
-                                                        verticalStepDuration,
-                                                    isChanging: true,
-                                                    multiDayTileHeight:
-                                                        multiDayTileHeight,
-                                                    rescheduleDateRange:
-                                                        visibleDateRange,
-                                                  );
-                                                } else {
-                                                  return const SizedBox
-                                                      .shrink();
-                                                }
-                                              },
-                                            ),
-                                        ],
-                                      ),
-                                    ),
+                                              return MultiDayEventGroupWidget<
+                                                  T>(
+                                                multiDayEventGroup:
+                                                    multiDayEventGroup,
+                                                visibleDateRange: weekDateRange,
+                                                horizontalStep: horizontalStep,
+                                                horizontalStepDuration:
+                                                    horizontalStepDuration,
+                                                verticalStep: verticalStep,
+                                                verticalStepDuration:
+                                                    verticalStepDuration,
+                                                isChanging: true,
+                                                multiDayTileHeight:
+                                                    multiDayTileHeight,
+                                                rescheduleDateRange:
+                                                    visibleDateRange,
+                                              );
+                                            } else {
+                                              return const SizedBox.shrink();
+                                            }
+                                          },
+                                        ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ],

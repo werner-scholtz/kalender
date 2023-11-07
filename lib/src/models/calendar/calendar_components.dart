@@ -110,9 +110,13 @@ class CalendarComponents {
 
   Widget _defaultTimelineBuilder(
     double hourHeight,
+    int startHour,
+    int endHour,
   ) {
     return Timeline(
       hourHeight: hourHeight,
+      startHour: startHour,
+      endHour: endHour,
     );
   }
 
