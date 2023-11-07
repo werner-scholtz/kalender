@@ -206,5 +206,5 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     notifyListeners();
   }
 
-  bool get customStartEndHour => _startHour != 0 && _endHour != 24;
+  bool get customStartEndHour => _startHour != 0 || _endHour != 24;
 }

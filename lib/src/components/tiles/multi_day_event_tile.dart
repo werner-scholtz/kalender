@@ -99,6 +99,8 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   /// Handles the onTap event.
   Future<void> _onTap() async {
     await functions.onEventTapped?.call(widget.event);
+
+    scope.eventsController.forceUpdate();
   }
 
   /// Handles the onPanStart event.

@@ -182,15 +182,15 @@ class MultiDayPageContent<T> extends StatelessWidget {
     bool isChanging = false,
   }) {
     return eventGroups.map(
-      (tileGroup) {
-        final dayIndex = visibleDates.indexOf(tileGroup.date);
+      (eventGroup) {
+        final dayIndex = visibleDates.indexOf(eventGroup.date);
         return Positioned(
           left: left(dayIndex, dayWidth),
           width: dayWidth,
           top: 0,
           bottom: 0,
           child: EventGroupWidget<T>(
-            eventGroup: tileGroup,
+            eventGroup: eventGroup,
             heightPerMinute: heightPerMinute,
             isChanging: isChanging,
             visibleDateTimeRange: visibleDateRange,
