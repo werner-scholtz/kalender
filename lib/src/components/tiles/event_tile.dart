@@ -20,6 +20,7 @@ class EventTile<T> extends StatefulWidget {
   final TileConfiguration tileConfiguration;
 
   final DateTimeRange visibleDateTimeRange;
+
   final bool isChanging;
   final double heightPerMinute;
   final double verticalStep;
@@ -165,6 +166,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
   /// Handles the onTap event.
   Future<void> _onTap() async {
     await scope.functions.onEventTapped?.call(widget.event);
+    scope.eventsController.forceUpdate();
   }
 
   /// Handles the onPanStart event.
@@ -264,7 +266,15 @@ class _EventTileState<T> extends State<EventTile<T>> {
       eventsController.selectedEvent!.start,
     );
 
-    if (newStart.hour >= startHour) {
+    if (viewConfiguration.customStartEndHour) {
+      if (newStart.hour >= startHour &&
+          newStart.isSameDay(initialDateTimeRange.start)) {
+        // Reschedule the event's start.
+        eventsController.rescheduleSelectedEventStart(
+          deltaDuration,
+        );
+      }
+    } else {
       // Reschedule the event's start.
       eventsController.rescheduleSelectedEventStart(
         deltaDuration,
@@ -320,7 +330,15 @@ class _EventTileState<T> extends State<EventTile<T>> {
       eventsController.selectedEvent!.end,
     );
 
-    if (newEnd.hour <= endHour) {
+    if (viewConfiguration.customStartEndHour) {
+      if (newEnd.hour <= endHour &&
+          newEnd.isSameDay(initialDateTimeRange.end)) {
+        // Reschedule the event's end.
+        eventsController.rescheduleSelectedEventEnd(
+          deltaDuration,
+        );
+      }
+    } else {
       // Reschedule the event's end.
       eventsController.rescheduleSelectedEventEnd(
         deltaDuration,
@@ -416,20 +434,36 @@ class _EventTileState<T> extends State<EventTile<T>> {
       end: newEnd,
     );
 
-    // Calculate the deltaDuration.
-    final deltaDuration = newStart.difference(
-      eventsController.selectedEvent!.start,
-    );
-
     final startIsWithin =
         newDateTimeRange.start.isWithin(widget.visibleDateTimeRange);
 
     final endIsWithin =
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange);
 
-    if ((startIsWithin || endIsWithin)) {
-      if (newDateTimeRange.start.hour >= startHour &&
-          newDateTimeRange.end.hour <= endHour) {
+    /// TODO: Fix the bug where dragging to the end of the day locks event to that day.
+    if (startIsWithin || endIsWithin) {
+      // Check if custom start and end hours are used.
+      if (viewConfiguration.customStartEndHour) {
+        if (newDateTimeRange.start.isSameDay(newDateTimeRange.end)) {
+          if (newDateTimeRange.start.hour >= startHour &&
+              newDateTimeRange.end.hour <= endHour) {
+            // Calculate the deltaDuration.
+            final deltaDuration = newStart.difference(
+              eventsController.selectedEvent!.start,
+            );
+
+            // Reschedule the event.
+            eventsController.rescheduleSelectedEvent(
+              deltaDuration,
+            );
+          }
+        }
+      } else {
+        // Calculate the deltaDuration.
+        final deltaDuration = newStart.difference(
+          eventsController.selectedEvent!.start,
+        );
+
         // Reschedule the event.
         eventsController.rescheduleSelectedEvent(
           deltaDuration,
