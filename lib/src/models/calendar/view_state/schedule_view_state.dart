@@ -35,7 +35,8 @@ class ScheduleViewState extends ViewState {
     return ScheduleViewState(
       viewConfiguration: viewConfiguration,
       adjustedDateTimeRange: adjustedDateTimeRange,
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(visibleDateRange),
+      visibleDateTimeRange: previousState?.visibleDateTimeRangeNotifier ??
+          ValueNotifier<DateTimeRange>(visibleDateRange),
     );
   }
 
@@ -44,7 +45,7 @@ class ScheduleViewState extends ViewState {
 
   @override
   set visibleDateTimeRange(DateTimeRange value) {
-    visibleDateTimeRange = value;
+    visibleDateTimeRangeNotifier.value = value;
     visibleMonth = visibleDateTimeRange.start.startOfMonth;
   }
 

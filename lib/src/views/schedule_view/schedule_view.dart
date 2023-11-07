@@ -88,18 +88,10 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
                   viewState: _viewState,
                 ),
                 Expanded(
-                  child: ListenableBuilder(
-                    listenable: widget.eventsController,
-                    builder: (context, child) {
-                      _viewState.scheduleGroups =
-                          widget.eventsController.getScheduleGroups().toList();
-
-                      return ScheduleContent<T>(
-                        controller: widget.controller,
-                        viewConfiguration: widget.scheduleViewConfiguration,
-                        viewState: _viewState,
-                      );
-                    },
+                  child: ScheduleContent<T>(
+                    controller: widget.controller,
+                    viewConfiguration: widget.scheduleViewConfiguration,
+                    viewState: _viewState,
                   ),
                 ),
               ],

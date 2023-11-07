@@ -40,38 +40,55 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ScheduleGroup>>(
-      valueListenable: widget.viewState.scheduleGroupsNotifier,
-      builder: (context, value, child) {
-        return ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: ScrollablePositionedList.builder(
-            itemCount: value.length,
-            itemBuilder: (context, index) {
-              final scheduleGroup = value[index];
+  void dispose() {
+    widget.viewState.itemPositionsListener.itemPositions
+        .removeListener(_updateVisibleDateRange);
+    super.dispose();
+  }
 
-              return Column(
-                children: [
-                  if (scheduleGroup.isFirstOfMonth)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: scope.components.scheduleMonthHeaderBuilder(
-                            scheduleGroup.date,
-                          ),
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: scope.eventsController,
+      builder: (context, child) {
+        widget.viewState.scheduleGroups =
+            scope.eventsController.getScheduleGroups().toList();
+
+        return ValueListenableBuilder<List<ScheduleGroup>>(
+          valueListenable: widget.viewState.scheduleGroupsNotifier,
+          builder: (context, value, child) {
+            return ScrollConfiguration(
+              behavior:
+                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ScrollablePositionedList.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  final scheduleGroup = value[index];
+
+                  return Column(
+                    children: [
+                      if (scheduleGroup.isFirstOfMonth)
+                        Row(
+                          children: [
+                            Expanded(
+                              child:
+                                  scope.components.scheduleMonthHeaderBuilder(
+                                scheduleGroup.date,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ScheduleDateTile<T>(
-                    scheduleGroup: scheduleGroup,
-                  ),
-                ],
-              );
-            },
-            itemScrollController: widget.viewState.itemScrollController,
-            itemPositionsListener: widget.viewState.itemPositionsListener,
-          ),
+                      ScheduleDateTile<T>(
+                        scheduleGroup: scheduleGroup,
+                      ),
+                    ],
+                  );
+                },
+                itemScrollController: widget.viewState.itemScrollController,
+                itemPositionsListener: widget.viewState.itemPositionsListener,
+              ),
+            );
+          },
         );
       },
     );
@@ -130,11 +147,11 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
 
     if (widget.viewState.visibleDateTimeRangeNotifier.value !=
         visibleDateRange) {
-      // Update the visible date range.
-      widget.viewState.visibleDateTimeRange = visibleDateRange;
-
       // Update the selected date.
       widget.controller.selectedDate = visibleDateRange.start;
+
+      // Update the visible date range.
+      widget.viewState.visibleDateTimeRange = visibleDateRange;
     }
   }
 }

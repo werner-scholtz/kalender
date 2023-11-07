@@ -29,6 +29,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
         ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {
+            scope.eventsController.clearVisibleEvents();
+
             return Column(
               children: [
                 for (int c = 0; c < 5; c++)
@@ -43,6 +45,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                       final end = visibleDateRange.start.add(
                         Duration(days: (c * 7) + 7),
                       );
+
                       // Create a date range from the start and end dates.
                       final weekDateRange = DateTimeRange(
                         start: start,
@@ -54,6 +57,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
                           scope.eventsController.getEventsFromDateRange(
                         weekDateRange,
                       );
+
+                      scope.eventsController.addVisibleEvents(events);
 
                       // Create a multi day event group from the events.
                       final multiDayEventGroup =
@@ -74,6 +79,26 @@ class MonthViewPageContent<T> extends StatelessWidget {
                       // Calculate the height of the multi day event group.
                       final height = multiDayTileHeight *
                           (multiDayEventGroup.maxNumberOfStackedEvents + 1);
+
+                      final gestureDetector = MultiDayHeaderGestureDetector<T>(
+                        createMultiDayEvents:
+                            viewConfiguration.createMultiDayEvents,
+                        visibleDateRange: weekDateRange,
+                        horizontalStep: horizontalStep,
+                        verticalStep: verticalStep,
+                      );
+
+                      final eventGroup = MultiDayEventGroupWidget<T>(
+                        multiDayEventGroup: multiDayEventGroup,
+                        visibleDateRange: weekDateRange,
+                        horizontalStep: horizontalStep,
+                        horizontalStepDuration: horizontalStepDuration,
+                        verticalStep: verticalStep,
+                        verticalStepDuration: verticalStepDuration,
+                        isChanging: false,
+                        multiDayTileHeight: multiDayTileHeight,
+                        rescheduleDateRange: visibleDateRange,
+                      );
 
                       return Expanded(
                         child: Column(
@@ -97,26 +122,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
                                   height: height,
                                   child: Stack(
                                     children: [
-                                      MultiDayHeaderGestureDetector<T>(
-                                        createMultiDayEvents: viewConfiguration
-                                            .createMultiDayEvents,
-                                        visibleDateRange: weekDateRange,
-                                        horizontalStep: horizontalStep,
-                                        verticalStep: verticalStep,
-                                      ),
-                                      MultiDayEventGroupWidget<T>(
-                                        multiDayEventGroup: multiDayEventGroup,
-                                        visibleDateRange: weekDateRange,
-                                        horizontalStep: horizontalStep,
-                                        horizontalStepDuration:
-                                            horizontalStepDuration,
-                                        verticalStep: verticalStep,
-                                        verticalStepDuration:
-                                            verticalStepDuration,
-                                        isChanging: false,
-                                        multiDayTileHeight: multiDayTileHeight,
-                                        rescheduleDateRange: visibleDateRange,
-                                      ),
+                                      gestureDetector,
+                                      eventGroup,
                                       if (selectedEvent != null &&
                                           scope.eventsController
                                               .hasChangingEvent)

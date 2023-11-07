@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/tiles/event_tile.dart';
-import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
-import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
 /// A widget that displays a group of events as [EventTile]s using the [CustomMultiChildLayout] widget.
 class EventGroupWidget<T> extends StatelessWidget {
@@ -14,12 +10,20 @@ class EventGroupWidget<T> extends StatelessWidget {
     super.key,
     required this.eventGroup,
     required this.isChanging,
-    required this.snapData,
+    required this.heightPerMinute,
+    required this.visibleDateTimeRange,
+    required this.verticalStep,
+    required this.horizontalStep,
+    required this.snapPoints,
   });
 
   final EventGroup<T> eventGroup;
-  final MultiDayPageData snapData;
   final bool isChanging;
+  final double heightPerMinute;
+  final DateTimeRange visibleDateTimeRange;
+  final double verticalStep;
+  final double horizontalStep;
+  final List<DateTime> snapPoints;
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +55,16 @@ class EventGroupWidget<T> extends StatelessWidget {
           child: EventTile(
             event: event,
             tileConfiguration: tileConfiguration,
-            snapData: snapData,
+            heightPerMinute: heightPerMinute,
             isChanging: isChanging,
+            visibleDateTimeRange: visibleDateTimeRange,
+            verticalStep: verticalStep,
+            horizontalStep: horizontalStep,
+            snapPoints: snapPoints,
           ),
         ),
       );
     }
-
-    final heightPerMinute =
-        (scope.state as MultiDayViewState).heightPerMinute.value;
 
     final startHour =
         (scope.state.viewConfiguration as MultiDayViewConfiguration).startHour;

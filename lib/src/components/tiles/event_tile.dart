@@ -2,22 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
 class EventTile<T> extends StatefulWidget {
   const EventTile({
     super.key,
     required this.event,
     required this.tileConfiguration,
+    required this.visibleDateTimeRange,
     required this.isChanging,
-    required this.snapData,
+    required this.heightPerMinute,
+    required this.verticalStep,
+    required this.horizontalStep,
+    required this.snapPoints,
   });
 
   final CalendarEvent<T> event;
   final TileConfiguration tileConfiguration;
 
+  final DateTimeRange visibleDateTimeRange;
   final bool isChanging;
-  final MultiDayPageData snapData;
+  final double heightPerMinute;
+  final double verticalStep;
+  final double horizontalStep;
+  final List<DateTime> snapPoints;
 
   @override
   State<EventTile<T>> createState() => _EventTileState<T>();
@@ -25,12 +32,25 @@ class EventTile<T> extends StatefulWidget {
 
 class _EventTileState<T> extends State<EventTile<T>> {
   late final CalendarScope<T> scope = CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => scope.eventsController;
-  MultiDayPageData get snapData => widget.snapData;
+  CalendarEventsController<T> get eventsController => scope.eventsController;
 
+  MultiDayViewConfiguration get viewConfiguration =>
+      scope.state.viewConfiguration as MultiDayViewConfiguration;
+
+  List<DateTime> get snapPoints => widget.snapPoints;
+
+  Duration get verticalStepDuration => viewConfiguration.verticalStepDuration;
+  Duration get horizontalStepDuration =>
+      viewConfiguration.horizontalStepDuration;
+  Duration get verticalSnapRange => viewConfiguration.verticalSnapRange;
+
+  bool get snapToTimeIndicator => viewConfiguration.timeIndicatorSnapping;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
   bool get useMobileGestures => isMobileDevice && widget.event.canModify;
   bool get useDesktopGestures => !isMobileDevice && widget.event.canModify;
+
+  int get startHour => viewConfiguration.startHour;
+  int get endHour => viewConfiguration.endHour;
 
   late DateTimeRange initialDateTimeRange;
 
@@ -77,8 +97,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
             onLongPressMoveUpdate;
         Future<void> Function(LongPressEndDetails details)? onLongPressEnd;
         if (useMobileGestures &&
-            !controller.isResizingBottom &&
-            !controller.isResizingTop) {
+            !eventsController.isResizingBottom &&
+            !eventsController.isResizingTop) {
           onLongPressStart = _onLongPressStart;
           onLongPressMoveUpdate = _onLongPressMoveUpdate;
           onLongPressEnd = _onLongPressEnd;
@@ -89,7 +109,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
         Widget? resizeBottomWidget;
 
         // Check if the event can be modified and if the event is being rescheduled.
-        if (widget.event.canModify && !controller.isRescheduling) {
+        if (widget.event.canModify && !eventsController.isRescheduling) {
           if (useDesktopGestures) {
             resizeBottomWidget = _resizeBottomDesktopWidget();
             resizeTopWidget = _resizeTopDesktopWidget();
@@ -100,7 +120,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
             if (!widget.tileConfiguration.continuesBefore) {
               resizeTopWidget = resizeTopMobileWidget(
                 handleSize: handleSize,
-                enabled: !controller.isResizingBottom,
+                enabled: !eventsController.isResizingBottom,
               );
             }
 
@@ -108,7 +128,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
             if (!widget.tileConfiguration.continuesAfter) {
               resizeBottomWidget = resizeBottomMobileWidget(
                 handleSize: handleSize,
-                enabled: !controller.isResizingTop,
+                enabled: !eventsController.isResizingTop,
               );
             }
           }
@@ -184,8 +204,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentVerticalSteps = 0;
 
     initialDateTimeRange = widget.event.dateTimeRange;
-    controller.selectEvent(widget.event);
-    controller.isResizingTop = true;
+    eventsController.selectEvent(widget.event);
+    eventsController.isResizingTop = true;
   }
 
   void _onVerticalDragStartBottom(DragStartDetails details) {
@@ -193,8 +213,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentVerticalSteps = 0;
 
     initialDateTimeRange = widget.event.dateTimeRange;
-    controller.selectEvent(widget.event);
-    controller.isResizingBottom = true;
+    eventsController.selectEvent(widget.event);
+    eventsController.isResizingBottom = true;
   }
 
   /// Handles the onVerticalDragStart event.
@@ -202,46 +222,60 @@ class _EventTileState<T> extends State<EventTile<T>> {
     initialDateTimeRange = widget.event.dateTimeRange;
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
-    controller.selectEvent(widget.event);
+    eventsController.selectEvent(widget.event);
   }
 
   /// Handles the onVerticalDragUpdate event (Start).
   void _onVerticalDragUpdateTop(DragUpdateDetails details) {
     cursorOffset += details.delta;
 
-    final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
     if (verticalSteps == currentVerticalSteps) return;
 
-    final newStart = initialDateTimeRange.start.add(
-      snapData.verticalStepDuration * verticalSteps,
+    final start = initialDateTimeRange.start.add(
+      verticalStepDuration * verticalSteps,
     );
 
     // Add now to the snap points if applicable.
     final now = DateTime.now();
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.add(now);
+    if (snapToTimeIndicator) {
+      snapPoints.add(now);
     }
 
-    final index = snapData.snapPoints.indexWhere(
-      (element) =>
-          element.difference(newStart).abs() <= snapData.verticalSnapRange,
+    // Find the index of the snap point that is within a duration of verticalSnapRange minutes of the startTime.
+    final index = snapPoints.indexWhere(
+      (element) => element.difference(start).abs() <= verticalSnapRange,
     );
 
-    if (scope.eventsController.selectedEvent == null) return;
-
-    if (index != -1 && snapData.snapPoints[index].isBefore(widget.event.end)) {
-      scope.eventsController.selectedEvent!.start = snapData.snapPoints[index];
+    final DateTime newStart;
+    if (index != -1 && snapPoints[index].isBefore(widget.event.end)) {
+      // use the snap point.
+      newStart = snapPoints[index];
+    } else if (start.isBefore(widget.event.end)) {
+      // use the calculated start.
+      newStart = start;
     } else {
-      if (newStart.isBefore(widget.event.end)) {
-        scope.eventsController.selectedEvent!.start = newStart;
-      }
+      // use the current start.
+      newStart = eventsController.selectedEvent!.start;
     }
+
+    // Calculate the deltaDuration.
+    final deltaDuration = newStart.difference(
+      eventsController.selectedEvent!.start,
+    );
+
+    // Reschedule the event's start.
+    eventsController.rescheduleSelectedEventStart(
+      deltaDuration,
+      startHour,
+      endHour,
+    );
 
     currentVerticalSteps = verticalSteps;
 
     // Remove now from the snap points if applicable.
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.remove(now);
+    if (snapToTimeIndicator) {
+      snapPoints.remove(now);
     }
   }
 
@@ -249,50 +283,64 @@ class _EventTileState<T> extends State<EventTile<T>> {
   void _onVerticalDragUpdateBottom(DragUpdateDetails details) {
     cursorOffset += details.delta;
     // Calculate the new vertical steps.
-    final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
 
     if (verticalSteps == currentVerticalSteps) return;
 
     // Calculate the new end time.
-    final newEnd = initialDateTimeRange.end.add(
-      snapData.verticalStepDuration * verticalSteps,
+    final end = initialDateTimeRange.end.add(
+      verticalStepDuration * verticalSteps,
     );
 
     // Add now to the snap points if applicable.
     final now = DateTime.now();
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.add(now);
+    if (snapToTimeIndicator) {
+      snapPoints.add(now);
     }
 
-    final index = snapData.snapPoints.indexWhere(
-      (element) =>
-          element.difference(newEnd).abs() <= snapData.verticalSnapRange,
+    // Find the index of the snap point that is within a duration of verticalSnapRange minutes of the endTime.
+    final index = snapPoints.indexWhere(
+      (element) => element.difference(end).abs() <= verticalSnapRange,
     );
 
-    if (scope.eventsController.selectedEvent == null) return;
-
-    if (index != -1 && snapData.snapPoints[index].isAfter(widget.event.start)) {
-      scope.eventsController.selectedEvent!.end = snapData.snapPoints[index];
+    final DateTime newEnd;
+    if (index != -1 && snapPoints[index].isAfter(widget.event.start)) {
+      // use the snap point.
+      newEnd = snapPoints[index];
+    } else if (end.isAfter(widget.event.start)) {
+      // use the calculated end.
+      newEnd = end;
     } else {
-      if (newEnd.isAfter(widget.event.start)) {
-        scope.eventsController.selectedEvent!.end = newEnd;
-      }
+      // use the current end.
+      newEnd = eventsController.selectedEvent!.end;
     }
+
+    // Calculate the delta.
+    final deltaDuration = newEnd.difference(
+      eventsController.selectedEvent!.end,
+    );
+
+    // Reschedule the event's end.
+    eventsController.rescheduleSelectedEventEnd(
+      deltaDuration,
+      startHour,
+      endHour,
+    );
 
     currentVerticalSteps = verticalSteps;
 
     // Remove now from the snap points if applicable.
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.remove(now);
+    if (snapToTimeIndicator) {
+      snapPoints.remove(now);
     }
   }
 
   /// Handles the onVerticalDragEnd event.
   Future<void> _onVerticalDragEnd(DragEndDetails details) async {
-    final selectedEvent = scope.eventsController.selectedEvent!;
-    controller.isResizingBottom = false;
-    controller.isResizingTop = false;
-    controller.deselectEvent();
+    final selectedEvent = eventsController.selectedEvent!;
+    eventsController.isResizingBottom = false;
+    eventsController.isResizingTop = false;
+    eventsController.deselectEvent();
 
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,
@@ -305,8 +353,8 @@ class _EventTileState<T> extends State<EventTile<T>> {
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
 
-    controller.selectEvent(widget.event);
-    scope.eventsController.isRescheduling = true;
+    eventsController.selectEvent(widget.event);
+    eventsController.isRescheduling = true;
     initialDateTimeRange = widget.event.dateTimeRange;
 
     scope.functions.onEventChangeStart?.call(widget.event);
@@ -315,68 +363,81 @@ class _EventTileState<T> extends State<EventTile<T>> {
   /// Reschedules the [CalendarEvent] to the the [cursorOffset] or the nearest snap point.
   void _onReschedule(Offset cursorOffset) {
     // Calculate the new vertical steps.
-    final verticalSteps = (cursorOffset.dy / snapData.verticalStep).round();
+    final verticalSteps = (cursorOffset.dy / widget.verticalStep).round();
 
     // Calculate the new horizontal steps if applicable.
     var horizontalSteps = 0;
-    horizontalSteps = (cursorOffset.dx / snapData.horizontalStep).round();
+    horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
 
     if (verticalSteps == currentVerticalSteps &&
         horizontalSteps == currentHorizontalSteps) {
       return;
     }
 
-    final horizontalDurationDelta =
-        snapData.horizontalStepDuration * horizontalSteps;
+    final horizontalDurationDelta = horizontalStepDuration * horizontalSteps;
 
     // Calculate the new start time.
     var newStart = initialDateTimeRange.start
         .add(horizontalDurationDelta)
-        .add(snapData.verticalStepDuration * verticalSteps);
+        .add(verticalStepDuration * verticalSteps);
 
     // Calculate the new end time.
     var newEnd = initialDateTimeRange.end
         .add(horizontalDurationDelta)
-        .add(snapData.verticalStepDuration * verticalSteps);
+        .add(verticalStepDuration * verticalSteps);
 
     final now = DateTime.now();
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.add(now);
+    if (snapToTimeIndicator) {
+      snapPoints.add(now);
     }
 
     // Find the index of the snap point that is within a duration of 15 minutes of the startTime.
-    final startIndex = snapData.snapPoints.indexWhere(
-      (element) =>
-          element.difference(newStart).abs() <= snapData.verticalSnapRange,
+    final startIndex = snapPoints.indexWhere(
+      (element) => element.difference(newStart).abs() <= verticalSnapRange,
     );
 
     // Find the index of the snap point that is within a duration of 15 minutes of the endTime.
-    final endIndex = snapData.snapPoints.indexWhere(
-      (element) =>
-          element.difference(newEnd).abs() <= snapData.verticalSnapRange,
+    final endIndex = snapPoints.indexWhere(
+      (element) => element.difference(newEnd).abs() <= verticalSnapRange,
     );
 
     // Check if the start or end snap points should be used.
     if (startIndex != -1) {
-      newStart = snapData.snapPoints[startIndex];
+      newStart = snapPoints[startIndex];
       newEnd = newStart.add(initialDateTimeRange.duration);
     } else if (endIndex != -1) {
-      newEnd = snapData.snapPoints[endIndex];
+      newEnd = snapPoints[endIndex];
       newStart = newEnd.subtract(initialDateTimeRange.duration);
     }
 
+    // Create the new DateTimeRange.
     final newDateTimeRange = DateTimeRange(
       start: newStart,
       end: newEnd,
     );
 
-    if (newDateTimeRange.start.isWithin(snapData.visibleDateRange) ||
-        newDateTimeRange.end.isWithin(snapData.visibleDateRange)) {
-      scope.eventsController.selectedEvent!.dateTimeRange = newDateTimeRange;
+    // Calculate the deltaDuration.
+    final deltaDuration = newStart.difference(
+      eventsController.selectedEvent!.start,
+    );
+
+    final startIsWithin =
+        newDateTimeRange.start.isWithin(widget.visibleDateTimeRange);
+
+    final endIsWithin =
+        newDateTimeRange.end.isWithin(widget.visibleDateTimeRange);
+
+    if ((startIsWithin || endIsWithin)) {
+      // Reschedule the event.
+      eventsController.rescheduleSelectedEvent(
+        deltaDuration,
+        startHour,
+        endHour,
+      );
     }
 
-    if (snapData.snapToTimeIndicator) {
-      snapData.snapPoints.remove(now);
+    if (snapToTimeIndicator) {
+      snapPoints.remove(now);
     }
 
     currentHorizontalSteps = horizontalSteps;
@@ -385,9 +446,9 @@ class _EventTileState<T> extends State<EventTile<T>> {
 
   /// Handles the onRescheduleEnd event.
   Future<void> _onRescheduleEnd() async {
-    final selectedEvent = scope.eventsController.selectedEvent!;
-    controller.isRescheduling = false;
-    controller.deselectEvent();
+    final selectedEvent = eventsController.selectedEvent!;
+    eventsController.isRescheduling = false;
+    eventsController.deselectEvent();
 
     await scope.functions.onEventChanged?.call(
       initialDateTimeRange,

@@ -59,6 +59,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
               visibleDateRange,
             );
 
+            // Update the list of visible events.
+            scope.eventsController.updateVisibleEvents(visibleEvents);
+
             // Generate the list of tile groups.
             final eventGroups = EventGroupController<T>().generateTileGroups(
               visibleDates: visibleDates,
@@ -78,19 +81,6 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     )
                     .toList()
                 : <DateTime>[];
-
-            // Create the snap data.
-            final snapData = MultiDayPageData(
-              snapPoints: snapPoints,
-              snapToTimeIndicator: viewConfiguration.timeIndicatorSnapping,
-              verticalSnapRange: viewConfiguration.verticalSnapRange,
-              verticalStep: verticalStep,
-              verticalStepDuration: viewConfiguration.verticalStepDuration,
-              horizontalStepDuration: viewConfiguration.horizontalStepDuration,
-              horizontalStep: dayWidth,
-              visibleDateRange: visibleDateRange,
-              heightPerMinute: heightPerMinute,
-            );
 
             final daySeparator = Positioned(
               left: viewConfiguration.daySeparatorLeftOffset.toDouble(),
@@ -115,7 +105,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
               visibleDates: visibleDates,
               dayWidth: dayWidth,
               heightPerMinute: heightPerMinute,
-              snapData: snapData,
+              verticalStep: verticalStep,
+              horizontalStep: dayWidth,
+              snapPoints: snapPoints,
             );
 
             Widget? changingEventGroups;
@@ -138,8 +130,10 @@ class MultiDayPageContent<T> extends StatelessWidget {
                         visibleDates: visibleDates,
                         dayWidth: dayWidth,
                         heightPerMinute: heightPerMinute,
-                        snapData: snapData,
                         isChanging: true,
+                        verticalStep: verticalStep,
+                        horizontalStep: dayWidth,
+                        snapPoints: snapPoints,
                       ),
                     ],
                   );
@@ -183,9 +177,11 @@ class MultiDayPageContent<T> extends StatelessWidget {
   Iterable<Widget> generateEventGroupWidgets({
     required Iterable<EventGroup<T>> eventGroups,
     required List<DateTime> visibleDates,
+    required List<DateTime> snapPoints,
     required double dayWidth,
     required double heightPerMinute,
-    required MultiDayPageData snapData,
+    required double verticalStep,
+    required double horizontalStep,
     bool isChanging = false,
   }) {
     return eventGroups.map(
@@ -198,8 +194,12 @@ class MultiDayPageContent<T> extends StatelessWidget {
           bottom: 0,
           child: EventGroupWidget<T>(
             eventGroup: tileGroup,
-            snapData: snapData,
+            heightPerMinute: heightPerMinute,
             isChanging: isChanging,
+            visibleDateTimeRange: visibleDateRange,
+            verticalStep: verticalStep,
+            horizontalStep: horizontalStep,
+            snapPoints: snapPoints,
           ),
         );
       },
@@ -213,28 +213,4 @@ class MultiDayPageContent<T> extends StatelessWidget {
 
   bool showSelectedTile(CalendarEventsController<T> controller) =>
       controller.hasChangingEvent && !controller.selectedEvent!.isMultiDayEvent;
-}
-
-class MultiDayPageData {
-  MultiDayPageData({
-    required this.snapPoints,
-    required this.snapToTimeIndicator,
-    required this.verticalSnapRange,
-    required this.verticalStep,
-    required this.verticalStepDuration,
-    required this.horizontalStepDuration,
-    required this.horizontalStep,
-    required this.visibleDateRange,
-    required this.heightPerMinute,
-  });
-
-  final List<DateTime> snapPoints;
-  final bool snapToTimeIndicator;
-  final Duration verticalSnapRange;
-  final double verticalStep;
-  final Duration verticalStepDuration;
-  final Duration horizontalStepDuration;
-  final double horizontalStep;
-  final DateTimeRange visibleDateRange;
-  final double heightPerMinute;
 }
