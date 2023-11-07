@@ -1,3 +1,6 @@
+## 0.1.8
+* Fixed enable resize option not working.
+  
 ## 0.1.7
 * Fixed alignment issues.
 * Changes to layout.
