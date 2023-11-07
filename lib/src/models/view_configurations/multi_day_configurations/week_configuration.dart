@@ -17,6 +17,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     super.verticalSnapRange = const Duration(minutes: 15),
     super.horizontalStepDuration = const Duration(days: 1),
     super.newEventDuration = const Duration(minutes: 15),
+    super.enableRescheduling = true,
+    super.enableResizing = true,
   }) {
     super.numberOfDays = 7;
   }
@@ -26,12 +28,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   int get numberOfDays => 7;
-
-  @override
-  final bool enableRescheduling;
-
-  @override
-  final bool enableResizing;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {

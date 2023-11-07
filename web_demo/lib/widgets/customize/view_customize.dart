@@ -35,21 +35,15 @@ class ViewConfigurationCustomize extends StatelessWidget {
       EnableReschedule(
         value: config.enableRescheduling,
         onChanged: (value) {
-          onViewConfigChanged(
-            config.copyWith(
-              enableRescheduling: value,
-            ),
-          );
+          if (value == null) return;
+          config.enableRescheduling = value;
         },
       ),
       EnableResize(
         value: config.enableResizing,
         onChanged: (value) {
-          onViewConfigChanged(
-            config.copyWith(
-              enableResizing: value,
-            ),
-          );
+          if (value == null) return;
+          config.enableResizing = value;
         },
       ),
       MultiDayTileHeight(
@@ -116,21 +110,15 @@ class ViewConfigurationCustomize extends StatelessWidget {
       EnableReschedule(
         value: config.enableRescheduling,
         onChanged: (value) {
-          onViewConfigChanged(
-            config.copyWith(
-              enableRescheduling: value,
-            ),
-          );
+          if (value == null) return;
+          config.enableRescheduling = value;
         },
       ),
       EnableResize(
         value: config.enableResizing,
         onChanged: (value) {
-          onViewConfigChanged(
-            config.copyWith(
-              enableResizing: value,
-            ),
-          );
+          if (value == null) return;
+          config.enableResizing = value;
         },
       ),
       MultiDayTileHeight(

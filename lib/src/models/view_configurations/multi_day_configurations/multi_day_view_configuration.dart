@@ -17,6 +17,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     required double multiDayTileHeight,
     required Duration verticalStepDuration,
     required Duration verticalSnapRange,
+    required bool enableRescheduling,
+    required bool enableResizing,
     int startHour = 0,
     int endHour = 24,
   }) {
@@ -40,6 +42,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _firstDayOfWeek = firstDayOfWeek ?? 1;
     _paintWeekNumber = paintWeekNumber ?? false;
+
+    _enableRescheduling = enableRescheduling;
+    _enableResizing = enableResizing;
 
     assert(
       startHour >= 0 && startHour <= 23,
@@ -96,10 +101,20 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   }
 
   /// The duration of a new event.
-  Duration get newEventDuration;
+  late Duration _newEventDuration;
+  Duration get newEventDuration => _newEventDuration;
+  set newEventDuration(Duration value) {
+    _newEventDuration = value;
+    notifyListeners();
+  }
 
   /// Paint the week number.
-  bool get paintWeekNumber;
+  late bool _paintWeekNumber;
+  bool get paintWeekNumber => _paintWeekNumber;
+  set paintWeekNumber(bool value) {
+    _paintWeekNumber = value;
+    notifyListeners();
+  }
 
   /// The duration where the vertical drag will snap to.
   late Duration _verticalSnapRange;
@@ -162,6 +177,22 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   Duration get verticalStepDuration => _verticalStepDuration;
   set verticalStepDuration(Duration value) {
     _verticalStepDuration = value;
+    notifyListeners();
+  }
+
+  /// Enable rescheduling.
+  late bool _enableRescheduling;
+  bool get enableRescheduling => _enableRescheduling;
+  set enableRescheduling(bool value) {
+    _enableRescheduling = value;
+    notifyListeners();
+  }
+
+  /// Enable resizing.
+  late bool _enableResizing;
+  bool get enableResizing => _enableResizing;
+  set enableResizing(bool value) {
+    _enableResizing = value;
     notifyListeners();
   }
 

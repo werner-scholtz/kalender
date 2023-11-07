@@ -59,6 +59,24 @@ class _EventTileState<T> extends State<EventTile<T>> {
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
 
+  bool get canResize {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableResizing;
+    } else {
+      return true;
+    }
+  }
+
+  bool get canReschedule {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableRescheduling;
+    } else {
+      return true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();

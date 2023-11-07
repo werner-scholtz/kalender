@@ -9,6 +9,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     required bool enableResizing,
     required double multiDayTileHeight,
     required bool createMultiDayEvents,
+    required bool enableRescheduling,
   }) {
     _verticalStepDuration = verticalStepDuration;
     _horizontalStepDuration = horizontalStepDuration;
@@ -16,6 +17,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     _enableResizing = enableResizing;
     _multiDayTileHeight = multiDayTileHeight;
     _createMultiDayEvents = createMultiDayEvents;
+    _enableRescheduling = enableRescheduling;
   }
 
   /// The duration of one vertical step.
@@ -45,8 +47,16 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
   /// Whether the events can be resized.
   late bool _enableResizing;
   bool get enableResizing => _enableResizing;
-  set canResizeEvents(bool value) {
+  set enableResizing(bool value) {
     _enableResizing = value;
+    notifyListeners();
+  }
+
+  /// Enable rescheduling.
+  late bool _enableRescheduling;
+  bool get enableRescheduling => _enableRescheduling;
+  set enableRescheduling(bool value) {
+    _enableRescheduling = value;
     notifyListeners();
   }
 
