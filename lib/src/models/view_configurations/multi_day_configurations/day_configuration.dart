@@ -20,6 +20,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
     super.verticalSnapRange = const Duration(minutes: 15),
     super.horizontalStepDuration = const Duration(days: 1),
     super.newEventDuration = const Duration(minutes: 15),
+    super.enableRescheduling = true,
+    super.enableResizing = true,
   }) {
     super.numberOfDays = 1;
     super.firstDayOfWeek = 1;

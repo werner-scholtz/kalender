@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
+
+import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_event.dart';
@@ -42,6 +45,29 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   bool get useMobileGestures => isMobileDevice && widget.event.canModify;
   bool get useDesktopGestures => !isMobileDevice && widget.event.canModify;
   bool get canModify => widget.event.canModify;
+
+  bool get canResize {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableResizing;
+    } else if (viewConfig is MonthViewConfiguration) {
+      return viewConfig.enableResizing;
+    } else {
+      return true;
+    }
+  }
+
+  bool get canReschedule {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableRescheduling;
+    } else if (viewConfig is MonthViewConfiguration) {
+      return viewConfig.enableRescheduling;
+    } else {
+      return true;
+    }
+  }
+
   late DateTimeRange initialDateTimeRange;
 
   Offset cursorOffset = Offset.zero;
@@ -66,10 +92,20 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   Widget build(BuildContext context) {
     final onTap = _onTap;
 
+    // Get the onPanStart, onPanUpdate, and onPanEnd functions.
+    void Function(DragStartDetails details)? onPanStart;
+    void Function(DragUpdateDetails details)? onPanUpdate;
+    Future<void> Function(DragEndDetails details)? onPanEnd;
+    if (useDesktopGestures && canReschedule) {
+      onPanStart = _onRescheduleStart;
+      onPanUpdate = _onRescheduleUpdate;
+      onPanEnd = _onRescheduleEnd;
+    }
+
     Widget? resizeLeft;
     Widget? resizeRight;
 
-    if (useDesktopGestures) {
+    if (useDesktopGestures && canResize) {
       resizeLeft = resizeLeftWidget();
       resizeRight = resizeRightWidget();
     }
@@ -80,9 +116,9 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
         fit: StackFit.expand,
         children: [
           GestureDetector(
-            onPanStart: _onRescheduleStart,
-            onPanUpdate: _onRescheduleUpdate,
-            onPanEnd: (details) async => await _onRescheduleEnd(details),
+            onPanStart: onPanStart,
+            onPanUpdate: onPanUpdate,
+            onPanEnd: (details) async => await onPanEnd?.call(details),
             onTap: onTap,
             child: scope.tileComponents.multiDayTileBuilder!(
               widget.event,

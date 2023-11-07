@@ -7,6 +7,7 @@ class MonthConfiguration extends MonthViewConfiguration {
     this.name = 'Month',
     super.firstDayOfWeek = 1,
     super.enableResizing = true,
+    super.enableRescheduling = true,
     super.createMultiDayEvents = true,
     super.multiDayTileHeight = 24,
     super.verticalStepDuration = const Duration(days: 1),

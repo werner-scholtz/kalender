@@ -291,6 +291,8 @@ These are the default ViewConfiguration's:
       multiDayTileHeight: 24,
       enableResizing: true,
       createMultiDayEvents: true,
+      enableRescheduling: true,
+      enableResizing: true,
     );
     ```
       

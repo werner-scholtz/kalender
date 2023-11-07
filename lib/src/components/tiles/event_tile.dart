@@ -59,6 +59,24 @@ class _EventTileState<T> extends State<EventTile<T>> {
   int currentVerticalSteps = 0;
   int currentHorizontalSteps = 0;
 
+  bool get canResize {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableResizing;
+    } else {
+      return true;
+    }
+  }
+
+  bool get canReschedule {
+    final viewConfig = scope.state.viewConfiguration;
+    if (viewConfig is MultiDayViewConfiguration) {
+      return viewConfig.enableRescheduling;
+    } else {
+      return true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,7 +104,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
         void Function(DragStartDetails details)? onPanStart;
         void Function(DragUpdateDetails details)? onPanUpdate;
         Future<void> Function(DragEndDetails details)? onPanEnd;
-        if (useDesktopGestures) {
+        if (useDesktopGestures && canReschedule) {
           onPanStart = _onPanStart;
           onPanUpdate = _onPanUpdate;
           onPanEnd = _onPanEnd;
