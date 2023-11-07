@@ -39,7 +39,7 @@ class MultiDayEventTile<T> extends StatefulWidget {
 
 class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
-  CalendarEventsController<T> get controller => scope.eventsController;
+  CalendarEventsController<T> get eventsController => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
   bool get isMobileDevice => scope.platformData.isMobileDevice;
   bool get useMobileGestures => isMobileDevice && widget.event.canModify;
@@ -132,41 +132,63 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
     );
   }
 
+  /// Handles the onTap event.
   Future<void> _onTap() async {
     await functions.onEventTapped?.call(widget.event);
-    // controller.forceUpdate();
+
+    scope.eventsController.forceUpdate();
   }
 
+  /// Handles the onPanStart event.
   void _onRescheduleStart(DragStartDetails details) {
+    // Reset the cursor offset and steps.
     cursorOffset = Offset.zero;
     currentVerticalSteps = 0;
     currentHorizontalSteps = 0;
 
+    // Set the initial date time range.
     initialDateTimeRange = widget.event.dateTimeRange;
-    controller.isRescheduling = true;
-    controller.selectEvent(widget.event);
+
+    // Set is rescheduling to true.
+    eventsController.isRescheduling = true;
+
+    // Select the event.
+    eventsController.selectEvent(widget.event);
+
+    // Call the onEventChangeStart function.
     scope.functions.onEventChangeStart?.call(widget.event);
   }
 
+  /// Handles the onPanEnd event.
   Future<void> _onRescheduleEnd(DragEndDetails details) async {
+    // Get the selected event.
     final selectedEvent = scope.eventsController.selectedEvent!;
-    controller.isRescheduling = false;
-    controller.deselectEvent();
 
+    // Set is rescheduling to false.
+    eventsController.isRescheduling = false;
+
+    // Deselect the event.
+    eventsController.deselectEvent();
+
+    // Call the onEventChanged function.
     await functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,
     );
   }
 
+  /// Handles the onPanUpdate event.
   void _onRescheduleUpdate(DragUpdateDetails details) {
+    // Add the delta to the cursor offset.
     cursorOffset += details.delta;
 
+    // Calculate the horizontal and vertical steps.
     final horizontalSteps = (cursorOffset.dx / widget.horizontalStep).round();
     final verticalSteps = widget.verticalStep != null
         ? (cursorOffset.dy / widget.verticalStep!).round()
         : 0;
 
+    // If the steps are the same as the current steps, return.
     if (widget.verticalStep != null &&
         currentHorizontalSteps == horizontalSteps &&
         currentVerticalSteps == verticalSteps) {
@@ -176,78 +198,140 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
       return;
     }
 
-    final dHorizontal = widget.horizontalStepDuration * horizontalSteps;
-    final dVertical =
+    // Calculate the duration deltas.
+    final horizontalDurationDelta =
+        widget.horizontalStepDuration * horizontalSteps;
+    final verticalDurationDelta =
         (widget.verticalStepDuration ?? Duration.zero) * verticalSteps;
 
+    // Calculate the new date time range.
     final newDateTimeRange = DateTimeRange(
-      start: initialDateTimeRange.start.add(dHorizontal).add(dVertical),
-      end: initialDateTimeRange.end.add(dHorizontal).add(dVertical),
+      start: initialDateTimeRange.start
+          .add(horizontalDurationDelta)
+          .add(verticalDurationDelta),
+      end: initialDateTimeRange.end
+          .add(horizontalDurationDelta)
+          .add(verticalDurationDelta),
     );
 
+    // Calculate the delta duration.
+    final deltaDuration = newDateTimeRange.start.difference(
+      eventsController.selectedEvent!.start,
+    );
+
+    // Check if the new date time range is within the reschedule date range.
     if ((newDateTimeRange.start.isWithin(widget.rescheduleDateRange) ||
         newDateTimeRange.end.isWithin(widget.rescheduleDateRange))) {
-      controller.selectedEvent!.dateTimeRange = newDateTimeRange;
+      eventsController.rescheduleSelectedEvent(deltaDuration);
     }
 
+    // Set the current steps.
     currentHorizontalSteps = horizontalSteps;
     currentVerticalSteps = verticalSteps;
   }
 
+  /// Handles the onHorizontalDragStart event. (Left)
   void _onHorizontalDragStartLeft(DragStartDetails details) {
-    controller.isResizingTop = true;
+    // Set is isResizingTop to true.
+    eventsController.isResizingTop = true;
+
     _onHorizontalDragStart(details);
   }
 
+  /// Handles the onHorizontalDragStart event. (Right)
   void _onHorizontalDragStartRight(DragStartDetails details) {
-    controller.isResizingBottom = true;
+    // Set is isResizingBottom to true.
+    eventsController.isResizingBottom = true;
+
     _onHorizontalDragStart(details);
   }
 
+  /// Handles the _onHorizontalDragStartLeft && _onHorizontalDragStartRight events.
   void _onHorizontalDragStart(DragStartDetails details) {
+    // Reset the cursor offset and steps.
     cursorOffset = Offset.zero;
     currentHorizontalSteps = 0;
+
+    // Set the initial date time range.
     initialDateTimeRange = widget.event.dateTimeRange;
-    controller.selectEvent(widget.event);
+
+    // Select the event.
+    eventsController.selectEvent(widget.event);
+
+    // Call the onEventChangeStart function.
     scope.functions.onEventChangeStart?.call(widget.event);
   }
 
   void _onHorizontalDragUpdateLeft(DragUpdateDetails details) {
+    // Add the delta to the cursor offset.
     cursorOffset += details.delta;
-    final steps = (cursorOffset.dx / widget.horizontalStep).round();
-    if (steps != currentHorizontalSteps) {
-      final newStart =
-          initialDateTimeRange.start.add(widget.horizontalStepDuration * steps);
 
-      if (controller.selectedEvent == null) return;
-      if (newStart.isBefore(initialDateTimeRange.end)) {
-        controller.selectedEvent?.start = newStart;
-      }
-      currentHorizontalSteps = steps;
+    // Calculate the horizontal steps.
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
+
+    // If the steps are the same as the current steps, return.
+    if (steps == currentHorizontalSteps) return;
+
+    // Calculate the new start.
+    final newStart = initialDateTimeRange.start.add(
+      widget.horizontalStepDuration * steps,
+    );
+
+    // Calculate the delta duration.
+    final deltaDuration = newStart.difference(
+      eventsController.selectedEvent!.start,
+    );
+
+    // Check that the new start is before the initial end.
+    if (newStart.isBefore(initialDateTimeRange.end)) {
+      eventsController.rescheduleSelectedEventStart(deltaDuration);
     }
+
+    // Set the current horizontal steps.
+    currentHorizontalSteps = steps;
   }
 
   void _onHorizontalDragUpdateRight(DragUpdateDetails details) {
+    // Add the delta to the cursor offset.
     cursorOffset += details.delta;
-    final steps = (cursorOffset.dx / widget.horizontalStep).round();
-    if (steps != currentHorizontalSteps) {
-      final newEnd =
-          initialDateTimeRange.end.add(widget.horizontalStepDuration * steps);
-      if (controller.selectedEvent == null) return;
-      if (newEnd.isAfter(initialDateTimeRange.start)) {
-        controller.selectedEvent?.end = newEnd;
-      }
 
-      currentHorizontalSteps = steps;
+    // Calculate the horizontal steps.
+    final steps = (cursorOffset.dx / widget.horizontalStep).round();
+
+    // If the steps are the same as the current steps, return.
+    if (steps == currentHorizontalSteps) return;
+
+    // Calculate the new end.
+    final newEnd = initialDateTimeRange.end.add(
+      widget.horizontalStepDuration * steps,
+    );
+
+    // Calculate the delta duration.
+    final deltaDuration = newEnd.difference(
+      eventsController.selectedEvent!.end,
+    );
+
+    // Check that the new end is after the initial start.
+    if (newEnd.isAfter(initialDateTimeRange.start)) {
+      eventsController.rescheduleSelectedEventEnd(deltaDuration);
     }
+
+    // Set the current horizontal steps.
+    currentHorizontalSteps = steps;
   }
 
   Future<void> _onHorizontalDragEnd(DragEndDetails details) async {
+    // Get the selected event.
     final selectedEvent = scope.eventsController.selectedEvent!;
-    controller.deselectEvent();
-    controller.isResizingTop = false;
-    controller.isResizingBottom = false;
 
+    // Deselect the event.
+    eventsController.deselectEvent();
+
+    // Set is isResizingTop and is isResizingBottom to false.
+    eventsController.isResizingTop = false;
+    eventsController.isResizingBottom = false;
+
+    // Call the onEventChanged function.
     await functions.onEventChanged?.call(
       initialDateTimeRange,
       selectedEvent,

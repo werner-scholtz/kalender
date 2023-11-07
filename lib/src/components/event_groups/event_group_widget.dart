@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/tiles/event_tile.dart';
-import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar/calendar_view_state.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
-import 'package:kalender/src/models/tile_configurations/tile_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
-import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
 /// A widget that displays a group of events as [EventTile]s using the [CustomMultiChildLayout] widget.
 class EventGroupWidget<T> extends StatelessWidget {
@@ -13,12 +10,20 @@ class EventGroupWidget<T> extends StatelessWidget {
     super.key,
     required this.eventGroup,
     required this.isChanging,
-    required this.snapData,
+    required this.heightPerMinute,
+    required this.visibleDateTimeRange,
+    required this.verticalStep,
+    required this.horizontalStep,
+    required this.snapPoints,
   });
 
   final EventGroup<T> eventGroup;
-  final MultiDayPageData snapData;
   final bool isChanging;
+  final double heightPerMinute;
+  final DateTimeRange visibleDateTimeRange;
+  final double verticalStep;
+  final double horizontalStep;
+  final List<DateTime> snapPoints;
 
   @override
   Widget build(BuildContext context) {
@@ -30,42 +35,50 @@ class EventGroupWidget<T> extends StatelessWidget {
 
       // Check if the event is currently being moved.
       final isMoving = scope.eventsController.selectedEvent == event;
+
+      final tileType = isChanging
+          ? TileType.selected
+          : isMoving
+              ? TileType.ghost
+              : TileType.normal;
+
+      final tileConfiguration = TileConfiguration(
+        tileType: tileType,
+        drawOutline: i >= 1,
+        continuesBefore: event.start.isBefore(eventGroup.start),
+        continuesAfter: event.end.isAfter(eventGroup.end),
+      );
+
       children.add(
         LayoutId(
           id: i,
           child: EventTile(
             event: event,
-            tileConfiguration: TileConfiguration(
-              tileType: isChanging
-                  ? TileType.selected
-                  : isMoving
-                      ? TileType.ghost
-                      : TileType.normal,
-              drawOutline: i >= 1,
-              continuesBefore: event.start.isBefore(eventGroup.start),
-              continuesAfter: event.end.isAfter(eventGroup.end),
-            ),
-            snapData: snapData,
+            tileConfiguration: tileConfiguration,
+            heightPerMinute: heightPerMinute,
             isChanging: isChanging,
+            visibleDateTimeRange: visibleDateTimeRange,
+            verticalStep: verticalStep,
+            horizontalStep: horizontalStep,
+            snapPoints: snapPoints,
           ),
         ),
       );
     }
 
-    final heightPerMinute =
-        (scope.state as MultiDayViewState).heightPerMinute!.value;
+    final startHour =
+        (scope.state.viewConfiguration as MultiDayViewConfiguration).startHour;
 
-    scope.layoutDelegates.tileLayoutController.call(
-      startOfGroup: eventGroup.start,
-      events: eventGroup.events,
-      heightPerMinute: heightPerMinute,
-    );
+    final endHour =
+        (scope.state.viewConfiguration as MultiDayViewConfiguration).endHour;
 
     return CustomMultiChildLayout(
-      delegate: scope.layoutDelegates.tileLayoutController(
-        startOfGroup: eventGroup.start,
+      delegate: scope.layoutDelegates.tileLayoutDelegate.call(
+        date: eventGroup.date,
         events: eventGroup.events,
         heightPerMinute: heightPerMinute,
+        startHour: startHour,
+        endHour: endHour,
       ),
       children: children,
     );

@@ -73,19 +73,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int currentConfiguration = 0;
   List<ViewConfiguration> viewConfigurations = [
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
     ),
-    const CustomMultiDayConfiguration(
+    CustomMultiDayConfiguration(
       name: 'Custom',
       numberOfDays: 2,
     ),
-    const WeekConfiguration(),
-    const WorkWeekConfiguration(),
-    const MultiWeekConfiguration(),
-    const MonthConfiguration(),
-    const ScheduleConfiguration(),
+    WeekConfiguration(),
+    WorkWeekConfiguration(),
+    MonthConfiguration(),
+    ScheduleConfiguration(),
+    MultiWeekConfiguration(),
   ];
 
   @override
@@ -138,11 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
             final viewConfigurationCustomize = ViewConfigurationCustomize(
               currentConfiguration: viewConfigurations[currentConfiguration],
-              onViewConfigChanged: (newConfig) {
-                setState(() {
-                  viewConfigurations[currentConfiguration] = newConfig;
-                });
-              },
             );
 
             if (constraints.maxWidth < 500) {

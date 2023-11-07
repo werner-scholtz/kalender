@@ -332,42 +332,104 @@ class VerticalSnapRange extends StatelessWidget {
   }
 }
 
-class EnableResize extends StatelessWidget {
-  const EnableResize({
+class VisibleHourStart extends StatelessWidget {
+  const VisibleHourStart({
     super.key,
-    required this.value,
+    required this.hour,
     required this.onChanged,
   });
 
-  final bool value;
-  final void Function(bool? value) onChanged;
+  final int hour;
+  final void Function(int hour) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile.adaptive(
-      title: const Text('Enable Resize'),
-      value: value,
-      onChanged: onChanged,
+    return ListTile(
+      title: const Text('Start Hour'),
+      trailing: DropdownButton<int>(
+        value: hour,
+        items: const [
+          DropdownMenuItem(
+            value: 0,
+            child: Text('0'),
+          ),
+          DropdownMenuItem(
+            value: 1,
+            child: Text('1'),
+          ),
+          DropdownMenuItem(
+            value: 2,
+            child: Text('2'),
+          ),
+          DropdownMenuItem(
+            value: 3,
+            child: Text('3'),
+          ),
+          DropdownMenuItem(
+            value: 4,
+            child: Text('4'),
+          ),
+          DropdownMenuItem(
+            value: 5,
+            child: Text('5'),
+          ),
+        ],
+        onChanged: (value) {
+          if (value == null) return;
+          onChanged(value);
+        },
+      ),
     );
   }
 }
 
-class EnableReschedule extends StatelessWidget {
-  const EnableReschedule({
+class VisibleHourEnd extends StatelessWidget {
+  const VisibleHourEnd({
     super.key,
-    required this.value,
+    required this.hour,
     required this.onChanged,
   });
 
-  final bool value;
-  final void Function(bool? value) onChanged;
+  final int hour;
+  final void Function(int hour) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile.adaptive(
-      title: const Text('Enable Reschedule'),
-      value: value,
-      onChanged: onChanged,
+    return ListTile(
+      title: const Text('End Hour'),
+      trailing: DropdownButton<int>(
+        value: hour,
+        items: const [
+          DropdownMenuItem(
+            value: 19,
+            child: Text('19'),
+          ),
+          DropdownMenuItem(
+            value: 20,
+            child: Text('20'),
+          ),
+          DropdownMenuItem(
+            value: 21,
+            child: Text('21'),
+          ),
+          DropdownMenuItem(
+            value: 22,
+            child: Text('22'),
+          ),
+          DropdownMenuItem(
+            value: 23,
+            child: Text('23'),
+          ),
+          DropdownMenuItem(
+            value: 24,
+            child: Text('24'),
+          ),
+        ],
+        onChanged: (value) {
+          if (value == null) return;
+          onChanged(value);
+        },
+      ),
     );
   }
 }

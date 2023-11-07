@@ -3,53 +3,18 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 
 class MonthConfiguration extends MonthViewConfiguration {
-  const MonthConfiguration({
-    this.firstDayOfWeek = 1,
-    this.enableResizing = true,
-    this.enableRescheduling = true,
-    this.createMultiDayEvents = true,
-    this.multiDayTileHeight = 24,
+  MonthConfiguration({
+    this.name = 'Month',
+    super.firstDayOfWeek = 1,
+    super.enableResizing = true,
+    super.createMultiDayEvents = true,
+    super.multiDayTileHeight = 24,
+    super.verticalStepDuration = const Duration(days: 1),
+    super.horizontalStepDuration = const Duration(days: 7),
   });
 
   @override
-  String get name => 'Month';
-
-  @override
-  final Duration horizontalStepDuration = const Duration(days: 1);
-
-  @override
-  final Duration verticalStepDuration = const Duration(days: 7);
-
-  @override
-  final int firstDayOfWeek;
-
-  @override
-  final bool enableRescheduling;
-
-  @override
-  final bool enableResizing;
-
-  @override
-  final bool createMultiDayEvents;
-
-  @override
-  final double multiDayTileHeight;
-
-  MonthConfiguration copyWith({
-    int? firstDayOfWeek,
-    bool? enableResizing,
-    bool? enableRescheduling,
-    bool? createMultiDayEvents,
-    double? multiDayTileHeight,
-  }) {
-    return MonthConfiguration(
-      firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      enableResizing: enableResizing ?? this.enableResizing,
-      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
-      createMultiDayEvents: createMultiDayEvents ?? this.createMultiDayEvents,
-      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
-    );
-  }
+  final String name;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {

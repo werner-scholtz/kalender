@@ -3,67 +3,29 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 
 class WorkWeekConfiguration extends MultiDayViewConfiguration {
-  const WorkWeekConfiguration({
-    this.timelineWidth = 56,
-    this.daySeparatorLeftOffset = 8,
-    this.multiDayTileHeight = 24,
-    this.newEventDuration = const Duration(minutes: 15),
-    this.paintWeekNumber = true,
-    this.eventSnapping = true,
-    this.timeIndicatorSnapping = true,
-    this.createEvents = true,
-    this.createMultiDayEvents = true,
-    this.enableResizing = true,
-    this.enableRescheduling = true,
-    this.verticalStepDuration = const Duration(minutes: 15),
-    this.verticalSnapRange = const Duration(minutes: 15),
+  WorkWeekConfiguration({
     this.name = 'Work Week',
-  });
-
-  @override
-  final int numberOfDays = 5;
-
-  @override
-  final double timelineWidth;
-
-  @override
-  final Duration horizontalStepDuration = const Duration(days: 1);
-
-  @override
-  final double daySeparatorLeftOffset;
-
-  @override
-  final Duration newEventDuration;
-
-  @override
-  final Duration verticalStepDuration;
-
-  @override
-  final Duration verticalSnapRange;
-
-  @override
-  final double multiDayTileHeight;
-
-  @override
-  final bool paintWeekNumber;
-
-  @override
-  final bool eventSnapping;
-
-  @override
-  final bool timeIndicatorSnapping;
-
-  @override
-  final int firstDayOfWeek = 1;
+    super.timelineWidth = 56,
+    super.daySeparatorLeftOffset = 8,
+    super.multiDayTileHeight = 24,
+    super.paintWeekNumber = true,
+    super.eventSnapping = false,
+    super.timeIndicatorSnapping = false,
+    super.createEvents = true,
+    super.createMultiDayEvents = true,
+    super.verticalStepDuration = const Duration(minutes: 15),
+    super.verticalSnapRange = const Duration(minutes: 15),
+    super.horizontalStepDuration = const Duration(days: 1),
+    super.newEventDuration = const Duration(minutes: 15),
+  }) {
+    super.numberOfDays = 5;
+  }
 
   @override
   final String name;
 
   @override
-  final bool createEvents;
-
-  @override
-  final bool createMultiDayEvents;
+  int get numberOfDays => 5;
 
   @override
   final bool enableRescheduling;
@@ -119,45 +81,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
       end: weekRange.end.subtract(
         const Duration(days: 2),
       ),
-    );
-  }
-
-  @override
-  WorkWeekConfiguration copyWith({
-    String? name,
-    int? numberOfDays = 5,
-    double? timelineWidth,
-    double? daySeparatorLeftOffset,
-    double? multiDayTileHeight,
-    Duration? verticalStepDuration,
-    Duration? verticalSnapRange,
-    Duration? newEventDuration,
-    bool? paintWeekNumber,
-    bool? eventSnapping,
-    bool? timeIndicatorSnapping,
-    bool? createEvents,
-    bool? createMultiDayEvents,
-    bool? enableRescheduling,
-    bool? enableResizing,
-    // ignore: avoid_init_to_null
-    int? firstDayOfWeek = null,
-  }) {
-    return WorkWeekConfiguration(
-      timelineWidth: timelineWidth ?? this.timelineWidth,
-      daySeparatorLeftOffset:
-          daySeparatorLeftOffset ?? this.daySeparatorLeftOffset,
-      multiDayTileHeight: multiDayTileHeight ?? this.multiDayTileHeight,
-      newEventDuration: newEventDuration ?? this.newEventDuration,
-      paintWeekNumber: paintWeekNumber ?? this.paintWeekNumber,
-      eventSnapping: eventSnapping ?? this.eventSnapping,
-      timeIndicatorSnapping:
-          timeIndicatorSnapping ?? this.timeIndicatorSnapping,
-      createEvents: createEvents ?? this.createEvents,
-      verticalStepDuration: verticalStepDuration ?? this.verticalStepDuration,
-      verticalSnapRange: verticalSnapRange ?? this.verticalSnapRange,
-      name: name ?? this.name,
-      enableRescheduling: enableRescheduling ?? this.enableRescheduling,
-      enableResizing: enableResizing ?? this.enableResizing,
     );
   }
 }

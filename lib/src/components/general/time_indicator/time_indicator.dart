@@ -29,7 +29,7 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
     super.initState();
     _currentDate = DateTime.now();
     _timer = Timer.periodic(
-      const Duration(seconds: 15),
+      const Duration(seconds: 1),
       (timer) {
         setState(() {
           _currentDate = DateTime.now();

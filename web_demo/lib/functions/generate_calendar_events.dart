@@ -76,7 +76,7 @@ List<CalendarEvent<Event>> generateCalendarEvents() {
         ),
         eventData: Event(
           title: 'Event ${getID()}',
-          description: 'Description',
+          description: 'Forced Height',
           color: getRadomColor(),
         ),
       ),
