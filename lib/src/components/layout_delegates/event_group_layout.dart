@@ -74,6 +74,7 @@ abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
         heightPerMinute,
       );
 
+  /// The start time of the day.
   late DateTime startTime = DateTime(
     date.year,
     date.month,
@@ -81,6 +82,7 @@ abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
     startHour,
   );
 
+  /// The end time of the day.
   late DateTime endTime = DateTime(
     date.year,
     date.month,

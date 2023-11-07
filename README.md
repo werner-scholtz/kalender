@@ -407,8 +407,7 @@ The EventsController is used to store and manage CalendarEvent's.
 | removeEvent   | CalendarEvent\<T\> event  | Removes this event from the list and rebuilds the calendar view |
 | removeWhere   | bool Function(CalendarEvent\<T\> element) test  | Removes the event(s) where the test returns true  |
 | clearEvents   |   | Clears the list of stored events  |
-| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData or newDateTimeRange (if provided), of the event where 
-the test returns true  | 
+| updateEvent   | T? newEventData, DateTimeRange? newDateTimeRange,bool modifiable,bool Function(CalendarEvent<T> calendarEvent) test, | Updates the eventData and/or newDateTimeRange and/or modifiable (if provided), of the event where the test returns true  | 
 | selectEvent   |  CalendarEvent<T> event | Selects the given event. |
 | deselectEvent | | Deselects the selected event. |
 | forceUpdate | | Forces the calendar to update the UI. |
@@ -467,6 +466,8 @@ There are three types of layout controllers: DayLayoutController, MultiDayLayout
       required super.events, // The events that are in the group.
       required super.startOfGroup, // The datetime that the group starts.
       required super.heightPerMinute, // The height per minute of the view.
+      required super.startHour, // The start hour of the view.
+      required super.endHour, // The end hour of the view.
     });
     
     @override
