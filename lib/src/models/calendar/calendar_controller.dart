@@ -30,6 +30,14 @@ class CalendarController<T> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// The list of [CalendarEvent]s that are currently visible.
+  Iterable<CalendarEvent<T>> _visibleEvents = [];
+  Iterable<CalendarEvent<T>> get visibleEvents => _visibleEvents;
+  set visibleEvents(Iterable<CalendarEvent<T>> value) {
+    _visibleEvents = value;
+    notifyListeners();
+  }
+
   /// The [DateTimeRange] that the calendar can display.
   final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
@@ -134,6 +142,7 @@ class CalendarController<T> with ChangeNotifier {
       }
     }
     _state = null;
+    _visibleEvents = [];
   }
 
   /// Animates to the next page.

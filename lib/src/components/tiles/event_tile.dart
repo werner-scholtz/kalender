@@ -264,12 +264,12 @@ class _EventTileState<T> extends State<EventTile<T>> {
       eventsController.selectedEvent!.start,
     );
 
-    // Reschedule the event's start.
-    eventsController.rescheduleSelectedEventStart(
-      deltaDuration,
-      startHour,
-      endHour,
-    );
+    if (newStart.hour >= startHour) {
+      // Reschedule the event's start.
+      eventsController.rescheduleSelectedEventStart(
+        deltaDuration,
+      );
+    }
 
     currentVerticalSteps = verticalSteps;
 
@@ -320,12 +320,12 @@ class _EventTileState<T> extends State<EventTile<T>> {
       eventsController.selectedEvent!.end,
     );
 
-    // Reschedule the event's end.
-    eventsController.rescheduleSelectedEventEnd(
-      deltaDuration,
-      startHour,
-      endHour,
-    );
+    if (newEnd.hour <= endHour) {
+      // Reschedule the event's end.
+      eventsController.rescheduleSelectedEventEnd(
+        deltaDuration,
+      );
+    }
 
     currentVerticalSteps = verticalSteps;
 
@@ -428,12 +428,13 @@ class _EventTileState<T> extends State<EventTile<T>> {
         newDateTimeRange.end.isWithin(widget.visibleDateTimeRange);
 
     if ((startIsWithin || endIsWithin)) {
-      // Reschedule the event.
-      eventsController.rescheduleSelectedEvent(
-        deltaDuration,
-        startHour,
-        endHour,
-      );
+      if (newDateTimeRange.start.hour >= startHour &&
+          newDateTimeRange.end.hour <= endHour) {
+        // Reschedule the event.
+        eventsController.rescheduleSelectedEvent(
+          deltaDuration,
+        );
+      }
     }
 
     if (snapToTimeIndicator) {

@@ -9,7 +9,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Platforms** - Works with Web, Desktop and Mobile. 
 
-* **Calendar Views** - There are 3 calendar views available, Day, MultiDay, and Month. [Find out more](#calendar-views)
+* **Calendar Views** - There are 3 calendar views available, MultiDay, Month and Schedule. [Find out more](#calendar-views)
 
 * **Reschedule** - Drag and Drop events to your liking. [Try it out](https://werner-scholtz.github.io/kalender/)
 
@@ -60,8 +60,9 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
     ```dart
     eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange()
-        eventData: Event(  
+        dateTimeRange: DateTimeRange(), // The DateTimeRange of the event.
+        modifiable: true, // Change this to false if you do not want the user to modify the event.
+        eventData: Event(  // The custom object that you want to link to the event.
             title: 'Event 1',
             color: Colors.blue,
         ),
@@ -130,7 +131,7 @@ Configure the event handlers like so.
 ### Calendar Views
 There are a few constructors that you can choose from to create a CalendarView.
 
-1. **Default Constructor** - this constructor will build the correct view (MultiDay, Month) based on the ViewConfiguration you pass it.
+1. **Default Constructor** - this constructor will build the correct view (MultiDay, Month, Schedule) based on the ViewConfiguration you pass it.
 
 2. **MultiDayView** - this constructor will build a MultiDayView.
 
@@ -139,9 +140,15 @@ There are a few constructors that you can choose from to create a CalendarView.
 4. **ScheduleView** - this constructor will build a ScheduleView and does not need the multiDayTileBuilder.
 
 ### View Configuration
-The CalendarView takes a ViewConfiguration object.
+The CalendarView takes a ViewConfiguration object, which allows you to configure the view to your liking.
+The view configuration serves the following purposes:
+- It contains the functions that calculate the date indices that are used by the PageView's/ScrollablePositionedList.
+- It contains various parameters that are used by the CalendarView:
+  1. To layout event tiles.
+  2. To determine user interaction with the calendar.
 
-There are 2 'Types' of ViewConfiguration's: MultiDayViewConfiguration, and MonthViewConfiguration.
+
+There are 3 'Types' of ViewConfiguration's: MultiDayViewConfiguration, MonthViewConfiguration and ScheduleViewConfiguration.
 * You can create a Custom ViewConfiguration by extending one of these 'Types'.
 
 These are the default ViewConfiguration's:
@@ -275,6 +282,7 @@ These are the default ViewConfiguration's:
 
     ```dart
     MonthConfiguration(
+      name: 'Month',
       firstDayOfWeek: 1,
       multiDayTileHeight: 24,
       enableResizing: true,
@@ -284,7 +292,17 @@ These are the default ViewConfiguration's:
       
     </details>
    
+7. **ScheduleConfiguration** - this configuration is used to configure the ScheduleView.
 
+    <details><summary>Example</summary>
+
+    ```dart
+    ScheduleConfiguration(
+      name: 'Schedule',
+    );
+    ```
+      
+    </details>
 
 
 
@@ -294,17 +312,24 @@ The CalendarEventHandlers handles the user's interaction with the calendar. (Do 
 
 There are 5 events at this time that can be handled.
 
-1. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
-2. **onEventChangeStart**: this function is called when an event is about to be changed.
+**Group 1:**
+
+1. **onEventChangeStart**: this function is called when an event is about to be changed.
+
+2. **onEventChanged**: this function is called when an event displayed on the calendar is changed. (resized or moved)
 
 3. **onEventTapped**: this function is called when an event displayed on the calendar is tapped.
 
-4. **onCreateEvent**: this function is called when a new event is created by the calendar.
+**Group 2:**
 
-5. **onEventCreated**: this function is called once all operations on the event is complete.
+1. **onCreateEvent**: this function is called when a new event is created by the calendar.
 
-6. **onDateTapped**: this function is called when a date on the calendar is tapped.
+2. **onEventCreated**: this function is called once all operations on the new event is complete.
+
+**Other:**
+
+1. **onDateTapped**: this function is called when a date on the calendar is tapped.
 
   <details><summary>Example Code</summary>
 

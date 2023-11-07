@@ -23,10 +23,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Whether the [CalendarController] has a [_selectedEvent].
   bool get hasChangingEvent => _selectedEvent != null;
 
-  /// The list of [CalendarEvent]s that are currently visible.
-  Iterable<CalendarEvent<T>> _visibleEvents = [];
-  Iterable<CalendarEvent<T>> get visibleEvents => _visibleEvents;
-
   /// Is resizing selectedEvent top.
   /// If true the selectedEvent will not allow resizing bottom and rescheduling.
   bool _isResizingTop = false;
@@ -71,23 +67,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// Forces an update of the calendar.
   void forceUpdate() {
     notifyListeners();
-  }
-
-  /// Updates the [_visibleEvents].
-  ///
-  /// The [_visibleEvents] are the [CalendarEvent]s that are currently visible.
-  void updateVisibleEvents(Iterable<CalendarEvent<T>> visibleEvents) {
-    _visibleEvents = visibleEvents;
-  }
-
-  /// Adds a list of [CalendarEvent]s to the list of [_visibleEvents].
-  void addVisibleEvents(Iterable<CalendarEvent<T>> visibleEvents) {
-    _visibleEvents = [..._visibleEvents, ...visibleEvents];
-  }
-
-  /// Clears the [_visibleEvents].
-  void clearVisibleEvents() {
-    _visibleEvents = [];
   }
 
   /// Adds an [CalendarEvent] to the list of [CalendarEvent]s.
@@ -139,7 +118,6 @@ class CalendarEventsController<T> with ChangeNotifier {
     T? newEventData,
     DateTimeRange? newDateTimeRange,
     bool? modifiable,
-    double? forcedHeight,
     required bool Function(CalendarEvent<T> calendarEvent) test,
   }) {
     final index = _events.indexWhere((element) => test(element));
@@ -163,8 +141,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEvent(
     Duration duration,
-    int start,
-    int end,
   ) {
     if (selectedEvent == null) return;
     final newDateTimeRange = DateTimeRange(
@@ -172,10 +148,7 @@ class CalendarEventsController<T> with ChangeNotifier {
       end: selectedEvent!.end.add(duration),
     );
 
-    if (newDateTimeRange.start.hour >= start &&
-        newDateTimeRange.end.hour <= end) {
-      selectedEvent!.dateTimeRange = newDateTimeRange;
-    }
+    selectedEvent!.dateTimeRange = newDateTimeRange;
   }
 
   /// Reschedules the [_selectedEvent]'s start by the given [duration].
@@ -183,8 +156,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEventStart(
     Duration duration,
-    int start,
-    int end,
   ) {
     if (selectedEvent == null) return;
 
@@ -193,9 +164,7 @@ class CalendarEventsController<T> with ChangeNotifier {
       end: selectedEvent!.end,
     );
 
-    if (newDateTimeRange.start.hour >= start) {
-      selectedEvent!.dateTimeRange = newDateTimeRange;
-    }
+    selectedEvent!.dateTimeRange = newDateTimeRange;
   }
 
   /// Reschedules the [_selectedEvent]'s end by the given [duration].
@@ -203,8 +172,6 @@ class CalendarEventsController<T> with ChangeNotifier {
   /// * The [start] and [end] are the start and end hours of the day.
   void rescheduleSelectedEventEnd(
     Duration duration,
-    int start,
-    int end,
   ) {
     if (selectedEvent == null) return;
 
@@ -212,10 +179,7 @@ class CalendarEventsController<T> with ChangeNotifier {
       start: selectedEvent!.start,
       end: selectedEvent!.end.add(duration),
     );
-
-    if (newDateTimeRange.end.hour <= end) {
-      selectedEvent!.dateTimeRange = newDateTimeRange;
-    }
+    selectedEvent!.dateTimeRange = newDateTimeRange;
   }
 
   /// Returns a iterable of [CalendarEvent]s that will be visible on the given date range.

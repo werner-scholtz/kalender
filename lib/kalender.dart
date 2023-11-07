@@ -10,7 +10,7 @@ export 'package:kalender/src/components/layout_delegates/layout_delegates_export
 export 'package:kalender/src/components/general/styles_export.dart';
 
 /// Views
-export 'package:kalender/src/views/calendar_view.dart';
+export 'package:kalender/src/views/view_export.dart';
 
 /// View Configurations
 export 'package:kalender/src/models/view_configurations/view_configuration_export.dart';

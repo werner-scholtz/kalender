@@ -63,6 +63,7 @@ class MonthViewContent<T> extends StatelessWidget {
                   visibleDateRange: visibleDateRange,
                   horizontalStep: horizontalStep,
                   verticalStep: verticalStep,
+                  controller: controller,
                 );
               },
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
@@ -13,12 +14,14 @@ class MonthViewPageContent<T> extends StatelessWidget {
     required this.visibleDateRange,
     required this.horizontalStep,
     required this.verticalStep,
+    required this.controller,
   });
 
   final DateTimeRange visibleDateRange;
   final MonthViewConfiguration viewConfiguration;
   final double horizontalStep;
   final double verticalStep;
+  final CalendarController<T> controller;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +32,6 @@ class MonthViewPageContent<T> extends StatelessWidget {
         ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {
-            scope.eventsController.clearVisibleEvents();
-
             return Column(
               children: [
                 for (int c = 0; c < 5; c++)
@@ -58,7 +59,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
                         weekDateRange,
                       );
 
-                      scope.eventsController.addVisibleEvents(events);
+                      controller.visibleEvents =
+                          controller.visibleEvents.followedBy(events);
 
                       // Create a multi day event group from the events.
                       final multiDayEventGroup =

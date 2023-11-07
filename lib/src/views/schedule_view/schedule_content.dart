@@ -148,7 +148,7 @@ class _ScheduleContentState<T> extends State<ScheduleContent<T>> {
     final visibleEvents = scope.eventsController.getEventsFromDateRange(
       visibleDateRange,
     );
-    scope.eventsController.updateVisibleEvents(visibleEvents);
+    widget.controller.visibleEvents = visibleEvents;
 
     if (widget.viewState.visibleDateTimeRangeNotifier.value !=
         visibleDateRange) {
