@@ -130,23 +130,23 @@ typedef MultiDayEventLayoutDelegateBuilder<T extends Object?>
   required List<CalendarEvent<T>> events,
 });
 
-typedef EventTileBuilder<T extends Object?> = Widget Function({
-  required CalendarEvent<T> event,
-  required TileConfiguration configuration,
-  required double heightPerMinute,
-  required bool isChanging,
-  required DateTimeRange visibleDateTimeRange,
-  required double verticalStep,
-  required double horizontalStep,
-  required List<DateTime> snapPoints,
-});
+typedef EventTileBuilder<T extends Object?> = Widget Function(
+  CalendarEvent<T> event,
+  TileConfiguration configuration,
+  double heightPerMinute,
+  bool isChanging,
+  DateTimeRange visibleDateTimeRange,
+  double verticalStep,
+  double horizontalStep,
+  List<DateTime> snapPoints,
+);
 
-typedef MultiDayEventTileBuilder<T extends Object?> = Widget Function({
-  required CalendarEvent<T> event,
-  required MultiDayTileConfiguration configuration,
-  required DateTimeRange rescheduleDateRange,
-  required double horizontalStep,
-  required Duration horizontalStepDuration,
-  required Duration? verticalStepDuration,
-  required double? verticalStep,
-});
+typedef MultiDayEventTileBuilder<T extends Object?> = Widget Function(
+  CalendarEvent<T> event,
+  MultiDayTileConfiguration configuration,
+  DateTimeRange rescheduleDateRange,
+  double horizontalStep,
+  Duration horizontalStepDuration,
+  Duration? verticalStepDuration,
+  double? verticalStep,
+);

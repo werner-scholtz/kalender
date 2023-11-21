@@ -59,13 +59,13 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
 
       final multiDayEventTile =
           scope.tileComponents.multiDayEventTileBuilder?.call(
-                event: event,
-                configuration: tileConfiguration,
-                rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
-                horizontalStep: horizontalStep,
-                horizontalStepDuration: horizontalStepDuration,
-                verticalStep: verticalStep,
-                verticalStepDuration: verticalStepDuration,
+                event,
+                tileConfiguration,
+                rescheduleDateRange ?? visibleDateRange,
+                horizontalStep,
+                horizontalStepDuration,
+                verticalStepDuration,
+                verticalStep,
               ) ??
               MultiDayEventTile(
                 event: event,

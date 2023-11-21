@@ -50,14 +50,14 @@ class EventGroupWidget<T> extends StatelessWidget {
       );
 
       final eventTile = scope.tileComponents.eventTileBuilder?.call(
-            event: event,
-            configuration: tileConfiguration,
-            heightPerMinute: heightPerMinute,
-            isChanging: isChanging,
-            visibleDateTimeRange: visibleDateTimeRange,
-            verticalStep: verticalStep,
-            horizontalStep: horizontalStep,
-            snapPoints: snapPoints,
+            event,
+            tileConfiguration,
+            heightPerMinute,
+            isChanging,
+            visibleDateTimeRange,
+            verticalStep,
+            horizontalStep,
+            snapPoints,
           ) ??
           EventTile(
             event: event,
