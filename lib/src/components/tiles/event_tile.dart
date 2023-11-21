@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions.dart';
 
 class EventTile<T> extends StatefulWidget {
   const EventTile({

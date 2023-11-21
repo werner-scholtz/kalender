@@ -18,5 +18,6 @@ export 'package:kalender/src/models/view_configurations/view_configuration_expor
 /// Enums
 export 'package:kalender/src/enumerations.dart';
 
+export 'package:kalender/src/type_definitions.dart';
 export 'package:kalender/src/providers/calendar_scope.dart';
 export 'package:kalender/src/extensions.dart';
