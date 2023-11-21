@@ -49,10 +49,17 @@ class EventGroupWidget<T> extends StatelessWidget {
         continuesAfter: event.end.isAfter(eventGroup.end),
       );
 
-      children.add(
-        LayoutId(
-          id: i,
-          child: EventTile(
+      final eventTile = scope.tileComponents.eventTileBuilder?.call(
+            event: event,
+            configuration: tileConfiguration,
+            heightPerMinute: heightPerMinute,
+            isChanging: isChanging,
+            visibleDateTimeRange: visibleDateTimeRange,
+            verticalStep: verticalStep,
+            horizontalStep: horizontalStep,
+            snapPoints: snapPoints,
+          ) ??
+          EventTile(
             event: event,
             tileConfiguration: tileConfiguration,
             heightPerMinute: heightPerMinute,
@@ -61,7 +68,12 @@ class EventGroupWidget<T> extends StatelessWidget {
             verticalStep: verticalStep,
             horizontalStep: horizontalStep,
             snapPoints: snapPoints,
-          ),
+          );
+
+      children.add(
+        LayoutId(
+          id: i,
+          child: eventTile,
         ),
       );
     }

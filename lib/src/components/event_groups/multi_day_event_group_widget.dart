@@ -41,26 +41,46 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
 
       // Check if the event is currently being moved.
       final isMoving = scope.eventsController.selectedEvent == event;
+
+      final tileType = isChanging
+          ? TileType.selected
+          : isMoving
+              ? TileType.ghost
+              : TileType.normal;
+
+      final continuesBefore = event.start.isBefore(visibleDateRange.start);
+      final continuesAfter = event.end.isAfter(visibleDateRange.end.endOfDay);
+
+      final tileConfiguration = MultiDayTileConfiguration(
+        tileType: tileType,
+        continuesBefore: continuesBefore,
+        continuesAfter: continuesAfter,
+      );
+
+      final multiDayEventTile =
+          scope.tileComponents.multiDayEventTileBuilder?.call(
+                event: event,
+                configuration: tileConfiguration,
+                rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
+                horizontalStep: horizontalStep,
+                horizontalStepDuration: horizontalStepDuration,
+                verticalStep: verticalStep,
+                verticalStepDuration: verticalStepDuration,
+              ) ??
+              MultiDayEventTile(
+                event: event,
+                rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
+                horizontalStep: horizontalStep,
+                horizontalStepDuration: horizontalStepDuration,
+                verticalStep: verticalStep,
+                verticalStepDuration: verticalStepDuration,
+                tileConfiguration: tileConfiguration,
+              );
+
       children.add(
         LayoutId(
           id: i,
-          child: MultiDayEventTile(
-            event: event,
-            rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
-            horizontalStep: horizontalStep,
-            horizontalStepDuration: horizontalStepDuration,
-            verticalStep: verticalStep,
-            verticalStepDuration: verticalStepDuration,
-            tileConfiguration: MultiDayTileConfiguration(
-              tileType: isChanging
-                  ? TileType.selected
-                  : isMoving
-                      ? TileType.ghost
-                      : TileType.normal,
-              continuesBefore: event.start.isBefore(visibleDateRange.start),
-              continuesAfter: event.end.isAfter(visibleDateRange.end.endOfDay),
-            ),
-          ),
+          child: multiDayEventTile,
         ),
       );
     }
