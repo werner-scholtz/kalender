@@ -5,7 +5,7 @@ import 'package:kalender/src/components/tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 
-/// A widget that displays a group of events as [MultiDayEventTile]s using the [CustomMultiChildLayout] widget.
+/// A widget that displays a group of events as [MultiDayEventGestureDetector]s using the [CustomMultiChildLayout] widget.
 class MultiDayEventGroupWidget<T> extends StatelessWidget {
   const MultiDayEventGroupWidget({
     super.key,
@@ -67,7 +67,7 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
                 verticalStepDuration,
                 verticalStep,
               ) ??
-              MultiDayEventTile(
+              MultiDayEventGestureDetector(
                 event: event,
                 rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
                 horizontalStep: horizontalStep,

@@ -11,8 +11,8 @@ import 'package:kalender/src/models/tile_configurations/multi_day_tile_configura
 
 // TODO: Add resize and reschedule for mobile.
 
-class MultiDayEventTile<T> extends StatefulWidget {
-  const MultiDayEventTile({
+class MultiDayEventGestureDetector<T> extends StatefulWidget {
+  const MultiDayEventGestureDetector({
     super.key,
     required this.event,
     required this.tileConfiguration,
@@ -34,10 +34,12 @@ class MultiDayEventTile<T> extends StatefulWidget {
   final double? verticalStep;
 
   @override
-  State<MultiDayEventTile<T>> createState() => _MultiDayEventTileState<T>();
+  State<MultiDayEventGestureDetector<T>> createState() =>
+      _MultiDayEventGestureDetectorState<T>();
 }
 
-class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
+class _MultiDayEventGestureDetectorState<T>
+    extends State<MultiDayEventGestureDetector<T>> {
   CalendarScope<T> get scope => CalendarScope.of<T>(context);
   CalendarEventsController<T> get eventsController => scope.eventsController;
   CalendarEventHandlers<T> get functions => scope.functions;
@@ -81,7 +83,7 @@ class _MultiDayEventTileState<T> extends State<MultiDayEventTile<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant MultiDayEventTile<T> oldWidget) {
+  void didUpdateWidget(covariant MultiDayEventGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.event != oldWidget.event) {
       initialDateTimeRange = widget.event.dateTimeRange;
