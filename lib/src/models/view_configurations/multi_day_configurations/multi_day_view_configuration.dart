@@ -19,8 +19,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     required Duration verticalSnapRange,
     required bool enableRescheduling,
     required bool enableResizing,
-    int startHour = 0,
-    int endHour = 24,
+    required int startHour,
+    required int endHour,
   }) {
     _numberOfDays = numberOfDays ?? 1;
     assert(

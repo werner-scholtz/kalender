@@ -20,6 +20,8 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
     super.newEventDuration = const Duration(minutes: 15),
     super.enableRescheduling = true,
     super.enableResizing = true,
+    super.startHour = 0,
+    super.endHour = 24,
   }) {
     _numberOfWeeks = numberOfWeeks;
     super.numberOfDays = numberOfWeeks * 7;

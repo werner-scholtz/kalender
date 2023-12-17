@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/general/day_header/day_header.dart';
 import 'package:kalender/src/components/general/day_separator/day_separator.dart';
 import 'package:kalender/src/components/general/hour_line/hour_lines.dart';
@@ -10,7 +11,6 @@ import 'package:kalender/src/components/general/tile_handle/tile_handle.dart';
 import 'package:kalender/src/components/general/time_indicator/time_indicator.dart';
 import 'package:kalender/src/components/general/time_line/timeline.dart';
 import 'package:kalender/src/components/general/week_number/week_number.dart';
-import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 /// This class is used to provide the tile components for the calendar.
@@ -19,6 +19,8 @@ class CalendarTileComponents<T> {
     this.tileBuilder,
     this.scheduleTileBuilder,
     this.multiDayTileBuilder,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   });
 
   /// The [TileBuilder] is used to build event tiles that are displayed on [SingleDayView] and [MultiDayView] days.
@@ -29,6 +31,10 @@ class CalendarTileComponents<T> {
 
   /// The [ScheduleTileBuilder] is used to build event tiles that are displayed on [ScheduleView] days.
   final ScheduleTileBuilder<T>? scheduleTileBuilder;
+
+  final EventTileBuilder<T>? eventTileBuilder;
+
+  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
 }
 
 /// This class is used to provide the components for the calendar.

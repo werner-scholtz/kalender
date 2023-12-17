@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 
-class EventTile<T> extends StatefulWidget {
-  const EventTile({
+class EventGestureDetector<T> extends StatefulWidget {
+  const EventGestureDetector({
     super.key,
     required this.event,
     required this.tileConfiguration,
@@ -28,10 +27,11 @@ class EventTile<T> extends StatefulWidget {
   final List<DateTime> snapPoints;
 
   @override
-  State<EventTile<T>> createState() => _EventTileState<T>();
+  State<EventGestureDetector<T>> createState() =>
+      _EventGestureDetectorState<T>();
 }
 
-class _EventTileState<T> extends State<EventTile<T>> {
+class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
   late final CalendarScope<T> scope = CalendarScope.of<T>(context);
   CalendarEventsController<T> get eventsController => scope.eventsController;
 
@@ -84,7 +84,7 @@ class _EventTileState<T> extends State<EventTile<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant EventTile<T> oldWidget) {
+  void didUpdateWidget(covariant EventGestureDetector<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.event != oldWidget.event) {
       initialDateTimeRange = widget.event.dateTimeRange;

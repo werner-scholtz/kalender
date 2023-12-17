@@ -48,6 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
     CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
+      startHour: 1,
+      endHour: 12,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',

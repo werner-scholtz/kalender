@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/tiles/event_tile.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
 
-/// A widget that displays a group of events as [EventTile]s using the [CustomMultiChildLayout] widget.
+/// A widget that displays a group of events as [EventGestureDetector]s using the [CustomMultiChildLayout] widget.
 class EventGroupWidget<T> extends StatelessWidget {
   const EventGroupWidget({
     super.key,
@@ -49,10 +48,17 @@ class EventGroupWidget<T> extends StatelessWidget {
         continuesAfter: event.end.isAfter(eventGroup.end),
       );
 
-      children.add(
-        LayoutId(
-          id: i,
-          child: EventTile(
+      final eventTile = scope.tileComponents.eventTileBuilder?.call(
+            event,
+            tileConfiguration,
+            heightPerMinute,
+            isChanging,
+            visibleDateTimeRange,
+            verticalStep,
+            horizontalStep,
+            snapPoints,
+          ) ??
+          EventGestureDetector(
             event: event,
             tileConfiguration: tileConfiguration,
             heightPerMinute: heightPerMinute,
@@ -61,7 +67,12 @@ class EventGroupWidget<T> extends StatelessWidget {
             verticalStep: verticalStep,
             horizontalStep: horizontalStep,
             snapPoints: snapPoints,
-          ),
+          );
+
+      children.add(
+        LayoutId(
+          id: i,
+          child: eventTile,
         ),
       );
     }

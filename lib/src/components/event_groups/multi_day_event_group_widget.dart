@@ -5,7 +5,7 @@ import 'package:kalender/src/components/tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 
-/// A widget that displays a group of events as [MultiDayEventTile]s using the [CustomMultiChildLayout] widget.
+/// A widget that displays a group of events as [MultiDayEventGestureDetector]s using the [CustomMultiChildLayout] widget.
 class MultiDayEventGroupWidget<T> extends StatelessWidget {
   const MultiDayEventGroupWidget({
     super.key,
@@ -41,26 +41,46 @@ class MultiDayEventGroupWidget<T> extends StatelessWidget {
 
       // Check if the event is currently being moved.
       final isMoving = scope.eventsController.selectedEvent == event;
+
+      final tileType = isChanging
+          ? TileType.selected
+          : isMoving
+              ? TileType.ghost
+              : TileType.normal;
+
+      final continuesBefore = event.start.isBefore(visibleDateRange.start);
+      final continuesAfter = event.end.isAfter(visibleDateRange.end.endOfDay);
+
+      final tileConfiguration = MultiDayTileConfiguration(
+        tileType: tileType,
+        continuesBefore: continuesBefore,
+        continuesAfter: continuesAfter,
+      );
+
+      final multiDayEventTile =
+          scope.tileComponents.multiDayEventTileBuilder?.call(
+                event,
+                tileConfiguration,
+                rescheduleDateRange ?? visibleDateRange,
+                horizontalStep,
+                horizontalStepDuration,
+                verticalStepDuration,
+                verticalStep,
+              ) ??
+              MultiDayEventGestureDetector(
+                event: event,
+                rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
+                horizontalStep: horizontalStep,
+                horizontalStepDuration: horizontalStepDuration,
+                verticalStep: verticalStep,
+                verticalStepDuration: verticalStepDuration,
+                tileConfiguration: tileConfiguration,
+              );
+
       children.add(
         LayoutId(
           id: i,
-          child: MultiDayEventTile(
-            event: event,
-            rescheduleDateRange: rescheduleDateRange ?? visibleDateRange,
-            horizontalStep: horizontalStep,
-            horizontalStepDuration: horizontalStepDuration,
-            verticalStep: verticalStep,
-            verticalStepDuration: verticalStepDuration,
-            tileConfiguration: MultiDayTileConfiguration(
-              tileType: isChanging
-                  ? TileType.selected
-                  : isMoving
-                      ? TileType.ghost
-                      : TileType.normal,
-              continuesBefore: event.start.isBefore(visibleDateRange.start),
-              continuesAfter: event.end.isAfter(visibleDateRange.end.endOfDay),
-            ),
-          ),
+          child: multiDayEventTile,
         ),
       );
     }
