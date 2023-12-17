@@ -1,3 +1,6 @@
+## 0.1.9
+* Fixed start and end hour issue.
+
 ## 0.1.8
 * Fixed enable resize option not working.
   
