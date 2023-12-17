@@ -66,6 +66,7 @@ import 'package:kalender/src/views/schedule_view/schedule_view.dart';
 ///   ),
 /// );
 /// '''
+/// {@end-tool}
 ///
 /// MultiDay constructor example:
 ///
