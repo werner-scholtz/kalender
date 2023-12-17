@@ -23,30 +23,23 @@ class DayHeader extends StatelessWidget {
         color: dayHeaderStyle?.backgroundColor,
         borderRadius: dayHeaderStyle?.borderRadius,
       ),
-      child: Padding(
-        padding:
-            dayHeaderStyle?.padding ?? const EdgeInsets.symmetric(vertical: 4),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              DateText(
-                date: date,
-                textStyle: dayHeaderStyle?.textStyle ??
-                    Theme.of(context).textTheme.bodySmall,
-                upperCase: dayHeaderStyle?.useUpperCase ?? false,
-              ),
-              RepaintBoundary(
-                child: DateIconButton(
-                  date: date,
-                  onTapped: (date) => onTapped?.call(date),
-                  textStyle: dayHeaderStyle?.buttonTextStyle ??
-                      Theme.of(context).textTheme.bodyLarge,
-                  visualDensity: dayHeaderStyle?.buttonVisualDensity,
-                ),
-              ),
-            ],
+      child: Column(
+        children: <Widget>[
+          DateText(
+            date: date,
+            textStyle: dayHeaderStyle?.textStyle ??
+                Theme.of(context).textTheme.bodySmall,
+            upperCase: dayHeaderStyle?.useUpperCase ?? false,
           ),
-        ),
+          DateIconButton(
+            date: date,
+            onTapped: (date) => onTapped?.call(date),
+            textStyle: dayHeaderStyle?.buttonTextStyle ??
+                Theme.of(context).textTheme.bodySmall,
+            visualDensity:
+                dayHeaderStyle?.buttonVisualDensity ?? VisualDensity.compact,
+          ),
+        ],
       ),
     );
   }

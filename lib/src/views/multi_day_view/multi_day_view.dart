@@ -29,6 +29,8 @@ class MultiDayView<T> extends StatefulWidget {
     this.style,
     this.functions,
     this.layoutDelegates,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   });
 
   /// The [CalendarController] used to control the view.
@@ -57,6 +59,9 @@ class MultiDayView<T> extends StatefulWidget {
 
   /// The [MultiDayTileBuilder] used to build multi day event tiles.
   final MultiDayTileBuilder<T> multiDayTileBuilder;
+
+  final EventTileBuilder<T>? eventTileBuilder;
+  final MultiDayEventTileBuilder<T>? multiDayEventTileBuilder;
 
   @override
   State<MultiDayView<T>> createState() => _MultiDayViewState<T>();
@@ -90,6 +95,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
             tileComponents: CalendarTileComponents<T>(
               tileBuilder: widget.tileBuilder,
               multiDayTileBuilder: widget.multiDayTileBuilder,
+              eventTileBuilder: widget.eventTileBuilder,
+              multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
             ),
             platformData: PlatformData(),
             layoutDelegates:

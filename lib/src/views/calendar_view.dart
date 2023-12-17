@@ -123,6 +123,8 @@ class CalendarView<T> extends StatelessWidget {
     this.style,
     this.eventHandlers,
     this.layoutDelegates,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   }) : assert(
           tileBuilder != null && multiDayTileBuilder != null,
           'All Event Tile builders must be assigned',
@@ -139,6 +141,8 @@ class CalendarView<T> extends StatelessWidget {
     this.style,
     this.eventHandlers,
     this.layoutDelegates,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   })  : scheduleTileBuilder = null,
         assert(
           tileBuilder != null && multiDayTileBuilder != null,
@@ -159,6 +163,8 @@ class CalendarView<T> extends StatelessWidget {
     this.style,
     this.eventHandlers,
     this.layoutDelegates,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   })  : tileBuilder = null,
         scheduleTileBuilder = null,
         assert(
@@ -180,6 +186,8 @@ class CalendarView<T> extends StatelessWidget {
     this.style,
     this.eventHandlers,
     this.layoutDelegates,
+    this.eventTileBuilder,
+    this.multiDayEventTileBuilder,
   })  : tileBuilder = null,
         multiDayTileBuilder = null,
         assert(
@@ -217,6 +225,9 @@ class CalendarView<T> extends StatelessWidget {
   /// The [ScheduleTileBuilder] used to build schedule event tiles.
   final ScheduleTileBuilder<T>? scheduleTileBuilder;
 
+  final EventTileBuilder? eventTileBuilder;
+  final MultiDayEventTileBuilder? multiDayEventTileBuilder;
+
   @override
   Widget build(BuildContext context) {
     if (viewConfiguration is MultiDayViewConfiguration) {
@@ -231,6 +242,8 @@ class CalendarView<T> extends StatelessWidget {
             viewConfiguration as MultiDayViewConfiguration,
         style: style,
         layoutDelegates: layoutDelegates,
+        eventTileBuilder: eventTileBuilder,
+        multiDayEventTileBuilder: multiDayEventTileBuilder,
       );
     }
 
@@ -244,6 +257,7 @@ class CalendarView<T> extends StatelessWidget {
         monthViewConfiguration: viewConfiguration as MonthViewConfiguration,
         style: style,
         layoutDelegates: layoutDelegates,
+        multiDayEventTileBuilder: multiDayEventTileBuilder,
       );
     }
 
