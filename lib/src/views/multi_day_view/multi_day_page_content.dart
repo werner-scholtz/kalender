@@ -8,6 +8,7 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/event_group_controllers/event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class MultiDayPageContent<T> extends StatelessWidget {
   const MultiDayPageContent({
@@ -26,6 +27,9 @@ class MultiDayPageContent<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+
+    final components = CalendarStyleProvider.of(context).components;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final visibleDates = visibleDateRange.datesSpanned;
@@ -84,7 +88,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
               width: daySeparatorWidth,
               top: 0,
               bottom: 0,
-              child: scope.components.daySeparatorBuilder(
+              child: components.daySeparatorBuilder(
                 viewConfiguration.numberOfDays,
                 dayWidth,
               ),
@@ -148,7 +152,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
                 top: 0,
                 bottom: 0,
                 width: dayWidth,
-                child: scope.components.timeIndicatorBuilder.call(
+                child: components.timeIndicatorBuilder.call(
                   heightPerMinute,
                   dayWidth,
                 ),

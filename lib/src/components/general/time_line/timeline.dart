@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/constants.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -19,8 +18,6 @@ class Timeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
-    final timelineTextBuilder =
-        CalendarScope.of(context).components.timelineTextBuilder;
 
     final timeline = Stack(
       fit: StackFit.expand,
@@ -34,18 +31,14 @@ class Timeline extends StatelessWidget {
             top: (i * hourHeight),
             child: i == startHour - 1 || i == endHour - 1
                 ? const SizedBox()
-                : timelineTextBuilder != null
-                    ? timelineTextBuilder(
-                        TimeOfDay(hour: i + 1, minute: 0),
-                      )
-                    : Center(
-                        child: TimeText(
-                          timeOfDay: TimeOfDay(hour: i + 1, minute: 0),
-                          textStyle: timelineStyle?.textStyle,
-                          use24HourFormat: timelineStyle?.use24HourFormat ??
-                              MediaQuery.of(context).alwaysUse24HourFormat,
-                        ),
-                      ),
+                : Center(
+                    child: TimeText(
+                      timeOfDay: TimeOfDay(hour: i + 1, minute: 0),
+                      textStyle: timelineStyle?.textStyle,
+                      use24HourFormat: timelineStyle?.use24HourFormat ??
+                          MediaQuery.of(context).alwaysUse24HourFormat,
+                    ),
+                  ),
           ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class EventGestureDetector<T> extends StatefulWidget {
   const EventGestureDetector({
@@ -34,6 +35,9 @@ class EventGestureDetector<T> extends StatefulWidget {
 class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
   late final CalendarScope<T> scope = CalendarScope.of<T>(context);
   CalendarEventsController<T> get eventsController => scope.eventsController;
+
+  late final CalendarComponents components =
+      CalendarStyleProvider.of(context).components;
 
   MultiDayViewConfiguration get viewConfiguration =>
       scope.state.viewConfiguration as MultiDayViewConfiguration;
@@ -128,7 +132,8 @@ class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
         Widget? resizeBottomWidget;
 
         // Check if the event can be modified and if the event is being rescheduled.
-        if (widget.event.canModify && !eventsController.isRescheduling &&
+        if (widget.event.canModify &&
+            !eventsController.isRescheduling &&
             canResize) {
           if (useDesktopGestures) {
             resizeBottomWidget = _resizeBottomDesktopWidget();
@@ -528,7 +533,7 @@ class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
                 _onVerticalDragEnd(details);
               }
             : null,
-        child: scope.components.tileHandleBuilder(enabled),
+        child: components.tileHandleBuilder(enabled),
       ),
     );
   }
@@ -585,7 +590,7 @@ class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
         onVerticalDragEnd: (details) async {
           _onVerticalDragEnd(details);
         },
-        child: scope.components.tileHandleBuilder(
+        child: components.tileHandleBuilder(
           enabled,
         ),
       ),
