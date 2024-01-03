@@ -2,17 +2,20 @@
 * Added initialHeightPerMinute.
 
 ## 0.1.9
-* ViewConfiguration is now a ChangeNotifier so making changes to it will now update the view.
-* Added Custom Start and End Hours to MultiDayViewConfiguration.
+* Fixed start and end hour issue.
 
 ## 0.1.8
-#### Breaking Changes:
-* onCreateEvent is now split into onCreateEvent and onEventCreated.
-
+* Fixed enable resize option not working.
+  
 ## 0.1.7
 * Fixed alignment issues.
 * Changes to layout.
 * Added options to enable/disable Resizing and Rescheduling.
+* ViewConfiguration is now a ChangeNotifier so making changes to it will now update the view.
+* Added Custom Start and End Hours to MultiDayViewConfiguration.
+
+#### Breaking Changes:
+* onCreateEvent is now split into onCreateEvent and onEventCreated.
 
 ## 0.1.6
 * Fixed some gesture bugs.

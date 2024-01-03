@@ -128,7 +128,8 @@ class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
         Widget? resizeBottomWidget;
 
         // Check if the event can be modified and if the event is being rescheduled.
-        if (widget.event.canModify && !eventsController.isRescheduling) {
+        if (widget.event.canModify && !eventsController.isRescheduling &&
+            canResize) {
           if (useDesktopGestures) {
             resizeBottomWidget = _resizeBottomDesktopWidget();
             resizeTopWidget = _resizeTopDesktopWidget();
