@@ -40,7 +40,7 @@ class MonthViewHeader<T> extends StatelessWidget {
           return Column(
             children: <Widget>[
               calendarHeader,
-              monthHeader,
+              if (viewConfiguration.showHeader) monthHeader,
             ],
           );
         },

@@ -82,11 +82,10 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
                 widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
             child: Column(
               children: <Widget>[
-                if (widget.scheduleViewConfiguration.showHeader)
-                  ScheduleHeader<T>(
-                    viewConfiguration: widget.scheduleViewConfiguration,
-                    viewState: _viewState,
-                  ),
+                ScheduleHeader<T>(
+                  viewConfiguration: widget.scheduleViewConfiguration,
+                  viewState: _viewState,
+                ),
                 Expanded(
                   child: ScheduleContent<T>(
                     controller: widget.controller,

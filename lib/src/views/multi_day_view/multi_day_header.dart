@@ -44,7 +44,7 @@ class MultiDayHeader<T> extends StatelessWidget {
           return Column(
             children: <Widget>[
               calendarHeader,
-              dayHeader,
+              if (viewConfiguration.showHeader) dayHeader,
             ],
           );
         },
