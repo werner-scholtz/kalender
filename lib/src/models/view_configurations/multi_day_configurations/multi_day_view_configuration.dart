@@ -6,6 +6,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? numberOfDays,
     int? firstDayOfWeek,
     bool? paintWeekNumber,
+    double? initialHeightPerMinute,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
     required Duration horizontalStepDuration,
@@ -45,6 +46,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _enableRescheduling = enableRescheduling;
     _enableResizing = enableResizing;
+
+    _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
 
     assert(
       startHour >= 0 && startHour <= 23,
@@ -226,6 +229,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _endHour = value;
     notifyListeners();
   }
+
+  late double _initialHeightPerMinute;
+  double get heightPerMinute => _initialHeightPerMinute;
 
   bool get customStartEndHour => _startHour != 0 || _endHour != 24;
 }
