@@ -21,6 +21,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     super.enableResizing = true,
     super.startHour = 0,
     super.endHour = 24,
+    super.initialHeightPerMinute,
   }) {
     super.numberOfDays = 7;
   }
