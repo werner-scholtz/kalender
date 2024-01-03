@@ -1,3 +1,4 @@
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [MultiDayViewConfiguration]s.
@@ -7,7 +8,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
-    bool? useLongPressForCreateEvent,
+    CreateEventTrigger? createEventTrigger,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
     required Duration horizontalStepDuration,
@@ -50,7 +51,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
 
-    _useLongPressForCreateEvent = useLongPressForCreateEvent ?? false;
+    _createEventTrigger = createEventTrigger ?? CreateEventTrigger.tap;
 
     assert(
       startHour >= 0 && startHour <= 23,
@@ -238,7 +239,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   bool get customStartEndHour => _startHour != 0 || _endHour != 24;
 
-  /// Use LongPress instead of Tap to create events.
-  late bool _useLongPressForCreateEvent;
-  bool get useLongPressForCreateEvent => _useLongPressForCreateEvent;
+  /// Gesture type for creating events.
+  late CreateEventTrigger _createEventTrigger;
+  CreateEventTrigger get createEventTrigger => _createEventTrigger;
 }
