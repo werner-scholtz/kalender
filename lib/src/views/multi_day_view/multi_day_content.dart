@@ -29,7 +29,8 @@ class MultiDayContent<T> extends StatelessWidget {
 
         // The height of the content after clipping.
         // The +1 is to show the last hour line.
-        final clippedHeight = (viewConfiguration.endHour * hourHeight) + 2;
+        final clippedHeight = (viewConfiguration.endHour * hourHeight) -
+            viewConfiguration.startHour * hourHeight;
 
         return scope.components.calendarZoomDetector(
           controller,
@@ -106,17 +107,17 @@ class MultiDayContent<T> extends StatelessWidget {
               return SingleChildScrollView(
                 controller: state.scrollController,
                 physics: value,
-                child: SizedBox(
-                  height: clippedHeight,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: -viewConfiguration.startHour * hourHeight,
-                        left: 0,
-                        right: 0,
-                        child: ClipRect(
+                child: ClipRect(
+                  child: SizedBox(
+                    height: clippedHeight,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: -viewConfiguration.startHour * hourHeight,
+                          left: 0,
+                          right: 0,
                           child: SizedBox(
-                            height: clippedHeight,
+                            height: (viewConfiguration.endHour) * hourHeight,
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
@@ -127,8 +128,8 @@ class MultiDayContent<T> extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
