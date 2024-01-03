@@ -1,3 +1,6 @@
+## 0.2.0
+* Added initialHeightPerMinute.
+
 ## 0.1.9
 * Fixed start and end hour issue.
 
