@@ -47,6 +47,7 @@ class CalendarComponents {
     WeekNumberBuilder? weekNumberBuilder,
     HourLinesBuilder? hourLineBuilder,
     TimelineBuilder? timelineBuilder,
+    TimelineTextBuilder? timelineTextBuilder,
     TimeIndicatorBuilder? timeIndicatorBuilder,
     DaySeparatorBuilder? daySeparatorBuilder,
     MonthGridBuilder? monthGridBuilder,
@@ -73,6 +74,8 @@ class CalendarComponents {
         scheduleMonthHeaderBuilder ?? _defaultScheduleMonthHeaderBuilder;
     this.calendarZoomDetector =
         calendarZoomDetector ?? _defaultCalendarZoomDetector;
+    this.timelineTextBuilder =
+        timelineTextBuilder ?? _defaultTimelineTextBuilder;
   }
 
   /// This builder is used to build the widget displayed in the calendar's header.
@@ -88,7 +91,12 @@ class CalendarComponents {
   late HourLinesBuilder hourLineBuilder;
 
   /// This builder is used to build the timeline displayed on the left side of the calendar.
+  ///
+  /// If you override this builder, the [TimelineTextBuilder] will be ignored.
   late TimelineBuilder timelineBuilder;
+
+  /// This builder is used to build the text displayed on the timeline.
+  late TimelineTextBuilder timelineTextBuilder;
 
   /// This builder is used to build the separators between days.
   late DaySeparatorBuilder daySeparatorBuilder;
@@ -123,6 +131,14 @@ class CalendarComponents {
       hourHeight: hourHeight,
       startHour: startHour,
       endHour: endHour,
+    );
+  }
+
+  Widget _defaultTimelineTextBuilder(
+    TimeOfDay timeOfDay,
+  ) {
+    return TimelineText(
+      timeOfDay: timeOfDay,
     );
   }
 

@@ -17,8 +17,6 @@ class Timeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
-
     final timeline = Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.hardEdge,
@@ -31,14 +29,12 @@ class Timeline extends StatelessWidget {
             top: (i * hourHeight),
             child: i == startHour - 1 || i == endHour - 1
                 ? const SizedBox()
-                : Center(
-                    child: TimeText(
-                      timeOfDay: TimeOfDay(hour: i + 1, minute: 0),
-                      textStyle: timelineStyle?.textStyle,
-                      use24HourFormat: timelineStyle?.use24HourFormat ??
-                          MediaQuery.of(context).alwaysUse24HourFormat,
+                : CalendarStyleProvider.of(context)
+                    .components
+                    .timelineTextBuilder
+                    .call(
+                      TimeOfDay(hour: i + 1, minute: 0),
                     ),
-                  ),
           ),
       ],
     );
@@ -55,25 +51,27 @@ class Timeline extends StatelessWidget {
   }
 }
 
-class TimeText extends StatelessWidget {
-  const TimeText({
+class TimelineText extends StatelessWidget {
+  const TimelineText({
     super.key,
     required this.timeOfDay,
-    required this.textStyle,
-    required this.use24HourFormat,
   });
+
   final TimeOfDay timeOfDay;
-  final TextStyle? textStyle;
-  final bool use24HourFormat;
 
   @override
   Widget build(BuildContext context) {
+    final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
+    final use24HourFormat = timelineStyle?.use24HourFormat ??
+        MediaQuery.of(context).alwaysUse24HourFormat;
     final string = use24HourFormat
         ? '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}'
         : '${((timeOfDay.hour - 1) % 12) + 1} ${timeOfDay.hour ~/ 12 == 0 ? "am" : "pm"}';
-    return Text(
-      string,
-      style: textStyle,
+    return Center(
+      child: Text(
+        string,
+        style: timelineStyle?.textStyle,
+      ),
     );
   }
 }
