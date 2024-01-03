@@ -1,3 +1,6 @@
+## 0.2.0
+* Added initialHeightPerMinute.
+
 ## 0.1.9
 * ViewConfiguration is now a ChangeNotifier so making changes to it will now update the view.
 * Added Custom Start and End Hours to MultiDayViewConfiguration.
