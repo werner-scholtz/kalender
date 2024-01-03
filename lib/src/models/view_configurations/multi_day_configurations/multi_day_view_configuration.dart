@@ -7,6 +7,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
+    this.showHeader = true,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
     required Duration horizontalStepDuration,
@@ -232,6 +233,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
   late double _initialHeightPerMinute;
   double get heightPerMinute => _initialHeightPerMinute;
+
+  @override
+  late bool showHeader;
 
   bool get customStartEndHour => _startHour != 0 || _endHour != 24;
 }

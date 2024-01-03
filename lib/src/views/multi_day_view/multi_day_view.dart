@@ -103,9 +103,10 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
                 widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
             child: Column(
               children: <Widget>[
-                MultiDayHeader<T>(
-                  viewConfiguration: widget.multiDayViewConfiguration,
-                ),
+                if (widget.multiDayViewConfiguration.showHeader)
+                  MultiDayHeader<T>(
+                    viewConfiguration: widget.multiDayViewConfiguration,
+                  ),
                 Expanded(
                   child: MultiDayContent<T>(
                     controller: widget.controller,

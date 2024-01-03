@@ -3,7 +3,12 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 
 /// This is the base class for all [ScheduleViewConfiguration]s.
 abstract class ScheduleViewConfiguration extends ViewConfiguration {
-  ScheduleViewConfiguration();
+  ScheduleViewConfiguration({
+    this.showHeader = true,
+  });
+
+  @override
+  bool showHeader;
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {

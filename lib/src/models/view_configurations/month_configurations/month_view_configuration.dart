@@ -10,6 +10,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     required double multiDayTileHeight,
     required bool createMultiDayEvents,
     required bool enableRescheduling,
+    this.showHeader = true,
   }) {
     _verticalStepDuration = verticalStepDuration;
     _horizontalStepDuration = horizontalStepDuration;
@@ -75,4 +76,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     _createMultiDayEvents = value;
     notifyListeners();
   }
+
+  @override
+  late bool showHeader;
 }

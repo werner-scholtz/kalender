@@ -10,6 +10,9 @@ abstract class ViewConfiguration with ChangeNotifier {
   /// The name of the [ViewConfiguration].
   String get name;
 
+  /// The number of days in the [ViewConfiguration].
+  bool get showHeader;
+
   /// Returns the visible[DateTimeRange] for the [index].
   ///
   /// [calendarStart] is the start of the calendar.

@@ -3,7 +3,9 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_configurations/schedule_view_configuration.dart';
 
 class ScheduleConfiguration extends ScheduleViewConfiguration {
-  ScheduleConfiguration();
+  ScheduleConfiguration({
+    super.showHeader,
+  });
 
   @override
   String get name => 'Schedule';
