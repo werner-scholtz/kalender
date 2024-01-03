@@ -7,6 +7,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
+    bool? useLongPressForCreateEvent,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
     required Duration horizontalStepDuration,
@@ -48,6 +49,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _enableResizing = enableResizing;
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
+
+    _useLongPressForCreateEvent = useLongPressForCreateEvent ?? false;
 
     assert(
       startHour >= 0 && startHour <= 23,
@@ -234,4 +237,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   double get heightPerMinute => _initialHeightPerMinute;
 
   bool get customStartEndHour => _startHour != 0 || _endHour != 24;
+
+  /// Use LongPress instead of Tap to create events.
+  late bool _useLongPressForCreateEvent;
+  bool get useLongPressForCreateEvent => _useLongPressForCreateEvent;
 }
