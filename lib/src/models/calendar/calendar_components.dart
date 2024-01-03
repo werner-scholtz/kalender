@@ -43,6 +43,7 @@ class CalendarTileComponents<T> {
 class CalendarComponents {
   CalendarComponents({
     this.calendarHeaderBuilder,
+    this.timelineTextBuilder,
     DayHeaderBuilder? dayHeaderBuilder,
     WeekNumberBuilder? weekNumberBuilder,
     HourLinesBuilder? hourLineBuilder,
@@ -89,6 +90,9 @@ class CalendarComponents {
 
   /// This builder is used to build the timeline displayed on the left side of the calendar.
   late TimelineBuilder timelineBuilder;
+
+  /// This builder is used to build the text displayed on the timeline.
+  late TimelineTextBuilder? timelineTextBuilder;
 
   /// This builder is used to build the separators between days.
   late DaySeparatorBuilder daySeparatorBuilder;

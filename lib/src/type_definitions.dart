@@ -35,6 +35,10 @@ typedef TimelineBuilder<T extends Object?> = Widget Function(
   int endHour,
 );
 
+typedef TimelineTextBuilder<T extends Object?> = Widget Function(
+  TimeOfDay timeOfDay,
+);
+
 /// The [WeekNumberBuilder] is used to build the week number displayed on the left side of the calendar.
 typedef WeekNumberBuilder<T extends Object?> = Widget Function(
   DateTimeRange visibleDateRange,
