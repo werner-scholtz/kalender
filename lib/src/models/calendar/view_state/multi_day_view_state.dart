@@ -62,7 +62,8 @@ class MultiDayViewState extends ViewState {
       numberOfPages: numberOfPages,
       pageController: pageController,
       scrollController: scrollController,
-      heightPerMinute: previousState?.heightPerMinute ?? ValueNotifier(0.7),
+      heightPerMinute: previousState?.heightPerMinute ??
+          ValueNotifier(viewConfiguration.heightPerMinute),
     );
   }
 
