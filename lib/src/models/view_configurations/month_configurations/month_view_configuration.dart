@@ -1,3 +1,4 @@
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [MonthViewConfiguration]s.
@@ -11,6 +12,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     required double multiDayTileHeight,
     required bool createMultiDayEvents,
     required bool enableRescheduling,
+    CreateEventTrigger? createEventTrigger,
   }) {
     _verticalStepDuration = verticalStepDuration;
     _horizontalStepDuration = horizontalStepDuration;
@@ -19,6 +21,8 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     _multiDayTileHeight = multiDayTileHeight;
     _createMultiDayEvents = createMultiDayEvents;
     _enableRescheduling = enableRescheduling;
+    _createEventTrigger = createEventTrigger ?? CreateEventTrigger.longPress;
+    _showHeader = showHeader;
   }
 
   /// The duration of one vertical step.
@@ -84,4 +88,8 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     _showHeader = value;
     notifyListeners();
   }
+
+  /// Gesture type for creating events.
+  late CreateEventTrigger _createEventTrigger;
+  CreateEventTrigger get createEventTrigger => _createEventTrigger;
 }

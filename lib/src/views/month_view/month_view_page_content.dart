@@ -86,8 +86,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
                           (multiDayEventGroup.maxNumberOfStackedEvents + 1);
 
                       final gestureDetector = MultiDayHeaderGestureDetector<T>(
-                        createMultiDayEvents:
-                            viewConfiguration.createMultiDayEvents,
+                        createMultiDayEvents: viewConfiguration.createMultiDayEvents,
+                        createEventTrigger: viewConfiguration.createEventTrigger,
                         visibleDateRange: weekDateRange,
                         horizontalStep: horizontalStep,
                         verticalStep: verticalStep,
