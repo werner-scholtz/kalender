@@ -21,7 +21,7 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     _multiDayTileHeight = multiDayTileHeight;
     _createMultiDayEvents = createMultiDayEvents;
     _enableRescheduling = enableRescheduling;
-    _createEventTrigger = createEventTrigger ?? CreateEventTrigger.longPress;
+    _createEventTrigger = createEventTrigger ?? CreateEventTrigger.tap;
     _showHeader = showHeader;
   }
 
