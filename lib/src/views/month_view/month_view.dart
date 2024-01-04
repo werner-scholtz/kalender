@@ -82,11 +82,11 @@ class _MonthViewState<T> extends State<MonthView<T>>
 
         return CalendarStyleProvider(
           style: widget.style ?? const CalendarStyle(),
+          components: widget.components ?? CalendarComponents(),
           child: CalendarScope<T>(
             state: _viewState,
             eventsController: widget.eventsController,
             functions: widget.functions ?? CalendarEventHandlers<T>(),
-            components: widget.components ?? CalendarComponents(),
             tileComponents: CalendarTileComponents(
               multiDayTileBuilder: widget.multiDayTileBuilder,
               multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
@@ -96,9 +96,10 @@ class _MonthViewState<T> extends State<MonthView<T>>
                 widget.layoutDelegates ?? CalendarLayoutDelegates(),
             child: Column(
               children: <Widget>[
-                MonthViewHeader<T>(
-                  viewConfiguration: widget.monthViewConfiguration,
-                ),
+                if (widget.monthViewConfiguration.showHeader)
+                  MonthViewHeader<T>(
+                    viewConfiguration: widget.monthViewConfiguration,
+                  ),
                 MonthViewContent<T>(
                   viewConfiguration: widget.monthViewConfiguration,
                   controller: widget.controller,

@@ -4,6 +4,7 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 import 'package:kalender/src/views/multi_day_view/multi_day_page_content.dart';
 
 class MultiDayContent<T> extends StatelessWidget {
@@ -19,6 +20,8 @@ class MultiDayContent<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
+
     final state = scope.state as MultiDayViewState;
 
     return ValueListenableBuilder<double>(
@@ -29,9 +32,10 @@ class MultiDayContent<T> extends StatelessWidget {
 
         // The height of the content after clipping.
         // The +1 is to show the last hour line.
-        final clippedHeight = (viewConfiguration.endHour * hourHeight) + 2;
+        final clippedHeight = (viewConfiguration.endHour * hourHeight) -
+            viewConfiguration.startHour * hourHeight;
 
-        return scope.components.calendarZoomDetector(
+        return components.calendarZoomDetector(
           controller,
           ValueListenableBuilder<ScrollPhysics>(
             valueListenable: state.scrollPhysics,
@@ -41,8 +45,9 @@ class MultiDayContent<T> extends StatelessWidget {
                 right: 0,
                 top: 0,
                 height: pageHeight.roundToDouble(),
-                child: scope.components.hourLineBuilder(
+                child: components.hourLineBuilder(
                   hourHeight,
+                  viewConfiguration.hourLineLeftMargin,
                 ),
               );
 
@@ -96,7 +101,7 @@ class MultiDayContent<T> extends StatelessWidget {
                 top: 0,
                 height: pageHeight.roundToDouble(),
                 width: viewConfiguration.timelineWidth,
-                child: scope.components.timelineBuilder(
+                child: components.timelineBuilder(
                   hourHeight,
                   viewConfiguration.startHour,
                   viewConfiguration.endHour,
@@ -106,17 +111,17 @@ class MultiDayContent<T> extends StatelessWidget {
               return SingleChildScrollView(
                 controller: state.scrollController,
                 physics: value,
-                child: SizedBox(
-                  height: clippedHeight,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: -viewConfiguration.startHour * hourHeight,
-                        left: 0,
-                        right: 0,
-                        child: ClipRect(
+                child: ClipRect(
+                  child: SizedBox(
+                    height: clippedHeight,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: -viewConfiguration.startHour * hourHeight,
+                          left: 0,
+                          right: 0,
                           child: SizedBox(
-                            height: clippedHeight,
+                            height: (viewConfiguration.endHour) * hourHeight,
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
@@ -127,8 +132,8 @@ class MultiDayContent<T> extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

@@ -3,10 +3,15 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_configurations/schedule_view_configuration.dart';
 
 class ScheduleConfiguration extends ScheduleViewConfiguration {
-  ScheduleConfiguration();
+  ScheduleConfiguration({
+    this.showHeader = true,
+  });
 
   @override
   String get name => 'Schedule';
+
+  @override
+  bool showHeader;
 
   @override
   DateTimeRange calculateAdjustedDateTimeRange({

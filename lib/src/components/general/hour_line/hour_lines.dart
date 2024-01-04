@@ -7,10 +7,13 @@ class HourLines extends StatelessWidget {
   const HourLines({
     super.key,
     required this.hourHeight,
+    required this.leftOffset,
   });
 
   /// The spacing between the hour lines.
   final double hourHeight;
+
+  final double leftOffset;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class HourLines extends StatelessWidget {
       children: [
         for (int i = 1; i < hoursADay; i++)
           Positioned(
-            left: 0,
+            left: leftOffset,
             right: 0,
             height: thickness,
             top: (i * roundedHourHeight),
