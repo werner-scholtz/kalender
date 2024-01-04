@@ -4,11 +4,14 @@ import 'package:kalender/src/models/view_configurations/schedule_configurations/
 
 class ScheduleConfiguration extends ScheduleViewConfiguration {
   ScheduleConfiguration({
-    super.showHeader,
+    this.showHeader = true,
   });
 
   @override
   String get name => 'Schedule';
+
+  @override
+  bool showHeader;
 
   @override
   DateTimeRange calculateAdjustedDateTimeRange({

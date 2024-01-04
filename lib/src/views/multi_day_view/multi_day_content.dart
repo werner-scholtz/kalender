@@ -125,8 +125,8 @@ class MultiDayContent<T> extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 hourLine,
-                                pageView,
                                 timeline,
+                                pageView,
                               ],
                             ),
                           ),

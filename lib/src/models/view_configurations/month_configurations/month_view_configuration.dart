@@ -3,6 +3,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 /// This is the base class for all [MonthViewConfiguration]s.
 abstract class MonthViewConfiguration extends ViewConfiguration {
   MonthViewConfiguration({
+    bool showHeader = true,
     required Duration verticalStepDuration,
     required Duration horizontalStepDuration,
     required int firstDayOfWeek,
@@ -10,7 +11,6 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     required double multiDayTileHeight,
     required bool createMultiDayEvents,
     required bool enableRescheduling,
-    this.showHeader = true,
   }) {
     _verticalStepDuration = verticalStepDuration;
     _horizontalStepDuration = horizontalStepDuration;
@@ -77,6 +77,11 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
     notifyListeners();
   }
 
-  @override
-  late bool showHeader;
+  /// Whether to show the view header or not.
+  late bool _showHeader;
+  bool get showHeader => _showHeader;
+  set showHeader(bool value) {
+    _showHeader = value;
+    notifyListeners();
+  }
 }
