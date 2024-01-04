@@ -8,6 +8,7 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
     int numberOfWeeks = 2,
     super.timelineWidth = 56,
     super.daySeparatorLeftOffset = 8,
+    super.hourLineLeftMargin = 56,
     super.multiDayTileHeight = 24,
     super.paintWeekNumber = true,
     super.eventSnapping = false,
@@ -22,6 +23,8 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
     super.enableResizing = true,
     super.startHour = 0,
     super.endHour = 24,
+    super.initialHeightPerMinute,
+    super.showHeader,
   }) {
     _numberOfWeeks = numberOfWeeks;
     super.numberOfDays = numberOfWeeks * 7;

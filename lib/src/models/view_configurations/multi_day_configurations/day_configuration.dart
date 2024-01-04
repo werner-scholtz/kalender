@@ -10,6 +10,7 @@ class DayConfiguration extends MultiDayViewConfiguration {
   DayConfiguration({
     this.name = 'Day',
     super.timelineWidth = 56,
+    super.hourLineLeftMargin = 56,
     super.daySeparatorLeftOffset = 8,
     super.eventSnapping = false,
     super.timeIndicatorSnapping = false,
@@ -24,6 +25,8 @@ class DayConfiguration extends MultiDayViewConfiguration {
     super.enableResizing = true,
     super.startHour = 0,
     super.endHour = 24,
+    super.initialHeightPerMinute,
+    super.showHeader,
   }) {
     super.numberOfDays = 1;
     super.firstDayOfWeek = 1;

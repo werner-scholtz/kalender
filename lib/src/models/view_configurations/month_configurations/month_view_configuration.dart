@@ -3,6 +3,7 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 /// This is the base class for all [MonthViewConfiguration]s.
 abstract class MonthViewConfiguration extends ViewConfiguration {
   MonthViewConfiguration({
+    bool showHeader = true,
     required Duration verticalStepDuration,
     required Duration horizontalStepDuration,
     required int firstDayOfWeek,
@@ -73,6 +74,14 @@ abstract class MonthViewConfiguration extends ViewConfiguration {
   bool get createMultiDayEvents => _createMultiDayEvents;
   set createMultiDayEvents(bool value) {
     _createMultiDayEvents = value;
+    notifyListeners();
+  }
+
+  /// Whether to show the view header or not.
+  late bool _showHeader;
+  bool get showHeader => _showHeader;
+  set showHeader(bool value) {
+    _showHeader = value;
     notifyListeners();
   }
 }

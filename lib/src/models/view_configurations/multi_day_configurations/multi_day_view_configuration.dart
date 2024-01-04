@@ -7,6 +7,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
+    bool showHeader = true,
+    double hourLineLeftMargin = 56,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
     required Duration horizontalStepDuration,
@@ -46,6 +48,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
 
     _enableRescheduling = enableRescheduling;
     _enableResizing = enableResizing;
+
+    _showHeader = showHeader;
+    _hourLineLeftMargin = hourLineLeftMargin;
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
 
@@ -92,6 +97,13 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   double get daySeparatorLeftOffset => _daySeparatorLeftOffset;
   set daySeparatorLeftOffset(double value) {
     _daySeparatorLeftOffset = value;
+    notifyListeners();
+  }
+
+  late double _hourLineLeftMargin;
+  double get hourLineLeftMargin => _hourLineLeftMargin;
+  set hourLineLeftMargin(double value) {
+    _hourLineLeftMargin = value;
     notifyListeners();
   }
 
@@ -227,6 +239,13 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     );
 
     _endHour = value;
+    notifyListeners();
+  }
+
+  late bool _showHeader;
+  bool get showHeader => _showHeader;
+  set showHeader(bool value) {
+    _showHeader = value;
     notifyListeners();
   }
 

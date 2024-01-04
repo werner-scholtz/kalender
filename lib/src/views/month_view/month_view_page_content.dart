@@ -6,6 +6,7 @@ import 'package:kalender/src/components/gesture_detectors/multi_day_header_gestu
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class MonthViewPageContent<T> extends StatelessWidget {
   const MonthViewPageContent({
@@ -26,9 +27,11 @@ class MonthViewPageContent<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
+
     return Stack(
       children: <Widget>[
-        scope.components.monthGridBuilder(),
+        components.monthGridBuilder(),
         ListenableBuilder(
           listenable: scope.eventsController,
           builder: (context, child) {
@@ -109,7 +112,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 for (int r = 0; r < 7; r++)
-                                  scope.components.monthCellHeaderBuilder(
+                                  components.monthCellHeaderBuilder(
                                     visibleDateRange.start.add(
                                       Duration(days: (c * 7) + r),
                                     ),
