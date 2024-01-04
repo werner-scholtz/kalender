@@ -24,6 +24,7 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
     super.startHour = 0,
     super.endHour = 24,
     super.initialHeightPerMinute,
+    super.createEventTrigger,
     super.showHeader,
   }) {
     _numberOfWeeks = numberOfWeeks;
