@@ -83,7 +83,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
 
                       // Calculate the height of the multi day event group.
                       final height = multiDayTileHeight *
-                          (multiDayEventGroup.maxNumberOfStackedEvents + 1);
+                          (multiDayEventGroup.maxNumberOfStackedEvents +
+                              (viewConfiguration.createMultiDayEvents ? 1 : 0));
 
                       final gestureDetector = MultiDayHeaderGestureDetector<T>(
                         createMultiDayEvents: viewConfiguration.createMultiDayEvents,
