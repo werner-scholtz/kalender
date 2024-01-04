@@ -14,3 +14,11 @@ enum TileType {
   /// This is used to show the size and position of a tile that is being modified.
   selected,
 }
+
+enum CreateEventTrigger {
+  /// Creates event on tap gesture.
+  tap,
+
+  /// Creates event on tap hold gesture.
+  longPress,
+}
