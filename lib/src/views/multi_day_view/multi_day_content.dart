@@ -47,6 +47,7 @@ class MultiDayContent<T> extends StatelessWidget {
                 height: pageHeight.roundToDouble(),
                 child: components.hourLineBuilder(
                   hourHeight,
+                  viewConfiguration.hourLineLeftMargin,
                 ),
               );
 
@@ -125,8 +126,8 @@ class MultiDayContent<T> extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 hourLine,
-                                timeline,
                                 pageView,
+                                timeline,
                               ],
                             ),
                           ),

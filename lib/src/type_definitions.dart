@@ -20,6 +20,7 @@ typedef DayHeaderBuilder<T extends Object?> = Widget Function(
 /// The [HourLinesBuilder] is used to build the hour lines displayed on calendar's.
 typedef HourLinesBuilder<T extends Object?> = Widget Function(
   double hourHeight,
+  double leftMargin,
 );
 
 /// The [DaySeparatorBuilder] is used to build the separators between days.

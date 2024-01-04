@@ -144,9 +144,11 @@ class CalendarComponents {
 
   Widget _defaultHourLineBuilder(
     double hourHeight,
+    double leftOffset,
   ) {
     return HourLines(
       hourHeight: hourHeight,
+      leftOffset: leftOffset,
     );
   }
 
