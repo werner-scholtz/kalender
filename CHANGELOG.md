@@ -1,5 +1,7 @@
 ## 0.2.0
 * Added initialHeightPerMinute.
+* Fixed MultiDayView header shadow issue.
+* Added hourLineLeftMargin to control the left margin of the hour line.
 
 ## 0.1.9
 * Fixed start and end hour issue.

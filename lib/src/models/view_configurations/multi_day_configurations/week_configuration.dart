@@ -7,6 +7,7 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     this.name = 'Week',
     super.timelineWidth = 56,
     super.daySeparatorLeftOffset = 8,
+    super.hourLineLeftMargin = 56,
     super.multiDayTileHeight = 24,
     super.paintWeekNumber = true,
     super.eventSnapping = false,
