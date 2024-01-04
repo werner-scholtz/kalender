@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/schedule_group.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 class ScheduleDateTile<T> extends StatelessWidget {
@@ -16,10 +15,11 @@ class ScheduleDateTile<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = CalendarStyleProvider.of(context).style.scheduleDateTileStyle;
     final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
 
     final dayHeader = Padding(
       padding: style?.datePadding ?? const EdgeInsets.all(0),
-      child: scope.components.dayHeaderBuilder(
+      child: components.dayHeaderBuilder(
         scheduleGroup.date,
         (date) => scope.functions.onDateTapped?.call(date),
       ),

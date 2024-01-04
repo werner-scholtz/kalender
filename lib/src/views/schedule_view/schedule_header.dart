@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/components/general/material_header/material_header.dart';
 import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class ScheduleHeader<T> extends StatelessWidget {
   const ScheduleHeader({
@@ -16,7 +16,7 @@ class ScheduleHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
 
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
@@ -25,7 +25,7 @@ class ScheduleHeader<T> extends StatelessWidget {
           return Column(
             children: <Widget>[
               RepaintBoundary(
-                child: scope.components.calendarHeaderBuilder?.call(
+                child: components.calendarHeaderBuilder?.call(
                   visibleDateTimeRange,
                 ),
               ),

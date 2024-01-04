@@ -5,6 +5,7 @@ import 'package:kalender/src/components/general/material_header/material_header.
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/providers/calendar_style.dart';
 
 class MultiDayHeader<T> extends StatelessWidget {
   const MultiDayHeader({
@@ -17,13 +18,14 @@ class MultiDayHeader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
 
     return CalendarHeaderBackground(
       child: ValueListenableBuilder<DateTimeRange>(
         valueListenable: scope.state.visibleDateTimeRangeNotifier,
         builder: (context, visibleDateTimeRange, child) {
           final calendarHeader = RepaintBoundary(
-            child: scope.components.calendarHeaderBuilder?.call(
+            child: components.calendarHeaderBuilder?.call(
               visibleDateTimeRange,
             ),
           );
@@ -44,7 +46,7 @@ class MultiDayHeader<T> extends StatelessWidget {
           return Column(
             children: <Widget>[
               calendarHeader,
-              dayHeader,
+              if (viewConfiguration.showHeader) dayHeader,
             ],
           );
         },
@@ -66,6 +68,8 @@ class MultipleDayHeader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
+
     return Row(
       children: [
         SizedBox(
@@ -73,7 +77,7 @@ class MultipleDayHeader<T> extends StatelessWidget {
               viewConfiguration.daySeparatorLeftOffset,
           child: Center(
             child: viewConfiguration.paintWeekNumber
-                ? scope.components.weekNumberBuilder(visibleDateTimeRange)
+                ? components.weekNumberBuilder(visibleDateTimeRange)
                 : null,
           ),
         ),
@@ -85,7 +89,7 @@ class MultipleDayHeader<T> extends StatelessWidget {
                 children: [
                   ...List.generate(
                     viewConfiguration.numberOfDays,
-                    (index) => scope.components.dayHeaderBuilder(
+                    (index) => components.dayHeaderBuilder(
                       visibleDateTimeRange.start.add(Duration(days: index)),
                       (date) => scope.functions.onDateTapped?.call(date),
                     ),
@@ -116,7 +120,8 @@ class SingleDayHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scope = CalendarScope.of<T>(context);
+    final components = CalendarStyleProvider.of(context).components;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -126,7 +131,7 @@ class SingleDayHeader<T> extends StatelessWidget {
             SizedBox(
               width: viewConfiguration.timelineWidth +
                   viewConfiguration.daySeparatorLeftOffset,
-              child: scope.components.dayHeaderBuilder(
+              child: components.dayHeaderBuilder(
                 visibleDateTimeRange.start,
                 null,
               ),

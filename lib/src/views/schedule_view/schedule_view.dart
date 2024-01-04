@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 import 'package:kalender/src/models/calendar/platform_data/web_platform_data.dart'
@@ -70,11 +69,11 @@ class _ScheduleViewState<T> extends State<ScheduleView<T>> {
 
         return CalendarStyleProvider(
           style: widget.style ?? const CalendarStyle(),
+          components: widget.components ?? CalendarComponents(),
           child: CalendarScope<T>(
             state: _viewState,
             eventsController: widget.eventsController,
             functions: widget.functions ?? CalendarEventHandlers<T>(),
-            components: widget.components ?? CalendarComponents(),
             tileComponents: CalendarTileComponents<T>(
               scheduleTileBuilder: widget.scheduleTileBuilder,
             ),

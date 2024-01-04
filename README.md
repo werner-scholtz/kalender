@@ -46,7 +46,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Usage
 
-1. Create a custom class to store your data. 
+1. Create a custom class to store your data.
     ```dart
     class Event {
       final String title;
@@ -160,22 +160,51 @@ These are the default ViewConfiguration's:
 1. **DayConfiguration** - This configuration is used to configure the MultiDayView for a single day.
     <details><summary>Example</summary>
 
-      ```dart
-      DayConfiguration(
-        timelineWidth: 56,
-        hourLineTimelineOverlap: 8,
-        multiDayTileHeight: 24,
-        eventSnapping: false,
-        timeIndicatorSnapping: false,
-        createEvents: true,
-        createMultiDayEvents: true,
-        verticalStepDuration: const Duration(minutes: 15),
-        verticalSnapRange: const Duration(minutes: 15),
-        newEventDuration: const Duration(minutes: 15),
-        startHour: 0,
-        endHour: 24,
-      );
-      ```
+    ```dart
+    DayConfiguration(
+      // This is the width of the timeline.
+      timelineWidth: 56, 
+
+      // This is the spacing between the left side of the calendar and the hour lines.
+      hourLineLeftMargin: 56, 
+
+      // This is the height of the multi day tile.
+      multiDayTileHeight: 24, 
+
+      // This determines if events should snap to other events.
+      eventSnapping: true,
+
+      // This determines if events should snap to the time indicator.
+      timeIndicatorSnapping: true, 
+
+      // This determines if the user can create events.
+      createEvents: true,
+
+      // This determines if the user can create multi day events.
+      createMultiDayEvents: true, 
+      
+      // This determines if the user can resize events.
+      enableResizing: true,
+
+      // This determines if the user can reschedule events.
+      enableRescheduling: true,
+
+      // This is the vertical step that events will snap to.
+      verticalStepDuration: const Duration(minutes: 15),
+
+      // This is the range that events will use to snap to other events/time indicator.
+      verticalSnapRange: const Duration(minutes: 15),
+
+      // This is the default duration of a new event.
+      newEventDuration: const Duration(minutes: 15), 
+
+      // This is the start hour of the calendar.
+      startHour: 0, 
+
+      // This is the end hour of the calendar.
+      endHour: 24, 
+    );
+    ```
 
     </details>
 
@@ -185,12 +214,14 @@ These are the default ViewConfiguration's:
     ```dart
     WeekConfiguration(
       timelineWidth: 56,
-      hourLineTimelineOverlap: 8,
+      hourLineLeftMargin: 56,
       multiDayTileHeight: 24,
-      eventSnapping: false,
-      timeIndicatorSnapping: false,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
       createEvents: true,
       createMultiDayEvents: true,
+      enableResizing: true,
+      enableRescheduling: true,
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
@@ -211,12 +242,14 @@ These are the default ViewConfiguration's:
     ```dart
     WorkWeekConfiguration(
       timelineWidth: 56,
-      hourLineTimelineOverlap: 8,
+      hourLineLeftMargin: 56,
       multiDayTileHeight: 24,
-      eventSnapping: false,
-      timeIndicatorSnapping: false,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
       createEvents: true,
       createMultiDayEvents: true,
+      enableResizing: true,
+      enableRescheduling: true,
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
@@ -235,12 +268,14 @@ These are the default ViewConfiguration's:
     ```dart
     WorkWeekConfiguration(
       timelineWidth: 56,
-      hourLineTimelineOverlap: 8,
+      hourLineLeftMargin: 56,
       multiDayTileHeight: 24,
-      eventSnapping: false,
-      timeIndicatorSnapping: false,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
       createEvents: true,
       createMultiDayEvents: true,
+      enableResizing: true,
+      enableRescheduling: true,
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
@@ -262,12 +297,14 @@ These are the default ViewConfiguration's:
       name: 'Custom Name',
       numberOfDays: 3,
       timelineWidth: 56,
-      hourLineTimelineOverlap: 8,
+      hourLineLeftMargin: 56,
       multiDayTileHeight: 24,
-      eventSnapping: false,
-      timeIndicatorSnapping: false,
+      eventSnapping: true,
+      timeIndicatorSnapping: true,
       createEvents: true,
       createMultiDayEvents: true,
+      enableResizing: true,
+      enableRescheduling: true,
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
@@ -309,7 +346,6 @@ These are the default ViewConfiguration's:
     ```
       
     </details>
-
 
 
 ### Event Handling
@@ -391,7 +427,7 @@ There are 5 events at this time that can be handled.
       // The date is the date header that was tapped. see example for use case.
     },
     onPageChanged: (DateTimeRange visibleDateTimeRange) {
-      // The visibleDateTimeRange is the visible DateTimeRange of the current page.
+      // The visibleDateTimeRange is the visible DateTimeRange of the new page.
     },
   );
   ```
