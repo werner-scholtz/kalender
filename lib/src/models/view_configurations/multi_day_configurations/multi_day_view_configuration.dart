@@ -1,3 +1,4 @@
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// This is the base class for all [MultiDayViewConfiguration]s.
@@ -7,6 +8,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     int? firstDayOfWeek,
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
+    CreateEventTrigger? createEventTrigger,
     bool showHeader = true,
     double hourLineLeftMargin = 56,
     required double timelineWidth,
@@ -53,6 +55,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _hourLineLeftMargin = hourLineLeftMargin;
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
+
+    _createEventTrigger = createEventTrigger ?? CreateEventTrigger.tap;
 
     assert(
       startHour >= 0 && startHour <= 23,
@@ -253,4 +257,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   double get heightPerMinute => _initialHeightPerMinute;
 
   bool get customStartEndHour => _startHour != 0 || _endHour != 24;
+
+  /// Gesture type for creating events.
+  late CreateEventTrigger _createEventTrigger;
+  CreateEventTrigger get createEventTrigger => _createEventTrigger;
 }

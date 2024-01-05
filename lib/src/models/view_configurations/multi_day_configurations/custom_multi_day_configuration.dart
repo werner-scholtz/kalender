@@ -23,6 +23,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     super.enableResizing = true,
     super.startHour = 0,
     super.endHour = 24,
+    super.createEventTrigger,
     super.showHeader,
   });
 

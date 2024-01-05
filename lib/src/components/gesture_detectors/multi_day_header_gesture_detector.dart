@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/providers/calendar_scope.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
-import 'package:kalender/src/models/calendar/calendar_functions.dart';
 
 /// This widget is used to detect gestures on the [MultiDayHeaderWidget] and [MonthViewPageContent].
 class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
@@ -12,6 +10,7 @@ class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
     required this.horizontalStep,
     this.verticalStep,
     required this.createMultiDayEvents,
+    required this.createEventTrigger,
   });
 
   final DateTimeRange visibleDateRange;
@@ -19,6 +18,7 @@ class MultiDayHeaderGestureDetector<T> extends StatefulWidget {
   final bool createMultiDayEvents;
   final double horizontalStep;
   final double? verticalStep;
+  final CreateEventTrigger createEventTrigger;
 
   @override
   State<MultiDayHeaderGestureDetector<T>> createState() =>
@@ -51,7 +51,12 @@ class _MultiDayHeaderGestureDetectorState<T>
           for (final date in widget.visibleDateRange.datesSpanned)
             Expanded(
               child: GestureDetector(
-                onTap: () => _onTap(date),
+                onLongPress: () => widget.createEventTrigger == CreateEventTrigger.longPress
+                    ? _createEvent(date)
+                    : controller.deselectEvent(),
+                onTap: () => widget.createEventTrigger == CreateEventTrigger.tap
+                    ? _createEvent(date)
+                    : controller.deselectEvent(),
                 onPanStart: createEvents
                     ? (details) => _onPanStart(details, date)
                     : null,
@@ -64,7 +69,7 @@ class _MultiDayHeaderGestureDetectorState<T>
     );
   }
 
-  void _onTap(DateTime date) async {
+  void _createEvent(DateTime date) async {
     // If the create events flag is false, return.
     if (!createEvents) return;
 
