@@ -96,25 +96,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final calendar = CalendarView<Event>(
+      controller: controller,
+      eventsController: eventController,
+      viewConfiguration: currentConfiguration,
+      tileBuilder: _tileBuilder,
+      multiDayTileBuilder: _multiDayTileBuilder,
+      scheduleTileBuilder: _scheduleTileBuilder,
+      components: CalendarComponents(
+        calendarHeaderBuilder: _calendarHeader,
+      ),
+      eventHandlers: CalendarEventHandlers(
+        onEventTapped: _onEventTapped,
+        onEventChanged: _onEventChanged,
+        onCreateEvent: _onCreateEvent,
+        onEventCreated: _onEventCreated,
+      ),
+    );
+
     return SafeArea(
       child: Scaffold(
-        body: CalendarView<Event>(
-          controller: controller,
-          eventsController: eventController,
-          viewConfiguration: currentConfiguration,
-          tileBuilder: _tileBuilder,
-          multiDayTileBuilder: _multiDayTileBuilder,
-          scheduleTileBuilder: _scheduleTileBuilder,
-          components: CalendarComponents(
-            calendarHeaderBuilder: _calendarHeader,
-          ),
-          eventHandlers: CalendarEventHandlers(
-            onEventTapped: _onEventTapped,
-            onEventChanged: _onEventChanged,
-            onCreateEvent: _onCreateEvent,
-            onEventCreated: _onEventCreated,
-          ),
-        ),
+        body: calendar,
       ),
     );
   }

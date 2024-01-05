@@ -121,7 +121,8 @@ class _EventGestureDetectorState<T> extends State<EventGestureDetector<T>> {
         Future<void> Function(LongPressEndDetails details)? onLongPressEnd;
         if (useMobileGestures &&
             !eventsController.isResizingBottom &&
-            !eventsController.isResizingTop) {
+            !eventsController.isResizingTop &&
+            canReschedule) {
           onLongPressStart = _onLongPressStart;
           onLongPressMoveUpdate = _onLongPressMoveUpdate;
           onLongPressEnd = _onLongPressEnd;

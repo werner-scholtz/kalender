@@ -86,8 +86,10 @@ class MonthViewPageContent<T> extends StatelessWidget {
                           (multiDayEventGroup.maxNumberOfStackedEvents + 1);
 
                       final gestureDetector = MultiDayHeaderGestureDetector<T>(
-                        createMultiDayEvents: viewConfiguration.createMultiDayEvents,
-                        createEventTrigger: viewConfiguration.createEventTrigger,
+                        createMultiDayEvents:
+                            viewConfiguration.createMultiDayEvents,
+                        createEventTrigger:
+                            viewConfiguration.createEventTrigger,
                         visibleDateRange: weekDateRange,
                         horizontalStep: horizontalStep,
                         verticalStep: verticalStep,
@@ -105,22 +107,66 @@ class MonthViewPageContent<T> extends StatelessWidget {
                         rescheduleDateRange: visibleDateRange,
                       );
 
+                      final cellHeaders = Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          for (int r = 0; r < 7; r++)
+                            components.monthCellHeaderBuilder(
+                              visibleDateRange.start.add(
+                                Duration(days: (c * 7) + r),
+                              ),
+                              (date) =>
+                                  scope.functions.onDateTapped?.call(date),
+                            ),
+                        ],
+                      );
+
+                      ListenableBuilder? changingEvent;
+                      if (selectedEvent != null &&
+                          scope.eventsController.hasChangingEvent) {
+                        changingEvent = ListenableBuilder(
+                          listenable: scope.eventsController.selectedEvent!,
+                          builder: (context, child) {
+                            if (selectedEvent.dateTimeRange.start.isWithin(
+                                  weekDateRange,
+                                ) ||
+                                selectedEvent.dateTimeRange.end.isWithin(
+                                  weekDateRange,
+                                ) ||
+                                (selectedEvent.start.isBefore(
+                                      weekDateRange.start,
+                                    ) &&
+                                    selectedEvent.end.isAfter(
+                                      weekDateRange.end,
+                                    ))) {
+                              final multiDayEventGroup =
+                                  MultiDayEventGroupController<T>()
+                                      .generateMultiDayEventGroup(
+                                events: [selectedEvent],
+                              );
+
+                              return MultiDayEventGroupWidget<T>(
+                                multiDayEventGroup: multiDayEventGroup,
+                                visibleDateRange: weekDateRange,
+                                horizontalStep: horizontalStep,
+                                horizontalStepDuration: horizontalStepDuration,
+                                verticalStep: verticalStep,
+                                verticalStepDuration: verticalStepDuration,
+                                isChanging: true,
+                                multiDayTileHeight: multiDayTileHeight,
+                                rescheduleDateRange: visibleDateRange,
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        );
+                      }
+
                       return Expanded(
                         child: Column(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                for (int r = 0; r < 7; r++)
-                                  components.monthCellHeaderBuilder(
-                                    visibleDateRange.start.add(
-                                      Duration(days: (c * 7) + r),
-                                    ),
-                                    (date) => scope.functions.onDateTapped
-                                        ?.call(date),
-                                  ),
-                              ],
-                            ),
+                            cellHeaders,
                             Expanded(
                               child: SingleChildScrollView(
                                 child: SizedBox(
@@ -129,57 +175,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                                     children: [
                                       gestureDetector,
                                       eventGroup,
-                                      if (selectedEvent != null &&
-                                          scope.eventsController
-                                              .hasChangingEvent)
-                                        ListenableBuilder(
-                                          listenable: scope
-                                              .eventsController.selectedEvent!,
-                                          builder: (context, child) {
-                                            if (selectedEvent
-                                                    .dateTimeRange.start
-                                                    .isWithin(
-                                                  weekDateRange,
-                                                ) ||
-                                                selectedEvent.dateTimeRange.end
-                                                    .isWithin(
-                                                  weekDateRange,
-                                                ) ||
-                                                (selectedEvent.start.isBefore(
-                                                      weekDateRange.start,
-                                                    ) &&
-                                                    selectedEvent.end.isAfter(
-                                                      weekDateRange.end,
-                                                    ))) {
-                                              final multiDayEventGroup =
-                                                  MultiDayEventGroupController<
-                                                          T>()
-                                                      .generateMultiDayEventGroup(
-                                                events: [selectedEvent],
-                                              );
-
-                                              return MultiDayEventGroupWidget<
-                                                  T>(
-                                                multiDayEventGroup:
-                                                    multiDayEventGroup,
-                                                visibleDateRange: weekDateRange,
-                                                horizontalStep: horizontalStep,
-                                                horizontalStepDuration:
-                                                    horizontalStepDuration,
-                                                verticalStep: verticalStep,
-                                                verticalStepDuration:
-                                                    verticalStepDuration,
-                                                isChanging: true,
-                                                multiDayTileHeight:
-                                                    multiDayTileHeight,
-                                                rescheduleDateRange:
-                                                    visibleDateRange,
-                                              );
-                                            } else {
-                                              return const SizedBox.shrink();
-                                            }
-                                          },
-                                        ),
+                                      changingEvent ?? const SizedBox.shrink(),
                                     ],
                                   ),
                                 ),
