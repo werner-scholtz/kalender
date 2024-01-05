@@ -195,7 +195,8 @@ class CalendarEvent<T> with ChangeNotifier {
     return other is CalendarEvent<T> &&
         other._dateTimeRange == _dateTimeRange &&
         other.eventData == _eventData &&
-        other.canModify == _canModify;
+        other.canModify == _canModify &&
+        other.hashCode == hashCode;
   }
 
   @override

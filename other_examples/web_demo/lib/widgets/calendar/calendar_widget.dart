@@ -68,32 +68,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  Future<void> onEventCreated(CalendarEvent<Event> event) async {
-    widget.eventsController.addEvent(event);
-    widget.eventsController.deselectEvent();
-  }
-
   /// This function is called when a new event is created.
-  Future<void> onCreateEvent(CalendarEvent<Event> newEvent) async {
-    newEvent.eventData = Event(
-      title: 'New Event',
-      color: Colors.blue,
-    );
-
+  Future<void> onEventCreated(CalendarEvent<Event> event) async {
     // Show the new event dialog.
-    CalendarEvent<Event>? event = await showDialog<CalendarEvent<Event>>(
+    CalendarEvent<Event>? newEvent = await showDialog<CalendarEvent<Event>>(
       context: context,
       builder: (BuildContext context) {
         return NewEventDialog(
           dialogTitle: 'Create Event',
-          event: newEvent,
+          event: event,
         );
       },
     );
 
     /// Add the event to the events controller.
-    if (event != null) {
-      widget.eventsController.addEvent(event);
+    if (newEvent != null) {
+      widget.eventsController.addEvent(newEvent);
     } else {
       widget.eventsController.deselectEvent();
     }
