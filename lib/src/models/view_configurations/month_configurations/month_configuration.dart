@@ -10,8 +10,8 @@ class MonthConfiguration extends MonthViewConfiguration {
     super.enableRescheduling = true,
     super.createMultiDayEvents = true,
     super.multiDayTileHeight = 24,
-    super.verticalStepDuration = const Duration(days: 1),
-    super.horizontalStepDuration = const Duration(days: 7),
+    super.verticalStepDuration = const Duration(days: 7),
+    super.horizontalStepDuration = const Duration(days: 1),
     super.showHeader,
   });
 
