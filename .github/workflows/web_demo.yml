@@ -32,4 +32,4 @@ jobs:
         working-directory: other_examples/web_demo
       - run: git push origin HEAD:gh-pages --force
         shell: bash
-        working-directory: examples/web_demo
+        working-directory: other_examples/web_demo
