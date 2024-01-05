@@ -28,7 +28,7 @@ class NewEventDialog extends StatelessWidget {
             isDense: true,
           ),
           onChanged: (value) {
-            event.eventData?.title = value;
+            event.eventData = event.eventData?.copyWith(title: value);
           },
         ),
         Padding(
@@ -63,7 +63,7 @@ class NewEventDialog extends StatelessWidget {
               ],
               onSelected: (value) {
                 if (value == null) return;
-                event.eventData?.color = value;
+                event.eventData = event.eventData?.copyWith(color: value);
               },
             )
           ],

@@ -8,13 +8,13 @@ class Event {
   });
 
   /// The title of the [Event].
-  late String title;
+  final String title;
 
   /// The description of the [Event].
-  String? description;
+  final String? description;
 
   /// The color of the [Event] tile.
-  Color? color;
+  final Color? color;
 
   Event copyWith({
     String? title,
@@ -27,17 +27,6 @@ class Event {
       color: color ?? this.color,
     );
   }
-
-  @override
-  operator ==(Object other) {
-    return other is Event &&
-        title == other.title &&
-        description == other.description &&
-        color == other.color;
-  }
-
-  @override
-  int get hashCode => Object.hash(title, description, color);
 
   @override
   String toString() {
