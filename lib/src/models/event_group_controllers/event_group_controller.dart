@@ -131,7 +131,9 @@ class EventGroupController<T> {
               element.start.isSameDay(date) || element.end.isSameDay(date),
         )
         .toList()
-      ..sort((a, b) => a.start.compareTo(b.start));
+      ..sort(
+        (a, b) => a.start.compareTo(b.start),
+      );
   }
 }
 

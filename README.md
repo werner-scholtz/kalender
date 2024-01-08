@@ -198,6 +198,9 @@ These are the default ViewConfiguration's:
       // This is the default duration of a new event.
       newEventDuration: const Duration(minutes: 15), 
 
+      // This determines the input type to create a new event.
+      createEventTrigger: CreateEventTrigger.tap, 
+
       // This is the start hour of the calendar.
       startHour: 0, 
 
