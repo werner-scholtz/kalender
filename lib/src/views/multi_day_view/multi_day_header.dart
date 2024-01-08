@@ -191,7 +191,7 @@ class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               child: SizedBox(
                 height: viewConfiguration.multiDayTileHeight *
-                    (multiDayEventGroup.maxNumberOfStackedEvents + 1),
+                    (multiDayEventGroup.maxNumberOfStackedEvents + (viewConfiguration.createMultiDayEvents ? 1 : 0)),
                 child: Stack(
                   clipBehavior: Clip.antiAlias,
                   children: [
