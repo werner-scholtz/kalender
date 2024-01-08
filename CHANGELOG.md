@@ -1,3 +1,9 @@
+## 0.2.1
+* Improvements to the MultiDayHeaderPanel.
+* Improvements to the EventGroupBasicLayoutDelegate.
+* Added CreateEventTrigger.
+* Minor bug fixes.
+
 ## 0.2.0
 * Added initialHeightPerMinute.
 * Fixed MultiDayView header shadow issue.

@@ -13,6 +13,7 @@ class MonthConfiguration extends MonthViewConfiguration {
     super.verticalStepDuration = const Duration(days: 7),
     super.horizontalStepDuration = const Duration(days: 1),
     super.showHeader,
+    super.createEventTrigger,
   });
 
   @override
