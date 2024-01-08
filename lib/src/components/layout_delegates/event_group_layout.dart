@@ -213,7 +213,7 @@ class EventGroupBasicLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
 
     // Set the width of each tile.
     tileWidths.addEntries({
-      for (var i = 0; i < entriesToRight; i++)
+      for (var i = 0; i < numChildren; i++)
         MapEntry(i, (size.width / max(entriesToRight, 1)).floorToDouble()),
     });
 
