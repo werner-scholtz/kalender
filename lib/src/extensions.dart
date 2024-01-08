@@ -46,6 +46,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
   DateTime get visibleMonth {
     return DateTime(centerDateTime.year, centerDateTime.month);
   }
+
+  /// Checks if the [DateTimeRange] overlaps with another [DateTimeRange].
+  bool overlaps(DateTimeRange other) {
+    return start.isBefore(other.end) && end.isAfter(other.start);
+  }
 }
 
 /// [DateTime] extensions.
