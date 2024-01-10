@@ -67,6 +67,39 @@ class MultiDayView<T> extends StatefulWidget {
   State<MultiDayView<T>> createState() => _MultiDayViewState<T>();
 }
 
+const _headerID = 0;
+const _contentID = 1;
+
+class _MultiDayViewLayoutDelegate extends MultiChildLayoutDelegate {
+  _MultiDayViewLayoutDelegate();
+
+  @override
+  void performLayout(Size size) {
+    final headerSize = layoutChild(
+      _headerID,
+      BoxConstraints.loose(size),
+    );
+
+    layoutChild(
+      _contentID,
+      BoxConstraints.loose(
+        Size(
+          size.width,
+          size.height - headerSize.height,
+        ),
+      ),
+    );
+
+    positionChild(1, Offset(0, headerSize.height));
+    positionChild(0, Offset.zero);
+  }
+
+  @override
+  bool shouldRelayout(covariant MultiChildLayoutDelegate oldDelegate) {
+    return false;
+  }
+}
+
 class _MultiDayViewState<T> extends State<MultiDayView<T>> {
   late MultiDayViewState _viewState;
 
@@ -85,13 +118,38 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
           widget.multiDayViewConfiguration,
         )! as MultiDayViewState;
 
+        final functions = widget.functions ?? CalendarEventHandlers<T>();
+
+        final layoutDelegates =
+            widget.layoutDelegates ?? CalendarLayoutDelegates<T>();
+
+        final child = CustomMultiChildLayout(
+          delegate: _MultiDayViewLayoutDelegate(),
+          children: [
+            // The content is placed first so that it is behind the header.
+            LayoutId(
+              id: _contentID,
+              child: MultiDayContent<T>(
+                controller: widget.controller,
+                viewConfiguration: widget.multiDayViewConfiguration,
+              ),
+            ),
+            LayoutId(
+              id: _headerID,
+              child: MultiDayHeader<T>(
+                viewConfiguration: widget.multiDayViewConfiguration,
+              ),
+            ),
+          ],
+        );
+
         return CalendarStyleProvider(
           style: widget.style ?? const CalendarStyle(),
           components: widget.components ?? CalendarComponents(),
           child: CalendarScope<T>(
             state: _viewState,
             eventsController: widget.eventsController,
-            functions: widget.functions ?? CalendarEventHandlers<T>(),
+            functions: functions,
             tileComponents: CalendarTileComponents<T>(
               tileBuilder: widget.tileBuilder,
               multiDayTileBuilder: widget.multiDayTileBuilder,
@@ -99,21 +157,8 @@ class _MultiDayViewState<T> extends State<MultiDayView<T>> {
               multiDayEventTileBuilder: widget.multiDayEventTileBuilder,
             ),
             platformData: PlatformData(),
-            layoutDelegates:
-                widget.layoutDelegates ?? CalendarLayoutDelegates<T>(),
-            child: Column(
-              children: <Widget>[
-                MultiDayHeader<T>(
-                  viewConfiguration: widget.multiDayViewConfiguration,
-                ),
-                Expanded(
-                  child: MultiDayContent<T>(
-                    controller: widget.controller,
-                    viewConfiguration: widget.multiDayViewConfiguration,
-                  ),
-                ),
-              ],
-            ),
+            layoutDelegates: layoutDelegates,
+            child: child,
           ),
         );
       },

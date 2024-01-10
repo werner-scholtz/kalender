@@ -39,9 +39,14 @@ class Timeline extends StatelessWidget {
       ],
     );
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
-      child: timeline,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
+        child: timeline,
+      ),
     );
   }
 }
