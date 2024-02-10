@@ -14,19 +14,19 @@ class ScheduleMonthHeader extends StatelessWidget {
     final style =
         CalendarStyleProvider.of(context).style.scheduleMonthHeaderStyle;
 
-    final dateFormat = DateFormat(style?.dateFormat ?? 'yyyy - MMMM');
+    final dateFormat = DateFormat(style.dateFormat);
 
     return Padding(
-      padding: style?.margin ?? const EdgeInsets.all(0),
+      padding: style.margin,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: style?.monthColors[date.month] ?? Colors.transparent,
+          color: style.monthColors[date.month] ?? Colors.transparent,
         ),
         child: Padding(
-          padding: style?.padding ?? const EdgeInsets.all(0),
+          padding: style.padding,
           child: Text(
             dateFormat.format(date),
-            style: style?.textStyle ?? Theme.of(context).textTheme.titleLarge,
+            style: style.textStyle,
           ),
         ),
       ),

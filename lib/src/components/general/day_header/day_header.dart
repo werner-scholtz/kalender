@@ -20,24 +20,24 @@ class DayHeader extends StatelessWidget {
         CalendarStyleProvider.of(context).style.dayHeaderStyle;
     return Container(
       decoration: BoxDecoration(
-        color: dayHeaderStyle?.backgroundColor,
-        borderRadius: dayHeaderStyle?.borderRadius,
+        color: dayHeaderStyle.backgroundColor,
+        borderRadius: dayHeaderStyle.borderRadius,
       ),
       child: Column(
         children: <Widget>[
           DateText(
             date: date,
-            textStyle: dayHeaderStyle?.textStyle ??
+            textStyle: dayHeaderStyle.textStyle ??
                 Theme.of(context).textTheme.bodySmall,
-            upperCase: dayHeaderStyle?.useUpperCase ?? false,
+            upperCase: dayHeaderStyle.useUpperCase ?? false,
           ),
           DateIconButton(
             date: date,
             onTapped: (date) => onTapped?.call(date),
-            textStyle: dayHeaderStyle?.buttonTextStyle ??
+            textStyle: dayHeaderStyle.buttonTextStyle ??
                 Theme.of(context).textTheme.bodySmall,
             visualDensity:
-                dayHeaderStyle?.buttonVisualDensity ?? VisualDensity.compact,
+                dayHeaderStyle.buttonVisualDensity ?? VisualDensity.compact,
           ),
         ],
       ),

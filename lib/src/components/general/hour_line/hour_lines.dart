@@ -21,9 +21,9 @@ class HourLines extends StatelessWidget {
 
     final roundedHourHeight = hourHeight.roundToDouble();
 
-    final thickness = hourLineStyle?.thickness ?? 1;
+    final thickness = hourLineStyle.thickness ?? 1;
     final color =
-        hourLineStyle?.color ?? Theme.of(context).colorScheme.surfaceVariant;
+        hourLineStyle.color ?? Theme.of(context).colorScheme.surfaceVariant;
 
     return Stack(
       fit: StackFit.expand,
