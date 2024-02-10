@@ -225,13 +225,9 @@ class CalendarEventsController<T> with ChangeNotifier {
   Iterable<CalendarEvent<T>> getEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
-    return _events.where(
-      (element) =>
-          (element.start.isWithin(dateRange) ||
-              element.end.isWithin(dateRange)) ||
-          (element.start.isBefore(dateRange.start) &&
-              element.end.isAfter(dateRange.end)),
-    );
+    return _events.where((event) {
+      return event.occursDuringDateTimeRange(dateRange);
+    });
   }
 
   /// Returns a iterable of [DateTime]s which is the [CalendarEvent.start] and [CalendarEvent.end]

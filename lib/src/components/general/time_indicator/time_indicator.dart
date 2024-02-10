@@ -47,19 +47,19 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
   @override
   Widget build(BuildContext context) {
     final style = CalendarStyleProvider.of(context).style;
-    final circleRadius = style.timeIndicatorStyle?.circleRadius ?? 4.5;
+    final circleRadius = style.timeIndicatorStyle.circleRadius ?? 4.5;
     final circleSize = Size(circleRadius * 2, circleRadius * 2);
 
     return Stack(
       children: [
         Positioned(
-          top: top - (style.timeIndicatorStyle?.lineWidth ?? 1) / 2,
+          top: top - (style.timeIndicatorStyle.lineWidth ?? 1) / 2,
           left: 0,
           width: widget.dayWidth,
           child: SizedBox(
-            height: style.timeIndicatorStyle?.lineWidth ?? 1,
+            height: style.timeIndicatorStyle.lineWidth ?? 1,
             child: Container(
-              color: style.timeIndicatorStyle?.color ?? Colors.red,
+              color: style.timeIndicatorStyle.color ?? Colors.red,
             ),
           ),
         ),
@@ -75,7 +75,7 @@ class _TimeIndicatorState<T> extends State<TimeIndicator<T>> {
             maxHeight: circleSize.height,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: style.timeIndicatorStyle?.color ?? Colors.red,
+                color: style.timeIndicatorStyle.color ?? Colors.red,
                 shape: BoxShape.circle,
               ),
             ),

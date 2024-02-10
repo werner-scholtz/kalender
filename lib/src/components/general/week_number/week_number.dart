@@ -16,13 +16,13 @@ class WeekNumber extends StatelessWidget {
     final weekNumberStyle =
         CalendarStyleProvider.of(context).style.weekNumberStyle;
 
-    final tooltip = weekNumberStyle?.tooltip ?? 'Week Number';
+    final tooltip = weekNumberStyle.tooltip ?? 'Week Number';
 
     final visualDensity =
-        weekNumberStyle?.visualDensity ?? VisualDensity.comfortable;
+        weekNumberStyle.visualDensity ?? VisualDensity.comfortable;
 
     final textStyle =
-        weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
+        weekNumberStyle.textStyle ?? Theme.of(context).textTheme.bodyMedium;
 
     final String text;
     if (visibleDateRange.duration > const Duration(days: 7)) {

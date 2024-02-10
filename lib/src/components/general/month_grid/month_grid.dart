@@ -10,8 +10,8 @@ class MonthGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = CalendarStyleProvider.of(context).style.monthGridStyle;
-    final thickness = style?.thickness ?? 0;
-    final color = style?.color;
+    final thickness = style.thickness ?? 0;
+    final color = style.color;
 
     return Stack(
       children: <Widget>[

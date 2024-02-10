@@ -25,43 +25,43 @@ class CalendarStyle {
   final Color? backgroundColor;
 
   /// The background color of the [CalendarHeaderBackground] header.
-  final CalendarHeaderBackgroundStyle? calendarHeaderBackgroundStyle;
+  final CalendarHeaderBackgroundStyle calendarHeaderBackgroundStyle;
 
   /// The [DaySeparatorStyle] used by the [DaySeparator].
-  final DaySeparatorStyle? daySeparatorStyle;
+  final DaySeparatorStyle daySeparatorStyle;
 
   /// The [HourLineStyle] used by the [HourLines].
-  final HourLineStyle? hourLineStyle;
+  final HourLineStyle hourLineStyle;
 
   /// The [DayHeaderStyle] used by the [DayHeader].
-  final DayHeaderStyle? dayHeaderStyle;
+  final DayHeaderStyle dayHeaderStyle;
 
   /// The [TimeIndicatorStyle] used by the [TimeIndicator].
-  final TimeIndicatorStyle? timeIndicatorStyle;
+  final TimeIndicatorStyle timeIndicatorStyle;
 
   /// The [TimelineStyle] used by the [Timeline].
-  final TimelineStyle? timelineStyle;
+  final TimelineStyle timelineStyle;
 
   /// The [WeekNumberStyle] used by the [WeekNumber].
-  final WeekNumberStyle? weekNumberStyle;
+  final WeekNumberStyle weekNumberStyle;
 
   /// The [MonthGridStyle] used by the [MonthGrid].
-  final MonthGridStyle? monthGridStyle;
+  final MonthGridStyle monthGridStyle;
 
   /// The [MonthHeaderStyle] used by the [MonthHeader].
-  final MonthHeaderStyle? monthHeaderStyle;
+  final MonthHeaderStyle monthHeaderStyle;
 
   /// The [MonthCellHeaderStyle] used by the [MonthCellHeader]
-  final MonthCellHeaderStyle? monthCellHeaderStyle;
+  final MonthCellHeaderStyle monthCellHeaderStyle;
 
   /// The [ScheduleMonthHeaderStyle] used by the [ScheduleMonthHeader]
-  final ScheduleMonthHeaderStyle? scheduleMonthHeaderStyle;
+  final ScheduleMonthHeaderStyle scheduleMonthHeaderStyle;
 
   /// The [ScheduleDateTileStyle] used by the [ScheduleDateTile]
-  final ScheduleDateTileStyle? scheduleDateTileStyle;
+  final ScheduleDateTileStyle scheduleDateTileStyle;
 
   /// The [TileHandleStyle] used by the [TileHandle]
-  final TileHandleStyle? tileHandleStyle;
+  final TileHandleStyle tileHandleStyle;
 
   @override
   operator ==(Object other) {
