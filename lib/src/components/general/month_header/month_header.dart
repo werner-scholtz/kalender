@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/components/general/date_text.dart';
+import 'package:intl/intl.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
-/// A widget that displays the month header.
 class MonthHeader extends StatelessWidget {
   const MonthHeader({
     super.key,
@@ -16,17 +15,25 @@ class MonthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final monthHeaderStyle =
         CalendarStyleProvider.of(context).style.monthHeaderStyle;
-    return SizedBox(
-      child: Padding(
-        padding:
-            monthHeaderStyle.padding ?? const EdgeInsets.symmetric(vertical: 2),
-        child: Center(
-          child: DateText(
-            date: date,
-            textStyle: monthHeaderStyle.textStyle ??
-                Theme.of(context).textTheme.bodySmall,
-            upperCase: monthHeaderStyle.useUpperCase ?? false,
-          ),
+
+    final padding =
+        monthHeaderStyle.padding ?? const EdgeInsets.symmetric(vertical: 2);
+    final textStyle =
+        monthHeaderStyle.textStyle ?? Theme.of(context).textTheme.bodySmall;
+    final upperCase = monthHeaderStyle.useUpperCase ?? false;
+
+    final dateFormat = DateFormat(monthHeaderStyle.dateFormat);
+    var text = dateFormat.format(date);
+    if (upperCase) {
+      text = text.toUpperCase();
+    }
+
+    return Padding(
+      padding: padding,
+      child: Center(
+        child: Text(
+          text,
+          style: textStyle,
         ),
       ),
     );
