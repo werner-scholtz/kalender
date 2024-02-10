@@ -167,6 +167,23 @@ class CalendarEvent<T> with ChangeNotifier {
         end == date.endOfDay;
   }
 
+  /// Whether the [CalendarEvent] is during the given [DateTimeRange].
+  bool occursDuringDateTimeRange(DateTimeRange dateRange) {
+    late final startIsWithin = start.isWithin(dateRange);
+
+    late final endIsWithin = end.isWithin(dateRange);
+
+    late final startIsBeforeOrEqual =
+        start.isBefore(dateRange.start) || start == dateRange.start;
+
+    late final endIsAfterOrEqual =
+        end.isAfter(dateRange.end) || end == dateRange.end;
+
+    return startIsWithin ||
+        endIsWithin ||
+        (startIsBeforeOrEqual && endIsAfterOrEqual);
+  }
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'Start': start,
         'End': end,
