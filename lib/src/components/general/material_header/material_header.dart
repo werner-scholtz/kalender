@@ -17,7 +17,6 @@ class CalendarHeaderBackground extends StatelessWidget {
     final surfaceTintColor = style.headerSurfaceTintColor ??
         Theme.of(context).colorScheme.surfaceTint;
     final elevation = style.headerElevation ?? 2;
-
     return Material(
       color: color,
       surfaceTintColor: surfaceTintColor,
