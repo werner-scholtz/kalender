@@ -10,6 +10,7 @@ class DayHeaderStyle {
     this.padding,
     this.backgroundColor,
     this.borderRadius,
+    this.dateFormat = 'E',
   });
 
   /// The [TextStyle] used by the [DateText] widget to display the day of the week.
@@ -17,6 +18,8 @@ class DayHeaderStyle {
 
   /// Whether the day of the week should be displayed in upper case.
   final bool? useUpperCase;
+
+  final String dateFormat;
 
   /// The [TextStyle] used by the [DateIconButton] widget to display the day number.
   final TextStyle? buttonTextStyle;

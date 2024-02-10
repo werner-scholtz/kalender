@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
-import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the day of the week and the day number.
@@ -18,6 +18,7 @@ class DayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final dayHeaderStyle =
         CalendarStyleProvider.of(context).style.dayHeaderStyle;
+    final dateFormat = DateFormat(dayHeaderStyle.dateFormat);
     return Container(
       decoration: BoxDecoration(
         color: dayHeaderStyle.backgroundColor,
@@ -25,11 +26,10 @@ class DayHeader extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          DateText(
-            date: date,
-            textStyle: dayHeaderStyle.textStyle ??
+          Text(
+            dateFormat.format(date),
+            style: dayHeaderStyle.textStyle ??
                 Theme.of(context).textTheme.bodySmall,
-            upperCase: dayHeaderStyle.useUpperCase ?? false,
           ),
           DateIconButton(
             date: date,
