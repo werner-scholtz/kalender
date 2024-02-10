@@ -160,13 +160,6 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The [DateTime]s that the [CalendarEvent] spans.
   List<DateTime> get datesSpanned => dateTimeRange.datesSpanned;
 
-  /// Whether the [CalendarEvent] is on a specific date.
-  bool isOnDate(DateTime date) {
-    return (start.isBefore(date.endOfDay) && end.isAfter(date.startOfDay)) ||
-        start == date.startOfDay ||
-        end == date.endOfDay;
-  }
-
   /// Whether the [CalendarEvent] is during the given [DateTimeRange].
   bool occursDuringDateTimeRange(DateTimeRange dateRange) {
     late final startIsWithin = start.isWithin(dateRange);
