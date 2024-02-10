@@ -23,8 +23,8 @@ class DaySeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = CalendarStyleProvider.of(context).style.daySeparatorStyle;
 
-    final width = style?.thickness ?? 1;
-    final color = style?.color ?? Theme.of(context).colorScheme.surfaceVariant;
+    final width = style.thickness ?? 1;
+    final color = style.color ?? Theme.of(context).colorScheme.surfaceVariant;
     return Stack(
       fit: StackFit.expand,
       children: [

@@ -18,14 +18,14 @@ class MonthHeader extends StatelessWidget {
         CalendarStyleProvider.of(context).style.monthHeaderStyle;
     return SizedBox(
       child: Padding(
-        padding: monthHeaderStyle?.padding ??
-            const EdgeInsets.symmetric(vertical: 2),
+        padding:
+            monthHeaderStyle.padding ?? const EdgeInsets.symmetric(vertical: 2),
         child: Center(
           child: DateText(
             date: date,
-            textStyle: monthHeaderStyle?.textStyle ??
+            textStyle: monthHeaderStyle.textStyle ??
                 Theme.of(context).textTheme.bodySmall,
-            upperCase: monthHeaderStyle?.useUpperCase ?? false,
+            upperCase: monthHeaderStyle.useUpperCase ?? false,
           ),
         ),
       ),

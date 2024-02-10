@@ -19,15 +19,15 @@ class MonthCellHeader extends StatelessWidget {
     final style = CalendarStyleProvider.of(context).style;
     return Container(
       decoration: BoxDecoration(
-        color: style.monthCellHeaderStyle?.backgroundColor,
-        borderRadius: style.monthCellHeaderStyle?.borderRadius,
+        color: style.monthCellHeaderStyle.backgroundColor,
+        borderRadius: style.monthCellHeaderStyle.borderRadius,
       ),
       child: DateIconButton(
         date: date,
         onTapped: (date) => onTapped?.call(date),
         visualDensity:
-            style.monthCellHeaderStyle?.visualDensity ?? VisualDensity.compact,
-        textStyle: style.monthCellHeaderStyle?.textStyle,
+            style.monthCellHeaderStyle.visualDensity ?? VisualDensity.compact,
+        textStyle: style.monthCellHeaderStyle.textStyle,
       ),
     );
   }

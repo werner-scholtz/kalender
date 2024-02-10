@@ -13,23 +13,20 @@ class ScheduleMonthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final style =
         CalendarStyleProvider.of(context).style.scheduleMonthHeaderStyle;
-
+    final padding = style.padding;
+    final margin = style.margin;
+    final decoration = BoxDecoration(
+      color: style.monthColors[date.month] ?? Colors.transparent,
+    );
     final dateFormat = DateFormat(style.dateFormat);
+    final text = dateFormat.format(date);
+    final textStyle = style.textStyle;
 
-    return Padding(
-      padding: style.margin,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: style.monthColors[date.month] ?? Colors.transparent,
-        ),
-        child: Padding(
-          padding: style.padding,
-          child: Text(
-            dateFormat.format(date),
-            style: style.textStyle,
-          ),
-        ),
-      ),
+    return Container(
+      padding: padding,
+      margin: margin,
+      decoration: decoration,
+      child: Text(text, style: textStyle),
     );
   }
 }

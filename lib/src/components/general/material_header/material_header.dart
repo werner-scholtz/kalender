@@ -13,17 +13,17 @@ class CalendarHeaderBackground extends StatelessWidget {
       color: CalendarStyleProvider.of(context)
               .style
               .calendarHeaderBackgroundStyle
-              ?.headerBackgroundColor ??
+              .headerBackgroundColor ??
           Theme.of(context).colorScheme.surface,
       surfaceTintColor: CalendarStyleProvider.of(context)
               .style
               .calendarHeaderBackgroundStyle
-              ?.headerSurfaceTintColor ??
+              .headerSurfaceTintColor ??
           Theme.of(context).colorScheme.surfaceTint,
       elevation: CalendarStyleProvider.of(context)
               .style
               .calendarHeaderBackgroundStyle
-              ?.headerElevation ??
+              .headerElevation ??
           2,
       child: child,
     );
