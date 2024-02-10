@@ -10,7 +10,7 @@ class DayHeaderStyle {
     this.padding,
     this.backgroundColor,
     this.borderRadius,
-    this.dateFormat = 'EEEE',
+    this.dateFormat = 'E',
   });
 
   /// The [TextStyle] used by the [DayHeader] widget to display the day of the week.
