@@ -124,21 +124,6 @@ class CalendarEvent<T> with ChangeNotifier {
     return dateTimeRangeOnDate(date).duration;
   }
 
-  /// Whether the [CalendarEvent] continues before the given date.
-  bool continuesBefore(DateTime date) {
-    assert(
-      date.isWithin(dateTimeRange) ||
-          date == start.startOfDay ||
-          date == end.endOfDay,
-      'The date must be within the dateTimeRange of the event',
-    );
-    if (isSplitAcrossDays) {
-      return !date.isSameDay(start);
-    } else {
-      return false;
-    }
-  }
-
   /// Whether the [CalendarEvent] continues after the given date.
   bool continuesAfter(DateTime date) {
     assert(
