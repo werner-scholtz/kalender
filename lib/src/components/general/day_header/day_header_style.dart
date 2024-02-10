@@ -10,21 +10,23 @@ class DayHeaderStyle {
     this.padding,
     this.backgroundColor,
     this.borderRadius,
-    this.dateFormat = 'E',
+    this.dateFormat = 'EEEE',
   });
 
-  /// The [TextStyle] used by the [DateText] widget to display the day of the week.
+  /// The [TextStyle] used by the [DayHeader] widget to display the day of the week.
   final TextStyle? textStyle;
+
+  /// DateFormat from the intl package.
+  /// ex. 'E' for short day of the week, 'EEEE' for long day of the week.
+  final String dateFormat;
 
   /// Whether the day of the week should be displayed in upper case.
   final bool? useUpperCase;
 
-  final String dateFormat;
-
-  /// The [TextStyle] used by the [DateIconButton] widget to display the day number.
+  /// The [TextStyle] used by the icon button in the [DayHeader] widget.
   final TextStyle? buttonTextStyle;
 
-  /// The [VisualDensity] used by the [DateIconButton] widget.
+  /// The [VisualDensity] used by the icon button in the [DayHeader] widget.
   final VisualDensity? buttonVisualDensity;
 
   /// The padding around the [DayHeader] widget.
