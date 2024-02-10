@@ -226,11 +226,22 @@ class CalendarEventsController<T> with ChangeNotifier {
     DateTimeRange dateRange,
   ) {
     return _events.where(
-      (element) =>
-          (element.start.isWithin(dateRange) ||
-              element.end.isWithin(dateRange)) ||
-          (element.start.isBefore(dateRange.start) &&
-              element.end.isAfter(dateRange.end)),
+      (element) {
+        late final startIsWithin = element.start.isWithin(dateRange);
+
+        late final endIsWithin = element.end.isWithin(dateRange);
+
+        late final startIsBeforeOrEqual =
+            element.start.isBefore(dateRange.start) ||
+                element.start == dateRange.start;
+
+        late final endIsAfterOrEqual =
+            element.end.isAfter(dateRange.end) || element.end == dateRange.end;
+
+        return startIsWithin ||
+            endIsWithin ||
+            (startIsBeforeOrEqual && endIsAfterOrEqual);
+      },
     );
   }
 
