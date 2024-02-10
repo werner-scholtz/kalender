@@ -11,6 +11,7 @@ class TimeIndicatorStyle {
   /// The radius of the circle on the left.
   final double? circleRadius;
 
+  /// The width of the line.
   final double? lineWidth;
 
   /// The color of time indicator.
