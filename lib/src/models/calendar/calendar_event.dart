@@ -124,21 +124,6 @@ class CalendarEvent<T> with ChangeNotifier {
     return dateTimeRangeOnDate(date).duration;
   }
 
-  /// Whether the [CalendarEvent] continues before the given date.
-  bool continuesBefore(DateTime date) {
-    assert(
-      date.isWithin(dateTimeRange) ||
-          date == start.startOfDay ||
-          date == end.endOfDay,
-      'The date must be within the dateTimeRange of the event',
-    );
-    if (isSplitAcrossDays) {
-      return !date.isSameDay(start);
-    } else {
-      return false;
-    }
-  }
-
   /// Whether the [CalendarEvent] continues after the given date.
   bool continuesAfter(DateTime date) {
     assert(
@@ -160,11 +145,21 @@ class CalendarEvent<T> with ChangeNotifier {
   /// The [DateTime]s that the [CalendarEvent] spans.
   List<DateTime> get datesSpanned => dateTimeRange.datesSpanned;
 
-  /// Whether the [CalendarEvent] is on a specific date.
-  bool isOnDate(DateTime date) {
-    return (start.isBefore(date.endOfDay) && end.isAfter(date.startOfDay)) ||
-        start == date.startOfDay ||
-        end == date.endOfDay;
+  /// Whether the [CalendarEvent] is during the given [DateTimeRange].
+  bool occursDuringDateTimeRange(DateTimeRange dateRange) {
+    late final startIsWithin = start.isWithin(dateRange);
+
+    late final endIsWithin = end.isWithin(dateRange);
+
+    late final startIsBeforeOrEqual =
+        start.isBefore(dateRange.start) || start == dateRange.start;
+
+    late final endIsAfterOrEqual =
+        end.isAfter(dateRange.end) || end == dateRange.end;
+
+    return startIsWithin ||
+        endIsWithin ||
+        (startIsBeforeOrEqual && endIsAfterOrEqual);
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

@@ -31,7 +31,6 @@ class MultiDayContent<T> extends StatelessWidget {
         final pageHeight = hourHeight * hoursADay;
 
         // The height of the content after clipping.
-        // The +1 is to show the last hour line.
         final clippedHeight = (viewConfiguration.endHour * hourHeight) -
             viewConfiguration.startHour * hourHeight;
 

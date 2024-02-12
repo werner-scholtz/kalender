@@ -18,7 +18,7 @@ class ScheduleDateTile<T> extends StatelessWidget {
     final components = CalendarStyleProvider.of(context).components;
 
     final dayHeader = Padding(
-      padding: style?.datePadding ?? const EdgeInsets.all(0),
+      padding: style.datePadding ?? const EdgeInsets.all(0),
       child: components.dayHeaderBuilder(
         scheduleGroup.date,
         (date) => scope.functions.onDateTapped?.call(date),
@@ -27,7 +27,7 @@ class ScheduleDateTile<T> extends StatelessWidget {
 
     final scheduleGroups = scheduleGroup.events.map(
       (event) => Padding(
-        padding: style?.tilePadding ?? const EdgeInsets.all(0),
+        padding: style.tilePadding ?? const EdgeInsets.all(0),
         child: MouseRegion(
           hitTestBehavior: HitTestBehavior.deferToChild,
           cursor: SystemMouseCursors.click,
@@ -46,7 +46,7 @@ class ScheduleDateTile<T> extends StatelessWidget {
     );
 
     return Padding(
-      padding: style?.margin ?? const EdgeInsets.all(0),
+      padding: style.margin ?? const EdgeInsets.all(0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

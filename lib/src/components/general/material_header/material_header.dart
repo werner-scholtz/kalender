@@ -9,22 +9,18 @@ class CalendarHeaderBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style =
+        CalendarStyleProvider.of(context).style.calendarHeaderBackgroundStyle;
+
+    final color =
+        style.headerBackgroundColor ?? Theme.of(context).colorScheme.surface;
+    final surfaceTintColor = style.headerSurfaceTintColor ??
+        Theme.of(context).colorScheme.surfaceTint;
+    final elevation = style.headerElevation ?? 2;
     return Material(
-      color: CalendarStyleProvider.of(context)
-              .style
-              .calendarHeaderBackgroundStyle
-              ?.headerBackgroundColor ??
-          Theme.of(context).colorScheme.surface,
-      surfaceTintColor: CalendarStyleProvider.of(context)
-              .style
-              .calendarHeaderBackgroundStyle
-              ?.headerSurfaceTintColor ??
-          Theme.of(context).colorScheme.surfaceTint,
-      elevation: CalendarStyleProvider.of(context)
-              .style
-              .calendarHeaderBackgroundStyle
-              ?.headerElevation ??
-          2,
+      color: color,
+      surfaceTintColor: surfaceTintColor,
+      elevation: elevation,
       child: child,
     );
   }

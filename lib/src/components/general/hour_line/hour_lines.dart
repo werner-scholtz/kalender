@@ -10,9 +10,7 @@ class HourLines extends StatelessWidget {
     required this.leftOffset,
   });
 
-  /// The spacing between the hour lines.
   final double hourHeight;
-
   final double leftOffset;
 
   @override
@@ -20,10 +18,9 @@ class HourLines extends StatelessWidget {
     final hourLineStyle = CalendarStyleProvider.of(context).style.hourLineStyle;
 
     final roundedHourHeight = hourHeight.roundToDouble();
-
-    final thickness = hourLineStyle?.thickness ?? 1;
+    final thickness = hourLineStyle.thickness ?? 1;
     final color =
-        hourLineStyle?.color ?? Theme.of(context).colorScheme.surfaceVariant;
+        hourLineStyle.color ?? Theme.of(context).colorScheme.surfaceVariant;
 
     return Stack(
       fit: StackFit.expand,

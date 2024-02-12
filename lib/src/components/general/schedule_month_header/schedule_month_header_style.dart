@@ -4,20 +4,6 @@ import 'package:flutter/material.dart';
 class ScheduleMonthHeaderStyle {
   const ScheduleMonthHeaderStyle({
     this.textStyle,
-    this.monthNames = const {
-      1: 'January',
-      2: 'February',
-      3: 'March',
-      4: 'April',
-      5: 'Mei',
-      6: 'June',
-      7: 'July',
-      8: 'August',
-      9: 'September',
-      10: 'October',
-      11: 'November',
-      12: 'December',
-    },
     this.monthColors = const {
       1: Color(0xFFE57373),
       2: Color(0xFFF06292),
@@ -34,11 +20,15 @@ class ScheduleMonthHeaderStyle {
     },
     this.margin = const EdgeInsets.only(top: 8),
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
+    this.dateFormat = 'yyyy - MMMM',
   });
 
   final Map<int, Color> monthColors;
-  final Map<int, String> monthNames;
   final TextStyle? textStyle;
   final EdgeInsets margin;
   final EdgeInsets padding;
+
+  /// DateFormat from the intl package.
+  /// ex. 'yyyy - MMMM'
+  final String dateFormat;
 }

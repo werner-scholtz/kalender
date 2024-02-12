@@ -3,7 +3,6 @@ import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -128,18 +127,10 @@ class MonthViewPageContent<T> extends StatelessWidget {
                         changingEvent = ListenableBuilder(
                           listenable: scope.eventsController.selectedEvent!,
                           builder: (context, child) {
-                            if (selectedEvent.dateTimeRange.start.isWithin(
-                                  weekDateRange,
-                                ) ||
-                                selectedEvent.dateTimeRange.end.isWithin(
-                                  weekDateRange,
-                                ) ||
-                                (selectedEvent.start.isBefore(
-                                      weekDateRange.start,
-                                    ) &&
-                                    selectedEvent.end.isAfter(
-                                      weekDateRange.end,
-                                    ))) {
+                            final occursDuring = selectedEvent
+                                .occursDuringDateTimeRange(weekDateRange);
+
+                            if (occursDuring) {
                               final multiDayEventGroup =
                                   MultiDayEventGroupController<T>()
                                       .generateMultiDayEventGroup(

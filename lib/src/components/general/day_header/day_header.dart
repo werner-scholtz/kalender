@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
-import 'package:kalender/src/components/general/date_text.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the day of the week and the day number.
@@ -16,28 +16,39 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dayHeaderStyle =
-        CalendarStyleProvider.of(context).style.dayHeaderStyle;
+    final style = CalendarStyleProvider.of(context).style.dayHeaderStyle;
+
+    final decoration = BoxDecoration(
+      color: style.backgroundColor,
+      borderRadius: style.borderRadius,
+    );
+
+    final dateFormat = DateFormat(style.dateFormat);
+    var dateText = dateFormat.format(date);
+    if (style.useUpperCase ?? false) {
+      dateText = dateText.toUpperCase();
+    }
+    final dateTextStyle =
+        style.textStyle ?? Theme.of(context).textTheme.bodySmall;
+
+    final dateIconButtonTextStyle =
+        style.buttonTextStyle ?? Theme.of(context).textTheme.bodySmall;
+    final dateIconButtonVisualDensity =
+        style.buttonVisualDensity ?? VisualDensity.compact;
+
     return Container(
-      decoration: BoxDecoration(
-        color: dayHeaderStyle?.backgroundColor,
-        borderRadius: dayHeaderStyle?.borderRadius,
-      ),
+      decoration: decoration,
       child: Column(
         children: <Widget>[
-          DateText(
-            date: date,
-            textStyle: dayHeaderStyle?.textStyle ??
-                Theme.of(context).textTheme.bodySmall,
-            upperCase: dayHeaderStyle?.useUpperCase ?? false,
+          Text(
+            dateText,
+            style: dateTextStyle,
           ),
           DateIconButton(
             date: date,
             onTapped: (date) => onTapped?.call(date),
-            textStyle: dayHeaderStyle?.buttonTextStyle ??
-                Theme.of(context).textTheme.bodySmall,
-            visualDensity:
-                dayHeaderStyle?.buttonVisualDensity ?? VisualDensity.compact,
+            textStyle: dateIconButtonTextStyle,
+            visualDensity: dateIconButtonVisualDensity,
           ),
         ],
       ),

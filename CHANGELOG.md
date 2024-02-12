@@ -1,3 +1,15 @@
+## 0.2.3
+* Fixed incorrect display of events in the MonthView.
+* Added intl package to dependencies.
+* DayHeaderStyle: now takes a dateFormat String.
+* MonthHeaderStyle: now takes a dateFormat String.
+
+#### Breaking Changes:
+* ScheduleMonthHeaderStyle now takes a dateFormat String instead.
+
+## 0.2.2
+* Fixed issue with EventGroupBasicLayoutDelegate.
+
 ## 0.2.1
 * Improvements to the MultiDayHeaderPanel.
 * Improvements to the EventGroupBasicLayoutDelegate.

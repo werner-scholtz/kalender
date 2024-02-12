@@ -39,9 +39,14 @@ class Timeline extends StatelessWidget {
       ],
     );
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
-      child: timeline,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: hourHeight / 2),
+        child: timeline,
+      ),
     );
   }
 }
@@ -57,7 +62,7 @@ class TimelineText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timelineStyle = CalendarStyleProvider.of(context).style.timelineStyle;
-    final use24HourFormat = timelineStyle?.use24HourFormat ??
+    final use24HourFormat = timelineStyle.use24HourFormat ??
         MediaQuery.of(context).alwaysUse24HourFormat;
     final string = use24HourFormat
         ? '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}'
@@ -65,7 +70,7 @@ class TimelineText extends StatelessWidget {
     return Center(
       child: Text(
         string,
-        style: timelineStyle?.textStyle,
+        style: timelineStyle.textStyle,
       ),
     );
   }
