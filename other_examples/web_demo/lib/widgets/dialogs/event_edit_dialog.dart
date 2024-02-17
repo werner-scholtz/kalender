@@ -3,7 +3,7 @@ import 'package:web_demo/widgets/dialogs/date_time_range_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class EventEditDialog extends StatelessWidget {
+class EventEditDialog extends StatefulWidget {
   const EventEditDialog({
     super.key,
     required this.dialogTitle,
@@ -18,6 +18,13 @@ class EventEditDialog extends StatelessWidget {
   final VoidCallback cancelEdit;
 
   @override
+  State<EventEditDialog> createState() => _EventEditDialogState();
+}
+
+class _EventEditDialogState extends State<EventEditDialog> {
+  late DateTimeRange dateTimeRange = widget.event.dateTimeRange;
+
+  @override
   Widget build(BuildContext context) {
     return SimpleDialog(
       insetPadding: EdgeInsets.zero,
@@ -26,11 +33,11 @@ class EventEditDialog extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(dialogTitle),
+          Text(widget.dialogTitle),
           IconButton.filledTonal(
             tooltip: 'Delete Event',
             onPressed: () {
-              deleteEvent(event);
+              widget.deleteEvent(widget.event);
               Navigator.of(context).pop();
             },
             icon: const Icon(Icons.delete),
@@ -39,32 +46,39 @@ class EventEditDialog extends StatelessWidget {
       ),
       children: [
         TextFormField(
-          initialValue: event.eventData?.title,
+          initialValue: widget.event.eventData?.title,
           decoration: const InputDecoration(
             labelText: 'Title',
             isDense: true,
           ),
           onChanged: (value) {
-            event.eventData = event.eventData?.copyWith(title: value);
+            widget.event.eventData =
+                widget.event.eventData?.copyWith(title: value);
           },
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: DateTimeRangeEditor(
-            dateTimeRange: event.dateTimeRange,
+            dateTimeRange: widget.event.dateTimeRange,
             onStartChanged: (dateTime) {
-              if (dateTime.isAfter(event.dateTimeRange.end)) return;
-              event.dateTimeRange = DateTimeRange(
-                start: dateTime,
-                end: event.dateTimeRange.end,
-              );
+              if (dateTime.isAfter(dateTimeRange.end)) return;
+              setState(() {
+                dateTimeRange = DateTimeRange(
+                  start: dateTime,
+                  end: dateTimeRange.end,
+                );
+                widget.event.dateTimeRange = dateTimeRange;
+              });
             },
             onEndChanged: (dateTime) {
-              if (dateTime.isBefore(event.dateTimeRange.start)) return;
-              event.dateTimeRange = DateTimeRange(
-                start: event.dateTimeRange.start,
-                end: dateTime,
-              );
+              if (dateTime.isBefore(dateTimeRange.start)) return;
+              setState(() {
+                dateTimeRange = DateTimeRange(
+                  start: dateTimeRange.start,
+                  end: dateTime,
+                );
+                widget.event.dateTimeRange = dateTimeRange;
+              });
             },
           ),
         ),
@@ -72,7 +86,7 @@ class EventEditDialog extends StatelessWidget {
           children: [
             DropdownMenu<Color>(
               label: const Text('Color'),
-              initialSelection: event.eventData?.color ?? Colors.blue,
+              initialSelection: widget.event.eventData?.color ?? Colors.blue,
               dropdownMenuEntries: const [
                 DropdownMenuEntry(value: Colors.blue, label: 'blue'),
                 DropdownMenuEntry(value: Colors.green, label: 'green'),
@@ -80,7 +94,8 @@ class EventEditDialog extends StatelessWidget {
               ],
               onSelected: (value) {
                 if (value == null) return;
-                event.eventData = event.eventData?.copyWith(color: value);
+                widget.event.eventData =
+                    widget.event.eventData?.copyWith(color: value);
               },
             )
           ],
@@ -91,7 +106,7 @@ class EventEditDialog extends StatelessWidget {
           children: [
             TextButton.icon(
               onPressed: () {
-                cancelEdit();
+                widget.cancelEdit();
                 Navigator.of(context).pop(false);
               },
               icon: const Icon(Icons.cancel),
