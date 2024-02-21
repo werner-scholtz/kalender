@@ -4,12 +4,11 @@ import 'package:kalender/src/extensions.dart';
 import 'date_time_test_object.dart';
 
 void main() {
-  testDateTimeRangeExtentions();
-
-  testDateTimeExtentions();
+  testDateTimeRangeExtensions();
+  testDateTimeExtensions();
 }
 
-void testDateTimeRangeExtentions() {
+void testDateTimeRangeExtensions() {
   group('DateTimeRangeExtensions Tests', () {
     final yearRange = DateTimeRange(
       start: DateTime(2023, 1, 1),
@@ -167,11 +166,11 @@ void testDateTimeRangeExtentions() {
   });
 }
 
-void testDateTimeExtentions() {
-  group('DateTimeExtentions Tests', () {
+void testDateTimeExtensions() {
+  group('DateTimeExtensions Tests', () {
     for (var object in dateTimeTestObjects) {
       test('weekNumber $object', () {
-        expect(object.date.weekOfYear, object.weekNumber);
+        expect(object.date.weekNumber, object.weekNumber);
       });
 
       test('startOfDay', () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// [DateTimeRange] extensions.
 extension DateTimeRangeExtensions on DateTimeRange {
@@ -140,64 +141,10 @@ extension DateTimeExtensions on DateTime {
   /// Checks if the [DateTime] is today.
   bool get isToday => isSameDay(DateTime.now());
 
-  /// Returns 'HH:mm' formatted [String] of the [DateTime].
-  String get timeString {
-    // DateFormat('HH:mm').format(this)
-
-    var hourString = hour.toString();
-    var minuteString = minute.toString();
-
-    if (hour < 10) {
-      hourString = '0$hourString';
-    }
-    if (minute < 10) {
-      minuteString = '0$minuteString';
-    }
-
-    return '$hourString:$minuteString';
-  }
-
-  /// Get the week of the year.
-  ///
-  /// https://en.wikipedia.org/wiki/ISO_week_date#Algorithms
-  int get weekOfYear {
-    final weekOfYear = ((ordinalDate - weekday + 10) ~/ 7);
-
-    if (weekOfYear == 0) {
-      return DateTime(year - 1, 12, 28).weekOfYear;
-    }
-
-    if (weekOfYear == 53 &&
-        DateTime(year, 1, 1).weekday != DateTime.thursday &&
-        DateTime(year, 12, 31).weekday != DateTime.thursday) {
-      return 1;
-    }
-
-    return weekOfYear;
-  }
-
-  /// Get the ordinal date.
-  int get ordinalDate {
-    const offsets = <int>[
-      0,
-      31,
-      59,
-      90,
-      120,
-      151,
-      181,
-      212,
-      243,
-      273,
-      304,
-      334,
-    ];
-    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
-  }
-
-  /// Checks if the [DateTime] is a leap year.
-  bool get isLeapYear {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  int get weekNumber {
+    final dayOfYear = int.parse(DateFormat('D').format(this));
+    return ((dayOfYear - weekday + 10) / 7).floor();
   }
 }
 

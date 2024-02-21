@@ -27,9 +27,9 @@ class WeekNumber extends StatelessWidget {
     final String text;
     if (visibleDateRange.duration > const Duration(days: 7)) {
       text =
-          '${visibleDateRange.start.weekOfYear} - ${visibleDateRange.end.weekOfYear}';
+          '${visibleDateRange.start.weekNumber} - ${visibleDateRange.end.weekNumber}';
     } else {
-      text = visibleDateRange.start.startOfWeek.weekOfYear.toString();
+      text = visibleDateRange.start.startOfWeek.weekNumber.toString();
     }
 
     return IconButton.filledTonal(
