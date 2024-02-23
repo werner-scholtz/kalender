@@ -117,7 +117,7 @@ void testDateTimeRangeExtensions() {
       ]);
     });
 
-    test('numberOfyears', () {
+    test('numberOfYears', () {
       expect(yearRange.numberOfYears, 0);
       expect(leapYearRange.numberOfYears, 0);
       expect(y2Range.numberOfYears, 2);
@@ -163,6 +163,8 @@ void testDateTimeRangeExtensions() {
       expect(d8Range.centerDateTime, DateTime(2021, 1, 5));
       expect(d14Range.centerDateTime, DateTime(2021, 1, 8));
     });
+
+    test('multiDayDateTimeRange', () {});
   });
 }
 

@@ -7,7 +7,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   int get dayDifference {
     final end = this.end;
     if (end == end.startOfDay) {
-      // Subtract 1 because the dateTimeRange does not span the last day.
+      // Subtract 1 because the dateTimeRange does not include the last day.
       return start.startOfDay.difference(end.endOfDay).inDays.abs() - 1;
     } else {
       return start.startOfDay.difference(end.endOfDay).inDays.abs();
@@ -145,6 +145,16 @@ extension DateTimeExtensions on DateTime {
   int get weekNumber {
     final dayOfYear = int.parse(DateFormat('D').format(this));
     return ((dayOfYear - weekday + 10) / 7).floor();
+  }
+
+  /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
+  DateTimeRange multiDayDateTimeRange(int numberOfDays) {
+    return DateTimeRange(
+      start: startOfDay,
+      end: endOfDay.add(
+        Duration(days: numberOfDays - 1),
+      ),
+    );
   }
 }
 

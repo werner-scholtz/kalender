@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
@@ -39,7 +40,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final CalendarController<Event> controller = CalendarController();
+  final CalendarController<Event> controller = CalendarController(
+      calendarDateTimeRange: DateTimeRange(
+    start: DateTime(2022),
+    end: DateTime(2022, 12, 31),
+  ));
   final CalendarEventsController<Event> eventController =
       CalendarEventsController<Event>();
 
@@ -53,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
-      numberOfDays: 2,
+      numberOfDays: 1,
     ),
     WeekConfiguration(),
     WorkWeekConfiguration(),
@@ -116,7 +121,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return SafeArea(
       child: Scaffold(
-        body: calendar,
+        body: Stack(
+          children: [
+            calendar,
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FilledButton.tonal(
+                    onPressed: () {
+                      controller.animateToDate(DateTime.now());
+                    },
+                    child: const Text('now'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
