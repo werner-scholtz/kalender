@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/components/general/styles_export.dart';
-import 'package:kalender/src/components/general/tile_handle/tile_handle_style.dart';
 
 /// The [CalendarStyle] class is used to store custom style's for the [CalendarComponents].
 class CalendarStyle {
