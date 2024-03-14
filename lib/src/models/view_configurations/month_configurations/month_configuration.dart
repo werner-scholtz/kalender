@@ -46,8 +46,8 @@ class MonthConfiguration extends MonthViewConfiguration {
   }
 
   @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.monthDifference;
+  int calculateNumberOfPages(DateTimeRange adjustedDateTimeRange) {
+    return adjustedDateTimeRange.monthDifference;
   }
 
   @override

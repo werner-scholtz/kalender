@@ -67,8 +67,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ numberOfDays;
+  int calculateNumberOfPages(DateTimeRange adjustedDateTimeRange) {
+    return adjustedDateTimeRange.dayDifference ~/ numberOfDays;
   }
 
   @override

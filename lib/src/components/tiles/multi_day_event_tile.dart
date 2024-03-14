@@ -9,8 +9,6 @@ import 'package:kalender/src/models/calendar/calendar_event_controller.dart';
 import 'package:kalender/src/models/calendar/calendar_functions.dart';
 import 'package:kalender/src/models/tile_configurations/multi_day_tile_configuration.dart';
 
-// TODO: Add resize and reschedule for mobile.
-
 class MultiDayEventGestureDetector<T> extends StatefulWidget {
   const MultiDayEventGestureDetector({
     super.key,
