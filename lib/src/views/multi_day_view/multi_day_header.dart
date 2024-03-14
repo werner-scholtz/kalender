@@ -3,7 +3,7 @@ import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/general/material_header/material_header.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
-import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
+import 'package:kalender/src/models/event_group_controllers/multi_day_event_group.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -176,8 +176,7 @@ class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
               scope.state.visibleDateTimeRangeNotifier.value,
             );
 
-            final multiDayEventGroup =
-                MultiDayEventGroupController<T>().generateMultiDayEventGroup(
+            final multiDayEventGroup = MultiDayEventGroup.fromEvents(
               events: events,
             );
 
@@ -218,8 +217,7 @@ class AnimatedMultiDayEventsHeader<T> extends StatelessWidget {
                         listenable: scope.eventsController.selectedEvent!,
                         builder: (context, child) {
                           final multiDayEventGroup =
-                              MultiDayEventGroupController<T>()
-                                  .generateMultiDayEventGroup(
+                              MultiDayEventGroup.fromEvents(
                             events: [selectedEvent],
                           );
 

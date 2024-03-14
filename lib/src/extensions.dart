@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// [DateTimeRange] extensions.
 extension DateTimeRangeExtensions on DateTimeRange {
   /// The difference of days between the [start] and [end] of the [DateTimeRange].
   int get dayDifference {
-    final end = this.end;
-    if (end == end.startOfDay) {
-      // Subtract 1 because the dateTimeRange does not span the last day.
-      return start.startOfDay.difference(end.endOfDay).inDays.abs() - 1;
-    } else {
-      return start.startOfDay.difference(end.endOfDay).inDays.abs();
-    }
+    final startDate = start.toUtc();
+    final endDate = end.toUtc();
+
+    final difference = startDate.difference(endDate).inDays.abs();
+
+    return difference;
   }
 
   /// The difference of months between the [start] and [end] of the [DateTimeRange].
@@ -22,11 +22,22 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// A list of [DateTime]s that the [DateTimeRange] spans.
   List<DateTime> get datesSpanned {
-    final dates = <DateTime>[];
-    for (var i = 0; i < dayDifference; i++) {
-      final date = start.add(Duration(days: i));
-      dates.add(DateTime(date.year, date.month, date.day));
+    final start = this.start.toUtc();
+    final end = this.end.toUtc();
+
+    final utcDates = <DateTime>[start.toUtc()];
+    final dates = <DateTime>[this.start.startOfDay];
+
+    while (utcDates.last.isBefore(end)) {
+      final newDate = utcDates.last.add(const Duration(days: 1));
+      if (newDate.isBefore(end)) {
+        utcDates.add(newDate);
+        dates.add(newDate.toLocal().startOfDay);
+      } else {
+        break;
+      }
     }
+
     return dates;
   }
 
@@ -75,10 +86,11 @@ extension DateTimeExtensions on DateTime {
   DateTime get startOfWeek => startOfWeekWithOffset(1);
 
   /// Gets the end of the week with an offset.
-  DateTime endOfWeekWithOffset(int firstDayOfWeek) =>
-      startOfWeekWithOffset(firstDayOfWeek).add(
-        const Duration(days: 7),
-      );
+  DateTime endOfWeekWithOffset(int firstDayOfWeek) {
+    return startOfWeekWithOffset(firstDayOfWeek)
+        .add(const Duration(days: 7))
+        .startOfDay;
+  }
 
   /// Gets the end of the week.
   DateTime get endOfWeek => endOfWeekWithOffset(1);
@@ -120,8 +132,10 @@ extension DateTimeExtensions on DateTime {
   DateTimeRange get weekRange => weekRangeWithOffset(1);
 
   /// Gets the month range in which the [DateTime] is in.
-  DateTimeRange get monthRange =>
-      DateTimeRange(start: startOfMonth, end: endOfMonth);
+  DateTimeRange get monthRange => DateTimeRange(
+        start: startOfMonth,
+        end: endOfMonth,
+      );
 
   /// Gets the year range in which the [DateTime] is in.
   DateTimeRange get yearRange => DateTimeRange(
@@ -140,64 +154,20 @@ extension DateTimeExtensions on DateTime {
   /// Checks if the [DateTime] is today.
   bool get isToday => isSameDay(DateTime.now());
 
-  /// Returns 'HH:mm' formatted [String] of the [DateTime].
-  String get timeString {
-    // DateFormat('HH:mm').format(this)
-
-    var hourString = hour.toString();
-    var minuteString = minute.toString();
-
-    if (hour < 10) {
-      hourString = '0$hourString';
-    }
-    if (minute < 10) {
-      minuteString = '0$minuteString';
-    }
-
-    return '$hourString:$minuteString';
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  int get weekNumber {
+    final dayOfYear = int.parse(DateFormat('D').format(this));
+    return ((dayOfYear - weekday + 10) / 7).floor();
   }
 
-  /// Get the week of the year.
-  ///
-  /// https://en.wikipedia.org/wiki/ISO_week_date#Algorithms
-  int get weekOfYear {
-    final weekOfYear = ((ordinalDate - weekday + 10) ~/ 7);
-
-    if (weekOfYear == 0) {
-      return DateTime(year - 1, 12, 28).weekOfYear;
-    }
-
-    if (weekOfYear == 53 &&
-        DateTime(year, 1, 1).weekday != DateTime.thursday &&
-        DateTime(year, 12, 31).weekday != DateTime.thursday) {
-      return 1;
-    }
-
-    return weekOfYear;
-  }
-
-  /// Get the ordinal date.
-  int get ordinalDate {
-    const offsets = <int>[
-      0,
-      31,
-      59,
-      90,
-      120,
-      151,
-      181,
-      212,
-      243,
-      273,
-      304,
-      334,
-    ];
-    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
-  }
-
-  /// Checks if the [DateTime] is a leap year.
-  bool get isLeapYear {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+  /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
+  DateTimeRange multiDayDateTimeRange(int numberOfDays) {
+    return DateTimeRange(
+      start: startOfDay,
+      end: endOfDay.add(
+        Duration(days: numberOfDays - 1),
+      ),
+    );
   }
 }
 

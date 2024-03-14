@@ -32,7 +32,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
-    return getMultiDayRange(date);
+    return date.multiDayDateTimeRange(numberOfDays);
   }
 
   @override
@@ -67,8 +67,8 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ numberOfDays;
+  int calculateNumberOfPages(DateTimeRange adjustedDateTimeRange) {
+    return adjustedDateTimeRange.dayDifference ~/ numberOfDays;
   }
 
   @override
@@ -77,22 +77,10 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     required DateTime calendarStart,
     int? firstDayOfWeek,
   }) {
-    return getMultiDayRange(
-      DateTime(
-        calendarStart.year,
-        calendarStart.month,
-        calendarStart.day + (index * numberOfDays),
-      ),
-    );
-  }
-
-  /// Gets the four day range with the [DateTime] as the first day.
-  DateTimeRange getMultiDayRange(DateTime date) {
-    return DateTimeRange(
-      start: date.startOfDay,
-      end: date.endOfDay.add(
-        Duration(days: numberOfDays - 1),
-      ),
-    );
+    return DateTime(
+      calendarStart.year,
+      calendarStart.month,
+      calendarStart.day + (index * numberOfDays),
+    ).multiDayDateTimeRange(numberOfDays);
   }
 }

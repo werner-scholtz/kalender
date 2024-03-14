@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_header_gesture_detector.dart';
-import 'package:kalender/src/models/event_group_controllers/multi_day_event_group_controller.dart';
+import 'package:kalender/src/models/event_group_controllers/multi_day_event_group.dart';
 import 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
@@ -51,8 +52,8 @@ class MonthViewPageContent<T> extends StatelessWidget {
 
                       // Create a date range from the start and end dates.
                       final weekDateRange = DateTimeRange(
-                        start: start,
-                        end: end,
+                        start: start.startOfDay,
+                        end: end.startOfDay,
                       );
 
                       // Get the events from the events controller.
@@ -65,9 +66,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
                           controller.visibleEvents.followedBy(events);
 
                       // Create a multi day event group from the events.
-                      final multiDayEventGroup =
-                          MultiDayEventGroupController<T>()
-                              .generateMultiDayEventGroup(
+                      final multiDayEventGroup = MultiDayEventGroup.fromEvents(
                         events: events,
                       );
 
@@ -132,8 +131,7 @@ class MonthViewPageContent<T> extends StatelessWidget {
 
                             if (occursDuring) {
                               final multiDayEventGroup =
-                                  MultiDayEventGroupController<T>()
-                                      .generateMultiDayEventGroup(
+                                  MultiDayEventGroup.fromEvents(
                                 events: [selectedEvent],
                               );
 

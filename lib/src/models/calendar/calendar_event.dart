@@ -70,7 +70,7 @@ class CalendarEvent<T> with ChangeNotifier {
   }
 
   /// Whether the [CalendarEvent] is a multi day event.
-  bool get isMultiDayEvent => duration.inHours >= 24;
+  bool get isMultiDayEvent => dateTimeRange.dayDifference >= 1;
 
   /// Whether the [CalendarEvent] is split across days.
   bool get isSplitAcrossDays {
@@ -147,19 +147,14 @@ class CalendarEvent<T> with ChangeNotifier {
 
   /// Whether the [CalendarEvent] is during the given [DateTimeRange].
   bool occursDuringDateTimeRange(DateTimeRange dateRange) {
-    late final startIsWithin = start.isWithin(dateRange);
+    final startsBeforeEndsAfter =
+        (start.isBefore(dateRange.start) && end.isAfter(dateRange.end));
 
-    late final endIsWithin = end.isWithin(dateRange);
+    final isWithin = start.isWithin(dateRange) || end.isWithin(dateRange);
 
-    late final startIsBeforeOrEqual =
-        start.isBefore(dateRange.start) || start == dateRange.start;
+    final startOrEndEquals = start == dateRange.start || end == dateRange.end;
 
-    late final endIsAfterOrEqual =
-        end.isAfter(dateRange.end) || end == dateRange.end;
-
-    return startIsWithin ||
-        endIsWithin ||
-        (startIsBeforeOrEqual && endIsAfterOrEqual);
+    return startsBeforeEndsAfter || isWithin || startOrEndEquals;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

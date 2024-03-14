@@ -3,13 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/extensions.dart';
 import 'date_time_test_object.dart';
 
-void main() {
-  testDateTimeRangeExtentions();
-
-  testDateTimeExtentions();
+void main() async {
+  testDateTimeRangeExtensions();
+  testDateTimeExtensions();
 }
 
-void testDateTimeRangeExtentions() {
+void testDateTimeRangeExtensions() {
   group('DateTimeRangeExtensions Tests', () {
     final yearRange = DateTimeRange(
       start: DateTime(2023, 1, 1),
@@ -58,7 +57,7 @@ void testDateTimeRangeExtentions() {
 
     final d7Range2 = DateTimeRange(
       start: DateTime(2021, 1, 1),
-      end: DateTime(2021, 1, 7, 23, 59, 59),
+      end: DateTime(2021, 1, 8, 23, 59, 59),
     );
 
     final d8Range = DateTimeRange(
@@ -118,7 +117,7 @@ void testDateTimeRangeExtentions() {
       ]);
     });
 
-    test('numberOfyears', () {
+    test('numberOfYears', () {
       expect(yearRange.numberOfYears, 0);
       expect(leapYearRange.numberOfYears, 0);
       expect(y2Range.numberOfYears, 2);
@@ -164,14 +163,16 @@ void testDateTimeRangeExtentions() {
       expect(d8Range.centerDateTime, DateTime(2021, 1, 5));
       expect(d14Range.centerDateTime, DateTime(2021, 1, 8));
     });
+
+    test('multiDayDateTimeRange', () {});
   });
 }
 
-void testDateTimeExtentions() {
-  group('DateTimeExtentions Tests', () {
+void testDateTimeExtensions() {
+  group('DateTimeExtensions Tests', () {
     for (var object in dateTimeTestObjects) {
       test('weekNumber $object', () {
-        expect(object.date.weekOfYear, object.weekNumber);
+        expect(object.date.weekNumber, object.weekNumber);
       });
 
       test('startOfDay', () {

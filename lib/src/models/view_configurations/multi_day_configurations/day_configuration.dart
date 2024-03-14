@@ -6,7 +6,8 @@ import 'package:kalender/src/models/view_configurations/view_configuration_expor
 ///
 /// This class contains the functions required to calculate the [DateTimeRange]s and indexes of a [MultiDayView].
 /// It also contains some configuration values that are used to layout of the [MultiDayView].
-class DayConfiguration extends MultiDayViewConfiguration {
+class DayConfiguration extends MultiDayViewConfiguration
+    implements ViewConfiguration {
   DayConfiguration({
     this.name = 'Day',
     super.timelineWidth = 56,
@@ -75,9 +76,9 @@ class DayConfiguration extends MultiDayViewConfiguration {
 
   @override
   int calculateNumberOfPages(
-    DateTimeRange calendarDateTimeRange,
+    DateTimeRange adjustedDateTimeRange,
   ) {
-    return calendarDateTimeRange.dayDifference;
+    return adjustedDateTimeRange.dayDifference;
   }
 
   @override

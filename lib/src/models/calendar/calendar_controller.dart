@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 import 'package:kalender/src/constants.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/view_state/month_view_state.dart';
 import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/models/calendar/view_state/schedule_view_state.dart';
@@ -20,7 +21,7 @@ class CalendarController<T> with ChangeNotifier {
     DateTime? initialDate,
     DateTimeRange? calendarDateTimeRange,
   })  : _dateTimeRange = calendarDateTimeRange ?? defaultDateRange,
-        _selectedDate = initialDate ?? DateTime.now();
+        _selectedDate = initialDate?.startOfDay ?? DateTime.now().startOfDay;
 
   /// The currently selected date.
   DateTime _selectedDate;

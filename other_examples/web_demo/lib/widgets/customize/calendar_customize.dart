@@ -183,7 +183,7 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 margin: value
                     ? const EdgeInsets.symmetric(vertical: 16)
                     : const EdgeInsets.symmetric(vertical: 4),
-                tilePadding: widget.style.scheduleDateTileStyle?.tilePadding,
+                tilePadding: widget.style.scheduleDateTileStyle.tilePadding,
               ),
             ),
           );
@@ -201,7 +201,7 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 tilePadding: value
                     ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
                     : const EdgeInsets.symmetric(horizontal: 8),
-                margin: widget.style.scheduleDateTileStyle?.margin,
+                margin: widget.style.scheduleDateTileStyle.margin,
               ),
             ),
           );

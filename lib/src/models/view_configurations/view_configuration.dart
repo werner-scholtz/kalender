@@ -19,9 +19,9 @@ abstract class ViewConfiguration with ChangeNotifier {
     required DateTime calendarStart,
   });
 
-  /// Calculates the number of pages for the [calendarDateTimeRange].
+  /// Calculates the number of pages for the [adjustedDateTimeRange].
   int calculateNumberOfPages(
-    DateTimeRange calendarDateTimeRange,
+    DateTimeRange adjustedDateTimeRange,
   );
 
   /// Calculates the visible [DateTimeRange] form the [date].
@@ -36,7 +36,6 @@ abstract class ViewConfiguration with ChangeNotifier {
   ///
   /// [dateTimeRange] is the range of the calendar.
   /// [visibleStart] is the date that is highlighted.
-  /// [firstDayOfWeek] is the first day of the week.
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,

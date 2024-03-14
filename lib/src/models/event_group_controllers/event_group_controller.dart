@@ -34,8 +34,12 @@ class EventGroupController<T> {
 
     // Loop through each date.
     for (final date in visibleDates) {
+      // log(date.toString(), name: 'Date');
+      // log(events.length.toString(), name: 'Events');
       // Get a list of events that are visible on the date.
       final eventsOnDate = _findEventsOnDate(events, date);
+
+      // log(eventsOnDate.length.toString());
 
       final tileGroupsOnDate = <EventGroup<T>>[];
 

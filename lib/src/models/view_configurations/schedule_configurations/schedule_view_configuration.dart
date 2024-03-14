@@ -12,7 +12,7 @@ abstract class ScheduleViewConfiguration extends ViewConfiguration {
   }
 
   @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
+  int calculateNumberOfPages(DateTimeRange adjustedDateTimeRange) {
     throw UnimplementedError();
   }
 

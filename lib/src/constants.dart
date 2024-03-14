@@ -8,13 +8,3 @@ final DateTimeRange defaultDateRange = DateTimeRange(
 const int hoursADay = 24;
 const int minutesAnHour = 60;
 const int minutesADay = 1440;
-
-const List<String> dayOfWeek = <String>[
-  'Mon',
-  'Tue',
-  'Wed',
-  'Thu',
-  'Fri',
-  'Sat',
-  'Sun',
-];

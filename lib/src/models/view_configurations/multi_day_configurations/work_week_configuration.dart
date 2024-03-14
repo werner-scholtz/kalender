@@ -63,8 +63,8 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   }
 
   @override
-  int calculateNumberOfPages(DateTimeRange calendarDateTimeRange) {
-    return calendarDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
+  int calculateNumberOfPages(DateTimeRange adjustedDateTimeRange) {
+    return adjustedDateTimeRange.dayDifference ~/ DateTime.daysPerWeek;
   }
 
   @override

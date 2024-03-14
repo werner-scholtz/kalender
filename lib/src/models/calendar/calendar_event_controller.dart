@@ -189,18 +189,13 @@ class CalendarEventsController<T> with ChangeNotifier {
   List<CalendarEvent<T>> getMultiDayEventsFromDateRange(
     DateTimeRange dateRange,
   ) {
-    return _events
-        .where(
-          (element) =>
-              ((element.start.isBefore(dateRange.start) &&
-                      element.end.isAfter(dateRange.end)) ||
-                  element.start.isWithin(dateRange) ||
-                  element.end.isWithin(dateRange) ||
-                  element.start == dateRange.start ||
-                  element.end == dateRange.end) &&
-              element.isMultiDayEvent,
-        )
-        .toList();
+    final events = _events.where((event) {
+      final isMultiDay = event.isMultiDayEvent;
+      if (!isMultiDay) return false;
+      return event.occursDuringDateTimeRange(dateRange);
+    }).toList();
+
+    return events;
   }
 
   /// Returns a iterable of [CalendarEvent]s for that will be visible on the given date range.
