@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/extensions.dart';
 import 'date_time_test_object.dart';
 
-void main() {
+void main() async {
   testDateTimeRangeExtensions();
   testDateTimeExtensions();
 }
@@ -57,7 +57,7 @@ void testDateTimeRangeExtensions() {
 
     final d7Range2 = DateTimeRange(
       start: DateTime(2021, 1, 1),
-      end: DateTime(2021, 1, 7, 23, 59, 59),
+      end: DateTime(2021, 1, 8, 23, 59, 59),
     );
 
     final d8Range = DateTimeRange(

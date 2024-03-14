@@ -40,6 +40,7 @@ class MultiDayEventsDefaultLayoutDelegate<T>
   void performLayout(Size size) {
     final numChildren = events.length;
     final visibleDates = visibleDateRange.datesSpanned;
+
     final dayWidth = size.width / visibleDates.length;
 
     final tileSizes = <int, Size>{};
@@ -51,7 +52,6 @@ class MultiDayEventsDefaultLayoutDelegate<T>
       final event = events[id];
 
       final eventDates = event.datesSpanned;
-
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(
         visibleDates.contains,

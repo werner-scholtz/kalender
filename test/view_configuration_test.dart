@@ -2,18 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:timezone/standalone.dart';
+
+import 'utils.dart';
 
 void main() {
-  final calendarStart = DateTime(2022, 1, 1);
-  final calendarEnd = DateTime(2023, 1, 1);
-  final calendarRange = DateTimeRange(start: calendarStart, end: calendarEnd);
+  timezoneTest(
+    (zone, now) {
+      group(zone.name, () {
+        final calendarStart = TZDateTime(zone, now.year);
+        final calendarEnd = TZDateTime(zone, now.year + 1);
 
-  for (var i = 1; i < 15; i++) {
-    testCustomMultiDay(
-      calendarRange: calendarRange,
-      numberOfDays: i,
-    );
-  }
+        for (var i = 1; i < 15; i++) {
+          testCustomMultiDayV2(
+            start: calendarStart,
+            end: calendarEnd,
+            numberOfDays: 1,
+          );
+        }
+      });
+    },
+  );
+}
+
+void testCustomMultiDayV2({
+  required TZDateTime start,
+  required TZDateTime end,
+  required int numberOfDays,
+}) {
+  final multiDayViewConfig = CustomMultiDayConfiguration(
+    name: 'test',
+    numberOfDays: numberOfDays,
+  );
+
+  final adjustedRange = multiDayViewConfig.calculateAdjustedDateTimeRange(
+    dateTimeRange: DateTimeRange(start: start, end: end),
+    visibleStart: start,
+  );
+  final remainder = adjustedRange.dayDifference % numberOfDays;
+
+  test('calculateAdjustedDateTimeRange', () {
+    expect(remainder, 0);
+  });
+
+  final numberOfPages = multiDayViewConfig.calculateNumberOfPages(
+    adjustedRange,
+  );
+  final expectedNumberOfPages = adjustedRange.dayDifference ~/ numberOfDays;
+
+  test('calculateNumberOfPages', () {
+    expect(numberOfPages, expectedNumberOfPages);
+  });
 }
 
 void testCustomMultiDay({

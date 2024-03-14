@@ -5,13 +5,12 @@ import 'package:intl/intl.dart';
 extension DateTimeRangeExtensions on DateTimeRange {
   /// The difference of days between the [start] and [end] of the [DateTimeRange].
   int get dayDifference {
-    final end = this.end;
-    if (end == end.startOfDay) {
-      // Subtract 1 because the dateTimeRange does not include the last day.
-      return start.startOfDay.difference(end.endOfDay).inDays.abs() - 1;
-    } else {
-      return start.startOfDay.difference(end.endOfDay).inDays.abs();
-    }
+    final startDate = start.toUtc();
+    final endDate = end.toUtc();
+
+    final difference = startDate.difference(endDate).inDays.abs();
+
+    return difference;
   }
 
   /// The difference of months between the [start] and [end] of the [DateTimeRange].
@@ -23,11 +22,22 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// A list of [DateTime]s that the [DateTimeRange] spans.
   List<DateTime> get datesSpanned {
-    final dates = <DateTime>[];
-    for (var i = 0; i < dayDifference; i++) {
-      final date = start.add(Duration(days: i));
-      dates.add(DateTime(date.year, date.month, date.day));
+    final start = this.start.toUtc();
+    final end = this.end.toUtc();
+
+    final utcDates = <DateTime>[start.toUtc()];
+    final dates = <DateTime>[this.start.startOfDay];
+
+    while (utcDates.last.isBefore(end)) {
+      final newDate = utcDates.last.add(const Duration(days: 1));
+      if (newDate.isBefore(end)) {
+        utcDates.add(newDate);
+        dates.add(newDate.toLocal().startOfDay);
+      } else {
+        break;
+      }
     }
+
     return dates;
   }
 
@@ -76,10 +86,11 @@ extension DateTimeExtensions on DateTime {
   DateTime get startOfWeek => startOfWeekWithOffset(1);
 
   /// Gets the end of the week with an offset.
-  DateTime endOfWeekWithOffset(int firstDayOfWeek) =>
-      startOfWeekWithOffset(firstDayOfWeek).add(
-        const Duration(days: 7),
-      );
+  DateTime endOfWeekWithOffset(int firstDayOfWeek) {
+    return startOfWeekWithOffset(firstDayOfWeek)
+        .add(const Duration(days: 7))
+        .startOfDay;
+  }
 
   /// Gets the end of the week.
   DateTime get endOfWeek => endOfWeekWithOffset(1);
@@ -121,8 +132,10 @@ extension DateTimeExtensions on DateTime {
   DateTimeRange get weekRange => weekRangeWithOffset(1);
 
   /// Gets the month range in which the [DateTime] is in.
-  DateTimeRange get monthRange =>
-      DateTimeRange(start: startOfMonth, end: endOfMonth);
+  DateTimeRange get monthRange => DateTimeRange(
+        start: startOfMonth,
+        end: endOfMonth,
+      );
 
   /// Gets the year range in which the [DateTime] is in.
   DateTimeRange get yearRange => DateTimeRange(

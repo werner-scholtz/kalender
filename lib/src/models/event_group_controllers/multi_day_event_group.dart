@@ -2,12 +2,9 @@ import 'dart:math' hide log;
 
 import 'package:kalender/src/models/calendar/calendar_event.dart';
 
-/// A controller that generates [MultiDayEventGroup]'s for a list of events.
-class MultiDayEventGroupController<T> {
-  const MultiDayEventGroupController();
-
-  /// Generate the [MultiDayEventGroup]'s for a list of events.
-  MultiDayEventGroup<T> generateMultiDayEventGroup({
+/// A group of [CalendarEvent]'s that will be stacked on top of each other.
+class MultiDayEventGroup<T> {
+  factory MultiDayEventGroup.fromEvents({
     required Iterable<CalendarEvent<T>> events,
   }) {
     var maxNumberOfStackedEvents = 0;
@@ -35,27 +32,12 @@ class MultiDayEventGroupController<T> {
         (a, b) => b.end.compareTo(a.end),
       );
 
-    final multiDayEventGroup = MultiDayEventGroup<T>(
+    return MultiDayEventGroup<T>(
       events: sortedEvents,
       maxNumberOfStackedEvents: maxNumberOfStackedEvents,
     );
-
-    return multiDayEventGroup;
   }
 
-  /// Generate the [MultiDayEventGroup]'s for a single event.
-  MultiDayEventGroup<T> generateDayTileGroupsFromSingleEvent({
-    required CalendarEvent<T> event,
-  }) {
-    return MultiDayEventGroup<T>(
-      events: [event],
-      maxNumberOfStackedEvents: 1,
-    );
-  }
-}
-
-/// A group of [CalendarEvent]'s that will be stacked on top of each other.
-class MultiDayEventGroup<T> {
   const MultiDayEventGroup({
     required this.events,
     required this.maxNumberOfStackedEvents,
