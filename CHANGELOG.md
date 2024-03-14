@@ -1,3 +1,7 @@
+## 0.3.0
+* Fixed DST issues.
+* Added export for tile_handle_style.
+
 ## 0.2.3
 * Fixed incorrect display of events in the MonthView.
 * Added intl package to dependencies.
