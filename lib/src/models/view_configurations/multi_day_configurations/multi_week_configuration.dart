@@ -80,7 +80,18 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    final index = date.difference(startDate).inDays ~/ numberOfDays;
+    final dateUtc = DateTime.utc(
+      date.year,
+      date.month,
+      date.day,
+    );
+    final startDateUTC = DateTime.utc(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    final index = dateUtc.difference(startDateUTC).inDays ~/ numberOfDays;
     return index;
   }
 

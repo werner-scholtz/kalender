@@ -63,7 +63,18 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return date.difference(startDate).inDays ~/ numberOfDays;
+    final dateUtc = DateTime.utc(
+      date.year,
+      date.month,
+      date.day,
+    );
+    final startDateUTC = DateTime.utc(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    return dateUtc.difference(startDateUTC).inDays ~/ numberOfDays;
   }
 
   @override

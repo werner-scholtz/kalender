@@ -1,6 +1,7 @@
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart';
 
+/// Test different timezones.
 void timezoneTest(Function(Location zone, TZDateTime now) test) {
   tz.initializeTimeZones();
   final timezones = [
