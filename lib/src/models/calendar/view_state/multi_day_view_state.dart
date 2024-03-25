@@ -110,7 +110,7 @@ class MultiDayViewState extends ViewState {
   }) async {
     final pageNumber = viewConfiguration.calculateDateIndex(
       date,
-      adjustedDateTimeRange.start,
+      adjustedDateTimeRange.start.startOfDay,
     );
 
     await pageController.animateToPage(

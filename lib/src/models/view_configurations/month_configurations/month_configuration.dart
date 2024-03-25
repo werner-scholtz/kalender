@@ -33,10 +33,15 @@ class MonthConfiguration extends MonthViewConfiguration {
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
   }) {
+    final start = dateTimeRange.start.startOfMonth.startOfWeekWithOffset(
+      firstDayOfWeek,
+    );
+    final end = dateTimeRange.end.endOfMonth.endOfWeekWithOffset(
+      firstDayOfWeek,
+    );
     return DateTimeRange(
-      start: dateTimeRange.start.startOfMonth
-          .startOfWeekWithOffset(firstDayOfWeek),
-      end: dateTimeRange.end.endOfMonth.endOfWeekWithOffset(firstDayOfWeek),
+      start: start,
+      end: end,
     );
   }
 
