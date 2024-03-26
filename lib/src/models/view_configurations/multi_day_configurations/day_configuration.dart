@@ -71,7 +71,18 @@ class DayConfiguration extends MultiDayViewConfiguration
     DateTime date,
     DateTime startDate,
   ) {
-    return date.difference(startDate).inDays;
+    final dateUtc = DateTime.utc(
+      date.year,
+      date.month,
+      date.day,
+    );
+    final startDateUTC = DateTime.utc(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    return dateUtc.difference(startDateUTC).inDays;
   }
 
   @override

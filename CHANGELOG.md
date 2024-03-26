@@ -1,3 +1,6 @@
+## 0.3.1
+* Fixed DST navigation issues.
+
 ## 0.3.0
 * Fixed DST issues.
 * Added export for tile_handle_style.
