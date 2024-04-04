@@ -142,18 +142,20 @@ class MultiDayViewState extends ViewState {
   }) async {
     // First animate to the date of the event.
     await animateToDate(
-      event.dateTimeRange.start,
+      event.dateTimeRange.start.startOfDay,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.ease,
     );
 
     // Calculate the event position.
+
+    final eventStart = event.start;
+    final startOfDate = eventStart.startOfDay;
+
     final eventPosition =
-        event.start.difference(event.start.startOfDay).inMinutes *
-            heightPerMinute.value;
+        eventStart.difference(startOfDate).inMinutes * heightPerMinute.value;
 
     double scrollPosition;
-
     if (centerEvent) {
       // Calculate the event height.
       final eventHeight = event.duration.inMinutes * heightPerMinute.value;
