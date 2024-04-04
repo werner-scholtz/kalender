@@ -22,10 +22,10 @@ abstract class ViewState {
   /// The adjusted dateTimeRange of the current view.
   DateTimeRange get adjustedDateTimeRange;
 
-  /// Jump to the given page.
+  /// Jump to the given [DateTime].
   void jumpToPage(int page);
 
-  /// Jump to the given date.
+  /// Jump to the given [DateTime].
   void jumpToDate(DateTime date);
 
   /// Adjust the height per minute of the current view.
@@ -43,14 +43,14 @@ abstract class ViewState {
     Curve? curve,
   });
 
-  /// Animate to the given date.
+  /// Animate to the given [DateTime].
   Future<void> animateToDate(
     DateTime date, {
     Duration? duration,
     Curve? curve,
   });
 
-  /// Animate to the given event.
+  /// Animate to the given [CalendarEvent].
   Future<void> animateToEvent(
     CalendarEvent event, {
     Duration? duration,

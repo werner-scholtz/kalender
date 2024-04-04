@@ -108,13 +108,26 @@ class MultiDayViewState extends ViewState {
     Duration? duration,
     Curve? curve,
   }) async {
+    // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.calculateDateIndex(
       date,
       adjustedDateTimeRange.start.startOfDay,
     );
 
+    // Animate to that page.
     await pageController.animateToPage(
       pageNumber,
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
+    );
+
+    // Calculate the offset of the time.
+    final timeOffset =
+        date.difference(date.startOfDay).inMinutes * heightPerMinute.value;
+
+    // Animate to the offset of the time.
+    await scrollController.animateTo(
+      timeOffset,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
@@ -133,6 +146,7 @@ class MultiDayViewState extends ViewState {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.ease,
     );
+
     // Calculate the event position.
     final eventPosition =
         event.start.difference(event.start.startOfDay).inMinutes *

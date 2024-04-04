@@ -1,4 +1,4 @@
-/// Abtract classes.
+/// Abstract classes.
 export 'package:kalender/src/models/view_configurations/multi_day_configurations/multi_day_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/month_configurations/month_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/schedule_configurations/schedule_view_configuration.dart';

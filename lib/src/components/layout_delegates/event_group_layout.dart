@@ -116,8 +116,8 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
       final id = i;
       final event = events[id];
 
-      // Calculate width of the child.
-      final childWidth = ((id * tileWidth) / 5);
+      // Calculate the x offset of the tile.
+      final xOffset = (tileWidth / numChildren) * id;
 
       // Calculate the top offset of the tile.
       final eventStartOnDate = event.dateTimeRangeOnDate(date).start;
@@ -145,18 +145,21 @@ class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
         childHeight = 0.0001;
       }
 
+      // Calculate the width of the tile.
+      final width = (tileWidth / numChildren) * (numChildren - id);
+
       // Layout the tile.
       layoutChild(
         id,
         BoxConstraints.tightFor(
-          width: (tileWidth - ((i * tileWidth) / 5)).floorToDouble(),
+          width: width,
           height: childHeight,
         ),
       );
 
       positionChild(
         id,
-        Offset(childWidth, dy),
+        Offset(xOffset, dy),
       );
     }
   }

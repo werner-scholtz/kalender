@@ -1,3 +1,7 @@
+## 0.3.2
+- Fixed some more DST bugs.
+- animateToDate now animates to the specified time.
+
 ## 0.3.1
 * Fixed DST navigation issues.
 
