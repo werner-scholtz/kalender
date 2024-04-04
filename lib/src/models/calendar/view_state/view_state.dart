@@ -44,6 +44,7 @@ abstract class ViewState {
   });
 
   /// Animate to the given date.
+  /// TODO: animate to the date and the time. @werner-scholtz
   Future<void> animateToDate(
     DateTime date, {
     Duration? duration,

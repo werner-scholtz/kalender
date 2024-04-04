@@ -95,6 +95,7 @@ abstract class EventGroupLayoutDelegate<T> extends MultiChildLayoutDelegate {
 }
 
 /// A [EventGroupLayoutDelegate] that lays out the tiles on top of each other.
+/// TODO: Fix layout issues @werner-scholtz.
 class EventGroupOverlapLayoutDelegate<T> extends EventGroupLayoutDelegate<T> {
   EventGroupOverlapLayoutDelegate({
     required super.events,
