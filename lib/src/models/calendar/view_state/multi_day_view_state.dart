@@ -137,6 +137,8 @@ class MultiDayViewState extends ViewState {
       curve: curve ?? Curves.easeInOut,
     );
 
+    if (!scrollController.hasClients) return;
+
     // Calculate the offset of the time.
     final timeOffset =
         date.difference(date.startOfDay).inMinutes * heightPerMinute.value;
