@@ -40,10 +40,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final CalendarController<Event> controller = CalendarController(
-      calendarDateTimeRange: DateTimeRange(
-    start: DateTime(2022),
-    end: DateTime(2022, 12, 31),
-  ));
+    calendarDateTimeRange: DateTimeRange(
+      start: DateTime(DateTime.now().year - 1),
+      end: DateTime(DateTime.now().year + 1),
+    ),
+  );
   final CalendarEventsController<Event> eventController =
       CalendarEventsController<Event>();
 
@@ -52,8 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
-      startHour: 1,
-      endHour: 12,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
@@ -120,25 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return SafeArea(
       child: Scaffold(
-        body: Stack(
-          children: [
-            calendar,
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FilledButton.tonal(
-                    onPressed: () {
-                      controller.animateToDate(DateTime.now());
-                    },
-                    child: const Text('now'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        body: calendar,
       ),
     );
   }
@@ -252,6 +233,12 @@ class _MyHomePageState extends State<MyHomePage> {
         IconButton.filledTonal(
           onPressed: controller.animateToNextPage,
           icon: const Icon(Icons.navigate_next_rounded),
+        ),
+        IconButton.filledTonal(
+          onPressed: () {
+            controller.animateToDate(DateTime.now());
+          },
+          icon: const Icon(Icons.today),
         ),
       ],
     );
