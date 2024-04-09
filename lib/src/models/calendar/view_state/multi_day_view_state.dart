@@ -21,6 +21,7 @@ class MultiDayViewState extends ViewState {
       final hour = total ~/ 60;
 
       visibleStartTimeOfDay = TimeOfDay(hour: hour, minute: minute);
+      lastKnowScrollOffset = scrollController.offset;
     });
   }
 
@@ -54,14 +55,11 @@ class MultiDayViewState extends ViewState {
       selectedDate,
     );
 
-    final scrollController = ScrollController(
-      keepScrollOffset: true,
-      initialScrollOffset: previousState?.lastKnowScrollOffset ?? 0.0,
-    );
-
-    scrollController.addListener(() {
-      previousState?.lastKnowScrollOffset = scrollController.offset;
-    });
+    final scrollController = previousState?.scrollController ??
+        ScrollController(
+          keepScrollOffset: true,
+          initialScrollOffset: previousState?.lastKnowScrollOffset ?? 0.0,
+        );
 
     return MultiDayViewState(
       visibleDateTimeRange: ValueNotifier(visibleDateRange),
