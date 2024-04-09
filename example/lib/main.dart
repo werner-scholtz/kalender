@@ -97,12 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
         eventData: Event(title: 'Event 3'),
       ),
     ]);
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      controller.state?.visibleStartTimeOfDayNotifier.addListener(() {
-        print(controller.state?.visibleStartTimeOfDayNotifier.value);
-      });
-    });
   }
 
   @override
