@@ -1,3 +1,6 @@
+## 0.3.5
+- Added animateToDateTime to CalendarController.
+
 ## 0.3.4
 - Fixed visibleStartTimeOfDay not taking start and end hours into account.
 
