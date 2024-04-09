@@ -195,4 +195,13 @@ class ScheduleViewState extends ViewState {
       itemPositionsListener,
     );
   }
+
+  @override
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  }) {
+    throw UnimplementedError();
+  }
 }

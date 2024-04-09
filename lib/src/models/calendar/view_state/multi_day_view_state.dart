@@ -14,7 +14,16 @@ class MultiDayViewState extends ViewState {
     required this.numberOfPages,
     required this.pageController,
     required this.scrollController,
-  });
+  }) {
+    scrollController.addListener(() {
+      final total = (scrollController.offset / pageHeight) * 1440;
+      final minute = (total % 60).toInt();
+      final hour = total ~/ 60;
+
+      visibleStartTimeOfDay = TimeOfDay(hour: hour, minute: minute);
+      lastKnowScrollOffset = scrollController.offset;
+    });
+  }
 
   /// Creates a [MultiDayViewState] from a [MultiDayViewConfiguration].
   factory MultiDayViewState.fromViewConfiguration({
@@ -46,14 +55,11 @@ class MultiDayViewState extends ViewState {
       selectedDate,
     );
 
-    final scrollController = ScrollController(
-      keepScrollOffset: true,
-      initialScrollOffset: previousState?.lastKnowScrollOffset ?? 0.0,
-    );
-
-    scrollController.addListener(() {
-      previousState?.lastKnowScrollOffset = scrollController.offset;
-    });
+    final scrollController = previousState?.scrollController ??
+        ScrollController(
+          keepScrollOffset: true,
+          initialScrollOffset: previousState?.lastKnowScrollOffset ?? 0.0,
+        );
 
     return MultiDayViewState(
       visibleDateTimeRange: ValueNotifier(visibleDateRange),
@@ -76,6 +82,11 @@ class MultiDayViewState extends ViewState {
     visibleMonth = visibleDateTimeRangeNotifier.value.start.startOfMonth;
   }
 
+  @override
+  set visibleStartTimeOfDay(TimeOfDay? value) {
+    visibleStartTimeOfDayNotifier.value = value;
+  }
+
   /// The pageController of the current view.
   final PageController pageController;
 
@@ -89,6 +100,9 @@ class MultiDayViewState extends ViewState {
   /// The scrollPhysics of the current view.
   ValueNotifier<ScrollPhysics> scrollPhysics =
       ValueNotifier<ScrollPhysics>(const ScrollPhysics());
+
+  /// The page height set by the widget.
+  double pageHeight = 10;
 
   /// The adjusted dateTimeRange of the current view.
   @override
@@ -120,6 +134,17 @@ class MultiDayViewState extends ViewState {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+  }
+
+  @override
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
+    await animateToDate(date, duration: duration, curve: curve);
+
+    if (!scrollController.hasClients) return;
 
     // Calculate the offset of the time.
     final timeOffset =
@@ -142,18 +167,20 @@ class MultiDayViewState extends ViewState {
   }) async {
     // First animate to the date of the event.
     await animateToDate(
-      event.dateTimeRange.start,
+      event.dateTimeRange.start.startOfDay,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.ease,
     );
 
     // Calculate the event position.
+
+    final eventStart = event.start;
+    final startOfDate = eventStart.startOfDay;
+
     final eventPosition =
-        event.start.difference(event.start.startOfDay).inMinutes *
-            heightPerMinute.value;
+        eventStart.difference(startOfDate).inMinutes * heightPerMinute.value;
 
     double scrollPosition;
-
     if (centerEvent) {
       // Calculate the event height.
       final eventHeight = event.duration.inMinutes * heightPerMinute.value;
