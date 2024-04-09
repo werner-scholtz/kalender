@@ -198,6 +198,24 @@ class CalendarController<T> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Animates to the [DateTime] provided.
+  ///
+  /// The [duration] and [curve] can be provided to customize the animation.
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
+    if (!hasState) return;
+
+    if (state is MultiDayViewState) {
+      await _state?.animateToDateTime(date, duration: duration, curve: curve);
+      notifyListeners();
+    } else {
+      debugPrint('Not available for this calendar view');
+    }
+  }
+
   /// Changes the [heightPerMinute] of the view. (Zoom level)
   /// * This is only available for [SingleDayView] and [MultiDayViewOLD].
   ///

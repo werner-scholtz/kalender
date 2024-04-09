@@ -143,8 +143,11 @@ class MultiDayViewState extends ViewState {
     if (!scrollController.hasClients) return;
 
     // Calculate the offset of the time.
+    final startTime = date.startOfDay.copyWith(
+      hour: viewConfiguration.startHour,
+    );
     final timeOffset =
-        date.difference(date.startOfDay).inMinutes * heightPerMinute.value;
+        date.difference(startTime).inMinutes * heightPerMinute.value;
 
     // Animate to the offset of the time.
     await scrollController.animateTo(
@@ -241,14 +244,9 @@ class MultiDayViewState extends ViewState {
   }
 
   void _updateTimeOfDay() {
-    final startHour = viewConfiguration.startHour;
-    final endHour = viewConfiguration.endHour;
-    final hoursDisplayed = endHour - startHour;
-    final minutesDisplayed = hoursDisplayed * 60;
-    final total = (scrollController.offset / pageHeight) * minutesDisplayed;
+    final total = (scrollController.offset / pageHeight) * 1440;
     final minute = (total % 60).toInt();
-    final hour = startHour + total ~/ 60;
-
+    final hour = viewConfiguration.startHour + total ~/ 60;
     visibleStartTimeOfDayNotifier.value = TimeOfDay(
       hour: hour,
       minute: minute,
