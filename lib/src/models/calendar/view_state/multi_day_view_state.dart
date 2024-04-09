@@ -143,7 +143,9 @@ class MultiDayViewState extends ViewState {
     if (!scrollController.hasClients) return;
 
     // Calculate the offset of the time.
-    final startTime = date.copyWith(hour: viewConfiguration.startHour);
+    final startTime = date.startOfDay.copyWith(
+      hour: viewConfiguration.startHour,
+    );
     final timeOffset =
         date.difference(startTime).inMinutes * heightPerMinute.value;
 
