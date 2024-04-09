@@ -244,14 +244,9 @@ class MultiDayViewState extends ViewState {
   }
 
   void _updateTimeOfDay() {
-    final startHour = viewConfiguration.startHour;
-    final endHour = viewConfiguration.endHour;
-    final hoursDisplayed = endHour - startHour;
-    final minutesDisplayed = hoursDisplayed * 60;
-    final total = (scrollController.offset / pageHeight) * minutesDisplayed;
+    final total = (scrollController.offset / pageHeight) * 1440;
     final minute = (total % 60).toInt();
-    final hour = startHour + total ~/ 60;
-
+    final hour = viewConfiguration.startHour + total ~/ 60;
     visibleStartTimeOfDayNotifier.value = TimeOfDay(
       hour: hour,
       minute: minute,
