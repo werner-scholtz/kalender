@@ -145,7 +145,7 @@ class MultiDayViewState extends ViewState {
     // Calculate the offset of the time.
     final startTime = date.copyWith(hour: viewConfiguration.startHour);
     final timeOffset =
-        startTime.difference(date.startOfDay).inMinutes * heightPerMinute.value;
+        date.difference(startTime).inMinutes * heightPerMinute.value;
 
     // Animate to the offset of the time.
     await scrollController.animateTo(
