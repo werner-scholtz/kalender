@@ -1,8 +1,6 @@
-## 0.3.6
-- Fixed visibleStartTimeOfDay so it takes start hour into account.
-
 ## 0.3.5
 - Added animateToDateTime to CalendarController.
+- Fixed visibleStartTimeOfDay so it takes start hour into account.
 
 ## 0.3.4
 - NA
