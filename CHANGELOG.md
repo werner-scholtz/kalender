@@ -1,3 +1,8 @@
+## 0.3.3
+- Split animateToDate into animateToDate and animateToDateTime.
+- Added visibleStartTimeOfDay to calendar state.
+  This is the current timeOfDay that the viewport's upper edge is displaying.
+
 ## 0.3.2
 - Fixed some more DST bugs.
 - animateToDate now animates to the specified time.
