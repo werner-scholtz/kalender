@@ -15,6 +15,11 @@ abstract class ViewState {
   DateTimeRange get visibleDateTimeRange => visibleDateTimeRangeNotifier.value;
   set visibleDateTimeRange(DateTimeRange value);
 
+  final ValueNotifier<TimeOfDay?> visibleStartTimeOfDayNotifier =
+      ValueNotifier(null);
+  TimeOfDay? get visibleStartTimeOfDay => visibleStartTimeOfDayNotifier.value;
+  set visibleStartTimeOfDay(TimeOfDay? value) {}
+
   /// The visible month notifier of the current page.
   late DateTime visibleMonth =
       visibleDateTimeRangeNotifier.value.start.startOfMonth;

@@ -14,7 +14,15 @@ class MultiDayViewState extends ViewState {
     required this.numberOfPages,
     required this.pageController,
     required this.scrollController,
-  });
+  }) {
+    scrollController.addListener(() {
+      final total = (scrollController.offset / pageHeight) * 1440;
+      final minute = (total % 60).toInt();
+      final hour = total ~/ 60;
+
+      visibleStartTimeOfDay = TimeOfDay(hour: hour, minute: minute);
+    });
+  }
 
   /// Creates a [MultiDayViewState] from a [MultiDayViewConfiguration].
   factory MultiDayViewState.fromViewConfiguration({
@@ -76,6 +84,11 @@ class MultiDayViewState extends ViewState {
     visibleMonth = visibleDateTimeRangeNotifier.value.start.startOfMonth;
   }
 
+  @override
+  set visibleStartTimeOfDay(TimeOfDay? value) {
+    visibleStartTimeOfDayNotifier.value = value;
+  }
+
   /// The pageController of the current view.
   final PageController pageController;
 
@@ -89,6 +102,9 @@ class MultiDayViewState extends ViewState {
   /// The scrollPhysics of the current view.
   ValueNotifier<ScrollPhysics> scrollPhysics =
       ValueNotifier<ScrollPhysics>(const ScrollPhysics());
+
+  /// The page height set by the widget.
+  double pageHeight = 10;
 
   /// The adjusted dateTimeRange of the current view.
   @override
