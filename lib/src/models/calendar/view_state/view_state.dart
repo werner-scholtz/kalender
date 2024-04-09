@@ -55,6 +55,13 @@ abstract class ViewState {
     Curve? curve,
   });
 
+  /// Animate to the given [DateTime].
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  });
+
   /// Animate to the given [CalendarEvent].
   Future<void> animateToEvent(
     CalendarEvent event, {

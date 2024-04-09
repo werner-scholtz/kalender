@@ -173,4 +173,13 @@ class MonthViewState extends ViewState {
       pageController,
     );
   }
+
+  @override
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  }) {
+    throw UnimplementedError();
+  }
 }

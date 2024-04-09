@@ -134,6 +134,15 @@ class MultiDayViewState extends ViewState {
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+  }
+
+  @override
+  Future<void> animateToDateTime(
+    DateTime date, {
+    Duration? duration,
+    Curve? curve,
+  }) async {
+    await animateToDate(date, duration: duration, curve: curve);
 
     if (!scrollController.hasClients) return;
 
