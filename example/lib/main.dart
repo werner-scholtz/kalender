@@ -53,6 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
     CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
+      startHour: 6,
+      endHour: 23,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
@@ -95,6 +97,12 @@ class _MyHomePageState extends State<MyHomePage> {
         eventData: Event(title: 'Event 3'),
       ),
     ]);
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      controller.state?.visibleStartTimeOfDayNotifier.addListener(() {
+        print(controller.state?.visibleStartTimeOfDayNotifier.value);
+      });
+    });
   }
 
   @override

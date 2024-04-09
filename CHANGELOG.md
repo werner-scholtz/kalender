@@ -1,3 +1,6 @@
+## 0.3.4
+- Fixed visibleStartTimeOfDay not taking start and end hours into account.
+
 ## 0.3.3
 - Split animateToDate into animateToDate and animateToDateTime.
 - Added visibleStartTimeOfDay to calendar state.
