@@ -9,7 +9,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
     CreateEventTrigger? createEventTrigger,
-    bool showMultiDayHeader = true,
+    bool showHeader = true,
     double hourLineLeftMargin = 56,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
@@ -51,7 +51,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _enableRescheduling = enableRescheduling;
     _enableResizing = enableResizing;
 
-    _showHeader = showMultiDayHeader;
+    _showHeader = showHeader;
     _hourLineLeftMargin = hourLineLeftMargin;
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
@@ -247,8 +247,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   }
 
   late bool _showHeader;
-  bool get showMultiDayHeader => _showHeader;
-  set showMultiDayHeader(bool value) {
+  bool get showHeader => _showHeader;
+  set showHeader(bool value) {
     _showHeader = value;
     notifyListeners();
   }
