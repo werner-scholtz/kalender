@@ -24,7 +24,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     super.startHour = 0,
     super.endHour = 24,
     super.createEventTrigger,
-    super.showHeader,
+    super.showMultiDayHeader,
   });
 
   @override

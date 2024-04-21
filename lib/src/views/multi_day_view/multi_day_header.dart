@@ -47,7 +47,7 @@ class MultiDayHeader<T> extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               calendarHeader,
-              if (viewConfiguration.showHeader) dayHeader,
+              if (viewConfiguration.showMultiDayHeader) dayHeader,
             ],
           );
         },
