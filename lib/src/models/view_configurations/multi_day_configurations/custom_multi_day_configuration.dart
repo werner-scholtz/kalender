@@ -24,6 +24,7 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
     super.startHour = 0,
     super.endHour = 24,
     super.createEventTrigger,
+    super.showDayHeader,
     super.showMultiDayHeader,
   });
 
@@ -43,10 +44,14 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   }) {
     return DateTimeRange(
       start: visibleStart.startOfDay.subtractDays(
-          (visibleStart.difference(dateTimeRange.start).inDays ~/ numberOfDays).ceil() * numberOfDays,
+        (visibleStart.difference(dateTimeRange.start).inDays ~/ numberOfDays)
+                .ceil() *
+            numberOfDays,
       ),
       end: visibleStart.startOfDay.addDays(
-          (dateTimeRange.end.difference(visibleStart).inDays ~/ numberOfDays).ceil() * numberOfDays,
+        (dateTimeRange.end.difference(visibleStart).inDays ~/ numberOfDays)
+                .ceil() *
+            numberOfDays,
       ),
     );
   }

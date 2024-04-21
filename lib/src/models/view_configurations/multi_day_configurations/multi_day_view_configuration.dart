@@ -9,6 +9,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     bool? paintWeekNumber,
     double? initialHeightPerMinute,
     CreateEventTrigger? createEventTrigger,
+    bool showDayHeader = true,
     bool showMultiDayHeader = true,
     double hourLineLeftMargin = 56,
     required double timelineWidth,
@@ -51,7 +52,9 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _enableRescheduling = enableRescheduling;
     _enableResizing = enableResizing;
 
-    _showHeader = showMultiDayHeader;
+    _showDayHeader = showDayHeader;
+    _showMultiDayHeader = showMultiDayHeader;
+
     _hourLineLeftMargin = hourLineLeftMargin;
 
     _initialHeightPerMinute = initialHeightPerMinute ?? 0.7;
@@ -246,10 +249,20 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     notifyListeners();
   }
 
-  late bool _showHeader;
-  bool get showMultiDayHeader => _showHeader;
-  set showMultiDayHeader(bool value) {
-    _showHeader = value;
+  /// Show the header that displays the days.
+  late bool _showDayHeader;
+  bool get showDayHeader => _showDayHeader;
+  set showDayHeader(bool value) {
+    _showDayHeader = value;
+    notifyListeners();
+  }
+
+  /// Show the multiDay events header.
+  /// If this is disabled the multiDay events will be displayed in the calendar grid.
+  late bool _showMultiDayHeader;
+  bool get showMultiDayEventsHeader => _showMultiDayHeader;
+  set showMultiDayEventsHeader(bool value) {
+    _showMultiDayHeader = value;
     notifyListeners();
   }
 

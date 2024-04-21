@@ -24,6 +24,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     super.endHour = 24,
     super.initialHeightPerMinute,
     super.createEventTrigger,
+    super.showDayHeader,
     super.showMultiDayHeader,
   }) {
     super.numberOfDays = 5;
