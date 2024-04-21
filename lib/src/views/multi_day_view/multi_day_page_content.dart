@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture_detector.dart';
@@ -56,10 +57,16 @@ class MultiDayPageContent<T> extends StatelessWidget {
           listenable: scope.eventsController,
           builder: (context, child) {
             // Get the list of events that are visible on the tile stack.
-            final visibleEvents =
-                scope.eventsController.getDayEventsFromDateRange(
-              visibleDateRange,
-            );
+            final Iterable<CalendarEvent<T>> visibleEvents;
+            if (viewConfiguration.showMultiDayEventsHeader) {
+              visibleEvents = scope.eventsController.getDayEventsFromDateRange(
+                visibleDateRange,
+              );
+            } else {
+              visibleEvents = scope.eventsController.getEventsFromDateRange(
+                visibleDateRange,
+              );
+            }
 
             controller.visibleEvents = visibleEvents;
 
@@ -212,6 +219,12 @@ class MultiDayPageContent<T> extends StatelessWidget {
         viewConfiguration.daySeparatorLeftOffset);
   }
 
-  bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChangingEvent && !controller.selectedEvent!.isMultiDayEvent;
+  bool showSelectedTile(CalendarEventsController<T> controller) {
+    if (viewConfiguration.showMultiDayEventsHeader) {
+      return controller.hasChangingEvent &&
+          !controller.selectedEvent!.isMultiDayEvent;
+    } else {
+      return controller.hasChangingEvent;
+    }
+  }
 }

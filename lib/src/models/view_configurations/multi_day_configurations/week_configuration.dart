@@ -24,7 +24,8 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     super.endHour = 24,
     super.initialHeightPerMinute,
     super.createEventTrigger,
-    super.showHeader,
+    super.showDayHeader,
+    super.showMultiDayHeader,
   }) {
     super.numberOfDays = 7;
   }

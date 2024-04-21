@@ -1,3 +1,26 @@
+## 0.3.6
+- Renamed `showHeader` to `showMultiDayHeader` in MultiDayViewConfiguration.
+- If `showMultiDayHeader` is false, the header will not be displayed and multiDayEvents will be rendered in the calendar grid.
+
+## 0.3.5
+- Added animateToDateTime to CalendarController.
+- Fixed visibleStartTimeOfDay so it takes start hour into account.
+
+## 0.3.4
+- NA
+
+## 0.3.3
+- Split animateToDate into animateToDate and animateToDateTime.
+- Added visibleStartTimeOfDay to calendar state.
+  This is the current timeOfDay that the viewport's upper edge is displaying.
+
+## 0.3.2
+- Fixed some more DST bugs.
+- animateToDate now animates to the specified time.
+
+## 0.3.1
+* Fixed DST navigation issues.
+
 ## 0.3.0
 * Fixed DST issues.
 * Added export for tile_handle_style.

@@ -73,13 +73,23 @@ extension DateTimeExtensions on DateTime {
   /// [end] of day == [start] of next day.
   DateTime get endOfDay => DateTime(year, month, day + 1);
 
+  /// Add specific amount of [days] (ignoring DST)
+  DateTime addDays(int days) {
+    return DateTime(year, month, day + days, hour, minute, second);
+  }
+
+  /// Subtract specific amount of [days] (ignoring DST)
+  DateTime subtractDays(int days) {
+    return addDays(-days);
+  }
+
   /// Gets the start of the week with an offset.
   DateTime startOfWeekWithOffset(int firstDayOfWeek) {
     assert(
       firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
       'firstDayOfWeek must be between 1 and 7',
     );
-    return subtract(Duration(days: weekday - firstDayOfWeek)).startOfDay;
+    return subtractDays(weekday - firstDayOfWeek).startOfDay;
   }
 
   /// Gets the start of the week.
@@ -88,7 +98,7 @@ extension DateTimeExtensions on DateTime {
   /// Gets the end of the week with an offset.
   DateTime endOfWeekWithOffset(int firstDayOfWeek) {
     return startOfWeekWithOffset(firstDayOfWeek)
-        .add(const Duration(days: 7))
+        .addDays(7)
         .startOfDay;
   }
 
@@ -113,13 +123,13 @@ extension DateTimeExtensions on DateTime {
   /// Gets the four day range with the [DateTime] as the first day.
   DateTimeRange get threeDayRange => DateTimeRange(
         start: startOfDay,
-        end: endOfDay.add(const Duration(days: 2)),
+        end: endOfDay.addDays(2),
       );
 
   /// Gets the four day range with the [DateTime] as the first day.
   DateTimeRange get fourDayRange => DateTimeRange(
         start: startOfDay,
-        end: endOfDay.add(const Duration(days: 3)),
+        end: endOfDay.addDays(3),
       );
 
   /// Gets the week range in which the [DateTime] is in with an offset.
@@ -164,9 +174,7 @@ extension DateTimeExtensions on DateTime {
   DateTimeRange multiDayDateTimeRange(int numberOfDays) {
     return DateTimeRange(
       start: startOfDay,
-      end: endOfDay.add(
-        Duration(days: numberOfDays - 1),
-      ),
+      end: endOfDay.addDays(numberOfDays - 1),
     );
   }
 }

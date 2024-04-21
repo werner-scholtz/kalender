@@ -13,25 +13,6 @@ class EventGroupController<T> {
   }) {
     final tileGroups = <EventGroup<T>>[];
 
-    if (events.length == 1) {
-      for (final date in visibleDates) {
-        final eventDateTimeRange = events.first.dateTimeRangeOnDate(date);
-
-        if (events.first.start.isWithin(date.dayRange) ||
-            events.first.end.isWithin(date.dayRange)) {
-          tileGroups.add(
-            EventGroup<T>(
-              date: date,
-              events: [events.first],
-              dateTimeRange: eventDateTimeRange,
-            ),
-          );
-        }
-      }
-
-      return tileGroups;
-    }
-
     // Loop through each date.
     for (final date in visibleDates) {
       // log(date.toString(), name: 'Date');
@@ -129,12 +110,14 @@ class EventGroupController<T> {
     Iterable<CalendarEvent<T>> events,
     DateTime date,
   ) {
-    return events
-        .where(
-          (element) =>
-              element.start.isSameDay(date) || element.end.isSameDay(date),
-        )
-        .toList()
+    final eventsOnDate = events.where(
+      (element) {
+        return element.occursDuringDateTimeRange(date.dayRange);
+        // element.start.isSameDay(date) || element.end.isSameDay(date);
+      },
+    );
+
+    return eventsOnDate.toList()
       ..sort(
         (a, b) => a.start.compareTo(b.start),
       );
