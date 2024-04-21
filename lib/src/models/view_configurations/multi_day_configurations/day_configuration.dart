@@ -28,7 +28,7 @@ class DayConfiguration extends MultiDayViewConfiguration
     super.endHour = 24,
     super.initialHeightPerMinute,
     super.createEventTrigger,
-    super.showHeader,
+    super.showMultiDayHeader,
   }) {
     super.numberOfDays = 1;
     super.firstDayOfWeek = 1;
