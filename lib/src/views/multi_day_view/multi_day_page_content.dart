@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar/calendar_event.dart';
 import 'package:kalender/src/models/calendar/view_state/multi_day_view_state.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/components/gesture_detectors/multi_day_page_gesture_detector.dart';
