@@ -129,8 +129,6 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     events: [selectedEvent],
                   );
 
-                  print(selectedEventWidgetGroups.length);
-
                   return Stack(
                     clipBehavior: Clip.hardEdge,
                     fit: StackFit.expand,
