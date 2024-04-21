@@ -260,8 +260,8 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   /// Show the multiDay events header.
   /// If this is disabled the multiDay events will be displayed in the calendar grid.
   late bool _showMultiDayHeader;
-  bool get showMultiDayEventsHeader => _showMultiDayHeader;
-  set showMultiDayEventsHeader(bool value) {
+  bool get showMultiDayHeader => _showMultiDayHeader;
+  set showMultiDayHeader(bool value) {
     _showMultiDayHeader = value;
     notifyListeners();
   }
