@@ -1,3 +1,8 @@
+## 0.3.6
+- Changed `showHeader` to `showDayHeader` in `MultiDayViewConfiguration` to better reflect its purpose.
+- Added `showMultiDayHeader` to `MultiDayViewConfiguration` to show/hide the multi day header.
+  Disabling this will render any multi day events in the calendar 'grid'.
+
 ## 0.3.5
 - Added animateToDateTime to CalendarController.
 - Fixed visibleStartTimeOfDay so it takes start hour into account.
