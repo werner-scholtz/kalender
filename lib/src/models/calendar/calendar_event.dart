@@ -112,9 +112,15 @@ class CalendarEvent<T> with ChangeNotifier {
       if (date.isSameDay(start)) {
         // The date is the same as the start.
         return DateTimeRange(start: start, end: start.endOfDay);
-      } else {
+      } else if (date.isSameDay(end)) {
         // The date is the same as the end.
         return DateTimeRange(start: end.startOfDay, end: end);
+      } else {
+        // The date is between the start and end.
+        return DateTimeRange(
+          start: date.startOfDay,
+          end: date.endOfDay,
+        );
       }
     }
   }

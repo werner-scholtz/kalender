@@ -58,7 +58,7 @@ class MultiDayPageContent<T> extends StatelessWidget {
           builder: (context, child) {
             // Get the list of events that are visible on the tile stack.
             final Iterable<CalendarEvent<T>> visibleEvents;
-            if (viewConfiguration.showMultiDayHeader) {
+            if (viewConfiguration.showMultiDayEventsHeader) {
               visibleEvents = scope.eventsController.getDayEventsFromDateRange(
                 visibleDateRange,
               );
@@ -128,6 +128,8 @@ class MultiDayPageContent<T> extends StatelessWidget {
                     visibleDates: visibleDates,
                     events: [selectedEvent],
                   );
+
+                  print(selectedEventWidgetGroups.length);
 
                   return Stack(
                     clipBehavior: Clip.hardEdge,
@@ -219,6 +221,12 @@ class MultiDayPageContent<T> extends StatelessWidget {
         viewConfiguration.daySeparatorLeftOffset);
   }
 
-  bool showSelectedTile(CalendarEventsController<T> controller) =>
-      controller.hasChangingEvent && !controller.selectedEvent!.isMultiDayEvent;
+  bool showSelectedTile(CalendarEventsController<T> controller) {
+    if (viewConfiguration.showMultiDayEventsHeader) {
+      return controller.hasChangingEvent &&
+          !controller.selectedEvent!.isMultiDayEvent;
+    } else {
+      return controller.hasChangingEvent;
+    }
+  }
 }
