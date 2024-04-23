@@ -62,6 +62,32 @@ extension DateTimeRangeExtensions on DateTimeRange {
   bool overlaps(DateTimeRange other) {
     return start.isBefore(other.end) && end.isAfter(other.start);
   }
+
+  /// Returns the weekNumber(s) that the [DateTimeRange] spans.
+  (int weekNumber, int? secondWeekNumber) get weekNumbers {
+    if (start.year != end.year) {
+      // When changing years we show both.
+      return (start.weekNumber, end.weekNumber);
+    }
+
+    final datesSpanned = this.datesSpanned;
+
+    final isSingleWeek = datesSpanned.length <= 7;
+    final spansOneWeek = isSingleWeek &&
+        (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
+
+    if (!spansOneWeek) {
+      // When its spans multiple weeks show both.
+      return (start.weekNumber, end.weekNumber);
+    } else {
+      final dateToUse = datesSpanned.firstWhere(
+        (date) => date.weekday == 1, // Find the first monday.
+        orElse: () => start, // If there is not a monday use the start.
+      );
+
+      return (dateToUse.weekNumber, null);
+    }
+  }
 }
 
 /// [DateTime] extensions.
@@ -97,9 +123,7 @@ extension DateTimeExtensions on DateTime {
 
   /// Gets the end of the week with an offset.
   DateTime endOfWeekWithOffset(int firstDayOfWeek) {
-    return startOfWeekWithOffset(firstDayOfWeek)
-        .addDays(7)
-        .startOfDay;
+    return startOfWeekWithOffset(firstDayOfWeek).addDays(7).startOfDay;
   }
 
   /// Gets the end of the week.
