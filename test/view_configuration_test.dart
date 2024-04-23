@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -11,8 +9,6 @@ void main() {
   timezoneTest(
     (zone, now) {
       group(zone.name, () {
-        log('Zone: ${zone.name}');
-
         final start = TZDateTime(zone, 2024, 1, 1);
         final end = TZDateTime(zone, 2025, 1, 1);
 
@@ -21,8 +17,6 @@ void main() {
         _testMultiDayConfigurations(zone: zone, start: start, end: end);
 
         _testScheduleConfigurations(start: start, end: end);
-
-        log('___________');
       });
     },
   );

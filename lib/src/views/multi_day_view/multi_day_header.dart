@@ -106,8 +106,7 @@ class MultipleDayHeader<T> extends StatelessWidget {
           child: Column(
             children: [
               if (viewConfiguration.showDayHeader) daysHeader,
-              if (viewConfiguration.showMultiDayEventsHeader)
-                multiDayEventsHeader,
+              if (viewConfiguration.showMultiDayHeader) multiDayEventsHeader,
             ],
           ),
         ),

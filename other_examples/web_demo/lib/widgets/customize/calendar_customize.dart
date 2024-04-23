@@ -52,11 +52,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
         children: [
           const ThemeTile(),
           if (widget.currentConfiguration is MultiDayViewConfiguration)
-            CheckboxListTile.adaptive(
+            SwitchListTile.adaptive(
               title: const Text('Custom Layout Controller'),
               value: customLayoutController,
               onChanged: (value) {
-                if (value == null) return;
                 customLayoutController = value;
 
                 if (value) {
@@ -89,11 +88,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
             title: const Text('Highlight Components'),
             initiallyExpanded: true,
             children: [
-              CheckboxListTile.adaptive(
+              SwitchListTile.adaptive(
                 title: const Text('Calendar Header'),
                 value: highlightCalendarHeader,
                 onChanged: (value) {
-                  if (value == null) return;
                   highlightCalendarHeader = value;
                   widget.onStyleChange(
                     widget.style.copyWith(
@@ -125,11 +123,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
 
   List<Widget> scheduleConfig(ScheduleConfiguration config) {
     return [
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Day Header'),
         value: highlightDayHeader,
         onChanged: (value) {
-          if (value == null) return;
           highlightDayHeader = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -141,11 +138,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Schedule Month Header'),
         value: scheduleMonthHeader,
         onChanged: (value) {
-          if (value == null) return;
           scheduleMonthHeader = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -171,11 +167,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('ScheduleDateTile margin'),
         value: scheduleTilePaddingVertical,
         onChanged: (value) {
-          if (value == null) return;
           scheduleTilePaddingVertical = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -189,11 +184,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Schedule Tile Padding'),
         value: scheduleTilePaddingHorizontal,
         onChanged: (value) {
-          if (value == null) return;
           scheduleTilePaddingHorizontal = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -212,11 +206,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
 
   List<Widget> multiDayConfig(MultiDayViewConfiguration config) {
     return [
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Day Separator'),
         value: highlightDaySeparator,
         onChanged: (value) {
-          if (value == null) return;
           highlightDaySeparator = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -227,11 +220,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Hour Lines'),
         value: highlightHourLine,
         onChanged: (value) {
-          if (value == null) return;
           highlightHourLine = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -242,11 +234,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Day Header'),
         value: highlightDayHeader,
         onChanged: (value) {
-          if (value == null) return;
           highlightDayHeader = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -258,11 +249,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Time Indicator'),
         value: highlightTimeIndicator,
         onChanged: (value) {
-          if (value == null) return;
           highlightTimeIndicator = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -273,11 +263,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Timeline'),
         value: highlightTimeline,
         onChanged: (value) {
-          if (value == null) return;
           highlightTimeline = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -291,11 +280,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Week Number'),
         value: highlightWeekNumber,
         onChanged: (value) {
-          if (value == null) return;
           highlightWeekNumber = value;
           widget.onStyleChange(widget.style.copyWith(
             weekNumberStyle: WeekNumberStyle(
@@ -312,11 +300,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
 
   List<Widget> monthConfig(MonthConfiguration config) {
     return [
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Month Header'),
         value: highlightMonthHeader,
         onChanged: (value) {
-          if (value == null) return;
           highlightMonthHeader = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -329,11 +316,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Month Cell Header'),
         value: highlightMonthCellHeaders,
         onChanged: (value) {
-          if (value == null) return;
           highlightMonthCellHeaders = value;
           widget.onStyleChange(
             widget.style.copyWith(
@@ -345,11 +331,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
           );
         },
       ),
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         title: const Text('Month Grid'),
         value: highlightMonthGrid,
         onChanged: (value) {
-          if (value == null) return;
           highlightMonthGrid = value;
           widget.onStyleChange(
             widget.style.copyWith(
