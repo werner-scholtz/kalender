@@ -1,3 +1,8 @@
+## 0.3.7
+- Increased minimum dart sdk version to 3.0.0.
+- Added firstDayOfWeek to WeekConfiguration.
+- Fixed WeekNumber component displaying incorrect week number.
+
 ## 0.3.6
 - Changed `showHeader` to `showDayHeader` in `MultiDayViewConfiguration` to better reflect its purpose.
 - Added `showMultiDayHeader` to `MultiDayViewConfiguration` to show/hide the multi day header.
