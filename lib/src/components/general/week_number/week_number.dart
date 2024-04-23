@@ -24,20 +24,15 @@ class WeekNumber extends StatelessWidget {
     final textStyle =
         weekNumberStyle.textStyle ?? Theme.of(context).textTheme.bodyMedium;
 
-    final String text;
-    if (visibleDateRange.duration > const Duration(days: 7)) {
-      text =
-          '${visibleDateRange.start.weekNumber} - ${visibleDateRange.end.weekNumber}';
-    } else {
-      text = visibleDateRange.start.startOfWeek.weekNumber.toString();
-    }
+    final (start, end) = visibleDateRange.weekNumbers;
+    final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
     return IconButton.filledTonal(
       tooltip: tooltip,
       onPressed: null,
       visualDensity: visualDensity,
       icon: Text(
-        text,
+        weekNumber,
         style: textStyle,
       ),
     );
