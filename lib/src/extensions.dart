@@ -65,14 +65,19 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// Returns the weekNumber(s) that the [DateTimeRange] spans.
   (int weekNumber, int? secondWeekNumber) get weekNumbers {
-    if (start.year != end.year) {
+    final datesSpanned = this.datesSpanned;
+    final isSingleWeek = datesSpanned.length <= 7;
+
+    if (start.year != end.year && isSingleWeek) {
       // When changing years we show both.
-      return (start.weekNumber, end.weekNumber);
+
+      final firstDayOfYear = datesSpanned.firstWhere(
+        (element) => element.year == end.year,
+      );
+
+      return (start.weekNumber, firstDayOfYear.weekNumber);
     }
 
-    final datesSpanned = this.datesSpanned;
-
-    final isSingleWeek = datesSpanned.length <= 7;
     final spansOneWeek = isSingleWeek &&
         (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
