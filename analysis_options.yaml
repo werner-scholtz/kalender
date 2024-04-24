@@ -24,3 +24,4 @@ linter:
     avoid_types_on_closure_parameters: true
     prefer_final_fields: true
     prefer_final_locals: true
+    dangling_library_doc_comments: true

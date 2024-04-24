@@ -1,3 +1,7 @@
+## 0.3.8
+- Fixed displaying incorrect page when changing firstDayOfWeek
+- Updated decencies.
+
 ## 0.3.7
 - Increased minimum dart sdk version to 3.0.0.
 - Added firstDayOfWeek to WeekConfiguration.

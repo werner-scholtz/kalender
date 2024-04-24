@@ -31,7 +31,6 @@ class MultiDayViewState extends ViewState {
     final adjustedDateTimeRange =
         viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: dateTimeRange,
-      visibleStart: selectedDate,
     );
 
     final numberOfPages = viewConfiguration.calculateNumberOfPages(
@@ -47,8 +46,10 @@ class MultiDayViewState extends ViewState {
       initialPage: initialPage,
     );
 
-    final visibleDateRange = viewConfiguration.calculateVisibleDateTimeRange(
-      selectedDate,
+    final visibleDateRange =
+        viewConfiguration.calculateVisibleDateRangeForIndex(
+      index: initialPage,
+      calendarStart: adjustedDateTimeRange.start,
     );
 
     final scrollController = previousState?.scrollController ??

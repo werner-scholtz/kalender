@@ -53,7 +53,6 @@ void _testMonthConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 7;
@@ -135,7 +134,6 @@ void _testMultiDayConfigurations({
 
       final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
         dateTimeRange: calendarRange,
-        visibleStart: calendarRange.start,
       );
 
       final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % i;
@@ -173,7 +171,6 @@ void _testMultiDayConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 1;
@@ -210,7 +207,6 @@ void _testMultiDayConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 14;
@@ -247,7 +243,6 @@ void _testMultiDayConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 7;
@@ -284,7 +279,6 @@ void _testMultiDayConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 7;
@@ -331,7 +325,6 @@ void _testScheduleConfigurations({
 
     final adjustedDateTimeRange = config.calculateAdjustedDateTimeRange(
       dateTimeRange: calendarRange,
-      visibleStart: calendarRange.start,
     );
 
     final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 1;

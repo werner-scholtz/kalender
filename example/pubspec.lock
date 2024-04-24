@@ -89,7 +89,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.6"
+    version: "0.3.7"
   leak_tracker:
     dependency: transitive
     description:
@@ -215,14 +215,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
-  timezone:
-    dependency: transitive
-    description:
-      name: timezone
-      sha256: "1cfd8ddc2d1cfd836bc93e67b9be88c3adaeca6f40a00ca999104c30693cdca0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.2"
   vector_math:
     dependency: transitive
     description:
