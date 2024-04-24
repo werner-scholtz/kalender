@@ -8,7 +8,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     final startDate = start.toUtc();
     final endDate = end.toUtc();
 
-    final difference = startDate.difference(endDate).inDays.abs();
+    final difference = endDate.difference(startDate).inDays;
 
     return difference;
   }
@@ -73,6 +73,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
       final firstDayOfYear = datesSpanned.firstWhere(
         (element) => element.year == end.year,
+        orElse: () => start,
       );
 
       return (start.weekNumber, firstDayOfYear.weekNumber);
