@@ -47,19 +47,18 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     required DateTimeRange dateTimeRange,
   }) {
     final start = dateTimeRange.start;
-    final end = dateTimeRange.end;
 
     final closetsStart = firstDayOfWeek >= 4
         ? start.subtractDays(start.weekday + (7 - firstDayOfWeek))
         : start.subtractDays(start.weekday - firstDayOfWeek);
 
-    final closestEnd = firstDayOfWeek >= 4
-        ? end.subtractDays(start.weekday + (7 - firstDayOfWeek))
-        : end.subtractDays(start.weekday - firstDayOfWeek);
+    final dayDifference = dateTimeRange.dayDifference;
+    final remained = dayDifference % numberOfDays;
+    final end = start.addDays((dayDifference - remained));
 
     final adjustDateTimeRange = DateTimeRange(
       start: closetsStart,
-      end: closestEnd,
+      end: end,
     );
 
     return adjustDateTimeRange;
