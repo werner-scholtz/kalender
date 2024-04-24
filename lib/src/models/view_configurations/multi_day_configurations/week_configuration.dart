@@ -47,10 +47,23 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     required DateTimeRange dateTimeRange,
     required DateTime visibleStart,
   }) {
-    return DateTimeRange(
-      start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: dateTimeRange.end.endOfWeekWithOffset(firstDayOfWeek),
+    final start = dateTimeRange.start;
+    final end = dateTimeRange.end;
+
+    final closetsStart = firstDayOfWeek >= 4
+        ? start.subtractDays(start.weekday + (7 - firstDayOfWeek))
+        : start.subtractDays(start.weekday - firstDayOfWeek);
+
+    final closestEnd = firstDayOfWeek >= 4
+        ? end.subtractDays(start.weekday + (7 - firstDayOfWeek))
+        : end.subtractDays(start.weekday - firstDayOfWeek);
+
+    final adjustDateTimeRange = DateTimeRange(
+      start: closetsStart,
+      end: closestEnd,
     );
+
+    return adjustDateTimeRange;
   }
 
   @override
@@ -79,10 +92,12 @@ class WeekConfiguration extends MultiDayViewConfiguration {
     required int index,
     required DateTime calendarStart,
   }) {
-    return DateTime(
+    final dateTime = DateTime(
       calendarStart.year,
       calendarStart.month,
       calendarStart.day + (index * DateTime.daysPerWeek),
-    ).weekRangeWithOffset(firstDayOfWeek);
+    );
+
+    return dateTime.weekRangeWithOffset(firstDayOfWeek);
   }
 }
