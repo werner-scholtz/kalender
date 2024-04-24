@@ -51,9 +51,10 @@ class _MultiDayHeaderGestureDetectorState<T>
           for (final date in widget.visibleDateRange.datesSpanned)
             Expanded(
               child: GestureDetector(
-                onLongPress: () => widget.createEventTrigger == CreateEventTrigger.longPress
-                    ? _createEvent(date)
-                    : controller.deselectEvent(),
+                onLongPress: () =>
+                    widget.createEventTrigger == CreateEventTrigger.longPress
+                        ? _createEvent(date)
+                        : controller.deselectEvent(),
                 onTap: () => widget.createEventTrigger == CreateEventTrigger.tap
                     ? _createEvent(date)
                     : controller.deselectEvent(),
