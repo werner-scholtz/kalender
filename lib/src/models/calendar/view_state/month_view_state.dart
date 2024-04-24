@@ -25,7 +25,6 @@ class MonthViewState extends ViewState {
     final adjustedDateTimeRange =
         viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: dateTimeRange,
-      visibleStart: selectedDate,
     );
 
     final numberOfPages = viewConfiguration.calculateNumberOfPages(

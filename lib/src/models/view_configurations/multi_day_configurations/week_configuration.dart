@@ -45,7 +45,6 @@ class WeekConfiguration extends MultiDayViewConfiguration {
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
   }) {
     final start = dateTimeRange.start;
     final end = dateTimeRange.end;

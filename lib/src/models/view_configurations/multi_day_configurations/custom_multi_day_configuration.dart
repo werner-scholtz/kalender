@@ -39,21 +39,26 @@ class CustomMultiDayConfiguration extends MultiDayViewConfiguration {
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
-    return DateTimeRange(
-      start: visibleStart.startOfDay.subtractDays(
-        (visibleStart.difference(dateTimeRange.start).inDays ~/ numberOfDays)
-                .ceil() *
-            numberOfDays,
-      ),
-      end: visibleStart.startOfDay.addDays(
-        (dateTimeRange.end.difference(visibleStart).inDays ~/ numberOfDays)
-                .ceil() *
-            numberOfDays,
-      ),
-    );
+    final start = dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek);
+    final dayDifference = dateTimeRange.dayDifference;
+    final remained = dayDifference % numberOfDays;
+    final end = start.addDays(dayDifference + remained);
+
+    return DateTimeRange(start: start, end: end);
+
+    // return DateTimeRange(
+    //   start: visibleStart.startOfDay.subtractDays(
+    //     (visibleStart.difference(dateTimeRange.start).inDays ~/ numberOfDays)
+    //             .ceil() *
+    //         numberOfDays,
+    //   ),
+    //   end: visibleStart.startOfDay.addDays(
+    //     (dateTimeRange.end.difference(visibleStart).inDays ~/ numberOfDays)
+    //             .ceil() *
+    //         numberOfDays,
+    //   ),
+    // );
   }
 
   @override

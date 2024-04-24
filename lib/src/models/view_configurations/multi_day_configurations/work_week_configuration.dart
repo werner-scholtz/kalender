@@ -50,7 +50,6 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
   }) {
     return DateTimeRange(
       start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),

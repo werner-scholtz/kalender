@@ -58,8 +58,6 @@ class DayConfiguration extends MultiDayViewConfiguration
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
-    int? firstDayOfWeek,
   }) {
     return DateTimeRange(
       start: dateTimeRange.start.startOfDay,

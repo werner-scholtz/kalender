@@ -31,7 +31,6 @@ class MonthConfiguration extends MonthViewConfiguration {
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
   }) {
     final start = dateTimeRange.start.startOfMonth.startOfWeekWithOffset(
       firstDayOfWeek,

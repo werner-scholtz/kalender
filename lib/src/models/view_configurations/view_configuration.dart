@@ -38,7 +38,6 @@ abstract class ViewConfiguration with ChangeNotifier {
   /// [visibleStart] is the date that is highlighted.
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
   });
 
   /// Calculates the index of the given [date].

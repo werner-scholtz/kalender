@@ -58,7 +58,6 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
   @override
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
-    required DateTime visibleStart,
   }) {
     final normalizedDateTimeRange = DateTimeRange(
       start: dateTimeRange.start.startOfWeekWithOffset(firstDayOfWeek),

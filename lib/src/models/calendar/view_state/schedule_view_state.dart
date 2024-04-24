@@ -25,7 +25,6 @@ class ScheduleViewState extends ViewState {
     final adjustedDateTimeRange =
         viewConfiguration.calculateAdjustedDateTimeRange(
       dateTimeRange: dateTimeRange,
-      visibleStart: selectedDate,
     );
 
     final visibleDateRange = viewConfiguration.calculateVisibleDateTimeRange(
