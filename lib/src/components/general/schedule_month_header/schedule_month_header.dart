@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 class ScheduleMonthHeader extends StatelessWidget {
@@ -18,8 +18,9 @@ class ScheduleMonthHeader extends StatelessWidget {
     final decoration = BoxDecoration(
       color: style.monthColors[date.month] ?? Colors.transparent,
     );
-    final dateFormat = DateFormat(style.dateFormat);
-    final text = dateFormat.format(date);
+
+    final monthName = date.englishMonthName;
+    final text = style.stringBuilder?.call(date) ?? '${date.year} - $monthName';
     final textStyle = style.textStyle;
 
     return Container(

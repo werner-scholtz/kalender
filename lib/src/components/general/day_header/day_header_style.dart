@@ -6,22 +6,17 @@ class DayHeaderStyle {
     this.textStyle,
     this.buttonTextStyle,
     this.buttonVisualDensity,
-    this.useUpperCase,
     this.padding,
     this.backgroundColor,
     this.borderRadius,
-    this.dateFormat = 'E',
+    this.stringBuilder,
   });
 
   /// The [TextStyle] used by the [DayHeader] widget to display the day of the week.
   final TextStyle? textStyle;
 
-  /// DateFormat from the intl package.
-  /// ex. 'E' for short day of the week, 'EEEE' for long day of the week.
-  final String dateFormat;
-
-  /// Whether the day of the week should be displayed in upper case.
-  final bool? useUpperCase;
+  /// Use this function to customize the sting displayed by the [DayHeader].
+  final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the icon button in the [DayHeader] widget.
   final TextStyle? buttonTextStyle;

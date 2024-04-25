@@ -20,7 +20,7 @@ class ScheduleMonthHeaderStyle {
     },
     this.margin = const EdgeInsets.only(top: 8),
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
-    this.dateFormat = 'yyyy - MMMM',
+    this.stringBuilder,
   });
 
   final Map<int, Color> monthColors;
@@ -28,7 +28,6 @@ class ScheduleMonthHeaderStyle {
   final EdgeInsets margin;
   final EdgeInsets padding;
 
-  /// DateFormat from the intl package.
-  /// ex. 'yyyy - MMMM'
-  final String dateFormat;
+  /// Use this function to customize the sting displayed by the [ScheduleMonthHeader].
+  final String Function(DateTime date)? stringBuilder;
 }
