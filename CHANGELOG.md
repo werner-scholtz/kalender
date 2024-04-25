@@ -1,3 +1,6 @@
+## 0.4.0
+- Fixed WeekNumbers for CustomMultiDay views.
+
 ## 0.3.9
 - Removed Intl dependency.
 - Added `stringBuilders` to all StyleClasses that display Names or the like.
