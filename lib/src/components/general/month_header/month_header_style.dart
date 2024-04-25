@@ -11,7 +11,6 @@ class MonthHeaderStyle {
   /// The [TextStyle] used by the [DateText] widget to display the day of the week.
   final TextStyle? textStyle;
 
-
   /// Use this function to customize the sting displayed by the [MonthHeader].
   final String Function(DateTime date)? stringBuilder;
 

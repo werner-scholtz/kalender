@@ -54,11 +54,17 @@ class _MultiDayPageGestureDetectorState<T>
                   (slotIndex) => Expanded(
                     child: SizedBox.expand(
                       child: GestureDetector(
-                        onLongPress: () => widget.viewConfiguration.createEventTrigger == CreateEventTrigger.longPress
-                            ? _createEvent(calculateNewEventDateTimeRange(date, slotIndex))
+                        onLongPress: () => widget
+                                    .viewConfiguration.createEventTrigger ==
+                                CreateEventTrigger.longPress
+                            ? _createEvent(
+                                calculateNewEventDateTimeRange(date, slotIndex))
                             : controller.deselectEvent(),
-                        onTap: () => widget.viewConfiguration.createEventTrigger == CreateEventTrigger.tap
-                            ? _createEvent(calculateNewEventDateTimeRange(date, slotIndex))
+                        onTap: () => widget
+                                    .viewConfiguration.createEventTrigger ==
+                                CreateEventTrigger.tap
+                            ? _createEvent(
+                                calculateNewEventDateTimeRange(date, slotIndex))
                             : controller.deselectEvent(),
                         onVerticalDragStart: isMobileDevice || !createEvents
                             ? null
