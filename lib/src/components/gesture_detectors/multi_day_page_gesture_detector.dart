@@ -58,13 +58,15 @@ class _MultiDayPageGestureDetectorState<T>
                                     .viewConfiguration.createEventTrigger ==
                                 CreateEventTrigger.longPress
                             ? _createEvent(
-                                calculateNewEventDateTimeRange(date, slotIndex))
+                                calculateNewEventDateTimeRange(date, slotIndex),
+                              )
                             : controller.deselectEvent(),
                         onTap: () => widget
                                     .viewConfiguration.createEventTrigger ==
                                 CreateEventTrigger.tap
                             ? _createEvent(
-                                calculateNewEventDateTimeRange(date, slotIndex))
+                                calculateNewEventDateTimeRange(date, slotIndex),
+                              )
                             : controller.deselectEvent(),
                         onVerticalDragStart: isMobileDevice || !createEvents
                             ? null
