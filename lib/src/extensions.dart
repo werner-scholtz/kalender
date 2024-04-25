@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// [DateTimeRange] extensions.
 extension DateTimeRangeExtensions on DateTimeRange {
@@ -196,8 +195,39 @@ extension DateTimeExtensions on DateTime {
 
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
   int get weekNumber {
-    final dayOfYear = int.parse(DateFormat('D').format(this));
-    return ((dayOfYear - weekday + 10) / 7).floor();
+    // Add 3 to always compare with January 4th, which is always in week 1
+    // Add 7 to index weeks starting with 1 instead of 0
+    final woy = ((ordinalDate - weekday + 10) ~/ 7);
+
+    // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
+    if (woy == 0) {
+      // The 28th of December is always in the last week of the year
+      return DateTime(year - 1, 12, 28).weekNumber;
+    }
+
+    // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
+    if (woy == 53 &&
+        DateTime(year, 1, 1).weekday != DateTime.thursday &&
+        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+      return 1;
+    }
+
+    return woy;
+  }
+
+  /// The ordinal date, the number of days since December 31st the previous year.
+  ///
+  /// January 1st has the ordinal date 1
+  ///
+  /// December 31st has the ordinal date 365, or 366 in leap years
+  int get ordinalDate {
+    const offsets = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
+  }
+
+  /// True if this date is on a leap year.
+  bool get isLeapYear {
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
   }
 
   /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
@@ -206,6 +236,58 @@ extension DateTimeExtensions on DateTime {
       start: startOfDay,
       end: endOfDay.addDays(numberOfDays - 1),
     );
+  }
+
+  String get englishDayName {
+    switch (weekday) {
+      case 1:
+        return 'Mon';
+      case 2:
+        return 'Tue';
+      case 3:
+        return 'Wed';
+      case 4:
+        return 'Thu';
+      case 5:
+        return 'Fri';
+      case 6:
+        return 'Sat';
+      case 7:
+        return 'Sun';
+      default:
+        return '';
+    }
+  }
+
+  String get englishMonthName {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return '';
+    }
   }
 }
 

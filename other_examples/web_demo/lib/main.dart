@@ -1,3 +1,6 @@
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/find_locale.dart';
+import 'package:intl/intl.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/functions/generate_calendar_events.dart';
 import 'package:web_demo/widgets/calendar/calendar_header.dart';
@@ -9,7 +12,10 @@ import 'package:web_demo/widgets/calendar/calendar_zoom.dart';
 import 'package:web_demo/widgets/customize/calendar_customize.dart';
 import 'package:web_demo/widgets/customize/view_customize.dart';
 
-void main() {
+void main() async {
+  final locale = await findSystemLocale();
+  Intl.defaultLocale = locale;
+  await initializeDateFormatting(locale);
   runApp(const MyApp());
 }
 
@@ -96,7 +102,19 @@ class _MyHomePageState extends State<MyHomePage> {
       calendarHeaderBuilder: _calendarHeaderBuilder,
       calendarZoomDetector: _calendarZoomDetectorBuilder,
     );
-    calendarStyle = const CalendarStyle();
+    calendarStyle = CalendarStyle(monthHeaderStyle: MonthHeaderStyle(
+      stringBuilder: (date) {
+        return DateFormat.EEEE(Intl.defaultLocale).format(date);
+      },
+    ), dayHeaderStyle: DayHeaderStyle(
+      stringBuilder: (date) {
+        return DateFormat('EEE', Intl.defaultLocale).format(date);
+      },
+    ), scheduleMonthHeaderStyle: ScheduleMonthHeaderStyle(
+      stringBuilder: (date) {
+        return DateFormat('yyyy - MMMM', Intl.defaultLocale).format(date);
+      },
+    ));
     calendarLayoutDelegates = CalendarLayoutDelegates();
   }
 

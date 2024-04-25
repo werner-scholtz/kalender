@@ -152,6 +152,13 @@ class ViewConfigurationCustomize extends StatelessWidget {
   List<Widget> monthConfig(MonthConfiguration config) {
     return [
       SwitchListTile(
+        title: const Text('Show Header'),
+        value: config.showHeader,
+        onChanged: (value) {
+          config.showHeader = value;
+        },
+      ),
+      SwitchListTile(
         title: const Text('Enable Rescheduling'),
         value: config.enableRescheduling,
         onChanged: (value) {

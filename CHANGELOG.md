@@ -1,3 +1,8 @@
+## 0.3.9
+- Removed Intl dependency.
+- Added `stringBuilders` to all StyleClasses that display Names or the like.
+- Fixed MonthViewConfiguration showHeader option.
+
 ## 0.3.8
 - Fixed displaying incorrect page when changing firstDayOfWeek
 - Updated decencies.

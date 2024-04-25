@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:kalender/src/components/general/date_icon_button.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
 
 /// A widget that displays the day of the week and the day number.
@@ -23,11 +23,7 @@ class DayHeader extends StatelessWidget {
       borderRadius: style.borderRadius,
     );
 
-    final dateFormat = DateFormat(style.dateFormat);
-    var dateText = dateFormat.format(date);
-    if (style.useUpperCase ?? false) {
-      dateText = dateText.toUpperCase();
-    }
+    final dateText = style.stringBuilder?.call(date) ?? date.englishDayName;
     final dateTextStyle =
         style.textStyle ?? Theme.of(context).textTheme.bodySmall;
 
