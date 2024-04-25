@@ -96,10 +96,9 @@ class _MonthViewState<T> extends State<MonthView<T>>
                 widget.layoutDelegates ?? CalendarLayoutDelegates(),
             child: Column(
               children: <Widget>[
-                if (widget.monthViewConfiguration.showHeader)
-                  MonthViewHeader<T>(
-                    viewConfiguration: widget.monthViewConfiguration,
-                  ),
+                MonthViewHeader<T>(
+                  viewConfiguration: widget.monthViewConfiguration,
+                ),
                 MonthViewContent<T>(
                   viewConfiguration: widget.monthViewConfiguration,
                   controller: widget.controller,
