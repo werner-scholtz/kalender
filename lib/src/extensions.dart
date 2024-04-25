@@ -78,12 +78,19 @@ extension DateTimeRangeExtensions on DateTimeRange {
       return (start.weekNumber, firstDayOfYear.weekNumber);
     }
 
-    final spansOneWeek = isSingleWeek &&
+    // This is custom so that if the user sets firstDayOfWeek to
+    // monday, sunday or saturday we only show one week number.
+    final showOnlyOneWeekNumber = isSingleWeek &&
         (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
-    if (!spansOneWeek) {
-      // When its spans multiple weeks show both.
-      return (start.weekNumber, end.weekNumber);
+    if (!showOnlyOneWeekNumber) {
+      if (datesSpanned.first.weekNumber == datesSpanned.last.weekNumber) {
+        // If the first and last day have the same week number return the start.weekNumber.
+        return (start.weekNumber, null);
+      } else {
+        // When its spans multiple weeks show both.
+        return (start.weekNumber, end.weekNumber);
+      }
     } else {
       final dateToUse = datesSpanned.firstWhere(
         (date) => date.weekday == 1, // Find the first monday.
