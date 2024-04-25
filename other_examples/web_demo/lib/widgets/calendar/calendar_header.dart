@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kalender/kalender.dart';
 
 class CalendarHeader extends StatelessWidget {
@@ -21,42 +22,46 @@ class CalendarHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        final months =
-            constraints.maxWidth < 600 ? monthsMobile : monthsDesktop;
         final buttonWidth = constraints.maxWidth < 600 ? 120.0 : 250.0;
         final viewWidth = constraints.maxWidth < 600 ? 80.0 : 150.0;
         final padding = constraints.maxWidth < 600 ? 0.0 : 4.0;
         final buttonHeight = constraints.maxWidth < 600 ? 40.0 : 48.0;
+
+        final dateFormat = constraints.maxWidth < 600
+            ? DateFormat('yyyy - MMM')
+            : DateFormat('yyyy - MMMM');
+
+        final dateButton = FilledButton.tonal(
+          style: ButtonStyle(
+            minimumSize: MaterialStateProperty.all<Size>(
+              Size(buttonWidth, buttonHeight),
+            ),
+          ),
+          onPressed: () async {
+            DateTime? selectedDate = await showDatePicker(
+              context: context,
+              initialDate: visibleDateTimeRange.start,
+              firstDate: DateTime(1970),
+              lastDate: DateTime(2040),
+            );
+            if (selectedDate == null) return;
+
+            calendarController.animateToDate(
+              selectedDate,
+            );
+          },
+          child: Text(
+            dateFormat.format(calendarController.visibleMonth!),
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        );
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              FilledButton.tonal(
-                style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all<Size>(
-                    Size(buttonWidth, buttonHeight),
-                  ),
-                ),
-                onPressed: () async {
-                  DateTime? selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: visibleDateTimeRange.start,
-                    firstDate: DateTime(1970),
-                    lastDate: DateTime(2040),
-                  );
-                  if (selectedDate == null) return;
-
-                  calendarController.animateToDate(
-                    selectedDate,
-                  );
-                },
-                child: Text(
-                  '${calendarController.visibleMonth!.year} - ${months[calendarController.visibleMonth!.month - 1]}',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
+              dateButton,
               if (viewConfigurations[currentConfiguration]
                   is! ScheduleViewConfiguration)
                 Padding(
@@ -133,33 +138,3 @@ class CalendarHeader extends StatelessWidget {
     );
   }
 }
-
-const Map<int, String> monthsDesktop = {
-  0: 'January',
-  1: 'February',
-  2: 'March',
-  3: 'April',
-  4: 'Mei',
-  5: 'June',
-  6: 'July',
-  7: 'August',
-  8: 'September',
-  9: 'October',
-  10: 'November',
-  11: 'December',
-};
-
-const Map<int, String> monthsMobile = {
-  0: 'Jan',
-  1: 'Feb',
-  2: 'Mar',
-  3: 'Apr',
-  4: 'Mei',
-  5: 'Jun',
-  6: 'Jul',
-  7: 'Aug',
-  8: 'Sep',
-  9: 'Oct',
-  10: 'Nov',
-  11: 'Dec',
-};
