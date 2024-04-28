@@ -5,7 +5,7 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - other_examples/**
+    # - other_examples/**
     # - example/**
 
 linter:
