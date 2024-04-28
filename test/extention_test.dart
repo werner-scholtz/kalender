@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:timezone/standalone.dart';
-
-import 'utils.dart';
 
 void main() {
-  timezoneTest(
-    (zone, now) {
-      group(zone.name, () {
-        dayDifferenceTest(zone, now);
-        monthDifferenceTest(zone, now);
-        rescheduleDateTimeTest(zone, now);
-        datesSpannedTest(zone, now);
-      });
-    },
-  );
+  print(DateTime(2024, 1, 1).toUtc());
+
+  group('Extension Tests', () {
+    dayDifferenceTest();
+    monthDifferenceTest();
+    rescheduleDateTimeTest();
+    datesSpannedTest();
+  });
 }
 
-void dayDifferenceTest(Location zone, TZDateTime now) {
+void dayDifferenceTest() {
+  final start = DateTime(2024, 1, 1);
+
   for (var day = 0; day < 365; day++) {
     for (var numberOfDays = 1; numberOfDays <= 2; numberOfDays++) {
       test('dayDifference', () {
-        final today = now.add(Duration(days: day));
+        final today = start.add(Duration(days: day));
         final tomorrow = today.add(Duration(days: numberOfDays));
         final range = DateTimeRange(start: today, end: tomorrow);
         final difference = range.dayDifference;
@@ -34,16 +31,16 @@ void dayDifferenceTest(Location zone, TZDateTime now) {
 
   final edgeCases = {
     DateTimeRange(
-      start: now,
-      end: now,
+      start: start,
+      end: start,
     ): 0,
     DateTimeRange(
-      start: now,
-      end: now.add(const Duration(days: 1)),
+      start: start,
+      end: start.add(const Duration(days: 1)),
     ): 1,
     DateTimeRange(
-      start: now,
-      end: now.add(const Duration(days: 1, hours: 5)),
+      start: start,
+      end: start.add(const Duration(days: 1, hours: 5)),
     ): 1,
   };
 
@@ -54,11 +51,12 @@ void dayDifferenceTest(Location zone, TZDateTime now) {
   }
 }
 
-void monthDifferenceTest(Location zone, TZDateTime now) {
+void monthDifferenceTest() {
+  final start = DateTime(2024, 1, 1);
+
   for (var i = 1; i < 13; i++) {
     test('monthDifference', () {
-      final start = now;
-      final end = TZDateTime(zone, now.year, now.month + i);
+      final end = DateTime(start.year, start.month + i);
       final range = DateTimeRange(start: start, end: end);
       final difference = range.monthDifference;
 
@@ -67,11 +65,12 @@ void monthDifferenceTest(Location zone, TZDateTime now) {
   }
 }
 
-void rescheduleDateTimeTest(Location zone, TZDateTime now) {
+void rescheduleDateTimeTest() {
+  final start = DateTime(2024, 1, 1);
+
   for (var i = -7; i <= 7; i++) {
     test('rescheduleDateTime', () {
-      final start = now;
-      final end = TZDateTime(zone, now.year, now.month, now.day + 1);
+      final end = DateTime(start.year, start.month, start.day + 1);
       final range = DateTimeRange(start: start, end: end);
       final duration = Duration(days: i);
       final rescheduledRange = range.rescheduleDateTime(duration);
@@ -81,19 +80,57 @@ void rescheduleDateTimeTest(Location zone, TZDateTime now) {
   }
 }
 
-void datesSpannedTest(Location zone, TZDateTime now) {
+void datesSpannedTest() {
+  final start = DateTime(2024, 1, 1);
+
   final rangesToTest = {
     DateTimeRange(
-      start: now,
-      end: now,
+      start: start,
+      end: start,
     ): 1,
     DateTimeRange(
-      start: now,
-      end: now.add(const Duration(days: 1)),
+      start: start,
+      end: start.add(const Duration(days: 1)),
     ): 1,
     DateTimeRange(
-      start: now,
-      end: now.add(const Duration(days: 2, hours: 3)),
+      start: start,
+      end: start.add(const Duration(days: 2)),
+    ): 2,
+    DateTimeRange(
+      start: start,
+      end: start.add(const Duration(days: 3)),
+    ): 3,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1),
+      end: DateTime(2024, 1, 1, 2),
+    ): 1,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1),
+      end: DateTime(2024, 1, 1, 12),
+    ): 1,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1, 12),
+      end: DateTime(2024, 1, 1, 12),
+    ): 1,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1),
+      end: DateTime(2024, 1, 2),
+    ): 1,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1),
+      end: DateTime(2024, 1, 2, 6),
+    ): 2,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1, 7),
+      end: DateTime(2024, 1, 2, 6),
+    ): 2,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1, 23),
+      end: DateTime(2024, 1, 2, 1),
+    ): 2,
+    DateTimeRange(
+      start: DateTime(2024, 1, 1, 23),
+      end: DateTime(2024, 1, 3, 1),
     ): 3,
   };
 

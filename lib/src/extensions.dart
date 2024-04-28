@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 /// [DateTimeRange] extensions.
@@ -21,20 +23,30 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// A list of [DateTime]s that the [DateTimeRange] spans.
   List<DateTime> get datesSpanned {
-    final start = this.start.toUtc();
-    final end = this.end.toUtc();
+    // Check if the start and end is equal.
+    if (start == end) return [start.startOfDay];
 
-    final utcDates = <DateTime>[start.toUtc()];
-    final dates = <DateTime>[this.start.startOfDay];
+    final localStartOfDate = start.startOfDay;
+    final utcStartOfDate = localStartOfDate.toUtc();
 
-    while (utcDates.last.isBefore(end)) {
-      final newDate = utcDates.last.add(const Duration(days: 1));
-      if (newDate.isBefore(end)) {
-        utcDates.add(newDate);
-        dates.add(newDate.toLocal().startOfDay);
-      } else {
-        break;
-      }
+    final localEndOfDate = end.startOfDay;
+    // Check if the local end date is the startOfDay.
+    final isLocalEndOfDateStartOfDay = localEndOfDate.toUtc() == end.toUtc();
+
+    // If the localEndDate is the startOfDay
+    //   Use the localEndOfDate in utc.
+    // else
+    //   Use the localEndOfDate endOfDay in utc.
+    final utcEndOfDate = isLocalEndOfDateStartOfDay
+        ? localEndOfDate.toUtc()
+        : localEndOfDate.endOfDay.toUtc();
+
+    // Calculate the dayDifference.
+    final dayDifference = utcEndOfDate.difference(utcStartOfDate).inDays;
+
+    final dates = <DateTime>[];
+    for (var i = 0; i < dayDifference; i++) {
+      dates.add(localStartOfDate.add(Duration(days: i)));
     }
 
     return dates;
