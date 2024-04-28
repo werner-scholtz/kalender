@@ -1,5 +1,6 @@
 ## 0.4.0
 - Fixed WeekNumbers for CustomMultiDay views.
+- Fixed MultiDayEventTile datesSpanned issue.
 
 ## 0.3.9
 - Removed Intl dependency.
