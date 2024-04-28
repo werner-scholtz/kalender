@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/extensions.dart';
 
 void main() {
-  print(DateTime(2024, 1, 1).toUtc());
-
   group('Extension Tests', () {
     dayDifferenceTest();
     monthDifferenceTest();
