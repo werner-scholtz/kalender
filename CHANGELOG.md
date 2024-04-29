@@ -1,6 +1,11 @@
 ## 0.4.0
 - Fixed WeekNumbers for CustomMultiDay views.
 - Fixed MultiDayEventTile datesSpanned issue.
+- Fixed MultiDayGestureDetector not working correctly with custom start/end hours.
+- Fixed CustomMultiDayHeader showing when disabled.
+
+#### Breaking Changes:
+- Renamed `paintWeekNumber` => `showWeekNumber`
 
 ## 0.3.9
 - Removed Intl dependency.
