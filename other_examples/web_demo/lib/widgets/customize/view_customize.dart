@@ -66,6 +66,13 @@ class ViewConfigurationCustomize extends StatelessWidget {
           config.showMultiDayHeader = value;
         },
       ),
+      SwitchListTile(
+        title: const Text('Show Week Number'),
+        value: config.paintWeekNumber,
+        onChanged: (value) {
+          config.paintWeekNumber = value;
+        },
+      ),
       DropDownBasic(
         label: 'MultiDay tile height',
         items: const [24.0, 48.0],

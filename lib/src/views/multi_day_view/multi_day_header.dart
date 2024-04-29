@@ -129,7 +129,7 @@ class SingleDayHeader<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final components = CalendarStyleProvider.of(context).components;
 
-    final dateHeader = Column(
+    late final dateHeader = Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         SizedBox(
@@ -143,18 +143,25 @@ class SingleDayHeader<T> extends StatelessWidget {
       ],
     );
 
+    late final dayHeaderSpacer = SizedBox(
+      width: viewConfiguration.timelineWidth +
+          viewConfiguration.daySeparatorLeftOffset,
+    );
+
     final multiDayEventsHeader = AnimatedMultiDayEventsHeader<T>(
       viewConfiguration: viewConfiguration,
       visibleDateRange: visibleDateTimeRange,
     );
 
+    final showDayHeader = viewConfiguration.showDayHeader;
+    final showMultiDayEvents = viewConfiguration.showMultiDayHeader;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        dateHeader,
-        Expanded(
-          child: multiDayEventsHeader,
-        ),
+        if (showDayHeader) dateHeader,
+        if (!showDayHeader && showMultiDayEvents) dayHeaderSpacer,
+        if (showMultiDayEvents) Expanded(child: multiDayEventsHeader),
       ],
     );
   }
