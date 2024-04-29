@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'package:kalender/kalender.dart';
@@ -163,26 +161,36 @@ class _MultiDayPageGestureDetectorState<T>
 
     final initialSlotRange = calculateSlotDateTimeRange(date, slotIndex);
 
-    DateTimeRange dateTimeRange;
+    DateTime start;
+    DateTime end;
+
     if (currentVerticalSteps.isNegative) {
-      dateTimeRange = DateTimeRange(
-        start: initialSlotRange.start.add(
-          Duration(
-            minutes: newEventDurationInMinutes * currentVerticalSteps,
-          ),
-        ),
-        end: initialSlotRange.end,
+      end = initialSlotRange.end;
+      start = initialSlotRange.start.add(
+        Duration(minutes: newEventDurationInMinutes * currentVerticalSteps),
       );
+
+      if (viewConfiguration.startHour != 0) {
+        final earliestTime = date.copyWith(hour: viewConfiguration.startHour);
+        if (start.isBefore(earliestTime)) {
+          start = earliestTime;
+        }
+      }
     } else {
-      dateTimeRange = DateTimeRange(
-        start: initialSlotRange.start,
-        end: initialSlotRange.end.add(
-          Duration(
-            minutes: newEventDurationInMinutes * currentVerticalSteps,
-          ),
-        ),
+      start = initialSlotRange.start;
+      end = initialSlotRange.end.add(
+        Duration(minutes: newEventDurationInMinutes * currentVerticalSteps),
       );
+
+      if (viewConfiguration.endHour != 0) {
+        final latestTime = date.copyWith(hour: viewConfiguration.endHour);
+        if (end.isAfter(latestTime)) {
+          end = latestTime;
+        }
+      }
     }
+
+    final dateTimeRange = DateTimeRange(start: start, end: end);
 
     scope.eventsController.selectedEvent?.dateTimeRange = dateTimeRange;
 
