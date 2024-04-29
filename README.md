@@ -206,6 +206,16 @@ These are the default ViewConfiguration's:
 
       // This is the end hour of the calendar.
       endHour: 24, 
+
+      // Show the header that displays the days.
+      showDayHeader: true
+
+      // Show the header that displays multiDay events.
+      // If this is disabled the multiDay events will be displayed in the calendar body.
+      showMultiDayHeader: true
+
+      // Gesture type for creating events.
+      createEventTrigger: CreateEventTrigger.tap,
     );
     ```
 
@@ -228,10 +238,13 @@ These are the default ViewConfiguration's:
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
-      paintWeekNumber: true,
       firstDayOfWeek: 1, 
       startHour: 0,
       endHour: 24,
+      showDayHeader: true,
+      showMultiDayHeader: true,
+      showWeekNumber: true,
+      createEventTrigger: CreateEventTrigger.tap,
     );
     ```
       
@@ -256,42 +269,19 @@ These are the default ViewConfiguration's:
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
-      paintWeekNumber: true,
       startHour: 0,
       endHour: 24,
+      showDayHeader: true,
+      showMultiDayHeader: true,
+      showWeekNumber: true,
+      createEventTrigger: CreateEventTrigger.tap,
     );
     ```
 
     </details>
 
-4. **WorkWeekConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
 
-    <details><summary>Example</summary>
-
-    ```dart
-    WorkWeekConfiguration(
-      timelineWidth: 56,
-      hourLineLeftMargin: 56,
-      multiDayTileHeight: 24,
-      eventSnapping: true,
-      timeIndicatorSnapping: true,
-      createEvents: true,
-      createMultiDayEvents: true,
-      enableResizing: true,
-      enableRescheduling: true,
-      verticalStepDuration: const Duration(minutes: 15),
-      verticalSnapRange: const Duration(minutes: 15),
-      newEventDuration: const Duration(minutes: 15),
-      paintWeekNumber: true,
-      startHour: 0,
-      endHour: 24,
-    );
-    ```
-      
-    </details>
-
-
-5. **CustomMultiDayConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
+4. **CustomMultiDayConfiguration** - This configuration is used to configure the MultiDayView and displays 5 days that starts on monday.
 
     <details><summary>Example</summary>
 
@@ -311,16 +301,19 @@ These are the default ViewConfiguration's:
       verticalStepDuration: const Duration(minutes: 15),
       verticalSnapRange: const Duration(minutes: 15),
       newEventDuration: const Duration(minutes: 15),
-      paintWeekNumber: true,
       startHour: 0,
       endHour: 24,
+      showDayHeader: true,
+      showMultiDayHeader: true,
+      showWeekNumber: true,
+      createEventTrigger: CreateEventTrigger.tap,
     );
 
     ```
       
     </details>
 
-6. **MonthConfiguration** - this configuration is used to configure the MonthView.
+5. **MonthConfiguration** - this configuration is used to configure the MonthView.
 
     <details><summary>Example</summary>
 
@@ -333,12 +326,14 @@ These are the default ViewConfiguration's:
       createMultiDayEvents: true,
       enableRescheduling: true,
       enableResizing: true,
+      showHeader: true
+      createEventTrigger: CreateEventTrigger.tap,
     );
     ```
       
     </details>
    
-7. **ScheduleConfiguration** - this configuration is used to configure the ScheduleView.
+6. **ScheduleConfiguration** - this configuration is used to configure the ScheduleView.
 
     <details><summary>Example</summary>
 
