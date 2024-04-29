@@ -21,20 +21,30 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// A list of [DateTime]s that the [DateTimeRange] spans.
   List<DateTime> get datesSpanned {
-    final start = this.start.toUtc();
-    final end = this.end.toUtc();
+    // Check if the start and end is equal.
+    if (start == end) return [start.startOfDay];
 
-    final utcDates = <DateTime>[start.toUtc()];
-    final dates = <DateTime>[this.start.startOfDay];
+    final localStartOfDate = start.startOfDay;
+    final utcStartOfDate = localStartOfDate.toUtc();
 
-    while (utcDates.last.isBefore(end)) {
-      final newDate = utcDates.last.add(const Duration(days: 1));
-      if (newDate.isBefore(end)) {
-        utcDates.add(newDate);
-        dates.add(newDate.toLocal().startOfDay);
-      } else {
-        break;
-      }
+    final localEndOfDate = end.startOfDay;
+    // Check if the local end date is the startOfDay.
+    final isLocalEndOfDateStartOfDay = localEndOfDate.toUtc() == end.toUtc();
+
+    // If the localEndDate is the startOfDay
+    //   Use the localEndOfDate in utc.
+    // else
+    //   Use the localEndOfDate endOfDay in utc.
+    final utcEndOfDate = isLocalEndOfDateStartOfDay
+        ? localEndOfDate.toUtc()
+        : localEndOfDate.endOfDay.toUtc();
+
+    // Calculate the dayDifference.
+    final dayDifference = utcEndOfDate.difference(utcStartOfDate).inDays;
+
+    final dates = <DateTime>[];
+    for (var i = 0; i < dayDifference; i++) {
+      dates.add(localStartOfDate.add(Duration(days: i)));
     }
 
     return dates;
@@ -78,12 +88,19 @@ extension DateTimeRangeExtensions on DateTimeRange {
       return (start.weekNumber, firstDayOfYear.weekNumber);
     }
 
-    final spansOneWeek = isSingleWeek &&
+    // This is custom so that if the user sets firstDayOfWeek to
+    // monday, sunday or saturday we only show one week number.
+    final showOnlyOneWeekNumber = isSingleWeek &&
         (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
-    if (!spansOneWeek) {
-      // When its spans multiple weeks show both.
-      return (start.weekNumber, end.weekNumber);
+    if (!showOnlyOneWeekNumber) {
+      if (datesSpanned.first.weekNumber == datesSpanned.last.weekNumber) {
+        // If the first and last day have the same week number return the start.weekNumber.
+        return (start.weekNumber, null);
+      } else {
+        // When its spans multiple weeks show both.
+        return (start.weekNumber, end.weekNumber);
+      }
     } else {
       final dateToUse = datesSpanned.firstWhere(
         (date) => date.weekday == 1, // Find the first monday.

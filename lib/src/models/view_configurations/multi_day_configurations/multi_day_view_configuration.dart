@@ -6,11 +6,11 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration({
     int? numberOfDays,
     int? firstDayOfWeek,
-    bool? paintWeekNumber,
     double? initialHeightPerMinute,
     CreateEventTrigger? createEventTrigger,
     bool showDayHeader = true,
     bool showMultiDayHeader = true,
+    bool? showWeekNumber,
     double hourLineLeftMargin = 56,
     required double timelineWidth,
     required double daySeparatorLeftOffset,
@@ -47,7 +47,7 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
     _verticalSnapRange = verticalSnapRange;
 
     _firstDayOfWeek = firstDayOfWeek ?? 1;
-    _paintWeekNumber = paintWeekNumber ?? false;
+    _showWeekNumber = showWeekNumber ?? false;
 
     _enableRescheduling = enableRescheduling;
     _enableResizing = enableResizing;
@@ -131,10 +131,10 @@ abstract class MultiDayViewConfiguration extends ViewConfiguration {
   }
 
   /// Paint the week number.
-  late bool _paintWeekNumber;
-  bool get paintWeekNumber => _paintWeekNumber;
-  set paintWeekNumber(bool value) {
-    _paintWeekNumber = value;
+  late bool _showWeekNumber;
+  bool get showWeekNumber => _showWeekNumber;
+  set showWeekNumber(bool value) {
+    _showWeekNumber = value;
     notifyListeners();
   }
 

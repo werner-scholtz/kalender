@@ -52,6 +52,7 @@ class MultiDayEventsDefaultLayoutDelegate<T>
       final event = events[id];
 
       final eventDates = event.datesSpanned;
+
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(
         visibleDates.contains,

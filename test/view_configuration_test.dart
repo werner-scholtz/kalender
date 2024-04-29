@@ -1,51 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:timezone/standalone.dart';
-
-import 'utils.dart';
 
 void main() {
-  timezoneTest(
-    (zone, now) {
-      group(zone.name, () {
-        final start = TZDateTime(zone, 2024, 1, 1);
-        final end = TZDateTime(zone, 2025, 1, 1);
+  group('ViewConfiguration Tests', () {
+    final start = DateTime(2024, 1, 1);
+    final end = DateTime(2025, 1, 1);
 
-        _testMonthConfigurations(zone: zone, start: start, end: end);
+    _testMonthConfigurations(start: start, end: end);
 
-        _testMultiDayConfigurations(zone: zone, start: start, end: end);
+    _testMultiDayConfigurations(start: start, end: end);
 
-        _testScheduleConfigurations(start: start, end: end);
-      });
-    },
-  );
+    _testScheduleConfigurations(start: start, end: end);
+  });
 }
 
 /// Tests for [MonthViewConfiguration].
 ///
 ///   - [MonthConfiguration]
 void _testMonthConfigurations({
-  required Location zone,
-  required TZDateTime start,
-  required TZDateTime end,
+  required DateTime start,
+  required DateTime end,
 }) {
   final calendarRange = DateTimeRange(start: start, end: end);
 
-  final datesToTest = <TZDateTime, int>{
-    TZDateTime(zone, start.year, 1, 1): 0,
-    TZDateTime(zone, start.year, 2, 1): 1,
-    TZDateTime(zone, start.year, 3, 1): 2,
-    TZDateTime(zone, start.year, 4, 1): 3,
-    TZDateTime(zone, start.year, 5, 1): 4,
-    TZDateTime(zone, start.year, 6, 1): 5,
-    TZDateTime(zone, start.year, 7, 1): 6,
-    TZDateTime(zone, start.year, 8, 1): 7,
-    TZDateTime(zone, start.year, 9, 1): 8,
-    TZDateTime(zone, start.year, 10, 1): 9,
-    TZDateTime(zone, start.year, 11, 1): 10,
-    TZDateTime(zone, start.year, 12, 1): 11,
-    TZDateTime(zone, start.year, 12, 31): 11,
+  final datesToTest = <DateTime, int>{
+    DateTime(start.year, 1, 1): 0,
+    DateTime(start.year, 2, 1): 1,
+    DateTime(start.year, 3, 1): 2,
+    DateTime(start.year, 4, 1): 3,
+    DateTime(start.year, 5, 1): 4,
+    DateTime(start.year, 6, 1): 5,
+    DateTime(start.year, 7, 1): 6,
+    DateTime(start.year, 8, 1): 7,
+    DateTime(start.year, 9, 1): 8,
+    DateTime(start.year, 10, 1): 9,
+    DateTime(start.year, 11, 1): 10,
+    DateTime(start.year, 12, 1): 11,
+    DateTime(start.year, 12, 31): 11,
   };
 
   test('MonthConfiguration Tests', () {
@@ -92,25 +84,24 @@ void _testMonthConfigurations({
 /// - [WeekConfiguration]
 /// - [WorkWeekConfiguration]
 void _testMultiDayConfigurations({
-  required Location zone,
-  required TZDateTime start,
-  required TZDateTime end,
+  required DateTime start,
+  required DateTime end,
 }) {
   final calendarRange = DateTimeRange(start: start, end: end);
 
   final datesToTest = [
-    TZDateTime(zone, start.year, 1, 1),
-    TZDateTime(zone, start.year, 2, 1),
-    TZDateTime(zone, start.year, 3, 1),
-    TZDateTime(zone, start.year, 4, 1),
-    TZDateTime(zone, start.year, 5, 1),
-    TZDateTime(zone, start.year, 6, 1),
-    TZDateTime(zone, start.year, 7, 1),
-    TZDateTime(zone, start.year, 8, 1),
-    TZDateTime(zone, start.year, 9, 1),
-    TZDateTime(zone, start.year, 10, 1),
-    TZDateTime(zone, start.year, 11, 1),
-    TZDateTime(zone, start.year, 12, 1),
+    DateTime(start.year, 1, 1),
+    DateTime(start.year, 2, 1),
+    DateTime(start.year, 3, 1),
+    DateTime(start.year, 4, 1),
+    DateTime(start.year, 5, 1),
+    DateTime(start.year, 6, 1),
+    DateTime(start.year, 7, 1),
+    DateTime(start.year, 8, 1),
+    DateTime(start.year, 9, 1),
+    DateTime(start.year, 10, 1),
+    DateTime(start.year, 11, 1),
+    DateTime(start.year, 12, 1),
   ];
 
   // For now use the precalculated indexes. for the year 2024-2025
@@ -315,8 +306,8 @@ void _testMultiDayConfigurations({
 ///
 /// - [ScheduleConfiguration]
 void _testScheduleConfigurations({
-  required TZDateTime start,
-  required TZDateTime end,
+  required DateTime start,
+  required DateTime end,
 }) {
   final calendarRange = DateTimeRange(start: start, end: end);
 
