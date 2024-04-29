@@ -9,7 +9,7 @@ class WorkWeekConfiguration extends MultiDayViewConfiguration {
     super.daySeparatorLeftOffset = 8,
     super.hourLineLeftMargin = 56,
     super.multiDayTileHeight = 24,
-    super.paintWeekNumber = true,
+    super.showWeekNumber = true,
     super.eventSnapping = false,
     super.timeIndicatorSnapping = false,
     super.createEvents = true,

@@ -33,7 +33,7 @@ class DayConfiguration extends MultiDayViewConfiguration
   }) {
     super.numberOfDays = 1;
     super.firstDayOfWeek = 1;
-    super.paintWeekNumber = false;
+    super.showWeekNumber = false;
   }
 
   @override
@@ -46,7 +46,7 @@ class DayConfiguration extends MultiDayViewConfiguration
   int get firstDayOfWeek => 1;
 
   @override
-  bool get paintWeekNumber => false;
+  bool get showWeekNumber => false;
 
   @override
   DateTimeRange calculateVisibleDateTimeRange(

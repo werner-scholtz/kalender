@@ -75,7 +75,7 @@ class MultipleDayHeader<T> extends StatelessWidget {
       width: viewConfiguration.timelineWidth +
           viewConfiguration.daySeparatorLeftOffset,
       child: Center(
-        child: viewConfiguration.paintWeekNumber
+        child: viewConfiguration.showWeekNumber
             ? components.weekNumberBuilder(visibleDateTimeRange)
             : null,
       ),

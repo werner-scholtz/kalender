@@ -68,9 +68,9 @@ class ViewConfigurationCustomize extends StatelessWidget {
       ),
       SwitchListTile(
         title: const Text('Show Week Number'),
-        value: config.paintWeekNumber,
+        value: config.showWeekNumber,
         onChanged: (value) {
-          config.paintWeekNumber = value;
+          config.showWeekNumber = value;
         },
       ),
       DropDownBasic(
