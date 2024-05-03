@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar/calendar_controller.dart';
 import 'package:kalender/src/models/calendar/view_state/month_view_state.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
@@ -44,7 +45,8 @@ class MonthViewContent<T> extends StatelessWidget {
                 scope.state.visibleDateTimeRange = newVisibleDateTimeRange;
 
                 // Update the selected date.
-                controller.selectedDate = newVisibleDateTimeRange.start;
+                controller.selectedDate =
+                    newVisibleDateTimeRange.centerDateTime;
 
                 // Call the onPageChanged function.
                 scope.functions.onPageChanged?.call(
