@@ -22,7 +22,7 @@ abstract class ViewState {
 
   /// The visible month notifier of the current page.
   late DateTime visibleMonth =
-      visibleDateTimeRangeNotifier.value.start.startOfMonth;
+      visibleDateTimeRangeNotifier.value.centerDateTime;
 
   /// The adjusted dateTimeRange of the current view.
   DateTimeRange get adjustedDateTimeRange;

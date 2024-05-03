@@ -22,9 +22,16 @@ class MonthConfiguration extends MonthViewConfiguration {
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     final monthRange = date.monthRange;
+
+    var start = monthRange.start.startOfWeekWithOffset(firstDayOfWeek);
+    if (start.isAfter(monthRange.start)) {
+      start = start.subtractDays(7);
+    }
+    final end = start.addDays(7 * 5);
+
     return DateTimeRange(
-      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
+      start: start,
+      end: end,
     );
   }
 
@@ -32,12 +39,12 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start.startOfMonth.startOfWeekWithOffset(
-      firstDayOfWeek,
-    );
-    final end = dateTimeRange.end.endOfMonth.endOfWeekWithOffset(
-      firstDayOfWeek,
-    );
+    final start = dateTimeRange.start.startOfMonth;
+    var end = dateTimeRange.end;
+    if (end != end.startOfMonth) {
+      end = end.endOfMonth;
+    }
+
     return DateTimeRange(
       start: start,
       end: end,
@@ -46,7 +53,11 @@ class MonthConfiguration extends MonthViewConfiguration {
 
   @override
   int calculateDateIndex(DateTime date, DateTime startDate) {
-    return DateTimeRange(start: startDate, end: date).monthDifference;
+    final index = DateTimeRange(
+      start: startDate,
+      end: date,
+    ).monthDifference;
+    return index;
   }
 
   @override
@@ -64,9 +75,15 @@ class MonthConfiguration extends MonthViewConfiguration {
       calendarStart.month + index,
     ).monthRange;
 
+    var start = monthRange.start.startOfWeekWithOffset(firstDayOfWeek);
+    if (start.isAfter(monthRange.start)) {
+      start = start.subtractDays(7);
+    }
+    final end = start.addDays(7 * 5);
+
     return DateTimeRange(
-      start: monthRange.start.startOfWeekWithOffset(firstDayOfWeek),
-      end: monthRange.end.endOfWeekWithOffset(firstDayOfWeek),
+      start: start,
+      end: end,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions.dart';
 
 void main() {
   group('ViewConfiguration Tests', () {
@@ -47,19 +48,19 @@ void _testMonthConfigurations({
       dateTimeRange: calendarRange,
     );
 
-    final numberOfDaysRemainder = adjustedDateTimeRange.duration.inDays % 7;
+    final numberOfMonths = adjustedDateTimeRange.monthDifference;
     expect(
-      numberOfDaysRemainder,
-      0,
-      reason: 'The number of days must be a multiple of 7',
+      numberOfMonths,
+      12,
     );
 
     final numberOfPages = config.calculateNumberOfPages(
       adjustedDateTimeRange,
     );
+
     expect(
       numberOfPages,
-      13,
+      12,
       reason: 'The number of pages must be 13 in this test',
     );
 
