@@ -39,9 +39,15 @@ class MonthConfiguration extends MonthViewConfiguration {
   DateTimeRange calculateAdjustedDateTimeRange({
     required DateTimeRange dateTimeRange,
   }) {
+    final start = dateTimeRange.start.startOfMonth;
+    var end = dateTimeRange.end;
+    if (end != end.startOfMonth) {
+      end = end.endOfMonth;
+    }
+
     return DateTimeRange(
-      start: dateTimeRange.start,
-      end: dateTimeRange.end,
+      start: start,
+      end: end,
     );
   }
 
