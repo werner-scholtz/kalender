@@ -8,16 +8,20 @@ The ability to have multiple calendars using the same EventsController,
   For this to work moving some responsibility from the EventsController to the CalendarController will be necessary.
 
 
-EventsController:
+EventsController
 |
 |__ CalendarController
 |           |
-|           |____ Calendar Widget
-|               
+|           |________ ViewController (MultiDay, Month, Schedule)
+|                           |
+|                           |________ CalendarWidget (CalendarProvider)
+|                                           |
+|                                           |________ Header
+|                                           |
+|                                           |
+|                                           |________ Body
 |
-|__ CalendarController
-|           |
-|           |____ Calendar Widget
+
 
 
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/custom_kalendar.dart';
+import 'package:kalender/kalender.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,48 +30,59 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final controller = CalendarController();
-  final eventsController = CalendarEventsController();
-  ViewConfiguration viewConfiguration = WeekConfiguration();
+  final eventsController = EventsController();
+
+  final test = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Calendar(
-        calendarController: controller,
-        eventsController: eventsController,
-        viewConfiguration: viewConfiguration,
-        headerBuilder: (context) {
-          return Material(
-            color: Theme.of(context).colorScheme.surface,
-            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-            elevation: 2,
-            child: const Column(
-              children: [],
-            ),
-          );
-        },
-        bodyBuilder: (context) {
-          final internals = CalendarInternals.of(context);
-          return Center(
-            child: Text(internals.viewConfiguration.name),
-          );
-        },
-      ),
+      // body: Calendar(
+      //   calendarController: controller,
+      //   eventsController: eventsController,
+      //   viewConfiguration: DayConfiguration(),
+      //   header: (context) {
+      //     return ValueListenableBuilder(
+      //       valueListenable: test,
+      //       builder: (context, value, child) {
+      //         return Material(
+      //           color: Theme.of(context).colorScheme.surface,
+      //           surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      //           elevation: 2,
+      //           child: Column(
+      //             children: [
+      //               if (value)
+      //                 FilledButton(
+      //                   onPressed: () {},
+      //                   child: Text('data'),
+      //                 ),
+      //               FilledButton(
+      //                 onPressed: () {},
+      //                 child: Text('data'),
+      //               ),
+      //             ],
+      //           ),
+      //         );
+      //       },
+      //     );
+      //   },
+      //   body: (context) {
+      //     // return _MultiDayBody();
+      //     return Container();
+      //   },
+      // ),
       floatingActionButton: FloatingActionButton(onPressed: _changeViewConfig),
     );
   }
 
   void _changeViewConfig() {
-    setState(() {
-      if (viewConfiguration is WeekConfiguration) {
-        viewConfiguration = DayConfiguration();
-      } else {
-        viewConfiguration = WeekConfiguration();
-      }
-    });
+    test.value = !test.value;
+    // setState(() {
+    //   if (viewConfiguration is WeekConfiguration) {
+    //     viewConfiguration = DayConfiguration();
+    //   } else {
+    //     viewConfiguration = WeekConfiguration();
+    //   }
+    // });
   }
 }

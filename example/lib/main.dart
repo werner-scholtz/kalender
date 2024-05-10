@@ -1,7 +1,7 @@
-import 'dart:io';
+import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' hide ViewConfiguration;
 import 'package:kalender/kalender.dart';
 
 void main() {
@@ -13,19 +13,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Kalender Example',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      ),
-      darkTheme: ThemeData(
+    final theme = ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+    );
+
+    final darkTheme = ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
           brightness: Brightness.dark,
         ),
-      ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ));
+
+    return MaterialApp(
+      title: 'Kalender Example',
+      themeMode: ThemeMode.dark,
+      theme: theme,
+      darkTheme: darkTheme,
       home: const MyHomePage(),
     );
   }
@@ -39,215 +46,236 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final CalendarController<Event> controller = CalendarController(
-    calendarDateTimeRange: DateTimeRange(
-      start: DateTime(DateTime.now().year - 1),
-      end: DateTime(DateTime.now().year + 1),
-    ),
-  );
-  final CalendarEventsController<Event> eventController =
-      CalendarEventsController<Event>();
+  final controller = CalendarController();
+  final controller1 = CalendarController();
+  final eventsController = EventsController();
 
-  late ViewConfiguration currentConfiguration = viewConfigurations[0];
-  List<ViewConfiguration> viewConfigurations = [
-    CustomMultiDayConfiguration(
-      name: 'Day',
-      numberOfDays: 1,
-      startHour: 6,
-      endHour: 18,
-    ),
-    CustomMultiDayConfiguration(
-      name: 'Custom',
-      numberOfDays: 1,
-    ),
-    WeekConfiguration(),
-    WorkWeekConfiguration(),
-    MonthConfiguration(),
-    ScheduleConfiguration(),
-    MultiWeekConfiguration(
-      numberOfWeeks: 3,
-    ),
+  late ViewConfiguration _viewConfig = _viewConfigs[0];
+  late ViewConfiguration _viewConfig1 = _viewConfigs[1];
+  final _viewConfigs = [
+    MultiDayViewConfiguration.singleDay(),
+    MultiDayViewConfiguration.week(),
+    MultiDayViewConfiguration.workWeek(),
+    MultiDayViewConfiguration.custom(numberOfDays: 3)
   ];
 
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
-    eventController.addEvents([
+
+    controller.addListener(() {});
+
+    final now = DateTime.now();
+    eventsController.addEvents([
       CalendarEvent(
         dateTimeRange: DateTimeRange(
           start: now,
-          end: now.add(const Duration(hours: 1)),
+          end: now.add(const Duration(hours: 3)),
         ),
-        eventData: Event(title: 'Event 1'),
       ),
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: now.add(const Duration(hours: 2)),
-          end: now.add(const Duration(hours: 5)),
-        ),
-        eventData: Event(title: 'Event 2'),
-      ),
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: DateTime(now.year, now.month, now.day),
-          end: DateTime(now.year, now.month, now.day)
-              .add(const Duration(days: 2)),
-        ),
-        eventData: Event(title: 'Event 3'),
-      ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(minutes: 30)),
+      //     end: now.add(const Duration(hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 1)),
+      //     end: now.add(const Duration(days: 1, hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 2)),
+      //     end: now.add(const Duration(days: 2, hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 3)),
+      //     end: now.add(const Duration(days: 3, hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 4)),
+      //     end: now.add(const Duration(days: 4, hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 5)),
+      //     end: now.add(const Duration(days: 5, hours: 1)),
+      //   ),
+      // ),
+      // CalendarEvent(
+      //   dateTimeRange: DateTimeRange(
+      //     start: now.add(const Duration(days: 6)),
+      //     end: now.add(const Duration(days: 6, hours: 1)),
+      //   ),
+      // ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final calendar = CalendarView<Event>(
-      controller: controller,
-      eventsController: eventController,
-      viewConfiguration: currentConfiguration,
-      tileBuilder: _tileBuilder,
-      multiDayTileBuilder: _multiDayTileBuilder,
-      scheduleTileBuilder: _scheduleTileBuilder,
-      components: CalendarComponents(
-        calendarHeaderBuilder: _calendarHeader,
+    final callbacks = MultiDayBodyCallbacks(
+      onEventTapped: (event) {
+        log('Event tapped: $event');
+      },
+      onEventCreated: (date) => log('Calendar tapped: $date'),
+      onPageChanged: (dateTimeRange) => log('Calendar dragged: $dateTimeRange'),
+    );
+
+    final multiDayComponents = MultiDayBodyTileComponents(
+      tileBuilder: (event) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dropTargetTile: (event) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.green, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      feedbackTileBuilder: (event, dropTargetWidgetSize) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: dropTargetWidgetSize.width * 0.8,
+          height: dropTargetWidgetSize.height,
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      tileWhenDraggingBuilder: (event) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dragAnchorStrategy: (draggable, context, position) {
+        final renderObject = context.findRenderObject()! as RenderBox;
+        return Offset(
+          20,
+          renderObject.size.height / 2,
+        );
+      },
+      resizeHandle: const ResizeHandle(),
+    );
+
+    final calendar = Calendar(
+      calendarController: controller,
+      eventsController: eventsController,
+      viewConfiguration: _viewConfig,
+      header: calendarHeader(
+        controller,
+        _viewConfig,
+        (value) => setState(() => _viewConfig = value),
       ),
-      eventHandlers: CalendarEventHandlers(
-        onEventTapped: _onEventTapped,
-        onEventChanged: _onEventChanged,
-        onCreateEvent: _onCreateEvent,
-        onEventCreated: _onEventCreated,
+      body: MultiDayBody(
+        heightPerMinute: ValueNotifier(0.5),
+        components: multiDayComponents,
+        callbacks: callbacks,
       ),
     );
 
-    return SafeArea(
-      child: Scaffold(
-        body: calendar,
+    final calendar1 = Calendar(
+      calendarController: controller1,
+      eventsController: eventsController,
+      viewConfiguration: _viewConfig1,
+      header: calendarHeader(
+        controller1,
+        _viewConfig1,
+        (value) => setState(() => _viewConfig1 = value),
+      ),
+      body: MultiDayBody(
+        heightPerMinute: ValueNotifier(0.5),
+        components: multiDayComponents,
+        callbacks: callbacks,
+      ),
+    );
+
+    return Scaffold(
+      body: Row(
+        children: [
+          Flexible(
+            flex: 3,
+            child: calendar,
+          ),
+          Flexible(
+            flex: 3,
+            child: calendar1,
+          ),
+        ],
       ),
     );
   }
 
-  CalendarEvent<Event> _onCreateEvent(DateTimeRange dateTimeRange) {
-    return CalendarEvent(
-      dateTimeRange: dateTimeRange,
-      eventData: Event(
-        title: 'New Event',
-      ),
-    );
-  }
-
-  Future<void> _onEventCreated(CalendarEvent<Event> event) async {
-    // Add the event to the events controller.
-    eventController.addEvent(event);
-
-    // Deselect the event.
-    eventController.deselectEvent();
-  }
-
-  Future<void> _onEventTapped(
-    CalendarEvent<Event> event,
-  ) async {
-    if (isMobile) {
-      eventController.selectedEvent == event
-          ? eventController.deselectEvent()
-          : eventController.selectEvent(event);
-    }
-  }
-
-  Future<void> _onEventChanged(
-    DateTimeRange initialDateTimeRange,
-    CalendarEvent<Event> event,
-  ) async {
-    if (isMobile) {
-      eventController.deselectEvent();
-    }
-  }
-
-  Widget _tileBuilder(
-    CalendarEvent<Event> event,
-    TileConfiguration configuration,
+  Widget calendarHeader(
+    CalendarController controller,
+    ViewConfiguration viewConfiguration,
+    void Function(ViewConfiguration value) onSelected,
   ) {
-    final color = event.eventData?.color ?? Colors.blue;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      margin: EdgeInsets.zero,
-      elevation: configuration.tileType == TileType.ghost ? 0 : 8,
-      color: configuration.tileType != TileType.ghost
-          ? color
-          : color.withAlpha(100),
-      child: Center(
-        child: configuration.tileType != TileType.ghost
-            ? Text(event.eventData?.title ?? 'New Event')
-            : null,
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              FilledButton.tonal(
+                onPressed: () {},
+                child: Text(controller.focusedDate.toString()),
+              ),
+              IconButton.filledTonal(
+                onPressed: () async {
+                  await controller.animateToPreviousPage();
+                },
+                icon: const Icon(Icons.navigate_before),
+              ),
+              IconButton.filledTonal(
+                onPressed: () {
+                  controller.animateToNextPage();
+                },
+                icon: const Icon(Icons.navigate_next),
+              ),
+              IconButton.filledTonal(
+                onPressed: () {
+                  controller.animateToDate(DateTime.now());
+                },
+                icon: const Icon(Icons.today),
+              ),
+              Expanded(
+                child: DropdownMenu(
+                  dropdownMenuEntries: _viewConfigs
+                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                      .toList(),
+                  initialSelection: viewConfiguration,
+                  expandedInsets: EdgeInsets.zero,
+                  onSelected: (value) {
+                    if (value == null) return;
+                    onSelected(value);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
-  }
-
-  Widget _multiDayTileBuilder(
-    CalendarEvent<Event> event,
-    MultiDayTileConfiguration configuration,
-  ) {
-    final color = event.eventData?.color ?? Colors.blue;
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 2),
-      elevation: configuration.tileType == TileType.selected ? 8 : 0,
-      color: configuration.tileType == TileType.ghost
-          ? color.withAlpha(100)
-          : color,
-      child: Center(
-        child: configuration.tileType != TileType.ghost
-            ? Text(event.eventData?.title ?? 'New Event')
-            : null,
-      ),
-    );
-  }
-
-  Widget _scheduleTileBuilder(CalendarEvent<Event> event, DateTime date) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: event.eventData?.color ?? Colors.blue,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(event.eventData?.title ?? 'New Event'),
-    );
-  }
-
-  Widget _calendarHeader(DateTimeRange dateTimeRange) {
-    return Row(
-      children: [
-        DropdownMenu(
-          onSelected: (value) {
-            if (value == null) return;
-            setState(() {
-              currentConfiguration = value;
-            });
-          },
-          initialSelection: currentConfiguration,
-          dropdownMenuEntries: viewConfigurations
-              .map((e) => DropdownMenuEntry(value: e, label: e.name))
-              .toList(),
-        ),
-        IconButton.filledTonal(
-          onPressed: controller.animateToPreviousPage,
-          icon: const Icon(Icons.navigate_before_rounded),
-        ),
-        IconButton.filledTonal(
-          onPressed: controller.animateToNextPage,
-          icon: const Icon(Icons.navigate_next_rounded),
-        ),
-        IconButton.filledTonal(
-          onPressed: () {
-            controller.animateToDate(DateTime.now());
-          },
-          icon: const Icon(Icons.today),
-        ),
-      ],
-    );
-  }
-
-  bool get isMobile {
-    return kIsWeb ? false : Platform.isAndroid || Platform.isIOS;
   }
 }
 
@@ -266,4 +294,36 @@ class Event {
 
   /// The color of the [Event] tile.
   final Color? color;
+}
+
+class ResizeHandle extends StatefulWidget {
+  const ResizeHandle({super.key});
+
+  @override
+  State<ResizeHandle> createState() => _ResizeHandleState();
+}
+
+class _ResizeHandleState extends State<ResizeHandle> {
+  bool hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.resizeUp,
+      onEnter: (event) => setState(() => hovering = true),
+      onExit: (event) => setState(() => hovering = false),
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: hovering ? 1 : 0,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+          decoration: BoxDecoration(
+            color:
+                hovering ? Colors.white10.withAlpha(100) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
+  }
 }

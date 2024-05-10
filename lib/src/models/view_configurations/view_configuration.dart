@@ -1,50 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/type_definitions.dart';
 
-/// This is the base class for all [ViewConfiguration]s.
+/// The base class for all [ViewConfiguration]s.
 ///
-/// It contains all the methods that are used to calculate:
-/// * The visible date range and indices.
-abstract class ViewConfiguration with ChangeNotifier {
-  ViewConfiguration();
+/// [ViewConfiguration]s are used to configure the view of the calendar.
+abstract class ViewConfiguration {
+  const ViewConfiguration({required this.name});
 
   /// The name of the [ViewConfiguration].
-  String get name;
+  final String name;
+}
 
-  /// Returns the visible[DateTimeRange] for the [index].
-  ///
-  /// [calendarStart] is the start of the calendar.
-  /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calculateVisibleDateRangeForIndex({
-    required int index,
-    required DateTime calendarStart,
+/// Navigation functions used by [PageView]s.
+class PageNavigationFunctions {
+  const PageNavigationFunctions({
+    required this.dateTimeRangeFromIndex,
+    required this.indexFromDate,
+    required this.numberOfPages,
   });
+  final DateTimeRangeFromIndex dateTimeRangeFromIndex;
+  final IndexFromDate indexFromDate;
+  final int numberOfPages;
 
-  /// Calculates the number of pages for the [adjustedDateTimeRange].
-  int calculateNumberOfPages(
-    DateTimeRange adjustedDateTimeRange,
-  );
-
-  /// Calculates the visible [DateTimeRange] form the [date].
-  ///
-  /// [firstDayOfWeek] is the first day of the week.
-  DateTimeRange calculateVisibleDateTimeRange(
-    DateTime date,
-  );
-
-  /// Calculates the adjusted [dateTimeRange].
-  /// This adjusts the [dateTimeRange] so it aligns with the visible dateTimeRange.
-  ///
-  /// [dateTimeRange] is the range of the calendar.
-  /// [visibleStart] is the date that is highlighted.
-  DateTimeRange calculateAdjustedDateTimeRange({
-    required DateTimeRange dateTimeRange,
-  });
-
-  /// Calculates the index of the given [date].
-  ///
-  /// [startDate] is the start date of the calendar.
-  int calculateDateIndex(
-    DateTime date,
-    DateTime startDate,
-  );
+  DateTimeRange dateTimeRangeFromDate(DateTime date) {
+    final index = indexFromDate(date);
+    return dateTimeRangeFromIndex(index);
+  }
 }
