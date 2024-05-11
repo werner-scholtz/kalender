@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: MultiDayBody(
         heightPerMinute: ValueNotifier(0.5),
-        components: multiDayComponents,
+        tileComponents: multiDayComponents,
         callbacks: callbacks,
       ),
     );
@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: MultiDayBody(
         heightPerMinute: ValueNotifier(0.5),
-        components: multiDayComponents,
+        tileComponents: multiDayComponents,
         callbacks: callbacks,
       ),
     );

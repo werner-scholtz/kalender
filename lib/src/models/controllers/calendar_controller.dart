@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
@@ -31,6 +32,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   ViewController? _viewController;
   ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
+
+  ValueNotifier<DateTimeRange>? get visibleDateTimeRange {
+    if (_viewController is MultiDayViewController && isAttached) {
+      return (_viewController as MultiDayViewController).visibleDateTimeRange;
+    }
+    return null;
+  }
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;

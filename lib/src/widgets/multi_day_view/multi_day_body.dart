@@ -104,7 +104,7 @@ class MultiDayBodyCallbacks<T extends Object?> {
 /// This widget is used to display a multi-day body.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The components used by the [MultiDayBody].
-  final MultiDayBodyTileComponents<T> components;
+  final MultiDayBodyTileComponents<T> tileComponents;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
@@ -132,7 +132,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
   const MultiDayBody({
     super.key,
-    required this.components,
+    required this.tileComponents,
     this.componentStyles,
     this.callbacks,
     this.eventsController,
@@ -154,7 +154,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
       heightPerMinute: heightPerMinute,
       scrollPhysics: scrollPhysics,
       pageScrollPhysics: pageScrollPhysics,
-      tileComponents: components,
+      tileComponents: tileComponents,
       componentStyles: componentStyles,
       callbacks: callbacks,
     );
