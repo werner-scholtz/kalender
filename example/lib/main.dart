@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' hide ViewConfiguration;
 import 'package:kalender/kalender.dart';
 
 void main() {
