@@ -7,7 +7,7 @@ typedef OnEventTapped<T extends Object?> = void Function(
   CalendarEvent<T> event,
 );
 
-/// The callback for when an event is dropped in a calendar.
+/// The callback for when an event's [DateTimeRange] is changed.
 typedef OnEventChanged<T extends Object?> = void Function(
   CalendarEvent<T> event,
   CalendarEvent<T> updatedEvent,
