@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
+import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/models/view_configurations/export.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
+import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 
-/// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s.
-///
-/// TODO: add more documentation.
+/// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
 
@@ -136,7 +138,7 @@ class _MultiDayDragTargetState<T extends Object?>
         // Check if the event will fit within the time of day range.
         if (event.duration > timeOfDayRange.duration) return false;
 
-        // Find the global position of the widget.
+        // Find the global position of the drop target widget.
         final renderObject = context.findRenderObject()! as RenderBox;
         final globalPosition = renderObject.localToGlobal(Offset.zero);
 

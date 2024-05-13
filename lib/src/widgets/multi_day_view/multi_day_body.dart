@@ -5,7 +5,6 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
-import 'package:kalender/src/models/view_configurations/export.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -96,7 +95,6 @@ class MultiDayBodyCallbacks<T extends Object?> {
     this.onEventTapped,
     this.onEventDropped,
     this.onEventCreated,
-    // this.onCalendarDragged,
     this.onPageChanged,
   });
 }
@@ -105,6 +103,9 @@ class MultiDayBodyCallbacks<T extends Object?> {
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The components used by the [MultiDayBody].
   final MultiDayBodyTileComponents<T> tileComponents;
+
+  /// The components used by the [MultiDayBody].
+  final MultiDayBodyComponents? components;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
@@ -132,11 +133,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
   const MultiDayBody({
     super.key,
-    required this.tileComponents,
-    this.componentStyles,
-    this.callbacks,
     this.eventsController,
     this.calendarController,
+    required this.tileComponents,
+    this.components,
+    this.componentStyles,
+    this.callbacks,
     this.scrollController,
     this.heightPerMinute,
     this.scrollPhysics,
@@ -168,6 +170,7 @@ class _MultiDayBody<T extends Object?> extends StatefulWidget {
     required this.calendarController,
     required this.tileComponents,
     this.callbacks,
+    this.components,
     this.componentStyles,
     this.scrollController,
     this.heightPerMinute,
@@ -183,6 +186,9 @@ class _MultiDayBody<T extends Object?> extends StatefulWidget {
 
   /// The components used by the [MultiDayBody].
   final MultiDayBodyTileComponents<T> tileComponents;
+
+  /// The components used by the [MultiDayBody].
+  final MultiDayBodyComponents? components;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
