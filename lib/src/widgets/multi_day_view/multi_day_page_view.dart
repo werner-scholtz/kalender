@@ -8,7 +8,7 @@ import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_event_groups_stack.dart';
+import 'package:kalender/src/widgets/day_event_groups_stack.dart';
 import 'package:kalender/src/widgets/multi_day_view/multi_day_page_gesture_detector.dart';
 
 /// TODO: Add documentation
@@ -122,7 +122,7 @@ class MultiDayPageView<T extends Object?> extends StatelessWidget {
               includeMultiDayEvents: showAllEvents,
             );
 
-            return MultiDayEventGroupsStack(
+            return DayEventGroupsStack(
               visibleEvents: visibleEvents,
               components: tileComponents,
               visibleDateTimeRange: visibleDateTimeRange,

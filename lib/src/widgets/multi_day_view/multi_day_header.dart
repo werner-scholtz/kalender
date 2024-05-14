@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions.dart';
 
@@ -8,6 +10,7 @@ import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
+import 'package:kalender/src/widgets/multi_day_events_widget.dart';
 
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayHeader].
@@ -66,7 +69,13 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
-        return viewConfiguration.numberOfDays == 1
+        final multiDayEventsWidget = MultiDayEventWidget(
+          visibleDateTimeRange: visibleDateTimeRange,
+          eventBeingDragged: viewController.eventBeingDragged,
+          eventsController: eventsController!,
+        );
+
+        final header = viewConfiguration.numberOfDays == 1
             ? _SingleDayHeader(
                 visibleDateTimeRange: visibleDateTimeRange,
                 timelineWidth: viewConfiguration.timelineWidth,
@@ -74,7 +83,14 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
             : _MultiDayHeader(
                 visibleDateTimeRange: visibleDateTimeRange,
                 timelineWidth: viewConfiguration.timelineWidth,
+                multiDayEventsWidget: multiDayEventsWidget,
               );
+
+        return Column(
+          children: [
+            header,
+          ],
+        );
       },
     );
   }
@@ -96,7 +112,7 @@ class _SingleDayHeader<T> extends StatelessWidget {
       width: timelineWidth,
       child: DayHeader(date: visibleDateTimeRange.start),
     );
-    
+
     return Row(
       children: [
         dayHeader,
@@ -108,11 +124,13 @@ class _SingleDayHeader<T> extends StatelessWidget {
 class _MultiDayHeader<T> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final double timelineWidth;
+  final Widget multiDayEventsWidget;
 
   const _MultiDayHeader({
     super.key,
     required this.visibleDateTimeRange,
     required this.timelineWidth,
+    required this.multiDayEventsWidget,
   });
 
   @override
@@ -135,10 +153,16 @@ class _MultiDayHeader<T> extends StatelessWidget {
           );
         }).toList();
 
-        return Row(
+        return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            weekNumber,
-            ...dayHeaders,
+            Row(
+              children: [
+                weekNumber,
+                ...dayHeaders,
+              ],
+            ),
+            multiDayEventsWidget,
           ],
         );
       },

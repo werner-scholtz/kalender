@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
-import 'package:kalender/src/models/event_group.dart';
+import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/event_tile.dart';
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
 ///
 /// The [EventGroup]s events are then rendered using the [EventTile].
-class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
+class DayEventGroupsStack<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final Iterable<CalendarEvent<T>> visibleEvents;
   final DayTileComponents<T> components;
@@ -18,8 +18,8 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final DayEventLayoutStrategy layoutStrategy;
 
-  /// Creates a [MultiDayEventGroupsStack].
-  const MultiDayEventGroupsStack({
+  /// Creates a [DayEventGroupsStack].
+  const DayEventGroupsStack({
     super.key,
     required this.eventBeingDragged,
     required this.visibleEvents,

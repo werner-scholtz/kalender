@@ -14,11 +14,8 @@ import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-
   final MultiDayViewController<T> viewController;
-
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-
   final CalendarCallbacks<T>? callbacks;
 
   /// Creates a [MultiDayDragTarget].

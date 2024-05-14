@@ -10,7 +10,6 @@ import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 ///
 /// - Using these will override the respective default components.
 class MultiDayBodyComponents {
-  
   final HourLinesBuilder? hourLines;
   final TimeLineBuilder? timeline;
   final DaySeparatorBuilder? daySeparator;
@@ -26,16 +25,9 @@ class MultiDayBodyComponents {
 
 /// The styles of the default components used by the [MultiDayBody].
 class MultiDayBodyComponentStyles {
-  /// The style of the day separator.
   final DaySeparatorStyle? daySeparatorStyle;
-
-  /// The style of the time indicator.
   final TimeIndicatorStyle? timeIndicatorStyle;
-
-  /// The style of the hour lines.
   final HourLinesStyle? hourLinesStyle;
-
-  /// The style of the timeline.
   final TimelineStyle? timelineStyle;
 
   const MultiDayBodyComponentStyles({

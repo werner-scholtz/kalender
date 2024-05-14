@@ -12,7 +12,7 @@ abstract class ViewConfiguration {
   final String name;
 }
 
-/// Navigation functions used by [PageView]s.
+/// Functions used by a [PageView] to navigate to different pages.
 class PageNavigationFunctions {
   PageNavigationFunctions({
     required this.dateTimeRangeFromIndex,

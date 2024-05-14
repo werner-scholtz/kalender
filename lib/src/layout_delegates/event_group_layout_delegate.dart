@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/event_group.dart';
+import 'package:kalender/src/models/groups/event_group.dart';
 
 /// Signature for the strategy that determines how DayEvents are layed out.
 ///
@@ -48,7 +48,7 @@ EventGroupLayoutDelegate sideBySideLayoutStrategy(
 
 /// The base [MultiChildLayoutDelegate] class for laying out [EventGroup]s.
 ///
-/// [EventGroupLayoutDelegate]s are used to layout [EventGroup]s
+/// [EventGroupLayoutDelegate]s are used to layout [EventGroup]s in  a [CustomMultiChildLayout].
 ///
 /// The [CustomMultiChildLayout] that uses this delegate will be sized according to the duration of the [EventGroup].
 /// The [CustomMultiChildLayout] that uses this delegate will be positioned according to the [EventGroup]'s [DateTimeRange].
