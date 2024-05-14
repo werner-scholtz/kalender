@@ -151,7 +151,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     );
   }
 
-  /// The functions for navigating the page.
+  /// The functions for navigating the [PageView].
   late final PageNavigationFunctions pageNavigationFunctions;
 
   /// The [DateTimeRange] that can be displayed by [MultiDayBody] widgets using this configuration.
@@ -176,6 +176,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   ///
   /// This is used by the [MultiDayBody] and [MultiDayHeader].
   final double timelineWidth;
+
+  /// TODO: move this into the widgets that use it since the body and Header might need different values
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
   final bool showMultiDayEvents;

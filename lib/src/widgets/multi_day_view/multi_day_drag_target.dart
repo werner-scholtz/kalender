@@ -137,7 +137,8 @@ class _MultiDayDragTargetState<T extends Object?>
         final eventDuration = event.duration;
 
         // Check if the event will fit within the time of day range.
-        if (event.duration > timeOfDayRange.duration) return false;
+        if (!timeOfDayRange.isAllDay &&
+            event.duration > timeOfDayRange.duration) return false;
 
         // Find the global position of the drop target widget.
         final renderObject = context.findRenderObject()! as RenderBox;
