@@ -136,17 +136,24 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
         );
       });
 
+      final layoutStrategy = sideBySideLayoutStrategy(
+        group,
+        heightPerMinute,
+        timeOfDayRange,
+      );
+      overlapLayoutStrategy(
+        group,
+        heightPerMinute,
+        timeOfDayRange,
+      );
+
       return Positioned(
         left: left,
         width: groupWidth,
         height: height,
         top: top,
         child: CustomMultiChildLayout(
-          delegate: EventGroupOverlapLayoutDelegate(
-            group: group,
-            heightPerMinute: heightPerMinute,
-            timeOfDayRange: timeOfDayRange,
-          ),
+          delegate: layoutStrategy,
           children: [...tiles],
         ),
       );

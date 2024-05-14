@@ -64,7 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.singleDay(showMultiDayEvents: true),
     MultiDayViewConfiguration.week(showMultiDayEvents: true),
     MultiDayViewConfiguration.workWeek(showMultiDayEvents: true),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, showMultiDayEvents: true)
+    MultiDayViewConfiguration.custom(numberOfDays: 3, showMultiDayEvents: true),
+    MultiDayViewConfiguration.custom(
+      name: '2 Weeks',
+      numberOfDays: 14,
+      showMultiDayEvents: true,
+    ),
   ];
 
   @override

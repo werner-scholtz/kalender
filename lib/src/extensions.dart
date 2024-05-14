@@ -117,6 +117,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
       return (dateToUse.weekNumber, null);
     }
   }
+
+  /// Checks if the [DateTimeRange] overlaps with another [DateTimeRange].
+  bool overlaps(DateTimeRange other) {
+    return start.isBefore(other.end) && end.isAfter(other.start);
+  }
 }
 
 extension DateTimeExtensions on DateTime {
