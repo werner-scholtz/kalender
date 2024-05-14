@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/calendar_view.dart';
 
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
@@ -18,7 +19,7 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
-  final MultiDayBodyCallbacks<T>? callbacks;
+  final CalendarCallbacks<T>? callbacks;
 
   /// Creates a [MultiDayDragTarget].
   const MultiDayDragTarget({
@@ -38,7 +39,7 @@ class _MultiDayDragTargetState<T extends Object?>
   /// The [MultiDayBodyProvider] of the current context.
   MultiDayBodyProvider get provider => MultiDayBodyProvider.of(context);
   double get dayWidth => provider.dayWidth;
-  double get heightPerMinute => provider.heightPerMinute;
+  double get heightPerMinute => provider.heightPerMinuteValue;
   double get pageWidth => provider.pageWidth;
   ScrollController get scrollController => provider.scrollController;
   TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
@@ -148,7 +149,7 @@ class _MultiDayDragTargetState<T extends Object?>
         final eventHeight = eventDuration.inMinutes * heightPerMinute;
 
         // Set the size of the feedback widget.
-        provider.dropTargetWidgetSize.value = Size(dayWidth, eventHeight);
+        provider.feedbackWidgetSize.value = Size(dayWidth, eventHeight);
 
         return true;
       },

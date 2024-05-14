@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
+import 'package:kalender/src/models/components/day_tile_components.dart';
 import 'package:kalender/src/models/event_group.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/event_tile.dart';
@@ -17,10 +18,10 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
   final Iterable<CalendarEvent<T>> visibleEvents;
 
   /// The components used by the [MultiDayEventGroupsStack].
-  final MultiDayBodyTileComponents<T> components;
+  final DayTileComponents<T> components;
 
   /// The callbacks used by the [MultiDayEventGroupsStack].
-  final MultiDayBodyCallbacks<T>? callbacks;
+  final CalendarCallbacks<T>? callbacks;
 
   /// The event that is being dragged.
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
@@ -42,7 +43,7 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = MultiDayBodyProvider.of(context);
     final dayWidth = provider.dayWidth;
-    final heightPerMinute = provider.heightPerMinute;
+    final heightPerMinute = provider.heightPerMinuteValue;
     final timeOfDayRange = provider.timeOfDayRange;
     final visibleDates = visibleDateTimeRange.datesSpanned;
 

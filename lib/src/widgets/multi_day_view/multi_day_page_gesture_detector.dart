@@ -8,7 +8,7 @@ class MultiDayPageGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final DateTimeRange visibleDateTimeRange;
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-  final MultiDayBodyCallbacks<T>? callbacks;
+  final CalendarCallbacks<T>? callbacks;
 
   const MultiDayPageGestureDetector({
     super.key,
@@ -27,7 +27,7 @@ class _MultiDayPageGestureDetectorState<T extends Object?>
     extends State<MultiDayPageGestureDetector<T>> {
   late final provider = MultiDayBodyProvider.of(context);
   late final newEventDuration = provider.viewConfiguration.newEventDuration;
-  late final heightPerMinute = provider.heightPerMinute;
+  late final heightPerMinute = provider.heightPerMinuteValue;
   late final timeOfDayRange = provider.timeOfDayRange;
   late final dayWidth = provider.dayWidth;
 

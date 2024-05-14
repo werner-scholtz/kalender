@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/widgets/components/day_separator.dart';
+import 'package:kalender/src/widgets/components/hour_lines.dart';
+import 'package:kalender/src/widgets/components/time_indicator.dart';
+import 'package:kalender/src/widgets/components/time_line.dart';
 
 /// The callback for when an event is tapped.
 typedef OnEventTapped<T extends Object?> = void Function(
@@ -45,25 +49,45 @@ typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
 );
 
 /// The hour lines builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the hour lines will be displayed for.
+/// The [style] is used to style the hour lines.
 typedef HourLinesBuilder = Widget Function(
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
+  HourLinesStyle? style,
 );
 
 /// The time line builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
+/// The [style] is used to style the time line.
 typedef TimeLineBuilder = Widget Function(
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
+  TimelineStyle? style,
 );
 
 /// The day separator builder.
-typedef DaySeparatorBuilder = Widget Function();
+///
+/// The [style] is used to style the day separator.
+typedef DaySeparatorBuilder = Widget Function(
+  DaySeparatorStyle? style,
+);
 
 /// The time indicator builder.
+///
+/// The [timeOfDayRange] is the range of time that the time indicator will be displayed for.
+/// The [heightPerMinute] is the height of each minute.
+/// The [timelineWidth] is the width of the timeline.
+/// The [style] is used to style the time indicator.
 typedef TimeIndicatorBuilder = Widget Function(
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double timelineWidth,
+  TimeIndicatorStyle? style,
 );
 
 ///

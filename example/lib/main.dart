@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final callbacks = MultiDayBodyCallbacks(
+    final callbacks = CalendarCallbacks(
       onEventTapped: (event) {
         log('Event tapped: $event');
       },
@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onPageChanged: (dateTimeRange) => log('Calendar dragged: $dateTimeRange'),
     );
 
-    final multiDayComponents = MultiDayBodyTileComponents(
+    final multiDayComponents = DayTileComponents(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(
@@ -173,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
       resizeHandle: const ResizeHandle(),
     );
 
-    final calendar = Calendar(
+    final calendar = CalendarView(
       calendarController: controller,
       eventsController: eventsController,
       viewConfiguration: _viewConfig,
@@ -189,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final calendar1 = Calendar(
+    final calendar1 = CalendarView(
       calendarController: controller1,
       eventsController: eventsController,
       viewConfiguration: _viewConfig1,

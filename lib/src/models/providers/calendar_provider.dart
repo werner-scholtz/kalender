@@ -9,6 +9,9 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   /// The [CalendarController] that will be used by the Calendar.
   final CalendarController<T> calendarController;
 
+  /// The [CalendarCallbacks] that will be used by the Calendar.
+  final CalendarCallbacks<T>? callbacks;
+
   /// The [ViewController] used by the [CalendarController] to controller this view.
   ViewController get viewController {
     final viewController = calendarController.viewController;
@@ -22,6 +25,7 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   const CalendarProvider({
     required this.calendarController,
     required this.eventsController,
+    required this.callbacks,
     required super.child,
     super.key,
   });

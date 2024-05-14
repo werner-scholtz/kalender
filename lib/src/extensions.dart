@@ -78,6 +78,45 @@ extension DateTimeRangeExtensions on DateTimeRange {
       }
     }
   }
+
+  /// Returns the weekNumber(s) that the [DateTimeRange] spans.
+  (int weekNumber, int? secondWeekNumber) get weekNumbers {
+    final datesSpanned = this.datesSpanned;
+    final isSingleWeek = datesSpanned.length <= 7;
+
+    if (start.year != end.year && isSingleWeek) {
+      // When changing years we show both.
+
+      final firstDayOfYear = datesSpanned.firstWhere(
+        (element) => element.year == end.year,
+        orElse: () => start,
+      );
+
+      return (start.weekNumber, firstDayOfYear.weekNumber);
+    }
+
+    // This is custom so that if the user sets firstDayOfWeek to
+    // monday, sunday or saturday we only show one week number.
+    final showOnlyOneWeekNumber = isSingleWeek &&
+        (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
+
+    if (!showOnlyOneWeekNumber) {
+      if (datesSpanned.first.weekNumber == datesSpanned.last.weekNumber) {
+        // If the first and last day have the same week number return the start.weekNumber.
+        return (start.weekNumber, null);
+      } else {
+        // When its spans multiple weeks show both.
+        return (start.weekNumber, end.weekNumber);
+      }
+    } else {
+      final dateToUse = datesSpanned.firstWhere(
+        (date) => date.weekday == 1, // Find the first monday.
+        orElse: () => start, // If there is not a monday use the start.
+      );
+
+      return (dateToUse.weekNumber, null);
+    }
+  }
 }
 
 extension DateTimeExtensions on DateTime {
@@ -174,6 +213,95 @@ extension DateTimeExtensions on DateTime {
       start: startOfDay,
       end: endOfDay.addDays(numberOfDays - 1),
     );
+  }
+
+  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
+  int get weekNumber {
+    // Add 3 to always compare with January 4th, which is always in week 1
+    // Add 7 to index weeks starting with 1 instead of 0
+    final woy = ((ordinalDate - weekday + 10) ~/ 7);
+
+    // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
+    if (woy == 0) {
+      // The 28th of December is always in the last week of the year
+      return DateTime(year - 1, 12, 28).weekNumber;
+    }
+
+    // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
+    if (woy == 53 &&
+        DateTime(year, 1, 1).weekday != DateTime.thursday &&
+        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+      return 1;
+    }
+
+    return woy;
+  }
+
+  /// The ordinal date, the number of days since December 31st the previous year.
+  ///
+  /// January 1st has the ordinal date 1
+  ///
+  /// December 31st has the ordinal date 365, or 366 in leap years
+  int get ordinalDate {
+    const offsets = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
+  }
+
+  /// True if this date is on a leap year.
+  bool get isLeapYear {
+    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+  }
+
+  String get dayNameEnglish {
+    switch (weekday) {
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+      default:
+        return '';
+    }
+  }
+
+  String get monthNameEnglish {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return '';
+    }
   }
 }
 

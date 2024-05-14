@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/components/day_tile_components.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
@@ -18,10 +20,10 @@ class EventTile<T extends Object?> extends StatefulWidget {
   final CalendarEvent<T> event;
 
   /// The components used by the [EventTile].
-  final MultiDayBodyTileComponents<T> tileComponents;
+  final DayTileComponents<T> tileComponents;
 
   /// The callbacks used by the [EventTile].
-  final MultiDayBodyCallbacks<T>? callbacks;
+  final CalendarCallbacks<T>? callbacks;
 
   /// The event that is being dragged.
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
@@ -52,11 +54,11 @@ class _EventTileState<T extends Object?> extends State<EventTile<T>> {
   late final provider = MultiDayBodyProvider.of(context);
   late final viewConfiguration = provider.viewConfiguration;
   late final dayWidth = provider.dayWidth;
-  late final heightPerMinute = provider.heightPerMinute;
+  late final heightPerMinute = provider.heightPerMinuteValue;
   late final timeOfDayRange = provider.timeOfDayRange;
   late final visibleDateTimeRange = provider.visibleDateTimeRange.value;
   late final visibleDates = visibleDateTimeRange.datesSpanned;
-  late final feedbackWidgetSize = provider.dropTargetWidgetSize;
+  late final feedbackWidgetSize = provider.feedbackWidgetSize;
   late final tileComponents = widget.tileComponents;
   late final dragAnchorStrategy = tileComponents.dragAnchorStrategy;
 

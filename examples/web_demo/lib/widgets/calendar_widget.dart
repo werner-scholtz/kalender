@@ -25,45 +25,53 @@ class CalendarWidget extends StatelessWidget {
       color: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
       elevation: 2,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Column(
         children: [
-          IconButton.filledTonal(
-            onPressed: () async {
-              await controller.animateToPreviousPage();
-            },
-            icon: const Icon(Icons.navigate_before),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton.filledTonal(
+                onPressed: () async {
+                  await controller.animateToPreviousPage();
+                },
+                icon: const Icon(Icons.navigate_before),
+              ),
+              IconButton.filledTonal(
+                onPressed: () {
+                  controller.animateToNextPage();
+                },
+                icon: const Icon(Icons.navigate_next),
+              ),
+              IconButton.filledTonal(
+                onPressed: () {
+                  controller.animateToDate(DateTime.now());
+                },
+                icon: const Icon(Icons.today),
+              ),
+              Expanded(
+                child: DropdownMenu(
+                  dropdownMenuEntries: viewConfigurations
+                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                      .toList(),
+                  initialSelection: viewConfiguration,
+                  expandedInsets: EdgeInsets.zero,
+                  onSelected: (value) {
+                    if (value == null) return;
+                    onSelected(value);
+                  },
+                ),
+              ),
+            ],
           ),
-          IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToNextPage();
-            },
-            icon: const Icon(Icons.navigate_next),
-          ),
-          IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToDate(DateTime.now());
-            },
-            icon: const Icon(Icons.today),
-          ),
-          Expanded(
-            child: DropdownMenu(
-              dropdownMenuEntries: viewConfigurations
-                  .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                  .toList(),
-              initialSelection: viewConfiguration,
-              expandedInsets: EdgeInsets.zero,
-              onSelected: (value) {
-                if (value == null) return;
-                onSelected(value);
-              },
-            ),
+          MultiDayHeader(
+            eventsController: eventsController,
+            calendarController: controller,
           ),
         ],
       ),
     );
 
-    final tileComponents = MultiDayBodyTileComponents(
+    final tileComponents = DayTileComponents(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(
@@ -109,7 +117,7 @@ class CalendarWidget extends StatelessWidget {
       resizeHandle: const ResizeHandle(),
     );
 
-    return Calendar(
+    return CalendarView(
       calendarController: controller,
       eventsController: eventsController,
       viewConfiguration: viewConfiguration,

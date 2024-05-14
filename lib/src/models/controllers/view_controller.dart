@@ -2,30 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
-import 'package:kalender/src/models/view_configurations/export.dart';
 
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
 abstract class ViewController<T extends Object?> extends ChangeNotifier
     with CalendarNavigationFunctions<T> {
-  ViewController();
-
-  factory ViewController.create({
-    required DateTime focusedDate,
-    required ViewConfiguration viewConfiguration,
-  }) {
-    if (viewConfiguration is MultiDayViewConfiguration) {
-      return MultiDayViewController(
-        viewConfiguration: viewConfiguration,
-      );
-    }
-
-    return MultiDayViewController(
-      viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-    );
-  }
-
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
@@ -37,31 +19,18 @@ abstract class ViewController<T extends Object?> extends ChangeNotifier
   @override
   void jumpToDate(DateTime date);
 
-  /// Animate to the next page.
-  ///
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToNextPage({
     Duration? duration,
     Curve? curve,
   });
 
-  /// Animate to the previous page.
-  ///
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToPreviousPage({
     Duration? duration,
     Curve? curve,
   });
 
-  /// Animate to the given [DateTime].
-  ///
-  /// [date] the [DateTime] to animate to.
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToDate(
     DateTime date, {
@@ -69,13 +38,6 @@ abstract class ViewController<T extends Object?> extends ChangeNotifier
     Curve? curve,
   });
 
-  /// Animate to the given [DateTime].
-  ///
-  /// [date] the [DateTime] to animate to.
-  /// [pageDuration] the [Duration] of the page animation.
-  /// [pageCurve] the [Curve] of the page animation.
-  /// [scrollDuration] the [Duration] of the scroll animation.
-  /// [scrollCurve] the [Curve] of the scroll animation.
   @override
   Future<void> animateToDateTime(
     DateTime date, {
@@ -85,12 +47,6 @@ abstract class ViewController<T extends Object?> extends ChangeNotifier
     Curve? scrollCurve,
   });
 
-  /// Animate to the given [CalendarEvent].
-  ///
-  /// [event] the [CalendarEvent] to animate to.
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
-  /// [centerEvent] whether to center the event in the view.
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
@@ -108,49 +64,43 @@ abstract class ViewController<T extends Object?> extends ChangeNotifier
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
     required this.viewConfiguration,
+    ViewController? previousViewConfiguration,
   }) {
-    initialPage = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      DateTime.now(),
+    final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
+    initialPage = pageNavigationFunctions.indexFromDate(DateTime.now());
+    pageController = PageController(initialPage: initialPage);
+    numberOfPages = pageNavigationFunctions.numberOfPages;
+    heightPerMinute = ValueNotifier<double>(0.7);
+    visibleDateTimeRange = ValueNotifier<DateTimeRange>(
+      pageNavigationFunctions.dateTimeRangeFromIndex(initialPage),
     );
+    eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
+    scrollController = ScrollController();
   }
 
   @override
   final MultiDayViewConfiguration viewConfiguration;
 
+  /// The initial page of the view.
   late final int initialPage;
 
-  /// The pageController of the current view.
-  PageController? pageController;
+  /// The number of pages in the view.
+  late final int numberOfPages;
 
-  /// The scrollController of the current view.
-  ScrollController? scrollController;
+  /// The page controller used by the view.
+  late final PageController pageController;
 
-  /// The Height of each minute.jum
-  ValueNotifier<double>? heightPerMinute;
+  /// The scroll controller used by the view.
+  late ScrollController scrollController;
 
-  /// The visible date time range.
-  ValueNotifier<DateTimeRange>? visibleDateTimeRange;
+  /// The height per minute of the view.
+  late final ValueNotifier<double> heightPerMinute;
 
-  /// Attach the body to the controller.
-  void attachBody({
-    required PageController pageController,
-    required ValueNotifier<double> heightPerMinute,
-    required ScrollController scrollController,
-    required ValueNotifier<DateTimeRange> visibleDateTimeRange,
-  }) {
-    this.pageController = pageController;
-    this.scrollController = scrollController;
-    this.heightPerMinute = heightPerMinute;
+  /// The visible date time range of the view.
+  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
-    this.visibleDateTimeRange = visibleDateTimeRange;
-  }
-
-  /// Detach the body from the controller.
-  void detachBody() {
-    pageController = null;
-    scrollController = null;
-    heightPerMinute = null;
-  }
+  /// The event being dragged.
+  late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
   @override
   Future<void> animateToDate(
@@ -164,7 +114,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     );
 
     // Animate to that page.
-    await pageController?.animateToPage(
+    await pageController.animateToPage(
       pageNumber,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -184,12 +134,10 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
     // TODO: Figure out how custom hours will work.
     final timeDifference = date.difference(date.startOfDay);
-
-    final timeOffset =
-        timeDifference.inMinutes * (heightPerMinute?.value ?? 0.0);
+    final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
     // Animate to the offset of the time.
-    await scrollController?.animateTo(
+    await scrollController.animateTo(
       timeOffset,
       duration: scrollDuration ?? const Duration(milliseconds: 300),
       curve: scrollCurve ?? Curves.easeInOut,
@@ -209,7 +157,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    await pageController?.nextPage(
+    await pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
@@ -217,7 +165,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    await pageController?.previousPage(
+    await pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
@@ -233,7 +181,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   }
 
   @override
-  void jumpToPage(int page) => pageController?.jumpToPage(page);
+  void jumpToPage(int page) => pageController.jumpToPage(page);
 
   @override
   String toString() {

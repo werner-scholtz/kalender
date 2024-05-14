@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/components/multi_day_body_components.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/view_configurations/export.dart';
 
 /// The [InheritedWidget] that contains the internals of the [MultiDayBody].
 ///
 /// This widget is used to pass the configuration and controllers down the widget tree.
 class MultiDayBodyProvider<T extends Object?> extends InheritedWidget {
-  /// The [MultiDayViewConfiguration] that will be used to display the [MultiDayBody].
-  final MultiDayViewConfiguration viewConfiguration;
+  /// The [MultiDayViewController] that will be used to control the view.
+  final MultiDayViewController<T> viewController;
 
-  /// The [DateTimeRange] that is currently visible.
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  /// The [ValueNotifier] that contains the size of the feedback widget.
-  final ValueNotifier<Size> dropTargetWidgetSize;
-
-  /// The [PageController] that will be used to control the pages.
-  final PageController pageController;
-
-  /// The [ScrollPhysics] that will be used to control the page scrolling.
-  final ScrollPhysics? pageScrollPhysics;
-
-  /// The [ScrollController] that will be used to control the scrolling.
-  final ScrollController scrollController;
+  /// The components that will be displayed in the [MultiDayBody].
+  final MultiDayBodyComponents? components;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
 
-  /// The height per minute.
-  final double heightPerMinute;
+  /// The [ScrollPhysics] that will be used to control the page scrolling.
+  final ScrollPhysics? pageScrollPhysics;
 
+  /// The [ValueNotifier] that contains the size of the feedback widget.
+  final ValueNotifier<Size> feedbackWidgetSize;
+
+  /// The height of the viewport.
   final double viewportHeight;
 
   /// The width of the page.
@@ -39,41 +32,61 @@ class MultiDayBodyProvider<T extends Object?> extends InheritedWidget {
   /// The width of a day.
   final double dayWidth;
 
-  /// The number of pages that can be displayed by the [PageView].
-  final int numberOfPages;
+  /// The [MultiDayViewConfiguration] that will be used to display the [MultiDayBody].
+  MultiDayViewConfiguration get viewConfiguration =>
+      viewController.viewConfiguration;
 
+  /// The [DateTimeRange] that is currently visible.
+  ValueNotifier<DateTimeRange> get visibleDateTimeRange =>
+      viewController.visibleDateTimeRange;
+
+  /// The [PageController] that will be used to control the pages.
+  PageController get pageController => viewController.pageController;
+
+  /// The [ScrollController] that will be used to control the scrolling.
+  ScrollController get scrollController => viewController.scrollController;
+
+  /// The [ValueNotifier] that contains the height per minute.
+  ValueNotifier<double> get heightPerMinute => viewController.heightPerMinute;
+
+  /// The value of the [heightPerMinute].
+  double get heightPerMinuteValue => heightPerMinute.value;
+
+  /// The number of pages that can be displayed by the [PageView].
+  int get numberOfPages => viewController.numberOfPages;
+
+  /// The [TimeOfDayRange] that can be displayed.
   TimeOfDayRange get timeOfDayRange => viewConfiguration.timeOfDayRange;
 
+  /// The [DateTime] that marks the start of the display range.
   DateTime get displayRangeStart => viewConfiguration.start;
 
+  /// The width of the timeline.
   double get timelineWidth => viewConfiguration.timelineWidth;
 
+  /// Whether to show all events in the [MultiDayBody].
   bool get showAllEvents => viewConfiguration.showMultiDayEvents;
 
-  PageTriggerConfiguration get pageTriggerConfiguration {
-    return viewConfiguration.pageTriggerConfiguration;
-  }
+  /// The [PageTriggerConfiguration] that will be used to control the page triggers.
+  PageTriggerConfiguration get pageTriggerConfiguration =>
+      viewConfiguration.pageTriggerConfiguration;
 
-  ScrollTriggerConfiguration get scrollTriggerConfiguration {
-    return viewConfiguration.scrollTriggerConfiguration;
-  }
+  /// The [ScrollTriggerConfiguration] that will be used to control the scroll triggers.
+  ScrollTriggerConfiguration get scrollTriggerConfiguration =>
+      viewConfiguration.scrollTriggerConfiguration;
 
   /// Creates a new [MultiDayBodyProvider].
   const MultiDayBodyProvider({
     required super.child,
     super.key,
-    required this.viewConfiguration,
-    required this.visibleDateTimeRange,
-    required this.dropTargetWidgetSize,
-    required this.scrollController,
-    required this.pageController,
+    required this.viewController,
+    required this.feedbackWidgetSize,
     required this.pageScrollPhysics,
+    required this.components,
     required this.componentStyles,
-    required this.heightPerMinute,
     required this.viewportHeight,
     required this.pageWidth,
     required this.dayWidth,
-    required this.numberOfPages,
   });
 
   static MultiDayBodyProvider? maybeOf<T>(BuildContext context) {

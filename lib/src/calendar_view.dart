@@ -1,55 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
-import 'package:kalender/src/models/controllers/calendar_controller.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/type_definitions.dart';
 
-class Calendar<T extends Object?> extends StatefulWidget {
+/// The callbacks used by the [MultiDayBody].
+class CalendarCallbacks<T extends Object?> {
+  final OnEventTapped<T>? onEventTapped;
+  final OnEventChanged<T>? onEventDropped;
+  final OnEventCreated? onEventCreated;
+  final OnPageChanged? onPageChanged;
+
+  const CalendarCallbacks({
+    this.onEventTapped,
+    this.onEventDropped,
+    this.onEventCreated,
+    this.onPageChanged,
+  });
+}
+
+class CalendarView<T extends Object?> extends StatefulWidget {
+  /// The [EventsController] that will be used by the [CalendarView].
   final EventsController<T> eventsController;
+
+  /// The [CalendarController] that will be used by the [CalendarView].
   final CalendarController<T> calendarController;
+
+  /// The [ViewConfiguration] that will be used by the [CalendarView].
   final ViewConfiguration viewConfiguration;
 
+  final CalendarCallbacks<T>? callbacks;
+
+  /// The header widget that will be displayed above the body.
   final Widget? header;
+
+  /// The body widget that will be displayed below the header.
   final Widget? body;
 
-  const Calendar({
+  const CalendarView({
     super.key,
     required this.eventsController,
     required this.calendarController,
     required this.viewConfiguration,
+    this.callbacks,
     this.header,
     this.body,
   });
 
   @override
-  State<Calendar<T>> createState() => _CalendarState<T>();
+  State<CalendarView<T>> createState() => _CalendarViewState<T>();
 }
 
-class _CalendarState<T> extends State<Calendar<T>> {
+class _CalendarViewState<T> extends State<CalendarView<T>> {
   late ViewController _viewController;
-  late final EventsController<T> _eventsController;
-  late final CalendarController<T> _calendarController;
 
   @override
   void initState() {
     super.initState();
-    _eventsController = widget.eventsController;
-    _calendarController = widget.calendarController;
-
     _viewController = _createViewController();
-    _calendarController.attach(_viewController);
+    widget.calendarController.attach(_viewController);
   }
 
   @override
-  void didUpdateWidget(covariant Calendar<T> oldWidget) {
+  void didUpdateWidget(covariant CalendarView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
       setState(() {
         _viewController = _createViewController();
-        _calendarController.attach(_viewController);
+        widget.calendarController.attach(_viewController);
       });
     }
   }
@@ -67,17 +87,21 @@ class _CalendarState<T> extends State<Calendar<T>> {
   }
 
   ViewController _createViewController() {
-    return ViewController.create(
-      focusedDate: widget.calendarController.focusedDate,
-      viewConfiguration: widget.viewConfiguration,
-    );
+    final viewConfiguration = widget.viewConfiguration;
+    return switch (viewConfiguration.runtimeType) {
+      MultiDayViewConfiguration => MultiDayViewController<T>(
+          viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
+        ),
+      _ => throw ErrorHint('Unsupported ViewConfiguration'),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return CalendarProvider<T>(
-      eventsController: _eventsController,
-      calendarController: _calendarController,
+      eventsController: widget.eventsController,
+      calendarController: widget.calendarController,
+      callbacks: widget.callbacks,
       child: Builder(
         builder: (context) {
           final body = widget.body;

@@ -137,11 +137,16 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
     pageNavigationFunctions = PageNavigationFunctions(
       dateTimeRangeFromIndex: (index) {
-        return DateTime(
+        final weekRange = DateTime(
           start.year,
           start.month,
           start.day + (index * DateTime.daysPerWeek),
         ).weekRangeWithOffset(firstDayOfWeek);
+
+        return DateTimeRange(
+          start: weekRange.start,
+          end: weekRange.end.subtractDays(2),
+        );
       },
       indexFromDate: (date) {
         final dateUtc = date.startOfDay.toUtc();
