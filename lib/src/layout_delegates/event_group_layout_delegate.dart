@@ -13,14 +13,14 @@ import 'package:kalender/src/models/event_group.dart';
 ///
 ///  * [sideBySideLayoutStrategy], which displays the tiles next to each other.
 ///
-typedef DayLayoutStrategy<T extends Object?> = EventGroupLayoutDelegate
+typedef DayEventLayoutStrategy<T extends Object?> = EventGroupLayoutDelegate
     Function(
   EventGroup<T> eventGroup,
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
 );
 
-/// A [DayLayoutStrategy] that lays out the tiles on top of each other.
+/// A [DayEventLayoutStrategy] that lays out the tiles on top of each other.
 EventGroupLayoutDelegate overlapLayoutStrategy(
   EventGroup group,
   double heightPerMinute,
@@ -33,7 +33,7 @@ EventGroupLayoutDelegate overlapLayoutStrategy(
   );
 }
 
-/// A [DayLayoutStrategy] that lays out the tiles next to each other.
+/// A [DayEventLayoutStrategy] that lays out the tiles next to each other.
 EventGroupLayoutDelegate sideBySideLayoutStrategy(
   EventGroup eventGroup,
   double heightPerMinute,

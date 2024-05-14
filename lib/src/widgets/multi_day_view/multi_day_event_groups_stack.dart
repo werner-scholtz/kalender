@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
-import 'package:kalender/src/models/components/day_tile_components.dart';
 import 'package:kalender/src/models/event_group.dart';
 import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/event_tile.dart';
@@ -11,22 +10,13 @@ import 'package:kalender/src/widgets/components/event_tile.dart';
 ///
 /// The [EventGroup]s events are then rendered using the [EventTile].
 class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
-  /// The visible date time range.
   final DateTimeRange visibleDateTimeRange;
-
-  /// The visible events.
   final Iterable<CalendarEvent<T>> visibleEvents;
-
-  /// The components used by the [MultiDayEventGroupsStack].
   final DayTileComponents<T> components;
-
-  /// The callbacks used by the [MultiDayEventGroupsStack].
   final CalendarCallbacks<T>? callbacks;
-
-  /// The event that is being dragged.
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-
   final EventsController<T> eventsController;
+  final DayEventLayoutStrategy layoutStrategy;
 
   /// Creates a [MultiDayEventGroupsStack].
   const MultiDayEventGroupsStack({
@@ -37,6 +27,7 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
     required this.visibleDateTimeRange,
     required this.callbacks,
     required this.eventsController,
+    required this.layoutStrategy,
   });
 
   @override
@@ -63,6 +54,7 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
           timeOfDayRange: timeOfDayRange,
           visibleDates: visibleDates,
           child: components.dropTargetTile.call,
+          layoutStrategy: layoutStrategy,
         );
 
         return Stack(
@@ -80,6 +72,7 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
       heightPerMinute: heightPerMinute,
       timeOfDayRange: timeOfDayRange,
       visibleDates: visibleDates,
+      layoutStrategy: layoutStrategy,
       child: (event) {
         return EventTile(
           event: event,
@@ -107,6 +100,7 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
     required double dayWidth,
     required double heightPerMinute,
     required TimeOfDayRange timeOfDayRange,
+    required DayEventLayoutStrategy layoutStrategy,
   }) {
     // Map the event groups to widgets.
     return groups.map((group) {
@@ -136,24 +130,13 @@ class MultiDayEventGroupsStack<T extends Object?> extends StatelessWidget {
         );
       });
 
-      final layoutStrategy = sideBySideLayoutStrategy(
-        group,
-        heightPerMinute,
-        timeOfDayRange,
-      );
-      overlapLayoutStrategy(
-        group,
-        heightPerMinute,
-        timeOfDayRange,
-      );
-
       return Positioned(
         left: left,
         width: groupWidth,
         height: height,
         top: top,
         child: CustomMultiChildLayout(
-          delegate: layoutStrategy,
+          delegate: layoutStrategy.call(group, heightPerMinute, timeOfDayRange),
           children: [...tiles],
         ),
       );

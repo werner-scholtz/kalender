@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
 class MultiDayViewConfiguration extends ViewConfiguration {
@@ -21,6 +22,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.pageNavigationFunctions,
     required this.pageTriggerConfiguration,
     required this.scrollTriggerConfiguration,
+    required this.dayEventLayoutStrategy,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be between 1 and 7 (inclusive)\n'
@@ -49,6 +51,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     numberOfDays = 1;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -84,6 +87,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -126,6 +130,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     firstDayOfWeek = DateTime.monday;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -175,6 +180,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -253,4 +259,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The configuration for the scroll navigation triggers.
   late final ScrollTriggerConfiguration scrollTriggerConfiguration;
+
+  /// The layout strategy used by the [MultiDayBody] to layout events.
+  final DayEventLayoutStrategy dayEventLayoutStrategy;
 }

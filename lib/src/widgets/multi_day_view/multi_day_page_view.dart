@@ -129,6 +129,7 @@ class MultiDayPageView<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               eventBeingDragged: eventBeingDragged,
               eventsController: eventsController,
+              layoutStrategy: viewConfiguration.dayEventLayoutStrategy,
             );
           },
         );
