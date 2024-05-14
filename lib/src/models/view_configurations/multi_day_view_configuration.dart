@@ -60,15 +60,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration =
         scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-
-    pageNavigationFunctions = PageNavigationFunctions(
-      dateTimeRangeFromIndex: (index) => start.addDays(index).dayRange,
-      indexFromDate: (date) {
-        final dateUtc = date.startOfDay.toUtc();
-        final startDateUtc = this.displayRange.start.startOfDay.toUtc();
-        return dateUtc.difference(startDateUtc).inDays;
-      },
-      numberOfPages: this.displayRange.dayDifference,
+    pageNavigationFunctions = PageNavigationFunctions.singleDay(
+      this.displayRange,
     );
   }
 
@@ -95,24 +88,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration =
         scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-
-    pageNavigationFunctions = PageNavigationFunctions(
-      dateTimeRangeFromIndex: (index) {
-        return DateTime(
-          start.year,
-          start.month,
-          start.day + (index * DateTime.daysPerWeek),
-        ).weekRangeWithOffset(firstDayOfWeek);
-      },
-      indexFromDate: (date) {
-        final dateUtc = date.startOfDay.toUtc();
-        final startDateUtc = start.startOfDay.toUtc();
-        final index =
-            dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
-        return index.floor();
-      },
-      numberOfPages:
-          (this.displayRange.dayDifference / DateTime.daysPerWeek).ceil(),
+    pageNavigationFunctions = PageNavigationFunctions.week(
+      this.displayRange,
+      firstDayOfWeek,
     );
   }
 
@@ -139,29 +117,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration =
         scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-
-    pageNavigationFunctions = PageNavigationFunctions(
-      dateTimeRangeFromIndex: (index) {
-        final weekRange = DateTime(
-          start.year,
-          start.month,
-          start.day + (index * DateTime.daysPerWeek),
-        ).weekRangeWithOffset(firstDayOfWeek);
-
-        return DateTimeRange(
-          start: weekRange.start,
-          end: weekRange.end.subtractDays(2),
-        );
-      },
-      indexFromDate: (date) {
-        final dateUtc = date.startOfDay.toUtc();
-        final startDateUtc = start.startOfDay.toUtc();
-        final index =
-            dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
-        return index.floor();
-      },
-      numberOfPages:
-          (this.displayRange.dayDifference / DateTime.daysPerWeek).ceil(),
+    pageNavigationFunctions = PageNavigationFunctions.workWeek(
+      this.displayRange,
     );
   }
 
@@ -188,22 +145,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration =
         scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-
-    pageNavigationFunctions = PageNavigationFunctions(
-      dateTimeRangeFromIndex: (index) {
-        final startDateUtc = this.displayRange.start.startOfDay;
-        return DateTime(
-          startDateUtc.year,
-          startDateUtc.month,
-          startDateUtc.day + (index * numberOfDays),
-        ).multiDayDateTimeRange(numberOfDays);
-      },
-      indexFromDate: (date) {
-        final dateUtc = date.startOfDay.toUtc();
-        final startDateUtc = this.displayRange.start.startOfDay.toUtc();
-        return dateUtc.difference(startDateUtc).inDays ~/ numberOfDays;
-      },
-      numberOfPages: this.displayRange.dayDifference ~/ numberOfDays,
+    pageNavigationFunctions = PageNavigationFunctions.custom(
+      this.displayRange,
+      numberOfDays,
     );
   }
 
