@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 ///
 /// The [dropTargetTile] is an extra component used to display where the event will be dropped.
 /// The [resizeHandle] is an extra component used to display the resize handle.
-class DayTileComponents<T extends Object?> {
+class TileComponents<T extends Object?> {
   final TileBuilder<T> tileBuilder;
   final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
   final FeedbackTileBuilder<T>? feedbackTileBuilder;
@@ -21,7 +21,7 @@ class DayTileComponents<T extends Object?> {
   final TileDropTargetBuilder<T> dropTargetTile;
   final Widget? resizeHandle;
 
-  const DayTileComponents({
+  const TileComponents({
     required this.tileBuilder,
     required this.dropTargetTile,
     this.tileWhenDraggingBuilder,

@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onPageChanged: (dateTimeRange) => log('Calendar dragged: $dateTimeRange'),
     );
 
-    final multiDayComponents = DayTileComponents(
+    final multiDayComponents = TileComponents(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(

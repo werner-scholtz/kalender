@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/components/multi_day_body_components.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
 /// The [InheritedWidget] that contains the internals of the [MultiDayBody].
 ///
 /// This widget is used to pass the configuration and controllers down the widget tree.
-class MultiDayBodyProvider<T extends Object?> extends InheritedWidget {
+class DayProvider<T extends Object?> extends InheritedWidget {
+  ///
+  final EventsController<T> eventsController;
+
+  final CalendarCallbacks<T>? callbacks;
+
   /// The [MultiDayViewController] that will be used to control the view.
   final MultiDayViewController<T> viewController;
 
   /// The components that will be displayed in the [MultiDayBody].
   final MultiDayBodyComponents? components;
+
+  final TileComponents<T> tileComponents;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
@@ -75,10 +81,14 @@ class MultiDayBodyProvider<T extends Object?> extends InheritedWidget {
   ScrollTriggerConfiguration get scrollTriggerConfiguration =>
       viewConfiguration.scrollTriggerConfiguration;
 
-  /// Creates a new [MultiDayBodyProvider].
-  const MultiDayBodyProvider({
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
+      viewController.eventBeingDragged;
+
+  /// Creates a new [DayProvider].
+  const DayProvider({
     required super.child,
     super.key,
+    required this.eventsController,
     required this.viewController,
     required this.feedbackWidgetSize,
     required this.pageScrollPhysics,
@@ -87,20 +97,22 @@ class MultiDayBodyProvider<T extends Object?> extends InheritedWidget {
     required this.viewportHeight,
     required this.pageWidth,
     required this.dayWidth,
+    required this.callbacks,
+    required this.tileComponents,
   });
 
-  static MultiDayBodyProvider? maybeOf<T>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MultiDayBodyProvider>();
+  static DayProvider<T>? maybeOf<T>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<DayProvider<T>>();
   }
 
-  static MultiDayBodyProvider of(BuildContext context) {
-    final result = maybeOf(context);
-    assert(result != null, 'No $MultiDayBodyProvider found.');
+  static DayProvider<T> of<T>(BuildContext context) {
+    final result = maybeOf<T>(context);
+    assert(result != null, 'No $DayProvider<$T> found.');
     return result!;
   }
 
   @override
-  bool updateShouldNotify(covariant MultiDayBodyProvider oldWidget) {
+  bool updateShouldNotify(covariant DayProvider oldWidget) {
     return false;
   }
 }

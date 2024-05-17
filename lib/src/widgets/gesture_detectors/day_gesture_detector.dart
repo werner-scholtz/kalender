@@ -2,37 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
+import 'package:kalender/src/models/providers/day_provider.dart';
 
-class MultiDayPageGestureDetector<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
+class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
-  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-  final CalendarCallbacks<T>? callbacks;
 
-  const MultiDayPageGestureDetector({
+  const DayGestureDetector({
     super.key,
-    required this.eventsController,
-    required this.eventBeingDragged,
     required this.visibleDateTimeRange,
-    required this.callbacks,
   });
 
   @override
-  State<MultiDayPageGestureDetector<T>> createState() =>
-      _MultiDayPageGestureDetectorState<T>();
+  State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
 }
 
-class _MultiDayPageGestureDetectorState<T extends Object?>
-    extends State<MultiDayPageGestureDetector<T>> {
-  late final provider = MultiDayBodyProvider.of(context);
-  late final newEventDuration = provider.viewConfiguration.newEventDuration;
-  late final heightPerMinute = provider.heightPerMinuteValue;
-  late final timeOfDayRange = provider.timeOfDayRange;
-  late final dayWidth = provider.dayWidth;
+class _DayGestureDetectorState<T extends Object?>
+    extends State<DayGestureDetector<T>> {
+  DayProvider<T> get provider => DayProvider.of<T>(context);
+  EventsController<T> get eventsController => provider.eventsController;
+  CalendarCallbacks<T>? get callbacks => provider.callbacks;
+  Duration get newEventDuration => provider.viewConfiguration.newEventDuration;
+  double get heightPerMinute => provider.heightPerMinuteValue;
+  TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
+  double get dayWidth => provider.dayWidth;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      widget.eventBeingDragged;
+      provider.eventBeingDragged;
 
   DateTime? start;
 
@@ -87,8 +82,8 @@ class _MultiDayPageGestureDetectorState<T extends Object?>
     final newEvent = eventBeingDragged.value;
     if (newEvent == null) return;
 
-    widget.eventsController.addEvent(newEvent);
-    widget.callbacks?.onEventCreated?.call(newEvent);
+    eventsController.addEvent(newEvent);
+    callbacks?.onEventCreated?.call(newEvent);
     eventBeingDragged.value = null;
   }
 

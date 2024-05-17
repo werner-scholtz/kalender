@@ -1,44 +1,23 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/src/calendar_view.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
-import 'package:kalender/src/models/components/day_tile_components.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/models/providers/day_provider.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
-class EventTile<T extends Object?> extends StatefulWidget {
-  /// The [EventsController] is used to update the events when resizing.
-  final EventsController<T> eventsController;
-
-  /// The [CalendarEvent] that the [EventTile] represents.
+class DayEventTile<T extends Object?> extends StatefulWidget {
+  /// The [CalendarEvent] that the [DayEventTile] represents.
   final CalendarEvent<T> event;
 
-  /// The components used by the [EventTile].
-  final DayTileComponents<T> tileComponents;
-
-  /// The callbacks used by the [EventTile].
-  final CalendarCallbacks<T>? callbacks;
-
-  /// The event that is being dragged.
-  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-
-  const EventTile({
+  const DayEventTile({
     super.key,
-    required this.eventsController,
     required this.event,
-    required this.tileComponents,
-    required this.callbacks,
-    required this.eventBeingDragged,
   });
 
   @override
-  State<EventTile<T>> createState() => _EventTileState<T>();
+  State<DayEventTile<T>> createState() => _DayEventTileState<T>();
 }
 
 enum VerticalResize {
@@ -47,30 +26,30 @@ enum VerticalResize {
   none,
 }
 
-class _EventTileState<T extends Object?> extends State<EventTile<T>> {
+class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
   CalendarEvent<T> get event => widget.event;
-  EventsController<T> get eventsController => widget.eventsController;
 
-  late final provider = MultiDayBodyProvider.of(context);
-  late final viewConfiguration = provider.viewConfiguration;
-  late final dayWidth = provider.dayWidth;
-  late final heightPerMinute = provider.heightPerMinuteValue;
-  late final timeOfDayRange = provider.timeOfDayRange;
-  late final visibleDateTimeRange = provider.visibleDateTimeRange.value;
-  late final visibleDates = visibleDateTimeRange.datesSpanned;
-  late final feedbackWidgetSize = provider.feedbackWidgetSize;
-  late final tileComponents = widget.tileComponents;
-  late final dragAnchorStrategy = tileComponents.dragAnchorStrategy;
+  DayProvider<T> get provider => DayProvider.of<T>(context);
+  EventsController<T> get eventsController => provider.eventsController;
+  MultiDayViewConfiguration get viewConfiguration => provider.viewConfiguration;
+  CalendarCallbacks<T>? get callbacks => provider.callbacks;
+  TileComponents<T> get tileComponents => provider.tileComponents;
+  DragAnchorStrategy? get dragAnchorStrategy =>
+      tileComponents.dragAnchorStrategy;
+  ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
+  TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
+  double get dayWidth => provider.dayWidth;
+  double get heightPerMinute => provider.heightPerMinuteValue;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      widget.eventBeingDragged;
+      provider.eventBeingDragged;
 
   ValueNotifier<VerticalResize> resizingDirection =
       ValueNotifier(VerticalResize.none);
 
   @override
   Widget build(BuildContext context) {
-    final onTap = widget.callbacks?.onEventTapped;
+    final onTap = callbacks?.onEventTapped;
 
     late final tileComponent = tileComponents.tileBuilder.call(
       widget.event,

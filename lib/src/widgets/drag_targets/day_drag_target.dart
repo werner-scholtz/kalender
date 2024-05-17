@@ -1,48 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/calendar_view.dart';
-
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
-import 'package:kalender/src/models/view_configurations/export.dart';
+import 'package:kalender/src/models/providers/day_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
-class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
-  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-  final CalendarCallbacks<T>? callbacks;
-
-  /// Creates a [MultiDayDragTarget].
-  const MultiDayDragTarget({
-    super.key,
-    required this.eventsController,
-    required this.viewController,
-    required this.eventBeingDragged,
-    required this.callbacks,
-  });
+class DayDragTarget<T extends Object?> extends StatefulWidget {
+  /// Creates a [DayDragTarget].
+  const DayDragTarget({super.key});
 
   @override
-  State<MultiDayDragTarget<T>> createState() => _MultiDayDragTargetState<T>();
+  State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
 }
 
-class _MultiDayDragTargetState<T extends Object?>
-    extends State<MultiDayDragTarget<T>> {
-  /// The [MultiDayBodyProvider] of the current context.
-  MultiDayBodyProvider get provider => MultiDayBodyProvider.of(context);
-  double get dayWidth => provider.dayWidth;
-  double get heightPerMinute => provider.heightPerMinuteValue;
-  double get pageWidth => provider.pageWidth;
+class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
+  /// The [DayProvider] of the current context.
+  DayProvider<T> get provider => DayProvider.of<T>(context);
+  EventsController<T> get eventsController => provider.eventsController;
+  MultiDayViewController<T> get viewController => provider.viewController;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
+      viewController.eventBeingDragged;
+
   ScrollController get scrollController => provider.scrollController;
   TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
   DateTimeRange get visibleDateTimeRange => provider.visibleDateTimeRange.value;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   MultiDayViewConfiguration get viewConfiguration => provider.viewConfiguration;
+
+  double get dayWidth => provider.dayWidth;
+  double get heightPerMinute => provider.heightPerMinuteValue;
+  double get pageWidth => provider.pageWidth;
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -96,17 +84,6 @@ class _MultiDayDragTargetState<T extends Object?>
     return startTime;
   }
 
-  CalendarEvent<T> updateEvent(CalendarEvent<T> event, DateTime newStartTime) {
-    final duration = event.dateTimeRange.duration;
-    final endTime = newStartTime.add(duration);
-    final newRange = DateTimeRange(start: newStartTime, end: endTime);
-
-    // Update the event with the new range.
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-
-    return updatedEvent;
-  }
-
   /// Clamp the start time of the event, so it doesn't go outside the bounds of the day.
   DateTime _clampDateTime(
     DateTime date,
@@ -125,6 +102,33 @@ class _MultiDayDragTargetState<T extends Object?>
     }
   }
 
+  CalendarEvent<T>? _update(CalendarEvent<T> event, Offset offset) {
+    // Calculate the relative cursor position.
+    final cursorPosition = _calculateRelativeCursorPosition(offset);
+    if (cursorPosition == null) return null;
+
+    // Calculate the date of the cursor.
+    final date = _calculateCursorDate(cursorPosition);
+    if (date == null) return null;
+
+    // Calculate the start time of the event.
+    final startTime = _calculateStartTime(
+      date,
+      event.duration,
+      cursorPosition,
+    );
+
+    // Calculate the new dateTimeRange for the event.
+    final duration = event.dateTimeRange.duration;
+    final endTime = startTime.add(duration);
+    final newRange = DateTimeRange(start: startTime, end: endTime);
+
+    // Update the event with the new range.
+    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+
+    return updatedEvent;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DragTarget<CalendarEvent<T>>(
@@ -136,6 +140,10 @@ class _MultiDayDragTargetState<T extends Object?>
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay &&
             event.duration > timeOfDayRange.duration) return false;
+
+        if (!provider.showAllEvents && event.isMultiDayEvent) {
+          return false;
+        }
 
         // Find the global position of the drop target widget.
         final renderObject = context.findRenderObject()! as RenderBox;
@@ -152,63 +160,34 @@ class _MultiDayDragTargetState<T extends Object?>
         return true;
       },
       onMove: (details) {
-        // Calculate the relative cursor position.
-        final cursorPosition = _calculateRelativeCursorPosition(details.offset);
-        if (cursorPosition == null) return;
-
-        // Calculate the date of the cursor.
-        final date = _calculateCursorDate(cursorPosition);
-        if (date == null) return;
-
         final event = details.data;
-
-        // Calculate the start time of the event.
-        final startTime = _calculateStartTime(
-          date,
-          event.duration,
-          cursorPosition,
-        );
-
         // Update the event with the new start time.
-        final updatedEvent = updateEvent(details.data, startTime);
+        final updatedEvent = _update(event, details.offset);
+        if (updatedEvent == null) return;
 
         // Update the event being dragged.
-        widget.eventBeingDragged.value = updatedEvent;
+        eventBeingDragged.value = updatedEvent;
       },
       onLeave: (data) {
         widgetPosition = null;
-        widget.eventBeingDragged.value = null;
+        eventBeingDragged.value = null;
       },
       onAcceptWithDetails: (details) {
-        // Calculate the relative cursor position.
-        final cursorPosition = _calculateRelativeCursorPosition(details.offset);
-        if (cursorPosition == null) return;
-
-        // Calculate the date of the cursor.
-        final date = _calculateCursorDate(cursorPosition);
-        if (date == null) return;
-
         final event = details.data;
 
-        // Calculate the start time of the event.
-        final startTime = _calculateStartTime(
-          date,
-          event.duration,
-          cursorPosition,
-        );
-
         // Update the event with the new start time.
-        final updatedEvent = updateEvent(event, startTime);
+        final updatedEvent = _update(event, details.offset);
+        if (updatedEvent == null) return;
 
         // Update the event in the events controller.
-        widget.eventsController.updateEvent(
+        eventsController.updateEvent(
           event: event,
           updatedEvent: updatedEvent,
         );
 
         widgetPosition = null;
-        widget.eventsController.feedbackWidgetSize.value = Size.zero;
-        widget.eventBeingDragged.value = null;
+        eventsController.feedbackWidgetSize.value = Size.zero;
+        eventBeingDragged.value = null;
       },
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
@@ -223,7 +202,7 @@ class _MultiDayDragTargetState<T extends Object?>
         final rightTrigger = NavigationTrigger(
           triggerDelay: pageTriggerDelay,
           onTrigger: () {
-            widget.viewController.animateToNextPage(
+            viewController.animateToNextPage(
               duration: pageAnimationDuration,
               curve: pageAnimationCurve,
             );
@@ -234,7 +213,7 @@ class _MultiDayDragTargetState<T extends Object?>
         final leftTrigger = NavigationTrigger(
           triggerDelay: pageTriggerDelay,
           onTrigger: () {
-            widget.viewController.animateToPreviousPage(
+            viewController.animateToPreviousPage(
               duration: pageAnimationDuration,
               curve: pageAnimationCurve,
             );

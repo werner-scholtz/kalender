@@ -2,13 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
+import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
+import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_drag_target.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_page_view.dart';
+import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
+import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
+import 'package:kalender/src/widgets/gesture_detectors/day_gesture_detector.dart';
 
 /// This widget is used to display a multi-day body.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
@@ -22,7 +26,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The components used by the [MultiDayBody].
-  final DayTileComponents<T> tileComponents;
+  final TileComponents<T> tileComponents;
 
   /// The components used by the [MultiDayBody].
   final MultiDayBodyComponents? components;
@@ -91,6 +95,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final viewController =
         calendarController!.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
+    final timeOfDayRange = viewConfiguration.timeOfDayRange;
+    final numberOfDays = viewConfiguration.numberOfDays;
+    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final eventBeingDragged = viewController.eventBeingDragged;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -99,7 +107,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         final pageWidth = constraints.maxWidth - timelineWidth;
 
         // Calculate the width of a single day.
-        final numberOfDays = viewConfiguration.numberOfDays;
         final dayWidth = pageWidth / numberOfDays;
 
         final viewPortHeight = constraints.maxHeight;
@@ -108,48 +115,118 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
           valueListenable: viewController.heightPerMinute,
           builder: (context, heightPerMinute, child) {
             // Calculate the height of the page.
-            final dayDuration = viewConfiguration.timeOfDayRange.duration;
+            final dayDuration = timeOfDayRange.duration;
             final pageHeight = heightPerMinute * dayDuration.inMinutes;
 
+            final hourLinesStyle = componentStyles?.hourLinesStyle;
             final hourLines = components?.hourLines?.call(
                   heightPerMinute,
-                  viewConfiguration.timeOfDayRange,
-                  componentStyles?.hourLinesStyle,
+                  timeOfDayRange,
+                  hourLinesStyle,
                 ) ??
                 HourLines(
-                  timeOfDayRange: viewConfiguration.timeOfDayRange,
+                  timeOfDayRange: timeOfDayRange,
                   heightPerMinute: heightPerMinute,
-                  style: componentStyles?.hourLinesStyle,
+                  style: hourLinesStyle,
                 );
 
+            final timelineStyle = componentStyles?.timelineStyle;
             final timeline = components?.timeline?.call(
                   heightPerMinute,
-                  viewConfiguration.timeOfDayRange,
-                  componentStyles?.timelineStyle,
+                  timeOfDayRange,
+                  timelineStyle,
                 ) ??
                 TimeLine(
-                  timeOfDayRange: viewConfiguration.timeOfDayRange,
+                  timeOfDayRange: timeOfDayRange,
                   heightPerMinute: heightPerMinute,
-                  style: componentStyles?.timelineStyle,
-                  eventBeingDragged: viewController.eventBeingDragged,
+                  style: timelineStyle,
+                  eventBeingDragged: eventBeingDragged,
                 );
 
-            final pageView = MultiDayPageView(
+            final timeIndicatorStyle = componentStyles?.timeIndicatorStyle;
+            late final timeIndicator = components?.timeIndicator?.call(
+                  timeOfDayRange,
+                  heightPerMinute,
+                  timelineWidth,
+                  timeIndicatorStyle,
+                ) ??
+                TimeIndicator(
+                  timeOfDayRange: timeOfDayRange,
+                  heightPerMinute: heightPerMinute,
+                  timelineWidth: timelineWidth,
+                  style: timeIndicatorStyle,
+                );
+
+            final daySeparatorStyle = componentStyles?.daySeparatorStyle;
+            final daySeparator =
+                components?.daySeparator?.call(daySeparatorStyle) ??
+                    DaySeparator(style: daySeparatorStyle);
+            final daySeparators = List.generate(
+              numberOfDays,
+              (index) {
+                final left = timelineWidth + (dayWidth * index);
+                return Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: left,
+                  child: daySeparator,
+                );
+              },
+            );
+
+            final pageView = PageView.builder(
+              key: ValueKey(viewConfiguration.name),
+              controller: viewController.pageController,
+              itemCount: viewController.numberOfPages,
+              physics: pageScrollPhysics,
+              onPageChanged: (index) {
+                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                  index,
+                );
+                viewController.visibleDateTimeRange.value = visibleRange;
+              },
+              itemBuilder: (context, index) {
+                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                  index,
+                );
+
+                final visibleDates = visibleRange.datesSpanned;
+                final timeIndicatorDateIndex = visibleDates.indexWhere(
+                  (date) => date.isToday,
+                );
+                late final left = dayWidth * timeIndicatorDateIndex;
+
+                final events = DayEventsWidget<T>(
+                  visibleDateTimeRange: visibleRange,
+                );
+
+                final detector = DayGestureDetector<T>(
+                  visibleDateTimeRange: visibleRange,
+                );
+
+                return Stack(
+                  fit: StackFit.passthrough,
+                  children: [
+                    ...daySeparators,
+                    Positioned.fill(left: timelineWidth, child: detector),
+                    Positioned.fill(left: timelineWidth, child: events),
+                    if (timeIndicatorDateIndex != -1)
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: left,
+                        width: dayWidth + timelineWidth,
+                        child: timeIndicator,
+                      ),
+                  ],
+                );
+              },
+            );
+
+            const dragTarget = DayDragTarget();
+
+            return DayProvider(
               eventsController: eventsController!,
-              calendarController: calendarController!,
-              eventBeingDragged: viewController.eventBeingDragged,
-              tileComponents: tileComponents,
-              callbacks: callbacks,
-            );
-
-            final dragTarget = MultiDayDragTarget(
-              eventsController: eventsController,
-              viewController: viewController,
-              eventBeingDragged: viewController.eventBeingDragged,
-              callbacks: callbacks,
-            );
-
-            return MultiDayBodyProvider(
               viewController: viewController,
               feedbackWidgetSize: eventsController.feedbackWidgetSize,
               pageScrollPhysics: pageScrollPhysics,
@@ -158,6 +235,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               dayWidth: dayWidth,
               components: components,
               componentStyles: componentStyles,
+              callbacks: callbacks,
+              tileComponents: tileComponents,
               child: Stack(
                 children: [
                   Positioned.fill(
