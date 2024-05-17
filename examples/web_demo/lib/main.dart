@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/pages/multi_calendar.dart';
+import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/theme.g.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
@@ -118,26 +120,48 @@ class _MyHomePageState extends State<MyHomePage> {
       callbacks: callbacks,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-        actions: [
-          IconButton.filledTonal(
-            onPressed: () => MyApp.of(context)!.toggleTheme(),
-            icon: Icon(
-              MyApp.of(context)!.themeMode == ThemeMode.dark
-                  ? Icons.brightness_2_rounded
-                  : Icons.brightness_7_rounded,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+          actions: [
+            IconButton.filledTonal(
+              onPressed: () => MyApp.of(context)!.toggleTheme(),
+              icon: Icon(
+                MyApp.of(context)!.themeMode == ThemeMode.dark
+                    ? Icons.brightness_2_rounded
+                    : Icons.brightness_7_rounded,
+              ),
+            )
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Single Calendar'),
+              Tab(text: 'Multi Calendar'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            SingleCalendarView(
+              eventsController: eventsController,
+              callbacks: callbacks,
+              viewConfigurations: _viewConfigurations,
             ),
-          )
-        ],
-      ),
-      body: Row(
-        children: [
-          Flexible(flex: 3, child: calendar),
-          Flexible(flex: 3, child: calendar1),
-        ],
+            MultiCalendarView(
+              eventsController: eventsController,
+            ),
+          ],
+        ),
+
+        //  Row(
+        //   children: [
+        //     Flexible(flex: 3, child: calendar),
+        //     Flexible(flex: 3, child: calendar1),
+        //   ],
+        // ),
       ),
     );
   }

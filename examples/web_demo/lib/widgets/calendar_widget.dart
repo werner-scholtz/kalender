@@ -68,7 +68,7 @@ class CalendarWidget extends StatelessWidget {
       resizeHandle: const ResizeHandle(),
     );
 
-    final navigationButtons = Row(
+    final calendarHeader = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton.filledTonal(
@@ -90,16 +90,20 @@ class CalendarWidget extends StatelessWidget {
           icon: const Icon(Icons.today),
         ),
         Expanded(
-          child: DropdownMenu(
-            dropdownMenuEntries: viewConfigurations
-                .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                .toList(),
-            initialSelection: viewConfiguration,
-            expandedInsets: EdgeInsets.zero,
-            onSelected: (value) {
-              if (value == null) return;
-              onSelected(value);
-            },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              DropdownMenu(
+                dropdownMenuEntries: viewConfigurations
+                    .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                    .toList(),
+                initialSelection: viewConfiguration,
+                onSelected: (value) {
+                  if (value == null) return;
+                  onSelected(value);
+                },
+              ),
+            ],
           ),
         ),
       ],
@@ -117,7 +121,7 @@ class CalendarWidget extends StatelessWidget {
       elevation: 2,
       child: Column(
         children: [
-          navigationButtons,
+          calendarHeader,
           multiDayHeader,
         ],
       ),
