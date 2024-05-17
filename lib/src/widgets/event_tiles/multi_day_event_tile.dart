@@ -177,7 +177,7 @@ class _MultiDayEventTileState<T extends Object?>
     if (date == null) return null;
 
     var start = date;
-    var end = event.end;
+    var end = event.end.endOfDay;
 
     if (start.isAfter(end) || start.isSameDay(end)) {
       start = end.startOfDay;
@@ -191,12 +191,12 @@ class _MultiDayEventTileState<T extends Object?>
     final date = _calculateTimeAndDate(offset);
     if (date == null) return null;
 
-    var start = event.start;
+    var start = event.start.startOfDay;
     var end = date.endOfDay;
 
     if (end.isBefore(start) || end.isSameDay(start)) {
-      end = start.endOfDay;
-      start = date.startOfDay;
+      end = start.startOfDay;
+      start = date;
     }
 
     return DateTimeRange(start: start, end: end);
