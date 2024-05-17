@@ -29,7 +29,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final eventBeingDragged = provider.eventBeingDragged;
     final tileComponents = provider.tileComponents;
-    final layoutStrategy = provider.viewConfiguration.dayEventLayoutStrategy;
+    final layoutStrategy = provider.bodyConfiguration.dayEventLayoutStrategy;
+    final showMultiDayEvents = provider.bodyConfiguration.showMultiDayEvents;
 
     return ListenableBuilder(
       listenable: eventsController,
@@ -40,6 +41,9 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           builder: (context, event, child) {
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();
+            if (!showMultiDayEvents && event.isMultiDayEvent) {
+              return const SizedBox();
+            }
 
             // Create a list of event groups that will be used to render the event.
             final chainingEventGroups = _createEventGroups(
@@ -67,7 +71,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         final visibleEvents = eventsController.eventsFromDateTimeRange(
           visibleDateTimeRange,
           includeDayEvents: true,
-          includeMultiDayEvents: provider.viewConfiguration.showMultiDayEvents,
+          includeMultiDayEvents: showMultiDayEvents,
         );
 
         // Create the event groups for the visible events.

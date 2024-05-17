@@ -71,7 +71,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = cursorPosition.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.viewConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
@@ -167,10 +167,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
 
         // Update the event being dragged.
         eventBeingDragged.value = updatedEvent;
-      },
-      onLeave: (data) {
-        widgetPosition = null;
-        eventBeingDragged.value = null;
+        viewController.draggingEventId = event.id;
       },
       onAcceptWithDetails: (details) {
         final event = details.data;
@@ -188,6 +185,12 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
         widgetPosition = null;
         eventsController.feedbackWidgetSize.value = Size.zero;
         eventBeingDragged.value = null;
+        viewController.draggingEventId = null;
+      },
+      onLeave: (data) {
+        widgetPosition = null;
+        eventBeingDragged.value = null;
+        viewController.draggingEventId = null;
       },
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.

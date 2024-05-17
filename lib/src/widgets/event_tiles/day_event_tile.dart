@@ -31,7 +31,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
 
   DayProvider<T> get provider => DayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
-  MultiDayViewConfiguration get viewConfiguration => provider.viewConfiguration;
+  MultiDayBodyConfiguration get bodyConfiguration => provider.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
   TileComponents<T> get tileComponents => provider.tileComponents;
   DragAnchorStrategy? get dragAnchorStrategy =>
@@ -94,17 +94,21 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
               },
             );
 
+            final isDragging =
+                provider.viewController.draggingEventId == event.id;
             late final draggableTile = Draggable<CalendarEvent<T>>(
               data: widget.event,
               feedback: feedback,
               childWhenDragging: dragComponent,
               dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-              child: tileComponent,
+              child: isDragging && dragComponent != null
+                  ? dragComponent
+                  : tileComponent,
             );
 
             final tileWidget = GestureDetector(
               onTap: onTap != null ? () => onTap(widget.event) : null,
-              child: viewConfiguration.allowRescheduling
+              child: bodyConfiguration.allowRescheduling
                   ? draggableTile
                   : tileComponent,
             );
@@ -116,7 +120,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
                       ? dragComponent ?? const SizedBox()
                       : tileWidget,
                 ),
-                if (viewConfiguration.allowResizing && showTopResizeHandle)
+                if (bodyConfiguration.allowResizing && showTopResizeHandle)
                   Positioned(
                     top: 0,
                     left: 0,
@@ -124,7 +128,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
                     height: resizeHeight,
                     child: topResizeDetector,
                   ),
-                if (viewConfiguration.allowResizing)
+                if (bodyConfiguration.allowResizing)
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -239,7 +243,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
     }
 
     final durationFromStart = delta.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.viewConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final verticalDuration = Duration(
       minutes: snapIntervalMinutes * numberOfIntervals,

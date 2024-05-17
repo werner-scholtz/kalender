@@ -22,7 +22,7 @@ class _MultiDayGestureDetectorState<T extends Object?>
   MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  Duration get newEventDuration => provider.viewConfiguration.newEventDuration;
+
   double get dayWidth => provider.dayWidth;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
@@ -87,7 +87,7 @@ class _MultiDayGestureDetectorState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
-    final createEventTrigger = provider.viewConfiguration.createEventTrigger;
+    final createEventTrigger = provider.headerConfiguration.createEventTrigger;
 
     final tap = createEventTrigger == CreateEventTrigger.tap;
     final long = createEventTrigger == CreateEventTrigger.longPress;

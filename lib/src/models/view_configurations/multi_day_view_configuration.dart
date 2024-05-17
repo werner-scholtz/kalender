@@ -5,6 +5,15 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
+const defaultTimeLineWith = 48.0;
+const defaultNewEventDuration = Duration(minutes: 30);
+const defaultAllowEventCreation = true;
+const defaultAllowResizing = true;
+const defaultAllowRescheduling = true;
+const defaultCreateEventTrigger = CreateEventTrigger.tap;
+const defaultShowMultiDayEvents = false;
+const defaultLayoutStrategy = overlapLayoutStrategy;
+
 class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration({
     required super.name,
@@ -12,30 +21,15 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.displayRange,
     required this.numberOfDays,
     required this.timelineWidth,
-    required this.showMultiDayEvents,
     required this.firstDayOfWeek,
-    required this.allowEventCreation,
-    required this.allowResizing,
-    required this.allowRescheduling,
-    required this.createEventTrigger,
-    required this.newEventDuration,
     required this.pageNavigationFunctions,
-    required this.pageTriggerConfiguration,
-    required this.scrollTriggerConfiguration,
-    required this.dayEventLayoutStrategy,
+    required this.bodyConfiguration,
+    required this.headerConfiguration,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be between 1 and 7 (inclusive)\n'
           'Use DateTime.monday ~ DateTime.sunday if unsure.',
         );
-
-  static const defaultTimeLineWith = 48.0;
-  static const defaultNewEventDuration = Duration(minutes: 30);
-  static const defaultAllowEventCreation = true;
-  static const defaultAllowResizing = true;
-  static const defaultAllowRescheduling = true;
-  static const defaultCreateEventTrigger = CreateEventTrigger.tap;
-  static const defaultShowMultiDayEvents = false;
 
   MultiDayViewConfiguration.singleDay({
     super.name = 'Day',
@@ -43,26 +37,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = DateTime.monday,
     this.timelineWidth = defaultTimeLineWith,
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.createEventTrigger = defaultCreateEventTrigger,
-    this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     numberOfDays = 1;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+
     pageNavigationFunctions = PageNavigationFunctions.singleDay(
       this.displayRange,
     );
+    bodyConfiguration = MultiDayBodyConfiguration();
+    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
   MultiDayViewConfiguration.week({
@@ -72,26 +58,17 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = DateTime.monday,
     this.numberOfDays = 7,
     this.timelineWidth = defaultTimeLineWith,
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.createEventTrigger = defaultCreateEventTrigger,
-    this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
     pageNavigationFunctions = PageNavigationFunctions.week(
       this.displayRange,
       firstDayOfWeek,
     );
+    bodyConfiguration = MultiDayBodyConfiguration();
+    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
   MultiDayViewConfiguration.workWeek({
@@ -100,26 +77,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
     this.timelineWidth = defaultTimeLineWith,
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.createEventTrigger = defaultCreateEventTrigger,
-    this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     firstDayOfWeek = DateTime.monday;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+
     pageNavigationFunctions = PageNavigationFunctions.workWeek(
       this.displayRange,
     );
+    bodyConfiguration = MultiDayBodyConfiguration();
+    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
   MultiDayViewConfiguration.custom({
@@ -129,26 +98,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.numberOfDays,
     this.firstDayOfWeek = DateTime.monday,
     this.timelineWidth = defaultTimeLineWith,
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.createEventTrigger = defaultCreateEventTrigger,
-    this.newEventDuration = defaultNewEventDuration,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.dayEventLayoutStrategy = overlapLayoutStrategy,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+
     pageNavigationFunctions = PageNavigationFunctions.custom(
       this.displayRange,
       numberOfDays,
     );
+    bodyConfiguration = MultiDayBodyConfiguration();
+    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
   /// The functions for navigating the [PageView].
@@ -177,7 +138,30 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// This is used by the [MultiDayBody] and [MultiDayHeader].
   final double timelineWidth;
 
-  /// TODO: move this into the widgets that use it since the body and Header might need different values
+  /// The configuration for the header of the [MultiDayHeader].
+  late final MultiDayHeaderConfiguration headerConfiguration;
+
+  /// The configuration for the body of the [MultiDayBody].
+  late final MultiDayBodyConfiguration bodyConfiguration;
+}
+
+class MultiDayBodyConfiguration {
+  MultiDayBodyConfiguration({
+    this.showMultiDayEvents = defaultShowMultiDayEvents,
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
+    this.createEventTrigger = defaultCreateEventTrigger,
+    this.newEventDuration = defaultNewEventDuration,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.dayEventLayoutStrategy = defaultLayoutStrategy,
+  }) {
+    this.pageTriggerConfiguration =
+        pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.scrollTriggerConfiguration =
+        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+  }
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
   final bool showMultiDayEvents;
@@ -208,4 +192,33 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The layout strategy used by the [MultiDayBody] to layout events.
   final DayEventLayoutStrategy dayEventLayoutStrategy;
+}
+
+class MultiDayHeaderConfiguration {
+  MultiDayHeaderConfiguration({
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
+    this.createEventTrigger = defaultCreateEventTrigger,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+  }) {
+    this.pageTriggerConfiguration =
+        pageTriggerConfiguration ?? PageTriggerConfiguration();
+  }
+
+  /// Allow the resizing of events.
+  final bool allowResizing;
+
+  /// Allow the rescheduling of events.
+  final bool allowRescheduling;
+
+  /// Allow the creation of events.
+  final bool allowEventCreation;
+
+  /// Gesture type for creating events.
+  final CreateEventTrigger createEventTrigger;
+
+  /// The configuration for the page navigation triggers.
+  late final PageTriggerConfiguration pageTriggerConfiguration;
 }

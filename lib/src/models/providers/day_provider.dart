@@ -38,6 +38,10 @@ class DayProvider<T extends Object?> extends InheritedWidget {
   /// The width of a day.
   final double dayWidth;
 
+  MultiDayBodyConfiguration get bodyConfiguration {
+    return viewController.viewConfiguration.bodyConfiguration;
+  }
+
   /// The [MultiDayViewConfiguration] that will be used to display the [MultiDayBody].
   MultiDayViewConfiguration get viewConfiguration =>
       viewController.viewConfiguration;
@@ -71,15 +75,15 @@ class DayProvider<T extends Object?> extends InheritedWidget {
   double get timelineWidth => viewConfiguration.timelineWidth;
 
   /// Whether to show all events in the [MultiDayBody].
-  bool get showAllEvents => viewConfiguration.showMultiDayEvents;
+  bool get showAllEvents => bodyConfiguration.showMultiDayEvents;
 
   /// The [PageTriggerConfiguration] that will be used to control the page triggers.
   PageTriggerConfiguration get pageTriggerConfiguration =>
-      viewConfiguration.pageTriggerConfiguration;
+      bodyConfiguration.pageTriggerConfiguration;
 
   /// The [ScrollTriggerConfiguration] that will be used to control the scroll triggers.
   ScrollTriggerConfiguration get scrollTriggerConfiguration =>
-      viewConfiguration.scrollTriggerConfiguration;
+      bodyConfiguration.scrollTriggerConfiguration;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
       viewController.eventBeingDragged;

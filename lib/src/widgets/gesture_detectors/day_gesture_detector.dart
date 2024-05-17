@@ -21,7 +21,7 @@ class _DayGestureDetectorState<T extends Object?>
   DayProvider<T> get provider => DayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  Duration get newEventDuration => provider.viewConfiguration.newEventDuration;
+  Duration get newEventDuration => provider.bodyConfiguration.newEventDuration;
   double get heightPerMinute => provider.heightPerMinuteValue;
   TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
   double get dayWidth => provider.dayWidth;
@@ -104,7 +104,7 @@ class _DayGestureDetectorState<T extends Object?>
 
     // Calculate the duration from the start of the day to the position.
     final durationFromStart = position.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.viewConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
 
     final start = timeOfDayRange.start.toDateTime(date);
@@ -115,7 +115,7 @@ class _DayGestureDetectorState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
-    final createEventTrigger = provider.viewConfiguration.createEventTrigger;
+    final createEventTrigger = provider.bodyConfiguration.createEventTrigger;
 
     final tap = createEventTrigger == CreateEventTrigger.tap;
     final long = createEventTrigger == CreateEventTrigger.longPress;

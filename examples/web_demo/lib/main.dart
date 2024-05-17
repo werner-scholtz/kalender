@@ -61,14 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
   late ViewConfiguration _viewConfiguration = _viewConfigurations[1];
   late ViewConfiguration _viewConfiguration1 = _viewConfigurations[1];
   final _viewConfigurations = [
-    MultiDayViewConfiguration.singleDay(showMultiDayEvents: true),
-    MultiDayViewConfiguration.week(showMultiDayEvents: true),
-    MultiDayViewConfiguration.workWeek(showMultiDayEvents: true),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, showMultiDayEvents: true),
+    MultiDayViewConfiguration.singleDay(),
+    MultiDayViewConfiguration.week(),
+    MultiDayViewConfiguration.workWeek(),
+    MultiDayViewConfiguration.custom(numberOfDays: 3),
     MultiDayViewConfiguration.custom(
       name: '2 Weeks',
       numberOfDays: 14,
-      showMultiDayEvents: true,
     ),
   ];
 

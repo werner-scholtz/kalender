@@ -72,11 +72,13 @@ class MultiDayEventsDefaultLayoutDelegate<T>
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(
         visibleDates.contains,
+        orElse: () => eventDates.first,
       );
 
       // last visible date.
       final lastVisibleDate = eventDates.lastWhere(
         visibleDates.contains,
+        orElse: () => eventDates.last,
       );
 
       final visibleEventDates = eventDates.getRange(

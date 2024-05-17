@@ -13,20 +13,28 @@ class _ResizeHandleState extends State<ResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = theme.colorScheme.onSurface.withOpacity(0.5);
+    final color = hovering
+        ? theme.colorScheme.onSurface.withOpacity(0.5)
+        : Colors.transparent;
+    final margin = hovering
+        ? const EdgeInsets.symmetric(vertical: 4, horizontal: 8)
+        : const EdgeInsets.symmetric(vertical: 4, horizontal: 32);
 
     return MouseRegion(
       cursor: SystemMouseCursors.resizeUp,
-      onEnter: (event) => setState(() => hovering = true),
-      onExit: (event) => setState(() => hovering = false),
+      onEnter: (event) => setState(() {
+        hovering = true;
+      }),
+      onExit: (event) => setState(() {
+        hovering = false;
+      }),
       child: AnimatedContainer(
-        duration: const Duration(seconds: 2),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          decoration: BoxDecoration(
-            color: hovering ? color : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        margin: margin,
+        decoration: BoxDecoration(
+          color: hovering ? color : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

@@ -84,8 +84,8 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
           valueListenable: viewController.visibleDateTimeRange,
           builder: (context, visibleDateTimeRange, child) {
             final header = viewConfiguration.numberOfDays == 1
-                ? const _SingleDayHeader()
-                : const _MultiDayHeader();
+                ? _SingleDayHeader(visibleDateTimeRange: visibleDateTimeRange)
+                : _MultiDayHeader(visibleDateTimeRange: visibleDateTimeRange);
 
             return MultiDayProvider(
               eventsController: eventsController!,
@@ -109,12 +109,15 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 }
 
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
-  const _SingleDayHeader({super.key});
+  final DateTimeRange visibleDateTimeRange;
+  const _SingleDayHeader({
+    super.key,
+    required this.visibleDateTimeRange,
+  });
 
   @override
   Widget build(BuildContext context) {
     final provider = MultiDayProvider.of<T>(context);
-    final visibleDateTimeRange = provider.visibleDateTimeRangeValue;
     final timelineWidth = provider.timelineWidth;
 
     final dayHeader = SizedBox(
@@ -122,7 +125,9 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       child: DayHeader(date: visibleDateTimeRange.start),
     );
 
-    final multiDayEvents = MultiDayEventWidget<T>();
+    final multiDayEvents = MultiDayEventWidget<T>(
+      visibleDateTimeRange: visibleDateTimeRange,
+    );
 
     final multiDayDragTarget = MultiDayDragTarget<T>(
       allowSingleDayEvents: false,
@@ -146,12 +151,14 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
         Expanded(
           child: Stack(
             children: [
-              multiDayEvents,
-              ConstrainedBox(
-                constraints: dragTargetConstrains,
-                child: multiDayDragTarget,
-              ),
               Positioned.fill(child: gestureDetector),
+              multiDayEvents,
+              Positioned.fill(
+                child: ConstrainedBox(
+                  constraints: dragTargetConstrains,
+                  child: multiDayDragTarget,
+                ),
+              ),
             ],
           ),
         ),
@@ -161,12 +168,12 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 }
 
 class _MultiDayHeader<T extends Object?> extends StatelessWidget {
-  const _MultiDayHeader({super.key});
+  final DateTimeRange visibleDateTimeRange;
+  const _MultiDayHeader({super.key, required this.visibleDateTimeRange});
 
   @override
   Widget build(BuildContext context) {
     final provider = MultiDayProvider.of<T>(context);
-    final visibleDateTimeRange = provider.visibleDateTimeRangeValue;
     final timelineWidth = provider.timelineWidth;
     final tileHeight = provider.tileHeight;
     final pageWidth = provider.pageWidth;
@@ -187,12 +194,14 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       );
     }).toList();
 
-    final multiDayEvents = MultiDayEventWidget<T>();
+    final multiDayEvents = MultiDayEventWidget<T>(
+      visibleDateTimeRange: visibleDateTimeRange,
+    );
     final multiDayDragTarget = MultiDayDragTarget<T>(
       allowSingleDayEvents: false,
     );
 
-    final dragTargetConstrains = BoxConstraints(
+    final constraints = BoxConstraints(
       minHeight: tileHeight,
       minWidth: pageWidth,
     );
@@ -208,15 +217,17 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           child: Column(
             children: [
               Row(children: [...dayHeaders]),
-              Stack(
-                children: [
-                  multiDayEvents,
-                  ConstrainedBox(
-                    constraints: dragTargetConstrains,
-                    child: multiDayDragTarget,
-                  ),
-                  Positioned.fill(child: gestureDetector),
-                ],
+              IntrinsicHeight(
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: gestureDetector),
+                    ConstrainedBox(
+                      constraints: constraints,
+                      child: multiDayEvents,
+                    ),
+                    Positioned.fill(child: multiDayDragTarget),
+                  ],
+                ),
               ),
             ],
           ),

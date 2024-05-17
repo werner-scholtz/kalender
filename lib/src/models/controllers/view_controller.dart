@@ -101,6 +101,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   /// The event being dragged.
   late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
+  int? draggingEventId;
 
   @override
   Future<void> animateToDate(

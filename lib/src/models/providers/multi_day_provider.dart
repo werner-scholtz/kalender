@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 
 class MultiDayProvider<T extends Object?> extends InheritedWidget {
   final EventsController<T> eventsController;
@@ -35,6 +36,10 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
 
   MultiDayViewConfiguration get viewConfiguration {
     return viewController.viewConfiguration;
+  }
+
+  MultiDayHeaderConfiguration get headerConfiguration {
+    return viewController.viewConfiguration.headerConfiguration;
   }
 
   double get timelineWidth => viewController.viewConfiguration.timelineWidth;

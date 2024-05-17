@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/export.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/components/_export.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/multi_day_provider.dart';
+import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final bool allowSingleDayEvents;
@@ -21,6 +23,7 @@ class _MultiDayDragTargetState<T extends Object?>
   MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
+  MultiDayViewController<T> get viewController => provider.viewController;
   TileComponents<T> get tileComponents => provider.tileComponents;
   List<DateTime> get visibleDates =>
       provider.visibleDateTimeRangeValue.datesSpanned;
@@ -28,6 +31,7 @@ class _MultiDayDragTargetState<T extends Object?>
       provider.eventBeingDragged;
   ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
   double get dayWidth => provider.dayWidth;
+  double get pageWidth => provider.pageWidth;
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -121,6 +125,7 @@ class _MultiDayDragTargetState<T extends Object?>
 
         // Update the event being dragged.
         eventBeingDragged.value = updatedEvent;
+        viewController.draggingEventId = event.id;
       },
       onAcceptWithDetails: (details) {
         final event = details.data;
@@ -133,17 +138,66 @@ class _MultiDayDragTargetState<T extends Object?>
         widgetPosition = null;
         eventsController.feedbackWidgetSize.value = Size.zero;
         eventBeingDragged.value = null;
-      },
-      builder: (context, candidateData, rejectedData) {
-        // TODO: implement navigation ?
-        return const SizedBox();
-        // Check if the candidateData is null.
-        // if (candidateData.firstOrNull == null) return const SizedBox();
-        // return Stack();
+        viewController.draggingEventId = null;
       },
       onLeave: (data) {
         widgetPosition = null;
         eventBeingDragged.value = null;
+        viewController.draggingEventId = null;
+      },
+      builder: (context, candidateData, rejectedData) {
+        // TODO: implement navigation ?
+
+        // Check if the candidateData is null.
+        if (candidateData.firstOrNull == null) return const SizedBox();
+
+        final pageTriggerSetup =
+            provider.headerConfiguration.pageTriggerConfiguration;
+        final triggerWidth = pageTriggerSetup.triggerWidth.call(pageWidth);
+        final pageAnimationDuration = pageTriggerSetup.animationDuration;
+        final pageTriggerDelay = pageTriggerSetup.triggerDelay;
+        final pageAnimationCurve = pageTriggerSetup.animationCurve;
+
+        final rightTrigger = NavigationTrigger(
+          triggerDelay: pageTriggerDelay,
+          onTrigger: () {
+            viewController.animateToNextPage(
+              duration: pageAnimationDuration,
+              curve: pageAnimationCurve,
+            );
+          },
+          child: pageTriggerSetup.rightTriggerWidget,
+        );
+
+        final leftTrigger = NavigationTrigger(
+          triggerDelay: pageTriggerDelay,
+          onTrigger: () {
+            viewController.animateToPreviousPage(
+              duration: pageAnimationDuration,
+              curve: pageAnimationCurve,
+            );
+          },
+          child: pageTriggerSetup.leftTriggerWidget,
+        );
+
+        return Stack(
+          children: [
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: triggerWidth,
+              child: rightTrigger,
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: triggerWidth,
+              child: leftTrigger,
+            ),
+          ],
+        );
       },
     );
   }

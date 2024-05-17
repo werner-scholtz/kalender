@@ -35,6 +35,8 @@ class _MultiDayEventTileState<T extends Object?>
   ValueNotifier<HorizontalResize> resizingDirection =
       ValueNotifier(HorizontalResize.none);
 
+  bool keepAlive = false;
+
   @override
   Widget build(BuildContext context) {
     final onTap = callbacks?.onEventTapped;
@@ -62,12 +64,15 @@ class _MultiDayEventTileState<T extends Object?>
           },
         );
 
+        final isDragging = provider.viewController.draggingEventId == event.id;
         late final draggableTile = Draggable<CalendarEvent<T>>(
           data: widget.event,
           feedback: feedback,
           childWhenDragging: dragComponent,
           dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-          child: tileComponent,
+          child: isDragging && dragComponent != null
+              ? dragComponent
+              : tileComponent,
         );
 
         final tileWidget = GestureDetector(
