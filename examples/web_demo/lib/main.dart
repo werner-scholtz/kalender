@@ -171,33 +171,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final overlayEntry = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          top: position.dy,
-          left: position.dx,
-          child: Card(
-            elevation: 5,
-            margin: const EdgeInsets.all(8),
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _removeOverlay,
+              ),
+            ),
+            Positioned(
+              top: position.dy,
+              left: position.dx,
+              child: Card(
+                elevation: 5,
+                margin: const EdgeInsets.all(8),
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
                       children: [
-                        IconButton.filledTonal(
-                          onPressed: () => _removeOverlay(),
-                          icon: const Icon(Icons.close),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton.filledTonal(
+                              onPressed: () => _removeOverlay(),
+                              icon: const Icon(Icons.close),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         );
       },
     );
