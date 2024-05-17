@@ -167,7 +167,6 @@ class _MultiDayEventTileState<T extends Object?>
       HorizontalResize.none => null,
     };
 
-    if (dateTimeRange == null) return null;
     return eventBeingDragged.value = event.copyWith(
       dateTimeRange: dateTimeRange,
     );
@@ -193,10 +192,10 @@ class _MultiDayEventTileState<T extends Object?>
     if (date == null) return null;
 
     var start = event.start;
-    var end = date;
+    var end = date.endOfDay;
 
     if (end.isBefore(start) || end.isSameDay(start)) {
-      end = start.startOfDay;
+      end = start.endOfDay;
       start = date.startOfDay;
     }
 

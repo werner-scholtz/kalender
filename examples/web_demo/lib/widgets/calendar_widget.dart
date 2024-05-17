@@ -22,7 +22,7 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileComponents = TileComponents(
+    final bodyTileComponents = TileComponents(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(
@@ -31,40 +31,28 @@ class CalendarWidget extends StatelessWidget {
           ),
         );
       },
-      dropTargetTile: (event) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.green, width: 2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      feedbackTileBuilder: (event, dropTargetWidgetSize) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          width: dropTargetWidgetSize.width * 0.8,
-          height: dropTargetWidgetSize.height,
+      dropTargetTile: _dropTargetTile,
+      feedbackTileBuilder: _feedbackTileBuilder,
+      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
+      dragAnchorStrategy: dragAnchorStrategy,
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+
+    final headerTileComponents = TileComponents(
+      tileBuilder: (event) {
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
           decoration: BoxDecoration(
             color: Colors.green.withAlpha(150),
             borderRadius: BorderRadius.circular(8),
           ),
         );
       },
-      tileWhenDraggingBuilder: (event) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(20),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      dragAnchorStrategy: (draggable, context, position) {
-        final renderObject = context.findRenderObject()! as RenderBox;
-        return Offset(
-          20,
-          renderObject.size.height / 2,
-        );
-      },
+      dropTargetTile: _dropTargetTile,
+      feedbackTileBuilder: _feedbackTileBuilder,
+      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
+      dragAnchorStrategy: dragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
@@ -113,7 +101,7 @@ class CalendarWidget extends StatelessWidget {
     final multiDayHeader = MultiDayHeader(
       eventsController: eventsController,
       calendarController: controller,
-      tileComponents: tileComponents,
+      tileComponents: headerTileComponents,
     );
 
     final header = Material(
@@ -130,7 +118,7 @@ class CalendarWidget extends StatelessWidget {
 
     final multiDayBody = MultiDayBody(
       heightPerMinute: ValueNotifier(0.5),
-      tileComponents: tileComponents,
+      tileComponents: bodyTileComponents,
     );
 
     return CalendarView(
@@ -140,6 +128,48 @@ class CalendarWidget extends StatelessWidget {
       header: header,
       body: multiDayBody,
       callbacks: callbacks,
+    );
+  }
+
+  Widget _feedbackTileBuilder(CalendarEvent event, Size dropTargetWidgetSize) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      width: dropTargetWidgetSize.width * 0.8,
+      height: dropTargetWidgetSize.height,
+      decoration: BoxDecoration(
+        color: Colors.green.withAlpha(150),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Widget _tileWhenDraggingBuilder(CalendarEvent event) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green.withAlpha(20),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Widget _dropTargetTile(CalendarEvent event) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Offset dragAnchorStrategy(
+    Draggable draggable,
+    BuildContext context,
+    Offset position,
+  ) {
+    final renderObject = context.findRenderObject()! as RenderBox;
+    return Offset(
+      20,
+      renderObject.size.height / 2,
     );
   }
 }
