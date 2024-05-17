@@ -76,7 +76,13 @@ class _MultiDayEventTileState<T extends Object?>
         );
 
         final tileWidget = GestureDetector(
-          onTap: onTap != null ? () => onTap(widget.event) : null,
+          onTap: onTap != null
+              ? () {
+                  // Find the global position and size of the tile.
+                  final renderObject = context.findRenderObject()! as RenderBox;
+                  onTap.call(widget.event, renderObject);
+                }
+              : null,
           child: draggableTile,
         );
 

@@ -5,17 +5,6 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
-const defaultTileHeight = 24.0;
-const defaultTimeLineWith = 48.0;
-const defaultNewEventDuration = Duration(minutes: 30);
-const defaultAllowEventCreation = true;
-const defaultAllowResizing = true;
-const defaultAllowRescheduling = true;
-const defaultCreateEventTrigger = CreateEventTrigger.tap;
-const defaultShowMultiDayEvents = false;
-const defaultLayoutStrategy = overlapLayoutStrategy;
-const defaultFirstDayOfWeek = DateTime.monday;
-
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration({

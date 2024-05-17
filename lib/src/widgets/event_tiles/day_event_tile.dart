@@ -107,7 +107,14 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
             );
 
             final tileWidget = GestureDetector(
-              onTap: onTap != null ? () => onTap(widget.event) : null,
+              onTap: onTap != null
+                  ? () {
+                      // Find the global position and size of the tile.
+                      final renderObject =
+                          context.findRenderObject()! as RenderBox;
+                      onTap.call(widget.event, renderObject);
+                    }
+                  : null,
               child: bodyConfiguration.allowRescheduling
                   ? draggableTile
                   : tileComponent,

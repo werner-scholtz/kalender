@@ -120,9 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final callbacks = CalendarCallbacks(
-      onEventTapped: (event) {
-        log('Event tapped: $event');
-      },
+      onEventTapped: (event, renderBox) {},
       onEventCreated: (date) => log('Calendar tapped: $date'),
       onPageChanged: (dateTimeRange) => log('Calendar dragged: $dateTimeRange'),
     );

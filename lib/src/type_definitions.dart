@@ -9,8 +9,12 @@ import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
 
 /// The callback for when an event is tapped.
+///
+/// The [event] is the event that was tapped.
+/// The [renderBox] is the [RenderBox] of the event tile.
 typedef OnEventTapped<T extends Object?> = void Function(
   CalendarEvent<T> event,
+  RenderBox renderBox,
 );
 
 /// The callback for when an event's [DateTimeRange] is changed.

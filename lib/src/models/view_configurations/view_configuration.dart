@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 /// The base class for all [ViewConfiguration]s.
@@ -11,6 +13,17 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   final String name;
 }
+
+const defaultTileHeight = 24.0;
+const defaultTimeLineWith = 48.0;
+const defaultNewEventDuration = Duration(minutes: 30);
+const defaultAllowEventCreation = true;
+const defaultAllowResizing = true;
+const defaultAllowRescheduling = true;
+const defaultCreateEventTrigger = CreateEventTrigger.tap;
+const defaultShowMultiDayEvents = false;
+const defaultLayoutStrategy = overlapLayoutStrategy;
+const defaultFirstDayOfWeek = DateTime.monday;
 
 /// Functions used by a [PageView] to navigate to different pages.
 class PageNavigationFunctions {

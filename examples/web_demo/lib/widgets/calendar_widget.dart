@@ -8,6 +8,7 @@ class CalendarWidget extends StatelessWidget {
   final ViewConfiguration viewConfiguration;
   final List<ViewConfiguration> viewConfigurations;
   final void Function(ViewConfiguration value) onSelected;
+  final CalendarCallbacks callbacks;
 
   const CalendarWidget({
     super.key,
@@ -16,6 +17,7 @@ class CalendarWidget extends StatelessWidget {
     required this.viewConfiguration,
     required this.viewConfigurations,
     required this.onSelected,
+    required this.callbacks,
   });
 
   @override
@@ -132,6 +134,7 @@ class CalendarWidget extends StatelessWidget {
       viewConfiguration: viewConfiguration,
       header: header,
       body: multiDayBody,
+      callbacks: callbacks,
     );
   }
 }

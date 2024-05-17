@@ -71,6 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
+  OverlayEntry? _overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -94,12 +96,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final callbacks = CalendarCallbacks(
+      onEventTapped: _createOverlay,
+    );
+
     final calendar = CalendarWidget(
       controller: controller,
       eventsController: eventsController,
       viewConfiguration: _viewConfiguration,
       viewConfigurations: _viewConfigurations,
       onSelected: (value) => setState(() => _viewConfiguration = value),
+      callbacks: callbacks,
     );
 
     final calendar1 = CalendarWidget(
@@ -108,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
       viewConfiguration: _viewConfiguration1,
       viewConfigurations: _viewConfigurations,
       onSelected: (value) => setState(() => _viewConfiguration1 = value),
+      callbacks: callbacks,
     );
 
     return Scaffold(
@@ -132,5 +140,69 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+  void _removeOverlay() {
+    if (_overlayEntry != null) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+  }
+
+  void _createOverlay(CalendarEvent event, RenderBox renderBox) {
+    _removeOverlay();
+
+    var position = renderBox.localToGlobal(Offset.zero);
+    const height = 300.0;
+    const width = 250.0;
+
+    final size = context.size!;
+
+    if (position.dy + height > size.height) {
+      position =
+          position.translate(0, size.height - (position.dy + height) - 25);
+    }
+
+    if (position.dx + width + renderBox.size.width > size.width) {
+      position = position.translate(-width - 16, 0);
+    } else {
+      position = position.translate(renderBox.size.width, 0);
+    }
+
+    final overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          top: position.dy,
+          left: position.dx,
+          child: Card(
+            elevation: 5,
+            margin: const EdgeInsets.all(8),
+            child: SizedBox(
+              width: width,
+              height: height,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton.filledTonal(
+                          onPressed: () => _removeOverlay(),
+                          icon: const Icon(Icons.close),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    _overlayEntry = overlayEntry;
+    Overlay.of(context).insert(overlayEntry);
   }
 }
