@@ -5,8 +5,6 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
-import 'package:web_demo/theme.g.dart';
-import 'package:web_demo/widgets/calendar_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,8 +30,19 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Web Demo',
       themeMode: themeMode,
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+      ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -56,12 +65,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final controller = CalendarController();
-  final controller1 = CalendarController();
   final eventsController = EventsController();
 
-  late ViewConfiguration _viewConfiguration = _viewConfigurations[1];
-  late ViewConfiguration _viewConfiguration1 = _viewConfigurations[1];
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
     MultiDayViewConfiguration.week(),
@@ -102,24 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
       onEventTapped: _createOverlay,
     );
 
-    final calendar = CalendarWidget(
-      controller: controller,
-      eventsController: eventsController,
-      viewConfiguration: _viewConfiguration,
-      viewConfigurations: _viewConfigurations,
-      onSelected: (value) => setState(() => _viewConfiguration = value),
-      callbacks: callbacks,
-    );
-
-    final calendar1 = CalendarWidget(
-      controller: controller1,
-      eventsController: eventsController,
-      viewConfiguration: _viewConfiguration1,
-      viewConfigurations: _viewConfigurations,
-      onSelected: (value) => setState(() => _viewConfiguration1 = value),
-      callbacks: callbacks,
-    );
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -152,16 +139,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             MultiCalendarView(
               eventsController: eventsController,
+              callbacks: callbacks,
+              viewConfigurations: _viewConfigurations,
             ),
           ],
         ),
-
-        //  Row(
-        //   children: [
-        //     Flexible(flex: 3, child: calendar),
-        //     Flexible(flex: 3, child: calendar1),
-        //   ],
-        // ),
       ),
     );
   }
