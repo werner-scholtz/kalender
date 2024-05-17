@@ -41,3 +41,34 @@ class _ResizeDetectorWidgetState extends State<ResizeDetectorWidget> {
     );
   }
 }
+
+/// A widget used to detect resizes for multi-day events.
+class MultiDayResizeDetectorWidget extends StatelessWidget {
+  final Function(Offset delta) onPanUpdate;
+  final Function(Offset delta) onPanEnd;
+  final Widget? child;
+
+  const MultiDayResizeDetectorWidget({
+    super.key,
+    required this.onPanUpdate,
+    required this.onPanEnd,
+    this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onPanStart: (details) {
+        onPanUpdate.call(details.globalPosition);
+      },
+      onPanUpdate: (details) {
+        onPanUpdate.call(details.globalPosition);
+      },
+      onPanEnd: (details) {
+        onPanEnd.call(details.globalPosition);
+      },
+      child: child,
+    );
+  }
+}

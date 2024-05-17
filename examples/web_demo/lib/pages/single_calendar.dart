@@ -22,7 +22,7 @@ class SingleCalendarView extends StatefulWidget {
 class _SingleCalendarViewState extends State<SingleCalendarView> {
   final _controller = CalendarController();
 
-  late ViewConfiguration _viewConfiguration = widget.viewConfigurations.first;
+  late ViewConfiguration _viewConfiguration = widget.viewConfigurations[1];
 
   @override
   Widget build(BuildContext context) {

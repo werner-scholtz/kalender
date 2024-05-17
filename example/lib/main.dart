@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
           renderObject.size.height / 2,
         );
       },
-      resizeHandle: const ResizeHandle(),
+      verticalResizeHandle: const ResizeHandle(),
     );
 
     final calendar = CalendarView(

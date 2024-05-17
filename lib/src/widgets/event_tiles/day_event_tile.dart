@@ -72,7 +72,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
               onPanEnd: (_) => _onPanEnd(_, VerticalResize.top),
               child: direction != VerticalResize.none
                   ? null
-                  : tileComponents.resizeHandle ?? const SizedBox(),
+                  : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
 
             final bottomResizeDetector = ResizeDetectorWidget(
@@ -80,7 +80,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
               onPanEnd: (_) => _onPanEnd(_, VerticalResize.bottom),
               child: direction != VerticalResize.none
                   ? null
-                  : tileComponents.resizeHandle ?? const SizedBox(),
+                  : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
 
             late final feedback = ValueListenableBuilder(

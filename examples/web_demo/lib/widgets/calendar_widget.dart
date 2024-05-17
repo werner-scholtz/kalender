@@ -65,7 +65,8 @@ class CalendarWidget extends StatelessWidget {
           renderObject.size.height / 2,
         );
       },
-      resizeHandle: const ResizeHandle(),
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
     );
 
     final calendarHeader = Row(
