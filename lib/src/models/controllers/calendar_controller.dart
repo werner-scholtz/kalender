@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
