@@ -47,14 +47,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// Attach the [ViewController] to this [CalendarController].
   void attach(ViewController viewController) {
     if (isAttached) detach();
-    log('Attaching ${viewController.toString()} to $this');
+
     _viewController = viewController;
     notifyListeners();
   }
 
   /// Detach the [ViewController] from this [CalendarController].
   void detach() {
-    log('Detaching ${viewController.toString()} from $this');
     _viewController = null;
   }
 
