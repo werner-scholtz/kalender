@@ -21,6 +21,52 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tileComponents = TileComponents(
+      tileBuilder: (event) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dropTargetTile: (event) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.green, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      feedbackTileBuilder: (event, dropTargetWidgetSize) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: dropTargetWidgetSize.width * 0.8,
+          height: dropTargetWidgetSize.height,
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      tileWhenDraggingBuilder: (event) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(20),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dragAnchorStrategy: (draggable, context, position) {
+        final renderObject = context.findRenderObject()! as RenderBox;
+        return Offset(
+          20,
+          renderObject.size.height / 2,
+        );
+      },
+      resizeHandle: const ResizeHandle(),
+    );
+
     final header = Material(
       color: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
@@ -66,55 +112,10 @@ class CalendarWidget extends StatelessWidget {
           MultiDayHeader(
             eventsController: eventsController,
             calendarController: controller,
+            tileComponents: tileComponents,
           ),
         ],
       ),
-    );
-
-    final tileComponents = DayTileComponents(
-      tileBuilder: (event) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      dropTargetTile: (event) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.green, width: 2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      feedbackTileBuilder: (event, dropTargetWidgetSize) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          width: dropTargetWidgetSize.width * 0.8,
-          height: dropTargetWidgetSize.height,
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      tileWhenDraggingBuilder: (event) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(20),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
-      dragAnchorStrategy: (draggable, context, position) {
-        final renderObject = context.findRenderObject()! as RenderBox;
-        return Offset(
-          20,
-          renderObject.size.height / 2,
-        );
-      },
-      resizeHandle: const ResizeHandle(),
     );
 
     return CalendarView(

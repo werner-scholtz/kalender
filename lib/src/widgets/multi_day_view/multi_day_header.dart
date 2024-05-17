@@ -1,16 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions.dart';
-
+import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_provider.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
-import 'package:kalender/src/widgets/multi_day_events_widget.dart';
+import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
+import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
+import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detector.dart';
 
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayHeader].
@@ -22,11 +23,19 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [CalendarCallbacks] that will be used by the [MultiDayHeader].
   final CalendarCallbacks<T>? callbacks;
 
+  /// The [TileComponents] that will be used by the [MultiDayHeader].
+  final TileComponents<T> tileComponents;
+
+  /// The height of the tiles.
+  final double tileHeight;
+
   const MultiDayHeader({
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
+    this.tileHeight = 24.0,
+    required this.tileComponents,
   });
 
   @override
@@ -66,106 +75,153 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final viewConfiguration = viewController.viewConfiguration;
 
-    return ValueListenableBuilder(
-      valueListenable: viewController.visibleDateTimeRange,
-      builder: (context, visibleDateTimeRange, child) {
-        final multiDayEventsWidget = MultiDayEventWidget(
-          visibleDateTimeRange: visibleDateTimeRange,
-          eventBeingDragged: viewController.eventBeingDragged,
-          eventsController: eventsController!,
-        );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
 
-        final header = viewConfiguration.numberOfDays == 1
-            ? _SingleDayHeader(
-                visibleDateTimeRange: visibleDateTimeRange,
-                timelineWidth: viewConfiguration.timelineWidth,
-              )
-            : _MultiDayHeader(
-                visibleDateTimeRange: visibleDateTimeRange,
-                timelineWidth: viewConfiguration.timelineWidth,
-                multiDayEventsWidget: multiDayEventsWidget,
-              );
+        return ValueListenableBuilder(
+          valueListenable: viewController.visibleDateTimeRange,
+          builder: (context, visibleDateTimeRange, child) {
+            final header = viewConfiguration.numberOfDays == 1
+                ? const _SingleDayHeader()
+                : const _MultiDayHeader();
 
-        return Column(
-          children: [
-            header,
-          ],
+            return MultiDayProvider(
+              eventsController: eventsController!,
+              viewController: viewController,
+              tileComponents: tileComponents,
+              pageWidth: pageWidth,
+              dayWidth: dayWidth,
+              callbacks: callbacks,
+              tileHeight: tileHeight,
+              child: Column(
+                children: [
+                  header,
+                ],
+              ),
+            );
+          },
         );
       },
     );
   }
 }
 
-class _SingleDayHeader<T> extends StatelessWidget {
-  final DateTimeRange visibleDateTimeRange;
-  final double timelineWidth;
-
-  const _SingleDayHeader({
-    super.key,
-    required this.visibleDateTimeRange,
-    required this.timelineWidth,
-  });
+class _SingleDayHeader<T extends Object?> extends StatelessWidget {
+  const _SingleDayHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = MultiDayProvider.of<T>(context);
+    final visibleDateTimeRange = provider.visibleDateTimeRangeValue;
+    final timelineWidth = provider.timelineWidth;
+
     final dayHeader = SizedBox(
       width: timelineWidth,
       child: DayHeader(date: visibleDateTimeRange.start),
     );
 
+    final multiDayEvents = MultiDayEventWidget<T>();
+
+    final multiDayDragTarget = MultiDayDragTarget<T>(
+      allowSingleDayEvents: false,
+    );
+
+    final tileHeight = provider.tileHeight;
+    final pageWidth = provider.pageWidth;
+    final dragTargetConstrains = BoxConstraints(
+      minHeight: tileHeight,
+      minWidth: pageWidth,
+    );
+
+    final gestureDetector = MultiDayGestureDetector<T>(
+      visibleDateTimeRange: visibleDateTimeRange,
+    );
+
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         dayHeader,
+        Expanded(
+          child: Stack(
+            children: [
+              multiDayEvents,
+              ConstrainedBox(
+                constraints: dragTargetConstrains,
+                child: multiDayDragTarget,
+              ),
+              Positioned.fill(child: gestureDetector),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
-class _MultiDayHeader<T> extends StatelessWidget {
-  final DateTimeRange visibleDateTimeRange;
-  final double timelineWidth;
-  final Widget multiDayEventsWidget;
-
-  const _MultiDayHeader({
-    super.key,
-    required this.visibleDateTimeRange,
-    required this.timelineWidth,
-    required this.multiDayEventsWidget,
-  });
+class _MultiDayHeader<T extends Object?> extends StatelessWidget {
+  const _MultiDayHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final weekNumber = SizedBox(
-          width: timelineWidth,
-          child: WeekNumber(visibleDateTimeRange: visibleDateTimeRange),
-        );
+    final provider = MultiDayProvider.of<T>(context);
+    final visibleDateTimeRange = provider.visibleDateTimeRangeValue;
+    final timelineWidth = provider.timelineWidth;
+    final tileHeight = provider.tileHeight;
+    final pageWidth = provider.pageWidth;
+    final numberOfDays = provider.viewConfiguration.numberOfDays;
 
-        final dayWidth = (constraints.maxWidth - timelineWidth) /
-            visibleDateTimeRange.datesSpanned.length;
+    final weekNumber = SizedBox(
+      width: timelineWidth,
+      child: WeekNumber(visibleDateTimeRange: visibleDateTimeRange),
+    );
 
-        final visibleDates = visibleDateTimeRange.datesSpanned;
-        final dayHeaders = visibleDates.map((date) {
-          return SizedBox(
-            width: dayWidth,
-            child: DayHeader(date: date),
-          );
-        }).toList();
+    final dayWidth = (pageWidth - timelineWidth) / numberOfDays;
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                weekNumber,
-                ...dayHeaders,
-              ],
-            ),
-            multiDayEventsWidget,
-          ],
-        );
-      },
+    final visibleDates = visibleDateTimeRange.datesSpanned;
+    final dayHeaders = visibleDates.map((date) {
+      return SizedBox(
+        width: dayWidth,
+        child: DayHeader(date: date),
+      );
+    }).toList();
+
+    final multiDayEvents = MultiDayEventWidget<T>();
+    final multiDayDragTarget = MultiDayDragTarget<T>(
+      allowSingleDayEvents: false,
+    );
+
+    final dragTargetConstrains = BoxConstraints(
+      minHeight: tileHeight,
+      minWidth: pageWidth,
+    );
+
+    final gestureDetector = MultiDayGestureDetector<T>(
+      visibleDateTimeRange: visibleDateTimeRange,
+    );
+
+    return Row(
+      children: [
+        weekNumber,
+        Expanded(
+          child: Column(
+            children: [
+              Row(children: [...dayHeaders]),
+              Stack(
+                children: [
+                  multiDayEvents,
+                  ConstrainedBox(
+                    constraints: dragTargetConstrains,
+                    child: multiDayDragTarget,
+                  ),
+                  Positioned.fill(child: gestureDetector),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
