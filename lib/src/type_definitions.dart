@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
+import 'package:kalender/src/widgets/components/week_number.dart';
 
 /// The callback for when an event is tapped.
 typedef OnEventTapped<T extends Object?> = void Function(
@@ -88,6 +90,24 @@ typedef TimeIndicatorBuilder = Widget Function(
   double heightPerMinute,
   double timelineWidth,
   TimeIndicatorStyle? style,
+);
+
+/// The day header builder.
+///
+/// The [date] is the date that the header will be displayed for.
+/// The [style] is used to style the day header.
+typedef DayHeaderBuilder = Widget Function(
+  DateTime date,
+  DayHeaderStyle? style,
+);
+
+/// The week number builder.
+///
+/// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.
+/// The [style] is used to style the week number.
+typedef WeekNumberBuilder = Widget Function(
+  DateTimeRange visibleDateTimeRange,
+  WeekNumberStyle? style,
 );
 
 ///

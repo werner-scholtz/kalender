@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/multi_day_provider.dart';
@@ -26,14 +27,22 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? configuration;
 
+  /// The [MultiDayHeaderComponentBuilders] that will be used by the [MultiDayHeader].
+  final MultiDayHeaderComponentBuilders? componentBuilders;
+
+  /// The [MultiDayHeaderComponentStyles] that will be used by the [MultiDayHeader].
+  final MultiDayHeaderComponentStyles? componentStyles;
+
   /// Creates a new [MultiDayHeader].
-  const MultiDayHeader({ 
+  const MultiDayHeader({
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
     required this.tileComponents,
     this.configuration,
+    this.componentBuilders,
+    this.componentStyles,
   });
 
   @override
@@ -95,6 +104,8 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               dayWidth: dayWidth,
               callbacks: callbacks,
               headerConfiguration: headerConfiguration,
+              componentBuilders: componentBuilders,
+              componentStyles: componentStyles,
               child: Column(
                 children: [
                   header,
@@ -127,9 +138,19 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       minWidth: pageWidth,
     );
 
+    final dayHeaderStyle = provider.componentStyles?.dayHeaderStyle;
+    final dayHeaderWidget = provider.componentBuilders?.dayHeaderBuilder?.call(
+          visibleDateTimeRange.start,
+          dayHeaderStyle,
+        ) ??
+        DayHeader(
+          date: visibleDateTimeRange.start,
+          style: dayHeaderStyle,
+        );
+
     final dayHeader = SizedBox(
       width: timelineWidth,
-      child: DayHeader(date: visibleDateTimeRange.start),
+      child: dayHeaderWidget,
     );
 
     final multiDayEvents = MultiDayEventWidget<T>(
@@ -190,18 +211,39 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       minWidth: pageWidth,
     );
 
+    final weekNumberStyle = provider.componentStyles?.weekNumberStyle;
+    final weekNumberWidget =
+        provider.componentBuilders?.weekNumberBuilder?.call(
+              visibleDateTimeRange,
+              weekNumberStyle,
+            ) ??
+            WeekNumber(
+              visibleDateTimeRange: visibleDateTimeRange,
+              weekNumberStyle: weekNumberStyle,
+            );
+
     final weekNumber = SizedBox(
       width: timelineWidth,
-      child: WeekNumber(visibleDateTimeRange: visibleDateTimeRange),
+      child: weekNumberWidget,
     );
 
     final dayWidth = (pageWidth - timelineWidth) / numberOfDays;
 
     final visibleDates = visibleDateTimeRange.datesSpanned;
+    final dayHeaderStyle = provider.componentStyles?.dayHeaderStyle;
     final dayHeaders = visibleDates.map((date) {
+      final dayHeader = provider.componentBuilders?.dayHeaderBuilder?.call(
+            visibleDateTimeRange.start,
+            dayHeaderStyle,
+          ) ??
+          DayHeader(
+            date: visibleDateTimeRange.start,
+            style: dayHeaderStyle,
+          );
+
       return SizedBox(
         width: dayWidth,
-        child: DayHeader(date: date),
+        child: dayHeader,
       );
     }).toList();
 

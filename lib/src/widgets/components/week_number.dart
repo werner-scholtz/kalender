@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 
+/// The style of the [WeekNumber].
 class WeekNumberStyle {
+  /// Creates a new [WeekNumberStyle].
   const WeekNumberStyle({
     this.textStyle,
     this.visualDensity,
@@ -41,7 +43,7 @@ class WeekNumber extends StatelessWidget {
 
     final (start, end) = visibleDateTimeRange.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
-    
+
     return IconButton.filledTonal(
       tooltip: tooltip,
       onPressed: null,

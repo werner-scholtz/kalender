@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 
 class MultiDayProvider<T extends Object?> extends InheritedWidget {
@@ -7,6 +8,8 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
   final MultiDayViewController<T> viewController;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
+  final MultiDayHeaderComponentBuilders? componentBuilders;
+  final MultiDayHeaderComponentStyles? componentStyles;
 
   /// The width of the page.
   final double pageWidth;
@@ -49,7 +52,9 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
     required this.pageWidth,
     required this.dayWidth,
     required this.headerConfiguration,
-    this.callbacks,
+    required this.callbacks,
+    required this.componentBuilders,
+    required this.componentStyles,
   });
 
   static MultiDayProvider<T>? maybeOf<T>(BuildContext context) {

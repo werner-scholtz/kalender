@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 
+/// The style of the [DayHeader].
 class DayHeaderStyle {
+  /// Creates a new [DayHeaderStyle].
   const DayHeaderStyle({
     this.textStyle,
     this.stringBuilder,
