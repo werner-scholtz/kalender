@@ -233,11 +233,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     final dayHeaderStyle = provider.componentStyles?.dayHeaderStyle;
     final dayHeaders = visibleDates.map((date) {
       final dayHeader = provider.componentBuilders?.dayHeaderBuilder?.call(
-            visibleDateTimeRange.start,
+            date,
             dayHeaderStyle,
           ) ??
           DayHeader(
-            date: visibleDateTimeRange.start,
+            date: date,
             style: dayHeaderStyle,
           );
 
