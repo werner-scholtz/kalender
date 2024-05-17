@@ -7,9 +7,10 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 ///
 /// This widget is used to pass the configuration and controllers down the widget tree.
 class DayProvider<T extends Object?> extends InheritedWidget {
-  ///
+  /// The [EventsController] that will be used to control the events.
   final EventsController<T> eventsController;
 
+  /// The [CalendarCallbacks] that will be used to control the calendar.
   final CalendarCallbacks<T>? callbacks;
 
   /// The [MultiDayViewController] that will be used to control the view.
@@ -18,13 +19,11 @@ class DayProvider<T extends Object?> extends InheritedWidget {
   /// The components that will be displayed in the [MultiDayBody].
   final MultiDayBodyComponents? components;
 
+  /// The tile components that will be displayed in the [MultiDayBody].
   final TileComponents<T> tileComponents;
 
   /// The styles of the components.
   final MultiDayBodyComponentStyles? componentStyles;
-
-  /// The [ScrollPhysics] that will be used to control the page scrolling.
-  final ScrollPhysics? pageScrollPhysics;
 
   /// The [ValueNotifier] that contains the size of the feedback widget.
   final ValueNotifier<Size> feedbackWidgetSize;
@@ -38,9 +37,7 @@ class DayProvider<T extends Object?> extends InheritedWidget {
   /// The width of a day.
   final double dayWidth;
 
-  MultiDayBodyConfiguration get bodyConfiguration {
-    return viewController.viewConfiguration.bodyConfiguration;
-  }
+  final MultiDayBodyConfiguration bodyConfiguration;
 
   /// The [MultiDayViewConfiguration] that will be used to display the [MultiDayBody].
   MultiDayViewConfiguration get viewConfiguration =>
@@ -95,7 +92,6 @@ class DayProvider<T extends Object?> extends InheritedWidget {
     required this.eventsController,
     required this.viewController,
     required this.feedbackWidgetSize,
-    required this.pageScrollPhysics,
     required this.components,
     required this.componentStyles,
     required this.viewportHeight,
@@ -103,6 +99,7 @@ class DayProvider<T extends Object?> extends InheritedWidget {
     required this.dayWidth,
     required this.callbacks,
     required this.tileComponents,
+    required this.bodyConfiguration,
   });
 
   static DayProvider<T>? maybeOf<T>(BuildContext context) {

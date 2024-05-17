@@ -5,6 +5,7 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
+const defaultTileHeight = 24.0;
 const defaultTimeLineWith = 48.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultAllowEventCreation = true;
@@ -13,7 +14,9 @@ const defaultAllowRescheduling = true;
 const defaultCreateEventTrigger = CreateEventTrigger.tap;
 const defaultShowMultiDayEvents = false;
 const defaultLayoutStrategy = overlapLayoutStrategy;
+const defaultFirstDayOfWeek = DateTime.monday;
 
+/// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration({
     required super.name,
@@ -23,19 +26,18 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.timelineWidth,
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
-    required this.bodyConfiguration,
-    required this.headerConfiguration,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be between 1 and 7 (inclusive)\n'
           'Use DateTime.monday ~ DateTime.sunday if unsure.',
         );
 
+  /// Creates a [MultiDayViewConfiguration] for a single day.
   MultiDayViewConfiguration.singleDay({
     super.name = 'Day',
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
-    this.firstDayOfWeek = DateTime.monday,
+    this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.timelineWidth = defaultTimeLineWith,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
@@ -47,15 +49,14 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     pageNavigationFunctions = PageNavigationFunctions.singleDay(
       this.displayRange,
     );
-    bodyConfiguration = MultiDayBodyConfiguration();
-    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
+  /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
     super.name = 'Week',
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
-    this.firstDayOfWeek = DateTime.monday,
+    this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.numberOfDays = 7,
     this.timelineWidth = defaultTimeLineWith,
     PageTriggerConfiguration? pageTriggerConfiguration,
@@ -67,10 +68,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       this.displayRange,
       firstDayOfWeek,
     );
-    bodyConfiguration = MultiDayBodyConfiguration();
-    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
+  /// Creates a [MultiDayViewConfiguration] for a work week.
   MultiDayViewConfiguration.workWeek({
     super.name = 'Work Week',
     DateTimeRange? displayRange,
@@ -87,10 +87,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     pageNavigationFunctions = PageNavigationFunctions.workWeek(
       this.displayRange,
     );
-    bodyConfiguration = MultiDayBodyConfiguration();
-    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
+  /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
     super.name = 'Custom',
     DateTimeRange? displayRange,
@@ -108,8 +107,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       this.displayRange,
       numberOfDays,
     );
-    bodyConfiguration = MultiDayBodyConfiguration();
-    headerConfiguration = MultiDayHeaderConfiguration();
   }
 
   /// The functions for navigating the [PageView].
@@ -137,15 +134,13 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   ///
   /// This is used by the [MultiDayBody] and [MultiDayHeader].
   final double timelineWidth;
-
-  /// The configuration for the header of the [MultiDayHeader].
-  late final MultiDayHeaderConfiguration headerConfiguration;
-
-  /// The configuration for the body of the [MultiDayBody].
-  late final MultiDayBodyConfiguration bodyConfiguration;
 }
 
+/// The configuration used by the [MultiDayBody].
+///
+/// This configuration is used to determine the behavior of the [MultiDayBody].
 class MultiDayBodyConfiguration {
+  /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayBodyConfiguration({
     this.showMultiDayEvents = defaultShowMultiDayEvents,
     this.allowEventCreation = defaultAllowEventCreation,
@@ -156,6 +151,8 @@ class MultiDayBodyConfiguration {
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.dayEventLayoutStrategy = defaultLayoutStrategy,
+    this.scrollPhysics,
+    this.pageScrollPhysics,
   }) {
     this.pageTriggerConfiguration =
         pageTriggerConfiguration ?? PageTriggerConfiguration();
@@ -192,10 +189,21 @@ class MultiDayBodyConfiguration {
 
   /// The layout strategy used by the [MultiDayBody] to layout events.
   final DayEventLayoutStrategy dayEventLayoutStrategy;
+
+  /// The [ScrollPhysics] used by the scrollable body.
+  final ScrollPhysics? scrollPhysics;
+
+  /// The [ScrollPhysics] used by the page view.
+  final ScrollPhysics? pageScrollPhysics;
 }
 
+/// The configuration used by the [MultiDayHeader].
+///
+/// This configuration is used to determine the behavior of the [MultiDayHeader].
 class MultiDayHeaderConfiguration {
+  /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
+    this.tileHeight = defaultTileHeight,
     this.allowEventCreation = defaultAllowEventCreation,
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
@@ -206,6 +214,9 @@ class MultiDayHeaderConfiguration {
     this.pageTriggerConfiguration =
         pageTriggerConfiguration ?? PageTriggerConfiguration();
   }
+
+  /// The height of the tiles in the [MultiDayHeader].
+  final double tileHeight;
 
   /// Allow the resizing of events.
   final bool allowResizing;

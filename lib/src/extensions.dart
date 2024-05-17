@@ -155,6 +155,20 @@ extension DateTimeExtensions on DateTime {
   /// Gets the day range in which the [DateTime] is in.
   DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
 
+  /// Gets the start of the month.
+  DateTime get startOfMonth => DateTime(year, month);
+
+  /// Gets the end of the month.
+  DateTime get endOfMonth => DateTime(year, month + 1);
+
+  /// Gets the month range in which the [DateTime] is in.
+  DateTimeRange get monthRange {
+    return DateTimeRange(
+      start: startOfMonth,
+      end: endOfMonth,
+    );
+  }
+
   /// Gets the year range in which the [DateTime] is in.
   DateTimeRange get yearRange {
     return DateTimeRange(

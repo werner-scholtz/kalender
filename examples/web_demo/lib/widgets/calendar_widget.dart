@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 
@@ -67,55 +66,64 @@ class CalendarWidget extends StatelessWidget {
       resizeHandle: const ResizeHandle(),
     );
 
+    final navigationButtons = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        IconButton.filledTonal(
+          onPressed: () async {
+            await controller.animateToPreviousPage();
+          },
+          icon: const Icon(Icons.navigate_before),
+        ),
+        IconButton.filledTonal(
+          onPressed: () {
+            controller.animateToNextPage();
+          },
+          icon: const Icon(Icons.navigate_next),
+        ),
+        IconButton.filledTonal(
+          onPressed: () {
+            controller.animateToDate(DateTime.now());
+          },
+          icon: const Icon(Icons.today),
+        ),
+        Expanded(
+          child: DropdownMenu(
+            dropdownMenuEntries: viewConfigurations
+                .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                .toList(),
+            initialSelection: viewConfiguration,
+            expandedInsets: EdgeInsets.zero,
+            onSelected: (value) {
+              if (value == null) return;
+              onSelected(value);
+            },
+          ),
+        ),
+      ],
+    );
+
+    final multiDayHeader = MultiDayHeader(
+      eventsController: eventsController,
+      calendarController: controller,
+      tileComponents: tileComponents,
+    );
+
     final header = Material(
       color: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
       elevation: 2,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton.filledTonal(
-                onPressed: () async {
-                  await controller.animateToPreviousPage();
-                },
-                icon: const Icon(Icons.navigate_before),
-              ),
-              IconButton.filledTonal(
-                onPressed: () {
-                  controller.animateToNextPage();
-                },
-                icon: const Icon(Icons.navigate_next),
-              ),
-              IconButton.filledTonal(
-                onPressed: () {
-                  controller.animateToDate(DateTime.now());
-                },
-                icon: const Icon(Icons.today),
-              ),
-              Expanded(
-                child: DropdownMenu(
-                  dropdownMenuEntries: viewConfigurations
-                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                      .toList(),
-                  initialSelection: viewConfiguration,
-                  expandedInsets: EdgeInsets.zero,
-                  onSelected: (value) {
-                    if (value == null) return;
-                    onSelected(value);
-                  },
-                ),
-              ),
-            ],
-          ),
-          MultiDayHeader(
-            eventsController: eventsController,
-            calendarController: controller,
-            tileComponents: tileComponents,
-          ),
+          navigationButtons,
+          multiDayHeader,
         ],
       ),
+    );
+
+    final multiDayBody = MultiDayBody(
+      heightPerMinute: ValueNotifier(0.5),
+      tileComponents: tileComponents,
     );
 
     return CalendarView(
@@ -123,10 +131,7 @@ class CalendarWidget extends StatelessWidget {
       eventsController: eventsController,
       viewConfiguration: viewConfiguration,
       header: header,
-      body: MultiDayBody(
-        heightPerMinute: ValueNotifier(0.5),
-        tileComponents: tileComponents,
-      ),
+      body: multiDayBody,
     );
   }
 }

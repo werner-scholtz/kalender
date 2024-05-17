@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/calendar_view.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/components/tile_components.dart';
-import 'package:kalender/src/models/controllers/calendar_controller.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/multi_day_provider.dart';
@@ -26,16 +23,17 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [TileComponents] that will be used by the [MultiDayHeader].
   final TileComponents<T> tileComponents;
 
-  /// The height of the tiles.
-  final double tileHeight;
+  /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
+  final MultiDayHeaderConfiguration? configuration;
 
-  const MultiDayHeader({
+  /// Creates a new [MultiDayHeader].
+  const MultiDayHeader({ 
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
-    this.tileHeight = 24.0,
     required this.tileComponents,
+    this.configuration,
   });
 
   @override
@@ -72,13 +70,15 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final viewController =
         calendarController!.viewController as MultiDayViewController<T>;
-
     final viewConfiguration = viewController.viewConfiguration;
+    final headerConfiguration =
+        this.configuration ?? MultiDayHeaderConfiguration();
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
-        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+        final dayWidth = (pageWidth - viewConfiguration.timelineWidth) /
+            viewConfiguration.numberOfDays;
 
         return ValueListenableBuilder(
           valueListenable: viewController.visibleDateTimeRange,
@@ -94,7 +94,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               pageWidth: pageWidth,
               dayWidth: dayWidth,
               callbacks: callbacks,
-              tileHeight: tileHeight,
+              headerConfiguration: headerConfiguration,
               child: Column(
                 children: [
                   header,
@@ -120,6 +120,13 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     final provider = MultiDayProvider.of<T>(context);
     final timelineWidth = provider.timelineWidth;
 
+    final tileHeight = provider.tileHeight;
+    final pageWidth = provider.pageWidth;
+    final constraints = BoxConstraints(
+      minHeight: tileHeight * 2,
+      minWidth: pageWidth,
+    );
+
     final dayHeader = SizedBox(
       width: timelineWidth,
       child: DayHeader(date: visibleDateTimeRange.start),
@@ -133,13 +140,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       allowSingleDayEvents: false,
     );
 
-    final tileHeight = provider.tileHeight;
-    final pageWidth = provider.pageWidth;
-    final dragTargetConstrains = BoxConstraints(
-      minHeight: tileHeight,
-      minWidth: pageWidth,
-    );
-
     final gestureDetector = MultiDayGestureDetector<T>(
       visibleDateTimeRange: visibleDateTimeRange,
     );
@@ -149,17 +149,23 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       children: [
         dayHeader,
         Expanded(
-          child: Stack(
-            children: [
-              Positioned.fill(child: gestureDetector),
-              multiDayEvents,
-              Positioned.fill(
-                child: ConstrainedBox(
-                  constraints: dragTargetConstrains,
-                  child: multiDayDragTarget,
+          child: IntrinsicHeight(
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Positioned.fill(child: gestureDetector),
+                    ConstrainedBox(
+                      constraints: constraints,
+                      child: multiDayEvents,
+                    ),
+                    Positioned.fill(
+                      child: multiDayDragTarget,
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -178,6 +184,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     final tileHeight = provider.tileHeight;
     final pageWidth = provider.pageWidth;
     final numberOfDays = provider.viewConfiguration.numberOfDays;
+
+    final constraints = BoxConstraints(
+      minHeight: tileHeight,
+      minWidth: pageWidth,
+    );
 
     final weekNumber = SizedBox(
       width: timelineWidth,
@@ -199,11 +210,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     );
     final multiDayDragTarget = MultiDayDragTarget<T>(
       allowSingleDayEvents: false,
-    );
-
-    final constraints = BoxConstraints(
-      minHeight: tileHeight,
-      minWidth: pageWidth,
     );
 
     final gestureDetector = MultiDayGestureDetector<T>(

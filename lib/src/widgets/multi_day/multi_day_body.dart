@@ -22,10 +22,13 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [CalendarController] that will be used by the [MultiDayBody].
   final CalendarController<T>? calendarController;
 
+  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
+  final MultiDayBodyConfiguration? configuration;
+
   /// The callbacks used by the [MultiDayBody].
   final CalendarCallbacks<T>? callbacks;
 
-  /// The components used by the [MultiDayBody].
+  /// The tile components used by the [MultiDayBody].
   final TileComponents<T> tileComponents;
 
   /// The components used by the [MultiDayBody].
@@ -40,12 +43,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [ScrollController] used by the scrollable body.
   final ScrollController? scrollController;
 
-  /// The [ScrollPhysics] used by the scrollable body.
-  final ScrollPhysics? scrollPhysics;
-
-  /// The [ScrollPhysics] used by the page view.
-  final ScrollPhysics? pageScrollPhysics;
-
+  /// Creates a new [MultiDayBody].
   const MultiDayBody({
     super.key,
     this.eventsController,
@@ -56,8 +54,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.componentStyles,
     this.scrollController,
     this.heightPerMinute,
-    this.scrollPhysics,
-    this.pageScrollPhysics,
+    this.configuration,
   });
 
   @override
@@ -99,6 +96,17 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final numberOfDays = viewConfiguration.numberOfDays;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
     final eventBeingDragged = viewController.eventBeingDragged;
+    final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
+
+    // Override the height per minute if it is provided.
+    if (heightPerMinute != null) {
+      viewController.heightPerMinute = heightPerMinute!;
+    }
+
+    // Override the scroll controller if it is provided.
+    if (scrollController != null) {
+      viewController.scrollController = scrollController!;
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -178,7 +186,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               key: ValueKey(viewConfiguration.name),
               controller: viewController.pageController,
               itemCount: viewController.numberOfPages,
-              physics: pageScrollPhysics,
+              physics: configuration?.pageScrollPhysics,
               onPageChanged: (index) {
                 final visibleRange = pageNavigation.dateTimeRangeFromIndex(
                   index,
@@ -229,7 +237,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               eventsController: eventsController!,
               viewController: viewController,
               feedbackWidgetSize: eventsController.feedbackWidgetSize,
-              pageScrollPhysics: pageScrollPhysics,
               viewportHeight: viewPortHeight,
               pageWidth: pageWidth,
               dayWidth: dayWidth,
@@ -237,6 +244,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               componentStyles: componentStyles,
               callbacks: callbacks,
               tileComponents: tileComponents,
+              bodyConfiguration: bodyConfiguration,
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -244,7 +252,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       controller: viewController.scrollController,
                       child: SingleChildScrollView(
                         controller: viewController.scrollController,
-                        physics: scrollPhysics,
+                        physics: configuration?.scrollPhysics,
                         child: SizedBox(
                           height: pageHeight,
                           child: Stack(

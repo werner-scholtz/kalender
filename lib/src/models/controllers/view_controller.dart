@@ -94,7 +94,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   late ScrollController scrollController;
 
   /// The height per minute of the view.
-  late final ValueNotifier<double> heightPerMinute;
+  late ValueNotifier<double> heightPerMinute;
 
   /// The visible date time range of the view.
   late final ValueNotifier<DateTimeRange> visibleDateTimeRange;

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
+import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
 /// The components used by the [MultiDayBody] to render the event tiles.
 ///

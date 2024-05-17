@@ -25,9 +25,7 @@ class PageNavigationFunctions {
     DateTimeRange dateTimeRange,
   ) {
     final start = dateTimeRange.start;
-
     dateTimeRangeFromIndex = (index) => start.addDays(index).dayRange;
-
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = start.startOfDay.toUtc();
@@ -42,7 +40,6 @@ class PageNavigationFunctions {
     int firstDayOfWeek,
   ) {
     final start = dateTimeRange.start;
-
     dateTimeRangeFromIndex = (index) {
       return DateTime(
         start.year,
@@ -50,7 +47,6 @@ class PageNavigationFunctions {
         start.day + (index * DateTime.daysPerWeek),
       ).weekRangeWithOffset(firstDayOfWeek);
     };
-
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = start.startOfDay.toUtc();
@@ -58,7 +54,6 @@ class PageNavigationFunctions {
           dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
       return index.floor();
     };
-
     numberOfPages = (dateTimeRange.dayDifference / DateTime.daysPerWeek).ceil();
   }
 
@@ -67,7 +62,6 @@ class PageNavigationFunctions {
     DateTimeRange dateTimeRange,
   ) {
     final start = dateTimeRange.start;
-
     dateTimeRangeFromIndex = (index) {
       final weekRange = DateTime(
         start.year,
@@ -80,7 +74,6 @@ class PageNavigationFunctions {
         end: weekRange.end.subtractDays(2),
       );
     };
-
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = start.startOfDay.toUtc();
@@ -88,7 +81,6 @@ class PageNavigationFunctions {
           dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
       return index.floor();
     };
-
     numberOfPages = (dateTimeRange.dayDifference / DateTime.daysPerWeek).ceil();
   }
 
@@ -98,7 +90,6 @@ class PageNavigationFunctions {
     int numberOfDays,
   ) {
     final start = dateTimeRange.start;
-
     dateTimeRangeFromIndex = (index) {
       final startDateUtc = start.startOfDay;
       return DateTime(
@@ -107,20 +98,40 @@ class PageNavigationFunctions {
         startDateUtc.day + (index * numberOfDays),
       ).multiDayDateTimeRange(numberOfDays);
     };
-
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = dateTimeRange.start.startOfDay.toUtc();
       return dateUtc.difference(startDateUtc).inDays ~/ numberOfDays;
     };
-
     numberOfPages = dateTimeRange.dayDifference ~/ numberOfDays;
+  }
+
+  PageNavigationFunctions.month(
+    DateTimeRange dateTimeRange,
+    int firstDayOfWeek,
+  ) {
+    final start = dateTimeRange.start;
+    dateTimeRangeFromIndex = (index) {
+      final range = DateTime(start.year, start.month + index, 1).monthRange;
+      var rangeStart = range.start.startOfWeekWithOffset(firstDayOfWeek);
+      if (rangeStart.isAfter(range.start)) {
+        rangeStart = rangeStart.subtractDays(7);
+      }
+      final rangeEnd = start.addDays(7 * 5);
+      return DateTimeRange(start: rangeStart, end: rangeEnd);
+    };
+    indexFromDate = (date) {
+      final dateTimeRange = DateTimeRange(start: start, end: date);
+      return dateTimeRange.monthDifference;
+    };
+    numberOfPages = dateTimeRange.monthDifference;
   }
 
   late final DateTimeRangeFromIndex dateTimeRangeFromIndex;
   late final IndexFromDate indexFromDate;
   late final int numberOfPages;
 
+  /// Returns the [DateTimeRange] that is displayed for the given [date].
   DateTimeRange dateTimeRangeFromDate(DateTime date) {
     final index = indexFromDate(date);
     return dateTimeRangeFromIndex(index);

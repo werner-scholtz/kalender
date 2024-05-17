@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/export.dart';
 import 'package:kalender/src/extensions.dart';
@@ -109,10 +111,9 @@ class _MultiDayDragTargetState<T extends Object?>
         widgetPosition = globalPosition;
 
         // Set the size of the feedback widget.
-
         final feedBackWidth = dayWidth * event.datesSpanned.length;
         provider.feedbackWidgetSize.value = Size(
-          feedBackWidth,
+          min(pageWidth, feedBackWidth),
           provider.tileHeight,
         );
 

@@ -4,7 +4,7 @@ import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 
-import 'package:kalender/src/widgets/multi_day_view/multi_day_body.dart';
+import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
 /// The component builders used by the [MultiDayBody].
 ///

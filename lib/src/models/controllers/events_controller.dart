@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 
+/// A controller for [CalendarEvent]s.
+///
+/// This is used to store and manage the [CalendarEvent]s.
 class EventsController<T extends Object?> with ChangeNotifier {
   ValueNotifier<Size> feedbackWidgetSize = ValueNotifier(Size.zero);
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 
 class MultiDayProvider<T extends Object?> extends InheritedWidget {
   final EventsController<T> eventsController;
@@ -14,9 +13,6 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
 
   /// The width of a day.
   final double dayWidth;
-
-  /// The height of the event tile.
-  final double tileHeight;
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
@@ -38,11 +34,10 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
     return viewController.viewConfiguration;
   }
 
-  MultiDayHeaderConfiguration get headerConfiguration {
-    return viewController.viewConfiguration.headerConfiguration;
-  }
+  final MultiDayHeaderConfiguration headerConfiguration;
 
   double get timelineWidth => viewController.viewConfiguration.timelineWidth;
+  double get tileHeight => headerConfiguration.tileHeight;
 
   /// Creates a new [MultiDayProvider].
   const MultiDayProvider({
@@ -53,7 +48,7 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
     required this.tileComponents,
     required this.pageWidth,
     required this.dayWidth,
-    required this.tileHeight,
+    required this.headerConfiguration,
     this.callbacks,
   });
 
