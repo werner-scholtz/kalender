@@ -20,7 +20,7 @@ class DayEventTile<T extends Object?> extends StatefulWidget {
   State<DayEventTile<T>> createState() => _DayEventTileState<T>();
 }
 
-enum VerticalResize {
+enum ResizeDirection {
   top,
   bottom,
   none,
@@ -44,8 +44,8 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
       provider.eventBeingDragged;
 
-  ValueNotifier<VerticalResize> resizingDirection =
-      ValueNotifier(VerticalResize.none);
+  ValueNotifier<ResizeDirection> resizingDirection =
+      ValueNotifier(ResizeDirection.none);
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +68,17 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
             late final showTopResizeHandle = constraints.maxHeight > 24;
 
             final topResizeDetector = ResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, VerticalResize.top),
-              onPanEnd: (_) => _onPanEnd(_, VerticalResize.top),
-              child: direction != VerticalResize.none
+              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.top),
+              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.top),
+              child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
 
             final bottomResizeDetector = ResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, VerticalResize.bottom),
-              onPanEnd: (_) => _onPanEnd(_, VerticalResize.bottom),
-              child: direction != VerticalResize.none
+              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.bottom),
+              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.bottom),
+              child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
@@ -123,7 +123,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
             return Stack(
               children: [
                 Positioned.fill(
-                  child: direction != VerticalResize.none
+                  child: direction != ResizeDirection.none
                       ? dragComponent ?? const SizedBox()
                       : tileWidget,
                 ),
@@ -151,14 +151,14 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
     );
   }
 
-  void _onPanUpdate(Offset delta, VerticalResize direction) {
+  void _onPanUpdate(Offset delta, ResizeDirection direction) {
     resizingDirection.value = direction;
     final updatedEvent = _updateEvent(delta, direction);
     if (updatedEvent == null) return;
     eventBeingDragged.value = updatedEvent;
   }
 
-  void _onPanEnd(Offset delta, VerticalResize direction) {
+  void _onPanEnd(Offset delta, ResizeDirection direction) {
     final updatedEvent = _updateEvent(delta, direction);
     if (updatedEvent == null) return;
     eventsController.updateEvent(
@@ -166,18 +166,18 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
       updatedEvent: updatedEvent,
     );
     eventBeingDragged.value = null;
-    resizingDirection.value = VerticalResize.none;
+    resizingDirection.value = ResizeDirection.none;
   }
 
-  /// Updates the [CalendarEvent] based on the [Offset] delta and [VerticalResize].
+  /// Updates the [CalendarEvent] based on the [Offset] delta and [ResizeDirection].
   CalendarEvent<T>? _updateEvent(
     Offset delta,
-    VerticalResize direction,
+    ResizeDirection direction,
   ) {
     final dateTimeRange = switch (direction) {
-      VerticalResize.top => _calculateDateTimeRangeTop(delta),
-      VerticalResize.bottom => _calculateDateTimeRangeBottom(delta),
-      VerticalResize.none => null,
+      ResizeDirection.top => _calculateDateTimeRangeTop(delta),
+      ResizeDirection.bottom => _calculateDateTimeRangeBottom(delta),
+      ResizeDirection.none => null,
     };
     if (dateTimeRange == null) return null;
     return eventBeingDragged.value = event.copyWith(

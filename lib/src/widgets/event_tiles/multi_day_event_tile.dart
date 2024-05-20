@@ -19,7 +19,7 @@ class MultiDayEventTile<T extends Object?> extends StatefulWidget {
   State<MultiDayEventTile<T>> createState() => _MultiDayEventTileState<T>();
 }
 
-enum HorizontalResize {
+enum ResizeDirection {
   left,
   right,
   none,
@@ -37,8 +37,8 @@ class _MultiDayEventTileState<T extends Object?>
       provider.eventBeingDragged;
   ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
 
-  ValueNotifier<HorizontalResize> resizingDirection =
-      ValueNotifier(HorizontalResize.none);
+  ValueNotifier<ResizeDirection> resizingDirection =
+      ValueNotifier(ResizeDirection.none);
 
   @override
   Widget build(BuildContext context) {
@@ -61,17 +61,17 @@ class _MultiDayEventTileState<T extends Object?>
             late final resizeWidth = min(constraints.maxWidth * 0.25, 12.0);
 
             final leftResize = MultiDayResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, HorizontalResize.left),
-              onPanEnd: (_) => _onPanEnd(_, HorizontalResize.left),
-              child: direction != HorizontalResize.none
+              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.left),
+              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.left),
+              child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
             );
 
             final rightResize = MultiDayResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, HorizontalResize.right),
-              onPanEnd: (_) => _onPanEnd(_, HorizontalResize.right),
-              child: direction != HorizontalResize.none
+              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.right),
+              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.right),
+              child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
             );
@@ -138,14 +138,16 @@ class _MultiDayEventTileState<T extends Object?>
     );
   }
 
-  void _onPanUpdate(Offset delta, HorizontalResize direction) {
+  /// Called when the user is resizing the event.
+  void _onPanUpdate(Offset delta, ResizeDirection direction) {
     resizingDirection.value = direction;
     final updatedEvent = _updateEvent(delta, direction);
     if (updatedEvent == null) return;
     eventBeingDragged.value = updatedEvent;
   }
 
-  void _onPanEnd(Offset delta, HorizontalResize direction) {
+  /// Called when the user has finished resizing the event.
+  void _onPanEnd(Offset delta, ResizeDirection direction) {
     final updatedEvent = _updateEvent(delta, direction);
     if (updatedEvent == null) return;
     eventsController.updateEvent(
@@ -153,18 +155,18 @@ class _MultiDayEventTileState<T extends Object?>
       updatedEvent: updatedEvent,
     );
     eventBeingDragged.value = null;
-    resizingDirection.value = HorizontalResize.none;
+    resizingDirection.value = ResizeDirection.none;
   }
 
-  /// Updates the [CalendarEvent] based on the [Offset] delta and [VerticalResize].
+  /// Updates the [CalendarEvent] based on the [Offset] delta and [ResizeDirection].
   CalendarEvent<T>? _updateEvent(
     Offset delta,
-    HorizontalResize direction,
+    ResizeDirection direction,
   ) {
     final dateTimeRange = switch (direction) {
-      HorizontalResize.left => _calculateDateTimeRangeLeft(delta),
-      HorizontalResize.right => _calculateDateTimeRangeRight(delta),
-      HorizontalResize.none => null,
+      ResizeDirection.left => _calculateDateTimeRangeLeft(delta),
+      ResizeDirection.right => _calculateDateTimeRangeRight(delta),
+      ResizeDirection.none => null,
     };
 
     return eventBeingDragged.value = event.copyWith(
@@ -172,12 +174,13 @@ class _MultiDayEventTileState<T extends Object?>
     );
   }
 
+  /// Calculates the [DateTimeRange] when resizing from the left.
   DateTimeRange? _calculateDateTimeRangeLeft(Offset offset) {
     final date = _calculateTimeAndDate(offset);
     if (date == null) return null;
 
     var start = date;
-    var end = event.end.endOfDay;
+    var end = event.end;
 
     if (start.isAfter(end) || start.isSameDay(end)) {
       start = end.startOfDay;
@@ -187,6 +190,7 @@ class _MultiDayEventTileState<T extends Object?>
     return DateTimeRange(start: start, end: end);
   }
 
+  /// Calculates the [DateTimeRange] when resizing from the right.
   DateTimeRange? _calculateDateTimeRangeRight(Offset offset) {
     final date = _calculateTimeAndDate(offset);
     if (date == null) return null;
@@ -202,6 +206,7 @@ class _MultiDayEventTileState<T extends Object?>
     return DateTimeRange(start: start, end: end);
   }
 
+  /// Calculates the [DateTime] of the [Offset] position.
   DateTime? _calculateTimeAndDate(Offset position) {
     // Calculate the date of the position.
     final visibleDates = provider.visibleDateTimeRangeValue.datesSpanned;
@@ -210,7 +215,6 @@ class _MultiDayEventTileState<T extends Object?>
     if (cursorDateIndex < 0) return null;
     final date = visibleDates.elementAtOrNull(cursorDateIndex);
     if (date == null) return null;
-
     return date;
   }
 }

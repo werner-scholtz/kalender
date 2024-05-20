@@ -22,13 +22,34 @@ class _MultiDayGestureDetectorState<T extends Object?>
   MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
-
   double get dayWidth => provider.dayWidth;
-
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
       provider.eventBeingDragged;
 
   DateTime? start;
+
+  @override
+  Widget build(BuildContext context) {
+    final createEventTrigger = provider.headerConfiguration.createEventTrigger;
+
+    final tap = createEventTrigger == CreateEventTrigger.tap;
+    final long = createEventTrigger == CreateEventTrigger.longPress;
+
+    return MouseRegion(
+      child: GestureDetector(
+        onTapDown: tap ? (details) => onDown(details.localPosition) : null,
+        onTapUp: tap ? (_) => onEnd() : null,
+        onPanStart: tap ? (details) => onDown(details.localPosition) : null,
+        onPanUpdate: tap ? (details) => onUpdate(details.localPosition) : null,
+        onPanEnd: tap ? (_) => onEnd() : null,
+        onLongPressDown:
+            long ? (details) => onDown(details.localPosition) : null,
+        onLongPressMoveUpdate:
+            long ? (details) => onUpdate(details.localPosition) : null,
+        onLongPressEnd: long ? (_) => onEnd() : null,
+      ),
+    );
+  }
 
   void onDown(Offset localPosition) {
     final dateTimeRange = _calculateDateTimeRange(localPosition);
@@ -61,7 +82,6 @@ class _MultiDayGestureDetectorState<T extends Object?>
     start = null;
     final newEvent = eventBeingDragged.value;
     if (newEvent == null) return;
-
     eventsController.addEvent(newEvent);
     callbacks?.onEventCreated?.call(newEvent);
     eventBeingDragged.value = null;
@@ -83,28 +103,5 @@ class _MultiDayGestureDetectorState<T extends Object?>
     if (date == null) return null;
 
     return date;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final createEventTrigger = provider.headerConfiguration.createEventTrigger;
-
-    final tap = createEventTrigger == CreateEventTrigger.tap;
-    final long = createEventTrigger == CreateEventTrigger.longPress;
-
-    return MouseRegion(
-      child: GestureDetector(
-        onTapDown: tap ? (details) => onDown(details.localPosition) : null,
-        onTapUp: tap ? (_) => onEnd() : null,
-        onPanStart: tap ? (details) => onDown(details.localPosition) : null,
-        onPanUpdate: tap ? (details) => onUpdate(details.localPosition) : null,
-        onPanEnd: tap ? (_) => onEnd() : null,
-        onLongPressDown:
-            long ? (details) => onDown(details.localPosition) : null,
-        onLongPressMoveUpdate:
-            long ? (details) => onUpdate(details.localPosition) : null,
-        onLongPressEnd: long ? (_) => onEnd() : null,
-      ),
-    );
   }
 }
