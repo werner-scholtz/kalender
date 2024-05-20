@@ -126,15 +126,28 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Calculate the new dateTimeRange for the event.
     final duration = event.dateTimeRange.duration;
-    final end = start.add(duration);
+    var end = start.add(duration);
 
     // Add now to the snap points.
     late final now = DateTime.now();
     if (bodyConfiguration.snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
-    final snapPoint = findSnapPoint(start, bodyConfiguration.snapRange);
-    if (snapPoint != null && snapPoint.isBefore(end)) start = snapPoint;
+    final startSnapPoint = findSnapPoint(start, bodyConfiguration.snapRange);
+    if (startSnapPoint != null && startSnapPoint.isBefore(end)) {
+      start = startSnapPoint;
+    }
+
+    // Find the index of the snap point that is within a duration of snapRange of the end.
+    late final endSnapPoint = findSnapPoint(end, bodyConfiguration.snapRange);
+    final canUseEndSnapPoint = startSnapPoint == null &&
+        endSnapPoint != null &&
+        endSnapPoint.isAfter(start);
+    if (canUseEndSnapPoint) {
+      // Calculate the new end time.
+      end = endSnapPoint;
+      start = end.subtract(duration);
+    }
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
