@@ -147,8 +147,6 @@ class _MultiDayDragTargetState<T extends Object?>
         viewController.draggingEventId = null;
       },
       builder: (context, candidateData, rejectedData) {
-        // TODO: implement navigation ?
-
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
