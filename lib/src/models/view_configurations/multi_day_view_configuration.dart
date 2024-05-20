@@ -91,7 +91,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-
     pageNavigationFunctions = PageNavigationFunctions.custom(
       this.displayRange,
       numberOfDays,

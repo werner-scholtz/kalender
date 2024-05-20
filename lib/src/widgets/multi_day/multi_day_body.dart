@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
@@ -233,7 +233,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
             const dragTarget = DayDragTarget();
 
-            return DayProvider(
+            return MultiDayBodyDayProvider(
               eventsController: eventsController!,
               viewController: viewController,
               feedbackWidgetSize: eventsController.feedbackWidgetSize,

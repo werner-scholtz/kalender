@@ -3,16 +3,37 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/providers/multi_day_provider.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 class MultiDayEventTile<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final ViewController<T> viewController;
+
   /// The [CalendarEvent] that the [MultiDayEventTile] represents.
   final CalendarEvent<T> event;
 
+  /// The [CalendarCallbacks] that will be used by the [MultiDayEventTile].
+  final CalendarCallbacks<T>? callbacks;
+
+  /// The [TileComponents] that will be used by the [MultiDayEventTile].
+  final TileComponents<T> tileComponents;
+
+  /// The width of a day.
+  final double dayWidth;
+
+  final bool allowResizing;
+
+  /// Creates a new [MultiDayEventTile].
   const MultiDayEventTile({
     super.key,
+    required this.eventsController,
+    required this.viewController,
     required this.event,
+    required this.tileComponents,
+    required this.dayWidth,
+    required this.allowResizing,
+    this.callbacks,
   });
 
   @override
@@ -27,15 +48,21 @@ enum ResizeDirection {
 
 class _MultiDayEventTileState<T extends Object?>
     extends State<MultiDayEventTile<T>> {
+  EventsController<T> get eventsController => widget.eventsController;
+  ViewController<T> get viewController => widget.viewController;
   CalendarEvent<T> get event => widget.event;
-  MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
-  MultiDayHeaderConfiguration get configuration => provider.headerConfiguration;
-  EventsController<T> get eventsController => provider.eventsController;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  TileComponents<T> get tileComponents => provider.tileComponents;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      provider.eventBeingDragged;
-  ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  TileComponents<T> get tileComponents => widget.tileComponents;
+  double get dayWidth => widget.dayWidth;
+  bool get allowResizing => widget.allowResizing;
+
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
+    return viewController.eventBeingDragged;
+  }
+
+  ValueNotifier<Size> get feedbackWidgetSize {
+    return eventsController.feedbackWidgetSize;
+  }
 
   ValueNotifier<ResizeDirection> resizingDirection =
       ValueNotifier(ResizeDirection.none);
@@ -89,8 +116,7 @@ class _MultiDayEventTileState<T extends Object?>
               },
             );
 
-            final isDragging =
-                provider.viewController.draggingEventId == event.id;
+            final isDragging = viewController.draggingEventId == event.id;
             late final draggableTile = Draggable<CalendarEvent<T>>(
               data: widget.event,
               feedback: feedback,
@@ -116,7 +142,7 @@ class _MultiDayEventTileState<T extends Object?>
             return Stack(
               children: [
                 tileWidget,
-                if (configuration.allowResizing)
+                if (allowResizing)
                   Positioned(
                     top: 0,
                     bottom: 0,
@@ -124,7 +150,7 @@ class _MultiDayEventTileState<T extends Object?>
                     width: resizeWidth,
                     child: leftResize,
                   ),
-                if (configuration.allowResizing)
+                if (allowResizing)
                   Positioned(
                     top: 0,
                     bottom: 0,
@@ -178,7 +204,7 @@ class _MultiDayEventTileState<T extends Object?>
 
   /// Calculates the number of days the event should be resized by.
   int _calculateDeltaDays(Offset delta) {
-    final dayOffset = delta.dx / provider.dayWidth;
+    final dayOffset = delta.dx / dayWidth;
     return dayOffset.isNegative ? dayOffset.ceil() : dayOffset.floor();
   }
 

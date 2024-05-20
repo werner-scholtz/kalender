@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
-import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
@@ -17,8 +17,9 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     with SnapPoints {
-  /// The [DayProvider] of the current context.
-  DayProvider<T> get provider => DayProvider.of<T>(context);
+  /// The [MultiDayBodyDayProvider] of the current context.
+  MultiDayBodyDayProvider<T> get provider =>
+      MultiDayBodyDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   MultiDayViewController<T> get viewController => provider.viewController;
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>

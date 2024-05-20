@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
@@ -18,7 +18,8 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
 
 class _DayGestureDetectorState<T extends Object?>
     extends State<DayGestureDetector<T>> {
-  DayProvider<T> get provider => DayProvider.of<T>(context);
+  MultiDayBodyDayProvider<T> get provider =>
+      MultiDayBodyDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;
   Duration get newEventDuration => provider.bodyConfiguration.newEventDuration;

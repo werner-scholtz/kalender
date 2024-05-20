@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/groups/event_group.dart';
-import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
@@ -21,7 +21,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = DayProvider.of<T>(context);
+    final provider = MultiDayBodyDayProvider.of<T>(context);
     final eventsController = provider.eventsController;
     final viewController = provider.viewController;
     final dayWidth = provider.dayWidth;

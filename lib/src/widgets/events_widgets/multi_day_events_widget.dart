@@ -1,43 +1,64 @@
 // ignore_for_file: dead_code
 
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_group_layout_delegate.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 
 import 'package:kalender/src/models/groups/event_group.dart';
-import 'package:kalender/src/models/providers/multi_day_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
+  final EventsController<T> eventsController;
+  final ViewController<T> viewController;
   final DateTimeRange visibleDateTimeRange;
-  const MultiDayEventWidget({super.key, required this.visibleDateTimeRange});
+  final TileComponents<T> tileComponents;
+  final double dayWidth;
+  final bool allowResizing;
+  final bool showAllEvents;
+
+  const MultiDayEventWidget({
+    super.key,
+    required this.visibleDateTimeRange,
+    required this.eventsController,
+    required this.tileComponents,
+    required this.viewController,
+    required this.dayWidth,
+    required this.allowResizing,
+    required this.showAllEvents,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final provider = MultiDayProvider.of<T>(context);
-    final eventsController = provider.eventsController;
-    final tileComponents = provider.tileComponents;
-
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
         final visibleEvents = eventsController.eventsFromDateTimeRange(
           visibleDateTimeRange,
-          includeDayEvents: false,
+          includeDayEvents: showAllEvents,
           includeMultiDayEvents: true,
         );
+
         final group = MultiDayEventGroup(
           events: visibleEvents.toList(),
           dateTimeRange: visibleDateTimeRange,
         );
+
         final children = group.sortedEvents.indexed.map((item) {
           final (id, event) = item;
           return LayoutId(
             id: id,
             child: MultiDayEventTile<T>(
               event: event,
+              eventsController: eventsController,
+              viewController: viewController,
+              tileComponents: tileComponents,
+              dayWidth: dayWidth,
+              allowResizing: allowResizing,
             ),
           );
         });
+
         final multiDayEventsWidget = CustomMultiChildLayout(
           delegate: MultiDayEventsDefaultLayoutDelegate(
             group: group,
@@ -47,9 +68,14 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         );
 
         final dropTarget = ValueListenableBuilder(
-          valueListenable: provider.eventBeingDragged,
+          valueListenable: viewController.eventBeingDragged,
           builder: (context, event, child) {
-            if (event == null || !event.isMultiDayEvent) {
+            if (event == null) return const SizedBox();
+            if (!showAllEvents && !event.isMultiDayEvent) {
+              return const SizedBox();
+            }
+
+            if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) {
               return const SizedBox();
             }
 
@@ -57,6 +83,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
               events: [event],
               dateTimeRange: visibleDateTimeRange,
             );
+
             return CustomMultiChildLayout(
               delegate: MultiDayEventsDefaultLayoutDelegate(
                 group: group,

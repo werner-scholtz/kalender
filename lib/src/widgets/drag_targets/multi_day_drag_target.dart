@@ -1,19 +1,37 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/src/export.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/components/_export.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/providers/multi_day_provider.dart';
+import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final ViewController<T> viewController;
+  final CalendarCallbacks<T>? callbacks;
+  final TileComponents<T> tileComponents;
+
+  final PageTriggerConfiguration pageTriggerSetup;
+  final DateTimeRange visibleDateTimeRange;
+  final double dayWidth;
+  final double pageWidth;
+  final double tileHeight;
   final bool allowSingleDayEvents;
 
   const MultiDayDragTarget({
     super.key,
-    this.allowSingleDayEvents = true,
+    required this.eventsController,
+    required this.viewController,
+    required this.tileComponents,
+    required this.pageTriggerSetup,
+    required this.visibleDateTimeRange,
+    required this.dayWidth,
+    required this.pageWidth,
+    required this.tileHeight,
+    required this.callbacks,
+    required this.allowSingleDayEvents,
   });
 
   @override
@@ -22,18 +40,25 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _MultiDayDragTargetState<T extends Object?>
     extends State<MultiDayDragTarget<T>> {
-  MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  MultiDayViewController<T> get viewController => provider.viewController;
-  TileComponents<T> get tileComponents => provider.tileComponents;
-  List<DateTime> get visibleDates =>
-      provider.visibleDateTimeRangeValue.datesSpanned;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      provider.eventBeingDragged;
-  ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
-  double get dayWidth => provider.dayWidth;
-  double get pageWidth => provider.pageWidth;
+  EventsController<T> get eventsController => widget.eventsController;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  ViewController<T> get viewController => widget.viewController;
+  TileComponents<T> get tileComponents => widget.tileComponents;
+  DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
+  List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
+  PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
+
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
+    return viewController.eventBeingDragged;
+  }
+
+  ValueNotifier<Size> get feedbackWidgetSize {
+    return eventsController.feedbackWidgetSize;
+  }
+
+  double get dayWidth => widget.dayWidth;
+  double get pageWidth => widget.pageWidth;
+  double get tileHeight => widget.tileHeight;
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -112,9 +137,9 @@ class _MultiDayDragTargetState<T extends Object?>
 
         // Set the size of the feedback widget.
         final feedBackWidth = dayWidth * event.datesSpanned.length;
-        provider.feedbackWidgetSize.value = Size(
+        feedbackWidgetSize.value = Size(
           min(pageWidth, feedBackWidth),
-          provider.tileHeight,
+          tileHeight,
         );
 
         return true;
@@ -150,8 +175,6 @@ class _MultiDayDragTargetState<T extends Object?>
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
-        final pageTriggerSetup =
-            provider.headerConfiguration.pageTriggerConfiguration;
         final triggerWidth = pageTriggerSetup.triggerWidth.call(pageWidth);
         final pageAnimationDuration = pageTriggerSetup.animationDuration;
         final pageTriggerDelay = pageTriggerSetup.triggerDelay;

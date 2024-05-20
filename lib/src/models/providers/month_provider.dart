@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 
-class MultiDayProvider<T extends Object?> extends InheritedWidget {
+class MonthProvider<T extends Object?> extends InheritedWidget {
   final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
+  final MonthViewController<T> viewController;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayHeaderComponentBuilders? componentBuilders;
-  final MultiDayHeaderComponentStyles? componentStyles;
 
   /// The width of the page.
   final double pageWidth;
+
+  /// The height of the page.
+  final double pageHeight;
 
   /// The width of a day.
   final double dayWidth;
@@ -33,42 +33,40 @@ class MultiDayProvider<T extends Object?> extends InheritedWidget {
     return visibleDateTimeRange.value;
   }
 
-  MultiDayViewConfiguration get viewConfiguration {
+  MonthViewConfiguration get viewConfiguration {
     return viewController.viewConfiguration;
   }
 
-  final MultiDayHeaderConfiguration headerConfiguration;
+  final MultiDayHeaderConfiguration bodyConfiguration;
 
-  double get timelineWidth => viewController.viewConfiguration.timelineWidth;
-  double get tileHeight => headerConfiguration.tileHeight;
+  double get tileHeight => bodyConfiguration.tileHeight;
 
-  /// Creates a new [MultiDayProvider].
-  const MultiDayProvider({
+  /// Creates a new [MonthProvider].
+  const MonthProvider({
     required super.child,
     super.key,
     required this.eventsController,
     required this.viewController,
     required this.tileComponents,
     required this.pageWidth,
+    required this.pageHeight,
     required this.dayWidth,
-    required this.headerConfiguration,
+    required this.bodyConfiguration,
     required this.callbacks,
-    required this.componentBuilders,
-    required this.componentStyles,
   });
 
-  static MultiDayProvider<T>? maybeOf<T>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MultiDayProvider<T>>();
+  static MonthProvider<T>? maybeOf<T>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<MonthProvider<T>>();
   }
 
-  static MultiDayProvider<T> of<T>(BuildContext context) {
+  static MonthProvider<T> of<T>(BuildContext context) {
     final result = maybeOf<T>(context);
-    assert(result != null, 'No $MultiDayProvider<$T> found.');
+    assert(result != null, 'No $MonthProvider<$T> found.');
     return result!;
   }
 
   @override
-  bool updateShouldNotify(covariant MultiDayProvider oldWidget) {
+  bool updateShouldNotify(covariant MonthProvider oldWidget) {
     return false;
   }
 }

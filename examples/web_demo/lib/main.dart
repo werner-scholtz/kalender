@@ -76,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       name: '2 Weeks',
       numberOfDays: 14,
     ),
+    MonthViewConfiguration.month(),
   ];
 
   OverlayEntry? _overlayEntry;

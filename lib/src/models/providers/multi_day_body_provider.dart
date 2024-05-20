@@ -6,7 +6,7 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 /// The [InheritedWidget] that contains the internals of the [MultiDayBody].
 ///
 /// This widget is used to pass the configuration and controllers down the widget tree.
-class DayProvider<T extends Object?> extends InheritedWidget {
+class MultiDayBodyDayProvider<T extends Object?> extends InheritedWidget {
   /// The [EventsController] that will be used to control the events.
   final EventsController<T> eventsController;
 
@@ -85,8 +85,8 @@ class DayProvider<T extends Object?> extends InheritedWidget {
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
       viewController.eventBeingDragged;
 
-  /// Creates a new [DayProvider].
-  const DayProvider({
+  /// Creates a new [MultiDayBodyDayProvider].
+  const MultiDayBodyDayProvider({
     required super.child,
     super.key,
     required this.eventsController,
@@ -102,18 +102,19 @@ class DayProvider<T extends Object?> extends InheritedWidget {
     required this.bodyConfiguration,
   });
 
-  static DayProvider<T>? maybeOf<T>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<DayProvider<T>>();
+  static MultiDayBodyDayProvider<T>? maybeOf<T>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<MultiDayBodyDayProvider<T>>();
   }
 
-  static DayProvider<T> of<T>(BuildContext context) {
+  static MultiDayBodyDayProvider<T> of<T>(BuildContext context) {
     final result = maybeOf<T>(context);
-    assert(result != null, 'No $DayProvider<$T> found.');
+    assert(result != null, 'No $MultiDayBodyDayProvider<$T> found.');
     return result!;
   }
 
   @override
-  bool updateShouldNotify(covariant DayProvider oldWidget) {
+  bool updateShouldNotify(covariant MultiDayBodyDayProvider oldWidget) {
     return false;
   }
 }

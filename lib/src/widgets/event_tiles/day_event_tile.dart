@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
-import 'package:kalender/src/models/providers/day_provider.dart';
+import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
@@ -31,7 +31,8 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
     with SnapPoints {
   CalendarEvent<T> get event => widget.event;
 
-  DayProvider<T> get provider => DayProvider.of<T>(context);
+  MultiDayBodyDayProvider<T> get provider =>
+      MultiDayBodyDayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
   MultiDayBodyConfiguration get bodyConfiguration => provider.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => provider.callbacks;

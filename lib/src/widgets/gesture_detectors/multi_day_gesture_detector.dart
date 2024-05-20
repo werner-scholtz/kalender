@@ -2,14 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/providers/multi_day_provider.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final CalendarCallbacks<T>? callbacks;
+  final ViewController<T> viewController;
   final DateTimeRange visibleDateTimeRange;
+  final CreateEventTrigger createEventTrigger;
+  final double dayWidth;
 
   const MultiDayGestureDetector({
     super.key,
+    required this.eventsController,
+    required this.callbacks,
+    required this.viewController,
     required this.visibleDateTimeRange,
+    required this.createEventTrigger,
+    required this.dayWidth,
   });
 
   @override
@@ -19,19 +29,21 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
 
 class _MultiDayGestureDetectorState<T extends Object?>
     extends State<MultiDayGestureDetector<T>> {
-  MultiDayProvider<T> get provider => MultiDayProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  double get dayWidth => provider.dayWidth;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      provider.eventBeingDragged;
+  EventsController<T> get eventsController => widget.eventsController;
+  ViewController<T> get viewController => widget.viewController;
+  CreateEventTrigger get createEventTrigger => widget.createEventTrigger;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+
+  double get dayWidth => widget.dayWidth;
+
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
+    return viewController.eventBeingDragged;
+  }
 
   DateTime? start;
 
   @override
   Widget build(BuildContext context) {
-    final createEventTrigger = provider.headerConfiguration.createEventTrigger;
-
     final tap = createEventTrigger == CreateEventTrigger.tap;
     final long = createEventTrigger == CreateEventTrigger.longPress;
 

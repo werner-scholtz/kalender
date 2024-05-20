@@ -134,7 +134,7 @@ class PageNavigationFunctions {
       if (rangeStart.isAfter(range.start)) {
         rangeStart = rangeStart.subtractDays(7);
       }
-      final rangeEnd = start.addDays(7 * 5);
+      final rangeEnd = rangeStart.addDays(7 * 5);
       return DateTimeRange(start: rangeStart, end: rangeEnd);
     };
     indexFromDate = (date) {

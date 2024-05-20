@@ -22,7 +22,7 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyTileComponents = TileComponents(
+    final tileComponents = TileComponents(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(
@@ -98,11 +98,11 @@ class CalendarWidget extends StatelessWidget {
       ],
     );
 
-    final multiDayHeader = MultiDayHeader(
-      eventsController: eventsController,
-      calendarController: controller,
-      tileComponents: headerTileComponents,
-    );
+    // final multiDayHeader = MultiDayHeader(
+    //   eventsController: eventsController,
+    //   calendarController: controller,
+    //   tileComponents: headerTileComponents,
+    // );
 
     final header = Material(
       color: Theme.of(context).colorScheme.surface,
@@ -111,22 +111,27 @@ class CalendarWidget extends StatelessWidget {
       child: Column(
         children: [
           calendarHeader,
-          multiDayHeader,
+          // multiDayHeader,
         ],
       ),
     );
 
-    final multiDayBody = MultiDayBody(
-      heightPerMinute: ValueNotifier(0.5),
-      tileComponents: bodyTileComponents,
+    final calendarBody = CalendarBody(
+      tileComponents: tileComponents,
+      multiDayTileComponents: tileComponents,
     );
+
+    // MultiDayBody(
+    //   heightPerMinute: ValueNotifier(0.5),
+    //   tileComponents: tileComponents,
+    // );
 
     return CalendarView(
       calendarController: controller,
       eventsController: eventsController,
       viewConfiguration: viewConfiguration,
       header: header,
-      body: multiDayBody,
+      body: calendarBody,
       callbacks: callbacks,
     );
   }

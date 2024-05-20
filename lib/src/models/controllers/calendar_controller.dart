@@ -31,7 +31,9 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   bool get isAttached => _viewController != null;
 
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange {
-    if (_viewController is MultiDayViewController<T> && isAttached) {
+    if (!isAttached) return null;
+
+    if (_viewController is MultiDayViewController<T>) {
       return (_viewController as MultiDayViewController<T>)
           .visibleDateTimeRange;
     }
@@ -39,7 +41,9 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   }
 
   ValueNotifier<List<CalendarEvent<T>>>? get visibleEvents {
-    if (_viewController is MultiDayViewController<T> && isAttached) {
+    if (!isAttached) return null;
+
+    if (_viewController is MultiDayViewController<T>) {
       return (_viewController as MultiDayViewController<T>).visibleEvents;
     }
     return null;
@@ -85,10 +89,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
-  /// Animate to the previous page.
-  ///
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToPreviousPage({
     Duration? duration,
@@ -100,7 +100,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
-  /// Animate to the given [DateTime].
   @override
   Future<void> animateToDate(
     DateTime date, {
@@ -114,7 +113,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
-  /// Animate to the given [DateTime].
   @override
   Future<void> animateToDateTime(
     DateTime date, {
@@ -132,7 +130,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
-  /// Animate to the given [CalendarEvent].
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
