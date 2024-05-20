@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/day_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
@@ -14,7 +15,8 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
 }
 
-class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
+class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
+    with SnapPoints {
   /// The [DayProvider] of the current context.
   DayProvider<T> get provider => DayProvider.of<T>(context);
   EventsController<T> get eventsController => provider.eventsController;
@@ -33,8 +35,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
   double get heightPerMinute => provider.heightPerMinuteValue;
   double get pageWidth => provider.pageWidth;
 
-  /// A list of possible [DateTime] snap points that the event can snap to.
-  final List<DateTime> _snapPoints = [];
+  // /// A list of possible [DateTime] snap points that the event can snap to.
+  // final List<DateTime> _snapPoints = [];
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -128,24 +130,18 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
 
     // Add now to the snap points.
     late final now = DateTime.now();
-    if (bodyConfiguration.snapToTimeIndicator) _snapPoints.add(now);
+    if (bodyConfiguration.snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
-    final index = _snapPoints.indexWhere(
-      (point) => point.difference(start).abs() <= bodyConfiguration.snapRange,
-    );
-
-    // If the index is not -1 and the snap point is before the end, snap to the snap point.
-    if (index != -1 && _snapPoints[index].isBefore(end)) {
-      start = _snapPoints[index];
-    }
+    final snapPoint = findSnapPoint(start, bodyConfiguration.snapRange);
+    if (snapPoint != null && snapPoint.isBefore(end)) start = snapPoint;
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
     final updatedEvent = event.copyWith(dateTimeRange: newRange);
 
     // Remove now from the snap points.
-    if (bodyConfiguration.snapToTimeIndicator) _snapPoints.remove(now);
+    if (bodyConfiguration.snapToTimeIndicator) removeSnapPoint(now);
 
     return updatedEvent;
   }
@@ -153,14 +149,22 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
   /// Update the snap points.
   void _updateSnapPoints() {
     if (!bodyConfiguration.snapToOtherEvents) return;
+    clearSnapPoints();
+    addEventSnapPoints(viewController.visibleEvents.value);
+  }
 
-    // Clear the snap points.
-    _snapPoints.clear();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewController.visibleEvents.addListener(_updateSnapPoints);
+    });
+  }
 
-    // Add the start and end of each event to the snap points.
-    for (final event in viewController.visibleEvents.value) {
-      _snapPoints.addAll([event.start, event.end]);
-    }
+  @override
+  void dispose() {
+    viewController.visibleEvents.removeListener(_updateSnapPoints);
+    super.dispose();
   }
 
   @override
@@ -189,8 +193,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
 
         // Set the size of the feedback widget.
         provider.feedbackWidgetSize.value = Size(dayWidth, eventHeight);
-
-        _updateSnapPoints();
 
         return true;
       },

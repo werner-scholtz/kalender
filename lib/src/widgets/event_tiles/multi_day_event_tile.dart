@@ -60,6 +60,7 @@ class _MultiDayEventTileState<T extends Object?>
           builder: (context, direction, child) {
             late final resizeWidth = min(constraints.maxWidth * 0.25, 12.0);
 
+            // TODO: Check if the event continues before
             final leftResize = ResizeDetectorWidget(
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.left),
               onPanEnd: (_) => _onPanEnd(_, ResizeDirection.left),
@@ -68,6 +69,7 @@ class _MultiDayEventTileState<T extends Object?>
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
             );
 
+            // TODO: Check if the event continues after
             final rightResize = ResizeDetectorWidget(
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.right),
               onPanEnd: (_) => _onPanEnd(_, ResizeDirection.right),
