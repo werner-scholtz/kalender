@@ -24,6 +24,8 @@ const defaultCreateEventTrigger = CreateEventTrigger.tap;
 const defaultShowMultiDayEvents = false;
 const defaultLayoutStrategy = overlapLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
+const defaultSnapToTimeIndicator = true;
+const defaultSnapToOtherEvents = true;
 
 /// Functions used by a [PageView] to navigate to different pages.
 class PageNavigationFunctions {
