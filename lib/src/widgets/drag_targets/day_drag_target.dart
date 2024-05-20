@@ -27,10 +27,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
   DateTimeRange get visibleDateTimeRange => provider.visibleDateTimeRange.value;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   MultiDayViewConfiguration get viewConfiguration => provider.viewConfiguration;
+  MultiDayBodyConfiguration get bodyConfiguration => provider.bodyConfiguration;
 
   double get dayWidth => provider.dayWidth;
   double get heightPerMinute => provider.heightPerMinuteValue;
   double get pageWidth => provider.pageWidth;
+
+  /// A list of possible [DateTime] snap points that the event can snap to.
+  final List<DateTime> _snapPoints = [];
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -102,7 +106,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
     }
   }
 
-  CalendarEvent<T>? _update(CalendarEvent<T> event, Offset offset) {
+  CalendarEvent<T>? _updateEvent(CalendarEvent<T> event, Offset offset) {
     // Calculate the relative cursor position.
     final cursorPosition = _calculateRelativeCursorPosition(offset);
     if (cursorPosition == null) return null;
@@ -112,7 +116,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
     if (date == null) return null;
 
     // Calculate the start time of the event.
-    final startTime = _calculateStartTime(
+    var start = _calculateStartTime(
       date,
       event.duration,
       cursorPosition,
@@ -120,13 +124,43 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
 
     // Calculate the new dateTimeRange for the event.
     final duration = event.dateTimeRange.duration;
-    final endTime = startTime.add(duration);
-    final newRange = DateTimeRange(start: startTime, end: endTime);
+    final end = start.add(duration);
+
+    // Add now to the snap points.
+    late final now = DateTime.now();
+    if (bodyConfiguration.snapToTimeIndicator) _snapPoints.add(now);
+
+    // Find the index of the snap point that is within a duration of snapRange of the start.
+    final index = _snapPoints.indexWhere(
+      (point) => point.difference(start).abs() <= bodyConfiguration.snapRange,
+    );
+
+    // If the index is not -1 and the snap point is before the end, snap to the snap point.
+    if (index != -1 && _snapPoints[index].isBefore(end)) {
+      start = _snapPoints[index];
+    }
 
     // Update the event with the new range.
+    final newRange = DateTimeRange(start: start, end: end);
     final updatedEvent = event.copyWith(dateTimeRange: newRange);
 
+    // Remove now from the snap points.
+    if (bodyConfiguration.snapToTimeIndicator) _snapPoints.remove(now);
+
     return updatedEvent;
+  }
+
+  /// Update the snap points.
+  void _updateSnapPoints() {
+    if (!bodyConfiguration.snapToOtherEvents) return;
+
+    // Clear the snap points.
+    _snapPoints.clear();
+
+    // Add the start and end of each event to the snap points.
+    for (final event in viewController.visibleEvents.value) {
+      _snapPoints.addAll([event.start, event.end]);
+    }
   }
 
   @override
@@ -148,7 +182,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
         // Find the global position of the drop target widget.
         final renderObject = context.findRenderObject()! as RenderBox;
         final globalPosition = renderObject.localToGlobal(Offset.zero);
-
         widgetPosition = globalPosition;
 
         // Calculate the size of the feedback widget.
@@ -157,23 +190,27 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
         // Set the size of the feedback widget.
         provider.feedbackWidgetSize.value = Size(dayWidth, eventHeight);
 
+        _updateSnapPoints();
+
         return true;
       },
       onMove: (details) {
         final event = details.data;
         // Update the event with the new start time.
-        final updatedEvent = _update(event, details.offset);
+        final updatedEvent = _updateEvent(event, details.offset);
         if (updatedEvent == null) return;
 
         // Update the event being dragged.
         eventBeingDragged.value = updatedEvent;
+
+        // Update the dragging event id.
         viewController.draggingEventId = event.id;
       },
       onAcceptWithDetails: (details) {
         final event = details.data;
 
         // Update the event with the new start time.
-        final updatedEvent = _update(event, details.offset);
+        final updatedEvent = _updateEvent(event, details.offset);
         if (updatedEvent == null) return;
 
         // Update the event in the events controller.
@@ -182,8 +219,11 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> {
           updatedEvent: updatedEvent,
         );
 
+        // Reset the widget position and feedback widget size.
         widgetPosition = null;
         eventsController.feedbackWidgetSize.value = Size.zero;
+
+        // Reset the event being dragged.
         eventBeingDragged.value = null;
         viewController.draggingEventId = null;
       },

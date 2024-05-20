@@ -186,9 +186,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
   }
 
   /// Calculates the [DateTimeRange] when resizing from the top.
-  DateTimeRange _calculateDateTimeRangeTop(
-    Offset delta,
-  ) {
+  DateTimeRange _calculateDateTimeRangeTop(Offset delta) {
     final deltaDuration = _calculateDeltaDuration(delta);
     var newStart = event.start.add(deltaDuration);
     if (!timeOfDayRange.isAllDay) newStart = _clampDateTime(newStart);
@@ -212,9 +210,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> {
   }
 
   /// Calculates the [DateTimeRange] when resizing from the bottom.
-  DateTimeRange _calculateDateTimeRangeBottom(
-    Offset delta,
-  ) {
+  DateTimeRange _calculateDateTimeRangeBottom(Offset delta) {
     final deltaDuration = _calculateDeltaDuration(delta);
     var newEnd = event.end.add(deltaDuration);
     if (!timeOfDayRange.isAllDay) newEnd = _clampDateTime(newEnd);

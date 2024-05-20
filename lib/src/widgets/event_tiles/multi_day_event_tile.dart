@@ -60,7 +60,7 @@ class _MultiDayEventTileState<T extends Object?>
           builder: (context, direction, child) {
             late final resizeWidth = min(constraints.maxWidth * 0.25, 12.0);
 
-            final leftResize = MultiDayResizeDetectorWidget(
+            final leftResize = ResizeDetectorWidget(
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.left),
               onPanEnd: (_) => _onPanEnd(_, ResizeDirection.left),
               child: direction != ResizeDirection.none
@@ -68,7 +68,7 @@ class _MultiDayEventTileState<T extends Object?>
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
             );
 
-            final rightResize = MultiDayResizeDetectorWidget(
+            final rightResize = ResizeDetectorWidget(
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.right),
               onPanEnd: (_) => _onPanEnd(_, ResizeDirection.right),
               child: direction != ResizeDirection.none
@@ -174,47 +174,55 @@ class _MultiDayEventTileState<T extends Object?>
     );
   }
 
+  /// Calculates the number of days the event should be resized by.
+  int _calculateDeltaDays(Offset delta) {
+    final dayOffset = delta.dx / provider.dayWidth;
+    return dayOffset.isNegative ? dayOffset.ceil() : dayOffset.floor();
+  }
+
   /// Calculates the [DateTimeRange] when resizing from the left.
-  DateTimeRange? _calculateDateTimeRangeLeft(Offset offset) {
-    final date = _calculateTimeAndDate(offset);
-    if (date == null) return null;
+  DateTimeRange? _calculateDateTimeRangeLeft(Offset delta) {
+    final deltaDays = _calculateDeltaDays(delta);
+    final start = event.start.addDays(deltaDays);
 
-    var start = date;
-    var end = event.end;
-
-    if (start.isAfter(end) || start.isSameDay(end)) {
-      start = end.startOfDay;
-      end = date.endOfDay;
+    if (start.isSameDay(event.end)) {
+      return DateTimeRange(
+        start: start.startOfDay,
+        end: event.end.endOfDay,
+      );
+    } else if (start.isAfter(event.end)) {
+      return DateTimeRange(
+        start: event.end.startOfDay,
+        end: start.endOfDay,
+      );
+    } else {
+      return DateTimeRange(
+        start: start,
+        end: event.end,
+      );
     }
-
-    return DateTimeRange(start: start, end: end);
   }
 
   /// Calculates the [DateTimeRange] when resizing from the right.
   DateTimeRange? _calculateDateTimeRangeRight(Offset offset) {
-    final date = _calculateTimeAndDate(offset);
-    if (date == null) return null;
+    final deltaDays = _calculateDeltaDays(offset);
+    final end = event.end.addDays(deltaDays);
 
-    var start = event.start.startOfDay;
-    var end = date.endOfDay;
-
-    if (end.isBefore(start) || end.isSameDay(start)) {
-      end = start.startOfDay;
-      start = date;
+    if (end.isSameDay(event.start)) {
+      return DateTimeRange(
+        start: event.start.startOfDay,
+        end: end.endOfDay,
+      );
+    } else if (end.isBefore(event.start)) {
+      return DateTimeRange(
+        start: end.startOfDay,
+        end: event.start.startOfDay,
+      );
+    } else {
+      return DateTimeRange(
+        start: event.start,
+        end: end,
+      );
     }
-
-    return DateTimeRange(start: start, end: end);
-  }
-
-  /// Calculates the [DateTime] of the [Offset] position.
-  DateTime? _calculateTimeAndDate(Offset position) {
-    // Calculate the date of the position.
-    final visibleDates = provider.visibleDateTimeRangeValue.datesSpanned;
-    final cursorDate = (position.dx / provider.dayWidth);
-    final cursorDateIndex = cursorDate.floor();
-    if (cursorDateIndex < 0) return null;
-    final date = visibleDates.elementAtOrNull(cursorDateIndex);
-    if (date == null) return null;
-    return date;
   }
 }
