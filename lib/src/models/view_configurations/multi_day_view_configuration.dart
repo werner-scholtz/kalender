@@ -140,6 +140,7 @@ class MultiDayBodyConfiguration {
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
     this.snapRange = defaultSnapRange,
+    this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.dayEventLayoutStrategy = defaultLayoutStrategy,
@@ -168,7 +169,7 @@ class MultiDayBodyConfiguration {
   final CreateEventTrigger createEventTrigger;
 
   /// The snap interval in minutes for events in the [MultiDayBody].
-  final int snapIntervalMinutes = 15;
+  final int snapIntervalMinutes;
 
   /// Whether to snap to the time indicator when altering an event.
   final bool snapToTimeIndicator;
