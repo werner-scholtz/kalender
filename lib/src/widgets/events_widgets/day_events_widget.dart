@@ -23,6 +23,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = DayProvider.of<T>(context);
     final eventsController = provider.eventsController;
+    final viewController = provider.viewController;
     final dayWidth = provider.dayWidth;
     final heightPerMinute = provider.heightPerMinuteValue;
     final timeOfDayRange = provider.timeOfDayRange;
@@ -73,6 +74,9 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           includeDayEvents: true,
           includeMultiDayEvents: showMultiDayEvents,
         );
+
+        /// Set the visible events on the view controller.
+        viewController.visibleEvents.value = visibleEvents.toList();
 
         // Create the event groups for the visible events.
         final eventGroups = _createEventGroups(visibleDates, visibleEvents);

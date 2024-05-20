@@ -11,6 +11,12 @@ abstract class ViewController<T extends Object?> extends ChangeNotifier
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
+  /// The visible date time range of the view that the controller is controlling.
+  ValueNotifier<DateTimeRange> get visibleDateTimeRange;
+
+  /// The events that are currently visible.
+  ValueNotifier<List<CalendarEvent<T>>> get visibleEvents;
+
   /// Jump to the given [DateTime].
   @override
   void jumpToPage(int page);
@@ -76,6 +82,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     );
     eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
     scrollController = ScrollController();
+    visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
   }
 
   @override
@@ -96,12 +103,15 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// The height per minute of the view.
   late ValueNotifier<double> heightPerMinute;
 
-  /// The visible date time range of the view.
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
   /// The event being dragged.
   late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
   int? draggingEventId;
+
+  @override
+  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
+
+  @override
+  late final ValueNotifier<List<CalendarEvent<T>>> visibleEvents;
 
   @override
   Future<void> animateToDate(
