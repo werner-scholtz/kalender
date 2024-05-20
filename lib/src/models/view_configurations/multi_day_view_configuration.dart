@@ -169,6 +169,7 @@ class MultiDayBodyConfiguration {
   final CreateEventTrigger createEventTrigger;
 
   /// The snap interval in minutes for events in the [MultiDayBody].
+  /// * This is used when not snapping to the time indicator or other events.
   final int snapIntervalMinutes;
 
   /// Whether to snap to the time indicator when altering an event.
