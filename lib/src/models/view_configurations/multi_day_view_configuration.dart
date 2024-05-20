@@ -139,6 +139,7 @@ class MultiDayBodyConfiguration {
     this.newEventDuration = defaultNewEventDuration,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
+    this.snapRange = defaultSnapRange,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.dayEventLayoutStrategy = defaultLayoutStrategy,
@@ -174,6 +175,9 @@ class MultiDayBodyConfiguration {
 
   /// Whether to snap to other events when altering an event.
   final bool snapToOtherEvents;
+
+  /// The [Duration] in which events will snap to other events.
+  final Duration snapRange;
 
   /// The duration of the new event when created by tapping on the [MultiDayBody].
   final Duration newEventDuration;
