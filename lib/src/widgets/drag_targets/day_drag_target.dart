@@ -35,9 +35,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   double get heightPerMinute => provider.heightPerMinuteValue;
   double get pageWidth => provider.pageWidth;
 
-  // /// A list of possible [DateTime] snap points that the event can snap to.
-  // final List<DateTime> _snapPoints = [];
-
   /// The position of the widget.
   Offset? widgetPosition;
 
@@ -173,12 +170,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       viewController.visibleEvents.addListener(_updateSnapPoints);
     });
-  }
-
-  @override
-  void dispose() {
-    viewController.visibleEvents.removeListener(_updateSnapPoints);
-    super.dispose();
   }
 
   @override
