@@ -28,7 +28,8 @@ class DaySeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = style?.color ?? Theme.of(context).colorScheme.surfaceVariant;
+    final color =
+        style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
     final width = style?.width ?? 1;
     final topIndent = style?.topIndent ?? 0;
     final bottomIndent = style?.bottomIndent ?? 0;
