@@ -215,8 +215,6 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
     final snapPoint = findSnapPoint(newStart, bodyConfiguration.snapRange);
     if (snapPoint != null) newStart = snapPoint;
 
-    print(snapPoint);
-
     // Clamp the new start to the time of day range.
     if (!timeOfDayRange.isAllDay) newStart = _clampDateTime(newStart);
 
@@ -239,8 +237,6 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
     // Find the snap point for the new end.
     final snapPoint = findSnapPoint(newEnd, bodyConfiguration.snapRange);
     if (snapPoint != null) newEnd = snapPoint;
-
-    print(snapPoint);
 
     // Clamp the new end to the time of day range.
     if (!timeOfDayRange.isAllDay) newEnd = _clampDateTime(newEnd);
