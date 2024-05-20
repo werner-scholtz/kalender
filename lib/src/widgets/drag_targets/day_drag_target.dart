@@ -136,6 +136,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     final startSnapPoint = findSnapPoint(start, bodyConfiguration.snapRange);
     if (startSnapPoint != null && startSnapPoint.isBefore(end)) {
       start = startSnapPoint;
+      end = start.add(duration);
     }
 
     // Find the index of the snap point that is within a duration of snapRange of the end.
