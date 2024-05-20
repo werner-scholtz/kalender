@@ -26,7 +26,7 @@ const defaultLayoutStrategy = overlapLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
 const defaultSnapToTimeIndicator = true;
 const defaultSnapToOtherEvents = true;
-const defaultSnapRange = Duration(minutes: 5);
+const defaultSnapRange = Duration(minutes: 15);
 const defaultSnapIntervalMinutes = 10;
 
 /// Functions used by a [PageView] to navigate to different pages.
