@@ -3,6 +3,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 
+/// TODO: remove this provider as well,
+
 /// The [InheritedWidget] that contains the internals of the [MultiDayBody].
 ///
 /// This widget is used to pass the configuration and controllers down the widget tree.

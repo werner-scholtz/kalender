@@ -4,6 +4,7 @@ import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
+import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
@@ -122,6 +123,13 @@ typedef WeekNumberBuilder = Widget Function(
 typedef WeekDayHeaderBuilder = Widget Function(
   DateTime date,
   WeekDayHeaderStyle? style,
+);
+
+/// The month grid builder.
+///
+/// The [style] is used to style the month grid.
+typedef MonthGridBuilder = Widget Function(
+  MonthGridStyle? style,
 );
 
 ///

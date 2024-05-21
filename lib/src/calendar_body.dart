@@ -28,8 +28,14 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
-  /// The [MonthBodyConfiguration] that will be used by the [MonthBody].
+  /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration? monthBodyConfiguration;
+
+  /// The components used by the [MonthBody].
+  final MonthBodyComponents? monthBodyComponents;
+
+  /// The styles of the components used by the [MonthBody].
+  final MonthBodyComponentStyles? monthBodyComponentStyles;
 
   const CalendarBody({
     super.key,
@@ -42,6 +48,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.monthBodyConfiguration,
     this.multiDayBodyComponents,
     this.multiDayBodyComponentStyles,
+    this.monthBodyComponents,
+    this.monthBodyComponentStyles,
   });
 
   @override
@@ -70,6 +78,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
           callbacks: callbacks,
           tileComponents: multiDayTileComponents,
           configuration: monthBodyConfiguration,
+          components: monthBodyComponents,
+          styles: monthBodyComponentStyles,
         ),
       _ => Container(),
     };

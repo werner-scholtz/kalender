@@ -1,17 +1,26 @@
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
+import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
 
 /// The component builders used by the [MonthBody].
 ///
 /// - Using these will override the respective default components.
 class MonthBodyComponents {
-  const MonthBodyComponents();
+  final MonthGridBuilder? monthGridBuilder;
+
+  const MonthBodyComponents({
+    this.monthGridBuilder,
+  });
 }
 
 /// The styles of the default components used by the [MonthBody].
 class MonthBodyComponentStyles {
-  const MonthBodyComponentStyles();
+  final MonthGridStyle? monthGridStyle;
+
+  const MonthBodyComponentStyles({
+    this.monthGridStyle,
+  });
 }
 
 /// The component builders used by the [MonthHeader].
