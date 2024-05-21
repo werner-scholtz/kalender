@@ -85,96 +85,86 @@ class MonthBody<T extends Object?> extends StatelessWidget {
         final dayWidth = pageWidth / DateTime.daysPerWeek;
         final weekHeight = pageHeight / 5;
 
-        return MonthProvider(
-          eventsController: eventsController!,
-          viewController: viewController,
-          tileComponents: tileComponents,
-          pageWidth: pageWidth,
-          pageHeight: pageHeight,
-          dayWidth: dayWidth,
-          bodyConfiguration: bodyConfiguration,
-          callbacks: callbacks,
-          child: SizedBox(
-            width: pageWidth,
-            height: pageHeight,
-            child: PageView.builder(
-              controller: viewController.pageController,
-              itemCount: pageNavigation.numberOfPages,
-              onPageChanged: (index) {
-                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                  index,
-                );
-                viewController.visibleDateTimeRange.value = visibleRange;
-              },
-              itemBuilder: (context, index) {
-                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                  index,
+        return SizedBox(
+          width: pageWidth,
+          height: pageHeight,
+          child: PageView.builder(
+            controller: viewController.pageController,
+            itemCount: pageNavigation.numberOfPages,
+            onPageChanged: (index) {
+              final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                index,
+              );
+              viewController.visibleDateTimeRange.value = visibleRange;
+            },
+            itemBuilder: (context, index) {
+              final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                index,
+              );
+
+              final multiDayEvents = List.generate(5, (index) {
+                final visibleDateTimeRange = DateTimeRange(
+                  start: visibleRange.start.addDays(index * 7),
+                  end: visibleRange.start.addDays((index * 7) + 7),
                 );
 
-                final multiDayEvents = List.generate(5, (index) {
-                  final visibleDateTimeRange = DateTimeRange(
-                    start: visibleRange.start.addDays(index * 7),
-                    end: visibleRange.start.addDays((index * 7) + 7),
-                  );
+                final multiDayEvents = MultiDayEventWidget<T>(
+                  eventsController: eventsController!,
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  tileComponents: tileComponents,
+                  viewController: viewController,
+                  dayWidth: dayWidth,
+                  allowResizing: bodyConfiguration.allowResizing,
+                  showAllEvents: true,
+                );
 
-                  final multiDayEvents = MultiDayEventWidget<T>(
-                    eventsController: eventsController!,
-                    visibleDateTimeRange: visibleDateTimeRange,
-                    tileComponents: tileComponents,
-                    viewController: viewController,
-                    dayWidth: dayWidth,
-                    allowResizing: bodyConfiguration.allowResizing,
-                    showAllEvents: true,
-                  );
+                final multiDayDragTarget = MultiDayDragTarget<T>(
+                  eventsController: eventsController,
+                  viewController: viewController,
+                  tileComponents: tileComponents,
+                  pageTriggerSetup: pageTriggerConfiguration,
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  dayWidth: dayWidth,
+                  pageWidth: pageWidth,
+                  tileHeight: tileHeight,
+                  callbacks: callbacks,
+                  allowSingleDayEvents: true,
+                );
 
-                  final multiDayDragTarget = MultiDayDragTarget<T>(
-                    eventsController: eventsController,
-                    viewController: viewController,
-                    tileComponents: tileComponents,
-                    pageTriggerSetup: pageTriggerConfiguration,
-                    visibleDateTimeRange: visibleDateTimeRange,
-                    dayWidth: dayWidth,
-                    pageWidth: pageWidth,
-                    tileHeight: tileHeight,
-                    callbacks: callbacks,
-                    allowSingleDayEvents: true,
-                  );
+                final gestureDetector = MultiDayGestureDetector(
+                  eventsController: eventsController,
+                  callbacks: callbacks,
+                  viewController: viewController,
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  createEventTrigger: bodyConfiguration.createEventTrigger,
+                  dayWidth: dayWidth,
+                );
 
-                  final gestureDetector = MultiDayGestureDetector(
-                    eventsController: eventsController,
-                    callbacks: callbacks,
-                    viewController: viewController,
-                    visibleDateTimeRange: visibleDateTimeRange,
-                    createEventTrigger: bodyConfiguration.createEventTrigger,
-                    dayWidth: dayWidth,
-                  );
-
-                  return SizedBox(
-                    height: pageHeight / 5,
-                    width: pageWidth,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(child: gestureDetector),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: weekHeight,
-                            minWidth: weekHeight,
-                          ),
-                          child: multiDayEvents,
+                return SizedBox(
+                  height: pageHeight / 5,
+                  width: pageWidth,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: gestureDetector),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: weekHeight,
+                          minWidth: weekHeight,
                         ),
-                        Positioned.fill(
-                          child: multiDayDragTarget,
-                        ),
-                      ],
-                    ),
-                  );
-                });
-
-                return Column(
-                  children: multiDayEvents,
+                        child: multiDayEvents,
+                      ),
+                      Positioned.fill(
+                        child: multiDayDragTarget,
+                      ),
+                    ],
+                  ),
                 );
-              },
-            ),
+              });
+
+              return Column(
+                children: multiDayEvents,
+              );
+            },
           ),
         );
       },

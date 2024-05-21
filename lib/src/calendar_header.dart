@@ -16,12 +16,20 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
   final TileComponents<T> multiDayTileComponents;
 
+  /// The components used by the [MonthHeader].
+  final MonthHeaderComponents? monthHeaderComponents;
+
+  /// The styles of the components used by the [MonthHeader].
+  final MonthHeaderComponentStyles? monthHeaderComponentStyles;
+
   const CalendarHeader({
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
     required this.multiDayTileComponents,
+    this.monthHeaderComponents,
+    this.monthHeaderComponentStyles,
   });
 
   @override
@@ -43,7 +51,11 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
           callbacks: callbacks,
           tileComponents: multiDayTileComponents,
         ),
-      MonthViewController => MonthHeader(),
+      MonthViewController => MonthHeader(
+          calendarController: calendarController,
+          components: monthHeaderComponents,
+          styles: monthHeaderComponentStyles,
+        ),
       _ => Container(),
     };
   }
