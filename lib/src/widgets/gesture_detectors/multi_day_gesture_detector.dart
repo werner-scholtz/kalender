@@ -113,7 +113,6 @@ class _MultiDayGestureDetectorState<T extends Object?>
     if (cursorDateIndex < 0) return null;
     final date = visibleDates.elementAtOrNull(cursorDateIndex);
     if (date == null) return null;
-
     return date;
   }
 }

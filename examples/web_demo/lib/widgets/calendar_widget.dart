@@ -39,7 +39,7 @@ class CalendarWidget extends StatelessWidget {
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
 
-    final headerTileComponents = TileComponents(
+    final multiDayTileComponents = TileComponents(
       tileBuilder: (event) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
@@ -57,7 +57,7 @@ class CalendarWidget extends StatelessWidget {
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
 
-    final calendarHeader = Row(
+    final navigationHeader = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton.filledTonal(
@@ -98,11 +98,9 @@ class CalendarWidget extends StatelessWidget {
       ],
     );
 
-    // final multiDayHeader = MultiDayHeader(
-    //   eventsController: eventsController,
-    //   calendarController: controller,
-    //   tileComponents: headerTileComponents,
-    // );
+    final calendarHeader = CalendarHeader(
+      multiDayTileComponents: multiDayTileComponents,
+    );
 
     final header = Material(
       color: Theme.of(context).colorScheme.surface,
@@ -110,21 +108,16 @@ class CalendarWidget extends StatelessWidget {
       elevation: 2,
       child: Column(
         children: [
+          navigationHeader,
           calendarHeader,
-          // multiDayHeader,
         ],
       ),
     );
 
     final calendarBody = CalendarBody(
-      tileComponents: tileComponents,
       multiDayTileComponents: tileComponents,
+      tileComponents: tileComponents,
     );
-
-    // MultiDayBody(
-    //   heightPerMinute: ValueNotifier(0.5),
-    //   tileComponents: tileComponents,
-    // );
 
     return CalendarView(
       calendarController: controller,

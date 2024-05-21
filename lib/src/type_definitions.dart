@@ -6,6 +6,7 @@ import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
+import 'package:kalender/src/widgets/components/week_day_header.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
 
 /// The callback for when an event is tapped.
@@ -112,6 +113,15 @@ typedef DayHeaderBuilder = Widget Function(
 typedef WeekNumberBuilder = Widget Function(
   DateTimeRange visibleDateTimeRange,
   WeekNumberStyle? style,
+);
+
+/// The week day header builder.
+///
+/// The [date] is the date that the header will be displayed for.
+/// The [style] is used to style the week day header.
+typedef WeekDayHeaderBuilder = Widget Function(
+  DateTime date,
+  WeekDayHeaderStyle? style,
 );
 
 ///
