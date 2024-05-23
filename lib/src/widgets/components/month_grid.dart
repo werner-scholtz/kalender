@@ -26,8 +26,7 @@ class MonthGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final thickness = style?.thickness ?? 0;
-    final color =
-        style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
+    final color = style?.color ?? Theme.of(context).colorScheme.surfaceVariant;
 
     return Stack(
       children: <Widget>[
