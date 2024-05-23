@@ -118,15 +118,16 @@ class TimeLine<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return ValueListenableBuilder(
+    final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: eventBeingDragged,
       builder: (context, eventBeingDragged, child) {
         // TODO: calculate eventBeingDragged start/end times and display them.
-
-        return Stack(
-          children: positionedTimes.nonNulls.toList(),
-        );
+        return SizedBox();
       },
+    );
+
+    return Stack(
+      children: positionedTimes.nonNulls.toList(),
     );
   }
 
