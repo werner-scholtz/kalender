@@ -9,7 +9,22 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/feature.gif" width="100%"/> 
+* [Calendar Views](#calendar-views) 
+
+
+### Calendar Views
+
+
+
+
+
+
+
+
+
+
+
+
 
 * **Platforms** - Works with Web, Desktop and Mobile. 
 
