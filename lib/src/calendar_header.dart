@@ -4,25 +4,14 @@ import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class CalendarHeader<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [CalendarHeader].
   final EventsController<T>? eventsController;
-
-  /// The [CalendarController] that will be used by the [CalendarHeader].
   final CalendarController<T>? calendarController;
-
-  /// The callbacks used by the [CalendarHeader].
   final CalendarCallbacks<T>? callbacks;
-
-  /// The tile components used by the [MonthBody] and [MultiDayHeader].
   final TileComponents<T> multiDayTileComponents;
-
-  /// The components used by the [MonthHeader].
+  final MultiDayHeaderComponents? multiDayHeaderComponents;
+  final MultiDayHeaderComponentStyles? multiDayHeaderComponentStyles;
   final MonthHeaderComponents? monthHeaderComponents;
-
-  /// The styles of the components used by the [MonthHeader].
   final MonthHeaderComponentStyles? monthHeaderComponentStyles;
-
-  /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? multiDayHeaderConfiguration;
 
   const CalendarHeader({
@@ -34,6 +23,8 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
     this.monthHeaderComponents,
     this.monthHeaderComponentStyles,
     this.multiDayHeaderConfiguration,
+    this.multiDayHeaderComponents,
+    this.multiDayHeaderComponentStyles,
   });
 
   @override
@@ -55,6 +46,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
           callbacks: callbacks,
           tileComponents: multiDayTileComponents,
           configuration: multiDayHeaderConfiguration,
+          components: multiDayHeaderComponents,
         ),
       MonthViewController => MonthHeader(
           calendarController: calendarController,

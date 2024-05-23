@@ -71,6 +71,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
           configuration: multiDayBodyConfiguration,
           callbacks: callbacks,
           tileComponents: tileComponents,
+          components: multiDayBodyComponents,
+          componentStyles: multiDayBodyComponentStyles,
         ),
       MonthViewController => MonthBody(
           eventsController: eventsController,

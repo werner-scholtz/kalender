@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
@@ -26,8 +25,8 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? configuration;
 
-  /// The [MultiDayHeaderComponentBuilders] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderComponentBuilders? componentBuilders;
+  /// The [MultiDayHeaderComponents] that will be used by the [MultiDayHeader].
+  final MultiDayHeaderComponents? components;
 
   /// The [MultiDayHeaderComponentStyles] that will be used by the [MultiDayHeader].
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -40,7 +39,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.configuration,
-    this.componentBuilders,
+    this.components,
     this.componentStyles,
   });
 
@@ -98,7 +97,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                     visibleDateTimeRange: visibleDateTimeRange,
                     headerConfiguration: headerConfiguration,
                     tileComponents: tileComponents,
-                    components: componentBuilders,
+                    components: components,
                     componentStyles: componentStyles,
                     timelineWidth: viewConfiguration.timelineWidth,
                     tileHeight: headerConfiguration.tileHeight,
@@ -111,7 +110,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                     visibleDateTimeRange: visibleDateTimeRange,
                     headerConfiguration: headerConfiguration,
                     tileComponents: tileComponents,
-                    component: componentBuilders,
+                    component: components,
                     componentStyles: componentStyles,
                     timelineWidth: viewConfiguration.timelineWidth,
                     tileHeight: headerConfiguration.tileHeight,
@@ -137,7 +136,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final MultiDayHeaderConfiguration headerConfiguration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponentBuilders? components;
+  final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double timelineWidth;
   final double tileHeight;
@@ -252,7 +251,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration headerConfiguration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponentBuilders? component;
+  final MultiDayHeaderComponents? component;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double timelineWidth;
   final double tileHeight;

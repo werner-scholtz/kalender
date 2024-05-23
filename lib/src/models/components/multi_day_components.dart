@@ -11,14 +11,14 @@ import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 /// The component builders used by the [MultiDayHeader].
 ///
 /// - Using these will override the respective default components.
-class MultiDayHeaderComponentBuilders {
+class MultiDayHeaderComponents {
   final DayHeaderBuilder? dayHeaderBuilder;
   final WeekNumberBuilder? weekNumberBuilder;
 
   final Widget? leftPageTriggerWidget;
   final Widget? rightPageTriggerWidget;
 
-  const MultiDayHeaderComponentBuilders({
+  const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.weekNumberBuilder,
     this.leftPageTriggerWidget,
