@@ -182,7 +182,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             );
 
             final pageView = PageView.builder(
-              key: ValueKey(viewConfiguration.name),
+              key: ValueKey(viewConfiguration.hashCode),
               controller: viewController.pageController,
               itemCount: viewController.numberOfPages,
               physics: configuration?.pageScrollPhysics,
