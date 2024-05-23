@@ -26,27 +26,18 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   DateTimeRange get calendarRange => _calendarRange;
 
   /// TODO: Document this.
-  ViewController? _viewController;
-  ViewController? get viewController => _viewController;
+  ViewController<T>? _viewController;
+  ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
   ValueNotifier<DateTimeRange>? get visibleDateTimeRange {
     if (!isAttached) return null;
-
-    if (_viewController is MultiDayViewController<T>) {
-      return (_viewController as MultiDayViewController<T>)
-          .visibleDateTimeRange;
-    }
-    return null;
+    return _viewController!.visibleDateTimeRange;
   }
 
   ValueNotifier<List<CalendarEvent<T>>>? get visibleEvents {
     if (!isAttached) return null;
-
-    if (_viewController is MultiDayViewController<T>) {
-      return (_viewController as MultiDayViewController<T>).visibleEvents;
-    }
-    return null;
+    return _viewController!.visibleEvents;
   }
 
   bool isAttachedTo(ViewController viewController) {
@@ -54,7 +45,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   }
 
   /// Attach the [ViewController] to this [CalendarController].
-  void attach(ViewController viewController) {
+  void attach(ViewController<T> viewController) {
     if (isAttached) detach();
 
     _viewController = viewController;

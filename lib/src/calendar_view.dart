@@ -53,7 +53,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 }
 
 class _CalendarViewState<T> extends State<CalendarView<T>> {
-  late ViewController _viewController;
+  late ViewController<T> _viewController;
 
   @override
   void initState() {
@@ -86,7 +86,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     widget.calendarController.attach(_viewController);
   }
 
-  ViewController _createViewController() {
+  ViewController<T> _createViewController() {
     final viewConfiguration = widget.viewConfiguration;
 
     return switch (viewConfiguration.runtimeType) {
