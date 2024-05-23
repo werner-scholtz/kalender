@@ -218,8 +218,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 }
 
 /// The configuration used by the [MultiDayBody].
-///
-/// This configuration is used to determine the behavior of the [MultiDayBody].
 class MultiDayBodyConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayBodyConfiguration({
@@ -290,11 +288,92 @@ class MultiDayBodyConfiguration {
 
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
+
+  /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
+  MultiDayBodyConfiguration copyWith({
+    bool? showMultiDayEvents,
+    bool? allowEventCreation,
+    bool? allowResizing,
+    bool? allowRescheduling,
+    CreateEventTrigger? createEventTrigger,
+    Duration? newEventDuration,
+    bool? snapToTimeIndicator,
+    bool? snapToOtherEvents,
+    Duration? snapRange,
+    int? snapIntervalMinutes,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    DayEventLayoutStrategy? dayEventLayoutStrategy,
+    ScrollPhysics? scrollPhysics,
+    ScrollPhysics? pageScrollPhysics,
+  }) {
+    return MultiDayBodyConfiguration(
+      showMultiDayEvents: showMultiDayEvents ?? this.showMultiDayEvents,
+      allowEventCreation: allowEventCreation ?? this.allowEventCreation,
+      allowResizing: allowResizing ?? this.allowResizing,
+      allowRescheduling: allowRescheduling ?? this.allowRescheduling,
+      createEventTrigger: createEventTrigger ?? this.createEventTrigger,
+      newEventDuration: newEventDuration ?? this.newEventDuration,
+      snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
+      snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
+      snapRange: snapRange ?? this.snapRange,
+      snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
+      pageTriggerConfiguration:
+          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      scrollTriggerConfiguration:
+          scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
+      dayEventLayoutStrategy:
+          dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
+      scrollPhysics: scrollPhysics ?? this.scrollPhysics,
+      pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayBodyConfiguration &&
+        other.showMultiDayEvents == showMultiDayEvents &&
+        other.allowEventCreation == allowEventCreation &&
+        other.allowResizing == allowResizing &&
+        other.allowRescheduling == allowRescheduling &&
+        other.createEventTrigger == createEventTrigger &&
+        other.newEventDuration == newEventDuration &&
+        other.snapToTimeIndicator == snapToTimeIndicator &&
+        other.snapToOtherEvents == snapToOtherEvents &&
+        other.snapRange == snapRange &&
+        other.snapIntervalMinutes == snapIntervalMinutes &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
+        other.dayEventLayoutStrategy == dayEventLayoutStrategy &&
+        other.scrollPhysics == scrollPhysics &&
+        other.pageScrollPhysics == pageScrollPhysics;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      showMultiDayEvents,
+      allowEventCreation,
+      allowResizing,
+      allowRescheduling,
+      createEventTrigger,
+      newEventDuration,
+      snapToTimeIndicator,
+      snapToOtherEvents,
+      snapRange,
+      snapIntervalMinutes,
+      pageTriggerConfiguration,
+      scrollTriggerConfiguration,
+      dayEventLayoutStrategy,
+      scrollPhysics,
+      pageScrollPhysics,
+    );
+  }
 }
 
-/// The configuration used by the [MultiDayHeader].
-///
-/// This configuration is used to determine the behavior of the [MultiDayHeader].
+/// The configuration used by the [MultiDayHeader] and [MonthBody].
 class MultiDayHeaderConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
@@ -327,4 +406,49 @@ class MultiDayHeaderConfiguration {
 
   /// The configuration for the page navigation triggers.
   late final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
+  MultiDayHeaderConfiguration copyWith({
+    double? tileHeight,
+    bool? allowEventCreation,
+    bool? allowResizing,
+    bool? allowRescheduling,
+    CreateEventTrigger? createEventTrigger,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+  }) {
+    return MultiDayHeaderConfiguration(
+      tileHeight: tileHeight ?? this.tileHeight,
+      allowEventCreation: allowEventCreation ?? this.allowEventCreation,
+      allowResizing: allowResizing ?? this.allowResizing,
+      allowRescheduling: allowRescheduling ?? this.allowRescheduling,
+      createEventTrigger: createEventTrigger ?? this.createEventTrigger,
+      pageTriggerConfiguration:
+          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayHeaderConfiguration &&
+        other.tileHeight == tileHeight &&
+        other.allowEventCreation == allowEventCreation &&
+        other.allowResizing == allowResizing &&
+        other.allowRescheduling == allowRescheduling &&
+        other.createEventTrigger == createEventTrigger &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      tileHeight,
+      allowEventCreation,
+      allowResizing,
+      allowRescheduling,
+      createEventTrigger,
+      pageTriggerConfiguration,
+    );
+  }
 }

@@ -36,6 +36,50 @@ class PageTriggerConfiguration {
 
   /// Calculation used to determine the width of the trigger.
   late double Function(double pageWidth) triggerWidth;
+
+  /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
+  PageTriggerConfiguration copyWith({
+    Widget? leftTriggerWidget,
+    Widget? rightTriggerWidget,
+    Duration? triggerDelay,
+    Duration? animationDuration,
+    Curve? animationCurve,
+    double Function(double pageWidth)? triggerWidth,
+  }) {
+    return PageTriggerConfiguration(
+      leftTriggerWidget: leftTriggerWidget ?? this.leftTriggerWidget,
+      rightTriggerWidget: rightTriggerWidget ?? this.rightTriggerWidget,
+      triggerDelay: triggerDelay ?? this.triggerDelay,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
+      triggerWidth: triggerWidth ?? this.triggerWidth,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is PageTriggerConfiguration &&
+        other.leftTriggerWidget == leftTriggerWidget &&
+        other.rightTriggerWidget == rightTriggerWidget &&
+        other.triggerDelay == triggerDelay &&
+        other.animationDuration == animationDuration &&
+        other.animationCurve == animationCurve &&
+        other.triggerWidth == triggerWidth;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      leftTriggerWidget,
+      rightTriggerWidget,
+      triggerDelay,
+      animationDuration,
+      animationCurve,
+      triggerWidth,
+    );
+  }
 }
 
 /// The configuration for the scroll triggers.
@@ -74,4 +118,48 @@ class ScrollTriggerConfiguration {
 
   /// Calculation used to determine the height of the trigger.
   late double Function(double pageHeight) triggerHeight;
+
+  /// Creates a copy of this [ScrollTriggerConfiguration] but with the given fields replaced with the new values.
+  ScrollTriggerConfiguration copyWith({
+    Widget? topTriggerWidget,
+    Widget? bottomTriggerWidget,
+    Duration? triggerDelay,
+    Duration? animationDuration,
+    Curve? animationCurve,
+    double Function(double pageHeight)? triggerHeight,
+  }) {
+    return ScrollTriggerConfiguration(
+      topTriggerWidget: topTriggerWidget ?? this.topTriggerWidget,
+      bottomTriggerWidget: bottomTriggerWidget ?? this.bottomTriggerWidget,
+      triggerDelay: triggerDelay ?? this.triggerDelay,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
+      triggerHeight: triggerHeight ?? this.triggerHeight,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScrollTriggerConfiguration &&
+        other.topTriggerWidget == topTriggerWidget &&
+        other.bottomTriggerWidget == bottomTriggerWidget &&
+        other.triggerDelay == triggerDelay &&
+        other.animationDuration == animationDuration &&
+        other.animationCurve == animationCurve &&
+        other.triggerHeight == triggerHeight;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      topTriggerWidget,
+      bottomTriggerWidget,
+      triggerDelay,
+      animationDuration,
+      animationCurve,
+      triggerHeight,
+    );
+  }
 }
