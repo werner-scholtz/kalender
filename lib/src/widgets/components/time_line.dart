@@ -10,6 +10,11 @@ class TimelineStyle {
   /// The text direction of the text.
   final TextDirection? textDirection;
 
+  /// The padding of the text.
+  ///
+  /// * Recommendation only pad horizontal.
+  final EdgeInsets? textPadding;
+
   /// The function that will be used to build the string.
   final String Function(TimeOfDay timeOfDay)? stringBuilder;
 
@@ -17,6 +22,7 @@ class TimelineStyle {
     this.textStyle,
     this.textDirection,
     this.stringBuilder,
+    this.textPadding,
   });
 }
 
@@ -32,7 +38,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
   final TimelineStyle? style;
 
   /// The [ValueNotifier] that contains the event being dragged.
-  /// TODO: display the resulting times in the timeline.
+  /// TODO: display the resulting start/end times of the dragged event.
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
   /// Creates a new [TimeLine] widget.
@@ -95,19 +101,32 @@ class TimeLine<T extends Object?> extends StatelessWidget {
         final text = style?.stringBuilder?.call(displayTime) ??
             displayTime.format(context);
 
+        final textPadding =
+            style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
+
         return Positioned(
           top: position - textXOffset,
-          child: Text(
-            text,
-            style: textStyle,
-            textDirection: textDirection,
+          child: Padding(
+            padding: textPadding,
+            child: Text(
+              text,
+              style: textStyle,
+              textDirection: textDirection,
+            ),
           ),
         );
       },
     );
 
-    return Stack(
-      children: positionedTimes.nonNulls.toList(),
+    return ValueListenableBuilder(
+      valueListenable: eventBeingDragged,
+      builder: (context, eventBeingDragged, child) {
+        // TODO: calculate eventBeingDragged start/end times and display them.
+
+        return Stack(
+          children: positionedTimes.nonNulls.toList(),
+        );
+      },
     );
   }
 
