@@ -124,6 +124,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   dayWidth: dayWidth,
                   allowResizing: bodyConfiguration.allowResizing,
                   showAllEvents: true,
+                  callbacks: callbacks,
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(

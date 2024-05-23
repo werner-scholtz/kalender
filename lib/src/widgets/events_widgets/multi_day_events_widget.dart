@@ -13,6 +13,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final ViewController<T> viewController;
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
+  final CalendarCallbacks<T>? callbacks;
   final double dayWidth;
   final bool allowResizing;
   final bool showAllEvents;
@@ -26,6 +27,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.dayWidth,
     required this.allowResizing,
     required this.showAllEvents,
+    required this.callbacks,
   });
 
   @override
@@ -55,6 +57,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
               tileComponents: tileComponents,
               dayWidth: dayWidth,
               allowResizing: allowResizing,
+              callbacks: callbacks,
             ),
           );
         });

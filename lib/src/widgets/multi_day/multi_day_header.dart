@@ -188,6 +188,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       dayWidth: pageWidth,
       allowResizing: headerConfiguration.allowResizing,
       showAllEvents: false,
+      callbacks: callbacks,
     );
 
     final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -319,6 +320,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       dayWidth: dayWidth,
       allowResizing: headerConfiguration.allowResizing,
       showAllEvents: false,
+      callbacks: callbacks,
     );
 
     final multiDayDragTarget = MultiDayDragTarget<T>(

@@ -9,19 +9,10 @@ import 'package:kalender/src/widgets/components/resize_detector.dart';
 class MultiDayEventTile<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final ViewController<T> viewController;
-
-  /// The [CalendarEvent] that the [MultiDayEventTile] represents.
   final CalendarEvent<T> event;
-
-  /// The [CalendarCallbacks] that will be used by the [MultiDayEventTile].
   final CalendarCallbacks<T>? callbacks;
-
-  /// The [TileComponents] that will be used by the [MultiDayEventTile].
   final TileComponents<T> tileComponents;
-
-  /// The width of a day.
   final double dayWidth;
-
   final bool allowResizing;
 
   /// Creates a new [MultiDayEventTile].
@@ -33,7 +24,7 @@ class MultiDayEventTile<T extends Object?> extends StatefulWidget {
     required this.tileComponents,
     required this.dayWidth,
     required this.allowResizing,
-    this.callbacks,
+    required this.callbacks,
   });
 
   @override

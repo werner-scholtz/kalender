@@ -157,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _createOverlay(CalendarEvent event, RenderBox renderBox) {
+    print('object');
     _removeOverlay();
 
     var position = renderBox.localToGlobal(Offset.zero);
