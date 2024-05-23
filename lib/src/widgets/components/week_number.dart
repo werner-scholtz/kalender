@@ -8,6 +8,7 @@ class WeekNumberStyle {
     this.textStyle,
     this.visualDensity,
     this.tooltip,
+    this.padding,
   });
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
@@ -18,6 +19,9 @@ class WeekNumberStyle {
 
   /// The tooltip used by the [WeekNumber] widget.
   final String? tooltip;
+
+  /// The padding around by the [WeekNumber] widget.
+  final EdgeInsets? padding;
 }
 
 class WeekNumber extends StatelessWidget {
@@ -44,13 +48,19 @@ class WeekNumber extends StatelessWidget {
     final (start, end) = visibleDateTimeRange.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
-    return IconButton.filledTonal(
-      tooltip: tooltip,
-      onPressed: null,
-      visualDensity: visualDensity,
-      icon: Text(
-        weekNumber,
-        style: textStyle,
+    final padding =
+        weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
+
+    return Padding(
+      padding: padding,
+      child: IconButton.filledTonal(
+        tooltip: tooltip,
+        onPressed: null,
+        visualDensity: visualDensity,
+        icon: Text(
+          weekNumber,
+          style: textStyle,
+        ),
       ),
     );
   }
