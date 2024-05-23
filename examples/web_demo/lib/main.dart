@@ -72,12 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
     MultiDayViewConfiguration.custom(numberOfDays: 3),
-    MultiDayViewConfiguration.custom(
-      name: '2 Weeks',
-      numberOfDays: 14,
-    ),
-    MonthViewConfiguration.month(),
+    // MonthViewConfiguration.month(),
   ];
+
+  int _index = 0;
 
   OverlayEntry? _overlayEntry;
 
@@ -108,44 +106,43 @@ class _MyHomePageState extends State<MyHomePage> {
       onEventTapped: _createOverlay,
     );
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          actions: [
-            IconButton.filledTonal(
-              onPressed: () => MyApp.of(context)!.toggleTheme(),
-              icon: Icon(
-                MyApp.of(context)!.themeMode == ThemeMode.dark
-                    ? Icons.brightness_2_rounded
-                    : Icons.brightness_7_rounded,
-              ),
-            )
-          ],
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Single Calendar'),
-              Tab(text: 'Multi Calendar'),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+        actions: [
+          IconButton.filledTonal(
+            onPressed: () => MyApp.of(context)!.toggleTheme(),
+            icon: Icon(
+              MyApp.of(context)!.themeMode == ThemeMode.dark
+                  ? Icons.brightness_2_rounded
+                  : Icons.brightness_7_rounded,
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            SingleCalendarView(
-              eventsController: eventsController,
-              callbacks: callbacks,
-              viewConfigurations: _viewConfigurations,
-            ),
-            MultiCalendarView(
-              eventsController: eventsController,
-              callbacks: callbacks,
-              viewConfigurations: _viewConfigurations,
-            ),
-          ],
-        ),
+          DropdownMenu(
+            initialSelection: _index,
+            dropdownMenuEntries: const [
+              DropdownMenuEntry(value: 0, label: 'Single Calendar'),
+              DropdownMenuEntry(value: 1, label: 'Multi Calendar'),
+            ],
+            onSelected: (value) {
+              if (value == null) return;
+              setState(() => _index = value);
+            },
+          ),
+        ],
       ),
+      body: _index == 0
+          ? SingleCalendarView(
+              eventsController: eventsController,
+              callbacks: callbacks,
+              viewConfigurations: _viewConfigurations,
+            )
+          : MultiCalendarView(
+              eventsController: eventsController,
+              callbacks: callbacks,
+              viewConfigurations: _viewConfigurations,
+            ),
     );
   }
 

@@ -24,6 +24,8 @@ class _MultiCalendarViewState extends State<MultiCalendarView> {
   late ViewConfiguration _viewConfiguration = widget.viewConfigurations.first;
   late ViewConfiguration _viewConfiguration1 = widget.viewConfigurations.first;
 
+  bool showHeader = true;
+
   @override
   Widget build(BuildContext context) {
     final calendar = CalendarWidget(
@@ -33,6 +35,9 @@ class _MultiCalendarViewState extends State<MultiCalendarView> {
       viewConfigurations: widget.viewConfigurations,
       onSelected: (value) => setState(() => _viewConfiguration = value),
       callbacks: widget.callbacks,
+      bodyConfiguration: MultiDayBodyConfiguration(),
+      headerConfiguration: MultiDayHeaderConfiguration(),
+      showHeader: showHeader,
     );
 
     final calendar1 = CalendarWidget(
@@ -42,9 +47,13 @@ class _MultiCalendarViewState extends State<MultiCalendarView> {
       viewConfigurations: widget.viewConfigurations,
       onSelected: (value) => setState(() => _viewConfiguration1 = value),
       callbacks: widget.callbacks,
+      bodyConfiguration: MultiDayBodyConfiguration(),
+      headerConfiguration: MultiDayHeaderConfiguration(),
+      showHeader: showHeader,
     );
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Flexible(flex: 3, child: calendar),
         Flexible(flex: 3, child: calendar1),
