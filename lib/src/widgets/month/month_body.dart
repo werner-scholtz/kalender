@@ -123,6 +123,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   viewController: viewController,
                   dayWidth: dayWidth,
                   allowResizing: bodyConfiguration.allowResizing,
+                  tileHeight: tileHeight,
                   showAllEvents: true,
                   callbacks: callbacks,
                 );

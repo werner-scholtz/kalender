@@ -17,6 +17,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final double dayWidth;
   final bool allowResizing;
   final bool showAllEvents;
+  final double tileHeight;
 
   const MultiDayEventWidget({
     super.key,
@@ -28,6 +29,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.allowResizing,
     required this.showAllEvents,
     required this.callbacks,
+    required this.tileHeight,
   });
 
   @override
@@ -65,7 +67,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         final multiDayEventsWidget = CustomMultiChildLayout(
           delegate: MultiDayEventsDefaultLayoutDelegate(
             group: group,
-            multiDayTileHeight: 24,
+            multiDayTileHeight: tileHeight,
           ),
           children: [...children],
         );
@@ -90,7 +92,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             return CustomMultiChildLayout(
               delegate: MultiDayEventsDefaultLayoutDelegate(
                 group: group,
-                multiDayTileHeight: 24,
+                multiDayTileHeight: tileHeight,
               ),
               children: [
                 LayoutId(
