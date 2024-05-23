@@ -4,6 +4,7 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
+import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
@@ -16,9 +17,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
   }) : assert(
-          firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-          'First day of week must be between 1 and 7 (inclusive)\n'
-          'Use DateTime.monday ~ DateTime.sunday if unsure.',
+          firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
+          'First day of week must be Monday, Saturday or Sunday\n'
+          'Use DateTime.monday, DateTime.saturday or DateTime.sunday if unsure.',
         );
 
   /// Creates a [MultiDayViewConfiguration] for a single day.
@@ -113,6 +114,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   late final TimeOfDayRange timeOfDayRange;
 
   /// The first day of the week.
+  ///
+  /// This can be [DateTime.monday], [DateTime.saturday] or [DateTime.sunday].
   late final int firstDayOfWeek;
 
   /// The number of days that can be displayed by [MultiDayBody] widgets using this configuration.
@@ -122,6 +125,84 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   ///
   /// This is used by the [MultiDayBody] and [MultiDayHeader].
   final double timelineWidth;
+
+  MultiDayViewConfiguration copyWith({
+    String? name,
+    TimeOfDayRange? timeOfDayRange,
+    DateTimeRange? displayRange,
+    int? numberOfDays,
+    double? timelineWidth,
+    int? firstDayOfWeek,
+    PageNavigationFunctions? pageNavigationFunctions,
+  }) {
+    final pageNavigationFunctions0 =
+        pageNavigationFunctions ?? this.pageNavigationFunctions;
+    final displayRange0 = displayRange ?? this.displayRange;
+    final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
+
+    return MultiDayViewConfiguration(
+      name: name ?? this.name,
+      timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+      displayRange: displayRange0,
+      numberOfDays: numberOfDays ?? this.numberOfDays,
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      firstDayOfWeek: firstDayOfWeek0,
+      pageNavigationFunctions: switch (pageNavigationFunctions0.runtimeType) {
+        DayPageFunctions => DayPageFunctions(dateTimeRange: displayRange0),
+        WeekPageFunctions => WeekPageFunctions(
+            dateTimeRange: displayRange0,
+            firstDayOfWeek: firstDayOfWeek0,
+          ),
+        WorkWeekPageFunctions => WorkWeekPageFunctions(
+            dateTimeRange: displayRange0,
+          ),
+        CustomPageFunctions => CustomPageFunctions(
+            dateTimeRange: displayRange0,
+            numberOfDays: numberOfDays ?? this.numberOfDays,
+          ),
+        _ => throw UnimplementedError(),
+      },
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayViewConfiguration &&
+        other.name == name &&
+        other.timeOfDayRange == timeOfDayRange &&
+        other.displayRange == displayRange &&
+        other.numberOfDays == numberOfDays &&
+        other.timelineWidth == timelineWidth &&
+        other.firstDayOfWeek == firstDayOfWeek &&
+        other.pageNavigationFunctions == pageNavigationFunctions;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      name,
+      timeOfDayRange,
+      displayRange,
+      numberOfDays,
+      timelineWidth,
+      firstDayOfWeek,
+      pageNavigationFunctions,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''
+    name: $name
+    timeOfDayRange: $timeOfDayRange
+    displayRange: $displayRange
+    numberOfDays: $numberOfDays
+    timelineWidth: $timelineWidth
+    firstDayOfWeek: $firstDayOfWeek
+    pageNavigationFunctions: $pageNavigationFunctions''';
+  }
 }
 
 /// The configuration used by the [MultiDayBody].
