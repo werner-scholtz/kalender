@@ -5,7 +5,6 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
@@ -205,11 +204,27 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 late final left = dayWidth * timeIndicatorDateIndex;
 
                 final events = DayEventsWidget<T>(
+                  eventsController: eventsController!,
+                  callbacks: callbacks,
+                  viewController: viewController,
+                  tileComponents: tileComponents,
+                  bodyConfiguration: bodyConfiguration,
+                  dayWidth: dayWidth,
+                  heightPerMinute: heightPerMinute,
                   visibleDateTimeRange: visibleRange,
+                  timeOfDayRange: timeOfDayRange,
                 );
 
                 final detector = DayGestureDetector<T>(
+                  eventsController: eventsController,
+                  callbacks: callbacks,
+                  viewController: viewController,
+                  bodyConfiguration: bodyConfiguration,
                   visibleDateTimeRange: visibleRange,
+                  eventBeingDragged: eventBeingDragged,
+                  timeOfDayRange: timeOfDayRange,
+                  dayWidth: dayWidth,
+                  heightPerMinute: heightPerMinute,
                 );
 
                 return Stack(
@@ -231,57 +246,57 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               },
             );
 
-            const dragTarget = DayDragTarget();
-
-            return MultiDayBodyDayProvider(
+            final dragTarget = DayDragTarget<T>(
               eventsController: eventsController!,
               viewController: viewController,
-              feedbackWidgetSize: eventsController.feedbackWidgetSize,
-              viewportHeight: viewPortHeight,
-              pageWidth: pageWidth,
-              dayWidth: dayWidth,
-              components: components,
-              componentStyles: componentStyles,
+              scrollController: viewController.scrollController,
               callbacks: callbacks,
               tileComponents: tileComponents,
+              eventBeingDragged: eventBeingDragged,
               bodyConfiguration: bodyConfiguration,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Scrollbar(
+              timeOfDayRange: timeOfDayRange,
+              pageWidth: pageWidth,
+              dayWidth: dayWidth,
+              viewPortHeight: viewPortHeight,
+              heightPerMinute: heightPerMinute,
+            );
+
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: Scrollbar(
+                    controller: viewController.scrollController,
+                    child: SingleChildScrollView(
                       controller: viewController.scrollController,
-                      child: SingleChildScrollView(
-                        controller: viewController.scrollController,
-                        physics: configuration?.scrollPhysics,
-                        child: SizedBox(
-                          height: pageHeight,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                bottom: 0,
-                                width: 56.0,
-                                child: timeline,
-                              ),
-                              Positioned.fill(child: hourLines),
-                              Positioned.fill(child: pageView),
-                            ],
-                          ),
+                      physics: configuration?.scrollPhysics,
+                      child: SizedBox(
+                        height: pageHeight,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              bottom: 0,
+                              width: 56.0,
+                              child: timeline,
+                            ),
+                            Positioned.fill(child: hourLines),
+                            Positioned.fill(child: pageView),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    left: timelineWidth,
-                    height: min(pageHeight, viewPortHeight),
-                    child: dragTarget,
-                  ),
-                ],
-              ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  left: timelineWidth,
+                  height: min(pageHeight, viewPortHeight),
+                  child: dragTarget,
+                ),
+              ],
             );
           },
         );

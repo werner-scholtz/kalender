@@ -2,14 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final CalendarCallbacks<T>? callbacks;
+  final MultiDayViewController<T> viewController;
+  final MultiDayBodyConfiguration bodyConfiguration;
+  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
   final DateTimeRange visibleDateTimeRange;
+  final TimeOfDayRange timeOfDayRange;
+  final double dayWidth;
+  final double heightPerMinute;
 
   const DayGestureDetector({
     super.key,
+    required this.eventsController,
+    required this.callbacks,
+    required this.viewController,
+    required this.bodyConfiguration,
     required this.visibleDateTimeRange,
+    required this.eventBeingDragged,
+    required this.timeOfDayRange,
+    required this.dayWidth,
+    required this.heightPerMinute,
   });
 
   @override
@@ -18,17 +34,15 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
 
 class _DayGestureDetectorState<T extends Object?>
     extends State<DayGestureDetector<T>> {
-  MultiDayBodyDayProvider<T> get provider =>
-      MultiDayBodyDayProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  Duration get newEventDuration => provider.bodyConfiguration.newEventDuration;
-  double get heightPerMinute => provider.heightPerMinuteValue;
-  TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
-  double get dayWidth => provider.dayWidth;
-
+  EventsController<T> get eventsController => widget.eventsController;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+  Duration get newEventDuration => bodyConfiguration.newEventDuration;
+  double get heightPerMinute => widget.heightPerMinute;
+  TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
+  double get dayWidth => widget.dayWidth;
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      provider.eventBeingDragged;
+      widget.eventBeingDragged;
 
   DateTime? start;
 
@@ -105,7 +119,7 @@ class _DayGestureDetectorState<T extends Object?>
 
     // Calculate the duration from the start of the day to the position.
     final durationFromStart = position.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
 
     final start = timeOfDayRange.start.toDateTime(date);
@@ -116,7 +130,7 @@ class _DayGestureDetectorState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
-    final createEventTrigger = provider.bodyConfiguration.createEventTrigger;
+    final createEventTrigger = bodyConfiguration.createEventTrigger;
 
     final tap = createEventTrigger == CreateEventTrigger.tap;
     final long = createEventTrigger == CreateEventTrigger.longPress;

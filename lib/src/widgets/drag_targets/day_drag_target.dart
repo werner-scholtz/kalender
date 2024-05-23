@@ -3,13 +3,40 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
 class DayDragTarget<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final MultiDayViewController<T> viewController;
+  final ScrollController scrollController;
+  final CalendarCallbacks<T>? callbacks;
+  final TileComponents<T> tileComponents;
+  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
+  final MultiDayBodyConfiguration bodyConfiguration;
+
+  final TimeOfDayRange timeOfDayRange;
+  final double pageWidth;
+  final double dayWidth;
+  final double viewPortHeight;
+  final double heightPerMinute;
+
   /// Creates a [DayDragTarget].
-  const DayDragTarget({super.key});
+  const DayDragTarget({
+    super.key,
+    required this.eventsController,
+    required this.viewController,
+    required this.scrollController,
+    required this.callbacks,
+    required this.tileComponents,
+    required this.eventBeingDragged,
+    required this.bodyConfiguration,
+    required this.timeOfDayRange,
+    required this.pageWidth,
+    required this.dayWidth,
+    required this.viewPortHeight,
+    required this.heightPerMinute,
+  });
 
   @override
   State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
@@ -17,24 +44,27 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     with SnapPoints {
-  /// The [MultiDayBodyDayProvider] of the current context.
-  MultiDayBodyDayProvider<T> get provider =>
-      MultiDayBodyDayProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  MultiDayViewController<T> get viewController => provider.viewController;
+  EventsController<T> get eventsController => widget.eventsController;
+  MultiDayViewController<T> get viewController => widget.viewController;
+  ScrollController get scrollController => widget.scrollController;
+  TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
+  DateTimeRange get visibleDateTimeRange =>
+      viewController.visibleDateTimeRange.value;
+  List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
+  MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+
+  double get dayWidth => widget.dayWidth;
+  double get heightPerMinute => widget.heightPerMinute;
+  double get pageWidth => widget.pageWidth;
+  double get viewPortHeight => widget.viewPortHeight;
+  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
+
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
       viewController.eventBeingDragged;
-
-  ScrollController get scrollController => provider.scrollController;
-  TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
-  DateTimeRange get visibleDateTimeRange => provider.visibleDateTimeRange.value;
-  List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
-  MultiDayViewConfiguration get viewConfiguration => provider.viewConfiguration;
-  MultiDayBodyConfiguration get bodyConfiguration => provider.bodyConfiguration;
-
-  double get dayWidth => provider.dayWidth;
-  double get heightPerMinute => provider.heightPerMinuteValue;
-  double get pageWidth => provider.pageWidth;
+  ValueNotifier<Size?> get feedbackWidgetSize =>
+      eventsController.feedbackWidgetSize;
+  MultiDayViewConfiguration get viewConfiguration =>
+      viewController.viewConfiguration;
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -75,7 +105,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = cursorPosition.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
@@ -185,7 +215,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         if (!timeOfDayRange.isAllDay &&
             event.duration > timeOfDayRange.duration) return false;
 
-        if (!provider.showAllEvents && event.isMultiDayEvent) {
+        if (!showMultiDayEvents && event.isMultiDayEvent) {
           return false;
         }
 
@@ -198,7 +228,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         final eventHeight = eventDuration.inMinutes * heightPerMinute;
 
         // Set the size of the feedback widget.
-        provider.feedbackWidgetSize.value = Size(dayWidth, eventHeight);
+        feedbackWidgetSize.value = Size(dayWidth, eventHeight);
 
         return true;
       },
@@ -244,7 +274,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
-        final pageTriggerSetup = provider.pageTriggerConfiguration;
+        final pageTriggerSetup = bodyConfiguration.pageTriggerConfiguration;
         final triggerWidth = pageTriggerSetup.triggerWidth.call(pageWidth);
         final pageAnimationDuration = pageTriggerSetup.animationDuration;
         final pageTriggerDelay = pageTriggerSetup.triggerDelay;
@@ -272,9 +302,9 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
           child: pageTriggerSetup.leftTriggerWidget,
         );
 
-        final scrollTriggerSetup = provider.scrollTriggerConfiguration;
+        final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
         final triggerHeight =
-            scrollTriggerSetup.triggerHeight.call(provider.viewportHeight);
+            scrollTriggerSetup.triggerHeight.call(viewPortHeight);
         final scrollTriggerDelay = scrollTriggerSetup.triggerDelay;
         final scrollAnimationDuration = scrollTriggerSetup.animationDuration;
         final scrollAnimationCurve = scrollTriggerSetup.animationCurve;

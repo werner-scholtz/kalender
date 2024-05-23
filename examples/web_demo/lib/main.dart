@@ -43,7 +43,7 @@ class MyAppState extends State<MyApp> {
           brightness: Brightness.dark,
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Kalender Demo'),
     );
   }
 

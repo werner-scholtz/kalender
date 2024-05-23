@@ -2,36 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/groups/event_group.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
 ///
 /// The [EventGroup]s events are then rendered using the [DayEventTile].
 class DayEventsWidget<T extends Object?> extends StatelessWidget {
-  /// The visible date time range.
+  final EventsController<T> eventsController;
+  final CalendarCallbacks<T>? callbacks;
+  final MultiDayViewController<T> viewController;
+  final TileComponents<T> tileComponents;
+  final MultiDayBodyConfiguration bodyConfiguration;
   final DateTimeRange visibleDateTimeRange;
+  final TimeOfDayRange timeOfDayRange;
+  final double dayWidth;
+  final double heightPerMinute;
 
   /// Creates a [DayEventsWidget].
   const DayEventsWidget({
     super.key,
+    required this.eventsController,
+    required this.callbacks,
+    required this.viewController,
+    required this.tileComponents,
+    required this.bodyConfiguration,
+    required this.dayWidth,
+    required this.heightPerMinute,
     required this.visibleDateTimeRange,
+    required this.timeOfDayRange,
   });
 
   @override
   Widget build(BuildContext context) {
-    final provider = MultiDayBodyDayProvider.of<T>(context);
-    final eventsController = provider.eventsController;
-    final viewController = provider.viewController;
-    final dayWidth = provider.dayWidth;
-    final heightPerMinute = provider.heightPerMinuteValue;
-    final timeOfDayRange = provider.timeOfDayRange;
     final visibleDates = visibleDateTimeRange.datesSpanned;
-    final eventBeingDragged = provider.eventBeingDragged;
-    final tileComponents = provider.tileComponents;
-    final layoutStrategy = provider.bodyConfiguration.dayEventLayoutStrategy;
-    final showMultiDayEvents = provider.bodyConfiguration.showMultiDayEvents;
+    final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
+    final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
+    final eventBeingDragged = viewController.eventBeingDragged;
 
     return ListenableBuilder(
       listenable: eventsController,
@@ -87,7 +95,19 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           timeOfDayRange: timeOfDayRange,
           visibleDates: visibleDates,
           layoutStrategy: layoutStrategy,
-          child: (event) => DayEventTile(event: event),
+          child: (event) => DayEventTile(
+            event: event,
+            eventsController: eventsController,
+            callbacks: callbacks,
+            viewController: viewController,
+            tileComponents: tileComponents,
+            eventBeingDragged: eventBeingDragged,
+            bodyConfiguration: bodyConfiguration,
+            visibleDateTimeRange: visibleDateTimeRange,
+            timeOfDayRange: timeOfDayRange,
+            dayWidth: dayWidth,
+            heightPerMinute: heightPerMinute,
+          ),
         );
 
         return Stack(

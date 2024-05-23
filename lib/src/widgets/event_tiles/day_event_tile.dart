@@ -3,18 +3,37 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
-import 'package:kalender/src/models/providers/multi_day_body_provider.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
 class DayEventTile<T extends Object?> extends StatefulWidget {
-  /// The [CalendarEvent] that the [DayEventTile] represents.
   final CalendarEvent<T> event;
+  final EventsController<T> eventsController;
+  final CalendarCallbacks<T>? callbacks;
+  final MultiDayViewController<T> viewController;
+  final TileComponents<T> tileComponents;
+  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
+  final MultiDayBodyConfiguration bodyConfiguration;
+  final DateTimeRange visibleDateTimeRange;
+  final TimeOfDayRange timeOfDayRange;
+  final double dayWidth;
+  final double heightPerMinute;
 
   const DayEventTile({
     super.key,
     required this.event,
+    required this.eventsController,
+    required this.callbacks,
+    required this.viewController,
+    required this.tileComponents,
+    required this.eventBeingDragged,
+    required this.bodyConfiguration,
+    required this.visibleDateTimeRange,
+    required this.timeOfDayRange,
+    required this.dayWidth,
+    required this.heightPerMinute,
   });
 
   @override
@@ -31,21 +50,21 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
     with SnapPoints {
   CalendarEvent<T> get event => widget.event;
 
-  MultiDayBodyDayProvider<T> get provider =>
-      MultiDayBodyDayProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  MultiDayBodyConfiguration get bodyConfiguration => provider.bodyConfiguration;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  TileComponents<T> get tileComponents => provider.tileComponents;
+  EventsController<T> get eventsController => widget.eventsController;
+  ViewController<T> get viewController => widget.viewController;
+  MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  TileComponents<T> get tileComponents => widget.tileComponents;
   DragAnchorStrategy? get dragAnchorStrategy =>
       tileComponents.dragAnchorStrategy;
-  ValueNotifier<Size> get feedbackWidgetSize => provider.feedbackWidgetSize;
-  TimeOfDayRange get timeOfDayRange => provider.timeOfDayRange;
-  double get dayWidth => provider.dayWidth;
-  double get heightPerMinute => provider.heightPerMinuteValue;
+  ValueNotifier<Size> get feedbackWidgetSize =>
+      eventsController.feedbackWidgetSize;
+  TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
+  double get dayWidth => widget.dayWidth;
+  double get heightPerMinute => widget.heightPerMinute;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      provider.eventBeingDragged;
+      viewController.eventBeingDragged;
 
   ValueNotifier<ResizeDirection> resizingDirection =
       ValueNotifier(ResizeDirection.none);
@@ -101,8 +120,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
               },
             );
 
-            final isDragging =
-                provider.viewController.draggingEventId == event.id;
+            final isDragging = viewController.draggingEventId == event.id;
             late final draggableTile = Draggable<CalendarEvent<T>>(
               data: widget.event,
               feedback: feedback,
@@ -162,7 +180,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
   void _onPanStart(Offset delta) {
     if (!bodyConfiguration.snapToOtherEvents) return;
     clearSnapPoints();
-    addEventSnapPoints(provider.viewController.visibleEvents.value);
+    addEventSnapPoints(viewController.visibleEvents.value);
   }
 
   void _onPanUpdate(Offset delta, ResizeDirection direction) {
@@ -264,7 +282,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
     }
 
     final durationFromStart = delta.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = provider.bodyConfiguration.snapIntervalMinutes;
+    final snapIntervalMinutes = bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final verticalDuration = Duration(
       minutes: snapIntervalMinutes * numberOfIntervals,
