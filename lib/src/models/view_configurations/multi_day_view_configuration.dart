@@ -6,6 +6,13 @@ import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
+enum MultiDayViewType {
+  singleDay,
+  week,
+  workWeek,
+  custom,
+}
+
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration({
@@ -16,6 +23,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.timelineWidth,
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
+    required this.type,
   }) : assert(
           firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
           'First day of week must be Monday, Saturday or Sunday\n'
@@ -35,10 +43,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     numberOfDays = 1;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-
     pageNavigationFunctions = PageNavigationFunctions.singleDay(
       this.displayRange,
     );
+    type = MultiDayViewType.singleDay;
   }
 
   /// Creates a [MultiDayViewConfiguration] for a week.
@@ -58,6 +66,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       this.displayRange,
       firstDayOfWeek,
     );
+    type = MultiDayViewType.week;
   }
 
   /// Creates a [MultiDayViewConfiguration] for a work week.
@@ -73,10 +82,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     firstDayOfWeek = DateTime.monday;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-
     pageNavigationFunctions = PageNavigationFunctions.workWeek(
       this.displayRange,
     );
+    type = MultiDayViewType.workWeek;
   }
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
@@ -96,7 +105,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       this.displayRange,
       numberOfDays,
     );
+    type = MultiDayViewType.custom;
   }
+
+  late final MultiDayViewType type;
 
   /// The functions for navigating the [PageView].
   late final PageNavigationFunctions pageNavigationFunctions;
@@ -133,36 +145,36 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     int? numberOfDays,
     double? timelineWidth,
     int? firstDayOfWeek,
-    PageNavigationFunctions? pageNavigationFunctions,
   }) {
-    final pageNavigationFunctions0 =
-        pageNavigationFunctions ?? this.pageNavigationFunctions;
     final displayRange0 = displayRange ?? this.displayRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
 
-    return MultiDayViewConfiguration(
-      name: name ?? this.name,
-      timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
-      displayRange: displayRange0,
-      numberOfDays: numberOfDays ?? this.numberOfDays,
-      timelineWidth: timelineWidth ?? this.timelineWidth,
-      firstDayOfWeek: firstDayOfWeek0,
-      pageNavigationFunctions: switch (pageNavigationFunctions0.runtimeType) {
-        DayPageFunctions => DayPageFunctions(dateTimeRange: displayRange0),
-        WeekPageFunctions => WeekPageFunctions(
-            dateTimeRange: displayRange0,
-            firstDayOfWeek: firstDayOfWeek0,
-          ),
-        WorkWeekPageFunctions => WorkWeekPageFunctions(
-            dateTimeRange: displayRange0,
-          ),
-        CustomPageFunctions => CustomPageFunctions(
-            dateTimeRange: displayRange0,
-            numberOfDays: numberOfDays ?? this.numberOfDays,
-          ),
-        _ => throw UnimplementedError(),
-      },
-    );
+    return switch (type) {
+      MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
+          name: name ?? this.name,
+          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          displayRange: displayRange0,
+          firstDayOfWeek: firstDayOfWeek0,
+        ),
+      MultiDayViewType.week => MultiDayViewConfiguration.week(
+          name: name ?? this.name,
+          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          displayRange: displayRange0,
+          firstDayOfWeek: firstDayOfWeek0,
+        ),
+      MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
+          name: name ?? this.name,
+          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          displayRange: displayRange0,
+        ),
+      MultiDayViewType.custom => MultiDayViewConfiguration.custom(
+          name: name ?? this.name,
+          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          displayRange: displayRange0,
+          firstDayOfWeek: firstDayOfWeek0,
+          numberOfDays: numberOfDays ?? this.numberOfDays,
+        ),
+    };
   }
 
   @override
