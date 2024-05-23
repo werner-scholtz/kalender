@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
@@ -9,8 +10,13 @@ import 'package:kalender/src/widgets/components/week_day_header.dart';
 class MonthBodyComponents {
   final MonthGridBuilder? monthGridBuilder;
 
+  final Widget? leftPageTriggerWidget;
+  final Widget? rightPageTriggerWidget;
+
   const MonthBodyComponents({
     this.monthGridBuilder,
+    this.leftPageTriggerWidget,
+    this.rightPageTriggerWidget,
   });
 }
 

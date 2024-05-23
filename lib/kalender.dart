@@ -18,6 +18,7 @@ export 'package:kalender/src/models/controllers/events_controller.dart';
 /// Models
 export 'package:kalender/src/models/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
+export 'package:kalender/src/models/navigation_triggers.dart';
 
 export 'package:kalender/src/models/components/tile_components.dart';
 export 'package:kalender/src/models/components/multi_day_components.dart';

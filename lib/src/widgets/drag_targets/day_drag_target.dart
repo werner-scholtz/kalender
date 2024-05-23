@@ -21,6 +21,11 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   final double viewPortHeight;
   final double heightPerMinute;
 
+  final Widget? leftTriggerWidget;
+  final Widget? rightTriggerWidget;
+  final Widget? topTriggerWidget;
+  final Widget? bottomTriggerWidget;
+
   /// Creates a [DayDragTarget].
   const DayDragTarget({
     super.key,
@@ -36,6 +41,10 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.viewPortHeight,
     required this.heightPerMinute,
+    required this.leftTriggerWidget,
+    required this.rightTriggerWidget,
+    required this.topTriggerWidget,
+    required this.bottomTriggerWidget,
   });
 
   @override
@@ -288,7 +297,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: pageTriggerSetup.rightTriggerWidget,
+          child: widget.rightTriggerWidget,
         );
 
         final leftTrigger = NavigationTrigger(
@@ -299,7 +308,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: pageTriggerSetup.leftTriggerWidget,
+          child: widget.leftTriggerWidget,
         );
 
         final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
@@ -320,7 +329,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: scrollTriggerSetup.topTriggerWidget,
+          child: widget.topTriggerWidget,
         );
 
         final bottomScrollTrigger = NavigationTrigger(
@@ -332,7 +341,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: scrollTriggerSetup.bottomTriggerWidget,
+          child: widget.bottomTriggerWidget,
         );
 
         return Stack(

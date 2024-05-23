@@ -98,7 +98,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                     visibleDateTimeRange: visibleDateTimeRange,
                     headerConfiguration: headerConfiguration,
                     tileComponents: tileComponents,
-                    componentBuilders: componentBuilders,
+                    components: componentBuilders,
                     componentStyles: componentStyles,
                     timelineWidth: viewConfiguration.timelineWidth,
                     tileHeight: headerConfiguration.tileHeight,
@@ -111,7 +111,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
                     visibleDateTimeRange: visibleDateTimeRange,
                     headerConfiguration: headerConfiguration,
                     tileComponents: tileComponents,
-                    componentBuilders: componentBuilders,
+                    component: componentBuilders,
                     componentStyles: componentStyles,
                     timelineWidth: viewConfiguration.timelineWidth,
                     tileHeight: headerConfiguration.tileHeight,
@@ -137,7 +137,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final MultiDayHeaderConfiguration headerConfiguration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponentBuilders? componentBuilders;
+  final MultiDayHeaderComponentBuilders? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double timelineWidth;
   final double tileHeight;
@@ -151,7 +151,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     required this.visibleDateTimeRange,
     required this.headerConfiguration,
     required this.tileComponents,
-    required this.componentBuilders,
+    required this.components,
     required this.componentStyles,
     required this.timelineWidth,
     required this.tileHeight,
@@ -166,7 +166,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     );
 
     final dayHeaderStyle = componentStyles?.dayHeaderStyle;
-    final dayHeaderWidget = componentBuilders?.dayHeaderBuilder?.call(
+    final dayHeaderWidget = components?.dayHeaderBuilder?.call(
           visibleDateTimeRange.start,
           dayHeaderStyle,
         ) ??
@@ -203,6 +203,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       tileHeight: tileHeight,
       callbacks: callbacks,
       allowSingleDayEvents: false,
+      leftTriggerWidget: components?.leftPageTriggerWidget,
+      rightTriggerWidget: components?.rightPageTriggerWidget,
     );
 
     final gestureDetector = MultiDayGestureDetector<T>(
@@ -250,7 +252,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration headerConfiguration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponentBuilders? componentBuilders;
+  final MultiDayHeaderComponentBuilders? component;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double timelineWidth;
   final double tileHeight;
@@ -265,7 +267,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.visibleDateTimeRange,
     required this.headerConfiguration,
     required this.tileComponents,
-    required this.componentBuilders,
+    required this.component,
     required this.componentStyles,
     required this.timelineWidth,
     required this.tileHeight,
@@ -281,7 +283,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     );
 
     final weekNumberStyle = componentStyles?.weekNumberStyle;
-    final weekNumberWidget = componentBuilders?.weekNumberBuilder?.call(
+    final weekNumberWidget = component?.weekNumberBuilder?.call(
           visibleDateTimeRange,
           weekNumberStyle,
         ) ??
@@ -298,7 +300,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final dayHeaderStyle = componentStyles?.dayHeaderStyle;
     final dayHeaders = visibleDates.map((date) {
-      final dayHeader = componentBuilders?.dayHeaderBuilder?.call(
+      final dayHeader = component?.dayHeaderBuilder?.call(
             date,
             dayHeaderStyle,
           ) ??
@@ -336,6 +338,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       tileHeight: tileHeight,
       callbacks: callbacks,
       allowSingleDayEvents: false,
+      leftTriggerWidget: component?.leftPageTriggerWidget,
+      rightTriggerWidget: component?.rightPageTriggerWidget,
     );
 
     final gestureDetector = MultiDayGestureDetector<T>(

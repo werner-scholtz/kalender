@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
@@ -20,6 +19,9 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final double tileHeight;
   final bool allowSingleDayEvents;
 
+  final Widget? leftTriggerWidget;
+  final Widget? rightTriggerWidget;
+
   const MultiDayDragTarget({
     super.key,
     required this.eventsController,
@@ -32,6 +34,8 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
     required this.tileHeight,
     required this.callbacks,
     required this.allowSingleDayEvents,
+    required this.leftTriggerWidget,
+    required this.rightTriggerWidget,
   });
 
   @override
@@ -188,7 +192,7 @@ class _MultiDayDragTargetState<T extends Object?>
               curve: pageAnimationCurve,
             );
           },
-          child: pageTriggerSetup.rightTriggerWidget,
+          child: widget.rightTriggerWidget,
         );
 
         final leftTrigger = NavigationTrigger(
@@ -199,7 +203,7 @@ class _MultiDayDragTargetState<T extends Object?>
               curve: pageAnimationCurve,
             );
           },
-          child: pageTriggerSetup.leftTriggerWidget,
+          child: widget.leftTriggerWidget,
         );
 
         return Stack(
