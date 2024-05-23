@@ -308,12 +308,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         final scrollTriggerDelay = scrollTriggerSetup.triggerDelay;
         final scrollAnimationDuration = scrollTriggerSetup.animationDuration;
         final scrollAnimationCurve = scrollTriggerSetup.animationCurve;
+        final scrollAmount =
+            scrollTriggerSetup.scrollAmount.call(viewPortHeight);
 
         final topScrollTrigger = NavigationTrigger(
           triggerDelay: scrollTriggerDelay,
           onTrigger: () {
             scrollController.animateTo(
-              scrollController.offset - triggerHeight,
+              scrollController.offset - scrollAmount,
               duration: scrollAnimationDuration,
               curve: scrollAnimationCurve,
             );
@@ -325,7 +327,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
           triggerDelay: scrollTriggerDelay,
           onTrigger: () {
             scrollController.animateTo(
-              scrollController.offset + triggerHeight,
+              scrollController.offset + scrollAmount,
               duration: scrollAnimationDuration,
               curve: scrollAnimationCurve,
             );

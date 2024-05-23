@@ -16,7 +16,7 @@ class PageTriggerConfiguration {
       animationDuration <= triggerDelay,
       'The animation duration must be less or equal to the page trigger delay.',
     );
-    this.triggerWidth = triggerWidth ?? (pageWidth) => pageWidth / 20;
+    this.triggerWidth = triggerWidth ?? (pageWidth) => pageWidth / 50;
   }
 
   /// The widget that is rendered above the left page trigger.
@@ -93,12 +93,14 @@ class ScrollTriggerConfiguration {
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
     double Function(double pageWidth)? triggerHeight,
+    double Function(double pageHeight)? scrollAmount,
   }) {
     assert(
       animationDuration <= triggerDelay,
       'The animation duration must be less or equal to the page trigger delay.',
     );
     this.triggerHeight = triggerHeight ?? (pageHeight) => pageHeight / 20;
+    this.scrollAmount = scrollAmount ?? (pageHeight) => pageHeight / 2.5;
   }
 
   /// The widget that is rendered above the top scroll trigger.
@@ -118,6 +120,9 @@ class ScrollTriggerConfiguration {
 
   /// Calculation used to determine the height of the trigger.
   late double Function(double pageHeight) triggerHeight;
+
+  /// The delta used to scroll the view.
+  late double Function(double pageHeight) scrollAmount;
 
   /// Creates a copy of this [ScrollTriggerConfiguration] but with the given fields replaced with the new values.
   ScrollTriggerConfiguration copyWith({
