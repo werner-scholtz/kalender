@@ -6,7 +6,7 @@ import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
-abstract class ViewController<T extends Object?> extends ChangeNotifier
+abstract class ViewController<T extends Object?>
     with CalendarNavigationFunctions<T> {
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
@@ -233,9 +233,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   @override
   late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
-
-  @override
-  int? draggingEventId;
 
   @override
   late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
