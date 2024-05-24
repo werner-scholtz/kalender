@@ -53,7 +53,7 @@ typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
 
 /// The builder for the drop target event tile.
 typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> eventGroup,
+  CalendarEvent<T> event,
 );
 
 /// The hour lines builder.
