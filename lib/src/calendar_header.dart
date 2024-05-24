@@ -39,21 +39,23 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
       'If you are using the $CalendarController<$T> directly, make sure to attach a $ViewController<$T> to it.',
     );
 
-    return switch (viewController.runtimeType) {
-      MultiDayViewController => MultiDayHeader(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          callbacks: callbacks,
-          tileComponents: multiDayTileComponents,
-          configuration: multiDayHeaderConfiguration,
-          components: multiDayHeaderComponents,
-        ),
-      MonthViewController => MonthHeader(
-          calendarController: calendarController,
-          components: monthHeaderComponents,
-          styles: monthHeaderComponentStyles,
-        ),
-      _ => Container(),
-    };
+    if (viewController is MultiDayViewController<T>) {
+      return MultiDayHeader<T>(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        callbacks: callbacks,
+        tileComponents: multiDayTileComponents,
+        configuration: multiDayHeaderConfiguration,
+        components: multiDayHeaderComponents,
+      );
+    } else if (viewController is MonthViewController<T>) {
+      return MonthHeader<T>(
+        calendarController: calendarController,
+        components: monthHeaderComponents,
+        styles: monthHeaderComponentStyles,
+      );
+    } else {
+      throw UnimplementedError();
+    }
   }
 }

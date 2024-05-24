@@ -64,26 +64,28 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
       'If you are using the $CalendarController<$T> directly, make sure to attach a $ViewController<$T> to it.',
     );
 
-    return switch (viewController.runtimeType) {
-      MultiDayViewController => MultiDayBody(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          configuration: multiDayBodyConfiguration,
-          callbacks: callbacks,
-          tileComponents: tileComponents,
-          components: multiDayBodyComponents,
-          componentStyles: multiDayBodyComponentStyles,
-        ),
-      MonthViewController => MonthBody(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          callbacks: callbacks,
-          tileComponents: multiDayTileComponents,
-          configuration: monthBodyConfiguration,
-          components: monthBodyComponents,
-          styles: monthBodyComponentStyles,
-        ),
-      _ => Container(),
-    };
+    if (viewController is MultiDayViewController<T>) {
+      return MultiDayBody(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        configuration: multiDayBodyConfiguration,
+        callbacks: callbacks,
+        tileComponents: tileComponents,
+        components: multiDayBodyComponents,
+        componentStyles: multiDayBodyComponentStyles,
+      );
+    } else if (viewController is MonthViewController<T>) {
+      return MonthBody(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        callbacks: callbacks,
+        tileComponents: multiDayTileComponents,
+        configuration: monthBodyConfiguration,
+        components: monthBodyComponents,
+        styles: monthBodyComponentStyles,
+      );
+    } else {
+      throw UnimplementedError();
+    }
   }
 }
