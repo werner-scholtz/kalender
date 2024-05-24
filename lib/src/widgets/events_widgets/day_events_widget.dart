@@ -65,7 +65,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               heightPerMinute: heightPerMinute,
               timeOfDayRange: timeOfDayRange,
               visibleDates: visibleDates,
-              child: tileComponents.dropTargetTile.call,
+              child: tileComponents.dropTargetTile?.call,
               layoutStrategy: layoutStrategy,
             );
 
@@ -122,7 +122,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
 
   Iterable<Positioned> _generateEventGroups({
     required Iterable<EventGroup<T>> groups,
-    required Widget Function(CalendarEvent<T> event) child,
+    required Widget Function(CalendarEvent<T> event)? child,
     required List<DateTime> visibleDates,
     required double dayWidth,
     required double heightPerMinute,
@@ -153,7 +153,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         final (id, event) = element;
         return LayoutId(
           id: id,
-          child: child.call(event),
+          child: child?.call(event) ?? const SizedBox(),
         );
       });
 

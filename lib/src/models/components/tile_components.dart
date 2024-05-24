@@ -18,13 +18,13 @@ class TileComponents<T extends Object?> {
   final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
   final FeedbackTileBuilder<T>? feedbackTileBuilder;
   final DragAnchorStrategy? dragAnchorStrategy;
-  final TileDropTargetBuilder<T> dropTargetTile;
+  final TileDropTargetBuilder<T>? dropTargetTile;
   final Widget? verticalResizeHandle;
   final Widget? horizontalResizeHandle;
 
   const TileComponents({
     required this.tileBuilder,
-    required this.dropTargetTile,
+    this.dropTargetTile,
     this.tileWhenDraggingBuilder,
     this.feedbackTileBuilder,
     this.dragAnchorStrategy,

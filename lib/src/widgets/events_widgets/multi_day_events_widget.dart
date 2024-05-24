@@ -97,7 +97,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
               children: [
                 LayoutId(
                   id: 0,
-                  child: tileComponents.dropTargetTile.call(event),
+                  child: tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
                 ),
               ],
             );
