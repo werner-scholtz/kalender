@@ -13,10 +13,9 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The callbacks used by the [CalendarBody].
   final CalendarCallbacks<T>? callbacks;
 
-  /// The tile components used by the [MultiDayBody].
-  final TileComponents<T> tileComponents;
+  /// MultiDay
 
-  /// The tile components used by the [MonthBody] and [MultiDayHeader].
+  /// The tile components used by the [MultiDayBody].
   final TileComponents<T> multiDayTileComponents;
 
   /// The components used by the [MultiDayBody].
@@ -28,8 +27,10 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
-  /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration? monthBodyConfiguration;
+  /// Month
+
+  /// The tile components used by the [MonthBody] and [MultiDayHeader].
+  final TileComponents<T> monthTileComponents;
 
   /// The components used by the [MonthBody].
   final MonthBodyComponents? monthBodyComponents;
@@ -37,17 +38,20 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The styles of the components used by the [MonthBody].
   final MonthBodyComponentStyles? monthBodyComponentStyles;
 
+  /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
+  final MultiDayHeaderConfiguration? monthBodyConfiguration;
+
   const CalendarBody({
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
-    required this.tileComponents,
     required this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
-    this.monthBodyConfiguration,
     this.multiDayBodyComponents,
     this.multiDayBodyComponentStyles,
+    required this.monthTileComponents,
+    this.monthBodyConfiguration,
     this.monthBodyComponents,
     this.monthBodyComponentStyles,
   });
@@ -70,7 +74,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         configuration: multiDayBodyConfiguration,
         callbacks: callbacks,
-        tileComponents: tileComponents,
+        tileComponents: multiDayTileComponents,
         components: multiDayBodyComponents,
         componentStyles: multiDayBodyComponentStyles,
       );
@@ -79,7 +83,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
-        tileComponents: multiDayTileComponents,
+        tileComponents: monthTileComponents,
         configuration: monthBodyConfiguration,
         components: monthBodyComponents,
         styles: monthBodyComponentStyles,

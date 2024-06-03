@@ -15,6 +15,14 @@ export 'package:kalender/src/widgets/month/month_header.dart';
 export 'package:kalender/src/models/controllers/calendar_controller.dart';
 export 'package:kalender/src/models/controllers/events_controller.dart';
 
+export 'package:kalender/src/widgets/components/day_header.dart';
+export 'package:kalender/src/widgets/components/day_separator.dart';
+export 'package:kalender/src/widgets/components/hour_lines.dart';
+export 'package:kalender/src/widgets/components/time_indicator.dart';
+export 'package:kalender/src/widgets/components/time_line.dart';
+export 'package:kalender/src/widgets/components/week_number.dart';
+export 'package:kalender/src/widgets/components/week_day_header.dart';
+
 /// Models
 export 'package:kalender/src/models/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
