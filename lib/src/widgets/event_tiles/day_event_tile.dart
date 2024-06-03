@@ -197,6 +197,9 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
       event: widget.event,
       updatedEvent: updatedEvent,
     );
+
+    callbacks?.onEventChanged?.call(event, updatedEvent);
+
     eventBeingDragged.value = null;
     resizingDirection.value = ResizeDirection.none;
   }

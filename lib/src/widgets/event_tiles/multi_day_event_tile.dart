@@ -173,6 +173,9 @@ class _MultiDayEventTileState<T extends Object?>
       event: widget.event,
       updatedEvent: updatedEvent,
     );
+
+    callbacks?.onEventChanged?.call(event, updatedEvent);
+
     eventBeingDragged.value = null;
     resizingDirection.value = ResizeDirection.none;
   }

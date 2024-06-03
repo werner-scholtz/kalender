@@ -165,6 +165,8 @@ class _MultiDayDragTargetState<T extends Object?>
         // Update the event in the events controller.
         eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
 
+        callbacks?.onEventChanged?.call(event, updatedEvent);
+
         widgetPosition = null;
         eventsController.feedbackWidgetSize.value = Size.zero;
         eventBeingDragged.value = null;

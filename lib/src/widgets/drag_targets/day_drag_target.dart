@@ -61,6 +61,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       viewController.visibleDateTimeRange.value;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
 
   double get dayWidth => widget.dayWidth;
   double get heightPerMinute => widget.heightPerMinute;
@@ -265,6 +266,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
           event: event,
           updatedEvent: updatedEvent,
         );
+
+        callbacks?.onEventChanged?.call(event, updatedEvent);
 
         // Reset the widget position and feedback widget size.
         widgetPosition = null;
