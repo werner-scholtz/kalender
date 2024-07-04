@@ -55,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       numberOfDays: 1,
       startHour: 6,
       endHour: 18,
+      initialHeightPerMinute: 1.5,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
