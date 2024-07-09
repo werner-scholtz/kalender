@@ -168,7 +168,7 @@ class CalendarWidget extends StatelessWidget {
 
     final calendarBody = CalendarBody(
       multiDayTileComponents: tileComponents,
-      tileComponents: tileComponents,
+      monthTileComponents: tileComponents,
       monthBodyComponents: monthBodyComponents,
       multiDayBodyComponents: multiDayBodyComponents,
       multiDayBodyConfiguration: bodyConfiguration,
