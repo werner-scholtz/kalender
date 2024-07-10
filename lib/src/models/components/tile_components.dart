@@ -14,7 +14,7 @@ import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 /// The [dropTargetTile] is an extra component used to display where the event will be dropped.
 /// The [verticalResizeHandle] is an extra component used to display the resize handle.
 class TileComponents<T extends Object?> {
-  /// The default builder for standard event tiles.
+  /// The default builder for stationary event tiles.
   final TileBuilder<T> tileBuilder;
 
   /// The builder for the standard event tile. (When dragging)
