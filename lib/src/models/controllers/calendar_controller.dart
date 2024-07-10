@@ -10,20 +10,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     DateTimeRange? calendarRange,
   }) {
     _focusedDate = initialDate ?? DateTime.now();
-    _calendarRange = calendarRange ??
-        DateTimeRange(
-          start: DateTime(_focusedDate.year - 1),
-          end: DateTime(_focusedDate.year + 1),
-        );
   }
 
-  /// The date that has focus.
+  /// The date that has focus. TODO: remove ?
   late DateTime _focusedDate;
   DateTime get focusedDate => _focusedDate;
-
-  /// The [DateTimeRange] that the calendar can display.
-  late final DateTimeRange _calendarRange;
-  DateTimeRange get calendarRange => _calendarRange;
 
   /// TODO: Document this.
   ViewController<T>? _viewController;
