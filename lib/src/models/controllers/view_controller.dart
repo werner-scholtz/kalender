@@ -6,8 +6,7 @@ import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
-abstract class ViewController<T extends Object?>
-    with CalendarNavigationFunctions<T> {
+abstract class ViewController<T extends Object?> with CalendarNavigationFunctions<T> {
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
@@ -78,7 +77,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
     initialPage = pageNavigationFunctions.indexFromDate(DateTime.now());
-    pageController = PageController(initialPage: initialPage);
+    pageController = PageController(initialPage: initialPage, viewportFraction: 1);
+    headerController = PageController(initialPage: initialPage, viewportFraction: 1);
+
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute = ValueNotifier<double>(0.7);
     visibleDateTimeRange = ValueNotifier<DateTimeRange>(
@@ -87,6 +88,13 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
     scrollController = ScrollController();
     visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+
+    // This listener will sync the headerController with the pageController.
+    // Note this only really works if both PageView's have the same horizontal 'size'.
+    pageController.addListener(() {
+      if (!headerController.hasClients) return;
+      headerController.jumpTo(pageController.offset);
+    });
   }
 
   @override
@@ -100,6 +108,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   /// The page controller used by the view.
   late final PageController pageController;
+
+  /// The page controller used by the header. (Linked to [pageController])
+  late final PageController headerController;
 
   /// The scroll controller used by the view.
   late ScrollController scrollController;

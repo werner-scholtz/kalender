@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
   final ViewController<T> viewController;
-  final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
-
   final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
   final double dayWidth;
@@ -24,7 +22,6 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
   const MultiDayDragTarget({
     super.key,
-    required this.eventsController,
     required this.viewController,
     required this.tileComponents,
     required this.pageTriggerSetup,
@@ -32,7 +29,6 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.pageWidth,
     required this.tileHeight,
-    required this.callbacks,
     required this.allowSingleDayEvents,
     required this.leftTriggerWidget,
     required this.rightTriggerWidget,
@@ -42,16 +38,15 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   State<MultiDayDragTarget<T>> createState() => _MultiDayDragTargetState<T>();
 }
 
-class _MultiDayDragTargetState<T extends Object?>
-    extends State<MultiDayDragTarget<T>> {
-  EventsController<T> get eventsController => widget.eventsController;
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> {
+  CalendarProvider<T> get provider => CalendarProvider.of<T>(context);
+  EventsController<T> get eventsController => provider.eventsController;
+  CalendarCallbacks<T>? get callbacks => provider.callbacks;
   ViewController<T> get viewController => widget.viewController;
   TileComponents<T> get tileComponents => widget.tileComponents;
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
-
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
     return viewController.eventBeingDragged;
   }
@@ -75,8 +70,7 @@ class _MultiDayDragTargetState<T extends Object?>
     final feedbackWidgetOffset = Offset(dayWidth / 2, 0);
 
     // Calculate the position of the cursor relative to the current widget.
-    final relativeCursorPosition =
-        cursorPosition + feedbackWidgetOffset - widgetPosition!;
+    final relativeCursorPosition = cursorPosition + feedbackWidgetOffset - widgetPosition!;
 
     return relativeCursorPosition;
   }
