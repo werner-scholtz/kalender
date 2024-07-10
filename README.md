@@ -58,7 +58,7 @@ Widget build(BuildContext context) {
 
 ## Callbacks
 
-The calendar has a few use full callback functions:
+The calendar has a few useful callback functions:
 
 ```dart
 CalendarCallbacks(
@@ -68,7 +68,7 @@ CalendarCallbacks(
   // Called when a new event is created.
   onEventCreated: (event) {},
 
-  // Called when a event is changed (rescheduling / resizing)
+  // Called when a event has been changed (rescheduling / resizing)
   onEventChanged: (event, updatedEvent) async {},
 
   // Called when a page is changed.
@@ -103,6 +103,26 @@ By default the calendar uses default components which can be customized with `Co
     multiDayBodyComponentStyles: MultiDayBodyComponentStyles(),
   );
   ```
+
+### Tile Components
+
+```dart
+TileComponents(
+  tileBuilder: (event) => Container(),
+  dropTargetTile: (event) => Container(),
+  tileWhenDraggingBuilder: (event) => Container(),
+  feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+  dragAnchorStrategy: childDragAnchorStrategy,
+  verticalResizeHandle: Container(),
+  horizontalResizeHandle: Container(),
+)
+```
+
+### Header Components
+TODO: Add documentation
+
+### Body Components
+TODO: Add documentation
 
 ## Customizing the behavior
 
