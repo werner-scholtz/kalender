@@ -89,6 +89,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
             (pageWidth - viewConfiguration.timelineWidth) / viewConfiguration.numberOfDays;
 
         late final singleDay = _SingleDayHeader(
+          key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
           viewController: viewController,
           headerConfiguration: headerConfiguration,
@@ -102,6 +103,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
         );
 
         late final multiDay = _MultiDayHeader(
+          key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
           viewController: viewController,
           headerConfiguration: headerConfiguration,
