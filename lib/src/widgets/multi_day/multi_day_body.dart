@@ -18,6 +18,7 @@ import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 
 /// This widget is used to display a multi-day body.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
@@ -56,7 +57,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.components,
-    this.componentStyles,
+    required this.componentStyles,
     this.scrollController,
     this.heightPerMinute,
     this.configuration,
@@ -185,69 +186,72 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               },
             );
 
-            final pageView = PageView.builder(
-              key: ValueKey(viewConfiguration.hashCode),
-              controller: viewController.pageController,
-              itemCount: viewController.numberOfPages,
-              physics: configuration?.pageScrollPhysics,
-              onPageChanged: (index) {
-                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                  index,
-                );
-                viewController.visibleDateTimeRange.value = visibleRange;
-              },
-              itemBuilder: (context, index) {
-                final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                  index,
-                );
+            final pageView = PageClipWidget(
+              timelineWidth: viewConfiguration.leftPageClip,
+              child: PageView.builder(
+                key: ValueKey(viewConfiguration.hashCode),
+                controller: viewController.pageController,
+                itemCount: viewController.numberOfPages,
+                physics: configuration?.pageScrollPhysics,
+                onPageChanged: (index) {
+                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                    index,
+                  );
+                  viewController.visibleDateTimeRange.value = visibleRange;
+                },
+                itemBuilder: (context, index) {
+                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                    index,
+                  );
 
-                final visibleDates = visibleRange.datesSpanned;
-                final timeIndicatorDateIndex = visibleDates.indexWhere(
-                  (date) => date.isToday,
-                );
-                late final left = dayWidth * timeIndicatorDateIndex;
+                  final visibleDates = visibleRange.datesSpanned;
+                  final timeIndicatorDateIndex = visibleDates.indexWhere(
+                    (date) => date.isToday,
+                  );
+                  late final left = dayWidth * timeIndicatorDateIndex;
 
-                final events = DayEventsWidget<T>(
-                  eventsController: eventsController!,
-                  callbacks: callbacks,
-                  viewController: viewController,
-                  tileComponents: tileComponents,
-                  bodyConfiguration: bodyConfiguration,
-                  dayWidth: dayWidth,
-                  heightPerMinute: heightPerMinute,
-                  visibleDateTimeRange: visibleRange,
-                  timeOfDayRange: timeOfDayRange,
-                );
+                  final events = DayEventsWidget<T>(
+                    eventsController: eventsController!,
+                    callbacks: callbacks,
+                    viewController: viewController,
+                    tileComponents: tileComponents,
+                    bodyConfiguration: bodyConfiguration,
+                    dayWidth: dayWidth,
+                    heightPerMinute: heightPerMinute,
+                    visibleDateTimeRange: visibleRange,
+                    timeOfDayRange: timeOfDayRange,
+                  );
 
-                final detector = DayGestureDetector<T>(
-                  eventsController: eventsController,
-                  callbacks: callbacks,
-                  viewController: viewController,
-                  bodyConfiguration: bodyConfiguration,
-                  visibleDateTimeRange: visibleRange,
-                  eventBeingDragged: eventBeingDragged,
-                  timeOfDayRange: timeOfDayRange,
-                  dayWidth: dayWidth,
-                  heightPerMinute: heightPerMinute,
-                );
+                  final detector = DayGestureDetector<T>(
+                    eventsController: eventsController,
+                    callbacks: callbacks,
+                    viewController: viewController,
+                    bodyConfiguration: bodyConfiguration,
+                    visibleDateTimeRange: visibleRange,
+                    eventBeingDragged: eventBeingDragged,
+                    timeOfDayRange: timeOfDayRange,
+                    dayWidth: dayWidth,
+                    heightPerMinute: heightPerMinute,
+                  );
 
-                return Stack(
-                  fit: StackFit.passthrough,
-                  children: [
-                    ...daySeparators,
-                    Positioned.fill(left: timelineWidth, child: detector),
-                    Positioned.fill(left: timelineWidth, child: events),
-                    if (timeIndicatorDateIndex != -1)
-                      Positioned(
-                        top: 0,
-                        bottom: 0,
-                        left: left,
-                        width: dayWidth + timelineWidth,
-                        child: timeIndicator,
-                      ),
-                  ],
-                );
-              },
+                  return Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      ...daySeparators,
+                      Positioned.fill(left: timelineWidth, child: detector),
+                      Positioned.fill(left: timelineWidth, child: events),
+                      if (timeIndicatorDateIndex != -1)
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          left: left,
+                          width: dayWidth + timelineWidth,
+                          child: timeIndicator,
+                        ),
+                    ],
+                  );
+                },
+              ),
             );
 
             final dragTarget = DayDragTarget<T>(

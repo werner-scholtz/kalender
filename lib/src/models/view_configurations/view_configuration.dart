@@ -13,6 +13,7 @@ abstract class ViewConfiguration {
 
 const defaultTileHeight = 24.0;
 const defaultTimeLineWith = 48.0;
+const defaultLeftPageClip = 40.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultAllowEventCreation = true;
 const defaultAllowResizing = true;

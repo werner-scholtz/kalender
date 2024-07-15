@@ -25,6 +25,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
     required this.type,
+    required this.leftPageClip,
   }) : assert(
           firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
           'First day of week must be Monday, Saturday or Sunday\n'
@@ -38,6 +39,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.timelineWidth = defaultTimeLineWith,
+    this.leftPageClip = defaultLeftPageClip,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
@@ -58,6 +60,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.numberOfDays = 7,
     this.timelineWidth = defaultTimeLineWith,
+    this.leftPageClip = defaultLeftPageClip,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
@@ -77,6 +80,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
     this.timelineWidth = defaultTimeLineWith,
+    this.leftPageClip = defaultLeftPageClip,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
@@ -97,6 +101,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.numberOfDays,
     this.firstDayOfWeek = DateTime.monday,
     this.timelineWidth = defaultTimeLineWith,
+    this.leftPageClip = defaultLeftPageClip,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
@@ -136,8 +141,13 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The width of the timeline.
   ///
-  /// This is used by the [MultiDayBody] and [MultiDayHeader].
+  /// This is used by the [MultiDayBody] and [MultiDayHeader] to layout the timeline.
   final double timelineWidth;
+
+  /// The width of the left page clip.
+  ///
+  /// This is used by the [MultiDayBody] to clip the left of the page.
+  final double leftPageClip;
 
   MultiDayViewConfiguration copyWith({
     String? name,
