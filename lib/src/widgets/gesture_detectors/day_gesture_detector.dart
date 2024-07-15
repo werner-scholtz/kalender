@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/platform.dart';
 
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
@@ -32,8 +33,7 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
   State<DayGestureDetector<T>> createState() => _DayGestureDetectorState<T>();
 }
 
-class _DayGestureDetectorState<T extends Object?>
-    extends State<DayGestureDetector<T>> {
+class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetector<T>> {
   EventsController<T> get eventsController => widget.eventsController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
@@ -41,8 +41,7 @@ class _DayGestureDetectorState<T extends Object?>
   double get heightPerMinute => widget.heightPerMinute;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      widget.eventBeingDragged;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => widget.eventBeingDragged;
 
   DateTime? start;
 
@@ -102,6 +101,11 @@ class _DayGestureDetectorState<T extends Object?>
     eventBeingDragged.value = null;
   }
 
+  void onCanceled() {
+    start = null;
+    eventBeingDragged.value = null;
+  }
+
   DateTimeRange? _calculateDateTimeRange(Offset position) {
     final start = _calculateTimeAndDate(position);
     if (start == null) return null;
@@ -136,15 +140,33 @@ class _DayGestureDetectorState<T extends Object?>
     final long = createEventTrigger == CreateEventTrigger.longPress;
 
     return GestureDetector(
+      // Tap
       onTapDown: tap ? (details) => onDown(details.localPosition) : null,
       onTapUp: tap ? (_) => onEnd() : null,
-      onPanStart: tap ? (details) => onDown(details.localPosition) : null,
-      onPanUpdate: tap ? (details) => onUpdate(details.localPosition) : null,
-      onPanEnd: tap ? (_) => onEnd() : null,
+      onTapCancel: tap ? onCanceled : null,
+
+      // Long Press
       onLongPressDown: long ? (details) => onDown(details.localPosition) : null,
-      onLongPressMoveUpdate:
-          long ? (details) => onUpdate(details.localPosition) : null,
+      onLongPressMoveUpdate: long ? (details) => onUpdate(details.localPosition) : null,
       onLongPressEnd: long ? (_) => onEnd() : null,
+      onLongPressCancel: long ? onCanceled : null,
+
+      // Pan
+      onPanStart: isMobileDevice
+          ? null
+          : tap
+              ? (details) => onDown(details.localPosition)
+              : null,
+      onPanUpdate: isMobileDevice
+          ? null
+          : tap
+              ? (details) => onUpdate(details.localPosition)
+              : null,
+      onPanEnd: isMobileDevice
+          ? null
+          : tap
+              ? (_) => onEnd()
+              : null,
     );
   }
 }

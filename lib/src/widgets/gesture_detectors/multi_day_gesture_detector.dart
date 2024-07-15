@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/platform.dart';
 
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
@@ -23,12 +24,10 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<MultiDayGestureDetector<T>> createState() =>
-      _MultiDayGestureDetectorState<T>();
+  State<MultiDayGestureDetector<T>> createState() => _MultiDayGestureDetectorState<T>();
 }
 
-class _MultiDayGestureDetectorState<T extends Object?>
-    extends State<MultiDayGestureDetector<T>> {
+class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGestureDetector<T>> {
   EventsController<T> get eventsController => widget.eventsController;
   ViewController<T> get viewController => widget.viewController;
   CreateEventTrigger get createEventTrigger => widget.createEventTrigger;
@@ -41,27 +40,6 @@ class _MultiDayGestureDetectorState<T extends Object?>
   }
 
   DateTime? start;
-
-  @override
-  Widget build(BuildContext context) {
-    final tap = createEventTrigger == CreateEventTrigger.tap;
-    final long = createEventTrigger == CreateEventTrigger.longPress;
-
-    return MouseRegion(
-      child: GestureDetector(
-        onTapDown: tap ? (details) => onDown(details.localPosition) : null,
-        onTapUp: tap ? (_) => onEnd() : null,
-        onPanStart: tap ? (details) => onDown(details.localPosition) : null,
-        onPanUpdate: tap ? (details) => onUpdate(details.localPosition) : null,
-        onPanEnd: tap ? (_) => onEnd() : null,
-        onLongPressDown:
-            long ? (details) => onDown(details.localPosition) : null,
-        onLongPressMoveUpdate:
-            long ? (details) => onUpdate(details.localPosition) : null,
-        onLongPressEnd: long ? (_) => onEnd() : null,
-      ),
-    );
-  }
 
   void onDown(Offset localPosition) {
     final dateTimeRange = _calculateDateTimeRange(localPosition);
@@ -99,6 +77,11 @@ class _MultiDayGestureDetectorState<T extends Object?>
     eventBeingDragged.value = null;
   }
 
+  void onCanceled() {
+    start = null;
+    eventBeingDragged.value = null;
+  }
+
   DateTimeRange? _calculateDateTimeRange(Offset position) {
     final start = _calculateTimeAndDate(position);
     if (start == null) return null;
@@ -114,5 +97,43 @@ class _MultiDayGestureDetectorState<T extends Object?>
     final date = visibleDates.elementAtOrNull(cursorDateIndex);
     if (date == null) return null;
     return date;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tap = createEventTrigger == CreateEventTrigger.tap;
+    final long = createEventTrigger == CreateEventTrigger.longPress;
+
+    return MouseRegion(
+      child: GestureDetector(
+        // Tap
+        onTapDown: tap ? (details) => onDown(details.localPosition) : null,
+        onTapUp: tap ? (_) => onEnd() : null,
+        onTapCancel: tap ? onCanceled : null,
+
+        // Long Press
+        onLongPressDown: long ? (details) => onDown(details.localPosition) : null,
+        onLongPressMoveUpdate: long ? (details) => onUpdate(details.localPosition) : null,
+        onLongPressEnd: long ? (_) => onEnd() : null,
+        onLongPressCancel: long ? onCanceled : null,
+
+        // Pan
+        onPanStart: isMobileDevice
+            ? null
+            : tap
+                ? (details) => onDown(details.localPosition)
+                : null,
+        onPanUpdate: isMobileDevice
+            ? null
+            : tap
+                ? (details) => onUpdate(details.localPosition)
+                : null,
+        onPanEnd: isMobileDevice
+            ? null
+            : tap
+                ? (_) => onEnd()
+                : null,
+      ),
+    );
   }
 }
