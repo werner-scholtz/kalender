@@ -11,8 +11,7 @@ abstract class PageNavigationFunctions {
     );
   }
 
-  factory PageNavigationFunctions.week(
-      DateTimeRange dateTimeRange, int firstDayOfWeek) {
+  factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return WeekPageFunctions(
       dateTimeRange: dateTimeRange,
       firstDayOfWeek: firstDayOfWeek,
@@ -25,8 +24,7 @@ abstract class PageNavigationFunctions {
     return WorkWeekPageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  factory PageNavigationFunctions.custom(
-      DateTimeRange dateTimeRange, int numberOfDays) {
+  factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
     return CustomPageFunctions(
       dateTimeRange: dateTimeRange,
       numberOfDays: numberOfDays,
@@ -94,8 +92,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = start.startOfDay.toUtc();
-      final value =
-          dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
+      final value = dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
 
       return value.floor();
     };
@@ -132,8 +129,7 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = start.startOfDay.toUtc();
-      final index =
-          dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
+      final index = dateUtc.difference(startDateUtc).inDays / DateTime.daysPerWeek;
       return index.floor();
     };
     numberOfPages = (dateTimeRange.dayDifference / DateTime.daysPerWeek).ceil();

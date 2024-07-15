@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/components/month_styles.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
@@ -76,11 +77,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    final viewController =
-        calendarController!.viewController as MonthViewController<T>;
+    final viewController = calendarController!.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final bodyConfiguration =
-        this.configuration ?? MultiDayHeaderConfiguration();
+    final bodyConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
@@ -129,7 +128,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  eventsController: eventsController,
                   viewController: viewController,
                   tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
@@ -137,7 +135,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   dayWidth: dayWidth,
                   pageWidth: pageWidth,
                   tileHeight: tileHeight,
-                  callbacks: callbacks,
                   allowSingleDayEvents: true,
                   leftTriggerWidget: components?.leftPageTriggerWidget,
                   rightTriggerWidget: components?.rightPageTriggerWidget,

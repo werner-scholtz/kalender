@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/components/month_styles.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/components/week_day_header.dart';
 
 class MonthHeader<T extends Object?> extends StatelessWidget {
   /// The [CalendarController] that will be used by the [MonthBody].
@@ -46,8 +46,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    final viewController =
-        calendarController!.viewController as MonthViewController<T>;
+    final viewController = calendarController!.viewController as MonthViewController<T>;
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -11,8 +11,7 @@ import 'package:kalender/src/models/groups/event_group.dart';
 ///
 /// [multiDayTileHeight] is the height of a tile in the [MultiDayEventGroupWidget].
 ///
-abstract class MultiDayEventsLayoutDelegate<T>
-    extends MultiChildLayoutDelegate {
+abstract class MultiDayEventsLayoutDelegate<T> extends MultiChildLayoutDelegate {
   MultiDayEventsLayoutDelegate({
     required this.group,
     required this.multiDayTileHeight,
@@ -23,13 +22,11 @@ abstract class MultiDayEventsLayoutDelegate<T>
 
   @override
   bool shouldRelayout(covariant MultiDayEventsLayoutDelegate oldDelegate) {
-    return oldDelegate.group != group ||
-        oldDelegate.multiDayTileHeight != multiDayTileHeight;
+    return oldDelegate.group != group || oldDelegate.multiDayTileHeight != multiDayTileHeight;
   }
 }
 
-class MultiDayEventsDefaultLayoutDelegate<T>
-    extends MultiDayEventsLayoutDelegate<T> {
+class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventsLayoutDelegate<T> {
   MultiDayEventsDefaultLayoutDelegate({
     required super.group,
     required super.multiDayTileHeight,
@@ -39,6 +36,8 @@ class MultiDayEventsDefaultLayoutDelegate<T>
   Size getSize(BoxConstraints constraints) {
     final events = group.sortedEvents;
 
+    /// TODO: this does not work 100% correctly.
+    /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
     for (final event in events) {
       final overlaps = events.where(
@@ -49,7 +48,7 @@ class MultiDayEventsDefaultLayoutDelegate<T>
 
     return Size(
       constraints.maxWidth,
-      maxOverlaps * multiDayTileHeight,
+      maxOverlaps * multiDayTileHeight + multiDayTileHeight,
     );
   }
 
@@ -86,8 +85,7 @@ class MultiDayEventsDefaultLayoutDelegate<T>
         eventDates.indexOf(lastVisibleDate) + 1,
       );
 
-      final dx = (visibleDates.indexOf(visibleEventDates.first) * dayWidth)
-          .roundToDouble();
+      final dx = (visibleDates.indexOf(visibleEventDates.first) * dayWidth).roundToDouble();
       tileDx[i] = dx;
 
       // Calculate the width of the tile.

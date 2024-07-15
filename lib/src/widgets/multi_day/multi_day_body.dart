@@ -1,10 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/components/multi_day_components.dart';
+import 'package:kalender/src/models/components/multi_day_styles.dart';
+import 'package:kalender/src/models/components/tile_components.dart';
+import 'package:kalender/src/models/controllers/calendar_controller.dart';
+import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
@@ -88,8 +94,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
     );
 
-    final viewController =
-        calendarController!.viewController as MultiDayViewController<T>;
+    final viewController = calendarController!.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
@@ -165,9 +170,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 );
 
             final daySeparatorStyle = componentStyles?.daySeparatorStyle;
-            final daySeparator =
-                components?.daySeparator?.call(daySeparatorStyle) ??
-                    DaySeparator(style: daySeparatorStyle);
+            final daySeparator = components?.daySeparator?.call(daySeparatorStyle) ??
+                DaySeparator(style: daySeparatorStyle);
             final daySeparators = List.generate(
               numberOfDays,
               (index) {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
+import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -237,10 +238,8 @@ class MultiDayBodyConfiguration {
     this.scrollPhysics,
     this.pageScrollPhysics,
   }) {
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
   }
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
@@ -318,12 +317,9 @@ class MultiDayBodyConfiguration {
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
-      pageTriggerConfiguration:
-          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
-      scrollTriggerConfiguration:
-          scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
-      dayEventLayoutStrategy:
-          dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
+      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
+      dayEventLayoutStrategy: dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
     );
@@ -385,8 +381,7 @@ class MultiDayHeaderConfiguration {
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
   }
 
   /// The height of the tiles in the [MultiDayHeader].
@@ -422,8 +417,7 @@ class MultiDayHeaderConfiguration {
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       createEventTrigger: createEventTrigger ?? this.createEventTrigger,
-      pageTriggerConfiguration:
-          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
   }
 

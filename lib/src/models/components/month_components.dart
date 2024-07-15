@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/components/month_grid.dart';
-import 'package:kalender/src/widgets/components/week_day_header.dart';
+
 
 /// The component builders used by the [MonthBody].
 ///
@@ -20,14 +19,6 @@ class MonthBodyComponents {
   });
 }
 
-/// The styles of the default components used by the [MonthBody].
-class MonthBodyComponentStyles {
-  final MonthGridStyle? monthGridStyle;
-
-  const MonthBodyComponentStyles({
-    this.monthGridStyle,
-  });
-}
 
 /// The component builders used by the [MonthHeader].
 ///
@@ -40,11 +31,3 @@ class MonthHeaderComponents {
   });
 }
 
-/// The styles of the default components used by the [MonthHeader].
-class MonthHeaderComponentStyles {
-  final WeekDayHeaderStyle? weekDayHeaderStyle;
-
-  const MonthHeaderComponentStyles({
-    this.weekDayHeaderStyle,
-  });
-}
