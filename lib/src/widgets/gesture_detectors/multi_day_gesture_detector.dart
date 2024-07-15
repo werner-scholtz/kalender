@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
@@ -40,6 +41,10 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     return controller.eventBeingDragged;
   }
 
+  ValueNotifier<CalendarEvent<T>?> get selectedEvent {
+    return controller.selectedEvent;
+  }
+
   DateTime? start;
 
   void onDown(Offset localPosition) {
@@ -49,6 +54,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     start = dateTimeRange.start;
 
     eventBeingDragged.value = CalendarEvent(dateTimeRange: dateTimeRange);
+    selectedEvent.value = null;
   }
 
   void onUpdate(Offset localPosition) {

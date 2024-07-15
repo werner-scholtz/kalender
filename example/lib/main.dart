@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:example/resize_handle.dart';
+import 'package:example/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/kalender_extensions.dart';
@@ -90,79 +93,89 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Kalender'),
-      ),
-      body: CalendarView(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        viewConfiguration: viewConfiguration,
-        header: Material(
-          color: Theme.of(context).colorScheme.surface,
-          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-          elevation: 2,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: calendarController.visibleDateTimeRange,
-                      builder: (context, value, child) {
-                        final year = value.start.year;
-                        final month = value.start.monthNameEnglish;
-
-                        return FilledButton.tonal(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            fixedSize: const Size(150, 40),
-                          ),
-                          child: Text('$month $year'),
-                        );
-                      },
-                    ),
-                    IconButton.filledTonal(
-                      onPressed: () => calendarController.animateToPreviousPage(),
-                      icon: const Icon(Icons.chevron_left),
-                    ),
-                    IconButton.filledTonal(
-                      onPressed: () => calendarController.animateToNextPage(),
-                      icon: const Icon(Icons.chevron_right),
-                    ),
-                    IconButton.filledTonal(
-                      onPressed: () => calendarController.animateToDate(DateTime.now()),
-                      icon: const Icon(Icons.today),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          DropdownMenu(
-                            dropdownMenuEntries: viewConfigurations
-                                .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                                .toList(),
-                            initialSelection: viewConfiguration,
-                            onSelected: (value) {
-                              if (value == null) return;
-                              setState(() => viewConfiguration = value);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              CalendarHeader(multiDayTileComponents: multiDayTileComponents),
-            ],
+      body: SafeArea(
+        child: CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: viewConfiguration,
+          callbacks: CalendarCallbacks(
+            onEventTapped: (event, renderBox) {
+              print('object');
+            },
           ),
+          header: _header(),
+          body: _body(),
         ),
-        body: CalendarBody(
-          multiDayTileComponents: tileComponents,
-          monthTileComponents: tileComponents,
-        ),
+      ),
+    );
+  }
+
+  CalendarBody<Object?> _body() {
+    return CalendarBody(
+      multiDayTileComponents: tileComponents,
+      monthTileComponents: tileComponents,
+      multiDayBodyComponents: const MultiDayBodyComponents(
+        leftPageTriggerWidget: TriggerWidget(),
+        rightPageTriggerWidget: TriggerWidget(),
+      ),
+    );
+  }
+
+  Material _header() {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+      elevation: 2,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: calendarController.visibleDateTimeRange,
+                  builder: (context, value, child) {
+                    final year = value.start.year;
+                    final month = value.start.monthNameEnglish;
+
+                    return FilledButton.tonal(
+                      onPressed: () {},
+                      style: FilledButton.styleFrom(
+                        fixedSize: const Size(120, 40),
+                      ),
+                      child: Text('$month $year'),
+                    );
+                  },
+                ),
+                if (!Platform.isAndroid && !Platform.isIOS)
+                  IconButton.filledTonal(
+                    onPressed: () => calendarController.animateToPreviousPage(),
+                    icon: const Icon(Icons.chevron_left),
+                  ),
+                if (!Platform.isAndroid && !Platform.isIOS)
+                  IconButton.filledTonal(
+                    onPressed: () => calendarController.animateToNextPage(),
+                    icon: const Icon(Icons.chevron_right),
+                  ),
+                IconButton.filledTonal(
+                  onPressed: () => calendarController.animateToDate(DateTime.now()),
+                  icon: const Icon(Icons.today),
+                ),
+                DropdownMenu(
+                  dropdownMenuEntries: viewConfigurations
+                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                      .toList(),
+                  initialSelection: viewConfiguration,
+                  onSelected: (value) {
+                    if (value == null) return;
+                    setState(() => viewConfiguration = value);
+                  },
+                ),
+              ],
+            ),
+          ),
+          CalendarHeader(multiDayTileComponents: multiDayTileComponents),
+        ],
       ),
     );
   }
@@ -181,8 +194,18 @@ class _MyHomePageState extends State<MyHomePage> {
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
       dragAnchorStrategy: dragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
+      verticalResizeHandle: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+      ),
+      horizontalResizeHandle: Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.rectangle,
+        ),
+      ),
     );
   }
 

@@ -224,11 +224,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
                   final detector = DayGestureDetector<T>(
                     eventsController: eventsController,
+                    calendarController: calendarController,
                     callbacks: callbacks,
-                    viewController: viewController,
                     bodyConfiguration: bodyConfiguration,
                     visibleDateTimeRange: visibleRange,
-                    eventBeingDragged: eventBeingDragged,
                     timeOfDayRange: timeOfDayRange,
                     dayWidth: dayWidth,
                     heightPerMinute: heightPerMinute,

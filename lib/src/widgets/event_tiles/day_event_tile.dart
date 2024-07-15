@@ -5,6 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
+import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
@@ -69,14 +70,8 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
   @override
   Widget build(BuildContext context) {
     final onTap = callbacks?.onEventTapped;
-
-    late final tileComponent = tileComponents.tileBuilder.call(
-      widget.event,
-    );
-
-    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(
-      widget.event,
-    );
+    late final tileComponent = tileComponents.tileBuilder.call(widget.event);
+    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(widget.event);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -85,22 +80,26 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           builder: (context, direction, child) {
             late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
             late final showTopResizeHandle = constraints.maxHeight > 24;
+            late final resizeType =
+                isMobileDevice ? ResizeDetectorType.vertical : ResizeDetectorType.pan;
 
             // TODO: Check if the event continues before, if it does do not show the resize handle.
-            final topResizeDetector = ResizeDetectorWidget(
-              onPanStart: _onPanStart,
-              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.top),
-              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.top),
+            late final topResizeDetector = ResizeDetectorWidget(
+              type: resizeType,
+              onStart: _onPanStart,
+              onUpdate: (_) => _onPanUpdate(_, ResizeDirection.top),
+              onEnd: (_) => _onPanEnd(_, ResizeDirection.top),
               child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
 
             // TODO: Check if the event continues after, if it does do not show the resize handle.
-            final bottomResizeDetector = ResizeDetectorWidget(
-              onPanStart: _onPanStart,
-              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.bottom),
-              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.bottom),
+            late final bottomResizeDetector = ResizeDetectorWidget(
+              type: resizeType,
+              onStart: _onPanStart,
+              onUpdate: (_) => _onPanUpdate(_, ResizeDirection.bottom),
+              onEnd: (_) => _onPanEnd(_, ResizeDirection.bottom),
               child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.verticalResizeHandle ?? const SizedBox(),
@@ -132,6 +131,10 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                       // Find the global position and size of the tile.
                       final renderObject = context.findRenderObject()! as RenderBox;
                       onTap.call(widget.event, renderObject);
+
+                      if (isMobileDevice) {
+                        controller.selectedEvent.value = event;
+                      }
                     }
                   : null,
               child: bodyConfiguration.allowRescheduling ? draggableTile : tileComponent,
@@ -144,22 +147,54 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                       ? dragComponent ?? const SizedBox()
                       : tileWidget,
                 ),
-                if (bodyConfiguration.allowResizing && showTopResizeHandle)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: resizeHeight,
-                    child: topResizeDetector,
-                  ),
-                if (bodyConfiguration.allowResizing)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: resizeHeight,
-                    child: bottomResizeDetector,
-                  ),
+
+                // Desktop
+                if (bodyConfiguration.allowResizing && event.canModify && showTopResizeHandle)
+                  if (!isMobileDevice)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: resizeHeight,
+                      child: topResizeDetector,
+                    )
+                  else
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      width: resizeHeight,
+                      height: resizeHeight,
+                      child: ValueListenableBuilder(
+                        valueListenable: controller.selectedEvent,
+                        builder: (context, value, child) {
+                          if (value == event) return topResizeDetector;
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                if (bodyConfiguration.allowResizing && event.canModify)
+                  if (!isMobileDevice)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: resizeHeight,
+                      child: bottomResizeDetector,
+                    )
+                  else
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      width: resizeHeight,
+                      height: resizeHeight,
+                      child: ValueListenableBuilder(
+                        valueListenable: controller.selectedEvent,
+                        builder: (context, value, child) {
+                          if (value == event) return bottomResizeDetector;
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
               ],
             );
           },

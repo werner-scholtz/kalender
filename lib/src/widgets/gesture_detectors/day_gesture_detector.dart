@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/platform.dart';
 
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
+  final CalendarController<T> calendarController;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayViewController<T> viewController;
   final MultiDayBodyConfiguration bodyConfiguration;
-  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
@@ -19,11 +17,10 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
   const DayGestureDetector({
     super.key,
     required this.eventsController,
+    required this.calendarController,
     required this.callbacks,
-    required this.viewController,
     required this.bodyConfiguration,
     required this.visibleDateTimeRange,
-    required this.eventBeingDragged,
     required this.timeOfDayRange,
     required this.dayWidth,
     required this.heightPerMinute,
@@ -35,13 +32,15 @@ class DayGestureDetector<T extends Object?> extends StatefulWidget {
 
 class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetector<T>> {
   EventsController<T> get eventsController => widget.eventsController;
+  CalendarController<T> get controller => widget.calendarController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   Duration get newEventDuration => bodyConfiguration.newEventDuration;
   double get heightPerMinute => widget.heightPerMinute;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => widget.eventBeingDragged;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
+  ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
   DateTime? start;
 
@@ -51,6 +50,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     start = dateTimeRange.start;
 
     eventBeingDragged.value = CalendarEvent(dateTimeRange: dateTimeRange);
+    selectedEvent.value = null;
   }
 
   void onUpdate(Offset localPosition) {

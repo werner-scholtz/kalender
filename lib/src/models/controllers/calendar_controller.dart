@@ -28,8 +28,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The selected event.
   ///
   /// This is used to keep track of the selected event on mobile.
-  ValueNotifier<CalendarEvent<T>?> selectedEventMobile = ValueNotifier<CalendarEvent<T>?>(null);
-  int? selectedEventId;
+  ValueNotifier<CalendarEvent<T>?> selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;

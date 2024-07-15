@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 class MultiDayEventTile<T extends Object?> extends StatefulWidget {
@@ -62,14 +63,8 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
   @override
   Widget build(BuildContext context) {
     final onTap = callbacks?.onEventTapped;
-
-    late final tileComponent = tileComponents.tileBuilder.call(
-      widget.event,
-    );
-
-    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(
-      widget.event,
-    );
+    late final tileComponent = tileComponents.tileBuilder.call(widget.event);
+    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(widget.event);
     late final dragAnchorStrategy = tileComponents.dragAnchorStrategy;
 
     return LayoutBuilder(
@@ -78,20 +73,24 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           valueListenable: resizingDirection,
           builder: (context, direction, child) {
             late final resizeWidth = min(constraints.maxWidth * 0.25, 12.0);
+            late final resizeType =
+                isMobileDevice ? ResizeDetectorType.horizontal : ResizeDetectorType.pan;
 
             // TODO: Check if the event continues before
-            final leftResize = ResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.left),
-              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.left),
+            late final leftResize = ResizeDetectorWidget(
+              type: resizeType,
+              onUpdate: (_) => _onPanUpdate(_, ResizeDirection.left),
+              onEnd: (_) => _onPanEnd(_, ResizeDirection.left),
               child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
             );
 
             // TODO: Check if the event continues after
-            final rightResize = ResizeDetectorWidget(
-              onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.right),
-              onPanEnd: (_) => _onPanEnd(_, ResizeDirection.right),
+            late final rightResize = ResizeDetectorWidget(
+              type: resizeType,
+              onUpdate: (_) => _onPanUpdate(_, ResizeDirection.right),
+              onEnd: (_) => _onPanEnd(_, ResizeDirection.right),
               child: direction != ResizeDirection.none
                   ? null
                   : tileComponents.horizontalResizeHandle ?? const SizedBox(),
@@ -131,22 +130,24 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
             return Stack(
               children: [
                 tileWidget,
-                if (allowResizing)
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    width: resizeWidth,
-                    child: leftResize,
-                  ),
-                if (allowResizing)
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: resizeWidth,
-                    child: rightResize,
-                  ),
+                if (allowResizing && event.canModify)
+                  if (!isMobileDevice)
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      width: resizeWidth,
+                      child: leftResize,
+                    ),
+                if (allowResizing && event.canModify)
+                  if (!isMobileDevice)
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: resizeWidth,
+                      child: rightResize,
+                    ),
               ],
             );
           },
