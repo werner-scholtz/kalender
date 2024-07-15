@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// TODO: move to a different folder ? (Not sure where this should go at this time.)
-
 /// Thanks to https://gist.github.com/andrzejchm for https://gist.github.com/andrzejchm/02c1728b6f31a69fde2fb4e10b636060
 /// Modified to fit the needs of the calendar header.
 class ExpandablePageView extends StatefulWidget {
