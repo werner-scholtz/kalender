@@ -51,14 +51,12 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
 }
 
-class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
-    with SnapPoints {
+class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints {
   EventsController<T> get eventsController => widget.eventsController;
   MultiDayViewController<T> get viewController => widget.viewController;
   ScrollController get scrollController => widget.scrollController;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
-  DateTimeRange get visibleDateTimeRange =>
-      viewController.visibleDateTimeRange.value;
+  DateTimeRange get visibleDateTimeRange => viewController.visibleDateTimeRange.value;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
@@ -69,12 +67,9 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   double get viewPortHeight => widget.viewPortHeight;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      viewController.eventBeingDragged;
-  ValueNotifier<Size?> get feedbackWidgetSize =>
-      eventsController.feedbackWidgetSize;
-  MultiDayViewConfiguration get viewConfiguration =>
-      viewController.viewConfiguration;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => viewController.eventBeingDragged;
+  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
+  MultiDayViewConfiguration get viewConfiguration => viewController.viewConfiguration;
 
   /// The position of the widget.
   Offset? widgetPosition;
@@ -179,9 +174,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Find the index of the snap point that is within a duration of snapRange of the end.
     late final endSnapPoint = findSnapPoint(end, bodyConfiguration.snapRange);
-    final canUseEndSnapPoint = startSnapPoint == null &&
-        endSnapPoint != null &&
-        endSnapPoint.isAfter(start);
+    final canUseEndSnapPoint =
+        startSnapPoint == null && endSnapPoint != null && endSnapPoint.isAfter(start);
     if (canUseEndSnapPoint) {
       // Calculate the new end time.
       end = endSnapPoint;
@@ -222,8 +216,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         final eventDuration = event.duration;
 
         // Check if the event will fit within the time of day range.
-        if (!timeOfDayRange.isAllDay &&
-            event.duration > timeOfDayRange.duration) return false;
+        if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
 
         if (!showMultiDayEvents && event.isMultiDayEvent) {
           return false;
@@ -315,13 +308,11 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         );
 
         final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
-        final triggerHeight =
-            scrollTriggerSetup.triggerHeight.call(viewPortHeight);
+        final triggerHeight = scrollTriggerSetup.triggerHeight.call(viewPortHeight);
         final scrollTriggerDelay = scrollTriggerSetup.triggerDelay;
         final scrollAnimationDuration = scrollTriggerSetup.animationDuration;
         final scrollAnimationCurve = scrollTriggerSetup.animationCurve;
-        final scrollAmount =
-            scrollTriggerSetup.scrollAmount.call(viewPortHeight);
+        final scrollAmount = scrollTriggerSetup.scrollAmount.call(viewPortHeight);
 
         final topScrollTrigger = NavigationTrigger(
           triggerDelay: scrollTriggerDelay,

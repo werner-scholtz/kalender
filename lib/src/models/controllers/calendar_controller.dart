@@ -1,35 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 
 class CalendarController<T extends Object?> extends ChangeNotifier
     with CalendarNavigationFunctions<T> {
-  CalendarController({
-    DateTime? initialDate,
-    DateTimeRange? calendarRange,
-  }) {
-    _focusedDate = initialDate ?? DateTime.now();
-  }
-
-  /// The date that has focus. TODO: remove ?
-  late DateTime _focusedDate;
-  DateTime get focusedDate => _focusedDate;
+  CalendarController();
 
   /// TODO: Document this.
   ViewController<T>? _viewController;
   ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
-  ValueNotifier<DateTimeRange>? get visibleDateTimeRange {
-    if (!isAttached) return null;
-    return _viewController!.visibleDateTimeRange;
-  }
+  /// The [DateTimeRange] that is currently visible.
+  ValueNotifier<DateTimeRange> visibleDateTimeRange = ValueNotifier<DateTimeRange>(
+    DateTime.now().dayRange,
+  );
 
-  ValueNotifier<List<CalendarEvent<T>>>? get visibleEvents {
-    if (!isAttached) return null;
-    return _viewController!.visibleEvents;
-  }
+  /// The [CalendarEvent]s that are currently visible.
+  ValueNotifier<List<CalendarEvent<T>>> visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;

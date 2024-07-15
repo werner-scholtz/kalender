@@ -14,10 +14,10 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged;
   int? draggingEventId;
 
-  /// The visible date time range of the view that the controller is controlling.
+  /// The [DateTimeRange] that is currently visible.
   ValueNotifier<DateTimeRange> get visibleDateTimeRange;
 
-  /// The events that are currently visible.
+  /// The [CalendarEvent]s that are currently visible.
   ValueNotifier<List<CalendarEvent<T>>> get visibleEvents;
 
   /// Jump to the given [DateTime].
@@ -73,6 +73,8 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
     required this.viewConfiguration,
+    required this.visibleDateTimeRange,
+    required this.visibleEvents,
     ViewController? previousViewConfiguration,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
@@ -82,12 +84,10 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute = ValueNotifier<double>(0.7);
-    visibleDateTimeRange = ValueNotifier<DateTimeRange>(
-      pageNavigationFunctions.dateTimeRangeFromIndex(initialPage),
-    );
+    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
     eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
     scrollController = ScrollController();
-    visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+    visibleEvents.value = [];
 
     // This listener will sync the headerController with the pageController.
     // Note this only really works if both PageView's have the same horizontal 'size'.
@@ -122,10 +122,10 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
   @override
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
+  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   @override
-  late final ValueNotifier<List<CalendarEvent<T>>> visibleEvents;
+  final ValueNotifier<List<CalendarEvent<T>>> visibleEvents;
 
   @override
   Future<void> animateToDate(
