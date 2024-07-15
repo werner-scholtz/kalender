@@ -98,11 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
-          callbacks: CalendarCallbacks(
-            onEventTapped: (event, renderBox) {
-              print('object');
-            },
-          ),
           header: _header(),
           body: _body(),
         ),
@@ -195,13 +190,13 @@ class _MyHomePageState extends State<MyHomePage> {
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
       dragAnchorStrategy: dragAnchorStrategy,
       verticalResizeHandle: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.red,
           shape: BoxShape.circle,
         ),
       ),
       horizontalResizeHandle: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.red,
           shape: BoxShape.rectangle,
         ),
