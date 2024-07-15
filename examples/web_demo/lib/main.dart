@@ -5,6 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
+import 'package:web_demo/widgets/event_overlay.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,8 +50,7 @@ class MyAppState extends State<MyApp> {
 
   void toggleTheme() {
     setState(() {
-      themeMode =
-          themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+      themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     });
   }
 }
@@ -163,8 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final size = context.size!;
 
     if (position.dy + height > size.height) {
-      position =
-          position.translate(0, size.height - (position.dy + height) - 25);
+      position = position.translate(0, size.height - (position.dy + height) - 25);
     }
 
     if (position.dx + width + renderBox.size.width > size.width) {
@@ -186,29 +185,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Positioned(
               top: position.dy,
               left: position.dx,
-              child: Card(
-                elevation: 5,
-                margin: const EdgeInsets.all(8),
-                child: SizedBox(
-                  width: width,
-                  height: height,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton.filledTonal(
-                              onPressed: () => _removeOverlay(),
-                              icon: const Icon(Icons.close),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+              child: EventOverlayCard(
+                event: event as CalendarEvent<Event>,
+                position: position,
+                height: height,
+                width: width,
+                onDismiss: _removeOverlay,
               ),
             ),
           ],

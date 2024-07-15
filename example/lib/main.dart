@@ -1,5 +1,7 @@
+import 'package:example/resize_handle.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/kalender_extensions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,25 +49,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   /// Create [EventsController]
-  final eventsController = EventsController<Event>();
+  final eventsController = EventsController();
 
   /// Create [CalendarController]
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
 
-  /// Create a [ViewConfiguration]
-  ///
-  /// Options:
-  /// - [MultiDayViewConfiguration.singleDay]
-  /// - [MultiDayViewConfiguration.week]
-  /// - [MultiDayViewConfiguration.workWeek]
-  /// - [MultiDayViewConfiguration.custom]
-  final viewConfiguration = MultiDayViewConfiguration.singleDay();
+  late ViewConfiguration viewConfiguration = viewConfigurations[0];
+  final viewConfigurations = <ViewConfiguration>[
+    MultiDayViewConfiguration.singleDay(),
+    MultiDayViewConfiguration.week(),
+    MultiDayViewConfiguration.workWeek(),
+    MultiDayViewConfiguration.custom(numberOfDays: 3),
+  ];
 
   @override
   void initState() {
     super.initState();
 
-    /// Add events to the [EventsController]
     final now = DateTime.now();
     eventsController.addEvents(
       [
@@ -89,30 +89,162 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Create your tile components.
-    final tileComponents = TileComponents<Event>(
-      tileBuilder: (event) => Container(color: Colors.green),
-    );
-
-    final calendar = CalendarView<Event>(
-      eventsController: eventsController,
-      calendarController: calendarController,
-      viewConfiguration: viewConfiguration,
-      header: CalendarHeader<Event>(
-        multiDayTileComponents: tileComponents,
-      ),
-      body: CalendarBody<Event>(
-        multiDayTileComponents: tileComponents,
-        monthTileComponents: tileComponents,
-      ),
-    );
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Kalender'),
       ),
-      body: calendar,
+      body: CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: viewConfiguration,
+        header: Material(
+          color: Theme.of(context).colorScheme.surface,
+          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+          elevation: 2,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: calendarController.visibleDateTimeRange,
+                      builder: (context, value, child) {
+                        final year = value.start.year;
+                        final month = value.start.monthNameEnglish;
+
+                        return FilledButton.tonal(
+                          onPressed: () {},
+                          style: FilledButton.styleFrom(
+                            fixedSize: const Size(150, 40),
+                          ),
+                          child: Text('$month $year'),
+                        );
+                      },
+                    ),
+                    IconButton.filledTonal(
+                      onPressed: () => calendarController.animateToPreviousPage(),
+                      icon: const Icon(Icons.chevron_left),
+                    ),
+                    IconButton.filledTonal(
+                      onPressed: () => calendarController.animateToNextPage(),
+                      icon: const Icon(Icons.chevron_right),
+                    ),
+                    IconButton.filledTonal(
+                      onPressed: () => calendarController.animateToDate(DateTime.now()),
+                      icon: const Icon(Icons.today),
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          DropdownMenu(
+                            dropdownMenuEntries: viewConfigurations
+                                .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                                .toList(),
+                            initialSelection: viewConfiguration,
+                            onSelected: (value) {
+                              if (value == null) return;
+                              setState(() => viewConfiguration = value);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              CalendarHeader(multiDayTileComponents: multiDayTileComponents),
+            ],
+          ),
+        ),
+        body: CalendarBody(
+          multiDayTileComponents: tileComponents,
+          monthTileComponents: tileComponents,
+        ),
+      ),
+    );
+  }
+
+  TileComponents get tileComponents {
+    return TileComponents(
+      tileBuilder: (event) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dropTargetTile: _dropTargetTile,
+      feedbackTileBuilder: _feedbackTileBuilder,
+      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
+      dragAnchorStrategy: dragAnchorStrategy,
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+  }
+
+  TileComponents get multiDayTileComponents {
+    return TileComponents(
+      tileBuilder: (event) {
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
+          decoration: BoxDecoration(
+            color: Colors.green.withAlpha(150),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      },
+      dropTargetTile: _dropTargetTile,
+      feedbackTileBuilder: _feedbackTileBuilder,
+      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
+      dragAnchorStrategy: dragAnchorStrategy,
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+  }
+
+  Widget _feedbackTileBuilder(CalendarEvent event, Size dropTargetWidgetSize) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      width: dropTargetWidgetSize.width * 0.8,
+      height: dropTargetWidgetSize.height,
+      decoration: BoxDecoration(
+        color: Colors.green.withAlpha(150),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Widget _tileWhenDraggingBuilder(CalendarEvent event) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green.withAlpha(20),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Widget _dropTargetTile(CalendarEvent event) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  Offset dragAnchorStrategy(
+    Draggable draggable,
+    BuildContext context,
+    Offset position,
+  ) {
+    final renderObject = context.findRenderObject()! as RenderBox;
+    return Offset(
+      20,
+      renderObject.size.height / 2,
     );
   }
 }

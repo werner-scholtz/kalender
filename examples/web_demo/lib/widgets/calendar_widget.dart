@@ -78,28 +78,19 @@ class CalendarWidget extends StatelessWidget {
       rightPageTriggerWidget: TriggerWidget(),
     );
 
-    final calendarDateTime = ListenableBuilder(
-      listenable: controller,
-      builder: (context, child) {
-        if (controller.visibleDateTimeRange != null) {
-          return ValueListenableBuilder(
-            valueListenable: controller.visibleDateTimeRange!,
-            builder: (context, value, child) {
-              final year = value.start.year;
-              final month = value.start.monthNameEnglish;
+    final calendarDateTime = ValueListenableBuilder(
+      valueListenable: controller.visibleDateTimeRange,
+      builder: (context, value, child) {
+        final year = value.start.year;
+        final month = value.start.monthNameEnglish;
 
-              return FilledButton.tonal(
-                onPressed: () {},
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(50, 48),
-                ),
-                child: Text('$month $year'),
-              );
-            },
-          );
-        } else {
-          return const SizedBox();
-        }
+        return FilledButton.tonal(
+          onPressed: () {},
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(50, 48),
+          ),
+          child: Text('$month $year'),
+        );
       },
     );
 
