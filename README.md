@@ -16,10 +16,10 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ```dart
 /// Create [EventsController]
-final eventsController = EventsController<Event>();
+final eventsController = EventsController();
 
 /// Create [CalendarController]
-final calendarController = CalendarController<Event>();
+final calendarController = CalendarController();
 
 /// Create a [ViewConfiguration]
 /// 
@@ -38,91 +38,99 @@ void initState() {
   eventsController.addEvents([...]);
 }
 
-Widget build(BuildContext context) {
-  
-  // Create your tile components.
-  final tileComponents = TileComponents<Event>(
+Widget build(BuildContext context) {  
+  // Create your TileComponents.
+  final tileComponents = TileComponents(
     tileBuilder: (event) => Container(color: Colors.green),
+  );
+
+  // Create the header Widget.
+  final header = CalendarHeader(
+    multiDayTileComponents: tileComponents,
+  );
+
+  // Create the body Widget.
+  final body = CalendarBody(
+    multiDayTileComponents: tileComponents,
+    monthTileComponents: tileComponents,
   );
 
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
     viewConfiguration: viewConfiguration,
-    header: CalendarHeader<Event>(),
-    body: CalendarBody<Event>(),
+    header: header,
+    body: body,
   );
 }
 ```
 
 
-## Callbacks
+## Customizing the look
 
-The calendar has a few useful callback functions:
+There are a few ways to customize the look of the calendar:
+- [Tile Components](#tile-components)
+- General Components
+  - [Header Components](#header-components)
+  - [Body Components](#body-components)
+
+### Tile Components
+
+The `TileComponents` object is used to customize the look of the tiles displayed in the calendar.
 
 ```dart
-CalendarCallbacks(
-  // Called when an event is tapped.
-  onEventTapped: (event, renderBox) {},
+TileComponents(
+  // The default builder for stationary event tiles.
+  tileBuilder: (event) => Container(),
 
-  // Called when a new event is created.
-  onEventCreated: (event) {},
+  // The builder for the stationary event tile. (When it is being dragged)
+  tileWhenDraggingBuilder: (event) => Container(),
 
-  // Called when a event has been changed (rescheduling / resizing)
-  onEventChanged: (event, updatedEvent) async {},
+  // The builder for the feedback tile. (When it is being dragged)
+  feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
 
-  // Called when a page is changed.
-  onPageChanged: (visibleDateTimeRange) {},
+  // The builder for the drop target event tile.
+  dropTargetTile: (event) => Container(),
+
+  // The dragAnchorStrategy used by the [feedbackTileBuilder].
+  dragAnchorStrategy: childDragAnchorStrategy,
+
+  // The vertical resize handle.
+  verticalResizeHandle: Container(),
+
+  // The horizontal resize handle.
+  horizontalResizeHandle: Container(),
 )
 ```
 
+### General Components
 
-## Customizing the look
-
-The Calendar is split into two major parts the Header and the Body.
+The general components are split into `Header` and `Body` components.  
 
 Both of these parts have their own `Components` and `ComponentStyles` for every type of `ViewConfiguration`, along with a `TileComponents` for the views that can display tiles.
 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
-1. Header
-  ```dart
-  CalendarHeader(
-    multiDayTileComponents: TileComponents(),
-    multiDayHeaderComponents: MultiDayHeaderComponents(),
-    multiDayHeaderComponentStyles: MultiDayHeaderComponentStyles(),
-  );
-  ```
 
-
-2. Body
-  ```dart
-  CalendarBody(
-    multiDayTileComponents: TileComponents(),
-    multiDayBodyComponents: MultiDayBodyComponents(),
-    multiDayBodyComponentStyles: MultiDayBodyComponentStyles(),
-  );
-  ```
-
-### Tile Components
+#### Header Components
 
 ```dart
-TileComponents(
-  tileBuilder: (event) => Container(),
-  dropTargetTile: (event) => Container(),
-  tileWhenDraggingBuilder: (event) => Container(),
-  feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
-  dragAnchorStrategy: childDragAnchorStrategy,
-  verticalResizeHandle: Container(),
-  horizontalResizeHandle: Container(),
-)
-```
-
-### Header Components
-TODO: Add documentation
+CalendarHeader(
+  multiDayTileComponents: TileComponents(),
+  multiDayHeaderComponents: MultiDayHeaderComponents(),
+  multiDayHeaderComponentStyles: MultiDayHeaderComponentStyles(),
+);
+```  
 
 ### Body Components
-TODO: Add documentation
+
+```dart
+CalendarBody(
+  multiDayTileComponents: TileComponents(),
+  multiDayBodyComponents: MultiDayBodyComponents(),
+  multiDayBodyComponentStyles: MultiDayBodyComponentStyles(),
+);
+```  
 
 ## Customizing the behavior
 
@@ -153,6 +161,22 @@ Some behaviors that can be customized:
   ```
 
 
+## Callbacks
 
+The calendar has a few useful callback functions:
 
+```dart
+CalendarCallbacks(
+  // Called when an event is tapped.
+  onEventTapped: (event, renderBox) {},
 
+  // Called when a new event is created.
+  onEventCreated: (event) {},
+
+  // Called when a event has been changed (rescheduling / resizing)
+  onEventChanged: (event, updatedEvent) async {},
+
+  // Called when a page is changed.
+  onPageChanged: (visibleDateTimeRange) {},
+)
+```

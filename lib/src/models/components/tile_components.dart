@@ -17,17 +17,17 @@ class TileComponents<T extends Object?> {
   /// The default builder for stationary event tiles.
   final TileBuilder<T> tileBuilder;
 
-  /// The builder for the standard event tile. (When dragging)
+  /// The builder for the stationary event tile. (When dragging)
   final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
 
   /// The builder for the feedback tile. (When dragging)
   final FeedbackTileBuilder<T>? feedbackTileBuilder;
 
-  /// The dragAnchorStrategy used by the [feedbackTileBuilder].
-  final DragAnchorStrategy? dragAnchorStrategy;
-
   /// The builder for the drop target event tile.
   final TileDropTargetBuilder<T>? dropTargetTile;
+
+  /// The dragAnchorStrategy used by the [feedbackTileBuilder].
+  final DragAnchorStrategy? dragAnchorStrategy;
 
   /// The vertical resize handle.
   final Widget? verticalResizeHandle;
