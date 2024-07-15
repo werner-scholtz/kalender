@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/type_definitions.dart';
@@ -106,30 +105,11 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       eventsController: widget.eventsController,
       calendarController: widget.calendarController,
       callbacks: widget.callbacks,
-      child: Builder(
-        builder: (context) {
-          final body = widget.body;
-          final header = widget.header;
-
-          final bodyId = body == null ? null : 1;
-          final headerId = header == null ? null : 0;
-
-          return CustomMultiChildLayout(
-            delegate: CalendarLayoutDelegate(headerId, bodyId),
-            children: [
-              if (bodyId != null)
-                LayoutId(
-                  id: bodyId,
-                  child: body!,
-                ),
-              if (headerId != null)
-                LayoutId(
-                  id: headerId,
-                  child: header!,
-                ),
-            ],
-          );
-        },
+      child: Column(
+        children: [
+          if (widget.header != null) widget.header!,
+          if (widget.body != null) Expanded(child: widget.body!),
+        ],
       ),
     );
   }
