@@ -88,7 +88,8 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Note this only really works if both PageView's have the same horizontal 'size'.
     pageController.addListener(() {
       if (!headerController.hasClients) return;
-      headerController.jumpTo(pageController.offset);
+      headerController.position.correctPixels(pageController.offset);
+      headerController.position.notifyListeners();
     });
   }
 
@@ -232,7 +233,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   /// The page controller used by the view.
   late final PageController pageController;
-
 
   @override
   late final ValueNotifier<DateTimeRange> visibleDateTimeRange;

@@ -19,14 +19,28 @@ class ExpandablePageView extends StatefulWidget {
 }
 
 class _ExpandablePageViewState extends State<ExpandablePageView> {
-  double _currentHeight = 80;
-  double _previousHeight = 80;
+  late List<double> _heights;
+  int _currentPage = 0;
+  double get _currentHeight => _heights[_currentPage];
+
+  @override
+  void initState() {
+    super.initState();
+    _heights = List.filled(widget.itemCount, 80, growable: true);
+    widget.controller.addListener(_updatePage);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_updatePage);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       curve: Curves.easeInOutCubic,
-      tween: Tween<double>(begin: _previousHeight, end: _currentHeight),
+      tween: Tween<double>(begin: _heights.first, end: _currentHeight),
       duration: const Duration(milliseconds: 100),
       builder: (context, value, child) => SizedBox(height: value, child: child),
       child: PageView.builder(
@@ -45,13 +59,19 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       maxHeight: double.infinity,
       alignment: Alignment.topCenter,
       child: SizeReportingWidget(
-        onSizeChange: (size) => setState(() {
-          _previousHeight = _currentHeight;
-          _currentHeight = size.height;
-        }),
+        onSizeChange: (size) => setState(() => _heights[index] = size.height),
         child: item,
       ),
     );
+  }
+
+  void _updatePage() {
+    final newPage = widget.controller.page!.round();
+    if (_currentPage != newPage) {
+      setState(() {
+        _currentPage = newPage;
+      });
+    }
   }
 }
 
