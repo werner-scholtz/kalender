@@ -52,8 +52,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle =
-        style?.textStyle ?? Theme.of(context).textTheme.labelMedium;
+    final textStyle = style?.textStyle ?? Theme.of(context).textTheme.labelMedium;
     final textDirection = style?.textDirection ?? TextDirection.ltr;
 
     final textHeight = _textSize('0', textStyle).height;
@@ -98,11 +97,9 @@ class TimeLine<T extends Object?> extends StatelessWidget {
 
         // The time to display is the next hour.
         final displayTime = TimeOfDay(hour: range.start.hour + 1, minute: 0);
-        final text = style?.stringBuilder?.call(displayTime) ??
-            displayTime.format(context);
+        final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
 
-        final textPadding =
-            style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
+        final textPadding = style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
 
         return Positioned(
           top: position - textXOffset,
@@ -118,13 +115,13 @@ class TimeLine<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final eventBeingDraggedTimes = ValueListenableBuilder(
-      valueListenable: eventBeingDragged,
-      builder: (context, eventBeingDragged, child) {
-        // TODO: calculate eventBeingDragged start/end times and display them.
-        return SizedBox();
-      },
-    );
+    // TODO: calculate eventBeingDragged start/end times and display them.
+    // final eventBeingDraggedTimes = ValueListenableBuilder(
+    //   valueListenable: eventBeingDragged,
+    //   builder: (context, eventBeingDragged, child) {
+    //     return const SizedBox();
+    //   },
+    // );
 
     return Stack(
       children: positionedTimes.nonNulls.toList(),

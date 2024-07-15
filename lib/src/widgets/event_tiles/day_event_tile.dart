@@ -46,8 +46,7 @@ enum ResizeDirection {
   none,
 }
 
-class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
-    with SnapPoints {
+class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with SnapPoints {
   CalendarEvent<T> get event => widget.event;
 
   EventsController<T> get eventsController => widget.eventsController;
@@ -55,19 +54,15 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
-  DragAnchorStrategy? get dragAnchorStrategy =>
-      tileComponents.dragAnchorStrategy;
-  ValueNotifier<Size> get feedbackWidgetSize =>
-      eventsController.feedbackWidgetSize;
+  DragAnchorStrategy? get dragAnchorStrategy => tileComponents.dragAnchorStrategy;
+  ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
   double get heightPerMinute => widget.heightPerMinute;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged =>
-      viewController.eventBeingDragged;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => viewController.eventBeingDragged;
 
-  ValueNotifier<ResizeDirection> resizingDirection =
-      ValueNotifier(ResizeDirection.none);
+  ValueNotifier<ResizeDirection> resizingDirection = ValueNotifier(ResizeDirection.none);
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +84,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
             late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
             late final showTopResizeHandle = constraints.maxHeight > 24;
 
-            // TODO: Check if the event continues before
+            // TODO: Check if the event continues before, if it does do not show the resize handle.
             final topResizeDetector = ResizeDetectorWidget(
               onPanStart: _onPanStart,
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.top),
@@ -99,7 +94,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
                   : tileComponents.verticalResizeHandle ?? const SizedBox(),
             );
 
-            // TODO: Check if the event continues after
+            // TODO: Check if the event continues after, if it does do not show the resize handle.
             final bottomResizeDetector = ResizeDetectorWidget(
               onPanStart: _onPanStart,
               onPanUpdate: (_) => _onPanUpdate(_, ResizeDirection.bottom),
@@ -126,23 +121,18 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>>
               feedback: feedback,
               childWhenDragging: dragComponent,
               dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-              child: isDragging && dragComponent != null
-                  ? dragComponent
-                  : tileComponent,
+              child: isDragging && dragComponent != null ? dragComponent : tileComponent,
             );
 
             final tileWidget = GestureDetector(
               onTap: onTap != null
                   ? () {
                       // Find the global position and size of the tile.
-                      final renderObject =
-                          context.findRenderObject()! as RenderBox;
+                      final renderObject = context.findRenderObject()! as RenderBox;
                       onTap.call(widget.event, renderObject);
                     }
                   : null,
-              child: bodyConfiguration.allowRescheduling
-                  ? draggableTile
-                  : tileComponent,
+              child: bodyConfiguration.allowRescheduling ? draggableTile : tileComponent,
             );
 
             return Stack(

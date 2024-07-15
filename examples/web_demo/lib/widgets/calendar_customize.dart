@@ -7,12 +7,10 @@ class CalendarCustomize extends StatefulWidget {
   final void Function(ViewConfiguration value) onChanged;
 
   final MultiDayBodyConfiguration bodyConfiguration;
-  final void Function(MultiDayBodyConfiguration bodyConfiguration)
-      onBodyChanged;
+  final void Function(MultiDayBodyConfiguration bodyConfiguration) onBodyChanged;
 
   final MultiDayHeaderConfiguration headerConfiguration;
-  final void Function(MultiDayHeaderConfiguration headerConfiguration)
-      onHeaderChanged;
+  final void Function(MultiDayHeaderConfiguration headerConfiguration) onHeaderChanged;
 
   final bool showHeader;
   final void Function(bool value) onShowHeaderChanged;
@@ -36,12 +34,10 @@ class CalendarCustomize extends StatefulWidget {
 class _CalendarCustomizeState extends State<CalendarCustomize> {
   ViewConfiguration get viewConfiguration => widget.viewConfiguration;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
-  MultiDayHeaderConfiguration get headerConfiguration =>
-      widget.headerConfiguration;
+  MultiDayHeaderConfiguration get headerConfiguration => widget.headerConfiguration;
   SizedBox get spacer => const SizedBox(height: 12.0);
 
-  EdgeInsets get childrenPadding =>
-      const EdgeInsets.only(top: 16, bottom: 16, left: 32);
+  EdgeInsets get childrenPadding => const EdgeInsets.only(top: 16, bottom: 16, left: 32);
 
   @override
   Widget build(BuildContext context) {
@@ -332,7 +328,7 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
     BuildContext context,
     MonthViewConfiguration configuration,
   ) {
-    return Card(
+    return const Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [],
