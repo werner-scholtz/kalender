@@ -36,20 +36,24 @@ class _NavigationTriggerState extends State<NavigationTrigger> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      hitTestBehavior: HitTestBehavior.translucent,
-      onEnter: (event) {
+    return DragTarget(
+      onWillAcceptWithDetails: (details) {
         // Start the timer on enter.
         triggerTimer = Timer.periodic(
           widget.triggerDelay,
           (timer) => widget.onTrigger(),
         );
+
+        // Always return false to allow the drag to continue.
+        return false;
       },
-      onExit: (event) {
-        // Cancel the timer on exit.
+      onLeave: (data) {
+        // Cancel the timer on leave.
         triggerTimer?.cancel();
       },
-      child: widget.child,
+      builder: (context, candidateData, rejectedData) {
+        return widget.child ?? const SizedBox();
+      },
     );
   }
 }
