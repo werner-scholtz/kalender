@@ -10,10 +10,6 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 
-  /// The event being dragged.
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged;
-  int? draggingEventId;
-
   /// The [DateTimeRange] that is currently visible.
   ValueNotifier<DateTimeRange> get visibleDateTimeRange;
 
@@ -85,7 +81,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute = ValueNotifier<double>(0.7);
     visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
-    eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
     scrollController = ScrollController();
     visibleEvents.value = [];
 
@@ -117,9 +112,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   /// The height per minute of the view.
   late ValueNotifier<double> heightPerMinute;
-
-  @override
-  late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
   @override
   final ValueNotifier<DateTimeRange> visibleDateTimeRange;
@@ -226,7 +218,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     visibleDateTimeRange = ValueNotifier<DateTimeRange>(
       pageNavigationFunctions.dateTimeRangeFromIndex(initialPage),
     );
-    eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
     visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
   }
 
@@ -242,8 +233,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   /// The page controller used by the view.
   late final PageController pageController;
 
-  @override
-  late final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
 
   @override
   late final ValueNotifier<DateTimeRange> visibleDateTimeRange;

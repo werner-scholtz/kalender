@@ -91,7 +91,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
         late final singleDay = _SingleDayHeader(
           key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
-          viewController: viewController,
+          calendarController: calendarController!,
           headerConfiguration: headerConfiguration,
           tileComponents: tileComponents,
           components: components,
@@ -105,7 +105,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
         late final multiDay = _MultiDayHeader(
           key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
-          viewController: viewController,
+          calendarController: calendarController!,
           headerConfiguration: headerConfiguration,
           tileComponents: tileComponents,
           component: components,
@@ -127,7 +127,8 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
+  final CalendarController<T> calendarController;
+
   final CalendarCallbacks<T>? callbacks;
 
   final MultiDayHeaderConfiguration headerConfiguration;
@@ -141,7 +142,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   const _SingleDayHeader({
     super.key,
     required this.eventsController,
-    required this.viewController,
+    required this.calendarController,
     required this.callbacks,
     required this.headerConfiguration,
     required this.tileComponents,
@@ -154,6 +155,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
@@ -200,9 +202,9 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
               final multiDayEvents = MultiDayEventWidget<T>(
                 eventsController: eventsController,
+                calendarController: calendarController,
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,
-                viewController: viewController,
                 dayWidth: pageWidth,
                 allowResizing: headerConfiguration.allowResizing,
                 showAllEvents: false,
@@ -211,7 +213,9 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               );
 
               final multiDayDragTarget = MultiDayDragTarget<T>(
-                viewController: viewController,
+                eventsController: eventsController,
+                calendarController: calendarController,
+                callbacks: callbacks,
                 tileComponents: tileComponents,
                 pageTriggerSetup: headerConfiguration.pageTriggerConfiguration,
                 visibleDateTimeRange: visibleRange,
@@ -226,7 +230,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               final gestureDetector = MultiDayGestureDetector<T>(
                 visibleDateTimeRange: visibleRange,
                 eventsController: eventsController,
-                viewController: viewController,
+                controller: calendarController,
                 callbacks: callbacks,
                 createEventTrigger: headerConfiguration.createEventTrigger,
                 dayWidth: pageWidth,
@@ -258,7 +262,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
 class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
+  final CalendarController<T> calendarController;
+
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration headerConfiguration;
   final TileComponents<T> tileComponents;
@@ -272,7 +277,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   const _MultiDayHeader({
     super.key,
     required this.eventsController,
-    required this.viewController,
+    required this.calendarController,
     required this.callbacks,
     required this.headerConfiguration,
     required this.tileComponents,
@@ -286,6 +291,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
@@ -345,10 +351,10 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               }).toList();
 
               final multiDayEvents = MultiDayEventWidget<T>(
+                calendarController: calendarController,
                 eventsController: eventsController,
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,
-                viewController: viewController,
                 dayWidth: dayWidth,
                 allowResizing: headerConfiguration.allowResizing,
                 showAllEvents: false,
@@ -357,7 +363,9 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               );
 
               final multiDayDragTarget = MultiDayDragTarget<T>(
-                viewController: viewController,
+                calendarController: calendarController,
+                eventsController: eventsController,
+                callbacks: callbacks,
                 tileComponents: tileComponents,
                 pageTriggerSetup: headerConfiguration.pageTriggerConfiguration,
                 visibleDateTimeRange: visibleRange,
@@ -372,7 +380,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               final gestureDetector = MultiDayGestureDetector<T>(
                 visibleDateTimeRange: visibleRange,
                 eventsController: eventsController,
-                viewController: viewController,
+                controller: calendarController,
                 callbacks: callbacks,
                 createEventTrigger: headerConfiguration.createEventTrigger,
                 dayWidth: dayWidth,

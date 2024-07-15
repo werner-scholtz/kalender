@@ -8,7 +8,8 @@ import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
 class DayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
+  final CalendarController<T> calendarController;
+
   final ScrollController scrollController;
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
@@ -30,7 +31,7 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   const DayDragTarget({
     super.key,
     required this.eventsController,
-    required this.viewController,
+    required this.calendarController,
     required this.scrollController,
     required this.callbacks,
     required this.tileComponents,
@@ -53,7 +54,9 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints {
   EventsController<T> get eventsController => widget.eventsController;
-  MultiDayViewController<T> get viewController => widget.viewController;
+  CalendarController<T> get controller => widget.calendarController;
+  MultiDayViewController<T> get viewController =>
+      controller.viewController as MultiDayViewController<T>;
   ScrollController get scrollController => widget.scrollController;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   DateTimeRange get visibleDateTimeRange => viewController.visibleDateTimeRange.value;
@@ -67,7 +70,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   double get viewPortHeight => widget.viewPortHeight;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => viewController.eventBeingDragged;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
   ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
   MultiDayViewConfiguration get viewConfiguration => viewController.viewConfiguration;
 
@@ -245,7 +248,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
         eventBeingDragged.value = updatedEvent;
 
         // Update the dragging event id.
-        viewController.draggingEventId = event.id;
+        controller.draggingEventId = event.id;
       },
       onAcceptWithDetails: (details) {
         final event = details.data;
@@ -268,12 +271,12 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
         // Reset the event being dragged.
         eventBeingDragged.value = null;
-        viewController.draggingEventId = null;
+        controller.draggingEventId = null;
       },
       onLeave: (data) {
         widgetPosition = null;
         eventBeingDragged.value = null;
-        viewController.draggingEventId = null;
+        controller.draggingEventId = null;
       },
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.

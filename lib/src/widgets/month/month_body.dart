@@ -116,10 +116,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayEvents = MultiDayEventWidget<T>(
+                  calendarController: calendarController!,
                   eventsController: eventsController!,
                   visibleDateTimeRange: visibleDateTimeRange,
                   tileComponents: tileComponents,
-                  viewController: viewController,
                   dayWidth: dayWidth,
                   allowResizing: bodyConfiguration.allowResizing,
                   tileHeight: tileHeight,
@@ -128,7 +128,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  viewController: viewController,
+                  eventsController: eventsController,
+                  calendarController: calendarController,
+                  callbacks: callbacks,
                   tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
                   visibleDateTimeRange: visibleDateTimeRange,
@@ -142,8 +144,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
                 final gestureDetector = MultiDayGestureDetector(
                   eventsController: eventsController,
+                  controller: calendarController,
                   callbacks: callbacks,
-                  viewController: viewController,
                   visibleDateTimeRange: visibleDateTimeRange,
                   createEventTrigger: bodyConfiguration.createEventTrigger,
                   dayWidth: dayWidth,

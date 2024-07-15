@@ -8,7 +8,8 @@ import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 class MultiDayEventTile<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-  final ViewController<T> viewController;
+  final CalendarController<T> controller;
+
   final CalendarEvent<T> event;
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
@@ -19,7 +20,7 @@ class MultiDayEventTile<T extends Object?> extends StatefulWidget {
   const MultiDayEventTile({
     super.key,
     required this.eventsController,
-    required this.viewController,
+    required this.controller,
     required this.event,
     required this.tileComponents,
     required this.dayWidth,
@@ -37,10 +38,11 @@ enum ResizeDirection {
   none,
 }
 
-class _MultiDayEventTileState<T extends Object?>
-    extends State<MultiDayEventTile<T>> {
+class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile<T>> {
   EventsController<T> get eventsController => widget.eventsController;
-  ViewController<T> get viewController => widget.viewController;
+  CalendarController<T> get controller => widget.controller;
+  ViewController<T> get viewController => controller.viewController!;
+
   CalendarEvent<T> get event => widget.event;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
@@ -48,15 +50,14 @@ class _MultiDayEventTileState<T extends Object?>
   bool get allowResizing => widget.allowResizing;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
-    return viewController.eventBeingDragged;
+    return widget.controller.eventBeingDragged;
   }
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
   }
 
-  ValueNotifier<ResizeDirection> resizingDirection =
-      ValueNotifier(ResizeDirection.none);
+  ValueNotifier<ResizeDirection> resizingDirection = ValueNotifier(ResizeDirection.none);
 
   @override
   Widget build(BuildContext context) {
@@ -107,23 +108,20 @@ class _MultiDayEventTileState<T extends Object?>
               },
             );
 
-            final isDragging = viewController.draggingEventId == event.id;
+            final isDragging = controller.draggingEventId == event.id;
             late final draggableTile = Draggable<CalendarEvent<T>>(
               data: widget.event,
               feedback: feedback,
               childWhenDragging: dragComponent,
               dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-              child: isDragging && dragComponent != null
-                  ? dragComponent
-                  : tileComponent,
+              child: isDragging && dragComponent != null ? dragComponent : tileComponent,
             );
 
             final tileWidget = GestureDetector(
               onTap: onTap != null
                   ? () {
                       // Find the global position and size of the tile.
-                      final renderObject =
-                          context.findRenderObject()! as RenderBox;
+                      final renderObject = context.findRenderObject()! as RenderBox;
                       onTap.call(widget.event, renderObject);
                     }
                   : null,

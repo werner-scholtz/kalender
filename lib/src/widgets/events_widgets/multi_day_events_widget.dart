@@ -3,14 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_group_layout_delegate.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
-
 import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
-  final ViewController<T> viewController;
+  final CalendarController<T> calendarController;
+
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
@@ -23,8 +22,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     super.key,
     required this.visibleDateTimeRange,
     required this.eventsController,
+    required this.calendarController,
     required this.tileComponents,
-    required this.viewController,
     required this.dayWidth,
     required this.allowResizing,
     required this.showAllEvents,
@@ -55,7 +54,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             child: MultiDayEventTile<T>(
               event: event,
               eventsController: eventsController,
-              viewController: viewController,
+              controller: calendarController,
               tileComponents: tileComponents,
               dayWidth: dayWidth,
               allowResizing: allowResizing,
@@ -73,7 +72,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         );
 
         final dropTarget = ValueListenableBuilder(
-          valueListenable: viewController.eventBeingDragged,
+          valueListenable: calendarController.eventBeingDragged,
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
             if (!showAllEvents && !event.isMultiDayEvent) {

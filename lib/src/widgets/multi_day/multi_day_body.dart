@@ -57,7 +57,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.components,
-    required this.componentStyles,
+    this.componentStyles,
     this.scrollController,
     this.heightPerMinute,
     this.configuration,
@@ -100,7 +100,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final eventBeingDragged = viewController.eventBeingDragged;
+    final eventBeingDragged = calendarController.eventBeingDragged;
     final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
 
     // Override the height per minute if it is provided.
@@ -212,8 +212,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
                   final events = DayEventsWidget<T>(
                     eventsController: eventsController!,
+                    calendarController: calendarController!,
                     callbacks: callbacks,
-                    viewController: viewController,
                     tileComponents: tileComponents,
                     bodyConfiguration: bodyConfiguration,
                     dayWidth: dayWidth,
@@ -256,7 +256,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
             final dragTarget = DayDragTarget<T>(
               eventsController: eventsController!,
-              viewController: viewController,
+              calendarController: calendarController!,
               scrollController: viewController.scrollController,
               callbacks: callbacks,
               tileComponents: tileComponents,

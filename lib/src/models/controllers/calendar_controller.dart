@@ -21,6 +21,16 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The [CalendarEvent]s that are currently visible.
   ValueNotifier<List<CalendarEvent<T>>> visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
 
+  /// The event being dragged.
+  ValueNotifier<CalendarEvent<T>?> eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
+  int? draggingEventId;
+
+  /// The selected event.
+  ///
+  /// This is used to keep track of the selected event on mobile.
+  ValueNotifier<CalendarEvent<T>?> selectedEventMobile = ValueNotifier<CalendarEvent<T>?>(null);
+  int? selectedEventId;
+
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
   }

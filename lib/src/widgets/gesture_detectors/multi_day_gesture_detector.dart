@@ -7,8 +7,8 @@ import 'package:kalender/src/platform.dart';
 
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
+  final CalendarController<T> controller;
   final CalendarCallbacks<T>? callbacks;
-  final ViewController<T> viewController;
   final DateTimeRange visibleDateTimeRange;
   final CreateEventTrigger createEventTrigger;
   final double dayWidth;
@@ -16,8 +16,8 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   const MultiDayGestureDetector({
     super.key,
     required this.eventsController,
+    required this.controller,
     required this.callbacks,
-    required this.viewController,
     required this.visibleDateTimeRange,
     required this.createEventTrigger,
     required this.dayWidth,
@@ -29,14 +29,15 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
 
 class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGestureDetector<T>> {
   EventsController<T> get eventsController => widget.eventsController;
-  ViewController<T> get viewController => widget.viewController;
+  CalendarController<T> get controller => widget.controller;
+  ViewController<T> get viewController => controller.viewController!;
   CreateEventTrigger get createEventTrigger => widget.createEventTrigger;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
 
   double get dayWidth => widget.dayWidth;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
-    return viewController.eventBeingDragged;
+    return controller.eventBeingDragged;
   }
 
   DateTime? start;

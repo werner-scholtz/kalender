@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
-  final ViewController<T> viewController;
+  final EventsController<T> eventsController;
+  final CalendarController<T> calendarController;
+  final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
   final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
@@ -22,7 +23,9 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
   const MultiDayDragTarget({
     super.key,
-    required this.viewController,
+    required this.eventsController,
+    required this.calendarController,
+    required this.callbacks,
     required this.tileComponents,
     required this.pageTriggerSetup,
     required this.visibleDateTimeRange,
@@ -39,16 +42,16 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> {
-  CalendarProvider<T> get provider => CalendarProvider.of<T>(context);
-  EventsController<T> get eventsController => provider.eventsController;
-  CalendarCallbacks<T>? get callbacks => provider.callbacks;
-  ViewController<T> get viewController => widget.viewController;
+  EventsController<T> get eventsController => widget.eventsController;
+  CalendarController<T> get controller => widget.calendarController;
+  ViewController<T> get viewController => controller.viewController!;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
   ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
-    return viewController.eventBeingDragged;
+    return controller.eventBeingDragged;
   }
 
   ValueNotifier<Size> get feedbackWidgetSize {
@@ -149,7 +152,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
         // Update the event being dragged.
         eventBeingDragged.value = updatedEvent;
-        viewController.draggingEventId = event.id;
+        controller.draggingEventId = event.id;
       },
       onAcceptWithDetails: (details) {
         final event = details.data;
@@ -164,12 +167,12 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
         widgetPosition = null;
         eventsController.feedbackWidgetSize.value = Size.zero;
         eventBeingDragged.value = null;
-        viewController.draggingEventId = null;
+        controller.draggingEventId = null;
       },
       onLeave: (data) {
         widgetPosition = null;
         eventBeingDragged.value = null;
-        viewController.draggingEventId = null;
+        controller.draggingEventId = null;
       },
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.

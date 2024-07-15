@@ -9,10 +9,12 @@ import 'package:kalender/src/widgets/components/resize_detector.dart';
 
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
 class DayEventTile<T extends Object?> extends StatefulWidget {
-  final CalendarEvent<T> event;
   final EventsController<T> eventsController;
+  final CalendarController<T> controller;
+
+  final CalendarEvent<T> event;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayViewController<T> viewController;
+
   final TileComponents<T> tileComponents;
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
   final MultiDayBodyConfiguration bodyConfiguration;
@@ -25,8 +27,8 @@ class DayEventTile<T extends Object?> extends StatefulWidget {
     super.key,
     required this.event,
     required this.eventsController,
+    required this.controller,
     required this.callbacks,
-    required this.viewController,
     required this.tileComponents,
     required this.eventBeingDragged,
     required this.bodyConfiguration,
@@ -47,10 +49,11 @@ enum ResizeDirection {
 }
 
 class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with SnapPoints {
-  CalendarEvent<T> get event => widget.event;
-
   EventsController<T> get eventsController => widget.eventsController;
-  ViewController<T> get viewController => widget.viewController;
+  CalendarController<T> get controller => widget.controller;
+  ViewController<T> get viewController => controller.viewController!;
+
+  CalendarEvent<T> get event => widget.event;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
@@ -60,8 +63,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
   double get dayWidth => widget.dayWidth;
   double get heightPerMinute => widget.heightPerMinute;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => viewController.eventBeingDragged;
-
+  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
   ValueNotifier<ResizeDirection> resizingDirection = ValueNotifier(ResizeDirection.none);
 
   @override
@@ -115,7 +117,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
               },
             );
 
-            final isDragging = viewController.draggingEventId == event.id;
+            final isDragging = controller.draggingEventId == event.id;
             late final draggableTile = Draggable<CalendarEvent<T>>(
               data: widget.event,
               feedback: feedback,

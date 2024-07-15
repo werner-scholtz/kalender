@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
@@ -10,8 +9,9 @@ import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 /// The [EventGroup]s events are then rendered using the [DayEventTile].
 class DayEventsWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
+  final CalendarController<T> calendarController;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayViewController<T> viewController;
+
   final TileComponents<T> tileComponents;
   final MultiDayBodyConfiguration bodyConfiguration;
   final DateTimeRange visibleDateTimeRange;
@@ -23,8 +23,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   const DayEventsWidget({
     super.key,
     required this.eventsController,
+    required this.calendarController,
     required this.callbacks,
-    required this.viewController,
     required this.tileComponents,
     required this.bodyConfiguration,
     required this.dayWidth,
@@ -38,7 +38,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
-    final eventBeingDragged = viewController.eventBeingDragged;
+    final eventBeingDragged = calendarController.eventBeingDragged;
 
     return ListenableBuilder(
       listenable: eventsController,
@@ -83,7 +83,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         );
 
         /// Set the visible events on the view controller.
-        viewController.visibleEvents.value = visibleEvents.toList();
+        calendarController.visibleEvents.value = visibleEvents.toList();
 
         // Create the event groups for the visible events.
         final eventGroups = _createEventGroups(visibleDates, visibleEvents);
@@ -97,8 +97,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           child: (event) => DayEventTile(
             event: event,
             eventsController: eventsController,
+            controller: calendarController,
             callbacks: callbacks,
-            viewController: viewController,
             tileComponents: tileComponents,
             eventBeingDragged: eventBeingDragged,
             bodyConfiguration: bodyConfiguration,
