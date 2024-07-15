@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/components/tile_components.dart';

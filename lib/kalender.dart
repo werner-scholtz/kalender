@@ -32,6 +32,8 @@ export 'package:kalender/src/models/components/tile_components.dart';
 export 'package:kalender/src/models/components/multi_day_components.dart';
 export 'package:kalender/src/models/components/month_components.dart';
 
+export 'package:kalender/src/models/calendar_callbacks.dart';
+
 /// View Configurations
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
