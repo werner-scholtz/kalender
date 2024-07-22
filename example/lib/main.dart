@@ -189,18 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
       dragAnchorStrategy: dragAnchorStrategy,
-      verticalResizeHandle: Container(
-        decoration: const BoxDecoration(
-          color: Colors.red,
-          shape: BoxShape.circle,
-        ),
-      ),
-      horizontalResizeHandle: Container(
-        decoration: const BoxDecoration(
-          color: Colors.red,
-          shape: BoxShape.rectangle,
-        ),
-      ),
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
     );
   }
 

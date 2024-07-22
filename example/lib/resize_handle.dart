@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class VerticalResizeHandle extends StatefulWidget {
@@ -13,12 +15,19 @@ class _VerticalResizeHandleState extends State<VerticalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = hovering
-        ? theme.colorScheme.onSurface.withOpacity(0.5)
-        : Colors.transparent;
+    final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 8)
         : const EdgeInsets.symmetric(vertical: 4, horizontal: 32);
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
+      );
+    }
 
     return MouseRegion(
       cursor: SystemMouseCursors.resizeUp,
@@ -54,9 +63,7 @@ class _HorizontalResizeHandleState extends State<HorizontalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = hovering
-        ? theme.colorScheme.onSurface.withOpacity(0.5)
-        : Colors.transparent;
+    final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 4)
         : const EdgeInsets.symmetric(vertical: 8, horizontal: 8);
