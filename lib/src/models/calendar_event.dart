@@ -48,12 +48,10 @@ class CalendarEvent<T extends Object?> {
     final rangeEnd = dateTimeRange.end;
 
     // Check if the event starts before the range and ends after the range.
-    final startsBeforeEndsAfter =
-        (start.isBefore(rangeStart) && end.isAfter(rangeEnd));
+    final startsBeforeEndsAfter = (start.isBefore(rangeStart) && end.isAfter(rangeEnd));
 
     // Check if the event is within the range.
-    final isWithin =
-        start.isWithin(dateTimeRange) || end.isWithin(dateTimeRange);
+    final isWithin = start.isWithin(dateTimeRange) || end.isWithin(dateTimeRange);
 
     // Check if the start or end of the event is equal to the start or end of the range.
     final startOrEndEquals = start == rangeStart || end == rangeEnd;

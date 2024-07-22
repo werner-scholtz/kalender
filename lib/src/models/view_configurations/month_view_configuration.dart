@@ -16,7 +16,7 @@ class MonthViewConfiguration extends ViewConfiguration {
           'Use DateTime.monday ~ DateTime.sunday if unsure.',
         );
 
-  MonthViewConfiguration.month({
+  MonthViewConfiguration.singleMonth({
     super.name = 'Month',
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// Modified to fit the needs of the calendar header.
 class ExpandablePageView extends StatefulWidget {
   final int itemCount;
-  final Widget Function(BuildContext, int) itemBuilder;
+  final Widget Function(BuildContext context, int index) itemBuilder;
   final PageController controller;
 
   const ExpandablePageView({

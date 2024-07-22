@@ -256,10 +256,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             final dragTarget = DayDragTarget<T>(
               eventsController: eventsController!,
               calendarController: calendarController!,
+              viewController: viewController,
               scrollController: viewController.scrollController,
               callbacks: callbacks,
               tileComponents: tileComponents,
-              eventBeingDragged: eventBeingDragged,
               bodyConfiguration: bodyConfiguration,
               timeOfDayRange: timeOfDayRange,
               pageWidth: pageWidth,

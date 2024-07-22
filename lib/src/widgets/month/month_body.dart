@@ -170,9 +170,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                             children: [
                               Positioned.fill(child: gestureDetector),
                               ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  minHeight: weekHeight - 32,
-                                ),
+                                constraints: BoxConstraints(minHeight: weekHeight - 32),
                                 child: multiDayEvents,
                               ),
                               Positioned.fill(child: multiDayDragTarget),
