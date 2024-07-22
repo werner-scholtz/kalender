@@ -15,8 +15,6 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The callbacks used by the [CalendarBody].
   final CalendarCallbacks<T>? callbacks;
 
-  /// MultiDay
-
   /// The tile components used by the [MultiDayBody].
   final TileComponents<T> multiDayTileComponents;
 
@@ -28,8 +26,6 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
-
-  /// Month
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
   final TileComponents<T> monthTileComponents;

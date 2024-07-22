@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 
-
 /// The component builders used by the [MonthBody].
 ///
 /// - Using these will override the respective default components.
@@ -19,7 +18,6 @@ class MonthBodyComponents {
   });
 }
 
-
 /// The component builders used by the [MonthHeader].
 ///
 /// - Using these will override the respective default components.
@@ -30,4 +28,3 @@ class MonthHeaderComponents {
     this.weekDayHeaderBuilder,
   });
 }
-

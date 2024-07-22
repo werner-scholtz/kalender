@@ -21,6 +21,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The body widget that will be displayed below the header.
   final Widget? body;
 
+  /// Creates a [CalendarView] widget.
   const CalendarView({
     super.key,
     required this.eventsController,
@@ -36,12 +37,14 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 }
 
 class _CalendarViewState<T> extends State<CalendarView<T>> {
+  /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController<T> _viewController;
 
   @override
   void initState() {
     super.initState();
     _viewController = _createViewController();
+    // Attach the view controller when the widget is initialized.
     widget.calendarController.attach(_viewController);
   }
 
@@ -49,6 +52,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   void didUpdateWidget(covariant CalendarView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
       setState(() {
         _viewController = _createViewController();
@@ -60,15 +64,18 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   @override
   void deactivate() {
     super.deactivate();
+    // Detach the view controller when the widget is deactivated.
     widget.calendarController.detach();
   }
 
   @override
   void activate() {
     super.activate();
+    // Reattach the view controller when the widget is reactivated.
     widget.calendarController.attach(_viewController);
   }
 
+  /// Create the [ViewController] based on the [ViewConfiguration].
   ViewController<T> _createViewController() {
     final viewConfiguration = widget.viewConfiguration;
 
