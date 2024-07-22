@@ -3,6 +3,7 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
+import 'package:kalender/src/models/resize_event.dart';
 
 class CalendarController<T extends Object?> extends ChangeNotifier
     with CalendarNavigationFunctions<T> {
@@ -21,9 +22,18 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The [CalendarEvent]s that are currently visible.
   ValueNotifier<List<CalendarEvent<T>>> visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
 
-  /// The event being dragged.
+  /// The event being modified.
   ValueNotifier<CalendarEvent<T>?> eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
-  int? draggingEventId;
+  int? _eventBeingDraggedId;
+  int? get eventBeingDraggedId => _eventBeingDraggedId;
+
+  ValueNotifier<ResizeEvent<T>?> eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
+
+  void onDragEnd() {
+    eventBeingResized.value = null;
+    eventBeingDragged.value = null;
+    _eventBeingDraggedId = null;
+  }
 
   /// The selected event.
   ///

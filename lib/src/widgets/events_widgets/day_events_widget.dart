@@ -39,6 +39,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
     final eventBeingDragged = calendarController.eventBeingDragged;
+    final eventBeingResized = calendarController.eventBeingResized;
 
     return ListenableBuilder(
       listenable: eventsController,
@@ -49,6 +50,41 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           builder: (context, event, child) {
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();
+
+            if (!showMultiDayEvents && event.isMultiDayEvent) {
+              return const SizedBox();
+            }
+
+            // Create a list of event groups that will be used to render the event.
+            final chainingEventGroups = _createEventGroups(
+              visibleDates,
+              [event],
+            );
+
+            final eventGroups = _generateEventGroups(
+              groups: chainingEventGroups,
+              dayWidth: dayWidth,
+              heightPerMinute: heightPerMinute,
+              timeOfDayRange: timeOfDayRange,
+              visibleDates: visibleDates,
+              child: tileComponents.dropTargetTile?.call,
+              layoutStrategy: layoutStrategy,
+            );
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [...eventGroups],
+            );
+          },
+        );
+
+        final resizeDropTargetWidget = ValueListenableBuilder(
+          valueListenable: eventBeingResized,
+          builder: (context, resizeEvent, child) {
+            // If there is no event being dragged, return an empty widget.
+            if (resizeEvent == null) return const SizedBox();
+            final event = resizeEvent.event;
+
             if (!showMultiDayEvents && event.isMultiDayEvent) {
               return const SizedBox();
             }
@@ -100,7 +136,6 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
             controller: calendarController,
             callbacks: callbacks,
             tileComponents: tileComponents,
-            eventBeingDragged: eventBeingDragged,
             bodyConfiguration: bodyConfiguration,
             visibleDateTimeRange: visibleDateTimeRange,
             timeOfDayRange: timeOfDayRange,
@@ -114,6 +149,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           children: [
             ...eventGroupWidgets,
             dropTargetWidget,
+            resizeDropTargetWidget,
           ],
         );
       },
