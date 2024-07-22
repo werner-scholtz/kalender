@@ -56,7 +56,6 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
               eventsController: eventsController,
               controller: calendarController,
               tileComponents: tileComponents,
-        
               allowResizing: allowResizing,
               callbacks: callbacks,
             ),
@@ -71,6 +70,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [...children],
         );
 
+        /// TODO: extract this to a separate widget
         final rescheduleDropTarget = ValueListenableBuilder(
           valueListenable: calendarController.eventBeingDragged,
           builder: (context, event, child) {
@@ -103,6 +103,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           },
         );
 
+        /// TODO: extract this to a separate widget
         final resizeDropTarget = ValueListenableBuilder(
           valueListenable: calendarController.eventBeingResized,
           builder: (context, resizeEvent, child) {

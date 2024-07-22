@@ -44,6 +44,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
+        /// TODO: extract this to a separate widget
         // Create the widget that displays the event being dragged.
         final dropTargetWidget = ValueListenableBuilder(
           valueListenable: eventBeingDragged,
@@ -78,6 +79,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           },
         );
 
+        /// TODO: extract this to a separate widget
         final resizeDropTargetWidget = ValueListenableBuilder(
           valueListenable: eventBeingResized,
           builder: (context, resizeEvent, child) {
