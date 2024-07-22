@@ -20,13 +20,14 @@ class ExpandablePageView extends StatefulWidget {
 
 class _ExpandablePageViewState extends State<ExpandablePageView> {
   late List<double> _heights;
-  int _currentPage = 0;
+  late int _currentPage;
   double get _currentHeight => _heights[_currentPage];
 
   @override
   void initState() {
     super.initState();
     _heights = List.filled(widget.itemCount, 80, growable: true);
+    _currentPage = widget.controller.initialPage;
     widget.controller.addListener(_updatePage);
   }
 
@@ -59,7 +60,12 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       maxHeight: double.infinity,
       alignment: Alignment.topCenter,
       child: SizeReportingWidget(
-        onSizeChange: (size) => setState(() => _heights[index] = size.height),
+        onSizeChange: (size) {
+          setState(() => _heights[index] = size.height);
+          print('____');
+          print(_currentPage);
+          print(_currentHeight);
+        },
         child: item,
       ),
     );
@@ -114,6 +120,7 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
     final context = _widgetKey.currentContext;
     if (context == null) return;
     final size = context.size;
+
     if (_oldSize != size && size != null) {
       _oldSize = size;
       widget.onSizeChange(size);
