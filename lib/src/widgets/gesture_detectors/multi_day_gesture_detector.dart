@@ -50,7 +50,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     if (isMobileDevice && eventBeingModified.value != null) {
       eventBeingModified.value = null;
     } else {
-      modify.onStart(CalendarEvent(dateTimeRange: dateTimeRange));
+      modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
     }
   }
 
@@ -69,7 +69,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
         ? DateTimeRange(start: currentDate, end: start!)
         : DateTimeRange(start: start!, end: currentDate);
 
-    modify.onUpdate(CalendarEvent(dateTimeRange: dateTimeRange));
+    modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
   }
 
   void onEnd() {
@@ -78,12 +78,12 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     if (newEvent == null) return;
     eventsController.addEvent(newEvent);
     callbacks?.onEventCreated?.call(newEvent);
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   void onCanceled() {
     start = null;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   DateTimeRange? _calculateDateTimeRange(Offset position) {

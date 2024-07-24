@@ -163,11 +163,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       final updatedEvent = _rescheduleEvent(data, details.offset);
       if (updatedEvent == null) return;
 
-      modify.onUpdate(updatedEvent);
+      modify.selectEvent(updatedEvent);
     } else if (data is ResizeEvent<T>) {
       final updatedEvent = _resizeEvent(data, details.offset);
       if (updatedEvent == null) return;
-      modify.onUpdate(updatedEvent);
+      modify.selectEvent(updatedEvent);
     }
   }
 
@@ -192,12 +192,12 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     eventsController.feedbackWidgetSize.value = Size.zero;
     widgetPosition = null;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   void _updateWidgetPosition() {

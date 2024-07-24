@@ -33,7 +33,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The event currently being modified.
   ValueNotifier<CalendarEvent<T>?> get eventBeingModified => eventModification.eventBeingModified;
 
-
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
   }
@@ -167,21 +166,11 @@ class EventModification<T> {
   final eventBeingModified = ValueNotifier<CalendarEvent<T>?>(null);
   int? get eventBeingDraggedId => eventBeingModified.value?.id;
 
-  /// The selected event.
-  ///
-  /// This is used to keep track of the selected event on mobile.
-  ValueNotifier<CalendarEvent<T>?> selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
-
-
-  void onStart(CalendarEvent<T> event) {
+  void selectEvent(CalendarEvent<T> event) {
     eventBeingModified.value = event;
   }
 
-  void onUpdate(CalendarEvent<T> event) {
-    eventBeingModified.value = event;
-  }
-
-  void onEnd() {
+  void deselectEvent() {
     eventBeingModified.value = null;
   }
 }

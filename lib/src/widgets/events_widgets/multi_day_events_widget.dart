@@ -70,7 +70,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [...children],
         );
 
-        final rescheduleDropTarget = ValueListenableBuilder(
+        final dropTargetWidget = ValueListenableBuilder(
           valueListenable: calendarController.eventModification.eventBeingModified,
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
@@ -104,8 +104,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
 
         return Stack(
           children: [
+            dropTargetWidget,
             multiDayEventsWidget,
-            rescheduleDropTarget,
           ],
         );
       },

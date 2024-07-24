@@ -48,7 +48,6 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         final dropTargetWidget = ValueListenableBuilder(
           valueListenable: eventBeingModified,
           builder: (context, event, child) {
-            print('droptarget');
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();
 
@@ -68,8 +67,6 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               child: tileComponents.dropTargetTile?.call,
               layoutStrategy: layoutStrategy,
             );
-
-            print('render');
 
             return Stack(
               fit: StackFit.expand,
@@ -113,8 +110,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         return Stack(
           fit: StackFit.expand,
           children: [
-            ...eventGroupWidgets,
             dropTargetWidget,
+            ...eventGroupWidgets,
           ],
         );
       },

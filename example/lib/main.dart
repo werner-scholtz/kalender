@@ -98,6 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
+          callbacks: CalendarCallbacks(onEventTapped: (event, renderBox) {
+            calendarController.eventModification.selectEvent(event);
+          }),
           header: _header(),
           body: _body(),
         ),

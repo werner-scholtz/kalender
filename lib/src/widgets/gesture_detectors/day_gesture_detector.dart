@@ -53,7 +53,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     if (isMobileDevice && eventBeingModified.value != null) {
       eventBeingModified.value = null;
     } else {
-      modify.onStart(CalendarEvent(dateTimeRange: dateTimeRange));
+      modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
     }
   }
 
@@ -74,7 +74,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       dateTimeRange = _clampDateTimeRange(dateTimeRange, start);
     }
 
-    modify.onUpdate(CalendarEvent(dateTimeRange: dateTimeRange));
+    modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
   }
 
   DateTimeRange _clampDateTimeRange(
@@ -102,12 +102,12 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
     eventsController.addEvent(newEvent);
     callbacks?.onEventCreated?.call(newEvent);
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   void onCanceled() {
     start = null;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   DateTimeRange? _calculateDateTimeRange(Offset position) {

@@ -242,14 +242,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       if (updatedEvent == null) return;
 
       // Update the event being dragged.
-      modify.onUpdate(updatedEvent);
+      modify.selectEvent(updatedEvent);
     } else if (details.data is ResizeEvent<T>) {
       final resizeEvent = details.data as ResizeEvent<T>;
 
       final updatedEvent = _resizeEvent(resizeEvent, details.offset);
       if (updatedEvent == null) return;
 
-      modify.onUpdate(updatedEvent);
+      modify.selectEvent(updatedEvent);
     }
   }
 
@@ -274,12 +274,12 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     widgetPosition = null;
     eventsController.feedbackWidgetSize.value = Size.zero;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    modify.onEnd();
+    modify.deselectEvent();
   }
 
   /// Calculate the [DateTime] of the cursor.

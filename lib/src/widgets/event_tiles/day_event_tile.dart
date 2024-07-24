@@ -58,7 +58,6 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
 
   EventModification<T> get modify => controller.eventModification;
   ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
-  ValueNotifier<CalendarEvent<T>?> get selectedEvent => modify.selectedEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +77,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.onStart(event),
+          onDragStarted: () => modify.selectEvent(event),
         );
 
         // TODO: Check if the event continues after, if it does do not show the resize handle.
@@ -88,7 +87,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.onStart(event),
+          onDragStarted: () => modify.selectEvent(event),
         );
 
         late final feedback = ValueListenableBuilder(
@@ -103,24 +102,30 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
         );
 
         final isDragging = modify.eventBeingDraggedId == event.id;
-        late final draggableTile = Draggable<CalendarEvent<T>>(
-          data: widget.event,
-          feedback: feedback,
-          childWhenDragging: dragComponent,
-          dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-          child: isDragging && dragComponent != null ? dragComponent : tileComponent,
-        );
+        late final draggableTile = isMobileDevice
+            ? LongPressDraggable(
+                data: widget.event,
+                feedback: feedback,
+                childWhenDragging: dragComponent,
+                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+              )
+            : Draggable<CalendarEvent<T>>(
+                data: widget.event,
+                feedback: feedback,
+                childWhenDragging: dragComponent,
+                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+              );
 
         final tileWidget = GestureDetector(
-          onTap: () {
-            if (isMobileDevice) selectedEvent.value = event;
-
-            if (onTap != null) {
-              // Find the global position and size of the tile.
-              final renderObject = context.findRenderObject()! as RenderBox;
-              onTap.call(widget.event, renderObject);
-            }
-          },
+          onTap: onTap != null
+              ? () {
+                  // Find the global position and size of the tile.
+                  final renderObject = context.findRenderObject()! as RenderBox;
+                  onTap.call(widget.event, renderObject);
+                }
+              : null,
           child: bodyConfiguration.allowRescheduling ? draggableTile : tileComponent,
         );
 
@@ -144,7 +149,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   width: resizeHeight,
                   height: resizeHeight,
                   child: ValueListenableBuilder(
-                    valueListenable: selectedEvent,
+                    valueListenable: eventBeingModified,
                     builder: (context, value, child) {
                       if (value == event) return topResizeDetector;
                       return const SizedBox();
@@ -167,7 +172,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   width: resizeHeight,
                   height: resizeHeight,
                   child: ValueListenableBuilder(
-                    valueListenable: selectedEvent,
+                    valueListenable: eventBeingModified,
                     builder: (context, value, child) {
                       if (value == event) return bottomResizeDetector;
                       return const SizedBox();

@@ -67,7 +67,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.onStart(event),
+          onDragStarted: () => modify.selectEvent(event),
         );
 
         // TODO: Check if the event continues after, if it does do not show the resize handle.
@@ -77,7 +77,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.onStart(event),
+          onDragStarted: () => modify.selectEvent(event),
         );
 
         late final feedback = ValueListenableBuilder(
