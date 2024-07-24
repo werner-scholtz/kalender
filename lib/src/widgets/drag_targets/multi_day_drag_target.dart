@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
@@ -54,8 +53,9 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
-  ValueNotifier<ResizeEvent<T>?> get eventBeingResized => controller.eventBeingResized;
+
+  EventModification<T> get modify => controller.eventModification;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
@@ -163,13 +163,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       final updatedEvent = _rescheduleEvent(data, details.offset);
       if (updatedEvent == null) return;
 
-      // Update the event being dragged.
-      eventBeingDragged.value = updatedEvent;
+      modify.onUpdate(updatedEvent);
     } else if (data is ResizeEvent<T>) {
       final updatedEvent = _resizeEvent(data, details.offset);
       if (updatedEvent == null) return;
-
-      eventBeingResized.value = updatedEvent;
+      modify.onUpdate(updatedEvent);
     }
   }
 
@@ -183,7 +181,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       updatedEvent = _rescheduleEvent(data, details.offset);
     } else if (data is ResizeEvent<T>) {
       originalEvent = data.event;
-      updatedEvent = _resizeEvent(data, details.offset)?.event;
+      updatedEvent = _resizeEvent(data, details.offset);
     }
 
     if (updatedEvent == null || originalEvent == null) return;
@@ -194,12 +192,12 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     eventsController.feedbackWidgetSize.value = Size.zero;
     widgetPosition = null;
-    controller.onDragEnd();
+    modify.onEnd();
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    controller.onDragEnd();
+    modify.onEnd();
   }
 
   void _updateWidgetPosition() {
@@ -264,7 +262,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     return updatedEvent;
   }
 
-  ResizeEvent<T>? _resizeEvent(ResizeEvent<T> resizeEvent, Offset offset) {
+  CalendarEvent<T>? _resizeEvent(ResizeEvent<T> resizeEvent, Offset offset) {
     // Calculate the date of the cursor.
     final date = _calculateCursorDate(offset);
     if (date == null) return null;
@@ -282,6 +280,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       throw Exception('Invalid resize direction.');
     }
 
-    return resizeEvent.updateDateTimeRange(range);
+    return resizeEvent.event.copyWith(dateTimeRange: range);
   }
 }

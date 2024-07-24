@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/platform.dart';
 
 /// A [GestureDetector] that listens for gestures on a
@@ -37,13 +36,8 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   double get dayWidth => widget.dayWidth;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
-    return controller.eventBeingDragged;
-  }
-
-  ValueNotifier<CalendarEvent<T>?> get selectedEvent {
-    return controller.selectedEvent;
-  }
+  EventModification<T> get modify => controller.eventModification;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
 
   DateTime? start;
 
@@ -52,9 +46,12 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
     if (dateTimeRange == null) return;
     start = dateTimeRange.start;
-
-    eventBeingDragged.value = CalendarEvent(dateTimeRange: dateTimeRange);
-    selectedEvent.value = null;
+    
+    if (isMobileDevice && eventBeingModified.value != null) {
+      eventBeingModified.value = null;
+    } else {
+      modify.onStart(CalendarEvent(dateTimeRange: dateTimeRange));
+    }
   }
 
   void onUpdate(Offset localPosition) {
@@ -72,21 +69,21 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
         ? DateTimeRange(start: currentDate, end: start!)
         : DateTimeRange(start: start!, end: currentDate);
 
-    eventBeingDragged.value = CalendarEvent(dateTimeRange: dateTimeRange);
+    modify.onUpdate(CalendarEvent(dateTimeRange: dateTimeRange));
   }
 
   void onEnd() {
     start = null;
-    final newEvent = eventBeingDragged.value;
+    final newEvent = eventBeingModified.value;
     if (newEvent == null) return;
     eventsController.addEvent(newEvent);
     callbacks?.onEventCreated?.call(newEvent);
-    eventBeingDragged.value = null;
+    modify.onEnd();
   }
 
   void onCanceled() {
     start = null;
-    eventBeingDragged.value = null;
+    modify.onEnd();
   }
 
   DateTimeRange? _calculateDateTimeRange(Offset position) {

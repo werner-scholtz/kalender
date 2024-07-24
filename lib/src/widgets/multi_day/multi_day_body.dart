@@ -104,7 +104,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final eventBeingDragged = calendarController.eventBeingDragged;
+    final eventBeingDragged = calendarController.eventModification.eventBeingModified;
     final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
 
     // Override the height per minute if it is provided.

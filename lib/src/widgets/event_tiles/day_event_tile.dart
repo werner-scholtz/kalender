@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
@@ -57,7 +56,9 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
   double get dayWidth => widget.dayWidth;
   double get heightPerMinute => widget.heightPerMinute;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
+  EventModification<T> get modify => controller.eventModification;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
+  ValueNotifier<CalendarEvent<T>?> get selectedEvent => modify.selectedEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.eventBeingResized.value = topResizeEvent,
+          onDragStarted: () => modify.onStart(event),
         );
 
         // TODO: Check if the event continues after, if it does do not show the resize handle.
@@ -87,7 +88,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.eventBeingResized.value = bottomResizeEvent,
+          onDragStarted: () => modify.onStart(event),
         );
 
         late final feedback = ValueListenableBuilder(
@@ -101,7 +102,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           },
         );
 
-        final isDragging = controller.eventBeingDraggedId == event.id;
+        final isDragging = modify.eventBeingDraggedId == event.id;
         late final draggableTile = Draggable<CalendarEvent<T>>(
           data: widget.event,
           feedback: feedback,
@@ -111,17 +112,15 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
         );
 
         final tileWidget = GestureDetector(
-          onTap: onTap != null
-              ? () {
-                  // Find the global position and size of the tile.
-                  final renderObject = context.findRenderObject()! as RenderBox;
-                  onTap.call(widget.event, renderObject);
+          onTap: () {
+            if (isMobileDevice) selectedEvent.value = event;
 
-                  if (isMobileDevice) {
-                    controller.selectedEvent.value = event;
-                  }
-                }
-              : null,
+            if (onTap != null) {
+              // Find the global position and size of the tile.
+              final renderObject = context.findRenderObject()! as RenderBox;
+              onTap.call(widget.event, renderObject);
+            }
+          },
           child: bodyConfiguration.allowRescheduling ? draggableTile : tileComponent,
         );
 
@@ -145,7 +144,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   width: resizeHeight,
                   height: resizeHeight,
                   child: ValueListenableBuilder(
-                    valueListenable: controller.selectedEvent,
+                    valueListenable: selectedEvent,
                     builder: (context, value, child) {
                       if (value == event) return topResizeDetector;
                       return const SizedBox();
@@ -168,7 +167,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   width: resizeHeight,
                   height: resizeHeight,
                   child: ValueListenableBuilder(
-                    valueListenable: controller.selectedEvent,
+                    valueListenable: selectedEvent,
                     builder: (context, value, child) {
                       if (value == event) return bottomResizeDetector;
                       return const SizedBox();

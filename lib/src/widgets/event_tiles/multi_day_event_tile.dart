@@ -42,9 +42,8 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
   TileComponents<T> get tileComponents => widget.tileComponents;
   bool get allowResizing => widget.allowResizing;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged {
-    return widget.controller.eventBeingDragged;
-  }
+  EventModification<T> get modify => controller.eventModification;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
@@ -68,7 +67,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.eventBeingResized.value = leftResizeEvent,
+          onDragStarted: () => modify.onStart(event),
         );
 
         // TODO: Check if the event continues after, if it does do not show the resize handle.
@@ -78,7 +77,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.eventBeingResized.value = rightResizeEvent,
+          onDragStarted: () => modify.onStart(event),
         );
 
         late final feedback = ValueListenableBuilder(
@@ -92,7 +91,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           },
         );
 
-        final isDragging = controller.eventBeingDraggedId == event.id;
+        final isDragging = modify.eventBeingDraggedId == event.id;
         late final draggableTile = Draggable<CalendarEvent<T>>(
           data: widget.event,
           feedback: feedback,

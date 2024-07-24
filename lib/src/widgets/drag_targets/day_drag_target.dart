@@ -3,7 +3,6 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/extensions.dart';
 
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
@@ -74,10 +73,11 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   double get viewPortHeight => widget.viewPortHeight;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
 
-  ValueNotifier<CalendarEvent<T>?> get eventBeingDragged => controller.eventBeingDragged;
-  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
+  EventModification<T> get modify => controller.eventModification;
 
-  ValueNotifier<ResizeEvent<T>?> get eventBeingResized => controller.eventBeingResized;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => controller.eventBeingModified;
+
+  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   MultiDayViewConfiguration get viewConfiguration => viewController.viewConfiguration;
 
@@ -242,14 +242,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       if (updatedEvent == null) return;
 
       // Update the event being dragged.
-      eventBeingDragged.value = updatedEvent;
+      modify.onUpdate(updatedEvent);
     } else if (details.data is ResizeEvent<T>) {
       final resizeEvent = details.data as ResizeEvent<T>;
 
       final updatedEvent = _resizeEvent(resizeEvent, details.offset);
       if (updatedEvent == null) return;
 
-      eventBeingResized.value = updatedEvent;
+      modify.onUpdate(updatedEvent);
     }
   }
 
@@ -263,7 +263,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       updatedEvent = _rescheduleEvent(data, details.offset);
     } else if (data is ResizeEvent<T>) {
       originalEvent = data.event;
-      updatedEvent = _resizeEvent(data, details.offset)?.event;
+      updatedEvent = _resizeEvent(data, details.offset);
     }
 
     if (updatedEvent == null || originalEvent == null) return;
@@ -274,12 +274,12 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     widgetPosition = null;
     eventsController.feedbackWidgetSize.value = Size.zero;
-    controller.onDragEnd();
+    modify.onEnd();
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    controller.onDragEnd();
+    modify.onEnd();
   }
 
   /// Calculate the [DateTime] of the cursor.
@@ -391,7 +391,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   }
 
   /// Update the [ResizeEvent] based on the [Offset] delta.
-  ResizeEvent<T>? _resizeEvent(ResizeEvent<T> resizeEvent, Offset offset) {
+  CalendarEvent<T>? _resizeEvent(ResizeEvent<T> resizeEvent, Offset offset) {
     // Calculate the start time of the event.
     final cursorDateTime = _calculateCursorDateTime(offset);
     if (cursorDateTime == null) return null;
@@ -409,7 +409,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     /// TODO: add snapping.
 
-    return resizeEvent.updateDateTimeRange(dateTimeRange);
+    return resizeEvent.event.copyWith(dateTimeRange: dateTimeRange);
   }
 
   /// Update the snap points.

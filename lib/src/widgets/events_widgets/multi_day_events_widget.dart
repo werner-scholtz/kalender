@@ -70,46 +70,10 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [...children],
         );
 
-        /// TODO: extract this to a separate widget
         final rescheduleDropTarget = ValueListenableBuilder(
-          valueListenable: calendarController.eventBeingDragged,
+          valueListenable: calendarController.eventModification.eventBeingModified,
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
-            if (!showAllEvents && !event.isMultiDayEvent) {
-              return const SizedBox();
-            }
-
-            if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) {
-              return const SizedBox();
-            }
-
-            final group = MultiDayEventGroup(
-              events: [event],
-              dateTimeRange: visibleDateTimeRange,
-            );
-
-            return CustomMultiChildLayout(
-              delegate: MultiDayEventsDefaultLayoutDelegate(
-                group: group,
-                multiDayTileHeight: tileHeight,
-              ),
-              children: [
-                LayoutId(
-                  id: 0,
-                  child: tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
-                ),
-              ],
-            );
-          },
-        );
-
-        /// TODO: extract this to a separate widget
-        final resizeDropTarget = ValueListenableBuilder(
-          valueListenable: calendarController.eventBeingResized,
-          builder: (context, resizeEvent, child) {
-            if (resizeEvent == null) return const SizedBox();
-            final event = resizeEvent.event;
-
             if (!showAllEvents && !event.isMultiDayEvent) {
               return const SizedBox();
             }
@@ -142,7 +106,6 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [
             multiDayEventsWidget,
             rescheduleDropTarget,
-            resizeDropTarget,
           ],
         );
       },

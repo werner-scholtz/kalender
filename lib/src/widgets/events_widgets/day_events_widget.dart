@@ -38,24 +38,21 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
-    final eventBeingDragged = calendarController.eventBeingDragged;
-    final eventBeingResized = calendarController.eventBeingResized;
+    final eventModification = calendarController.eventModification;
+    final eventBeingModified = eventModification.eventBeingModified;
 
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
-        /// TODO: extract this to a separate widget
         // Create the widget that displays the event being dragged.
         final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: eventBeingDragged,
+          valueListenable: eventBeingModified,
           builder: (context, event, child) {
+            print('droptarget');
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();
 
-            if (!showMultiDayEvents && event.isMultiDayEvent) {
-              return const SizedBox();
-            }
-
+            if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
             // Create a list of event groups that will be used to render the event.
             final chainingEventGroups = _createEventGroups(
               visibleDates,
@@ -72,40 +69,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               layoutStrategy: layoutStrategy,
             );
 
-            return Stack(
-              fit: StackFit.expand,
-              children: [...eventGroups],
-            );
-          },
-        );
-
-        /// TODO: extract this to a separate widget
-        final resizeDropTargetWidget = ValueListenableBuilder(
-          valueListenable: eventBeingResized,
-          builder: (context, resizeEvent, child) {
-            // If there is no event being dragged, return an empty widget.
-            if (resizeEvent == null) return const SizedBox();
-            final event = resizeEvent.event;
-
-            if (!showMultiDayEvents && event.isMultiDayEvent) {
-              return const SizedBox();
-            }
-
-            // Create a list of event groups that will be used to render the event.
-            final chainingEventGroups = _createEventGroups(
-              visibleDates,
-              [event],
-            );
-
-            final eventGroups = _generateEventGroups(
-              groups: chainingEventGroups,
-              dayWidth: dayWidth,
-              heightPerMinute: heightPerMinute,
-              timeOfDayRange: timeOfDayRange,
-              visibleDates: visibleDates,
-              child: tileComponents.dropTargetTile?.call,
-              layoutStrategy: layoutStrategy,
-            );
+            print('render');
 
             return Stack(
               fit: StackFit.expand,
@@ -151,7 +115,6 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           children: [
             ...eventGroupWidgets,
             dropTargetWidget,
-            resizeDropTargetWidget,
           ],
         );
       },

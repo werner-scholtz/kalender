@@ -3,7 +3,6 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
-import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/calendar_view.dart';
 
 /// The [CalendarController] is used to controller a single [CalendarView].
@@ -21,7 +20,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
-
   /// The [DateTimeRange] that is currently visible.
   final visibleDateTimeRange = ValueNotifier<DateTimeRange>(
     DateTime.now().dayRange,
@@ -30,34 +28,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
 
-  /// The event being dragged.
-  final eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
-  int? _eventBeingDraggedId;
-  int? get eventBeingDraggedId => _eventBeingDraggedId;
+  final eventModification = EventModification<T>();
 
-  void onDragStart() {
-    //TODO:
-  }
+  /// The event currently being modified.
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => eventModification.eventBeingModified;
 
-  void onDragUpdate() {
-    //TODO:
-  }
-
-  void onDragEnd() {
-    eventBeingResized.value = null;
-    eventBeingDragged.value = null;
-    _eventBeingDraggedId = null;
-  }
-
-  /// The event being resized.
-  final eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
-
-
-  /// The selected event.
-  ///
-  /// This is used to keep track of the selected event on mobile.
-  ValueNotifier<CalendarEvent<T>?> selectedEvent =
-      ValueNotifier<CalendarEvent<T>?>(null);
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
@@ -184,5 +159,29 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   @override
   String toString() {
     return runtimeType.toString();
+  }
+}
+
+class EventModification<T> {
+  /// The event currently being modified.
+  final eventBeingModified = ValueNotifier<CalendarEvent<T>?>(null);
+  int? get eventBeingDraggedId => eventBeingModified.value?.id;
+
+  /// The selected event.
+  ///
+  /// This is used to keep track of the selected event on mobile.
+  ValueNotifier<CalendarEvent<T>?> selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
+
+
+  void onStart(CalendarEvent<T> event) {
+    eventBeingModified.value = event;
+  }
+
+  void onUpdate(CalendarEvent<T> event) {
+    eventBeingModified.value = event;
+  }
+
+  void onEnd() {
+    eventBeingModified.value = null;
   }
 }
