@@ -121,7 +121,13 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   bottom: 0,
                   left: 0,
                   width: resizeWidth,
-                  child: leftResize,
+                  child: ValueListenableBuilder(
+                    valueListenable: eventBeingModified,
+                    builder: (context, value, child) {
+                      if (value == null) return leftResize;
+                      return const SizedBox();
+                    },
+                  ),
                 ),
             if (allowResizing && event.canModify)
               if (!isMobileDevice)
@@ -130,7 +136,13 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   bottom: 0,
                   right: 0,
                   width: resizeWidth,
-                  child: rightResize,
+                  child: ValueListenableBuilder(
+                    valueListenable: eventBeingModified,
+                    builder: (context, value, child) {
+                      if (value == null) return rightResize;
+                      return const SizedBox();
+                    },
+                  ),
                 ),
           ],
         );

@@ -140,7 +140,13 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   left: 0,
                   right: 0,
                   height: resizeHeight,
-                  child: topResizeDetector,
+                  child: ValueListenableBuilder(
+                    valueListenable: eventBeingModified,
+                    builder: (context, value, child) {
+                      if (value == null) return topResizeDetector;
+                      return const SizedBox();
+                    },
+                  ),
                 )
               else
                 Positioned(
@@ -163,7 +169,13 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   left: 0,
                   right: 0,
                   height: resizeHeight,
-                  child: bottomResizeDetector,
+                  child: ValueListenableBuilder(
+                    valueListenable: eventBeingModified,
+                    builder: (context, value, child) {
+                      if (value == null) return bottomResizeDetector;
+                      return const SizedBox();
+                    },
+                  ),
                 )
               else
                 Positioned(
