@@ -40,5 +40,8 @@ export 'package:kalender/src/models/view_configurations/view_configuration.dart'
 export 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 
+/// View Controllers
+export 'package:kalender/src/models/controllers/view_controller.dart';
+
 /// Layout Delegates
 export 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
