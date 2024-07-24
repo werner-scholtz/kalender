@@ -5,6 +5,7 @@ import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/platform.dart';
 
+/// A [GestureDetector] that listens for gestures on a
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;

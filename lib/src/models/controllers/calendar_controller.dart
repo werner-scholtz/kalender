@@ -4,30 +4,38 @@ import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/models/resize_event.dart';
+import 'package:kalender/src/calendar_view.dart';
 
+/// The [CalendarController] is used to controller a single [CalendarView].
+/// It provides some useful functions for navigating the [CalendarView].
+///
+/// The [CalendarView] attaches itself to the [CalendarController] by calling [attach].
+/// And detaches itself by calling [detach].
+///
 class CalendarController<T extends Object?> extends ChangeNotifier
     with CalendarNavigationFunctions<T> {
   CalendarController();
 
-  /// TODO: Document this.
+  /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
   ViewController<T>? _viewController;
   ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
   /// The [DateTimeRange] that is currently visible.
-  ValueNotifier<DateTimeRange> visibleDateTimeRange = ValueNotifier<DateTimeRange>(
+  final visibleDateTimeRange = ValueNotifier<DateTimeRange>(
     DateTime.now().dayRange,
   );
 
   /// The [CalendarEvent]s that are currently visible.
-  ValueNotifier<List<CalendarEvent<T>>> visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+  final visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
 
-  /// The event being modified.
-  ValueNotifier<CalendarEvent<T>?> eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
+  /// The event being dragged.
+  final eventBeingDragged = ValueNotifier<CalendarEvent<T>?>(null);
   int? _eventBeingDraggedId;
   int? get eventBeingDraggedId => _eventBeingDraggedId;
 
-  ValueNotifier<ResizeEvent<T>?> eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
+  /// The event being resized.
+  final eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
 
   void onDragEnd() {
     eventBeingResized.value = null;
@@ -38,7 +46,8 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// The selected event.
   ///
   /// This is used to keep track of the selected event on mobile.
-  ValueNotifier<CalendarEvent<T>?> selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
+  ValueNotifier<CalendarEvent<T>?> selectedEvent =
+      ValueNotifier<CalendarEvent<T>?>(null);
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
@@ -59,11 +68,15 @@ class CalendarController<T extends Object?> extends ChangeNotifier
 
   /// Jump to the given [DateTime].
   @override
-  void jumpToPage(int page) {}
+  void jumpToPage(int page) {
+    // TODO: implement jumpToPage
+  }
 
   /// Jump to the given [DateTime].
   @override
-  void jumpToDate(DateTime date) {}
+  void jumpToDate(DateTime date) {
+    // TODO: implement jumpToDate
+  }
 
   /// Animate to the next page.
   ///
@@ -80,6 +93,10 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
+  /// Animate to the previous page.
+  ///
+  /// [duration] the [Duration] of the animation.
+  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToPreviousPage({
     Duration? duration,
@@ -91,6 +108,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
+  /// Animate to the date part of the given [DateTime].
+  ///
+  /// [date] the [DateTime] to animate to.
+  /// [duration] the [Duration] of the animation.
+  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToDate(
     DateTime date, {
@@ -104,6 +126,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
+  /// Animate to the date and time parts of the given [DateTime].
+  ///
+  /// [date] the [DateTime] to animate to.
+  /// [pageDuration] the [Duration] of the page animation.
+  /// [pageCurve] the [Curve] of the page animation.
+  /// [scrollDuration] the [Duration] of the scroll animation.
+  /// [scrollCurve] the [Curve] of the scroll animation.
   @override
   Future<void> animateToDateTime(
     DateTime date, {
@@ -121,6 +150,12 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     );
   }
 
+  /// Animate to the given [CalendarEvent].
+  ///
+  /// [event] the [CalendarEvent] to animate to.
+  /// [duration] the [Duration] of the animation.
+  /// [curve] the [Curve] of the animation.
+  /// [centerEvent] whether to center the event in the view.
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {

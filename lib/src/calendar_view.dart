@@ -13,6 +13,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [ViewConfiguration] that will be used by the [CalendarView].
   final ViewConfiguration viewConfiguration;
 
+  /// The [CalendarCallbacks] used by the [CalendarView]
   final CalendarCallbacks<T>? callbacks;
 
   /// The header widget that will be displayed above the body.
@@ -22,6 +23,9 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   final Widget? body;
 
   /// Creates a [CalendarView] widget.
+  ///
+  /// This widget creates a [ViewController] based on the [viewConfiguration].
+  /// It then attaches the [ViewController] to the [calendarController].
   const CalendarView({
     super.key,
     required this.eventsController,

@@ -19,14 +19,21 @@ class ExpandablePageView extends StatefulWidget {
 }
 
 class _ExpandablePageViewState extends State<ExpandablePageView> {
+  /// The heights of the items in the page view.
   late List<double> _heights;
+
+  /// The current page of the page view.
   late int _currentPage;
+
+  /// The current height of the page view.
   double get _currentHeight => _heights[_currentPage];
 
   @override
   void initState() {
     super.initState();
+    // Initialize the heights with a default value.
     _heights = List.filled(widget.itemCount, 80, growable: true);
+    
     _currentPage = widget.controller.initialPage;
     widget.controller.addListener(_updatePage);
   }
@@ -76,8 +83,13 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   }
 }
 
+
+/// This widget reports its size to the parent widget.
 class SizeReportingWidget extends StatefulWidget {
+  /// The child widget.
   final Widget child;
+
+  /// The callback that is called when the size of the widget changes.
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
@@ -91,12 +103,18 @@ class SizeReportingWidget extends StatefulWidget {
 }
 
 class _SizeReportingWidgetState extends State<SizeReportingWidget> {
+  /// The key of the widget.
   final _widgetKey = GlobalKey();
+
+  /// The old size of the widget.
   Size? _oldSize;
 
   @override
   Widget build(BuildContext context) {
+    // Notify the parent widget about the size after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
+    
+    // Listen for size changes.
     return NotificationListener<SizeChangedLayoutNotification>(
       onNotification: (_) {
         WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
@@ -116,6 +134,7 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
     if (context == null) return;
     final size = context.size;
 
+    // Notify the parent widget if the size has changed.
     if (_oldSize != size && size != null) {
       _oldSize = size;
       widget.onSizeChange(size);

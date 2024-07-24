@@ -5,14 +5,15 @@ import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-class CalendarBody<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [CalendarBody].
-  final EventsController<T>? eventsController;
 
-  /// The [CalendarController] that will be used by the [CalendarBody].
+/// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
+class CalendarBody<T extends Object?> extends StatelessWidget {
+  final EventsController<T>? eventsController;
   final CalendarController<T>? calendarController;
 
   /// The callbacks used by the [CalendarBody].
+  /// 
+  /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [MultiDayBody].
@@ -39,6 +40,14 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration? monthBodyConfiguration;
 
+
+  /// Creates a CalendarBody widget.
+  /// 
+  /// This creates the correct body based on the [ViewController] inside the [CalendarController]
+  /// - [MultiDayBody]
+  /// - [MonthBody]
+  /// - TODO: add schedule view.
+  /// 
   const CalendarBody({
     super.key,
     this.eventsController,
@@ -66,7 +75,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     );
 
     if (viewController is MultiDayViewController<T>) {
-      return MultiDayBody(
+      return MultiDayBody<T>(
         eventsController: eventsController,
         calendarController: calendarController,
         configuration: multiDayBodyConfiguration,
@@ -76,7 +85,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         componentStyles: multiDayBodyComponentStyles,
       );
     } else if (viewController is MonthViewController<T>) {
-      return MonthBody(
+      return MonthBody<T>(
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
