@@ -27,11 +27,28 @@ class CalendarController<T extends Object?> extends ChangeNotifier
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+ 
+  /// The event currently being focused on.
+  final selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
+  int? get selectedEventId => selectedEvent.value?.id;
 
-  final eventModification = EventModification<T>();
+  /// This is used to determine if focus on the event is coming from within the package or from outside. 
+  bool internalFocus = false;
 
-  /// The event currently being modified.
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => eventModification.eventBeingModified;
+  /// Place focus on an event.
+  /// 
+  /// [event] the event to focus on.
+  /// [internal] leave false if not called from within the package.
+  void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
+    selectedEvent.value = event;
+    internalFocus = internal;
+  }
+
+  /// Deselect the event.
+  void deselectEvent() {
+    selectedEvent.value = null;
+    internalFocus = false;
+  }
 
   bool isAttachedTo(ViewController viewController) {
     return viewController == _viewController;
@@ -158,19 +175,5 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   @override
   String toString() {
     return runtimeType.toString();
-  }
-}
-
-class EventModification<T> {
-  /// The event currently being modified.
-  final eventBeingModified = ValueNotifier<CalendarEvent<T>?>(null);
-  int? get eventBeingDraggedId => eventBeingModified.value?.id;
-
-  void selectEvent(CalendarEvent<T> event) {
-    eventBeingModified.value = event;
-  }
-
-  void deselectEvent() {
-    eventBeingModified.value = null;
   }
 }

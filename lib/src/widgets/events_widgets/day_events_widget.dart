@@ -38,15 +38,14 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
-    final eventModification = calendarController.eventModification;
-    final eventBeingModified = eventModification.eventBeingModified;
+    final selectedEvent = calendarController.selectedEvent;
 
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
         // Create the widget that displays the event being dragged.
         final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: eventBeingModified,
+          valueListenable: selectedEvent,
           builder: (context, event, child) {
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();

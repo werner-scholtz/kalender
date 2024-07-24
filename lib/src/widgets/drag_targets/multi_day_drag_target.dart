@@ -54,9 +54,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
 
-  EventModification<T> get modify => controller.eventModification;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
-
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
   }
@@ -163,11 +160,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       final updatedEvent = _rescheduleEvent(data, details.offset);
       if (updatedEvent == null) return;
 
-      modify.selectEvent(updatedEvent);
+      controller.selectEvent(updatedEvent, internal: true);
     } else if (data is ResizeEvent<T>) {
       final updatedEvent = _resizeEvent(data, details.offset);
       if (updatedEvent == null) return;
-      modify.selectEvent(updatedEvent);
+      controller.selectEvent(updatedEvent, internal: true);
     }
   }
 
@@ -188,16 +185,17 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
 
     eventsController.feedbackWidgetSize.value = Size.zero;
     widgetPosition = null;
-    modify.deselectEvent();
+    controller.deselectEvent();
+
+    callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    modify.deselectEvent();
+    controller.deselectEvent();
   }
 
   void _updateWidgetPosition() {

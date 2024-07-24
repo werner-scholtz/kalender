@@ -73,12 +73,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   double get viewPortHeight => widget.viewPortHeight;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
 
-  EventModification<T> get modify => controller.eventModification;
-
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => controller.eventBeingModified;
-
   ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
-
   MultiDayViewConfiguration get viewConfiguration => viewController.viewConfiguration;
 
   /// The position of the widget.
@@ -242,14 +237,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       if (updatedEvent == null) return;
 
       // Update the event being dragged.
-      modify.selectEvent(updatedEvent);
+      controller.selectEvent(updatedEvent, internal: true);
     } else if (details.data is ResizeEvent<T>) {
       final resizeEvent = details.data as ResizeEvent<T>;
 
       final updatedEvent = _resizeEvent(resizeEvent, details.offset);
       if (updatedEvent == null) return;
 
-      modify.selectEvent(updatedEvent);
+      controller.selectEvent(updatedEvent, internal: true);
     }
   }
 
@@ -270,16 +265,17 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
 
     widgetPosition = null;
     eventsController.feedbackWidgetSize.value = Size.zero;
-    modify.deselectEvent();
+    controller.deselectEvent();
+
+    callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }
 
   void _onLeave(Object? data) {
     widgetPosition = null;
-    modify.deselectEvent();
+    controller.deselectEvent();
   }
 
   /// Calculate the [DateTime] of the cursor.

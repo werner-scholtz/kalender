@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
 
@@ -42,8 +41,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
   TileComponents<T> get tileComponents => widget.tileComponents;
   bool get allowResizing => widget.allowResizing;
 
-  EventModification<T> get modify => controller.eventModification;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
+  ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
@@ -67,7 +65,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.selectEvent(event),
+          onDragStarted: () => controller.selectEvent(event, internal: true),
         );
 
         // TODO: Check if the event continues after, if it does do not show the resize handle.
@@ -77,7 +75,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => modify.selectEvent(event),
+          onDragStarted: () => controller.selectEvent(event, internal: true),
         );
 
         late final feedback = ValueListenableBuilder(
@@ -91,7 +89,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           },
         );
 
-        final isDragging = modify.eventBeingDraggedId == event.id;
+        final isDragging = controller.selectedEventId == event.id;
         late final draggableTile = Draggable<CalendarEvent<T>>(
           data: widget.event,
           feedback: feedback,
@@ -122,9 +120,10 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   left: 0,
                   width: resizeWidth,
                   child: ValueListenableBuilder(
-                    valueListenable: eventBeingModified,
+                    valueListenable: selectedEvent,
                     builder: (context, value, child) {
                       if (value == null) return leftResize;
+                      if (!controller.internalFocus) return leftResize;
                       return const SizedBox();
                     },
                   ),
@@ -137,9 +136,10 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   right: 0,
                   width: resizeWidth,
                   child: ValueListenableBuilder(
-                    valueListenable: eventBeingModified,
+                    valueListenable: selectedEvent,
                     builder: (context, value, child) {
                       if (value == null) return rightResize;
+                      if (!controller.internalFocus) return rightResize;
                       return const SizedBox();
                     },
                   ),

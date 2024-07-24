@@ -71,7 +71,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         );
 
         final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: calendarController.eventModification.eventBeingModified,
+          valueListenable: calendarController.selectedEvent,
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
             if (!showAllEvents && !event.isMultiDayEvent) {

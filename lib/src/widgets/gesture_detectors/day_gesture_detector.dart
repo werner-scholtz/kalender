@@ -40,8 +40,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
 
-  EventModification<T> get modify => controller.eventModification;
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => modify.eventBeingModified;
+
+  ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
   DateTime? start;
 
@@ -50,10 +50,12 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     if (dateTimeRange == null) return;
     start = dateTimeRange.start;
 
-    if (isMobileDevice && eventBeingModified.value != null) {
-      eventBeingModified.value = null;
+    if (isMobileDevice && selectedEvent.value != null) {
+      selectedEvent.value = null;
     } else {
-      modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
+      var newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
+      newEvent = callbacks?.onEventCreate?.call(newEvent) ?? newEvent;
+      controller.selectEvent(newEvent, internal: true);
     }
   }
 
@@ -74,7 +76,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       dateTimeRange = _clampDateTimeRange(dateTimeRange, start);
     }
 
-    modify.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange));
+    controller.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange), internal: true);
   }
 
   DateTimeRange _clampDateTimeRange(
@@ -97,17 +99,16 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
   void onEnd() {
     start = null;
-    final newEvent = eventBeingModified.value;
+    final newEvent = selectedEvent.value;
     if (newEvent == null) return;
-
     eventsController.addEvent(newEvent);
+    controller.deselectEvent();
     callbacks?.onEventCreated?.call(newEvent);
-    modify.deselectEvent();
   }
 
   void onCanceled() {
     start = null;
-    modify.deselectEvent();
+    controller.deselectEvent();
   }
 
   DateTimeRange? _calculateDateTimeRange(Offset position) {

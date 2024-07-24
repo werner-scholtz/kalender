@@ -20,7 +20,7 @@ typedef OnEventTapped<T extends Object?> = void Function(
 );
 
 /// The callback for when an event is changed.
-/// 
+///
 /// [event] is the original event.
 /// [updatedEvent] is the updated event.
 typedef OnEventChanged<T extends Object?> = void Function(
@@ -28,7 +28,12 @@ typedef OnEventChanged<T extends Object?> = void Function(
   CalendarEvent<T> updatedEvent,
 );
 
-/// The callback for when the calendar is tapped.
+/// The call back for creating a new event.
+typedef OnEventCreate<T extends Object?> = CalendarEvent<T> Function(
+  CalendarEvent<T> event,
+);
+
+/// The callback for a new event has been created.
 typedef OnEventCreated<T extends Object?> = void Function(
   CalendarEvent<T> event,
 );
