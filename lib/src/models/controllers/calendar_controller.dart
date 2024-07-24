@@ -21,6 +21,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
+
   /// The [DateTimeRange] that is currently visible.
   final visibleDateTimeRange = ValueNotifier<DateTimeRange>(
     DateTime.now().dayRange,
@@ -34,14 +35,23 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   int? _eventBeingDraggedId;
   int? get eventBeingDraggedId => _eventBeingDraggedId;
 
-  /// The event being resized.
-  final eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
+  void onDragStart() {
+    //TODO:
+  }
+
+  void onDragUpdate() {
+    //TODO:
+  }
 
   void onDragEnd() {
     eventBeingResized.value = null;
     eventBeingDragged.value = null;
     _eventBeingDraggedId = null;
   }
+
+  /// The event being resized.
+  final eventBeingResized = ValueNotifier<ResizeEvent<T>?>(null);
+
 
   /// The selected event.
   ///
