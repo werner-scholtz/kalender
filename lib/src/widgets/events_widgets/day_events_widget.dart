@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
@@ -57,13 +56,16 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               [event],
             );
 
+            final dropTarget = tileComponents.dropTargetTile;
             final eventGroups = _generateEventGroups(
               groups: chainingEventGroups,
               dayWidth: dayWidth,
               heightPerMinute: heightPerMinute,
               timeOfDayRange: timeOfDayRange,
               visibleDates: visibleDates,
-              child: tileComponents.dropTargetTile?.call,
+              child: dropTarget == null
+                  ? null
+                  : (event, _, __) => tileComponents.dropTargetTile!.call(event),
               layoutStrategy: layoutStrategy,
             );
 
@@ -92,7 +94,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           timeOfDayRange: timeOfDayRange,
           visibleDates: visibleDates,
           layoutStrategy: layoutStrategy,
-          child: (event) => DayEventTile(
+          child: (event, continuesBefore, continuesAfter) => DayEventTile(
             event: event,
             eventsController: eventsController,
             controller: calendarController,
@@ -103,6 +105,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
             timeOfDayRange: timeOfDayRange,
             dayWidth: dayWidth,
             heightPerMinute: heightPerMinute,
+            continuesBefore: continuesBefore,
+            continuesAfter: continuesAfter,
           ),
         );
 
@@ -119,7 +123,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
 
   Iterable<Positioned> _generateEventGroups({
     required Iterable<EventGroup<T>> groups,
-    required Widget Function(CalendarEvent<T> event)? child,
+    required Widget Function(CalendarEvent<T> event, bool before, bool after)? child,
     required List<DateTime> visibleDates,
     required double dayWidth,
     required double heightPerMinute,
@@ -148,9 +152,11 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
       // Map the events to tiles.
       final tiles = group.events.indexed.map((element) {
         final (id, event) = element;
+        final continuesBefore = event.start.isBefore(group.date);
+        final continuesAfter = event.end.isAfter(group.date.endOfDay);
         return LayoutId(
           id: id,
-          child: child?.call(event) ?? const SizedBox(),
+          child: child?.call(event, continuesBefore, continuesAfter) ?? const SizedBox(),
         );
       });
 

@@ -50,9 +50,9 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   final ScrollController? scrollController;
 
   /// Creates a new [MultiDayBody].
-  /// 
+  ///
   /// This widget is used to display events in a day/week view format.
-  /// 
+  ///
   /// This widget is intended to be the body of a [CalendarView].
   const MultiDayBody({
     super.key,
@@ -125,7 +125,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
         // Calculate the width of a single day.
         final dayWidth = pageWidth / numberOfDays;
-        
+
         final viewPortHeight = constraints.maxHeight;
 
         return ValueListenableBuilder(
@@ -289,6 +289,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
+                            Positioned.fill(child: hourLines),
                             Positioned(
                               left: 0,
                               top: 0,
@@ -296,7 +297,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                               width: 56.0,
                               child: timeline,
                             ),
-                            Positioned.fill(child: hourLines),
                             Positioned.fill(child: pageView),
                           ],
                         ),

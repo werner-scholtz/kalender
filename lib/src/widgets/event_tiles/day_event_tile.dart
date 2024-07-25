@@ -23,6 +23,9 @@ class DayEventTile<T extends Object?> extends StatefulWidget {
   final double dayWidth;
   final double heightPerMinute;
 
+  final bool continuesBefore;
+  final bool continuesAfter;
+
   const DayEventTile({
     super.key,
     required this.event,
@@ -35,6 +38,8 @@ class DayEventTile<T extends Object?> extends StatefulWidget {
     required this.timeOfDayRange,
     required this.dayWidth,
     required this.heightPerMinute,
+    required this.continuesBefore,
+    required this.continuesAfter,
   });
 
   @override
@@ -66,10 +71,12 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
-        late final showTopResizeHandle = constraints.maxHeight > 24;
+        final showResizeWidgets = bodyConfiguration.allowResizing && event.canModify;
 
-        // TODO: Check if the event continues before, if it does do not show the resize handle.
+        late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
+
+        late final showTop =
+            showResizeWidgets && constraints.maxHeight > 24 && !widget.continuesBefore;
         late final topResizeEvent = ResizeEvent(event, ResizeDirection.top);
         late final topResizeDetector = Draggable<ResizeEvent<T>>(
           data: topResizeEvent,
@@ -79,7 +86,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           onDragStarted: () => controller.selectEvent(event, internal: true),
         );
 
-        // TODO: Check if the event continues after, if it does do not show the resize handle.
+        late final showBottom = showResizeWidgets && !widget.continuesAfter;
         late final bottomResizeEvent = ResizeEvent(event, ResizeDirection.bottom);
         late final bottomResizeDetector = Draggable<ResizeEvent<T>>(
           data: bottomResizeEvent,
@@ -132,7 +139,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
           children: [
             Positioned.fill(child: tileWidget),
             // Desktop
-            if (bodyConfiguration.allowResizing && event.canModify && showTopResizeHandle)
+            if (showTop)
               if (!isMobileDevice)
                 Positioned(
                   top: 0,
@@ -162,7 +169,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                     },
                   ),
                 ),
-            if (bodyConfiguration.allowResizing && event.canModify)
+            if (showBottom)
               if (!isMobileDevice)
                 Positioned(
                   bottom: 0,
