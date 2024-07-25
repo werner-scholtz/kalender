@@ -40,8 +40,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.timelineWidth = defaultTimeLineWith,
     this.leftPageClip = defaultLeftPageClip,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
     numberOfDays = 1;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -61,8 +59,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.numberOfDays = 7,
     this.timelineWidth = defaultTimeLineWith,
     this.leftPageClip = defaultLeftPageClip,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -81,8 +77,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.numberOfDays = 5,
     this.timelineWidth = defaultTimeLineWith,
     this.leftPageClip = defaultLeftPageClip,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
     firstDayOfWeek = DateTime.monday;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -102,8 +96,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = DateTime.monday,
     this.timelineWidth = defaultTimeLineWith,
     this.leftPageClip = defaultLeftPageClip,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -248,8 +240,10 @@ class MultiDayBodyConfiguration {
     this.scrollPhysics,
     this.pageScrollPhysics,
   }) {
-    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+    this.pageTriggerConfiguration =
+        pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.scrollTriggerConfiguration =
+        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
   }
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
@@ -327,9 +321,12 @@ class MultiDayBodyConfiguration {
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
-      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
-      scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
-      dayEventLayoutStrategy: dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
+      pageTriggerConfiguration:
+          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      scrollTriggerConfiguration:
+          scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
+      dayEventLayoutStrategy:
+          dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
     );
@@ -383,6 +380,7 @@ class MultiDayBodyConfiguration {
 class MultiDayHeaderConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
+    this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
     this.allowEventCreation = defaultAllowEventCreation,
     this.allowResizing = defaultAllowResizing,
@@ -391,7 +389,8 @@ class MultiDayHeaderConfiguration {
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
-    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.pageTriggerConfiguration =
+        pageTriggerConfiguration ?? PageTriggerConfiguration();
   }
 
   /// The height of the tiles in the [MultiDayHeader].
@@ -408,6 +407,9 @@ class MultiDayHeaderConfiguration {
 
   /// Gesture type for creating events.
   final CreateEventTrigger createEventTrigger;
+
+  /// Whether to show event tiles.
+  final bool showTiles;
 
   /// The configuration for the page navigation triggers.
   late final PageTriggerConfiguration pageTriggerConfiguration;
@@ -427,7 +429,8 @@ class MultiDayHeaderConfiguration {
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       createEventTrigger: createEventTrigger ?? this.createEventTrigger,
-      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      pageTriggerConfiguration:
+          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
   }
 

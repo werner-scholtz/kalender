@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/components/multi_day_styles.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
@@ -106,7 +105,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
           key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
           calendarController: calendarController!,
-          headerConfiguration: headerConfiguration,
+          configuration: headerConfiguration,
           tileComponents: tileComponents,
           component: components,
           componentStyles: componentStyles,
@@ -265,7 +264,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarController<T> calendarController;
 
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayHeaderConfiguration headerConfiguration;
+  final MultiDayHeaderConfiguration configuration;
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents? component;
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -279,7 +278,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.eventsController,
     required this.calendarController,
     required this.callbacks,
-    required this.headerConfiguration,
+    required this.configuration,
     required this.tileComponents,
     required this.component,
     required this.componentStyles,
@@ -311,16 +310,14 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final weekNumber = SizedBox(
-      width: timelineWidth,
-      child: weekNumberWidget,
-    );
-
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: weekNumber,
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: timelineWidth,
+          child: weekNumberWidget,
         ),
         PageClipWidget(
           timelineWidth: timelineWidth,
@@ -356,7 +353,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,
                 dayWidth: dayWidth,
-                allowResizing: headerConfiguration.allowResizing,
+                allowResizing: configuration.allowResizing,
                 showAllEvents: false,
                 callbacks: callbacks,
                 tileHeight: tileHeight,
@@ -367,7 +364,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 eventsController: eventsController,
                 callbacks: callbacks,
                 tileComponents: tileComponents,
-                pageTriggerSetup: headerConfiguration.pageTriggerConfiguration,
+                pageTriggerSetup: configuration.pageTriggerConfiguration,
                 visibleDateTimeRange: visibleRange,
                 dayWidth: dayWidth,
                 pageWidth: pageWidth,
@@ -382,7 +379,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 eventsController: eventsController,
                 controller: calendarController,
                 callbacks: callbacks,
-                createEventTrigger: headerConfiguration.createEventTrigger,
+                createEventTrigger: configuration.createEventTrigger,
                 dayWidth: dayWidth,
               );
 
@@ -392,19 +389,23 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               );
 
               return Padding(
-                padding: EdgeInsets.only(left: viewConfiguration.timelineWidth),
+                padding: EdgeInsets.only(
+                  left: viewConfiguration.timelineWidth,
+                  bottom: configuration.showTiles ? 0 : 8.0,
+                ),
                 child: Column(
                   children: [
                     Row(children: [...dayHeaders]),
-                    IntrinsicHeight(
-                      child: Stack(
-                        children: [
-                          Positioned.fill(child: gestureDetector),
-                          ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                          Positioned.fill(child: multiDayDragTarget),
-                        ],
+                    if (configuration.showTiles)
+                      IntrinsicHeight(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(child: gestureDetector),
+                            ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                            Positioned.fill(child: multiDayDragTarget),
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );

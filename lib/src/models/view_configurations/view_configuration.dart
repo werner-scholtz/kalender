@@ -26,3 +26,4 @@ const defaultSnapToTimeIndicator = true;
 const defaultSnapToOtherEvents = true;
 const defaultSnapRange = Duration(minutes: 15);
 const defaultSnapIntervalMinutes = 10;
+const defaultShowEventTiles = true;
