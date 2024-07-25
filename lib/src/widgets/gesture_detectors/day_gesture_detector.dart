@@ -40,7 +40,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
 
-
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
   DateTime? start;
@@ -79,6 +78,19 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     controller.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange), internal: true);
   }
 
+  void onEnd() {
+    start = null;
+    final newEvent = selectedEvent.value;
+    if (newEvent == null) return;
+    controller.deselectEvent();
+    callbacks?.onEventCreated?.call(newEvent);
+  }
+
+  void onCanceled() {
+    start = null;
+    controller.deselectEvent();
+  }
+
   DateTimeRange _clampDateTimeRange(
     DateTimeRange dateTimeRange,
     DateTime start,
@@ -95,20 +107,6 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     }
 
     return DateTimeRange(start: clampedStart, end: clampedEnd);
-  }
-
-  void onEnd() {
-    start = null;
-    final newEvent = selectedEvent.value;
-    if (newEvent == null) return;
-    eventsController.addEvent(newEvent);
-    controller.deselectEvent();
-    callbacks?.onEventCreated?.call(newEvent);
-  }
-
-  void onCanceled() {
-    start = null;
-    controller.deselectEvent();
   }
 
   DateTimeRange? _calculateDateTimeRange(Offset position) {

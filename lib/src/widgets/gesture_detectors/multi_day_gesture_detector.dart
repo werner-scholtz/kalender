@@ -77,7 +77,6 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     start = null;
     final newEvent = selectedEvent.value;
     if (newEvent == null) return;
-    eventsController.addEvent(newEvent);
     controller.deselectEvent();
     callbacks?.onEventCreated?.call(newEvent);
   }
