@@ -41,7 +41,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
   TileComponents<T> get tileComponents => widget.tileComponents;
   bool get allowResizing => widget.allowResizing;
 
-  ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
+  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => controller.selectedEvent;
 
   ValueNotifier<Size> get feedbackWidgetSize {
     return eventsController.feedbackWidgetSize;
@@ -120,7 +120,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   left: 0,
                   width: resizeWidth,
                   child: ValueListenableBuilder(
-                    valueListenable: selectedEvent,
+                    valueListenable: eventBeingModified,
                     builder: (context, value, child) {
                       if (value == null) return leftResize;
                       if (!controller.internalFocus) return leftResize;
@@ -136,7 +136,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   right: 0,
                   width: resizeWidth,
                   child: ValueListenableBuilder(
-                    valueListenable: selectedEvent,
+                    valueListenable: eventBeingModified,
                     builder: (context, value, child) {
                       if (value == null) return rightResize;
                       if (!controller.internalFocus) return rightResize;

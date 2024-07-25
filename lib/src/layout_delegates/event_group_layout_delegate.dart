@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/groups/event_group.dart';
+
+export 'package:kalender/src/models/groups/event_group.dart';
 
 /// Signature for the strategy that determines how DayEvents are layed out.
 ///

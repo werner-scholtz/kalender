@@ -33,7 +33,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
     super.initState();
     // Initialize the heights with a default value.
     _heights = List.filled(widget.itemCount, 80, growable: true);
-    
+
     _currentPage = widget.controller.initialPage;
     widget.controller.addListener(_updatePage);
   }
@@ -83,7 +83,6 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   }
 }
 
-
 /// This widget reports its size to the parent widget.
 class SizeReportingWidget extends StatefulWidget {
   /// The child widget.
@@ -113,7 +112,7 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
   Widget build(BuildContext context) {
     // Notify the parent widget about the size after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-    
+
     // Listen for size changes.
     return NotificationListener<SizeChangedLayoutNotification>(
       onNotification: (_) {

@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_group_layout_delegate.dart';
-import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
