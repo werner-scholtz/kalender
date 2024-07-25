@@ -63,9 +63,7 @@ class MultiDayEventGroup<T extends Object?> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is EventGroup<T> &&
-        other.dateTimeRange == dateTimeRange &&
-        other.events == events;
+    return other is EventGroup<T> && other.dateTimeRange == dateTimeRange && other.events == events;
   }
 
   @override

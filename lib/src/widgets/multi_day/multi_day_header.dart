@@ -201,7 +201,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
               final multiDayEvents = MultiDayEventWidget<T>(
                 eventsController: eventsController,
-                calendarController: calendarController,
+                controller: calendarController,
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,
                 dayWidth: pageWidth,
@@ -348,7 +348,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               }).toList();
 
               final multiDayEvents = MultiDayEventWidget<T>(
-                calendarController: calendarController,
+                controller: calendarController,
                 eventsController: eventsController,
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,

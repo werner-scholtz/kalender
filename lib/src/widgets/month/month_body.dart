@@ -116,7 +116,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayEvents = MultiDayEventWidget<T>(
-                  calendarController: calendarController!,
+                  controller: calendarController!,
                   eventsController: eventsController!,
                   visibleDateTimeRange: visibleDateTimeRange,
                   tileComponents: tileComponents,

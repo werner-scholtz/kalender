@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/components/month_styles.dart';
 import 'package:kalender/src/models/components/multi_day_styles.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {
@@ -12,7 +10,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final CalendarController<T>? calendarController;
 
   /// The callbacks used by the [CalendarBody].
-  /// 
+  ///
   /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
   final CalendarCallbacks<T>? callbacks;
 
@@ -40,14 +38,13 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration? monthBodyConfiguration;
 
-
   /// Creates a CalendarBody widget.
-  /// 
+  ///
   /// This creates the correct body based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayBody]
   /// - [MonthBody]
   /// - TODO: add schedule view.
-  /// 
+  ///
   const CalendarBody({
     super.key,
     this.eventsController,

@@ -7,7 +7,7 @@ import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
-  final CalendarController<T> calendarController;
+  final CalendarController<T> controller;
 
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
@@ -21,7 +21,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     super.key,
     required this.visibleDateTimeRange,
     required this.eventsController,
-    required this.calendarController,
+    required this.controller,
     required this.tileComponents,
     required this.dayWidth,
     required this.allowResizing,
@@ -42,7 +42,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         );
 
         final group = MultiDayEventGroup(
-          events: visibleEvents.toList(),
+          events: visibleEvents,
           dateTimeRange: visibleDateTimeRange,
         );
 
@@ -53,7 +53,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             child: MultiDayEventTile<T>(
               event: event,
               eventsController: eventsController,
-              controller: calendarController,
+              controller: controller,
               tileComponents: tileComponents,
               allowResizing: allowResizing,
               callbacks: callbacks,
@@ -69,34 +69,35 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [...children],
         );
 
+        // TODO: investigate a more efficient way to do this.
         final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: calendarController.selectedEvent,
+          valueListenable: controller.selectedEvent,
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
-            if (!showAllEvents && !event.isMultiDayEvent) {
-              return const SizedBox();
-            }
+            if (!showAllEvents && !event.isMultiDayEvent) return const SizedBox();
+            if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) return const SizedBox();
 
-            if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) {
-              return const SizedBox();
-            }
+            final events = visibleEvents.toList()
+              ..removeWhere((e) => e.id == controller.selectedEventId)
+              ..add(event);
+            final group = MultiDayEventGroup(events: events, dateTimeRange: visibleDateTimeRange);
 
-            final group = MultiDayEventGroup(
-              events: [event],
-              dateTimeRange: visibleDateTimeRange,
-            );
+            final children = group.sortedEvents.indexed.map((item) {
+              final (id, event) = item;
+              return LayoutId(
+                id: id,
+                child: event.id == -1 || event.id == controller.selectedEventId
+                    ? tileComponents.dropTargetTile?.call(event) ?? const SizedBox()
+                    : const SizedBox(),
+              );
+            });
 
             return CustomMultiChildLayout(
               delegate: MultiDayEventsDefaultLayoutDelegate(
                 group: group,
                 multiDayTileHeight: tileHeight,
               ),
-              children: [
-                LayoutId(
-                  id: 0,
-                  child: tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
-                ),
-              ],
+              children: children.toList(),
             );
           },
         );

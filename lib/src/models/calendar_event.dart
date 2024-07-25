@@ -77,6 +77,6 @@ class CalendarEvent<T extends Object?> {
 
   @override
   String toString() {
-    return 'data: $data, start: $start, end: $end';
+    return 'id: $id, data: $data, start: $start, end: $end';
   }
 }

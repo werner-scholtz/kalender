@@ -95,6 +95,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
           feedback: feedback,
           childWhenDragging: dragComponent,
           dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+          onDragStarted: () => controller.selectEvent(event),
           child: isDragging && dragComponent != null ? dragComponent : tileComponent,
         );
 
@@ -111,7 +112,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
 
         return Stack(
           children: [
-            tileWidget,
+            Positioned.fill(child: tileWidget),
             if (allowResizing && event.canModify)
               if (!isMobileDevice)
                 Positioned(

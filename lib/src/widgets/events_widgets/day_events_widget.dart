@@ -8,7 +8,7 @@ import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 /// The [EventGroup]s events are then rendered using the [DayEventTile].
 class DayEventsWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
-  final CalendarController<T> calendarController;
+  final CalendarController<T> controller;
   final CalendarCallbacks<T>? callbacks;
 
   final TileComponents<T> tileComponents;
@@ -22,7 +22,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   const DayEventsWidget({
     super.key,
     required this.eventsController,
-    required this.calendarController,
+    required this.controller,
     required this.callbacks,
     required this.tileComponents,
     required this.bodyConfiguration,
@@ -37,45 +37,11 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final visibleDates = visibleDateTimeRange.datesSpanned;
     final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
-    final selectedEvent = calendarController.selectedEvent;
+    final selectedEvent = controller.selectedEvent;
 
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
-        // Create the widget that displays the event being dragged.
-        final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: selectedEvent,
-          builder: (context, event, child) {
-            // If there is no event being dragged, return an empty widget.
-            if (event == null) return const SizedBox();
-
-            if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
-            // Create a list of event groups that will be used to render the event.
-            final chainingEventGroups = _createEventGroups(
-              visibleDates,
-              [event],
-            );
-
-            final dropTarget = tileComponents.dropTargetTile;
-            final eventGroups = _generateEventGroups(
-              groups: chainingEventGroups,
-              dayWidth: dayWidth,
-              heightPerMinute: heightPerMinute,
-              timeOfDayRange: timeOfDayRange,
-              visibleDates: visibleDates,
-              child: dropTarget == null
-                  ? null
-                  : (event, _, __) => tileComponents.dropTargetTile!.call(event),
-              layoutStrategy: layoutStrategy,
-            );
-
-            return Stack(
-              fit: StackFit.expand,
-              children: [...eventGroups],
-            );
-          },
-        );
-
         final visibleEvents = eventsController.eventsFromDateTimeRange(
           visibleDateTimeRange,
           includeDayEvents: true,
@@ -83,7 +49,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
         );
 
         /// Set the visible events on the view controller.
-        calendarController.visibleEvents.value = visibleEvents.toList();
+        controller.visibleEvents.value = visibleEvents.toList();
 
         // Create the event groups for the visible events.
         final eventGroups = _createEventGroups(visibleDates, visibleEvents);
@@ -97,7 +63,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           child: (event, continuesBefore, continuesAfter) => DayEventTile(
             event: event,
             eventsController: eventsController,
-            controller: calendarController,
+            controller: controller,
             callbacks: callbacks,
             tileComponents: tileComponents,
             bodyConfiguration: bodyConfiguration,
@@ -108,6 +74,42 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
             continuesBefore: continuesBefore,
             continuesAfter: continuesAfter,
           ),
+        );
+
+        // TODO: investigate a more efficient way to do this.
+        final dropTargetWidget = ValueListenableBuilder(
+          valueListenable: selectedEvent,
+          builder: (context, event, child) {
+            // If there is no event being dragged, return an empty widget.
+            if (event == null) return const SizedBox();
+            if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
+
+            final events = visibleEvents.toList()
+              ..removeWhere((e) => e.id == controller.selectedEventId)
+              ..add(event);
+            final chainingEventGroups = _createEventGroups(visibleDates, events);
+            final dropTarget = tileComponents.dropTargetTile;
+            final eventGroups = _generateEventGroups(
+              groups: chainingEventGroups,
+              dayWidth: dayWidth,
+              heightPerMinute: heightPerMinute,
+              timeOfDayRange: timeOfDayRange,
+              visibleDates: visibleDates,
+              child: (event, _, __) {
+                if (dropTarget == null ||
+                    (event.id != -1 && event.id != controller.selectedEventId)) {
+                  return const SizedBox();
+                }
+                return tileComponents.dropTargetTile!.call(event);
+              },
+              layoutStrategy: layoutStrategy,
+            );
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [...eventGroups],
+            );
+          },
         );
 
         return Stack(

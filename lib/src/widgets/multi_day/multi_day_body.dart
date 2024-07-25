@@ -216,7 +216,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
                   final events = DayEventsWidget<T>(
                     eventsController: eventsController!,
-                    calendarController: calendarController!,
+                    controller: calendarController!,
                     callbacks: callbacks,
                     tileComponents: tileComponents,
                     bodyConfiguration: bodyConfiguration,

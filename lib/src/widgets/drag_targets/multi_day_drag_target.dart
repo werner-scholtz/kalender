@@ -160,11 +160,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       final updatedEvent = _rescheduleEvent(data, details.offset);
       if (updatedEvent == null) return;
 
-      controller.selectEvent(updatedEvent, internal: true);
+      controller.updateEvent(updatedEvent, internal: true);
     } else if (data is ResizeEvent<T>) {
       final updatedEvent = _resizeEvent(data, details.offset);
       if (updatedEvent == null) return;
-      controller.selectEvent(updatedEvent, internal: true);
+      controller.updateEvent(updatedEvent, internal: true);
     }
   }
 

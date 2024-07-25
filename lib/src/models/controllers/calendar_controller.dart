@@ -27,19 +27,26 @@ class CalendarController<T extends Object?> extends ChangeNotifier
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
- 
+
   /// The event currently being focused on.
   final selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
-  int? get selectedEventId => selectedEvent.value?.id;
+  int? _selectedEventId;
+  int? get selectedEventId => _selectedEventId;
 
-  /// This is used to determine if focus on the event is coming from within the package or from outside. 
+  /// This is used to determine if focus on the event is coming from within the package or from outside.
   bool internalFocus = false;
 
   /// Place focus on an event.
-  /// 
+  ///
   /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
   void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
+    selectedEvent.value = event;
+    _selectedEventId = event.id;
+    internalFocus = internal;
+  }
+
+  void updateEvent(CalendarEvent<T> event, {bool internal = false}) {
     selectedEvent.value = event;
     internalFocus = internal;
   }
@@ -48,6 +55,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   void deselectEvent() {
     selectedEvent.value = null;
     internalFocus = false;
+    _selectedEventId = null;
   }
 
   bool isAttachedTo(ViewController viewController) {

@@ -237,14 +237,14 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       if (updatedEvent == null) return;
 
       // Update the event being dragged.
-      controller.selectEvent(updatedEvent, internal: true);
+      controller.updateEvent(updatedEvent, internal: true);
     } else if (details.data is ResizeEvent<T>) {
       final resizeEvent = details.data as ResizeEvent<T>;
 
       final updatedEvent = _resizeEvent(resizeEvent, details.offset);
       if (updatedEvent == null) return;
 
-      controller.selectEvent(updatedEvent, internal: true);
+      controller.updateEvent(updatedEvent, internal: true);
     }
   }
 
