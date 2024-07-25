@@ -339,16 +339,20 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     );
     if (cursorDateTime == null) return null;
 
-    final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime);
-    final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime);
-
     DateTime start;
-    if (cursorDateTime.isBefore(startOfDate)) {
-      start = startOfDate;
-    } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {
-      start = endOfDate.subtract(event.duration);
-    } else {
+
+    if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
+    } else {
+      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime);
+      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime);
+      if (cursorDateTime.isBefore(startOfDate)) {
+        start = startOfDate;
+      } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {
+        start = endOfDate.subtract(event.duration);
+      } else {
+        start = cursorDateTime;
+      }
     }
 
     // Calculate the new dateTimeRange for the event.
