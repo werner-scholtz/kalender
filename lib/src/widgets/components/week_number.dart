@@ -51,15 +51,17 @@ class WeekNumber extends StatelessWidget {
     final padding =
         weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
 
-    return Padding(
-      padding: padding,
-      child: IconButton.filledTonal(
-        tooltip: tooltip,
-        onPressed: null,
-        visualDensity: visualDensity,
-        icon: Text(
-          weekNumber,
-          style: textStyle,
+    return Center(
+      child: Padding(
+        padding: padding,
+        child: IconButton.filledTonal(
+          tooltip: tooltip,
+          onPressed: null,
+          visualDensity: visualDensity,
+          icon: Text(
+            weekNumber,
+            style: textStyle,
+          ),
         ),
       ),
     );
