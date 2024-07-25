@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
 extension DateTimeRangeExtensions on DateTimeRange {
-  /// The difference in days between the [start] and [end] of the [DateTimeRange].
+  /// The time difference in days between the [start] and [end] of the [DateTimeRange].
   ///
   /// - Converts the start and end to utc before calculation.
   int get dayDifference {
     final startDate = start.toUtc();
     final endDate = end.toUtc();
+    final difference = endDate.difference(startDate).inDays;
+    return difference;
+  }
+
+  /// The number of days between the [start] and [end] of the [DateTimeRange]. (including start and end).
+  ///
+  /// - Converts the start and end to utc before calculation.
+  int get dateDifference {
+    final startDate = start.toUtc().startOfDay;
+    final endDate = end.toUtc().endOfDay;
     final difference = endDate.difference(startDate).inDays;
     return difference;
   }
@@ -203,7 +213,21 @@ extension DateTimeExtensions on DateTime {
       'firstDayOfWeek must be between 1 and 7',
     );
 
-    return subtractDays(weekday - firstDayOfWeek).startOfDay;
+    final difference = weekday - firstDayOfWeek;
+
+    /// 1 - 2 = - 1
+    if (difference < 0) {
+      return subtractDays(7 + difference).startOfDay;
+    } else {
+      return subtractDays(difference).startOfDay;
+    }
+
+  
+    // if (weekday < firstDayOfWeek) {
+    //   return subtractDays(days).startOfDay;
+    // } else {
+    //   return subtractDays(weekday - firstDayOfWeek).startOfDay;
+    // }
   }
 
   /// Gets the end of the week with an offset.
