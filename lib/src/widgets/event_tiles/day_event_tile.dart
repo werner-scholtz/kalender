@@ -114,6 +114,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                 feedback: feedback,
                 childWhenDragging: dragComponent,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                onDragStarted: () => controller.selectEvent(event),
                 child: isDragging && dragComponent != null ? dragComponent : tileComponent,
               )
             : Draggable<CalendarEvent<T>>(
@@ -121,6 +122,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                 feedback: feedback,
                 childWhenDragging: dragComponent,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                onDragStarted: () => controller.selectEvent(event),
                 child: isDragging && dragComponent != null ? dragComponent : tileComponent,
               );
 
