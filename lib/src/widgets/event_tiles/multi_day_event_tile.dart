@@ -90,14 +90,23 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
         );
 
         final isDragging = controller.selectedEventId == event.id;
-        late final draggableTile = Draggable<CalendarEvent<T>>(
-          data: widget.event,
-          feedback: feedback,
-          childWhenDragging: dragComponent,
-          dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-          onDragStarted: () => controller.selectEvent(event),
-          child: isDragging && dragComponent != null ? dragComponent : tileComponent,
-        );
+        late final draggableTile = isMobileDevice
+            ? LongPressDraggable<CalendarEvent<T>>(
+                data: widget.event,
+                feedback: feedback,
+                childWhenDragging: dragComponent,
+                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                onDragStarted: () => controller.selectEvent(event),
+                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+              )
+            : Draggable<CalendarEvent<T>>(
+                data: widget.event,
+                feedback: feedback,
+                childWhenDragging: dragComponent,
+                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+                onDragStarted: () => controller.selectEvent(event),
+                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+              );
 
         final tileWidget = GestureDetector(
           onTap: onTap != null
