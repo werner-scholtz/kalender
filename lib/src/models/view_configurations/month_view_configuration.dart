@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
 class MonthViewConfiguration extends ViewConfiguration {

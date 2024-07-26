@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/kalender_extensions.dart';
 
 class CalendarCustomize extends StatefulWidget {
   final ViewConfiguration viewConfiguration;
@@ -216,7 +215,7 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       onSelected: (value) {
         if (value == null) return;
         widget.onBodyChanged(
-          bodyConfiguration.copyWith(dayEventLayoutStrategy: value),
+          bodyConfiguration.copyWith(eventLayoutStrategy: value),
         );
       },
     );

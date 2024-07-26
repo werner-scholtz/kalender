@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 
 class CalendarProvider<T extends Object?> extends InheritedWidget {
   /// The [EventsController] that will be used by the Calendar.

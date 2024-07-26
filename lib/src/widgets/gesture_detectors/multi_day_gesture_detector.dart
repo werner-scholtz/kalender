@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/platform.dart';
 
 /// A [GestureDetector] that listens for gestures on a

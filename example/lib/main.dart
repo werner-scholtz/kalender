@@ -4,7 +4,6 @@ import 'package:example/resize_handle.dart';
 import 'package:example/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/kalender_extensions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +50,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+//   final displayRange = DateTimeRange(
+//   start: DateTime(2024),
+//   end: DateTime.now().addDays(365),
+// );
+  final displayRange = DateTimeRange(
+    start: DateTime(2024, 03, 30),
+    end: DateTime(2024, 04, 20),
+  );
+  // final displayRange = DateTimeRange(
+  //   start: DateTime(2000),
+  //   end: DateTime.now().addDays(365),
+  // );
+
   /// Create [EventsController]
   final eventsController = EventsController();
 
@@ -58,11 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final calendarController = CalendarController();
 
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
-  final viewConfigurations = <ViewConfiguration>[
-    MultiDayViewConfiguration.singleDay(),
-    MultiDayViewConfiguration.week(),
-    MultiDayViewConfiguration.workWeek(),
-    MultiDayViewConfiguration.custom(numberOfDays: 3),
+  late final viewConfigurations = <ViewConfiguration>[
+    MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
+    MultiDayViewConfiguration.singleDay(displayRange: displayRange),
+    MultiDayViewConfiguration.workWeek(displayRange: displayRange),
+    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
+    MonthViewConfiguration.singleMonth(),
   ];
 
   @override
@@ -98,9 +111,14 @@ class _MyHomePageState extends State<MyHomePage> {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
-          callbacks: CalendarCallbacks(onEventTapped: (event, renderBox) {
-            calendarController.eventModification.selectEvent(event);
-          }),
+          callbacks: CalendarCallbacks(
+            onEventTapped: (event, renderBox) {
+              calendarController.selectEvent(event);
+            },
+            onEventCreated: (event) {
+              eventsController.addEvent(event);
+            },
+          ),
           header: _header(),
           body: _body(),
         ),
@@ -115,6 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
       multiDayBodyComponents: const MultiDayBodyComponents(
         leftPageTriggerWidget: TriggerWidget(),
         rightPageTriggerWidget: TriggerWidget(),
+      ),
+      multiDayBodyConfiguration: MultiDayBodyConfiguration(
+        eventLayoutStrategy: sideBySideLayoutStrategy,
       ),
     );
   }
@@ -172,7 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          CalendarHeader(multiDayTileComponents: multiDayTileComponents),
+          CalendarHeader(
+            multiDayTileComponents: multiDayTileComponents,
+          ),
         ],
       ),
     );
@@ -182,10 +205,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return TileComponents(
       tileBuilder: (event) {
         return Container(
+          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
           decoration: BoxDecoration(
             color: Colors.green.withAlpha(150),
             borderRadius: BorderRadius.circular(8),
           ),
+          child: const Text('data'),
         );
       },
       dropTargetTile: _dropTargetTile,
@@ -200,12 +225,12 @@ class _MyHomePageState extends State<MyHomePage> {
   TileComponents get multiDayTileComponents {
     return TileComponents(
       tileBuilder: (event) {
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
+        return DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.green.withAlpha(150),
             borderRadius: BorderRadius.circular(8),
           ),
+          child: const Text('data'),
         );
       },
       dropTargetTile: _dropTargetTile,

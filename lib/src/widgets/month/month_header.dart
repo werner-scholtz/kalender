@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/components/month_styles.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class MonthHeader<T extends Object?> extends StatelessWidget {

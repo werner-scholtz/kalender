@@ -308,7 +308,7 @@ class MultiDayBodyConfiguration {
     int? snapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    EventLayoutStrategy? dayEventLayoutStrategy,
+    EventLayoutStrategy? eventLayoutStrategy,
     ScrollPhysics? scrollPhysics,
     ScrollPhysics? pageScrollPhysics,
   }) {
@@ -325,7 +325,7 @@ class MultiDayBodyConfiguration {
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
-      eventLayoutStrategy: dayEventLayoutStrategy ?? this.eventLayoutStrategy,
+      eventLayoutStrategy: eventLayoutStrategy ?? this.eventLayoutStrategy,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
     );
