@@ -1,5 +1,6 @@
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
+import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
 /// The component builders used by the [MultiDayHeader].
 ///
@@ -11,6 +12,7 @@ class MultiDayHeaderComponents {
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
   final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
+  /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.weekNumberBuilder,
@@ -33,6 +35,7 @@ class MultiDayBodyComponents {
   final VerticalTriggerWidgetBuilder? topTriggerBuilder;
   final VerticalTriggerWidgetBuilder? bottomTriggerBuilder;
 
+  /// Creates overrides for the default components used by the [MultiDayBody].
   const MultiDayBodyComponents({
     this.hourLines,
     this.timeline,

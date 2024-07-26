@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
+// TODO: document this.
+// Maybe give a broad overview of what this widget and how it works.
+
 class MonthHeader<T extends Object?> extends StatelessWidget {
   /// The [CalendarController] that will be used by the [MonthBody].
   final CalendarController<T>? calendarController;

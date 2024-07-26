@@ -22,6 +22,7 @@ class DaySeparatorStyle {
   });
 }
 
+// TODO: document.
 class DaySeparator extends StatelessWidget {
   final DaySeparatorStyle? style;
   const DaySeparator({super.key, this.style});

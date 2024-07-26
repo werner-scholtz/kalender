@@ -3,7 +3,9 @@ import 'package:kalender/kalender.dart';
 
 export 'package:kalender/src/extensions.dart';
 
-///  * [defaultEventGroupLayoutStrategy], which displays the tile over each other.
+// TODO: document this.
+
+///  * [defaultEventGroupLayoutStrategy]
 typedef EventGroupLayoutStrategy<T extends Object?> = EventGroupLayoutDelegate Function(
   List<EventGroup<T>> groups,
   List<DateTime> visibleDates,

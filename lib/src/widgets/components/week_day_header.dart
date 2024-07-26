@@ -19,6 +19,7 @@ class WeekDayHeaderStyle {
   final EdgeInsets? padding;
 }
 
+// TODO: document.
 class WeekDayHeader extends StatelessWidget {
   const WeekDayHeader({
     super.key,

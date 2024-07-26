@@ -6,6 +6,9 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
 
+// TODO: more detailed documentation.
+// Simplify the boolean logic to an enum if possible.
+
 class MultiDayEventTile<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;

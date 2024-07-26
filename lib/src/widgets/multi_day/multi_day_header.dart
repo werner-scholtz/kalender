@@ -9,6 +9,9 @@ import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detecto
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 
+// TODO: document this.
+// Maybe give a broad overview of what this widget and how it works.
+
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayHeader].
   final EventsController<T>? eventsController;

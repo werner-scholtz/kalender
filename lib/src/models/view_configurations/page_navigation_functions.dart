@@ -1,44 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/type_definitions.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 abstract class PageNavigationFunctions {
   PageNavigationFunctions();
 
+  /// Creates a [PageNavigationFunctions] for a single day [ViewConfiguration].
   factory PageNavigationFunctions.singleDay(DateTimeRange dateTimeRange) {
-    return DayPageFunctions(
-      dateTimeRange: dateTimeRange,
-    );
+    return DayPageFunctions(dateTimeRange: dateTimeRange);
   }
 
+  /// Creates a [PageNavigationFunctions] for a week [ViewConfiguration].
   factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return WeekPageFunctions(
-      dateTimeRange: dateTimeRange,
-      firstDayOfWeek: firstDayOfWeek,
-    );
+    return WeekPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
-  factory PageNavigationFunctions.workWeek(
-    DateTimeRange dateTimeRange,
-  ) {
+  /// Creates a [PageNavigationFunctions] for a work week [ViewConfiguration].
+  factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
     return WorkWeekPageFunctions(dateTimeRange: dateTimeRange);
   }
 
+  /// Creates a [PageNavigationFunctions] for a custom [ViewConfiguration].
   factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
-    return CustomPageFunctions(
-      dateTimeRange: dateTimeRange,
-      numberOfDays: numberOfDays,
-    );
+    return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
-  factory PageNavigationFunctions.month(
-    DateTimeRange dateTimeRange,
-    int firstDayOfWeek,
-  ) {
-    return MonthPageFunctions(
-      dateTimeRange: dateTimeRange,
-      firstDayOfWeek: firstDayOfWeek,
-    );
+  /// Creates a [PageNavigationFunctions] for a month [ViewConfiguration].
+  factory PageNavigationFunctions.month(DateTimeRange dateTimeRange, int firstDayOfWeek) {
+    return MonthPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
   DateTimeRangeFromIndex get dateTimeRangeFromIndex;
@@ -51,6 +41,8 @@ abstract class PageNavigationFunctions {
     return dateTimeRangeFromIndex(index);
   }
 }
+
+// TODO: Document these.
 
 class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({

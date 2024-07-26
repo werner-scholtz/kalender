@@ -20,6 +20,9 @@ import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/gesture_detectors/day_gesture_detector.dart';
 import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 
+// TODO: document this.
+// Maybe give a broad overview of what this widget and how it works.
+
 /// This widget is used to display a multi-day body.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayBody].

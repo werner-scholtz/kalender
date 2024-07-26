@@ -10,9 +10,7 @@ class ResizeEvent<T> {
   /// The direction that the [CalendarEvent] is being resized in.
   final ResizeDirection direction;
 
-  /// The start [DateTime] of the [CalendarEvent].
-  int get id => event.id;
-
+  /// Creates a [ResizeEvent] with the given [CalendarEvent] and [ResizeDirection].
   ResizeEvent(this.event, this.direction);
 
   /// Updates the [ResizeEvent]'s [CalendarEvent] with the new [DateTimeRange].

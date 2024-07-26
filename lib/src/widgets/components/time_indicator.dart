@@ -27,6 +27,8 @@ class TimeIndicatorStyle {
   });
 }
 
+// TODO: document.
+
 class TimeIndicator extends StatefulWidget {
   /// The [TimeOfDayRange] that will be used to display the hour lines.
   final TimeOfDayRange timeOfDayRange;

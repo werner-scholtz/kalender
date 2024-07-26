@@ -3,6 +3,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/platform.dart';
 
+// TODO: document this.
+
 class DayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;

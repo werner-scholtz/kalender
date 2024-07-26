@@ -7,6 +7,9 @@ import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detector.dart';
 
+// TODO: document this.
+// Maybe give a broad overview of what this widget does.
+
 /// This widget is used to display a multi-day body.
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MonthBody].

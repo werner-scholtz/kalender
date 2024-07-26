@@ -3,6 +3,8 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/platform.dart';
 
+// TODO: document this.
+
 /// A [GestureDetector] that listens for gestures on a
 class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;

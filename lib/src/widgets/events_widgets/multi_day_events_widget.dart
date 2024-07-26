@@ -1,9 +1,9 @@
-// ignore_for_file: dead_code
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
+
+// TODO: document this.
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;

@@ -7,6 +7,9 @@ import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
 
+// TODO: more detailed documentation.
+// Simplify the boolean logic to an enum if possible.
+
 /// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
 class DayEventTile<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;

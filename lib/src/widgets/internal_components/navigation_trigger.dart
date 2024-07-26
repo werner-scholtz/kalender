@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+// TODO: document.
 class NavigationTrigger extends StatefulWidget {
   final Widget? child;
   final Function() onTrigger;

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/groups/event_group.dart';
 
-/// The base MultiChildLayoutDelegate for [MultiDayEventsLayoutDelegate]'s
+/// The base Mul`tiChildLayoutDelegate for [MultiDayEventsLayoutDelegate]'s
 ///
 /// [MultiDayEventsLayoutDelegate]'s are used to layout [EventGroup]'s in a [MultiDayEventGroupWidget].
 ///
@@ -25,6 +25,8 @@ abstract class MultiDayEventsLayoutDelegate<T> extends MultiChildLayoutDelegate 
     return oldDelegate.group != group || oldDelegate.multiDayTileHeight != multiDayTileHeight;
   }
 }
+
+// TODO: document this.
 
 class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventsLayoutDelegate<T> {
   MultiDayEventsDefaultLayoutDelegate({

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
+
+// TODO: Improve documentation.
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
 ///

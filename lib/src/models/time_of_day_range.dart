@@ -20,6 +20,7 @@ class TimeOfDayRange {
     );
   }
 
+  /// Creates a [TimeOfDayRange] that represents the given [hour].
   factory TimeOfDayRange.forHour(int hour) {
     return TimeOfDayRange(
       start: TimeOfDay(hour: hour, minute: 0),
@@ -27,10 +28,11 @@ class TimeOfDayRange {
     );
   }
 
+  /// Creates a [TimeOfDayRange] from the given [DateTimeRange].
   factory TimeOfDayRange.fromDateTimeRange(DateTimeRange dateTimeRange) {
     assert(
       dateTimeRange.start.isSameDay(dateTimeRange.end),
-      'The DateTimeRange must be on the same day.',
+      'The DateTimeRange start and end must be on the same day.',
     );
 
     return TimeOfDayRange(
@@ -87,9 +89,7 @@ class TimeOfDayRange {
 
   @override
   bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) {
-      return false;
-    }
+    if (other.runtimeType != runtimeType) return false;
     return other is TimeOfDayRange && other.start == start && other.end == end;
   }
 

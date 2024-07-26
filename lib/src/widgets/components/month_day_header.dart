@@ -20,6 +20,7 @@ class MonthDayHeaderStyle {
   final TextStyle? numberTextStyle;
 }
 
+// TODO: document.
 class MonthDayHeader extends StatelessWidget {
   final DateTime date;
   final MonthDayHeaderStyle? style;

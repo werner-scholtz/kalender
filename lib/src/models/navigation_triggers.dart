@@ -25,7 +25,6 @@ class PageTriggerConfiguration {
   /// The curve of the page animation.
   Curve animationCurve;
 
-
   /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
   PageTriggerConfiguration copyWith({
     Duration? triggerDelay,

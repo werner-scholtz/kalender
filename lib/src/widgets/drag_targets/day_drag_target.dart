@@ -6,7 +6,10 @@ import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/components/navigation_trigger.dart';
+import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
+
+// TODO: more detailed documentation.
+// Consider moving the logic into a separate class.
 
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
 class DayDragTarget<T extends Object?> extends StatefulWidget {

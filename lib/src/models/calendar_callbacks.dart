@@ -1,6 +1,9 @@
 import 'package:kalender/src/type_definitions.dart';
+import 'package:kalender/src/calendar_view.dart';
 
-/// The callbacks used by the [MultiDayBody].
+/// The callbacks used by the [CalendarView].
+/// 
+/// - These callbacks are used to notify the parent widget of events that occur in the [CalendarView].
 class CalendarCallbacks<T extends Object?> {
   final OnEventTapped<T>? onEventTapped;
   final OnEventChanged<T>? onEventChanged;
@@ -8,6 +11,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnEventCreated<T>? onEventCreated;
   final OnPageChanged? onPageChanged;
 
+  /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
     this.onEventTapped,
     this.onEventChanged,

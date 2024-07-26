@@ -24,6 +24,7 @@ class WeekNumberStyle {
   final EdgeInsets? padding;
 }
 
+// TODO: document.
 class WeekNumber extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
 

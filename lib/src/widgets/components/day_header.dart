@@ -20,6 +20,7 @@ class DayHeaderStyle {
   final TextStyle? numberTextStyle;
 }
 
+// TODO: document.
 class DayHeader extends StatelessWidget {
   final DateTime date;
   final DayHeaderStyle? style;
