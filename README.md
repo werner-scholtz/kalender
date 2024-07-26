@@ -55,6 +55,14 @@ Widget build(BuildContext context) {
     monthTileComponents: tileComponents,
   );
 
+  // Specify some callbacks.
+  final callbacks = CalendarCallbacks(
+    onEventTapped: (event, renderBox) => controller.selectEvent(event),
+    onEventCreate: (event) => event.copyWith(data: "Some data"),
+    onEventCreated: (event) => eventsController.addEvent(event),
+  );
+
+
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
@@ -77,6 +85,7 @@ There are a few ways to customize the look of the calendar:
 ### Tile Components
 
 The `TileComponents` object is used to customize the look of the tiles displayed in the calendar.
+The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can be customized.
 
 ```dart
 TileComponents(
@@ -112,13 +121,27 @@ Both of these parts have their own `Components` and `ComponentStyles` for every 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
 
-#### Header Components
+### Header Components
 
 ```dart
 CalendarHeader(
-  multiDayTileComponents: TileComponents(),
-  multiDayHeaderComponents: MultiDayHeaderComponents(),
-  multiDayHeaderComponentStyles: MultiDayHeaderComponentStyles(),
+  multiDayHeaderComponents: MultiDayHeaderComponents(
+    // Custom Day Header builder.
+    dayHeaderBuilder: (date, style) => CustomWidget(),
+
+    // Custom Week Number builder.
+    weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
+
+    // Custom left trigger. (Must constrain the width)
+    leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+
+    /// Custom right trigger. (Must constrain the width)
+    rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+  ),
+  multiDayHeaderComponentStyles: MultiDayHeaderComponentStyles(
+    dayHeaderStyle: DayHeaderStyle(),
+    weekNumberStyle: WeekNumberStyle(),
+  ),
 );
 ```  
 
@@ -126,13 +149,81 @@ CalendarHeader(
 
 ```dart
 CalendarBody(
-  multiDayTileComponents: TileComponents(),
-  multiDayBodyComponents: MultiDayBodyComponents(),
-  multiDayBodyComponentStyles: MultiDayBodyComponentStyles(),
+  multiDayBodyComponents: MultiDayBodyComponents(
+    // Custom Hour Line builder.
+    hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+    
+    // Custom time line builder.
+    timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+    
+    // Custom day separator builder.
+    daySeparator: (style) => CustomWidget(),
+    
+    // Custom event indicator builder.
+    timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
+    
+    // Left trigger. (Must constrain the width)
+    leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+    
+    // Right trigger. (Must constrain the width)
+    rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+    
+    // Top trigger. (Must constrain the height)
+    topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+
+    // Bottom trigger. (Must constrain the height)
+    bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+  ),
+  monthBodyComponents: MonthBodyComponents(
+    // Custom month grid builder.
+    monthGridBuilder: (style) => CustomWidget(),  
+
+    // Left trigger. (Must constrain the width)
+    leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+
+    // Right trigger. (Must constrain the width)
+    rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+  ),
 );
 ```  
 
 ## Customizing the behavior
+
+
+### Callbacks
+
+The calendar has a few useful callback functions:
+
+```dart
+CalendarCallbacks(
+  // Called when an event is tapped.
+  onEventTapped: (event, renderBox) {},
+
+  // Called when an event is about to be created.
+  onEventCreate: (event) {
+    // This allows you to modify the event before it is created.
+    event.copyWith(data: data);
+  }
+  
+  // Called when a new event is created.
+  onEventCreated: (event) {
+    // Add the event to the eventsController.
+    eventsController.addEvent(event);
+  },
+
+  // Called when a event has been changed (rescheduling / resizing)
+  onEventChanged: (event, updatedEvent) {
+    // Do something with the updated event.
+    // ex. Update it in your database/long term storage.
+  },
+
+  // Called when a page is changed.
+  onPageChanged: (visibleDateTimeRange) {},
+)
+```
+
+
+### Header and Body
 
 The `CalendarHeader` and `CalendarBody` both take configuration object's for the different `ViewConfigurations`.
 
@@ -161,22 +252,3 @@ Some behaviors that can be customized:
   ```
 
 
-## Callbacks
-
-The calendar has a few useful callback functions:
-
-```dart
-CalendarCallbacks(
-  // Called when an event is tapped.
-  onEventTapped: (event, renderBox) {},
-
-  // Called when a new event is created.
-  onEventCreated: (event) {},
-
-  // Called when a event has been changed (rescheduling / resizing)
-  onEventChanged: (event, updatedEvent) async {},
-
-  // Called when a page is changed.
-  onPageChanged: (visibleDateTimeRange) {},
-)
-```
