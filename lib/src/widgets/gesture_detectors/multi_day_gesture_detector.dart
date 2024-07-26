@@ -34,9 +34,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
 
   double get dayWidth => widget.dayWidth;
-
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
-
   DateTime? start;
 
   void onDown(Offset localPosition) {
@@ -66,7 +64,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
     // Create a dateTimeRange from the start and currentDateTime.
     final dateTimeRange = currentDate.isBefore(start!)
-        ? DateTimeRange(start: currentDate, end: start!)
+        ? DateTimeRange(start: currentDate, end: start!.endOfDay)
         : DateTimeRange(start: start!, end: currentDate);
 
     final selectedEvent = this.selectedEvent.value;
