@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/trigger.dart';
 
 class CalendarWidget extends StatelessWidget {
-  final CalendarController controller;
-  final EventsController eventsController;
+  final CalendarController<Event> controller;
+  final EventsController<Event> eventsController;
   final ViewConfiguration viewConfiguration;
   final List<ViewConfiguration> viewConfigurations;
   final void Function(ViewConfiguration value) onSelected;
-  final CalendarCallbacks callbacks;
+  final CalendarCallbacks<Event> callbacks;
   final MultiDayBodyConfiguration bodyConfiguration;
   final MultiDayHeaderConfiguration headerConfiguration;
   final bool showHeader;
@@ -29,7 +30,7 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileComponents = TileComponents(
+    final tileComponents = TileComponents<Event>(
       tileBuilder: (event) {
         return Container(
           decoration: BoxDecoration(
@@ -46,7 +47,7 @@ class CalendarWidget extends StatelessWidget {
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
 
-    final multiDayTileComponents = TileComponents(
+    final multiDayTileComponents = TileComponents<Event>(
       tileBuilder: (event) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
@@ -138,7 +139,7 @@ class CalendarWidget extends StatelessWidget {
       ),
     );
 
-    final calendarHeader = CalendarHeader(
+    final calendarHeader = CalendarHeader<Event>(
       multiDayTileComponents: multiDayTileComponents,
       multiDayHeaderConfiguration: headerConfiguration,
       multiDayHeaderComponents: multiDayHeaderComponents,
@@ -156,7 +157,7 @@ class CalendarWidget extends StatelessWidget {
       ),
     );
 
-    final calendarBody = CalendarBody(
+    final calendarBody = CalendarBody<Event>(
       multiDayTileComponents: tileComponents,
       monthTileComponents: tileComponents,
       monthBodyComponents: monthBodyComponents,
@@ -165,7 +166,7 @@ class CalendarWidget extends StatelessWidget {
       monthBodyConfiguration: headerConfiguration,
     );
 
-    return CalendarView(
+    return CalendarView<Event>(
       calendarController: controller,
       eventsController: eventsController,
       viewConfiguration: viewConfiguration,

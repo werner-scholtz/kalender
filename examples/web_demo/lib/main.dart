@@ -1,10 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/enumerations.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
+import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/event_overlay.dart';
 
 void main() {
@@ -65,47 +65,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final eventsController = EventsController();
+  final eventsController = EventsController<Event>();
 
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
     MultiDayViewConfiguration.custom(numberOfDays: 3),
-    // MonthViewConfiguration.month(),
+    MonthViewConfiguration.singleMonth(),
   ];
 
-  int _index = 0;
+  late final _calendarCallbacks = CalendarCallbacks<Event>(
+    onEventTapped: (event, renderBox) => _createOverlay(event, renderBox),
+    onEventCreate: (event) => event.copyWith(data: Event(title: 'new')),
+    onEventCreated: (event) => eventsController.addEvent(event),
+  );
 
+  ViewType _type = ViewType.single;
   OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-
-    final events = List.generate(14, (index) {
-      final start = now.add(Duration(days: index - 7));
-      final end = start.add(Duration(hours: Random().nextInt(3) + 1));
-
-      return CalendarEvent(
-        data: Event(
-          title: 'Event $index',
-          color: Colors.blue,
-        ),
-        dateTimeRange: DateTimeRange(start: start, end: end),
-      );
-    });
-
-    eventsController.addEvents(events);
+    eventsController.addEvents(generateEvents());
   }
 
   @override
   Widget build(BuildContext context) {
-    final callbacks = CalendarCallbacks(
-      onEventTapped: _createOverlay,
-    );
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -119,28 +105,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   : Icons.brightness_7_rounded,
             ),
           ),
-          DropdownMenu(
-            initialSelection: _index,
-            dropdownMenuEntries: const [
-              DropdownMenuEntry(value: 0, label: 'Single Calendar'),
-              DropdownMenuEntry(value: 1, label: 'Multi Calendar'),
+          DropdownMenu<ViewType>(
+            initialSelection: _type,
+            dropdownMenuEntries: [
+              ...ViewType.values.map((e) => DropdownMenuEntry(value: e, label: e.label)),
             ],
             onSelected: (value) {
               if (value == null) return;
-              setState(() => _index = value);
+              setState(() => _type = value);
             },
           ),
         ],
       ),
-      body: _index == 0
+      body: _type == ViewType.single
           ? SingleCalendarView(
               eventsController: eventsController,
-              callbacks: callbacks,
+              callbacks: _calendarCallbacks,
               viewConfigurations: _viewConfigurations,
             )
           : MultiCalendarView(
               eventsController: eventsController,
-              callbacks: callbacks,
+              callbacks: _calendarCallbacks,
               viewConfigurations: _viewConfigurations,
             ),
     );
@@ -153,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _createOverlay(CalendarEvent event, RenderBox renderBox) {
+  void _createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
     _removeOverlay();
 
     var position = renderBox.localToGlobal(Offset.zero);
@@ -179,6 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Positioned.fill(
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: _removeOverlay,
               ),
             ),
@@ -186,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
               top: position.dy,
               left: position.dx,
               child: EventOverlayCard(
-                event: event as CalendarEvent<Event>,
+                event: event,
                 position: position,
                 height: height,
                 width: width,

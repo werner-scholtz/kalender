@@ -46,6 +46,7 @@ class EventOverlayCard extends StatelessWidget {
                   )
                 ],
               ),
+              const SizedBox(height: 8),
             ],
           ),
         ),

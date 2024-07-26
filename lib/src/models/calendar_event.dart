@@ -67,10 +67,10 @@ class CalendarEvent<T extends Object?> {
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
     DateTimeRange? dateTimeRange,
-    T? eventData,
+    T? data,
   }) {
     return CalendarEvent<T>(
-      data: eventData ?? this.data,
+      data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
     );
   }

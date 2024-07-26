@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
 class MultiCalendarView extends StatefulWidget {
-  final EventsController eventsController;
-  final CalendarCallbacks callbacks;
+  final EventsController<Event> eventsController;
+  final CalendarCallbacks<Event> callbacks;
   final List<ViewConfiguration> viewConfigurations;
   const MultiCalendarView({
     super.key,
@@ -18,8 +19,8 @@ class MultiCalendarView extends StatefulWidget {
 }
 
 class _MultiCalendarViewState extends State<MultiCalendarView> {
-  final _controller = CalendarController();
-  final _controller1 = CalendarController();
+  final _controller = CalendarController<Event>();
+  final _controller1 = CalendarController<Event>();
 
   late ViewConfiguration _viewConfiguration = widget.viewConfigurations.first;
   late ViewConfiguration _viewConfiguration1 = widget.viewConfigurations.first;
