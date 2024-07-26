@@ -389,10 +389,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               );
 
               return Padding(
-                padding: EdgeInsets.only(
-                  left: viewConfiguration.timelineWidth,
-                  bottom: configuration.showTiles ? 0 : 8.0,
-                ),
+                padding: EdgeInsets.only(left: viewConfiguration.timelineWidth),
                 child: Column(
                   children: [
                     Row(children: [...dayHeaders]),
