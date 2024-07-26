@@ -140,6 +140,20 @@ typedef MonthGridBuilder = Widget Function(
   MonthGridStyle? style,
 );
 
+/// The trigger widget builder, should be constrained in width.
+/// 
+/// The [pageWidth] is the width of the page.
+typedef HorizontalTriggerWidgetBuilder = Widget Function(
+  double pageWidth,
+);
+
+/// The trigger widget builder, should be constrained in height.
+/// 
+/// The [pageHeight] is the height of the page.
+typedef VerticalTriggerWidgetBuilder = Widget Function(
+  double viewPortHeight,
+);
+
 ///
 
 /// Calculates the VisibleDateRange from the [index].

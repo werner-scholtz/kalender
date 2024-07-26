@@ -270,10 +270,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               dayWidth: dayWidth,
               viewPortHeight: viewPortHeight,
               heightPerMinute: heightPerMinute,
-              leftTriggerWidget: components?.leftPageTriggerWidget,
-              rightTriggerWidget: components?.rightPageTriggerWidget,
-              topTriggerWidget: components?.topScrollTriggerWidget,
-              bottomTriggerWidget: components?.bottomScrollTriggerWidget,
+              leftPageTrigger: components?.leftTriggerBuilder,
+              rightPageTrigger: components?.rightTriggerBuilder,
+              topScrollTrigger: components?.topTriggerBuilder,
+              bottomScrollTrigger: components?.bottomTriggerBuilder,
             );
 
             return Stack(

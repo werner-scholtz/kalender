@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
@@ -9,14 +8,14 @@ class MultiDayHeaderComponents {
   final DayHeaderBuilder? dayHeaderBuilder;
   final WeekNumberBuilder? weekNumberBuilder;
 
-  final Widget? leftPageTriggerWidget;
-  final Widget? rightPageTriggerWidget;
+  final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
+  final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.weekNumberBuilder,
-    this.leftPageTriggerWidget,
-    this.rightPageTriggerWidget,
+    this.leftTriggerBuilder,
+    this.rightTriggerBuilder,
   });
 }
 
@@ -29,19 +28,19 @@ class MultiDayBodyComponents {
   final DaySeparatorBuilder? daySeparator;
   final TimeIndicatorBuilder? timeIndicator;
 
-  final Widget? leftPageTriggerWidget;
-  final Widget? rightPageTriggerWidget;
-  final Widget? topScrollTriggerWidget;
-  final Widget? bottomScrollTriggerWidget;
+  final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
+  final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
+  final VerticalTriggerWidgetBuilder? topTriggerBuilder;
+  final VerticalTriggerWidgetBuilder? bottomTriggerBuilder;
 
   const MultiDayBodyComponents({
     this.hourLines,
     this.timeline,
     this.daySeparator,
     this.timeIndicator,
-    this.leftPageTriggerWidget,
-    this.rightPageTriggerWidget,
-    this.topScrollTriggerWidget,
-    this.bottomScrollTriggerWidget,
+    this.leftTriggerBuilder,
+    this.rightTriggerBuilder,
+    this.topTriggerBuilder,
+    this.bottomTriggerBuilder,
   });
 }

@@ -5,6 +5,7 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
@@ -24,10 +25,10 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   final double viewPortHeight;
   final double heightPerMinute;
 
-  final Widget? leftTriggerWidget;
-  final Widget? rightTriggerWidget;
-  final Widget? topTriggerWidget;
-  final Widget? bottomTriggerWidget;
+  final HorizontalTriggerWidgetBuilder? leftPageTrigger;
+  final HorizontalTriggerWidgetBuilder? rightPageTrigger;
+  final VerticalTriggerWidgetBuilder? topScrollTrigger;
+  final VerticalTriggerWidgetBuilder? bottomScrollTrigger;
 
   /// Creates a [DayDragTarget].
   const DayDragTarget({
@@ -44,10 +45,10 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.viewPortHeight,
     required this.heightPerMinute,
-    required this.leftTriggerWidget,
-    required this.rightTriggerWidget,
-    required this.topTriggerWidget,
-    required this.bottomTriggerWidget,
+    required this.leftPageTrigger,
+    required this.rightPageTrigger,
+    required this.topScrollTrigger,
+    required this.bottomScrollTrigger,
   });
 
   @override
@@ -99,7 +100,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
         if (candidateData.firstOrNull == null) return const SizedBox();
 
         final pageTriggerSetup = bodyConfiguration.pageTriggerConfiguration;
-        final triggerWidth = pageTriggerSetup.triggerWidth.call(pageWidth);
+        final triggerWidth = pageWidth / 50;
         final pageAnimationDuration = pageTriggerSetup.animationDuration;
         final pageTriggerDelay = pageTriggerSetup.triggerDelay;
         final pageAnimationCurve = pageTriggerSetup.animationCurve;
@@ -112,7 +113,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: widget.rightTriggerWidget,
+          child: widget.rightPageTrigger?.call(pageWidth) ??
+              SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final leftTrigger = NavigationTrigger(
@@ -123,7 +125,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: widget.leftTriggerWidget,
+          child: widget.leftPageTrigger?.call(pageWidth) ??
+              SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
@@ -142,7 +145,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: widget.topTriggerWidget,
+          child: widget.topScrollTrigger?.call(viewPortHeight) ??
+              SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         final bottomScrollTrigger = NavigationTrigger(
@@ -154,39 +158,16 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: widget.bottomTriggerWidget,
+          child: widget.bottomScrollTrigger?.call(viewPortHeight) ??
+              SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         return Stack(
           children: [
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: triggerWidth,
-              child: rightTrigger,
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: triggerWidth,
-              child: leftTrigger,
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 0,
-              height: triggerHeight,
-              child: topScrollTrigger,
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: triggerHeight,
-              child: bottomScrollTrigger,
-            ),
+            Align(alignment: Alignment.topCenter, child: topScrollTrigger),
+            Align(alignment: Alignment.bottomCenter, child: bottomScrollTrigger),
+            Align(alignment: Alignment.centerLeft, child: leftTrigger),
+            Align(alignment: Alignment.centerRight, child: rightTrigger),
           ],
         );
       },

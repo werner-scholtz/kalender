@@ -5,6 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/resize_event.dart';
+import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/components/navigation_trigger.dart';
 
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
@@ -19,8 +20,8 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final double tileHeight;
   final bool allowSingleDayEvents;
 
-  final Widget? leftTriggerWidget;
-  final Widget? rightTriggerWidget;
+  final HorizontalTriggerWidgetBuilder? leftPageTrigger;
+  final HorizontalTriggerWidgetBuilder? rightPageTrigger;
 
   const MultiDayDragTarget({
     super.key,
@@ -34,8 +35,8 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
     required this.pageWidth,
     required this.tileHeight,
     required this.allowSingleDayEvents,
-    required this.leftTriggerWidget,
-    required this.rightTriggerWidget,
+    required this.leftPageTrigger,
+    required this.rightPageTrigger,
   });
 
   @override
@@ -75,7 +76,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
-        final triggerWidth = pageTriggerSetup.triggerWidth.call(pageWidth);
+        final triggerWidth = pageWidth / 50;
         final pageAnimationDuration = pageTriggerSetup.animationDuration;
         final pageTriggerDelay = pageTriggerSetup.triggerDelay;
         final pageAnimationCurve = pageTriggerSetup.animationCurve;
@@ -88,7 +89,8 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
               curve: pageAnimationCurve,
             );
           },
-          child: widget.rightTriggerWidget,
+          child: widget.rightPageTrigger?.call(pageWidth) ??
+              ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
         );
 
         final leftTrigger = NavigationTrigger(
@@ -99,25 +101,14 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
               curve: pageAnimationCurve,
             );
           },
-          child: widget.leftTriggerWidget,
+          child: widget.leftPageTrigger?.call(pageWidth) ??
+              ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
         );
 
         return Stack(
           children: [
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: triggerWidth,
-              child: rightTrigger,
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: triggerWidth,
-              child: leftTrigger,
-            ),
+            Align(alignment: Alignment.centerRight, child: rightTrigger),
+            Align(alignment: Alignment.centerLeft, child: leftTrigger),
           ],
         );
       },

@@ -14,7 +14,6 @@ class PageTriggerConfiguration {
       animationDuration <= triggerDelay,
       'The animation duration must be less or equal to the page trigger delay.',
     );
-    this.triggerWidth = triggerWidth ?? (pageWidth) => pageWidth / 50;
   }
 
   /// The widget that is rendered above the top page trigger.
@@ -26,8 +25,6 @@ class PageTriggerConfiguration {
   /// The curve of the page animation.
   Curve animationCurve;
 
-  /// Calculation used to determine the width of the trigger.
-  late double Function(double pageWidth) triggerWidth;
 
   /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
   PageTriggerConfiguration copyWith({
@@ -40,7 +37,6 @@ class PageTriggerConfiguration {
       triggerDelay: triggerDelay ?? this.triggerDelay,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
-      triggerWidth: triggerWidth ?? this.triggerWidth,
     );
   }
 
@@ -51,8 +47,7 @@ class PageTriggerConfiguration {
     return other is PageTriggerConfiguration &&
         other.triggerDelay == triggerDelay &&
         other.animationDuration == animationDuration &&
-        other.animationCurve == animationCurve &&
-        other.triggerWidth == triggerWidth;
+        other.animationCurve == animationCurve;
   }
 
   @override
@@ -61,7 +56,6 @@ class PageTriggerConfiguration {
       triggerDelay,
       animationDuration,
       animationCurve,
-      triggerWidth,
     );
   }
 }

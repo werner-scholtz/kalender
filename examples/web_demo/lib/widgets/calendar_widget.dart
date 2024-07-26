@@ -66,17 +66,17 @@ class CalendarWidget extends StatelessWidget {
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
 
-    const monthBodyComponents = MonthBodyComponents(
-      leftPageTriggerWidget: TriggerWidget(),
-      rightPageTriggerWidget: TriggerWidget(),
+    final monthBodyComponents = MonthBodyComponents(
+      leftTriggerBuilder: _horizontalTrigger,
+      rightTriggerBuilder: _horizontalTrigger,
     );
-    const multiDayBodyComponents = MultiDayBodyComponents(
-      leftPageTriggerWidget: TriggerWidget(),
-      rightPageTriggerWidget: TriggerWidget(),
+    final multiDayBodyComponents = MultiDayBodyComponents(
+      leftTriggerBuilder: _horizontalTrigger,
+      rightTriggerBuilder: _horizontalTrigger,
     );
-    const multiDayHeaderComponents = MultiDayHeaderComponents(
-      leftPageTriggerWidget: TriggerWidget(),
-      rightPageTriggerWidget: TriggerWidget(),
+    final multiDayHeaderComponents = MultiDayHeaderComponents(
+      leftTriggerBuilder: _horizontalTrigger,
+      rightTriggerBuilder: _horizontalTrigger,
     );
 
     final calendarDateTime = ValueListenableBuilder(
@@ -208,6 +208,10 @@ class CalendarWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     );
+  }
+
+  Widget _horizontalTrigger(double pageWidth) {
+    return TriggerWidget(size: Size.fromWidth(pageWidth / 50));
   }
 
   Offset dragAnchorStrategy(

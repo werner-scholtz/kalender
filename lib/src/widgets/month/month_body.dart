@@ -136,8 +136,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   pageWidth: pageWidth,
                   tileHeight: tileHeight,
                   allowSingleDayEvents: true,
-                  leftTriggerWidget: components?.leftPageTriggerWidget,
-                  rightTriggerWidget: components?.rightPageTriggerWidget,
+                  leftPageTrigger: components?.leftTriggerBuilder,
+                  rightPageTrigger: components?.rightTriggerBuilder,
                 );
 
                 final gestureDetector = MultiDayGestureDetector(

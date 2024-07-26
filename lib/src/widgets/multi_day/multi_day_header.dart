@@ -106,7 +106,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
           calendarController: calendarController!,
           configuration: headerConfiguration,
           tileComponents: tileComponents,
-          component: components,
+          components: components,
           componentStyles: componentStyles,
           timelineWidth: viewConfiguration.timelineWidth,
           tileHeight: headerConfiguration.tileHeight,
@@ -221,8 +221,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                 pageWidth: pageWidth,
                 tileHeight: tileHeight,
                 allowSingleDayEvents: false,
-                leftTriggerWidget: components?.leftPageTriggerWidget,
-                rightTriggerWidget: components?.rightPageTriggerWidget,
+                leftPageTrigger: components?.leftTriggerBuilder,
+                rightPageTrigger: components?.rightTriggerBuilder,
               );
 
               final gestureDetector = MultiDayGestureDetector<T>(
@@ -265,7 +265,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration configuration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponents? component;
+  final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double timelineWidth;
   final double tileHeight;
@@ -279,7 +279,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.callbacks,
     required this.configuration,
     required this.tileComponents,
-    required this.component,
+    required this.components,
     required this.componentStyles,
     required this.timelineWidth,
     required this.tileHeight,
@@ -298,7 +298,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
-        return component?.weekNumberBuilder?.call(
+        return components?.weekNumberBuilder?.call(
               value,
               weekNumberStyle,
             ) ??
@@ -331,7 +331,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
               final dayHeaderStyle = componentStyles?.dayHeaderStyle;
               final dayHeaders = visibleDates.map((date) {
-                final dayHeader = component?.dayHeaderBuilder?.call(
+                final dayHeader = components?.dayHeaderBuilder?.call(
                       date,
                       dayHeaderStyle,
                     ) ??
@@ -369,8 +369,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 pageWidth: pageWidth,
                 tileHeight: tileHeight,
                 allowSingleDayEvents: false,
-                leftTriggerWidget: component?.leftPageTriggerWidget,
-                rightTriggerWidget: component?.rightPageTriggerWidget,
+                leftPageTrigger: components?.leftTriggerBuilder,
+                rightPageTrigger: components?.rightTriggerBuilder,
               );
 
               final gestureDetector = MultiDayGestureDetector<T>(
@@ -386,7 +386,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 minHeight: tileHeight,
                 minWidth: pageWidth,
               );
-
+                
               return Padding(
                 padding: EdgeInsets.only(left: viewConfiguration.timelineWidth),
                 child: Column(
