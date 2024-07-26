@@ -73,8 +73,10 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       // Clamp the dateTimeRange to the timeOfDayRange.
       dateTimeRange = _clampDateTimeRange(dateTimeRange, start);
     }
-
-    controller.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange), internal: true);
+    final selectedEvent = this.selectedEvent.value;
+    if (selectedEvent == null) return;
+    final updatedEvent = selectedEvent.copyWith(dateTimeRange: dateTimeRange);
+    controller.selectEvent(updatedEvent, internal: true);
   }
 
   void onEnd() {

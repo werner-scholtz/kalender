@@ -69,7 +69,10 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
         ? DateTimeRange(start: currentDate, end: start!)
         : DateTimeRange(start: start!, end: currentDate);
 
-    controller.selectEvent(CalendarEvent(dateTimeRange: dateTimeRange), internal: true);
+    final selectedEvent = this.selectedEvent.value;
+    if (selectedEvent == null) return;
+    final updatedEvent = selectedEvent.copyWith(dateTimeRange: dateTimeRange);
+    controller.selectEvent(updatedEvent, internal: true);
   }
 
   void onEnd() {
