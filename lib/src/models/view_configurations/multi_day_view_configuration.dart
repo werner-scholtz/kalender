@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
+import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -236,14 +236,13 @@ class MultiDayBodyConfiguration {
     this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.dayEventLayoutStrategy = defaultLayoutStrategy,
+    this.eventLayoutStrategy = defaultEventLayoutStrategy,
+    this.eventGroupLayoutStrategy = defaultEventGroupLayoutStrategy,
     this.scrollPhysics,
     this.pageScrollPhysics,
   }) {
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration =
-        scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
   }
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
@@ -284,7 +283,10 @@ class MultiDayBodyConfiguration {
   late final ScrollTriggerConfiguration scrollTriggerConfiguration;
 
   /// The layout strategy used by the [MultiDayBody] to layout events.
-  final DayEventLayoutStrategy dayEventLayoutStrategy;
+  final EventLayoutStrategy eventLayoutStrategy;
+
+  //// The layout strategy used by the [MultiDayBody] to layout event groups.
+  final EventGroupLayoutStrategy eventGroupLayoutStrategy;
 
   /// The [ScrollPhysics] used by the scrollable body.
   final ScrollPhysics? scrollPhysics;
@@ -306,7 +308,7 @@ class MultiDayBodyConfiguration {
     int? snapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    DayEventLayoutStrategy? dayEventLayoutStrategy,
+    EventLayoutStrategy? dayEventLayoutStrategy,
     ScrollPhysics? scrollPhysics,
     ScrollPhysics? pageScrollPhysics,
   }) {
@@ -321,12 +323,9 @@ class MultiDayBodyConfiguration {
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
-      pageTriggerConfiguration:
-          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
-      scrollTriggerConfiguration:
-          scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
-      dayEventLayoutStrategy:
-          dayEventLayoutStrategy ?? this.dayEventLayoutStrategy,
+      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
+      eventLayoutStrategy: dayEventLayoutStrategy ?? this.eventLayoutStrategy,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
     );
@@ -349,7 +348,7 @@ class MultiDayBodyConfiguration {
         other.snapIntervalMinutes == snapIntervalMinutes &&
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
         other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
-        other.dayEventLayoutStrategy == dayEventLayoutStrategy &&
+        other.eventLayoutStrategy == eventLayoutStrategy &&
         other.scrollPhysics == scrollPhysics &&
         other.pageScrollPhysics == pageScrollPhysics;
   }
@@ -369,7 +368,7 @@ class MultiDayBodyConfiguration {
       snapIntervalMinutes,
       pageTriggerConfiguration,
       scrollTriggerConfiguration,
-      dayEventLayoutStrategy,
+      eventLayoutStrategy,
       scrollPhysics,
       pageScrollPhysics,
     );
@@ -389,8 +388,7 @@ class MultiDayHeaderConfiguration {
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
-    this.pageTriggerConfiguration =
-        pageTriggerConfiguration ?? PageTriggerConfiguration();
+    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
   }
 
   /// The height of the tiles in the [MultiDayHeader].
@@ -429,8 +427,7 @@ class MultiDayHeaderConfiguration {
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       createEventTrigger: createEventTrigger ?? this.createEventTrigger,
-      pageTriggerConfiguration:
-          pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
 /// A [StatelessWidget] that positions a list of [EventGroup]s in a stack.
@@ -35,7 +35,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleDates = visibleDateTimeRange.datesSpanned;
-    final layoutStrategy = bodyConfiguration.dayEventLayoutStrategy;
+    final eventLayoutStrategy = bodyConfiguration.eventLayoutStrategy;
+    final eventGroupLayoutStrategy = bodyConfiguration.eventGroupLayoutStrategy;
     final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
     final selectedEvent = controller.selectedEvent;
 
@@ -53,27 +54,50 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
 
         // Create the event groups for the visible events.
         final eventGroups = _createEventGroups(visibleDates, visibleEvents);
-        final eventGroupWidgets = _generateEventGroups(
-          groups: eventGroups,
-          dayWidth: dayWidth,
-          heightPerMinute: heightPerMinute,
-          timeOfDayRange: timeOfDayRange,
-          visibleDates: visibleDates,
-          layoutStrategy: layoutStrategy,
-          child: (event, continuesBefore, continuesAfter) => DayEventTile(
-            event: event,
-            eventsController: eventsController,
-            controller: controller,
-            callbacks: callbacks,
-            tileComponents: tileComponents,
-            bodyConfiguration: bodyConfiguration,
-            visibleDateTimeRange: visibleDateTimeRange,
-            timeOfDayRange: timeOfDayRange,
-            dayWidth: dayWidth,
-            heightPerMinute: heightPerMinute,
-            continuesBefore: continuesBefore,
-            continuesAfter: continuesAfter,
+        final eventGroupWidgets = eventGroups.map((group) {
+          // TODO: how to handle errors when event is outside of the TimeOfDayRange.
+
+          // Map the events to tiles.
+          final tiles = group.events.indexed.map((element) {
+            final (id, event) = element;
+            final continuesBefore = event.start.isBefore(group.date);
+            final continuesAfter = event.end.isAfter(group.date.endOfDay);
+            return LayoutId(
+              id: id,
+              child: DayEventTile(
+                event: event,
+                eventsController: eventsController,
+                controller: controller,
+                callbacks: callbacks,
+                tileComponents: tileComponents,
+                bodyConfiguration: bodyConfiguration,
+                visibleDateTimeRange: visibleDateTimeRange,
+                timeOfDayRange: timeOfDayRange,
+                dayWidth: dayWidth,
+                heightPerMinute: heightPerMinute,
+                continuesBefore: continuesBefore,
+                continuesAfter: continuesAfter,
+              ),
+            );
+          });
+
+          return CustomMultiChildLayout(
+            delegate: eventLayoutStrategy.call(group, heightPerMinute, timeOfDayRange),
+            children: [...tiles],
+          );
+        });
+
+        final eventGroupsWidget = CustomMultiChildLayout(
+          delegate: eventGroupLayoutStrategy.call(
+            eventGroups.toList(),
+            visibleDates,
+            timeOfDayRange,
+            heightPerMinute,
+            dayWidth,
           ),
+          children: eventGroupWidgets.indexed.map((e) {
+            return LayoutId(id: e.$1, child: e.$2);
+          }).toList(),
         );
 
         // TODO: investigate a more efficient way to do this.
@@ -87,27 +111,41 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
             final events = visibleEvents.toList()
               ..removeWhere((e) => e.id == controller.selectedEventId)
               ..add(event);
-            final chainingEventGroups = _createEventGroups(visibleDates, events);
-            final dropTarget = tileComponents.dropTargetTile;
-            final eventGroups = _generateEventGroups(
-              groups: chainingEventGroups,
-              dayWidth: dayWidth,
-              heightPerMinute: heightPerMinute,
-              timeOfDayRange: timeOfDayRange,
-              visibleDates: visibleDates,
-              child: (event, _, __) {
-                if (dropTarget == null ||
-                    (event.id != -1 && event.id != controller.selectedEventId)) {
-                  return const SizedBox();
-                }
-                return tileComponents.dropTargetTile!.call(event);
-              },
-              layoutStrategy: layoutStrategy,
-            );
 
-            return Stack(
-              fit: StackFit.expand,
-              children: [...eventGroups],
+            final dropTarget = tileComponents.dropTargetTile;
+            final eventGroups = _createEventGroups(visibleDates, events);
+
+            final eventGroupWidgets = eventGroups.indexed.map((item) {
+              // TODO: how to handle errors when event is outside of the TimeOfDayRange.
+              final (index, group) = item;
+
+              // Map the events to tiles.
+              final tiles = group.events.indexed.map((element) {
+                final (id, event) = element;
+                final drawTile = dropTarget != null &&
+                    (event.id == -1 || event.id == controller.selectedEventId);
+                return LayoutId(
+                    id: id, child: drawTile ? dropTarget.call(event) : const SizedBox());
+              });
+
+              return LayoutId(
+                id: index,
+                child: CustomMultiChildLayout(
+                  delegate: eventLayoutStrategy.call(group, heightPerMinute, timeOfDayRange),
+                  children: [...tiles],
+                ),
+              );
+            });
+
+            return CustomMultiChildLayout(
+              delegate: EventGroupDefaultLayoutDelegate(
+                groups: eventGroups.toList(),
+                heightPerMinute: heightPerMinute,
+                timeOfDayRange: timeOfDayRange,
+                dayWidth: dayWidth,
+                visibleDates: visibleDates,
+              ),
+              children: eventGroupWidgets.toList(),
             );
           },
         );
@@ -116,63 +154,12 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             dropTargetWidget,
-            ...eventGroupWidgets,
+            // ...eventGroupWidgets,
+            eventGroupsWidget,
           ],
         );
       },
     );
-  }
-
-  Iterable<Positioned> _generateEventGroups({
-    required Iterable<EventGroup<T>> groups,
-    required Widget Function(CalendarEvent<T> event, bool before, bool after)? child,
-    required List<DateTime> visibleDates,
-    required double dayWidth,
-    required double heightPerMinute,
-    required TimeOfDayRange timeOfDayRange,
-    required DayEventLayoutStrategy layoutStrategy,
-  }) {
-    // Map the event groups to widgets.
-    return groups.map((group) {
-      final dayIndex = visibleDates.indexOf(group.date);
-
-      // Calculate the left value of the group.
-      final groupWidth = dayWidth - 1;
-      final left = (groupWidth * dayIndex) + (dayIndex + 1);
-
-      // Calculate the height of the group.
-      final duration = group.dateTimeRange.duration;
-      final height = heightPerMinute * duration.inMinutes;
-
-      // Calculate the top value of the group.
-      final startOfDay = timeOfDayRange.start.toDateTime(group.date);
-      final timeAfterStart = group.start.difference(startOfDay);
-      final top = heightPerMinute * timeAfterStart.inMinutes;
-
-      // TODO: how to handle errors when event is outside of the TimeOfDayRange.
-
-      // Map the events to tiles.
-      final tiles = group.events.indexed.map((element) {
-        final (id, event) = element;
-        final continuesBefore = event.start.isBefore(group.date);
-        final continuesAfter = event.end.isAfter(group.date.endOfDay);
-        return LayoutId(
-          id: id,
-          child: child?.call(event, continuesBefore, continuesAfter) ?? const SizedBox(),
-        );
-      });
-
-      return Positioned(
-        left: left,
-        width: groupWidth,
-        height: height,
-        top: top,
-        child: CustomMultiChildLayout(
-          delegate: layoutStrategy.call(group, heightPerMinute, timeOfDayRange),
-          children: [...tiles],
-        ),
-      );
-    });
   }
 
   /// Creates a list of [EventGroup]s from the [visibleDates] and [events].
