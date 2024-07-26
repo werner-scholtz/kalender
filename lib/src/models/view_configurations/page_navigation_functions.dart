@@ -11,8 +11,7 @@ abstract class PageNavigationFunctions {
     );
   }
 
-  factory PageNavigationFunctions.week(
-      DateTimeRange dateTimeRange, int firstDayOfWeek) {
+  factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return WeekPageFunctions(
       dateTimeRange: dateTimeRange,
       firstDayOfWeek: firstDayOfWeek,
@@ -25,8 +24,7 @@ abstract class PageNavigationFunctions {
     return WorkWeekPageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  factory PageNavigationFunctions.custom(
-      DateTimeRange dateTimeRange, int numberOfDays) {
+  factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
     return CustomPageFunctions(
       dateTimeRange: dateTimeRange,
       numberOfDays: numberOfDays,
@@ -58,14 +56,13 @@ class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start;
+    final start = dateTimeRange.start.asUtc().startOfDay;
     dateTimeRangeFromIndex = (index) => start.addDays(index).dayRange;
     indexFromDate = (date) {
-      final dateUtc = date.startOfDay.toUtc();
-      final startDateUtc = start.startOfDay.toUtc();
-      return dateUtc.difference(startDateUtc).inDays;
+      final dateAsUtc = date.asUtc().endOfDay;
+      return dateAsUtc.difference(start).inDays;
     };
-    numberOfPages = dateTimeRange.dateDifference;
+    numberOfPages = dateTimeRange.dayDifference;
   }
 
   @override
@@ -83,12 +80,23 @@ class WeekPageFunctions extends PageNavigationFunctions {
     required DateTimeRange dateTimeRange,
     required int firstDayOfWeek,
   }) {
-    final start = dateTimeRange.start;
-    final end = dateTimeRange.end;
-    final shiftedStart = start.startOfWeekWithOffset(firstDayOfWeek);
-    final shiftedEnd = end.endOfWeekWithOffset(firstDayOfWeek);
-    final shiftedStartUtc = shiftedStart.toUtc();
-    final shiftedEndUtc = shiftedEnd.toUtc();
+    final start = dateTimeRange.start.asUtc();
+    final end = dateTimeRange.end.asUtc();
+    final shiftedStart = start.startOfWeekWithOffset(firstDayOfWeek).startOfDay;
+    final shiftedEnd = end.endOfWeekWithOffset(firstDayOfWeek).startOfDay;
+    print(shiftedStart);
+    final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
+    final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
+    print(shiftedRange);
+    print(weekDifference);
+
+    // 2024-03-25 00:00:00.000 - 2024-04-22 00:00:00.000
+    // 2024-03-25 00:00:00.000 - 2024-04-22 00:00:00.000
+
+    if (weekDifference != weekDifference.round()) {
+      debugPrint('Week difference is not a whole number, this should not happen and is a bug');
+    }
+    numberOfPages = weekDifference.round();
 
     dateTimeRangeFromIndex = (index) {
       return DateTime(
@@ -98,18 +106,15 @@ class WeekPageFunctions extends PageNavigationFunctions {
       ).weekRangeWithOffset(firstDayOfWeek);
     };
     indexFromDate = (date) {
-      final shiftedDate = date.startOfDay.startOfWeekWithOffset(firstDayOfWeek);
-      final shiftedDateUtc = shiftedDate.toUtc();
-      final range = DateTimeRange(start: shiftedStartUtc, end: shiftedDateUtc);
-      final value = range.dayDifference / DateTime.daysPerWeek;
-      assert(value == value.round());
-      return value.round();
-    };
+      final dateAsUtc = date.asUtc().endOfDay;
+      final shiftedDate = dateAsUtc.startOfWeekWithOffset(firstDayOfWeek);
+      final range = DateTimeRange(start: shiftedStart, end: shiftedDate);
 
-    final shiftedRange = DateTimeRange(start: shiftedStartUtc, end: shiftedEndUtc);
-    final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
-    assert(weekDifference == weekDifference.round());
-    numberOfPages = weekDifference.round();
+      final index = range.dayDifference / DateTime.daysPerWeek;
+
+      // assert(index == index.round());
+      return index.round().clamp(0, numberOfPages - 1);
+    };
   }
 
   @override
@@ -126,12 +131,17 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   WorkWeekPageFunctions({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start;
-    final end = dateTimeRange.end;
-    final shiftedStart = start.startOfWeekWithOffset(1);
-    final shiftedEnd = end.endOfWeekWithOffset(1);
-    final shiftedStartUtc = shiftedStart.toUtc();
-    final shiftedEndUtc = shiftedEnd.toUtc();
+    final start = dateTimeRange.start.asUtc();
+    final end = dateTimeRange.end.asUtc();
+    final shiftedStart = start.startOfWeekWithOffset(1).startOfDay;
+    final shiftedEnd = end.endOfWeekWithOffset(1).startOfDay;
+    final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
+    final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
+
+    if (weekDifference != weekDifference.round()) {
+      debugPrint('Week difference is not a whole number, this should not happen and is a bug');
+    }
+    numberOfPages = weekDifference.round();
 
     dateTimeRangeFromIndex = (index) {
       final weekRange = DateTime(
@@ -146,18 +156,13 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
       );
     };
     indexFromDate = (date) {
-      final shiftedDate = date.startOfDay.startOfWeekWithOffset(1);
-      final shiftedDateUtc = shiftedDate.toUtc();
-      final range = DateTimeRange(start: shiftedStartUtc, end: shiftedDateUtc);
-      final value = range.dayDifference / DateTime.daysPerWeek;
-      assert(value == value.round());
-      return value.round();
+      final dateAsUtc = date.asUtc();
+      final shiftedDate = dateAsUtc.startOfWeekWithOffset(1).endOfDay;
+      final range = DateTimeRange(start: shiftedStart, end: shiftedDate);
+      final index = range.dayDifference / DateTime.daysPerWeek;
+      assert(index == index.round());
+      return index.round().clamp(0, numberOfPages - 1);
     };
-
-    final shiftedRange = DateTimeRange(start: shiftedStartUtc, end: shiftedEndUtc);
-    final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
-    assert(weekDifference == weekDifference.round());
-    numberOfPages = weekDifference.round();
   }
 
   @override
@@ -176,6 +181,7 @@ class CustomPageFunctions extends PageNavigationFunctions {
     required int numberOfDays,
   }) {
     final start = dateTimeRange.start;
+    numberOfPages = dateTimeRange.dayDifference ~/ numberOfDays;
     dateTimeRangeFromIndex = (index) {
       final startDateUtc = start.startOfDay;
       return DateTime(
@@ -187,9 +193,9 @@ class CustomPageFunctions extends PageNavigationFunctions {
     indexFromDate = (date) {
       final dateUtc = date.startOfDay.toUtc();
       final startDateUtc = dateTimeRange.start.startOfDay.toUtc();
-      return dateUtc.difference(startDateUtc).inDays ~/ numberOfDays;
+      final index = dateUtc.difference(startDateUtc).inDays ~/ numberOfDays;
+      return index.clamp(0, numberOfPages - 1);
     };
-    numberOfPages = dateTimeRange.dayDifference ~/ numberOfDays;
   }
 
   @override

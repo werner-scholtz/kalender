@@ -11,16 +11,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return difference;
   }
 
-  /// The number of days between the [start] and [end] of the [DateTimeRange]. (including start and end).
-  ///
-  /// - Converts the start and end to utc before calculation.
-  int get dateDifference {
-    final startDate = start.toUtc().startOfDay;
-    final endDate = end.toUtc().endOfDay;
-    final difference = endDate.difference(startDate).inDays;
-    return difference;
-  }
-
   /// The month difference between the [start] and [end] of the [DateTimeRange].
   int get monthDifference {
     var months = ((start.year - end.year).abs() - 1) * 12;
@@ -38,30 +28,14 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// Includes the [start] date.
   /// Includes the [end] date only if it is not the start of the day. (after 00:00:00)
   List<DateTime> get datesSpanned {
-    // Check if the start and end is equal.
-    if (start == end) return [start.startOfDay];
+    final start = this.start.asUtc();
+    final end = this.end.asUtc();
 
-    final localStartOfDate = start.startOfDay;
-    final utcStartOfDate = localStartOfDate.toUtc();
-
-    final localEndOfDate = end.startOfDay;
-    // Check if the local end date is the startOfDay.
-    final isLocalEndOfDateStartOfDay = localEndOfDate.toUtc() == end.toUtc();
-
-    // If the localEndDate is the startOfDay
-    //   Use the localEndOfDate in utc.
-    // else
-    //   Use the localEndOfDate endOfDay in utc.
-    final utcEndOfDate = isLocalEndOfDateStartOfDay
-        ? localEndOfDate.toUtc()
-        : localEndOfDate.endOfDay.toUtc();
-
-    // Calculate the dayDifference.
-    final dayDifference = utcEndOfDate.difference(utcStartOfDate).inDays;
-
+    final dateTimeRange = DateTimeRange(start: start, end: end);
+    final numberOfDays = dateTimeRange.dayDifference;
     final dates = <DateTime>[];
-    for (var i = 0; i < dayDifference; i++) {
-      dates.add(localStartOfDate.add(Duration(days: i)));
+    for (var i = 0; i < numberOfDays; i++) {
+      dates.add(this.start.add(Duration(days: i)));
     }
 
     return dates;
@@ -107,8 +81,8 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
     // This is custom so that if the user sets firstDayOfWeek to
     // monday, sunday or saturday we only show one week number.
-    final showOnlyOneWeekNumber = isSingleWeek &&
-        (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
+    final showOnlyOneWeekNumber =
+        isSingleWeek && (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
     if (!showOnlyOneWeekNumber) {
       if (datesSpanned.first.weekNumber == datesSpanned.last.weekNumber) {
@@ -151,16 +125,30 @@ extension DateTimeExtensions on DateTime {
     return year == now.year && month == now.month && day == now.day;
   }
 
+  /// Returns a [DateTime] as a UTC value without converting it.
+  DateTime asUtc() {
+    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
   /// Gets the start of the date.
   ///
   /// * DateTime(year, month, day)
-  DateTime get startOfDay => DateTime(year, month, day);
+  DateTime get startOfDay => copyWith(
+        year: year,
+        month: month,
+        day: day,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+        microsecond: 0,
+      );
 
   /// Gets the end of the date.
   ///
   /// * DateTime(year, month, day + 1)
   /// * Same as the start of next day
-  DateTime get endOfDay => DateTime(year, month, day + 1);
+  DateTime get endOfDay => startOfDay.copyWith(day: day + 1);
 
   /// Gets the day range in which the [DateTime] is in.
   DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
@@ -189,15 +177,15 @@ extension DateTimeExtensions on DateTime {
 
   /// Add specific amount of [days] (ignoring DST)
   DateTime addDays(int days) {
-    return DateTime(
-      year,
-      month,
-      day + days,
-      hour,
-      minute,
-      second,
-      millisecond,
-      microsecond,
+    return copyWith(
+      year: year,
+      month: month,
+      day: day + days,
+      hour: hour,
+      minute: minute,
+      second: second,
+      millisecond: millisecond,
+      microsecond: microsecond,
     );
   }
 
@@ -215,19 +203,11 @@ extension DateTimeExtensions on DateTime {
 
     final difference = weekday - firstDayOfWeek;
 
-    /// 1 - 2 = - 1
     if (difference < 0) {
       return subtractDays(7 + difference).startOfDay;
     } else {
       return subtractDays(difference).startOfDay;
     }
-
-  
-    // if (weekday < firstDayOfWeek) {
-    //   return subtractDays(days).startOfDay;
-    // } else {
-    //   return subtractDays(weekday - firstDayOfWeek).startOfDay;
-    // }
   }
 
   /// Gets the end of the week with an offset.
