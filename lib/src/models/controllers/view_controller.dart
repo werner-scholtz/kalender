@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 
 /// A controller for calendar views.
@@ -72,12 +71,13 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     required this.visibleDateTimeRange,
     required this.visibleEvents,
     ViewController? previousViewConfiguration,
+    // TODO: pass this in
+    DateTime? initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(DateTime.now());
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
     pageController = PageController(initialPage: initialPage, viewportFraction: 1);
     headerController = PageController(initialPage: initialPage, viewportFraction: 1);
-
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute = ValueNotifier<double>(0.7);
     visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
@@ -130,6 +130,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
       date,
     );
+
 
     // Animate to that page.
     await pageController.animateToPage(
@@ -194,7 +195,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
       date,
     );
-
     jumpToPage(pageNumber);
   }
 
@@ -211,9 +211,11 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
     ViewController? previousViewConfiguration,
+    // TODO: pass this in
+    DateTime? initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(DateTime.now());
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages;
     visibleDateTimeRange = ValueNotifier<DateTimeRange>(
@@ -303,7 +305,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
       date,
     );
-
     jumpToPage(pageNumber);
   }
 
