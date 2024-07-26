@@ -84,20 +84,12 @@ class WeekPageFunctions extends PageNavigationFunctions {
     final end = dateTimeRange.end.asUtc();
     final shiftedStart = start.startOfWeekWithOffset(firstDayOfWeek).startOfDay;
     final shiftedEnd = end.endOfWeekWithOffset(firstDayOfWeek).startOfDay;
-    print(shiftedStart);
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
     final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
-    print(shiftedRange);
-    print(weekDifference);
-
-    // 2024-03-25 00:00:00.000 - 2024-04-22 00:00:00.000
-    // 2024-03-25 00:00:00.000 - 2024-04-22 00:00:00.000
-
     if (weekDifference != weekDifference.round()) {
       debugPrint('Week difference is not a whole number, this should not happen and is a bug');
     }
     numberOfPages = weekDifference.round();
-
     dateTimeRangeFromIndex = (index) {
       return DateTime(
         start.year,
@@ -137,12 +129,10 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
     final shiftedEnd = end.endOfWeekWithOffset(1).startOfDay;
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
     final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
-
     if (weekDifference != weekDifference.round()) {
       debugPrint('Week difference is not a whole number, this should not happen and is a bug');
     }
     numberOfPages = weekDifference.round();
-
     dateTimeRangeFromIndex = (index) {
       final weekRange = DateTime(
         start.year,
