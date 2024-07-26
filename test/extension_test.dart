@@ -247,8 +247,10 @@ void testDatesSpanned() {
 
       test('datesSpanned', () {
         final dates = range.datesSpanned;
-        expect(dates.length, entry.value,
-            reason: "Expected ${entry.value} dates, but got ${dates.length}, Range: $range");
+        expect(
+          dates.length,
+          entry.value,
+        );
       });
     }
   });

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:example/resize_handle.dart';
-import 'package:example/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -104,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           viewConfiguration: viewConfiguration,
           callbacks: CalendarCallbacks(
             onEventTapped: (event, renderBox) => controller.selectEvent(event),
-            onEventCreated: (event)=>  eventsController.addEvent(event),
+            onEventCreated: (event) => eventsController.addEvent(event),
           ),
           header: Material(
             color: Theme.of(context).colorScheme.surface,
@@ -118,17 +117,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   selected: viewConfiguration,
                   onSelected: (config) => setState(() => viewConfiguration = config),
                 ),
-                CalendarHeader(multiDayTileComponents: multiDayTileComponents),
+                CalendarHeader(
+                  multiDayTileComponents: multiDayTileComponents,
+                  multiDayHeaderComponents: const MultiDayHeaderComponents(),
+                ),
               ],
             ),
           ),
           body: CalendarBody(
             multiDayTileComponents: tileComponents,
             monthTileComponents: tileComponents,
-            multiDayBodyComponents: const MultiDayBodyComponents(
-              leftPageTriggerWidget: TriggerWidget(),
-              rightPageTriggerWidget: TriggerWidget(),
-            ),
+            multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
               eventLayoutStrategy: sideBySideLayoutStrategy,
             ),

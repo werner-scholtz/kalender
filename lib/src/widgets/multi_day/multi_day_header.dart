@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
@@ -386,7 +385,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 minHeight: tileHeight,
                 minWidth: pageWidth,
               );
-                
+
               return Padding(
                 padding: EdgeInsets.only(left: viewConfiguration.timelineWidth),
                 child: Column(

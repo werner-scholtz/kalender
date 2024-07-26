@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/components/month_styles.dart';
-import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].

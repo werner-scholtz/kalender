@@ -124,8 +124,11 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
                 final (id, event) = element;
                 final drawTile = dropTarget != null &&
                     (event.id == -1 || event.id == controller.selectedEventId);
+                    
                 return LayoutId(
-                    id: id, child: drawTile ? dropTarget.call(event) : const SizedBox());
+                  id: id,
+                  child: drawTile ? dropTarget.call(event) : const SizedBox(),
+                );
               });
 
               return LayoutId(
