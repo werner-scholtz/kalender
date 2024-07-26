@@ -241,20 +241,25 @@ class NavigationHeader extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          ValueListenableBuilder(
-            valueListenable: controller.visibleDateTimeRange,
-            builder: (context, value, child) {
-              final year = value.start.year;
-              final month = value.start.monthNameEnglish;
-
-              return FilledButton.tonal(
-                onPressed: () {},
-                style: FilledButton.styleFrom(
-                  fixedSize: const Size(120, 40),
+          Expanded(
+            child: Row(
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: controller.visibleDateTimeRange,
+                  builder: (context, value, child) {
+                    final year = value.start.year;
+                    final month = value.start.monthNameEnglish;
+                    return FilledButton.tonal(
+                      onPressed: () {},
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(160, kMinInteractiveDimension),
+                      ),
+                      child: Text('$month $year'),
+                    );
+                  },
                 ),
-                child: Text('$month $year'),
-              );
-            },
+              ],
+            ),
           ),
           if (!Platform.isAndroid && !Platform.isIOS)
             IconButton.filledTonal(

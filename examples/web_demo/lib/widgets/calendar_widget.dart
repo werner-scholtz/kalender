@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/trigger.dart';
+import 'package:web_demo/widgets/zoom.dart';
 
 class CalendarWidget extends StatelessWidget {
   final CalendarController<Event> controller;
@@ -87,7 +88,7 @@ class CalendarWidget extends StatelessWidget {
         return FilledButton.tonal(
           onPressed: () {},
           style: FilledButton.styleFrom(
-            minimumSize: const Size(50, 48),
+            minimumSize: const Size(150, kMinInteractiveDimension),
           ),
           child: Text('$month $year'),
         );
@@ -166,13 +167,16 @@ class CalendarWidget extends StatelessWidget {
       monthBodyConfiguration: headerConfiguration,
     );
 
-    return CalendarView<Event>(
-      calendarController: controller,
-      eventsController: eventsController,
-      viewConfiguration: viewConfiguration,
-      header: header,
-      body: calendarBody,
-      callbacks: callbacks,
+    return CalendarZoomDetector(
+      controller: controller,
+      child: CalendarView<Event>(
+        calendarController: controller,
+        eventsController: eventsController,
+        viewConfiguration: viewConfiguration,
+        header: header,
+        body: calendarBody,
+        callbacks: callbacks,
+      ),
     );
   }
 
