@@ -46,6 +46,8 @@ typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 /// The default builder for the event tiles.
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
+  // TODO: add a parameter(s) that allows the user to customise the tile if it spans across multiple days.
+  // It should allow the user to know how many days the event spans across and the date of the tile.
 );
 
 /// The builder for the event tile when dragging.
@@ -149,7 +151,7 @@ typedef HorizontalTriggerWidgetBuilder = Widget Function(
 
 /// The trigger widget builder, should be constrained in height.
 /// 
-/// The [pageHeight] is the height of the page.
+/// The [viewPortHeight] is the height of the page.
 typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
 );
