@@ -55,8 +55,8 @@ class MultiDayEventGroup<T extends Object?> {
   /// The [CalendarEvent]'s that are in this group sorted by start and end.
   List<CalendarEvent<T>> get sortedEvents {
     return events.toList()
-      ..sort((a, b) => a.start.compareTo(b.start))
-      ..sort((a, b) => b.end.compareTo(a.end));
+      ..sort((a, b) => a.start.compareTo(b.end))
+      ..sort((a, b) => b.start.compareTo(a.end));
   }
 
   @override

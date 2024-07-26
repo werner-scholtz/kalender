@@ -38,7 +38,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     final numberOfDays = dateTimeRange.dayDifference;
     final dates = <DateTime>[];
     for (var i = 0; i < numberOfDays; i++) {
-      dates.add(this.start.add(Duration(days: i)));
+      dates.add(this.start.startOfDay.add(Duration(days: i)));
     }
     return dates;
   }

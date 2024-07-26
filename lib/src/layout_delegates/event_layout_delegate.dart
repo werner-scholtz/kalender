@@ -205,7 +205,7 @@ class EventBasicLayoutDelegate<T> extends EventLayoutDelegate<T> {
 
       final eventsBefore = tilePositions.keys.map((e) => events[e]).where(
         (previous) {
-          final overlap = event.dateTimeRange.overlaps(previous.dateTimeRange);
+          final overlap = event.dateTimeRangeAsUtc.overlaps(previous.dateTimeRangeAsUtc);
           final isShorter = previous.duration >= event.duration;
           return overlap && isShorter;
         },
@@ -213,7 +213,7 @@ class EventBasicLayoutDelegate<T> extends EventLayoutDelegate<T> {
 
       final eventsAfter = events.where(
         (previous) {
-          final overlaps = event.dateTimeRange.overlaps(previous.dateTimeRange);
+          final overlaps = event.dateTimeRangeAsUtc.overlaps(previous.dateTimeRangeAsUtc);
           final isLonger = previous.duration <= event.duration;
           final isNotSelf = previous != event;
           final isPresent = tilePositions.keys.contains(events.indexOf(previous));
@@ -275,7 +275,7 @@ class EventBasicLayoutDelegate<T> extends EventLayoutDelegate<T> {
       (otherEvent) {
         final isLonger = entriesBefore.last.duration >= otherEvent.duration;
         final isPresent = entriesBefore.contains(otherEvent);
-        final overlaps = entriesBefore.last.dateTimeRange.overlaps(otherEvent.dateTimeRange);
+        final overlaps = entriesBefore.last.dateTimeRangeAsUtc.overlaps(otherEvent.dateTimeRangeAsUtc);
 
         return isLonger && !isPresent && overlaps;
       },

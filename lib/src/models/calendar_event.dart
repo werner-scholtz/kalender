@@ -15,6 +15,15 @@ class CalendarEvent<T extends Object?> {
   /// The end [DateTime] of the [CalendarEvent].
   DateTime get end => dateTimeRange.end;
 
+  /// The start [DateTime] of the [CalendarEvent] as UTC.
+  DateTime get startAsUtc => start.asUtc();
+
+  /// The end [DateTime] of the [CalendarEvent] as UTC.
+  DateTime get endAsUtc => end.asUtc();
+
+  /// The [DateTimeRange] of the [CalendarEvent] as UTC.
+  DateTimeRange get dateTimeRangeAsUtc => DateTimeRange(start: startAsUtc, end: endAsUtc);
+
   /// Whether this [CalendarEvent] can be modified.
   bool canModify;
 

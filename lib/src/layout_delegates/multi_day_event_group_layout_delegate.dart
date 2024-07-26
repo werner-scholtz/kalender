@@ -85,7 +85,8 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventsLayoutDelegat
         eventDates.indexOf(lastVisibleDate) + 1,
       );
 
-      final dx = (visibleDates.indexOf(visibleEventDates.first) * dayWidth).roundToDouble();
+      final indexOfFirstVisibleDate = visibleDates.indexOf(visibleEventDates.first.startOfDay);
+      final dx = (indexOfFirstVisibleDate * dayWidth).roundToDouble();
       tileDx[i] = dx;
 
       // Calculate the width of the tile.
