@@ -87,9 +87,11 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
+          initialDate: widget.calendarController.initialDate,
         ),
       MonthViewConfiguration => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
+          initialDate: widget.calendarController.initialDate,
         ),
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
     };

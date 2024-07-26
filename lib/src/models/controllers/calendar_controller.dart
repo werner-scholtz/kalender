@@ -13,7 +13,9 @@ import 'package:kalender/src/calendar_view.dart';
 ///
 class CalendarController<T extends Object?> extends ChangeNotifier
     with CalendarNavigationFunctions<T> {
-  CalendarController();
+  CalendarController({DateTime? initialDate}) : initialDate = initialDate ?? DateTime.now();
+
+  late final DateTime initialDate;
 
   /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
   ViewController<T>? _viewController;
@@ -78,13 +80,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   /// Jump to the given [DateTime].
   @override
   void jumpToPage(int page) {
-    // TODO: implement jumpToPage
+    viewController?.jumpToPage(page);
   }
 
   /// Jump to the given [DateTime].
   @override
   void jumpToDate(DateTime date) {
-    // TODO: implement jumpToDate
+    viewController?.jumpToDate(date);
   }
 
   /// Animate to the next page.
