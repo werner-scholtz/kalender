@@ -50,25 +50,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-//   final displayRange = DateTimeRange(
-//   start: DateTime(2024),
-//   end: DateTime.now().addDays(365),
-// );
-  final displayRange = DateTimeRange(
-    start: DateTime(2024, 03, 30),
-    end: DateTime(2024, 04, 20),
-  );
-  // final displayRange = DateTimeRange(
-  //   start: DateTime(2000),
-  //   end: DateTime.now().addDays(365),
-  // );
-
   /// Create [EventsController]
   final eventsController = EventsController();
 
   /// Create [CalendarController]
-  final calendarController = CalendarController();
+  final controller = CalendarController();
 
+  final displayRange = DateTimeRange(
+    start: DateTime.now().subtractDays(365),
+    end: DateTime.now().addDays(365),
+  );
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
@@ -90,14 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
             start: now,
             end: now.add(const Duration(hours: 1)),
           ),
-          data: Event('My Event', Colors.red),
+          data: Event('My Event', Colors.green),
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: now,
             end: now.add(const Duration(hours: 1)),
           ),
-          data: Event('My Event', Colors.red),
+          data: Event('My Event', Colors.blue),
         ),
       ],
     );
@@ -109,94 +100,40 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
         child: CalendarView(
           eventsController: eventsController,
-          calendarController: calendarController,
+          calendarController: controller,
           viewConfiguration: viewConfiguration,
           callbacks: CalendarCallbacks(
-            onEventTapped: (event, renderBox) {
-              calendarController.selectEvent(event);
-            },
-            onEventCreated: (event) {
-              eventsController.addEvent(event);
-            },
+            onEventTapped: (event, renderBox) => controller.selectEvent(event),
+            onEventCreated: (event)=>  eventsController.addEvent(event),
           ),
-          header: _header(),
-          body: _body(),
-        ),
-      ),
-    );
-  }
-
-  CalendarBody<Object?> _body() {
-    return CalendarBody(
-      multiDayTileComponents: tileComponents,
-      monthTileComponents: tileComponents,
-      multiDayBodyComponents: const MultiDayBodyComponents(
-        leftPageTriggerWidget: TriggerWidget(),
-        rightPageTriggerWidget: TriggerWidget(),
-      ),
-      multiDayBodyConfiguration: MultiDayBodyConfiguration(
-        eventLayoutStrategy: sideBySideLayoutStrategy,
-      ),
-    );
-  }
-
-  Material _header() {
-    return Material(
-      color: Theme.of(context).colorScheme.surface,
-      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-      elevation: 2,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+          header: Material(
+            color: Theme.of(context).colorScheme.surface,
+            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+            elevation: 2,
+            child: Column(
               children: [
-                ValueListenableBuilder(
-                  valueListenable: calendarController.visibleDateTimeRange,
-                  builder: (context, value, child) {
-                    final year = value.start.year;
-                    final month = value.start.monthNameEnglish;
-
-                    return FilledButton.tonal(
-                      onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        fixedSize: const Size(120, 40),
-                      ),
-                      child: Text('$month $year'),
-                    );
-                  },
+                NavigationHeader(
+                  controller: controller,
+                  viewConfigurations: viewConfigurations,
+                  selected: viewConfiguration,
+                  onSelected: (config) => setState(() => viewConfiguration = config),
                 ),
-                if (!Platform.isAndroid && !Platform.isIOS)
-                  IconButton.filledTonal(
-                    onPressed: () => calendarController.animateToPreviousPage(),
-                    icon: const Icon(Icons.chevron_left),
-                  ),
-                if (!Platform.isAndroid && !Platform.isIOS)
-                  IconButton.filledTonal(
-                    onPressed: () => calendarController.animateToNextPage(),
-                    icon: const Icon(Icons.chevron_right),
-                  ),
-                IconButton.filledTonal(
-                  onPressed: () => calendarController.animateToDate(DateTime.now()),
-                  icon: const Icon(Icons.today),
-                ),
-                DropdownMenu(
-                  dropdownMenuEntries: viewConfigurations
-                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                      .toList(),
-                  initialSelection: viewConfiguration,
-                  onSelected: (value) {
-                    if (value == null) return;
-                    setState(() => viewConfiguration = value);
-                  },
-                ),
+                CalendarHeader(multiDayTileComponents: multiDayTileComponents),
               ],
             ),
           ),
-          CalendarHeader(
-            multiDayTileComponents: multiDayTileComponents,
+          body: CalendarBody(
+            multiDayTileComponents: tileComponents,
+            monthTileComponents: tileComponents,
+            multiDayBodyComponents: const MultiDayBodyComponents(
+              leftPageTriggerWidget: TriggerWidget(),
+              rightPageTriggerWidget: TriggerWidget(),
+            ),
+            multiDayBodyConfiguration: MultiDayBodyConfiguration(
+              eventLayoutStrategy: sideBySideLayoutStrategy,
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -281,6 +218,69 @@ class _MyHomePageState extends State<MyHomePage> {
     return Offset(
       20,
       renderObject.size.height / 2,
+    );
+  }
+}
+
+class NavigationHeader extends StatelessWidget {
+  final CalendarController controller;
+  final List<ViewConfiguration> viewConfigurations;
+  final ViewConfiguration selected;
+  final void Function(ViewConfiguration config) onSelected;
+  const NavigationHeader({
+    required this.controller,
+    required this.viewConfigurations,
+    required this.onSelected,
+    super.key,
+    required this.selected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: controller.visibleDateTimeRange,
+            builder: (context, value, child) {
+              final year = value.start.year;
+              final month = value.start.monthNameEnglish;
+
+              return FilledButton.tonal(
+                onPressed: () {},
+                style: FilledButton.styleFrom(
+                  fixedSize: const Size(120, 40),
+                ),
+                child: Text('$month $year'),
+              );
+            },
+          ),
+          if (!Platform.isAndroid && !Platform.isIOS)
+            IconButton.filledTonal(
+              onPressed: () => controller.animateToPreviousPage(),
+              icon: const Icon(Icons.chevron_left),
+            ),
+          if (!Platform.isAndroid && !Platform.isIOS)
+            IconButton.filledTonal(
+              onPressed: () => controller.animateToNextPage(),
+              icon: const Icon(Icons.chevron_right),
+            ),
+          IconButton.filledTonal(
+            onPressed: () => controller.animateToDate(DateTime.now()),
+            icon: const Icon(Icons.today),
+          ),
+          DropdownMenu(
+            dropdownMenuEntries:
+                viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+            initialSelection: selected,
+            onSelected: (value) {
+              if (value == null) return;
+              onSelected(value);
+            },
+          ),
+        ],
+      ),
     );
   }
 }
