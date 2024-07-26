@@ -5,8 +5,8 @@ extension DateTimeRangeExtensions on DateTimeRange {
   ///
   /// - Converts the start and end to utc before calculation.
   int get dayDifference {
-    final startDate = start.toUtc();
-    final endDate = end.toUtc();
+    final startDate = start.asUtc();
+    final endDate = end.asUtc();
     final difference = endDate.difference(startDate).inDays;
     return difference;
   }
@@ -30,14 +30,16 @@ extension DateTimeRangeExtensions on DateTimeRange {
   List<DateTime> get datesSpanned {
     final start = this.start.asUtc();
     final end = this.end.asUtc();
-
-    final dateTimeRange = DateTimeRange(start: start, end: end);
+    if (start.isSameDay(end)) return [this.start.startOfDay];
+    final dateTimeRange = DateTimeRange(
+      start: start.startOfDay,
+      end: end.startOfDay == end ? end.startOfDay : end.endOfDay,
+    );
     final numberOfDays = dateTimeRange.dayDifference;
     final dates = <DateTime>[];
     for (var i = 0; i < numberOfDays; i++) {
       dates.add(this.start.add(Duration(days: i)));
     }
-
     return dates;
   }
 

@@ -101,11 +101,9 @@ void testWeekRangeWithOffset() {
       final week = date.weekRangeWithOffset(i);
       expect(week.dayDifference, 7);
 
-      final dateIsAfterStart =
-          (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
+      final dateIsAfterStart = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
 
-      final dateIsBeforeEnd =
-          (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
+      final dateIsBeforeEnd = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
 
       final dateIsDuringWeek = dateIsAfterStart && dateIsBeforeEnd;
 
@@ -249,7 +247,8 @@ void testDatesSpanned() {
 
       test('datesSpanned', () {
         final dates = range.datesSpanned;
-        expect(dates.length, entry.value);
+        expect(dates.length, entry.value,
+            reason: "Expected ${entry.value} dates, but got ${dates.length}, Range: $range");
       });
     }
   });
