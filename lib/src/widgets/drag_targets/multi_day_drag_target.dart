@@ -107,8 +107,18 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
         return Stack(
           children: [
-            Align(alignment: Alignment.centerRight, child: rightTrigger),
-            Align(alignment: Alignment.centerLeft, child: leftTrigger),
+            PositionedDirectional(
+              end: 0,
+              top: 0,
+              bottom: 0,
+              child: rightTrigger,
+            ),
+            PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              child: leftTrigger,
+            ),
           ],
         );
       },

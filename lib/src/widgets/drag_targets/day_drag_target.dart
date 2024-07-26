@@ -164,10 +164,29 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
         return Stack(
           children: [
-            Align(alignment: Alignment.topCenter, child: topScrollTrigger),
-            Align(alignment: Alignment.bottomCenter, child: bottomScrollTrigger),
-            Align(alignment: Alignment.centerLeft, child: leftTrigger),
-            Align(alignment: Alignment.centerRight, child: rightTrigger),
+            PositionedDirectional(
+              start: 0,
+              end: 0,
+              child: topScrollTrigger,
+            ),
+            PositionedDirectional(
+              start: 0,
+              end: 0,
+              bottom: 0,
+              child: bottomScrollTrigger,
+            ),
+            PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              child: leftTrigger,
+            ),
+            PositionedDirectional(
+              end: 0,
+              top: 0,
+              bottom: 0,
+              child: rightTrigger,
+            ),
           ],
         );
       },
