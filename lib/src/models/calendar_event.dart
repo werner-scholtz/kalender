@@ -68,6 +68,15 @@ class CalendarEvent<T extends Object?> {
     return startsBeforeEndsAfter || isWithin || startOrEndEquals;
   }
 
+  /// Whether the [CalendarEvent] continues before the given [DateTime].
+  bool continuesBefore(DateTime date) => start.isBefore(date.startOfDay);
+
+  /// Whether the [CalendarEvent] continues after the given [DateTime].
+  /// 
+  /// TODO: check that this works for multiday events.
+  bool continuesAfter(DateTime date) => end.isAfter(date.endOfDay);
+
+
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
   DateTimeRange dateTimeRangeOnDate(DateTime date) {
     return dateTimeRange.dateTimeRangeOnDate(date);

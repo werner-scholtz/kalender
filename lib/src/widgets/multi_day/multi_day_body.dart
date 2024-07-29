@@ -222,7 +222,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     controller: calendarController!,
                     callbacks: callbacks,
                     tileComponents: tileComponents,
-                    bodyConfiguration: bodyConfiguration,
+                    configuration: bodyConfiguration,
                     dayWidth: dayWidth,
                     heightPerMinute: heightPerMinute,
                     visibleDateTimeRange: visibleRange,

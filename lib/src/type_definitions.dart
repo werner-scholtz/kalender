@@ -19,6 +19,11 @@ typedef OnEventTapped<T extends Object?> = void Function(
   RenderBox renderBox,
 );
 
+/// The callback for when an event is about to be changed.
+typedef OnEventChange<T extends Object?> = void Function(
+  CalendarEvent<T> event,
+); 
+
 /// The callback for when an event is changed.
 ///
 /// [event] is the original event.

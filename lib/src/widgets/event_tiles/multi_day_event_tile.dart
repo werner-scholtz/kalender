@@ -5,159 +5,119 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
+import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 // TODO: more detailed documentation.
 // Simplify the boolean logic to an enum if possible.
 
-class MultiDayEventTile<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> controller;
-
-  final CalendarEvent<T> event;
-  final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
-
-  /// Whether the event can be resized.
-  final bool allowResizing;
-
-  /// Creates a new [MultiDayEventTile].
-  const MultiDayEventTile({
+class MultiDayEventTileV2<T extends Object?> extends EventTile<T> {
+  const MultiDayEventTileV2({
     super.key,
-    required this.eventsController,
-    required this.controller,
-    required this.event,
-    required this.tileComponents,
-    required this.allowResizing,
-    required this.callbacks,
+    required super.controller,
+    required super.eventsController,
+    required super.callbacks,
+    required super.tileComponents,
+    required super.event,
+    required super.dateTimeRange,
+    required super.allowRescheduling,
+    required super.allowResizing,
   });
 
   @override
-  State<MultiDayEventTile<T>> createState() => _MultiDayEventTileState<T>();
-}
-
-class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile<T>> {
-  EventsController<T> get eventsController => widget.eventsController;
-  CalendarController<T> get controller => widget.controller;
-  ViewController<T> get viewController => controller.viewController!;
-  CalendarEvent<T> get event => widget.event;
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  TileComponents<T> get tileComponents => widget.tileComponents;
-  bool get allowResizing => widget.allowResizing && event.canModify;
-  bool get allowRescheduling => widget.allowResizing && event.canModify;
-
-  ValueNotifier<CalendarEvent<T>?> get eventBeingModified => controller.selectedEvent;
-
-  ValueNotifier<Size> get feedbackWidgetSize {
-    return eventsController.feedbackWidgetSize;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final onTap = callbacks?.onEventTapped;
-    late final tileComponent = tileComponents.tileBuilder.call(widget.event);
-    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(widget.event);
-    late final dragAnchorStrategy = tileComponents.dragAnchorStrategy;
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        late final resizeWidth = min(constraints.maxWidth * 0.25, 12.0);
+        late final resizeWidth = min(constraints.maxWidth * 0.25, 24.0);
 
-        // TODO: Check if the event continues before, if it does do not show the resize handle.
-        late final leftResizeEvent = ResizeEvent(event, ResizeDirection.left);
         late final leftResize = Draggable<ResizeEvent<T>>(
-          data: leftResizeEvent,
+          data: resizeEvent(ResizeDirection.left),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
-          child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.selectEvent(event, internal: true),
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? const SizedBox(),
         );
 
-        // TODO: Check if the event continues after, if it does do not show the resize handle.
-        late final rightResizeEvent = ResizeEvent(event, ResizeDirection.right);
         late final rightResize = Draggable<ResizeEvent<T>>(
-          data: rightResizeEvent,
+          data: resizeEvent(ResizeDirection.right),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
-          child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.selectEvent(event, internal: true),
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? const SizedBox(),
         );
 
         late final feedback = ValueListenableBuilder(
           valueListenable: feedbackWidgetSize,
           builder: (context, value, child) {
-            final feedbackTile = tileComponents.feedbackTileBuilder?.call(
-              widget.event,
-              value,
-            );
+            final feedbackTile = feedbackTileBuilder?.call(event, value);
             return feedbackTile ?? const SizedBox();
           },
         );
 
+        final tile = tileBuilder.call(event);
+        final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
         final isDragging = controller.selectedEventId == event.id;
         late final draggableTile = isMobileDevice
             ? LongPressDraggable<CalendarEvent<T>>(
-                data: widget.event,
+                data: event,
                 feedback: feedback,
-                childWhenDragging: dragComponent,
+                childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event),
-                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+                onDragStarted: () => controller.selectEvent(event, internal: true),
+                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<CalendarEvent<T>>(
-                data: widget.event,
+                data: event,
                 feedback: feedback,
-                childWhenDragging: dragComponent,
+                childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event),
-                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+                onDragStarted: () => controller.selectEvent(event, internal: true),
+                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               );
 
         final tileWidget = GestureDetector(
-          onTap: onTap != null
+          onTap: onEventTapped != null
               ? () {
                   // Find the global position and size of the tile.
                   final renderObject = context.findRenderObject()! as RenderBox;
-                  onTap.call(widget.event, renderObject);
+                  onEventTapped!.call(event, renderObject);
                 }
               : null,
-          child: allowRescheduling ? draggableTile : tileComponent,
+          child: canReschedule ? draggableTile : tile,
         );
 
         return Stack(
           children: [
             Positioned.fill(child: tileWidget),
-            if (allowResizing)
-              if (!isMobileDevice)
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  width: resizeWidth,
-                  child: ValueListenableBuilder(
-                    valueListenable: eventBeingModified,
-                    builder: (context, value, child) {
-                      if (value == null) return leftResize;
-                      if (!controller.internalFocus) return leftResize;
-                      return const SizedBox();
-                    },
-                  ),
+            if (showStart && !isMobileDevice)
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: resizeWidth,
+                child: ValueListenableBuilder(
+                  valueListenable: selectedEvent,
+                  builder: (context, value, child) {
+                    if (value == null) return leftResize;
+                    if (!controller.internalFocus) return leftResize;
+                    return const SizedBox();
+                  },
                 ),
-            if (allowResizing)
-              if (!isMobileDevice)
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  right: 0,
-                  width: resizeWidth,
-                  child: ValueListenableBuilder(
-                    valueListenable: eventBeingModified,
-                    builder: (context, value, child) {
-                      if (value == null) return rightResize;
-                      if (!controller.internalFocus) return rightResize;
-                      return const SizedBox();
-                    },
-                  ),
+              ),
+            if (showEnd && !isMobileDevice)
+              Positioned(
+                top: 0,
+                bottom: 0,
+                right: 0,
+                width: resizeWidth,
+                child: ValueListenableBuilder(
+                  valueListenable: selectedEvent,
+                  builder: (context, value, child) {
+                    if (value == null) return rightResize;
+                    if (!controller.internalFocus) return rightResize;
+                    return const SizedBox();
+                  },
                 ),
+              ),
           ],
         );
       },

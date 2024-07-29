@@ -29,7 +29,6 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
-   
   });
 
   @override
@@ -52,13 +51,15 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           final (id, event) = item;
           return LayoutId(
             id: id,
-            child: MultiDayEventTile<T>(
+            child: MultiDayEventTileV2<T>(
               event: event,
               eventsController: eventsController,
               controller: controller,
+              callbacks: callbacks,
               tileComponents: tileComponents,
               allowResizing: allowResizing,
-              callbacks: callbacks,
+              allowRescheduling: allowRescheduling,
+              dateTimeRange: visibleDateTimeRange,
             ),
           );
         });

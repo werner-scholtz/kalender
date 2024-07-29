@@ -9,7 +9,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   final TileComponents<T> tileComponents;
-  final MultiDayBodyConfiguration bodyConfiguration;
+  final MultiDayBodyConfiguration configuration;
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
@@ -22,7 +22,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.callbacks,
     required this.tileComponents,
-    required this.bodyConfiguration,
+    required this.configuration,
     required this.dayWidth,
     required this.heightPerMinute,
     required this.visibleDateTimeRange,
@@ -32,8 +32,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleDates = visibleDateTimeRange.datesSpanned;
-    final eventGroupLayoutStrategy = bodyConfiguration.eventLayoutStrategy;
-    final showMultiDayEvents = bodyConfiguration.showMultiDayEvents;
+    final eventGroupLayoutStrategy = configuration.eventLayoutStrategy;
+    final showMultiDayEvents = configuration.showMultiDayEvents;
     final selectedEvent = controller.selectedEvent;
 
     return ListenableBuilder(
@@ -70,13 +70,15 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
                         controller: controller,
                         callbacks: callbacks,
                         tileComponents: tileComponents,
-                        bodyConfiguration: bodyConfiguration,
-                        visibleDateTimeRange: visibleDateTimeRange,
-                        timeOfDayRange: timeOfDayRange,
-                        dayWidth: dayWidth,
-                        heightPerMinute: heightPerMinute,
-                        continuesBefore: false,
-                        continuesAfter: false,
+                        dateTimeRange: date.dayRange,
+                        allowResizing: configuration.allowResizing,
+                        allowRescheduling: configuration.allowRescheduling,
+                        // bodyConfiguration: bodyConfiguration,
+                        // timeOfDayRange: timeOfDayRange,
+                        // dayWidth: dayWidth,
+                        // heightPerMinute: heightPerMinute,
+                        // continuesBefore: false,
+                        // continuesAfter: false,
                       ),
                     ),
                   )

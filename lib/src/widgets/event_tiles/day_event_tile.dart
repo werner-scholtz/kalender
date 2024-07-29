@@ -3,148 +3,95 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/platform.dart';
+
+import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 // TODO: more detailed documentation.
 // Simplify the boolean logic to an enum if possible.
 
-/// A [StatelessWidget] that displays a single [CalendarEvent] in the [MultiDayBody].
-class DayEventTile<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> controller;
-
-  final CalendarEvent<T> event;
-  final CalendarCallbacks<T>? callbacks;
-
-  final TileComponents<T> tileComponents;
-
-  final MultiDayBodyConfiguration bodyConfiguration;
-  final DateTimeRange visibleDateTimeRange;
-  final TimeOfDayRange timeOfDayRange;
-  final double dayWidth;
-  final double heightPerMinute;
-
-  final bool continuesBefore;
-  final bool continuesAfter;
-
+class DayEventTile<T extends Object?> extends EventTile<T> {
   const DayEventTile({
     super.key,
-    required this.event,
-    required this.eventsController,
-    required this.controller,
-    required this.callbacks,
-    required this.tileComponents,
-    required this.bodyConfiguration,
-    required this.visibleDateTimeRange,
-    required this.timeOfDayRange,
-    required this.dayWidth,
-    required this.heightPerMinute,
-    required this.continuesBefore,
-    required this.continuesAfter,
+    required super.controller,
+    required super.eventsController,
+    required super.callbacks,
+    required super.tileComponents,
+    required super.event,
+    required super.dateTimeRange,
+    required super.allowRescheduling,
+    required super.allowResizing,
   });
 
   @override
-  State<DayEventTile<T>> createState() => _DayEventTileState<T>();
-}
-
-class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with SnapPoints {
-  EventsController<T> get eventsController => widget.eventsController;
-  CalendarController<T> get controller => widget.controller;
-  ViewController<T> get viewController => controller.viewController!;
-
-  CalendarEvent<T> get event => widget.event;
-  MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  TileComponents<T> get tileComponents => widget.tileComponents;
-  DragAnchorStrategy? get dragAnchorStrategy => tileComponents.dragAnchorStrategy;
-  ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
-  TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
-  double get dayWidth => widget.dayWidth;
-  double get heightPerMinute => widget.heightPerMinute;
-
-  ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
-
-  @override
   Widget build(BuildContext context) {
-    final onTap = callbacks?.onEventTapped;
-    late final tileComponent = tileComponents.tileBuilder.call(widget.event);
-    late final dragComponent = tileComponents.tileWhenDraggingBuilder?.call(widget.event);
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        final showResizeWidgets = bodyConfiguration.allowResizing && event.canModify;
-
+        late final showTop = constraints.maxHeight > kMinInteractiveDimension;
         late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
 
-        late final showTop =
-            showResizeWidgets && constraints.maxHeight > 24 && !widget.continuesBefore;
-        late final topResizeEvent = ResizeEvent(event, ResizeDirection.top);
         late final topResizeDetector = Draggable<ResizeEvent<T>>(
-          data: topResizeEvent,
+          data: resizeEvent(ResizeDirection.top),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
-          child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.selectEvent(event, internal: true),
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? const SizedBox(),
         );
 
-        late final showBottom = showResizeWidgets && !widget.continuesAfter;
-        late final bottomResizeEvent = ResizeEvent(event, ResizeDirection.bottom);
         late final bottomResizeDetector = Draggable<ResizeEvent<T>>(
-          data: bottomResizeEvent,
+          data: resizeEvent(ResizeDirection.bottom),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
-          child: tileComponents.verticalResizeHandle ?? const SizedBox(),
-          onDragStarted: () => controller.selectEvent(event, internal: true),
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? const SizedBox(),
         );
 
         late final feedback = ValueListenableBuilder(
           valueListenable: feedbackWidgetSize,
           builder: (context, value, child) {
-            final feedbackTile = tileComponents.feedbackTileBuilder?.call(
-              widget.event,
-              value,
-            );
+            final feedbackTile = feedbackTileBuilder?.call(event, value);
             return feedbackTile ?? const SizedBox();
           },
         );
 
+        final tile = tileBuilder.call(event);
+        final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
         final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
-        late final draggableTile = isMobileDevice
+        late final draggable = isMobileDevice
             ? LongPressDraggable(
-                data: widget.event,
+                data: event,
                 feedback: feedback,
-                childWhenDragging: dragComponent,
+                childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event),
-                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+                onDragStarted: () => controller.selectEvent(event, internal: true),
+                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<CalendarEvent<T>>(
-                data: widget.event,
+                data: event,
                 feedback: feedback,
-                childWhenDragging: dragComponent,
+                childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event),
-                child: isDragging && dragComponent != null ? dragComponent : tileComponent,
+                onDragStarted: () => controller.selectEvent(event, internal: true),
+                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               );
 
         final tileWidget = GestureDetector(
-          onTap: onTap != null
+          onTap: onEventTapped != null
               ? () {
                   // Find the global position and size of the tile.
                   final renderObject = context.findRenderObject()! as RenderBox;
-                  onTap.call(widget.event, renderObject);
+                  onEventTapped!.call(event, renderObject);
                 }
               : null,
-          child: (bodyConfiguration.allowRescheduling && event.canModify) ? draggableTile : tileComponent,
+          child: canReschedule ? draggable : tile,
         );
 
-        return Stack(
+      return Stack(
           children: [
             Positioned.fill(child: tileWidget),
             // Desktop
-            if (showTop)
+            if (showTop && showStart)
               if (!isMobileDevice)
                 Positioned(
                   top: 0,
@@ -174,7 +121,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                     },
                   ),
                 ),
-            if (showBottom)
+            if (showEnd)
               if (!isMobileDevice)
                 Positioned(
                   bottom: 0,
