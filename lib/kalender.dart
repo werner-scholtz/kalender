@@ -47,5 +47,4 @@ export 'package:kalender/src/models/controllers/view_controller.dart';
 
 /// Layout Delegates
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-export 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 export 'package:kalender/src/layout_delegates/multi_day_event_group_layout_delegate.dart';

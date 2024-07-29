@@ -1,6 +1,6 @@
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
+export 'package:kalender/kalender_extensions.dart';
 
 /// The base class for all [ViewConfiguration]s.
 ///
@@ -22,7 +22,6 @@ const defaultAllowRescheduling = true;
 const defaultCreateEventTrigger = CreateEventTrigger.tap;
 const defaultShowMultiDayEvents = false;
 const defaultEventLayoutStrategy = overlapLayoutStrategy;
-const defaultEventGroupLayoutDelegate = defaultEventGroupLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
 const defaultSnapToTimeIndicator = true;
 const defaultSnapToOtherEvents = true;

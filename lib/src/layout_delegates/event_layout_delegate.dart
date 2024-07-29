@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 
-export 'package:kalender/src/models/groups/event_group.dart';
+import 'package:kalender/kalender.dart';
 export 'package:kalender/src/extensions.dart';
 
 /// Signature for the strategy that determines how DayEvents are layed out.
@@ -14,85 +11,64 @@ export 'package:kalender/src/extensions.dart';
 ///
 ///  * [sideBySideLayoutStrategy], which displays the tiles next to each other.
 ///
-typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate Function(
-  EventGroup<T> eventGroup,
-  double heightPerMinute,
+typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function(
+  Iterable<CalendarEvent<T>> events,
+  DateTime date,
   TimeOfDayRange timeOfDayRange,
+  double heightPerMinute,
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
-EventLayoutDelegate overlapLayoutStrategy(
-  EventGroup group,
-  double heightPerMinute,
+EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
+  Iterable<CalendarEvent<T>> events,
+  DateTime date,
   TimeOfDayRange timeOfDayRange,
+  double heightPerMinute,
 ) {
-  return EventGroupOverlapLayoutDelegate(
-    group: group,
+  return OverlapLayoutDelegate<T>(
+    events: events,
+    date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
   );
 }
 
-/// A [EventLayoutStrategy] that lays out the tiles next to each other.
-EventLayoutDelegate sideBySideLayoutStrategy(
-  EventGroup eventGroup,
-  double heightPerMinute,
+/// A [EventLayoutStrategy] that lays out the tiles on top of each other.
+EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
+  Iterable<CalendarEvent<T>> events,
+  DateTime date,
   TimeOfDayRange timeOfDayRange,
+  double heightPerMinute,
 ) {
-  return EventBasicLayoutDelegate(
-    group: eventGroup,
+  return SideBySideLayoutDelegate<T>(
+    events: events,
+    date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
   );
 }
 
-/// The base [MultiChildLayoutDelegate] class for laying out [EventGroup]s.
+/// The base [MultiChildLayoutDelegate] class for laying out [CalendarEvent]s.
 ///
-/// [EventLayoutDelegate]s are used to layout [EventGroup]s in  a [CustomMultiChildLayout].
+/// [EventLayoutDelegate]s are used to layout [CalendarEvent]s in  a [CustomMultiChildLayout].
 ///
-/// The [CustomMultiChildLayout] that uses this delegate will be sized according to the duration of the [EventGroup].
-/// The [CustomMultiChildLayout] that uses this delegate will be positioned according to the [EventGroup]'s [DateTimeRange].
+/// The [EventLayoutDelegate] has some helper methods:
 ///
-/// ex.
-///
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <- Day-Start
-///
-///
-///   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  <- CustomMultiChildLayout
-///  |          EventGroup            |
-///  |                                |
-///  |                                |
-///  |                                |
-///   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///
-///
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <- Day-End
-///
-///
-/// Taking  a closer look at the event group:
-///
-///   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  <- EventGroup-Start
-///  | |---------|
-///  | |  Event  |
-///  | |         |
-///  | |         |
-///  | |         |
-///  | |---------|
-///  |      |
-///  |      | Distance can be calculated like so:
-///  |      | (event.dateTimeRangeOnDate(startOfGroup).start.difference(startOfGroup).inMinutes * heightPerMinute)
-///  |     \|/
-///   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  <- EventGroup-End
-///
+/// * [calculateHeight] - Calculates the height of an item based on the [Duration] and [heightPerMinute] of the event.
+/// * [calculateDistanceFromStart] - Calculates the distance from the start of the day to the start of the [CalendarEvent].
+/// * [calculateVerticalLayoutData] - Calculates the top and bottom of each event.
+/// * [groupVerticalLayoutData] - Groups the [VerticalLayoutData] into horizontal groups.
 ///
 abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
   EventLayoutDelegate({
-    required this.group,
+    required this.events,
     required this.heightPerMinute,
+    required this.date,
     required this.timeOfDayRange,
   });
 
-  final EventGroup<T> group;
+  final Iterable<CalendarEvent<T>> events;
+  final DateTime date;
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
 
@@ -104,188 +80,293 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     return ((duration.inSeconds / 60) * heightPerMinute);
   }
 
-  /// Calculates the distance from the start of the group to the [dateTime].
-  double calculateDistanceFromStartOfGroup(DateTime dateTime) {
-    return (dateTime.difference(group.start).inMinutes * heightPerMinute);
+  /// Calculates the distance from the start of the day to the start of the [event].
+  ///
+  /// [event] - The event to calculate the distance from.
+  ///
+  /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
+  double calculateDistanceFromStart(CalendarEvent<T> event) {
+    final eventStart = event.dateTimeRangeOnDate(date).start;
+    final dateStart = timeOfDayRange.start.toDateTime(date);
+    return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
+  }
+
+  /// Vertical layout of the events.
+  ///
+  /// Calculates the top and bottom of each event.
+  Iterable<VerticalLayoutData> calculateVerticalLayoutData() {
+    final numberOfChildren = events.length;
+    final layoutEvents = <VerticalLayoutData>[];
+    // Calculate the top and bottom of each event.
+    for (var i = 0; i < numberOfChildren; i++) {
+      final id = i;
+      final event = events.elementAt(i);
+
+      final top = calculateDistanceFromStart(event);
+      final height = calculateHeight(event.duration, heightPerMinute);
+      final bottom = top + height;
+
+      layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
+    }
+    return layoutEvents;
+  }
+
+  /// Groups the [VerticalLayoutData] into horizontal groups.
+  Iterable<HorizontalGroupData> groupVerticalLayoutData(
+    Iterable<VerticalLayoutData> verticalLayoutData,
+  ) {
+    final horizontalGroups = <HorizontalGroupData>[];
+
+    final sortedData = verticalLayoutData.toList()
+    ..sort((a, b) => b.height.compareTo(a.height))
+    ..sort((a, b) => b.height.compareTo(a.height) == 0 ? a.top.compareTo(b.top) : 0);
+
+    for (var i = 0; i < sortedData.length; i++) {
+      final layoutData = sortedData.elementAt(i);
+      final id = layoutData.id;
+      final top = layoutData.top;
+      final bottom = layoutData.bottom;
+
+      // If the layout data is already in a group, skip it.
+      if (horizontalGroups.any((group) => group.containsId(id))) continue;
+
+      // Find the index of the group that overlaps with the layout data.
+      final groupIndex = horizontalGroups.indexWhere((group) => group.overlaps(top, bottom));
+
+      if (groupIndex != -1) {
+        final group = horizontalGroups.elementAt(groupIndex);
+        group.add(layoutData);
+      } else {
+        horizontalGroups.add(HorizontalGroupData(layoutData));
+      }
+    }
+
+    return horizontalGroups;
   }
 
   @override
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
-    return oldDelegate.group != group ||
+    return oldDelegate.events != events ||
         oldDelegate.heightPerMinute != heightPerMinute ||
         oldDelegate.timeOfDayRange != timeOfDayRange;
   }
 }
 
-/// A [EventLayoutDelegate] that lays out the tiles on top of each other.
-class EventGroupOverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
-  EventGroupOverlapLayoutDelegate({
-    required super.group,
+class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+  OverlapLayoutDelegate({
+    required super.events,
     required super.heightPerMinute,
+    required super.date,
     required super.timeOfDayRange,
   });
 
   @override
   void performLayout(Size size) {
-    final numberOfChildren = group.events.length;
-    final baseWidth = size.width;
-    final childWidth = baseWidth / numberOfChildren;
-    final events = group.events;
+    // Calculate the vertical layout data.
+    final verticalLayoutData = calculateVerticalLayoutData();
 
-    for (var i = 0; i < numberOfChildren; i++) {
-      final tileId = i;
+    // Group the vertical layout data into horizontal groups.
+    final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
 
-      // Calculate the distance from the top of the group to the top of the event.
-      final tileYOffset = calculateDistanceFromStartOfGroup(
-        events[i].dateTimeRangeOnDate(group.start).start,
-      );
+    for (var i = 0; i < horizontalGroups.length; i++) {
+      final group = horizontalGroups.elementAt(i);
 
-      // Calculate the height of the tile.
-      final duration = events[i].dateTimeRangeOnDate(group.date).duration;
-      final tileHeight = calculateHeight(duration, heightPerMinute);
+      // Sort the vertical layout data by height and top.
+      final verticalLayoutData = group.verticalLayoutData
+        ..sort((a, b) => b.height.compareTo(a.height))
+        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : 0);
 
-      // Calculate the x offset of the tile.
-      final tileXOffset = childWidth * tileId;
+      final numberOfEvents = verticalLayoutData.length;
 
-      // Calculate the width of the tile.
-      final tileWidth = childWidth * (numberOfChildren - tileId);
+      final childWidth = size.width / numberOfEvents;
 
-      // Layout the tile.
-      layoutChild(
-        tileId,
-        BoxConstraints.tightFor(
-          width: tileWidth,
-          height: tileHeight,
-        ),
-      );
+      for (var i = 0; i < numberOfEvents; i++) {
+        final data = verticalLayoutData.elementAt(i);
+        final id = data.id;
 
-      positionChild(
-        tileId,
-        Offset(tileXOffset, tileYOffset),
-      );
+        // Calculate the x offset of the tile.
+        final tileXOffset = childWidth * i;
+
+        // Calculate the width of the tile.
+        final tileWidth = childWidth * (numberOfEvents - i);
+
+        // Layout the tile.
+        layoutChild(
+          id,
+          BoxConstraints.tightFor(
+            width: tileWidth,
+            height: data.height,
+          ),
+        );
+
+        positionChild(
+          id,
+          Offset(tileXOffset, data.top),
+        );
+      }
     }
   }
 }
 
-/// A [EventLayoutDelegate] that lays out the tiles next to each other.
-class EventBasicLayoutDelegate<T> extends EventLayoutDelegate<T> {
-  EventBasicLayoutDelegate({
-    required super.group,
+class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+  SideBySideLayoutDelegate({
+    required super.events,
     required super.heightPerMinute,
+    required super.date,
     required super.timeOfDayRange,
   });
 
   @override
   void performLayout(Size size) {
-    final events = group.events;
-    final numberOfChildren = group.events.length;
+    // Calculate the vertical layout data.
+    final verticalLayoutData = calculateVerticalLayoutData();
 
-    final tileWidths = <int, double>{};
-    final tilePositions = <int, Offset>{};
-    final tileHeights = <int, double>{};
-    var entriesToRight = 0;
+    // Group the vertical layout data into horizontal groups.
+    final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
 
-    // Find the longest consecutive batch of events that are each others right.
-    for (var id = 0; id < numberOfChildren; id++) {
-      entriesToRight = max(
-        entriesToRight,
-        findNumberOfEventsToRight(events, <CalendarEvent>[events[id]]),
-      );
+    for (var i = 0; i < horizontalGroups.length; i++) {
+      final group = horizontalGroups.elementAt(i);
+      final verticalLayoutData = group.verticalLayoutData
+        ..sort((a, b) => b.height.compareTo(a.height))
+        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? a.top.compareTo(b.top) : 0);
+
+      final numberOfEvents = verticalLayoutData.length;
+      final longest = _findLongestChain(verticalLayoutData);
+      final childWidth = size.width / longest;
+
+      for (var i = 0; i < numberOfEvents; i++) {
+        final data = verticalLayoutData.elementAt(i);
+        final id = data.id;
+
+        // Find the overlaps to the left of the tile.
+        final tilesToLeft = verticalLayoutData.getRange(0, i);
+        final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data)).length;
+
+        // Calculate the x offset of the tile.
+        final tileXOffset = childWidth * overlapsLeft;
+
+        // Find the overlaps to the right of the tile.
+        final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
+        final overlapsRight = tilesToRight.where((e) => e.overlaps(data)).toList();
+
+        // Calculate the width of the tile.
+        var tileWidth = childWidth;
+        if (overlapsRight.isEmpty) {
+          tileWidth = size.width - tileXOffset;
+        }
+
+        // Layout the tile.
+        layoutChild(
+          id,
+          BoxConstraints.tightFor(
+            width: tileWidth,
+            height: data.height,
+          ),
+        );
+
+        positionChild(
+          id,
+          Offset(tileXOffset, data.top),
+        );
+      }
     }
+  }
 
-    // Calculate the width of each tile.
-    tileWidths.addEntries({
-      for (var i = 0; i < numberOfChildren; i++)
-        MapEntry(i, (size.width / max(entriesToRight, 1)).floorToDouble()),
-    });
+  /// Finds the longest chain of overlapping events.
+  int _findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
+    var longest = <VerticalLayoutData>[];
+    final currentChain = <VerticalLayoutData>[verticalLayoutData.first];
 
-    // Calculate position of each tile.
-    for (var i = 0; i < numberOfChildren; i++) {
-      final event = events[i];
+    void depthFirstSearch(VerticalLayoutData current, List<VerticalLayoutData> chain) {
+      chain.add(current);
 
-      final eventsBefore = tilePositions.keys.map((e) => events[e]).where(
-        (previous) {
-          final overlap = event.dateTimeRangeAsUtc.overlaps(previous.dateTimeRangeAsUtc);
-          final isShorter = previous.duration >= event.duration;
-          return overlap && isShorter;
-        },
-      );
-
-      final eventsAfter = events.where(
-        (previous) {
-          final overlaps = event.dateTimeRangeAsUtc.overlaps(previous.dateTimeRangeAsUtc);
-          final isLonger = previous.duration <= event.duration;
-          final isNotSelf = previous != event;
-          final isPresent = tilePositions.keys.contains(events.indexOf(previous));
-          return overlaps && isLonger && isNotSelf && !isPresent;
-        },
-      );
-
-      var dx = 0.0;
-      if (eventsBefore.isNotEmpty) {
-        final eventBeforeID = events.indexOf(eventsBefore.last);
-        final eventBeforeDx = tilePositions[eventBeforeID]!.dx;
-        dx = eventBeforeDx + tileWidths[eventBeforeID]!;
-
-        if (eventsAfter.isEmpty) {
-          // if there are no events after, then expand the tile to the end of the screen.
-          tileWidths[i] = size.width - dx;
+      var extended = false;
+      for (var data in verticalLayoutData) {
+        if (!chain.contains(data) && current.overlaps(data)) {
+          extended = true;
+          depthFirstSearch(data, chain);
         }
       }
-
-      // Calculate the distance from the top of the group to the top of the event.
-      final tileYOffset = calculateDistanceFromStartOfGroup(
-        events[i].dateTimeRangeOnDate(group.start).start,
-      );
-
-      // Calculate the height of the tile.
-      final duration = events[i].dateTimeRangeOnDate(group.date).duration;
-      final tileHeight = calculateHeight(duration, heightPerMinute);
-
-      tileHeights[i] = tileHeight;
-      tilePositions[i] = Offset(dx, tileYOffset);
+      if (!extended && chain.length > longest.length) {
+        longest = chain;
+      }
     }
 
-    // Layout the tiles.
-    for (var id = 0; id < numberOfChildren; id++) {
-      final height = tileHeights[id]!;
-      final position = tilePositions[id]!;
-      final tileWidth = tileWidths[id]!;
-
-      layoutChild(
-        id,
-        BoxConstraints.tightFor(
-          width: tileWidth,
-          height: height,
-        ),
-      );
-
-      positionChild(
-        id,
-        position,
-      );
+    for (var data in verticalLayoutData) {
+      depthFirstSearch(data, []);
     }
+
+    // Final comparison after loop
+    if (currentChain.length > longest.length) longest = currentChain;
+
+    var length = longest.length;
+    for (var i = 0; i < longest.length; i++) {
+      final current = longest[i];
+      final next = longest.elementAtOrNull(i + 1);
+      if (next != null && !current.overlaps(next)) length--;
+    }
+    return length;
+  }
+}
+
+class VerticalLayoutData {
+  /// The id of the event.
+  final int id;
+
+  /// The top of the event.
+  final double top;
+
+  /// The bottom of the event.
+  final double bottom;
+
+  VerticalLayoutData({required this.id, required this.top, required this.bottom});
+
+  /// The height of the event.
+  double get height => bottom - top;
+
+  bool overlaps(VerticalLayoutData layoutData) {
+    final inside = layoutData.top >= top && layoutData.bottom <= bottom;
+    final overlapTop = layoutData.top < top && layoutData.bottom > top;
+    final overlapBottom = layoutData.top < bottom && layoutData.bottom > bottom;
+    final outside = layoutData.top <= top && layoutData.bottom >= bottom;
+    return inside || overlapTop || overlapBottom || outside;
   }
 
-  int findNumberOfEventsToRight(
-    List<CalendarEvent> events,
-    List<CalendarEvent> entriesBefore,
-  ) {
-    final indexOfNextEvent = events.indexWhere(
-      (otherEvent) {
-        final isLonger = entriesBefore.last.duration >= otherEvent.duration;
-        final isPresent = entriesBefore.contains(otherEvent);
-        final overlaps = entriesBefore.last.dateTimeRangeAsUtc.overlaps(otherEvent.dateTimeRangeAsUtc);
+  @override
+  String toString() => 'id: $id, top: $top, bottom: $bottom';
+}
 
-        return isLonger && !isPresent && overlaps;
-      },
-    );
+class HorizontalGroupData {
+  final List<VerticalLayoutData> verticalLayoutData = [];
 
-    if (indexOfNextEvent == -1) {
-      return entriesBefore.length;
-    } else {
-      entriesBefore.add(events[indexOfNextEvent]);
-      return findNumberOfEventsToRight(events, entriesBefore);
-    }
+  double top = double.infinity;
+  double bottom = double.negativeInfinity;
+
+  HorizontalGroupData(VerticalLayoutData layoutData) {
+    verticalLayoutData.add(layoutData);
+    top = layoutData.top;
+    bottom = layoutData.bottom;
   }
+
+  /// Adds the [layoutData] to the [HorizontalGroupData].
+  void add(VerticalLayoutData layoutData) {
+    verticalLayoutData.add(layoutData);
+    top = layoutData.top < top ? layoutData.top : top;
+    bottom = layoutData.bottom > bottom ? layoutData.bottom : bottom;
+  }
+
+  /// Whether the [HorizontalGroupData] overlaps with the given [top] and [bottom].
+  bool overlaps(double top, double bottom) {
+    final inside = top >= this.top && bottom <= this.bottom;
+    final overlapTop = top < this.top && bottom > this.top;
+    final overlapBottom = top < this.bottom && bottom > this.bottom;
+    final outside = top <= this.top && bottom >= this.bottom;
+    return inside || overlapTop || overlapBottom || outside;
+  }
+
+  /// Whether the [HorizontalGroupData] contains the [id].
+  bool containsId(int id) => verticalLayoutData.any((layoutData) => layoutData.id == id);
+
+  @override
+  String toString() => 'top: $top, bottom: $bottom';
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/layout_delegates/event_group_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
@@ -237,7 +236,6 @@ class MultiDayBodyConfiguration {
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.eventLayoutStrategy = defaultEventLayoutStrategy,
-    this.eventGroupLayoutStrategy = defaultEventGroupLayoutStrategy,
     this.scrollPhysics,
     this.pageScrollPhysics,
   }) {
@@ -284,9 +282,6 @@ class MultiDayBodyConfiguration {
 
   /// The layout strategy used by the [MultiDayBody] to layout events.
   final EventLayoutStrategy eventLayoutStrategy;
-
-  //// The layout strategy used by the [MultiDayBody] to layout event groups.
-  final EventGroupLayoutStrategy eventGroupLayoutStrategy;
 
   /// The [ScrollPhysics] used by the scrollable body.
   final ScrollPhysics? scrollPhysics;
