@@ -76,8 +76,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// [duration] - The duration of the event.
   /// [heightPerMinute] - The per minute of the current view.
-  double calculateHeight(Duration duration, double heightPerMinute) {
-    return ((duration.inSeconds / 60) * heightPerMinute);
+  double calculateHeight(CalendarEvent<T> event, double heightPerMinute) {
+    final durationOnDate = event.dateTimeRangeOnDate(date).duration;
+    return ((durationOnDate.inSeconds / 60) * heightPerMinute);
   }
 
   /// Calculates the distance from the start of the day to the start of the [event].
@@ -103,7 +104,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
       final event = events.elementAt(i);
 
       final top = calculateDistanceFromStart(event);
-      final height = calculateHeight(event.duration, heightPerMinute);
+      final height = calculateHeight(event, heightPerMinute);
       final bottom = top + height;
 
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
