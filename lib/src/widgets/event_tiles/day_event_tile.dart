@@ -55,7 +55,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
           },
         );
 
-        final tile = tileBuilder.call(event);
+        final tile = tileBuilder.call(event, dateTimeRange);
         final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
         final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
         late final draggable = isMobileDevice

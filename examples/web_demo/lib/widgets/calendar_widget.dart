@@ -32,7 +32,7 @@ class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tileComponents = TileComponents<Event>(
-      tileBuilder: (event) {
+      tileBuilder: (event, tileRange) {
         return Container(
           decoration: BoxDecoration(
             color: Colors.green.withAlpha(150),
@@ -49,7 +49,7 @@ class CalendarWidget extends StatelessWidget {
     );
 
     final multiDayTileComponents = TileComponents<Event>(
-      tileBuilder: (event) {
+      tileBuilder: (event, tileRange) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
           decoration: BoxDecoration(

@@ -22,7 +22,7 @@ typedef OnEventTapped<T extends Object?> = void Function(
 /// The callback for when an event is about to be changed.
 typedef OnEventChange<T extends Object?> = void Function(
   CalendarEvent<T> event,
-); 
+);
 
 /// The callback for when an event is changed.
 ///
@@ -34,39 +34,54 @@ typedef OnEventChanged<T extends Object?> = void Function(
 );
 
 /// The call back for creating a new event.
+///
+/// [event] is the event that will be created.
 typedef OnEventCreate<T extends Object?> = CalendarEvent<T> Function(
   CalendarEvent<T> event,
 );
 
 /// The callback for a new event has been created.
+///
+/// [event] is the event that was created.
 typedef OnEventCreated<T extends Object?> = void Function(
   CalendarEvent<T> event,
 );
 
 /// The callback for when a calendar page is changed.
+///
+/// [visibleDateTimeRange] is the range of dates that are visible.
 typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 
 /// Widget builders ///
 
 /// The default builder for the event tiles.
+///
+/// [event] is the event that the tile will be built for.
+/// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
-  // TODO: add a parameter(s) that allows the user to customise the tile if it spans across multiple days.
-  // It should allow the user to know how many days the event spans across and the date of the tile.
+  DateTimeRange tileRange,
 );
 
 /// The builder for the event tile when dragging.
+///
+/// [event] is the event that the tile will be built for.
 typedef TileWhenDraggingBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
 );
 
 /// The builder for the feedback tile. (When dragging)
+///
+/// [event] is the event that the tile will be built for.
+/// [dropTargetWidgetSize] is the size of the drop target widget.
 typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   Size dropTargetWidgetSize,
 );
 
 /// The builder for the drop target event tile.
+///
+/// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
 );
@@ -148,14 +163,14 @@ typedef MonthGridBuilder = Widget Function(
 );
 
 /// The trigger widget builder, should be constrained in width.
-/// 
+///
 /// The [pageWidth] is the width of the page.
 typedef HorizontalTriggerWidgetBuilder = Widget Function(
   double pageWidth,
 );
 
 /// The trigger widget builder, should be constrained in height.
-/// 
+///
 /// The [viewPortHeight] is the height of the page.
 typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
