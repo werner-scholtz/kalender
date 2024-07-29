@@ -62,7 +62,7 @@ class MultiDayEventTileV2<T extends Object?> extends EventTile<T> {
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event, internal: true),
+                onDragStarted: selectEvent,
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<CalendarEvent<T>>(
@@ -70,7 +70,7 @@ class MultiDayEventTileV2<T extends Object?> extends EventTile<T> {
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event, internal: true),
+                onDragStarted: selectEvent,
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               );
 

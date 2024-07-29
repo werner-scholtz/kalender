@@ -64,7 +64,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event, internal: true),
+                onDragStarted: selectEvent,
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<CalendarEvent<T>>(
@@ -72,7 +72,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () => controller.selectEvent(event, internal: true),
+                onDragStarted: selectEvent,
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               );
 
@@ -87,7 +87,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
           child: canReschedule ? draggable : tile,
         );
 
-      return Stack(
+        return Stack(
           children: [
             Positioned.fill(child: tileWidget),
             // Desktop
