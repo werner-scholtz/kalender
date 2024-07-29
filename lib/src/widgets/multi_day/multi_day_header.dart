@@ -92,7 +92,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
           key: ValueKey(viewConfiguration.hashCode),
           eventsController: eventsController!,
           calendarController: calendarController!,
-          headerConfiguration: headerConfiguration,
+          configuration: headerConfiguration,
           tileComponents: tileComponents,
           components: components,
           componentStyles: componentStyles,
@@ -131,7 +131,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
   final CalendarCallbacks<T>? callbacks;
 
-  final MultiDayHeaderConfiguration headerConfiguration;
+  final MultiDayHeaderConfiguration configuration;
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -144,7 +144,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     required this.eventsController,
     required this.calendarController,
     required this.callbacks,
-    required this.headerConfiguration,
+    required this.configuration,
     required this.tileComponents,
     required this.components,
     required this.componentStyles,
@@ -206,7 +206,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                 visibleDateTimeRange: visibleRange,
                 tileComponents: tileComponents,
                 dayWidth: pageWidth,
-                allowResizing: headerConfiguration.allowResizing,
+                allowResizing: configuration.allowResizing,
+                allowRescheduling: configuration.allowRescheduling,
                 showAllEvents: false,
                 callbacks: callbacks,
                 tileHeight: tileHeight,
@@ -217,7 +218,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                 calendarController: calendarController,
                 callbacks: callbacks,
                 tileComponents: tileComponents,
-                pageTriggerSetup: headerConfiguration.pageTriggerConfiguration,
+                pageTriggerSetup: configuration.pageTriggerConfiguration,
                 visibleDateTimeRange: visibleRange,
                 dayWidth: pageWidth,
                 pageWidth: pageWidth,
@@ -232,7 +233,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                 eventsController: eventsController,
                 controller: calendarController,
                 callbacks: callbacks,
-                createEventTrigger: headerConfiguration.createEventTrigger,
+                createEventTrigger: configuration.createEventTrigger,
                 dayWidth: pageWidth,
               );
 
@@ -355,6 +356,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 tileComponents: tileComponents,
                 dayWidth: dayWidth,
                 allowResizing: configuration.allowResizing,
+                allowRescheduling: configuration.allowRescheduling,
                 showAllEvents: false,
                 callbacks: callbacks,
                 tileHeight: tileHeight,

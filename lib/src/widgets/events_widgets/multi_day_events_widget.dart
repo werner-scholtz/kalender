@@ -3,7 +3,6 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
-
 // TODO: document this.
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
@@ -14,6 +13,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final double dayWidth;
   final bool allowResizing;
+  final bool allowRescheduling;
   final bool showAllEvents;
   final double tileHeight;
 
@@ -25,9 +25,11 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.tileComponents,
     required this.dayWidth,
     required this.allowResizing,
+    required this.allowRescheduling,
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
+   
   });
 
   @override

@@ -122,11 +122,13 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   tileComponents: tileComponents,
                   dayWidth: dayWidth,
                   allowResizing: bodyConfiguration.allowResizing,
+                  allowRescheduling: bodyConfiguration.allowRescheduling,
                   tileHeight: tileHeight,
                   showAllEvents: true,
                   callbacks: callbacks,
                 );
 
+              
                 final multiDayDragTarget = MultiDayDragTarget<T>(
                   eventsController: eventsController,
                   calendarController: calendarController,

@@ -42,7 +42,8 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
   CalendarEvent<T> get event => widget.event;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
-  bool get allowResizing => widget.allowResizing;
+  bool get allowResizing => widget.allowResizing && event.canModify;
+  bool get allowRescheduling => widget.allowResizing && event.canModify;
 
   ValueNotifier<CalendarEvent<T>?> get eventBeingModified => controller.selectedEvent;
 
@@ -119,13 +120,13 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                   onTap.call(widget.event, renderObject);
                 }
               : null,
-          child: draggableTile,
+          child: allowRescheduling ? draggableTile : tileComponent,
         );
 
         return Stack(
           children: [
             Positioned.fill(child: tileWidget),
-            if (allowResizing && event.canModify)
+            if (allowResizing)
               if (!isMobileDevice)
                 Positioned(
                   top: 0,
@@ -141,7 +142,7 @@ class _MultiDayEventTileState<T extends Object?> extends State<MultiDayEventTile
                     },
                   ),
                 ),
-            if (allowResizing && event.canModify)
+            if (allowResizing)
               if (!isMobileDevice)
                 Positioned(
                   top: 0,

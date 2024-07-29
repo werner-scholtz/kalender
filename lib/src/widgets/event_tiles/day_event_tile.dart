@@ -137,7 +137,7 @@ class _DayEventTileState<T extends Object?> extends State<DayEventTile<T>> with 
                   onTap.call(widget.event, renderObject);
                 }
               : null,
-          child: bodyConfiguration.allowRescheduling ? draggableTile : tileComponent,
+          child: (bodyConfiguration.allowRescheduling && event.canModify) ? draggableTile : tileComponent,
         );
 
         return Stack(
