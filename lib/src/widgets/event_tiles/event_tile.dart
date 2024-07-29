@@ -9,6 +9,7 @@ import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/type_definitions.dart';
 
+// TODO: document this.
 abstract class EventTile<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;

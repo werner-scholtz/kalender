@@ -159,6 +159,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   }
 }
 
+// TODO: document.
+
 class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   OverlapLayoutDelegate({
     required super.events,
@@ -214,6 +216,8 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     }
   }
 }
+
+// TODO: document.
 
 class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   SideBySideLayoutDelegate({
@@ -315,6 +319,9 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     return length;
   }
 }
+
+
+// TODO: document.
 
 class VerticalLayoutData {
   /// The id of the event.
