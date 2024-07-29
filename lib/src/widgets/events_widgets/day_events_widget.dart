@@ -88,6 +88,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               builder: (context, event, child) {
                 // If there is no event being dragged, return an empty widget.
                 if (event == null) return const SizedBox();
+                if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
+                
                 if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
                 final events = visibleEvents.toList()
