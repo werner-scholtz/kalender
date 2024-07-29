@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/extensions.dart';
+
+export 'package:kalender/src/models/calendar_event.dart';
+export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/extensions.dart';
+
 
 /// Signature for the strategy that determines how DayEvents are layed out.
 ///
@@ -74,9 +80,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 
   /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
   ///
-  /// [duration] - The duration of the event.
+  /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
-  double calculateHeight(CalendarEvent<T> event, double heightPerMinute) {
+  double calculateHeight(CalendarEvent<T> event) {
     final durationOnDate = event.dateTimeRangeOnDate(date).duration;
     return ((durationOnDate.inSeconds / 60) * heightPerMinute);
   }
@@ -104,7 +110,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
       final event = events.elementAt(i);
 
       final top = calculateDistanceFromStart(event);
-      final height = calculateHeight(event, heightPerMinute);
+      final height = calculateHeight(event);
       final bottom = top + height;
 
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
