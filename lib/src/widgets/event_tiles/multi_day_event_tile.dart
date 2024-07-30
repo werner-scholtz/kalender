@@ -63,6 +63,7 @@ class MultiDayEventTileV2<T extends Object?> extends EventTile<T> {
                 childWhenDragging: tileWhenDragging,
                 dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
                 onDragStarted: selectEvent,
+                maxSimultaneousDrags: 1,
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<CalendarEvent<T>>(
