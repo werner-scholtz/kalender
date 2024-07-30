@@ -48,8 +48,10 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     if (isMobileDevice && selectedEvent.value != null) {
       selectedEvent.value = null;
     } else {
-      var newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
-      newEvent = callbacks?.onEventCreate?.call(newEvent) ?? newEvent;
+      final newEvent = callbacks?.onEventCreate?.call(
+        CalendarEvent<T>(dateTimeRange: dateTimeRange),
+      );
+      if (newEvent == null) return;
       controller.selectEvent(newEvent, internal: true);
     }
   }

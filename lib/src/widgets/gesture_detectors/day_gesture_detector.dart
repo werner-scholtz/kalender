@@ -53,9 +53,11 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     if (isMobileDevice && selectedEvent.value != null) {
       selectedEvent.value = null;
     } else {
-      var newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
-      newEvent = callbacks?.onEventCreate?.call(newEvent) ?? newEvent;
-      controller.selectEvent(newEvent, internal: true);
+      final newEvent = callbacks?.onEventCreate?.call(
+        CalendarEvent<T>(dateTimeRange: dateTimeRange),
+      );
+      if (newEvent != null) return;
+      controller.selectEvent(newEvent!, internal: true);
     }
   }
 
