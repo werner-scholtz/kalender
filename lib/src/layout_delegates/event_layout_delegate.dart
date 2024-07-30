@@ -322,6 +322,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
 
 
 // TODO: document.
+// TODO: fix issues, 
 
 class VerticalLayoutData {
   /// The id of the event.
