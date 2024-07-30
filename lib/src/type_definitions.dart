@@ -36,7 +36,7 @@ typedef OnEventChanged<T extends Object?> = void Function(
 /// The call back for creating a new event.
 ///
 /// [event] is the event that will be created.
-typedef OnEventCreate<T extends Object?> = CalendarEvent<T>? Function(
+typedef OnEventCreate<T extends Object?> = CalendarEvent<T> Function(
   CalendarEvent<T> event,
 );
 

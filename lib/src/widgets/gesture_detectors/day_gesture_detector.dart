@@ -56,8 +56,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       final newEvent = callbacks?.onEventCreate?.call(
         CalendarEvent<T>(dateTimeRange: dateTimeRange),
       );
-      if (newEvent != null) return;
-      controller.selectEvent(newEvent!, internal: true);
+      if (newEvent == null) return;
+      controller.selectEvent(newEvent, internal: true);
     }
   }
 
