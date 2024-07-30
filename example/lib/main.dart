@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kalender Example',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -103,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           viewConfiguration: viewConfiguration,
           callbacks: CalendarCallbacks(
             onEventTapped: (event, renderBox) => controller.selectEvent(event),
+            onEventCreate: (event) => event,
             onEventCreated: (event) => eventsController.addEvent(event),
           ),
           header: Material(
@@ -130,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
             multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
               eventLayoutStrategy: sideBySideLayoutStrategy,
+              showMultiDayEvents: true
             ),
           ),
         ),
@@ -139,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   TileComponents get tileComponents {
     return TileComponents(
-      tileBuilder: (event) {
+      tileBuilder: (event, tileRange) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
           decoration: BoxDecoration(
@@ -160,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   TileComponents get multiDayTileComponents {
     return TileComponents(
-      tileBuilder: (event) {
+      tileBuilder: (event, tileRange) {
         return DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.green.withAlpha(150),
