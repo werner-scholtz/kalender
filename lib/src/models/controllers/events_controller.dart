@@ -92,9 +92,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     bool includeDayEvents = true,
   }) {
     if (includeMultiDayEvents && includeDayEvents) {
-      return events.where((event) {
-        return event.occursDuringDateTimeRange(dateTimeRange);
-      });
+      return events.where((event) => event.occursDuringDateTimeRange(dateTimeRange));
     } else if (includeMultiDayEvents) {
       return _multiDayEventsFromDateTimeRange(dateTimeRange);
     } else if (includeDayEvents) {

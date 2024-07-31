@@ -41,6 +41,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
       builder: (context, child) {
         return Row(
           children: visibleDates.map((date) {
+            // TODO: allow custom sorting.
             final visibleEvents = eventsController
                 .eventsFromDateTimeRange(
                   date.dayRange,
@@ -73,25 +74,20 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
                         dateTimeRange: date.dayRange,
                         allowResizing: configuration.allowResizing,
                         allowRescheduling: configuration.allowRescheduling,
-                        // bodyConfiguration: bodyConfiguration,
-                        // timeOfDayRange: timeOfDayRange,
-                        // dayWidth: dayWidth,
-                        // heightPerMinute: heightPerMinute,
-                        // continuesBefore: false,
-                        // continuesAfter: false,
                       ),
                     ),
                   )
                   .toList(),
             );
 
+            // TODO: investigate a more efficient way to do this.
             final dropTargetWidget = ValueListenableBuilder(
               valueListenable: selectedEvent,
               builder: (context, event, child) {
                 // If there is no event being dragged, return an empty widget.
                 if (event == null) return const SizedBox();
                 if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
-                
+
                 if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
                 final events = visibleEvents.toList()
