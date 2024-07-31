@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/extensions.dart';
-
 export 'package:kalender/src/models/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/extensions.dart';
-
 
 /// Signature for the strategy that determines how DayEvents are layed out.
 ///
@@ -78,6 +76,12 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
 
+  /// Sorts the [CalendarEvent]s.
+  ///
+  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
+  /// Override this method to provide custom sorting.
+  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
+
   /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
   ///
   /// [event] - The event to calculate the height of.
@@ -124,12 +128,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ) {
     final horizontalGroups = <HorizontalGroupData>[];
 
-    final sortedData = verticalLayoutData.toList()
-    ..sort((a, b) => b.height.compareTo(a.height))
-    ..sort((a, b) => b.height.compareTo(a.height) == 0 ? a.top.compareTo(b.top) : 0);
-
-    for (var i = 0; i < sortedData.length; i++) {
-      final layoutData = sortedData.elementAt(i);
+    for (var i = 0; i < verticalLayoutData.length; i++) {
+      final layoutData = verticalLayoutData.elementAt(i);
       final id = layoutData.id;
       final top = layoutData.top;
       final bottom = layoutData.bottom;
@@ -168,6 +168,15 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.date,
     required super.timeOfDayRange,
   });
+
+  @override
+  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) {
+    return events
+      ..sort((a, b) => b.duration.compareTo(a.duration))
+      ..sort(
+        (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
+      );
+  }
 
   @override
   void performLayout(Size size) {
@@ -320,9 +329,8 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
   }
 }
 
-
 // TODO: document.
-// TODO: fix issues, 
+// TODO: fix issues,
 
 class VerticalLayoutData {
   /// The id of the event.

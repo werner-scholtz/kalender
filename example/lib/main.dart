@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: tileComponents,
             multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              eventLayoutStrategy: sideBySideLayoutStrategy,
+              // eventLayoutStrategy: sideBySideLayoutStrategy,
               showMultiDayEvents: true
             ),
           ),
@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: dragAnchorStrategy,
+      dragAnchorStrategy: childDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: dragAnchorStrategy,
+      dragAnchorStrategy: childDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
@@ -210,17 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Offset dragAnchorStrategy(
-    Draggable draggable,
-    BuildContext context,
-    Offset position,
-  ) {
-    final renderObject = context.findRenderObject()! as RenderBox;
-    return Offset(
-      20,
-      renderObject.size.height / 2,
-    );
-  }
+
 }
 
 class NavigationHeader extends StatelessWidget {

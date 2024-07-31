@@ -32,36 +32,36 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleDates = visibleDateTimeRange.datesSpanned;
-    final eventGroupLayoutStrategy = configuration.eventLayoutStrategy;
+    final layoutStrategy = configuration.eventLayoutStrategy;
     final showMultiDayEvents = configuration.showMultiDayEvents;
     final selectedEvent = controller.selectedEvent;
+
+    final layoutInstance = layoutStrategy.call([], DateTime(2000), timeOfDayRange, heightPerMinute)
+        as EventLayoutDelegate<T>;
 
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
         return Row(
           children: visibleDates.map((date) {
-            // TODO: allow custom sorting.
-            final visibleEvents = eventsController
-                .eventsFromDateTimeRange(
-                  date.dayRange,
-                  includeDayEvents: true,
-                  includeMultiDayEvents: showMultiDayEvents,
-                )
-                .toList()
-              ..sort((a, b) => b.duration.compareTo(a.duration))
-              ..sort(
-                (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
-              );
+            final visibleEvents = eventsController.eventsFromDateTimeRange(
+              date.dayRange,
+              includeDayEvents: true,
+              includeMultiDayEvents: showMultiDayEvents,
+            );
+
+            final sortedEvents = layoutInstance.sortEvents(
+              visibleEvents.toList(),
+            );
 
             final events = CustomMultiChildLayout(
-              delegate: eventGroupLayoutStrategy.call(
-                visibleEvents,
+              delegate: layoutStrategy.call(
+                sortedEvents,
                 date,
                 timeOfDayRange,
                 heightPerMinute,
               ),
-              children: visibleEvents.indexed
+              children: sortedEvents.indexed
                   .map(
                     (item) => LayoutId(
                       id: item.$1,
@@ -87,22 +87,16 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
                 // If there is no event being dragged, return an empty widget.
                 if (event == null) return const SizedBox();
                 if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
-
                 if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
-                final events = visibleEvents.toList()
+                final events = sortedEvents.toList()
                   ..removeWhere((e) => e.id == controller.selectedEventId)
                   ..add(event);
 
                 final dropTarget = tileComponents.dropTargetTile;
 
                 return CustomMultiChildLayout(
-                  delegate: eventGroupLayoutStrategy.call(
-                    events,
-                    date,
-                    timeOfDayRange,
-                    heightPerMinute,
-                  ),
+                  delegate: layoutStrategy.call(events, date, timeOfDayRange, heightPerMinute),
                   children: events.indexed.map(
                     (item) {
                       final event = item.$2;
