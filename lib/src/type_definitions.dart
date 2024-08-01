@@ -176,8 +176,6 @@ typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
 );
 
-///
-
 /// Calculates the VisibleDateRange from the [index].
 ///
 /// [index] is the page index.

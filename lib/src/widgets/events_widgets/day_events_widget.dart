@@ -31,7 +31,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleDates = visibleDateTimeRange.datesSpanned;
+    final visibleDates = visibleDateTimeRange.days;
     final layoutStrategy = configuration.eventLayoutStrategy;
     final showMultiDayEvents = configuration.showMultiDayEvents;
     final selectedEvent = controller.selectedEvent;

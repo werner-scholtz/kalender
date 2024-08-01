@@ -54,7 +54,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   TileComponents<T> get tileComponents => widget.tileComponents;
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
-  List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
+  List<DateTime> get visibleDates => visibleDateTimeRange.days;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
 
   ValueNotifier<Size> get feedbackWidgetSize {
@@ -143,6 +143,8 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       );
 
       _updateWidgetPosition();
+
+      controller.selectEvent(data, internal: true);
       return true;
     } else if (data is ResizeEvent<T>) {
       // Check that the resize direction is either top or bottom.
