@@ -10,8 +10,8 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 // TODO: more detailed documentation.
 // Simplify the boolean logic to an enum if possible.
 
-class MultiDayEventTileV2<T extends Object?> extends EventTile<T> {
-  const MultiDayEventTileV2({
+class MultiDayEventTile<T extends Object?> extends EventTile<T> {
+  const MultiDayEventTile({
     super.key,
     required super.controller,
     required super.eventsController,

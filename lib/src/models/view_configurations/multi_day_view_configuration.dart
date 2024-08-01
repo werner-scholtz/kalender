@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
+import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
@@ -380,6 +380,7 @@ class MultiDayHeaderConfiguration {
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
     this.createEventTrigger = defaultCreateEventTrigger,
+    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) {
@@ -403,6 +404,9 @@ class MultiDayHeaderConfiguration {
 
   /// Whether to show event tiles.
   final bool showTiles;
+
+  /// The layout strategy used by the [MultiDayHeader] to layout events.
+  final MultiDayEventLayoutStrategy eventLayoutStrategy;
 
   /// The configuration for the page navigation triggers.
   late final PageTriggerConfiguration pageTriggerConfiguration;

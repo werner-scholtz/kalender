@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
@@ -83,7 +82,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
     }
     numberOfPages = weekDifference.round();
     dateTimeRangeFromIndex = (index) {
-      return DateTime(
+      return DateTime.utc(
         start.year,
         start.month,
         start.day + (index * DateTime.daysPerWeek),
@@ -124,7 +123,7 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
     }
     numberOfPages = weekDifference.round();
     dateTimeRangeFromIndex = (index) {
-      final weekRange = DateTime(
+      final weekRange = DateTime.utc(
         start.year,
         start.month,
         start.day + (index * DateTime.daysPerWeek),
@@ -164,7 +163,7 @@ class CustomPageFunctions extends PageNavigationFunctions {
     numberOfPages = dateTimeRange.dayDifference ~/ numberOfDays;
     dateTimeRangeFromIndex = (index) {
       final startDateUtc = start.startOfDay;
-      return DateTime(
+      return DateTime.utc(
         startDateUtc.year,
         startDateUtc.month,
         startDateUtc.day + (index * numberOfDays),

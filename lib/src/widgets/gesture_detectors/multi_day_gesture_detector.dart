@@ -98,7 +98,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   DateTime? _calculateTimeAndDate(Offset position) {
     // Calculate the date of the position.
-    final visibleDates = widget.visibleDateTimeRange.datesSpanned;
+    final visibleDates = widget.visibleDateTimeRange.days;
     final cursorDate = (position.dx / dayWidth);
     final cursorDateIndex = cursorDate.floor();
     if (cursorDateIndex < 0) return null;

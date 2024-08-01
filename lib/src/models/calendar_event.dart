@@ -9,21 +9,6 @@ class CalendarEvent<T extends Object?> {
   final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
 
-  /// The start [DateTime] of the [CalendarEvent].
-  DateTime get start => dateTimeRange.start;
-
-  /// The end [DateTime] of the [CalendarEvent].
-  DateTime get end => dateTimeRange.end;
-
-  /// The start [DateTime] of the [CalendarEvent] as UTC.
-  DateTime get startAsUtc => start.asUtc();
-
-  /// The end [DateTime] of the [CalendarEvent] as UTC.
-  DateTime get endAsUtc => end.asUtc();
-
-  /// The [DateTimeRange] of the [CalendarEvent] as UTC.
-  DateTimeRange get dateTimeRangeAsUtc => DateTimeRange(start: startAsUtc, end: endAsUtc);
-
   /// Whether this [CalendarEvent] can be modified.
   bool canModify;
 
@@ -42,11 +27,17 @@ class CalendarEvent<T extends Object?> {
     this.canModify = true,
   }) : _dateTimeRange = dateTimeRange;
 
+  /// The start [DateTime] of the [CalendarEvent].
+  DateTime get start => dateTimeRange.start;
+
+  /// The end [DateTime] of the [CalendarEvent].
+  DateTime get end => dateTimeRange.end;
+
   /// Whether the [CalendarEvent] is a multi day event.
   bool get isMultiDayEvent => dateTimeRange.dayDifference >= 1;
 
   /// The [DateTime]s that the [CalendarEvent] spans.
-  List<DateTime> get datesSpanned => dateTimeRange.datesSpanned;
+  List<DateTime> get datesSpanned => dateTimeRange.days;
 
   /// The total duration of the [CalendarEvent].
   Duration get duration => dateTimeRange.duration;
@@ -72,10 +63,9 @@ class CalendarEvent<T extends Object?> {
   bool continuesBefore(DateTime date) => start.isBefore(date.startOfDay);
 
   /// Whether the [CalendarEvent] continues after the given [DateTime].
-  /// 
+  ///
   /// TODO: check that this works for multiday events.
   bool continuesAfter(DateTime date) => end.isAfter(date.endOfDay);
-
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
   DateTimeRange dateTimeRangeOnDate(DateTime date) {

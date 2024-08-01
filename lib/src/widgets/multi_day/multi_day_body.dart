@@ -125,6 +125,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         // Calculate the width of the page.
         final timelineWidth = viewConfiguration.timelineWidth;
         final pageWidth = constraints.maxWidth - timelineWidth;
+        final leftPageClip = viewConfiguration.leftPageClip;
 
         // Calculate the width of a single day.
         final dayWidth = pageWidth / numberOfDays;
@@ -173,7 +174,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 TimeIndicator(
                   timeOfDayRange: timeOfDayRange,
                   heightPerMinute: heightPerMinute,
-                  timelineWidth: timelineWidth,
+                  timelineWidth: 0,
                   style: timeIndicatorStyle,
                 );
 
@@ -183,7 +184,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             final daySeparators = List.generate(
               numberOfDays,
               (index) {
-                final left = timelineWidth + (dayWidth * index);
+                final left = dayWidth * index;
                 return Positioned(
                   top: 0,
                   bottom: 0,
@@ -194,69 +195,75 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             );
 
             final pageView = PageClipWidget(
-              timelineWidth: viewConfiguration.leftPageClip,
-              child: PageView.builder(
-                key: ValueKey(viewConfiguration.hashCode),
-                controller: viewController.pageController,
-                itemCount: viewController.numberOfPages,
-                physics: configuration?.pageScrollPhysics,
-                onPageChanged: (index) {
-                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                    index,
-                  );
-                  viewController.visibleDateTimeRange.value = visibleRange;
-                },
-                itemBuilder: (context, index) {
-                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                    index,
-                  );
+              left: leftPageClip,
+              child: Row(
+                children: [
+                  SizedBox(width: timelineWidth),
+                  Expanded(
+                    child: PageView.builder(
+                      clipBehavior: Clip.none,
+                      key: ValueKey(viewConfiguration.hashCode),
+                      controller: viewController.pageController,
+                      itemCount: viewController.numberOfPages,
+                      physics: configuration?.pageScrollPhysics,
+                      onPageChanged: (index) {
+                        final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                          index,
+                        ).asLocal;
+                        viewController.visibleDateTimeRange.value = visibleRange;
+                      },
+                      itemBuilder: (context, index) {
+                        final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+                          index,
+                        );
 
-                  final visibleDates = visibleRange.datesSpanned;
-                  final timeIndicatorDateIndex = visibleDates.indexWhere(
-                    (date) => date.isToday,
-                  );
-                  late final left = dayWidth * timeIndicatorDateIndex;
+                        final visibleDates = visibleRange.days;
+                        final timeIndicatorDateIndex = visibleDates.indexWhere(
+                          (date) => date.isToday,
+                        );
 
-                  final events = DayEventsWidget<T>(
-                    eventsController: eventsController!,
-                    controller: calendarController!,
-                    callbacks: callbacks,
-                    tileComponents: tileComponents,
-                    configuration: bodyConfiguration,
-                    dayWidth: dayWidth,
-                    heightPerMinute: heightPerMinute,
-                    visibleDateTimeRange: visibleRange,
-                    timeOfDayRange: timeOfDayRange,
-                  );
+                        final events = DayEventsWidget<T>(
+                          eventsController: eventsController!,
+                          controller: calendarController!,
+                          callbacks: callbacks,
+                          tileComponents: tileComponents,
+                          configuration: bodyConfiguration,
+                          dayWidth: dayWidth,
+                          heightPerMinute: heightPerMinute,
+                          visibleDateTimeRange: visibleRange,
+                          timeOfDayRange: timeOfDayRange,
+                        );
 
-                  final detector = DayGestureDetector<T>(
-                    eventsController: eventsController,
-                    calendarController: calendarController,
-                    callbacks: callbacks,
-                    bodyConfiguration: bodyConfiguration,
-                    visibleDateTimeRange: visibleRange,
-                    timeOfDayRange: timeOfDayRange,
-                    dayWidth: dayWidth,
-                    heightPerMinute: heightPerMinute,
-                  );
+                        final detector = DayGestureDetector<T>(
+                          eventsController: eventsController,
+                          calendarController: calendarController,
+                          callbacks: callbacks,
+                          bodyConfiguration: bodyConfiguration,
+                          visibleDateTimeRange: visibleRange,
+                          timeOfDayRange: timeOfDayRange,
+                          dayWidth: dayWidth,
+                          heightPerMinute: heightPerMinute,
+                        );
 
-                  return Stack(
-                    fit: StackFit.passthrough,
-                    children: [
-                      ...daySeparators,
-                      Positioned.fill(left: timelineWidth, child: detector),
-                      Positioned.fill(left: timelineWidth, child: events),
-                      if (timeIndicatorDateIndex != -1)
-                        Positioned(
-                          top: 0,
-                          bottom: 0,
-                          left: left,
-                          width: dayWidth + timelineWidth,
-                          child: timeIndicator,
-                        ),
-                    ],
-                  );
-                },
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            ...daySeparators,
+                            Positioned.fill(child: detector),
+                            Positioned.fill(child: events),
+                            if (timeIndicatorDateIndex != -1)
+                              Positioned(
+                                top: 0,
+                                bottom: 0,
+                                width: dayWidth,
+                                child: timeIndicator,
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             );
 
@@ -290,7 +297,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       child: SizedBox(
                         height: pageHeight,
                         child: Stack(
-                          fit: StackFit.expand,
+                          fit: StackFit.passthrough,
                           children: [
                             Positioned.fill(child: hourLines),
                             Positioned(

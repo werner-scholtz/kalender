@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/groups/event_group.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 // TODO: document this.
@@ -11,6 +10,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
+  final MultiDayEventLayoutStrategy<T> layoutStrategy;
   final double dayWidth;
   final bool allowResizing;
   final bool allowRescheduling;
@@ -29,10 +29,12 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
+    required this.layoutStrategy ,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
@@ -42,16 +44,17 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           includeMultiDayEvents: true,
         );
 
-        final group = MultiDayEventGroup(
-          events: visibleEvents,
-          dateTimeRange: visibleDateTimeRange,
-        );
+        final sortedEvents = MultiDayEventsDefaultLayoutDelegate<T>(
+          dateTimeRange: DateTime(2000).dayRange,
+          multiDayTileHeight: 0,
+          events: [],
+        ).sortEvents(visibleEvents.toList());
 
-        final children = group.sortedEvents.indexed.map((item) {
+        final children = sortedEvents.indexed.map((item) {
           final (id, event) = item;
           return LayoutId(
             id: id,
-            child: MultiDayEventTileV2<T>(
+            child: MultiDayEventTile<T>(
               event: event,
               eventsController: eventsController,
               controller: controller,
@@ -66,13 +69,14 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
 
         final multiDayEventsWidget = CustomMultiChildLayout(
           delegate: MultiDayEventsDefaultLayoutDelegate(
-            group: group,
+            events: sortedEvents,
+            dateTimeRange: visibleDateTimeRange,
             multiDayTileHeight: tileHeight,
           ),
           children: [...children],
         );
 
-        // TODO: investigate a more efficient way to do this.
+        // // TODO: investigate a more efficient way to do this.
         final dropTargetWidget = ValueListenableBuilder(
           valueListenable: controller.selectedEvent,
           builder: (context, event, child) {
@@ -80,12 +84,11 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             if (!showAllEvents && !event.isMultiDayEvent) return const SizedBox();
             if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) return const SizedBox();
 
-            final events = visibleEvents.toList()
+            final events = sortedEvents.toList()
               ..removeWhere((e) => e.id == controller.selectedEventId)
               ..add(event);
-            final group = MultiDayEventGroup(events: events, dateTimeRange: visibleDateTimeRange);
 
-            final children = group.sortedEvents.indexed.map((item) {
+            final children = events.indexed.map((item) {
               final (id, event) = item;
               return LayoutId(
                 id: id,
@@ -97,7 +100,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
 
             return CustomMultiChildLayout(
               delegate: MultiDayEventsDefaultLayoutDelegate(
-                group: group,
+              events: events,
+              dateTimeRange: visibleDateTimeRange,
                 multiDayTileHeight: tileHeight,
               ),
               children: children.toList(),

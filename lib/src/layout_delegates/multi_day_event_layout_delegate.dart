@@ -1,43 +1,68 @@
 import 'dart:math';
 
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/groups/event_group.dart';
+import 'package:kalender/src/models/calendar_event.dart';
 
-/// The base Mul`tiChildLayoutDelegate for [MultiDayEventsLayoutDelegate]'s
-///
-/// [MultiDayEventsLayoutDelegate]'s are used to layout [EventGroup]'s in a [MultiDayEventGroupWidget].
-///
-/// [multiDayTileHeight] is the height of a tile in the [MultiDayEventGroupWidget].
-///
-abstract class MultiDayEventsLayoutDelegate<T> extends MultiChildLayoutDelegate {
-  MultiDayEventsLayoutDelegate({
-    required this.group,
+
+// TODO: document this.
+
+typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(
+  List<CalendarEvent<T>> events,
+  DateTimeRange dateTimeRange,
+  double multiDayTileHeight,
+);
+
+MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
+  List<CalendarEvent<T>> events,
+  DateTimeRange dateTimeRange,
+  double multiDayTileHeight,
+) {
+  return MultiDayEventsDefaultLayoutDelegate<T>(
+    events: events,
+    dateTimeRange: dateTimeRange,
+    multiDayTileHeight: multiDayTileHeight,
+  );
+}
+
+
+/// The base MultiChildLayoutDelegate for [MultiDayEventLayoutDelegate]'s
+abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
+  MultiDayEventLayoutDelegate({
+    required this.events,
+    required this.dateTimeRange,
     required this.multiDayTileHeight,
   });
 
-  final MultiDayEventGroup<T> group;
+  final List<CalendarEvent<T>> events;
+  final DateTimeRange dateTimeRange;
   final double multiDayTileHeight;
 
+  /// Sorts the [CalendarEvent]s.
+  ///
+  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
+  /// Override this method to provide custom sorting.
+  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
+
   @override
-  bool shouldRelayout(covariant MultiDayEventsLayoutDelegate oldDelegate) {
-    return oldDelegate.group != group || oldDelegate.multiDayTileHeight != multiDayTileHeight;
+  bool shouldRelayout(covariant MultiDayEventLayoutDelegate oldDelegate) {
+    return oldDelegate.events != events ||
+        oldDelegate.dateTimeRange != dateTimeRange ||
+        oldDelegate.multiDayTileHeight != multiDayTileHeight;
   }
 }
 
 // TODO: document this.
 
-class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventsLayoutDelegate<T> {
+class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   MultiDayEventsDefaultLayoutDelegate({
-    required super.group,
+    required super.events,
+    required super.dateTimeRange,
     required super.multiDayTileHeight,
   });
 
   @override
   Size getSize(BoxConstraints constraints) {
-    final events = group.sortedEvents;
-
     /// TODO: this does not work 100% correctly.
     /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
@@ -56,9 +81,8 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventsLayoutDelegat
 
   @override
   void performLayout(Size size) {
-    final events = group.sortedEvents;
     final numberOfChildren = events.length;
-    final visibleDates = group.dateTimeRange.datesSpanned;
+    final visibleDates = dateTimeRange.days;
     final dayWidth = size.width / visibleDates.length;
 
     final tileSizes = <int, Size>{};
