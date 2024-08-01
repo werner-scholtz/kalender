@@ -246,7 +246,7 @@ void testDatesSpanned() {
       final range = entry.key;
 
       test('datesSpanned', () {
-        final dates = range.datesSpanned;
+        final dates = range.days;
         expect(
           dates.length,
           entry.value,

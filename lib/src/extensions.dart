@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 extension DateTimeRangeExtensions on DateTimeRange {
   /// The time difference in days between the [start] and [end] of the [DateTimeRange].
-  ///
-  /// - Converts the start and end to utc before calculation.
   int get dayDifference {
     final startDate = start.asUtc();
     final endDate = end.asUtc();
@@ -27,14 +25,17 @@ extension DateTimeRangeExtensions on DateTimeRange {
   ///
   /// Includes the [start] date.
   /// Includes the [end] date only if it is not the start of the day. (after 00:00:00)
-  List<DateTime> get datesSpanned {
+  List<DateTime> get days {
     final start = this.start.asUtc();
     final end = this.end.asUtc();
+
     if (start.isSameDay(end)) return [this.start.startOfDay];
+
     final dateTimeRange = DateTimeRange(
       start: start.startOfDay,
       end: end.startOfDay == end ? end.startOfDay : end.endOfDay,
     );
+
     final numberOfDays = dateTimeRange.dayDifference;
     final dates = <DateTime>[];
     for (var i = 0; i < numberOfDays; i++) {
@@ -67,13 +68,13 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// Returns the weekNumber(s) that the [DateTimeRange] spans.
   (int weekNumber, int? secondWeekNumber) get weekNumbers {
-    final datesSpanned = this.datesSpanned;
-    final isSingleWeek = datesSpanned.length <= 7;
+    final days = this.days;
+    final isSingleWeek = days.length <= 7;
 
     if (start.year != end.year && isSingleWeek) {
       // When changing years we show both.
 
-      final firstDayOfYear = datesSpanned.firstWhere(
+      final firstDayOfYear = days.firstWhere(
         (element) => element.year == end.year,
         orElse: () => start,
       );
@@ -87,7 +88,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
         isSingleWeek && (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
     if (!showOnlyOneWeekNumber) {
-      if (datesSpanned.first.weekNumber == datesSpanned.last.weekNumber) {
+      if (days.first.weekNumber == days.last.weekNumber) {
         // If the first and last day have the same week number return the start.weekNumber.
         return (start.weekNumber, null);
       } else {
@@ -95,7 +96,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
         return (start.weekNumber, end.weekNumber);
       }
     } else {
-      final dateToUse = datesSpanned.firstWhere(
+      final dateToUse = days.firstWhere(
         (date) => date.weekday == 1, // Find the first monday.
         orElse: () => start, // If there is not a monday use the start.
       );
@@ -108,6 +109,12 @@ extension DateTimeRangeExtensions on DateTimeRange {
   bool overlaps(DateTimeRange other) {
     return start.isBefore(other.end) && end.isAfter(other.start);
   }
+
+  /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
+  DateTimeRange get asUtc => DateTimeRange(start: start.asUtc(), end: end.asUtc());
+
+  /// Returns a [DateTimeRange] with the [DateTime]s as local values without converting them.
+  DateTimeRange get asLocal => DateTimeRange(start: start.asLocal(), end: end.asLocal());
 }
 
 extension DateTimeExtensions on DateTime {
@@ -130,6 +137,11 @@ extension DateTimeExtensions on DateTime {
   /// Returns a [DateTime] as a UTC value without converting it.
   DateTime asUtc() {
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
+  /// Returns a [DateTime] as a local value without converting it.
+  DateTime asLocal() {
+    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
   }
 
   /// Gets the start of the date.
