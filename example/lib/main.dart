@@ -56,11 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final controller = CalendarController();
 
   final displayRange = DateTimeRange(
-    start: DateTime.now().subtractDays(365),
+    start: DateTime.now().subtractDays(363),
     end: DateTime.now().addDays(365),
   );
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
+    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4),
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
@@ -130,9 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: tileComponents,
             multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              // eventLayoutStrategy: sideBySideLayoutStrategy,
-              showMultiDayEvents: true
-            ),
+                // eventLayoutStrategy: sideBySideLayoutStrategy,
+                showMultiDayEvents: false),
           ),
         ),
       ),
@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: childDragAnchorStrategy,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: childDragAnchorStrategy,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
     );
@@ -209,8 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-
 }
 
 class NavigationHeader extends StatelessWidget {
@@ -240,6 +238,7 @@ class NavigationHeader extends StatelessWidget {
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;
+                    
                     return FilledButton.tonal(
                       onPressed: () {},
                       style: FilledButton.styleFrom(

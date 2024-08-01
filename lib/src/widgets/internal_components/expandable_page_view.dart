@@ -52,6 +52,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       duration: const Duration(milliseconds: 100),
       builder: (context, value, child) => SizedBox(height: value, child: child),
       child: PageView.builder(
+        padEnds: false,
         clipBehavior: Clip.none,
         controller: widget.controller,
         itemCount: widget.itemCount,

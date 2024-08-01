@@ -11,6 +11,7 @@ enum MultiDayViewType {
   week,
   workWeek,
   custom,
+  freeScroll,
 }
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
@@ -105,6 +106,22 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     type = MultiDayViewType.custom;
   }
 
+  /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
+  MultiDayViewConfiguration.freeScroll({
+    super.name = 'Free Scroll',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    required this.numberOfDays,
+    this.timelineWidth = defaultTimeLineWith,
+    this.leftPageClip = defaultLeftPageClip,
+  }) {
+    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
+    this.displayRange = displayRange ?? DateTime.now().yearRange;
+    pageNavigationFunctions = PageNavigationFunctions.freeScroll(this.displayRange);
+    type = MultiDayViewType.freeScroll;
+    firstDayOfWeek = DateTime.monday;
+  }
+
   late final MultiDayViewType type;
 
   /// The functions for navigating the [PageView].
@@ -174,6 +191,12 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          numberOfDays: numberOfDays ?? this.numberOfDays,
+        ),
+      MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
+          name: name ?? this.name,
+          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
         ),
     };

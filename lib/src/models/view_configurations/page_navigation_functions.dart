@@ -25,6 +25,11 @@ abstract class PageNavigationFunctions {
     return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
+  /// Creates a [PageNavigationFunctions] for a single day [ViewConfiguration].
+  factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
+    return FreeScrollFunctions(dateTimeRange: dateTimeRange);
+  }
+
   /// Creates a [PageNavigationFunctions] for a month [ViewConfiguration].
   factory PageNavigationFunctions.month(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return MonthPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
@@ -175,6 +180,29 @@ class CustomPageFunctions extends PageNavigationFunctions {
       final index = dateUtc.difference(startDateUtc).inDays ~/ numberOfDays;
       return index.clamp(0, numberOfPages - 1);
     };
+  }
+
+  @override
+  late DateTimeRangeFromIndex dateTimeRangeFromIndex;
+
+  @override
+  late IndexFromDate indexFromDate;
+
+  @override
+  late int numberOfPages;
+}
+
+class FreeScrollFunctions extends PageNavigationFunctions {
+  FreeScrollFunctions({
+    required DateTimeRange dateTimeRange,
+  }) {
+    final start = dateTimeRange.start.asUtc().startOfDay;
+    dateTimeRangeFromIndex = (index) => start.addDays(index).dayRange;
+    indexFromDate = (date) {
+      final dateAsUtc = date.asUtc().startOfDay;
+      return dateAsUtc.difference(start).inDays;
+    };
+    numberOfPages = dateTimeRange.dayDifference;
   }
 
   @override
