@@ -77,15 +77,26 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // TODO: if a previousViewConfiguration is passed in use its visibleDateTimeRange to set the initialPage.
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
 
-    final viewPortFraction = viewConfiguration.type == MultiDayViewType.freeScroll
-        ? 1 / viewConfiguration.numberOfDays
-        : 1.0;
+    final type = viewConfiguration.type;
+    final viewPortFraction =
+        type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute = ValueNotifier<double>(0.7);
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+
+    final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+
+    if (type == MultiDayViewType.freeScroll) {
+      visibleDateTimeRange.value = DateTimeRange(
+        start: range.start,
+        end: range.start.addDays(viewConfiguration.numberOfDays),
+      );
+    } else {
+      visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+    }
+
     scrollController = ScrollController();
     visibleEvents.value = [];
 
