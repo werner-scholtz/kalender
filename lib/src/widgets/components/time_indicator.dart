@@ -134,6 +134,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     );
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Positioned(
           top: top,

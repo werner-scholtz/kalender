@@ -66,7 +66,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
   ScrollController get scrollController => widget.scrollController;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   DateTimeRange get visibleDateTimeRange => viewController.visibleDateTimeRange.value;
-  List<DateTime> get visibleDates => visibleDateTimeRange.datesSpanned;
+  List<DateTime> get visibleDates => visibleDateTimeRange.days;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
 
@@ -216,6 +216,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
       feedbackWidgetSize.value = Size(dayWidth, eventHeight);
 
       _updateWidgetPosition();
+
+      controller.selectEvent(data, internal: true);
       return true;
     } else if (data is ResizeEvent<T>) {
       // Check that the resize direction is either top or bottom.
