@@ -127,7 +127,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   tileHeight: tileHeight,
                   showAllEvents: true,
                   callbacks: callbacks,
-                  layoutStrategy: bodyConfiguration.eventLayoutStrategy as MultiDayEventLayoutStrategy<T>,
+                  layoutStrategy: bodyConfiguration.eventLayoutStrategy,
                 );
 
               

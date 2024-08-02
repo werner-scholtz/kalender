@@ -38,11 +38,11 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
   final DateTimeRange dateTimeRange;
   final double multiDayTileHeight;
 
-  /// Sorts the [CalendarEvent]s.
-  ///
-  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
-  /// Override this method to provide custom sorting.
-  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
+  // /// Sorts the [CalendarEvent]s.
+  // ///
+  // /// This is used to sort the events before passing them to the [EventLayoutDelegate].
+  // /// Override this method to provide custom sorting.
+  // List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
 
   @override
   bool shouldRelayout(covariant MultiDayEventLayoutDelegate oldDelegate) {

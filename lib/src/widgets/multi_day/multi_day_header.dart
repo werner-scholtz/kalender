@@ -203,7 +203,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           showAllEvents: false,
           callbacks: callbacks,
           tileHeight: tileHeight,
-          layoutStrategy: configuration.eventLayoutStrategy as MultiDayEventLayoutStrategy<T>,
+          layoutStrategy: configuration.eventLayoutStrategy,
         );
 
         final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -351,7 +351,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           showAllEvents: false,
           callbacks: callbacks,
           tileHeight: tileHeight,
-          layoutStrategy: configuration.eventLayoutStrategy as MultiDayEventLayoutStrategy<T>,
+          layoutStrategy: configuration.eventLayoutStrategy,
         );
 
         final multiDayDragTarget = MultiDayDragTarget<T>(

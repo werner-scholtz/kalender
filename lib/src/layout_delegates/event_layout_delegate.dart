@@ -76,11 +76,11 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
 
-  /// Sorts the [CalendarEvent]s.
-  ///
-  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
-  /// Override this method to provide custom sorting.
-  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
+  // /// Sorts the [CalendarEvent]s.
+  // ///
+  // /// This is used to sort the events before passing them to the [EventLayoutDelegate].
+  // /// Override this method to provide custom sorting.
+  // List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
 
   /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
   ///
@@ -168,15 +168,6 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.date,
     required super.timeOfDayRange,
   });
-
-  @override
-  List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) {
-    return events
-      ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort(
-        (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
-      );
-  }
 
   @override
   void performLayout(Size size) {

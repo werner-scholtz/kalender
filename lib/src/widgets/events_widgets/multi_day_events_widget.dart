@@ -10,7 +10,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayEventLayoutStrategy<T> layoutStrategy;
+  final MultiDayEventLayoutStrategy layoutStrategy;
   final double dayWidth;
   final bool allowResizing;
   final bool allowRescheduling;
@@ -29,12 +29,11 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
-    required this.layoutStrategy ,
+    required this.layoutStrategy,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
@@ -44,11 +43,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           includeMultiDayEvents: true,
         );
 
-        final sortedEvents = MultiDayEventsDefaultLayoutDelegate<T>(
-          dateTimeRange: DateTime(2000).dayRange,
-          multiDayTileHeight: 0,
-          events: [],
-        ).sortEvents(visibleEvents.toList());
+        final sortedEvents = visibleEvents.toList();
 
         final children = sortedEvents.indexed.map((item) {
           final (id, event) = item;
@@ -100,8 +95,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
 
             return CustomMultiChildLayout(
               delegate: MultiDayEventsDefaultLayoutDelegate(
-              events: events,
-              dateTimeRange: visibleDateTimeRange,
+                events: events,
+                dateTimeRange: visibleDateTimeRange,
                 multiDayTileHeight: tileHeight,
               ),
               children: children.toList(),

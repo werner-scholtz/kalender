@@ -36,9 +36,6 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
     final showMultiDayEvents = configuration.showMultiDayEvents;
     final selectedEvent = controller.selectedEvent;
 
-    final layoutInstance = layoutStrategy.call([], DateTime(2000), timeOfDayRange, heightPerMinute)
-        as EventLayoutDelegate<T>;
-
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
@@ -50,9 +47,11 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               includeMultiDayEvents: showMultiDayEvents,
             );
 
-            final sortedEvents = layoutInstance.sortEvents(
-              visibleEvents.toList(),
-            );
+            final sortedEvents = visibleEvents.toList()
+              ..sort((a, b) => b.duration.compareTo(a.duration))
+              ..sort(
+                (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
+              );
 
             final events = CustomMultiChildLayout(
               delegate: layoutStrategy.call(
