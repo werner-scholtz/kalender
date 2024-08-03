@@ -255,6 +255,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                           heightPerMinute: heightPerMinute,
                         );
 
+                        late final left = dayWidth * timeIndicatorDateIndex;
+
                         return Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -265,6 +267,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                               Positioned(
                                 top: 0,
                                 bottom: 0,
+                                left: left,
                                 width: dayWidth,
                                 child: timeIndicator,
                               ),
