@@ -114,9 +114,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
   }
 
   /// Finds the [CalendarEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
-  Iterable<CalendarEvent<T>> _dayEventsFromDateTimeRange(
-    DateTimeRange dateTimeRange,
-  ) {
+  Iterable<CalendarEvent<T>> _dayEventsFromDateTimeRange(DateTimeRange dateTimeRange) {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;

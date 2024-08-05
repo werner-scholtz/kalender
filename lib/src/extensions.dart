@@ -44,7 +44,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return dates;
   }
 
-  /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
+  /// The [DateTimeRange] of the [DateTime] on a specific date.
   DateTimeRange dateTimeRangeOnDate(DateTime date) {
     if (start.isSameDay(end)) {
       // The start and end are on same day.
@@ -318,7 +318,11 @@ extension DateTimeExtensions on DateTime {
 }
 
 extension TimeOfDayExtension on TimeOfDay {
-  DateTime toDateTime(DateTime dateTime) {
-    return DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
-  }
+  DateTime toDateTime(DateTime dateTime) => dateTime.copyWith(
+        year: dateTime.year,
+        month: dateTime.month,
+        day: dateTime.day,
+        hour: hour,
+        minute: minute,
+      );
 }
