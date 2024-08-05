@@ -230,15 +230,12 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           dayWidth: pageWidth,
         );
 
-        return Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-          child: Stack(
-            children: [
-              Positioned.fill(child: gestureDetector),
-              ConstrainedBox(constraints: constraints, child: multiDayEvents),
-              Positioned.fill(child: multiDayDragTarget),
-            ],
-          ),
+        return Stack(
+          children: [
+            Positioned.fill(child: gestureDetector),
+            ConstrainedBox(constraints: constraints, child: multiDayEvents),
+            Positioned.fill(child: multiDayDragTarget),
+          ],
         );
       },
     );
