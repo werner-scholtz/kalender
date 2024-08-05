@@ -31,13 +31,13 @@ class CalendarEvent<T extends Object?> {
   }) : _dateTimeRange = dateTimeRange;
 
   /// The start [DateTime] of the [CalendarEvent].
-  DateTime get start => dateTimeRange.start;
+  DateTime get start => dateTimeRange.start.asLocal();
 
   /// The start [DateTime.utc] of the [CalendarEvent].
   DateTime get _startAsUTC => start.asUtc();
 
   /// The end [DateTime] of the [CalendarEvent].
-  DateTime get end => dateTimeRange.end;
+  DateTime get end => dateTimeRange.end.asLocal();
 
   /// The end [DateTime.utc] of the [CalendarEvent].
   DateTime get _endAsUTC => end.asUtc();

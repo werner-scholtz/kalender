@@ -79,7 +79,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     }
     final selectedEvent = this.selectedEvent.value;
     if (selectedEvent == null) return;
-    final updatedEvent = selectedEvent.copyWith(dateTimeRange: dateTimeRange);
+    final updatedEvent = selectedEvent.copyWith(dateTimeRange: dateTimeRange.asLocal);
     controller.selectEvent(updatedEvent, internal: true);
   }
 

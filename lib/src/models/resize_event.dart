@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar_event.dart';
 
 /// A wrapper class for a [CalendarEvent] that is being resized.
 class ResizeEvent<T> {
@@ -17,7 +17,7 @@ class ResizeEvent<T> {
   ResizeEvent<T> updateDateTimeRange(
     DateTimeRange dateTimeRange,
   ) {
-    final updatedEvent = event.copyWith(dateTimeRange: dateTimeRange);
+    final updatedEvent = event.copyWith(dateTimeRange: dateTimeRange.asLocal);
     return ResizeEvent<T>(updatedEvent, direction);
   }
 }

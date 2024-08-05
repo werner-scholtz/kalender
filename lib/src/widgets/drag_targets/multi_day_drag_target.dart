@@ -260,7 +260,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
     // Update the event with the new start time.
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
 
     return updatedEvent;
   }
@@ -283,6 +283,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       throw Exception('Invalid resize direction.');
     }
 
-    return resizeEvent.event.copyWith(dateTimeRange: range);
+    return resizeEvent.event.copyWith(dateTimeRange: range.asLocal);
   }
 }

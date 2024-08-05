@@ -386,7 +386,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
 
     // Remove now from the snap points.
     if (bodyConfiguration.snapToTimeIndicator) removeSnapPoint(now);
@@ -413,7 +413,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     /// TODO: add snapping.
 
-    return resizeEvent.event.copyWith(dateTimeRange: dateTimeRange);
+    return resizeEvent.event.copyWith(dateTimeRange: dateTimeRange.asLocal);
   }
 
   /// Update the snap points.
