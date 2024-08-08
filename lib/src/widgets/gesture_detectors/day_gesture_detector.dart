@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
@@ -45,7 +46,22 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
   DateTime? start;
 
-  void onDown(Offset localPosition) {
+  void onTapDown(TapDownDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+  void onLongPressDown(LongPressDownDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+  void onPanStart(DragStartDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+  void _onDown(Offset localPosition) {
     final dateTimeRange = _calculateDateTimeRange(localPosition);
     if (dateTimeRange == null) return;
     start = dateTimeRange.start;
@@ -149,12 +165,12 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
 
     return GestureDetector(
       // Tap
-      onTapDown: tap ? (details) => onDown(details.localPosition) : null,
+      onTapDown: tap ? onTapDown : null,
       onTapUp: tap ? (_) => onEnd() : null,
       onTapCancel: tap ? onCanceled : null,
 
       // Long Press
-      onLongPressDown: long ? (details) => onDown(details.localPosition) : null,
+      onLongPressDown: long ? onLongPressDown : null,
       onLongPressMoveUpdate: long ? (details) => onUpdate(details.localPosition) : null,
       onLongPressEnd: long ? (_) => onEnd() : null,
       onLongPressCancel: long ? onCanceled : null,
@@ -163,7 +179,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
       onPanStart: isMobileDevice
           ? null
           : tap
-              ? (details) => onDown(details.localPosition)
+              ? onPanStart
               : null,
       onPanUpdate: isMobileDevice
           ? null
