@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
@@ -39,7 +40,23 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
   DateTime? start;
 
-  void onDown(Offset localPosition) {
+  void _onTapDown(TapDownDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+  void _onLongPressDown(LongPressDownDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+  void _onPanStart(DragStartDetails details) {
+    if (details.kind == PointerDeviceKind.trackpad) return;
+    _onDown(details.localPosition);
+  }
+
+
+  void _onDown(Offset localPosition) {
     final dateTimeRange = _calculateDateTimeRange(localPosition);
 
     if (dateTimeRange == null) return;
@@ -56,7 +73,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     }
   }
 
-  void onUpdate(Offset localPosition) {
+  void _onUpdate(Offset localPosition) {
     if (start == null) return;
 
     var currentDate = _calculateTimeAndDate(localPosition);
@@ -77,7 +94,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     controller.selectEvent(updatedEvent, internal: true);
   }
 
-  void onEnd() {
+  void _onEnd() {
     start = null;
     final newEvent = selectedEvent.value;
     if (newEvent == null) return;
@@ -85,7 +102,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     callbacks?.onEventCreated?.call(newEvent);
   }
 
-  void onCanceled() {
+  void _onCanceled() {
     start = null;
     controller.deselectEvent();
   }
@@ -115,31 +132,31 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     return MouseRegion(
       child: GestureDetector(
         // Tap
-        onTapDown: tap ? (details) => onDown(details.localPosition) : null,
-        onTapUp: tap ? (_) => onEnd() : null,
-        onTapCancel: tap ? onCanceled : null,
+        onTapDown: tap ? _onTapDown : null,
+        onTapUp: tap ? (_) => _onEnd() : null,
+        onTapCancel: tap ? _onCanceled : null,
 
         // Long Press
-        onLongPressDown: long ? (details) => onDown(details.localPosition) : null,
-        onLongPressMoveUpdate: long ? (details) => onUpdate(details.localPosition) : null,
-        onLongPressEnd: long ? (_) => onEnd() : null,
-        onLongPressCancel: long ? onCanceled : null,
+        onLongPressDown: long ? _onLongPressDown : null,
+        onLongPressMoveUpdate: long ? (details) => _onUpdate(details.localPosition) : null,
+        onLongPressEnd: long ? (_) => _onEnd() : null,
+        onLongPressCancel: long ? _onCanceled : null,
 
         // Pan
         onPanStart: isMobileDevice
             ? null
             : tap
-                ? (details) => onDown(details.localPosition)
+                ? _onPanStart
                 : null,
         onPanUpdate: isMobileDevice
             ? null
             : tap
-                ? (details) => onUpdate(details.localPosition)
+                ? (details) => _onUpdate(details.localPosition)
                 : null,
         onPanEnd: isMobileDevice
             ? null
             : tap
-                ? (_) => onEnd()
+                ? (_) => _onEnd()
                 : null,
       ),
     );
