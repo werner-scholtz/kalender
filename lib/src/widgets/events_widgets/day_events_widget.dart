@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 
-// TODO: Improve documentation.
+// TODO: document this.
 class DayEventsWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
@@ -80,6 +80,8 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
             );
 
             // TODO: investigate a more efficient way to do this.
+            // This can get computationally expensive when there a lot of events.
+            // Might be worth it to store the current layout instead of re-calculating every time.
             final dropTargetWidget = ValueListenableBuilder(
               valueListenable: selectedEvent,
               builder: (context, event, child) {
