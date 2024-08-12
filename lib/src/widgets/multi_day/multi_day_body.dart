@@ -215,8 +215,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             start: visibleRange.start,
                             end: visibleRange.start.addDays(numberOfDays),
                           );
-                          print(numberOfDays);
-                          print(range);
                           viewController.visibleDateTimeRange.value = range.asLocal;
                         } else {
                           viewController.visibleDateTimeRange.value = visibleRange.asLocal;
