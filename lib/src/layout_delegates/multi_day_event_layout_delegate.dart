@@ -135,7 +135,7 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventLayoutDelegate
       // Find events that fill the same dates as the current event.
       final eventsAbove = tilePositions.keys.map((e) => events[e]).where(
         (eventAbove) {
-          return eventAbove.datesSpanned.any(event.datesSpannedAsUtc.contains);
+          return eventAbove.datesSpannedAsUtc.any(event.datesSpannedAsUtc.contains);
         },
       ).toList();
 

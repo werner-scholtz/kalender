@@ -48,7 +48,7 @@ class CalendarEvent<T extends Object?> {
   /// The [DateTime]s that the [CalendarEvent] spans.
   List<DateTime> get datesSpanned => dateTimeRange.days;
 
-  /// The [DateTime]s that the [CalendarEvent] spans as UTC [DateTime]s. 
+  /// The [DateTime]s that the [CalendarEvent] spans as UTC [DateTime]s.
   List<DateTime> get datesSpannedAsUtc => _dateTimeRangeAsUtc.days;
 
   /// The total duration of the [CalendarEvent].
@@ -94,6 +94,10 @@ class CalendarEvent<T extends Object?> {
     DateTimeRange? dateTimeRange,
     T? data,
   }) {
+    if (dateTimeRange?.start.isUtc ?? false) {
+      print("errror");
+    }
+
     return CalendarEvent<T>(
       data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
