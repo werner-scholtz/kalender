@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 
-
 // TODO: document this.
 
 typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(
@@ -24,7 +23,6 @@ MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
     multiDayTileHeight: multiDayTileHeight,
   );
 }
-
 
 /// The base MultiChildLayoutDelegate for [MultiDayEventLayoutDelegate]'s
 abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
@@ -92,7 +90,7 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventLayoutDelegate
     for (var i = 0; i < numberOfChildren; i++) {
       final event = events[i];
 
-      final eventDates = event.datesSpanned;
+      final eventDates = event.datesSpannedAsUtc;
 
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(
@@ -112,9 +110,9 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventLayoutDelegate
       );
 
       final indexOfFirstVisibleDate = visibleDates.indexOf(visibleEventDates.first.startOfDay);
+
       final dx = (indexOfFirstVisibleDate * dayWidth).roundToDouble();
       tileDx[i] = dx;
-
       // Calculate the width of the tile.
       final tileWidth = ((visibleEventDates.length) * dayWidth).roundToDouble();
 
@@ -137,7 +135,7 @@ class MultiDayEventsDefaultLayoutDelegate<T> extends MultiDayEventLayoutDelegate
       // Find events that fill the same dates as the current event.
       final eventsAbove = tilePositions.keys.map((e) => events[e]).where(
         (eventAbove) {
-          return eventAbove.datesSpanned.any(event.datesSpanned.contains);
+          return eventAbove.datesSpanned.any(event.datesSpannedAsUtc.contains);
         },
       ).toList();
 

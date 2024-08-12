@@ -48,6 +48,9 @@ class CalendarEvent<T extends Object?> {
   /// The [DateTime]s that the [CalendarEvent] spans.
   List<DateTime> get datesSpanned => dateTimeRange.days;
 
+  /// The [DateTime]s that the [CalendarEvent] spans as UTC [DateTime]s. 
+  List<DateTime> get datesSpannedAsUtc => _dateTimeRangeAsUtc.days;
+
   /// The total duration of the [CalendarEvent].
   Duration get duration => dateTimeRange.duration;
 
@@ -82,7 +85,7 @@ class CalendarEvent<T extends Object?> {
   bool continuesAfter(DateTime date) => end.isAfter(date.endOfDay);
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
-  /// 
+  ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
   DateTimeRange dateTimeRangeOnDate(DateTime date) => _dateTimeRangeAsUtc.dateTimeRangeOnDate(date);
 
