@@ -57,7 +57,9 @@ typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 /// The default builder for the event tiles.
 ///
 /// [event] is the event that the tile will be built for.
+/// 
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
+/// * (This can be compared to the [CalendarEvent.dateTimeRange] to determine on which day it falls.)
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTimeRange tileRange,

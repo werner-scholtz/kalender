@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
 
+import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
@@ -23,6 +24,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   /// Whether the event can be rescheduled.
   final bool allowRescheduling;
 
+  /// The dateTimeRange of this tile
   final DateTimeRange dateTimeRange;
 
   const EventTile({
@@ -37,6 +39,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
     required this.dateTimeRange,
   });
 
+  DateTimeRange get localDateTimeRange => dateTimeRange.asLocal;
   DragAnchorStrategy? get dragAnchorStrategy => tileComponents.dragAnchorStrategy;
   ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
@@ -55,7 +58,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   bool get showEnd => allowRescheduling && event.canModify && !continuesAfter;
   bool get canReschedule => allowRescheduling && event.canModify;
 
-  (DateTime date, List<DateTime> dates) eventDates(DateTime date) => (date, event.datesSpanned);
+  // (DateTime date, List<DateTime> dates) eventDates(DateTime date) => (date, event.datesSpanned);
 
   ResizeEvent<T> resizeEvent(ResizeDirection direction) => ResizeEvent<T>(event, direction);
 
