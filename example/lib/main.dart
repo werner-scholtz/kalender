@@ -61,12 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
   );
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
-    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4),
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
     MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
     MonthViewConfiguration.singleMonth(),
+    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
 
   @override
@@ -238,7 +238,7 @@ class NavigationHeader extends StatelessWidget {
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;
-                    
+
                     return FilledButton.tonal(
                       onPressed: () {},
                       style: FilledButton.styleFrom(
