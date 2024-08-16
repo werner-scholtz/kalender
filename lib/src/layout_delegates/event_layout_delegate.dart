@@ -71,6 +71,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.timeOfDayRange,
   });
 
+  /// The list of events that will be layed out. (The order of these events are the same as the widget's)
   final Iterable<CalendarEvent<T>> events;
   final DateTime date;
   final TimeOfDayRange timeOfDayRange;

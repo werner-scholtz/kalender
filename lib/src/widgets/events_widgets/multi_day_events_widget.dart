@@ -63,7 +63,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         });
 
         final multiDayEventsWidget = CustomMultiChildLayout(
-          delegate: MultiDayEventsDefaultLayoutDelegate(
+          delegate: DefaultMultiDayLayoutDelegate(
             events: sortedEvents,
             dateTimeRange: visibleDateTimeRange,
             multiDayTileHeight: tileHeight,
@@ -94,7 +94,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             });
 
             return CustomMultiChildLayout(
-              delegate: MultiDayEventsDefaultLayoutDelegate(
+              delegate: DefaultMultiDayLayoutDelegate(
                 events: events,
                 dateTimeRange: visibleDateTimeRange,
                 multiDayTileHeight: tileHeight,
