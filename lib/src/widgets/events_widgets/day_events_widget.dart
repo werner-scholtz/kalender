@@ -47,6 +47,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
               includeMultiDayEvents: showMultiDayEvents,
             );
 
+            /// TODO: This should probably be a customizable.
             final sortedEvents = visibleEvents.toList()
               ..sort((a, b) => b.duration.compareTo(a.duration))
               ..sort(
