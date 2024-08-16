@@ -159,8 +159,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   }
 }
 
-// TODO: document.
-
+/// The [OverlapLayoutDelegate] lays out [CalendarEvent]'s, by stacking them on top of one another.
 class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   OverlapLayoutDelegate({
     required super.events,
@@ -217,8 +216,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   }
 }
 
-// TODO: document.
-
+/// The [SideBySideLayoutDelegate] lays out [CalendarEvent]'s next to one another.
 class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   SideBySideLayoutDelegate({
     required super.events,
@@ -320,9 +318,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
   }
 }
 
-// TODO: document.
-// TODO: fix issues,
-
+/// This stores the vertical layout data of a single [CalendarEvent].
 class VerticalLayoutData {
   /// The id of the event.
   final int id;
@@ -338,11 +334,12 @@ class VerticalLayoutData {
   /// The height of the event.
   double get height => bottom - top;
 
-  bool overlaps(VerticalLayoutData layoutData) {
-    final inside = layoutData.top >= top && layoutData.bottom <= bottom;
-    final overlapTop = layoutData.top < top && layoutData.bottom > top;
-    final overlapBottom = layoutData.top < bottom && layoutData.bottom > bottom;
-    final outside = layoutData.top <= top && layoutData.bottom >= bottom;
+  /// Checks if this [VerticalLayoutData] overlaps with [other].
+  bool overlaps(VerticalLayoutData other) {
+    final inside = other.top >= top && other.bottom <= bottom;
+    final overlapTop = other.top < top && other.bottom > top;
+    final overlapBottom = other.top < bottom && other.bottom > bottom;
+    final outside = other.top <= top && other.bottom >= bottom;
     return inside || overlapTop || overlapBottom || outside;
   }
 
@@ -350,16 +347,20 @@ class VerticalLayoutData {
   String toString() => 'id: $id, top: $top, bottom: $bottom';
 }
 
+/// This stores horizontal data [top] and [bottom] for a group of [VerticalLayoutData].
 class HorizontalGroupData {
   final List<VerticalLayoutData> verticalLayoutData = [];
 
+  /// The top of the group of [VerticalLayoutData].
   double top = double.infinity;
+
+  /// The bottom of the group of [VerticalLayoutData].
   double bottom = double.negativeInfinity;
 
-  HorizontalGroupData(VerticalLayoutData layoutData) {
-    verticalLayoutData.add(layoutData);
-    top = layoutData.top;
-    bottom = layoutData.bottom;
+  HorizontalGroupData(VerticalLayoutData initialData) {
+    verticalLayoutData.add(initialData);
+    top = initialData.top;
+    bottom = initialData.bottom;
   }
 
   /// Adds the [layoutData] to the [HorizontalGroupData].
