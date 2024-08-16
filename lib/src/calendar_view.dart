@@ -58,8 +58,10 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
 
     // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
+
       setState(() {
-        _viewController = _createViewController();
+        final initialDate = _viewController.visibleDateTimeRange.value.start;
+        _viewController = _createViewController(initialDate: initialDate);
         widget.calendarController.attach(_viewController);
       });
     }
@@ -80,7 +82,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   }
 
   /// Create the [ViewController] based on the [ViewConfiguration].
-  ViewController<T> _createViewController() {
+  ViewController<T> _createViewController({DateTime? initialDate}) {
     final viewConfiguration = widget.viewConfiguration;
 
     return switch (viewConfiguration.runtimeType) {

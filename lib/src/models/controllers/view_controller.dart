@@ -72,11 +72,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     required this.viewConfiguration,
     required this.visibleDateTimeRange,
     required this.visibleEvents,
-    ViewController? previousViewConfiguration,
     DateTime? initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    // TODO: if a previousViewConfiguration is passed in use its visibleDateTimeRange to set the initialPage.
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
 
     final type = viewConfiguration.type;
@@ -240,11 +238,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
-    ViewController? previousViewConfiguration,
     DateTime? initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    // TODO: if a previousViewConfiguration is passed in use its visibleDateTimeRange to set the initialPage.
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages;
