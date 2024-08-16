@@ -222,7 +222,7 @@ class MonthPageFunctions extends PageNavigationFunctions {
   }) {
     final start = dateTimeRange.start;
     dateTimeRangeFromIndex = (index) {
-      final range = DateTime(start.year, start.month + index, 1).monthRange;
+      final range = DateTime.utc(start.year, start.month + index, 1).monthRange.asUtc;
       var rangeStart = range.start.startOfWeekWithOffset(firstDayOfWeek);
       if (rangeStart.isAfter(range.start)) {
         rangeStart = rangeStart.subtractDays(7);

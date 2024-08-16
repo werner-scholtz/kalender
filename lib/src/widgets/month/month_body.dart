@@ -97,17 +97,12 @@ class MonthBody<T extends Object?> extends StatelessWidget {
           controller: viewController.pageController,
           itemCount: pageNavigation.numberOfPages,
           onPageChanged: (index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-              index,
-            ).asLocal;
-            
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index).asLocal;
             viewController.visibleDateTimeRange.value = visibleRange;
           },
           itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-              index,
-            );
-
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+            
             final multiDayEvents = List.generate(
               5,
               (index) {
@@ -130,7 +125,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   layoutStrategy: bodyConfiguration.eventLayoutStrategy,
                 );
 
-              
                 final multiDayDragTarget = MultiDayDragTarget<T>(
                   eventsController: eventsController,
                   calendarController: calendarController,
