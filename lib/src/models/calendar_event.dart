@@ -81,7 +81,6 @@ class CalendarEvent<T extends Object?> {
   /// Whether the [CalendarEvent] continues after the given [DateTime].
   ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  /// TODO: check that this works for multiday events.
   bool continuesAfter(DateTime date) => end.isAfter(date.endOfDay);
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
@@ -94,10 +93,6 @@ class CalendarEvent<T extends Object?> {
     DateTimeRange? dateTimeRange,
     T? data,
   }) {
-    if (dateTimeRange?.start.isUtc ?? false) {
-      print("errror");
-    }
-
     return CalendarEvent<T>(
       data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
