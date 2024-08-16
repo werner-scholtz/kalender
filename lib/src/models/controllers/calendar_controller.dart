@@ -170,14 +170,15 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
-    Duration? duration,
-    Curve? curve,
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
+    
     await viewController?.animateToEvent(
       event,
-      duration: duration,
-      curve: curve,
       centerEvent: centerEvent,
     );
   }

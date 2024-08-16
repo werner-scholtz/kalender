@@ -54,8 +54,10 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
-    Duration? duration,
-    Curve? curve,
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
     bool centerEvent = true,
   });
 
@@ -141,14 +143,11 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     DateTime date, {
     Duration? duration,
     Curve? curve,
-  }) async {
+  }) {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      date,
-    );
-
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
     // Animate to that page.
-    await pageController.animateToPage(
+    return pageController.animateToPage(
       pageNumber,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -171,7 +170,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
     // Animate to the offset of the time.
-    await scrollController.animateTo(
+    return scrollController.animateTo(
       timeOffset,
       duration: scrollDuration ?? const Duration(milliseconds: 300),
       curve: scrollCurve ?? Curves.easeInOut,
@@ -181,25 +180,43 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
-    Duration? duration,
-    Curve? curve,
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
     bool centerEvent = true,
   }) {
-    // TODO: implement animateToEvent
-    throw UnimplementedError();
+    if (centerEvent) {
+      // TODO: center the start of the event in the middle of the viewport.
+      return animateToDateTime(
+        event.start,
+        pageDuration: pageDuration,
+        pageCurve: pageCurve,
+        scrollDuration: scrollDuration,
+        scrollCurve: scrollCurve,
+      );
+    } else {
+      return animateToDateTime(
+        event.start,
+        pageDuration: pageDuration,
+        pageCurve: pageCurve,
+        scrollDuration: scrollDuration,
+        scrollCurve: scrollCurve,
+      );
+    }
   }
 
   @override
-  Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    await pageController.nextPage(
+  Future<void> animateToNextPage({Duration? duration, Curve? curve}) {
+    return pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
   }
 
   @override
-  Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    await pageController.previousPage(
+  Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) {
+    return pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
@@ -207,9 +224,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      date,
-    );
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
     jumpToPage(pageNumber);
   }
 
@@ -264,9 +279,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     Curve? curve,
   }) async {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      date,
-    );
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
 
     // Animate to that page.
     await pageController.animateToPage(
@@ -291,12 +304,19 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
-    Duration? duration,
-    Curve? curve,
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
     bool centerEvent = true,
   }) {
-    // TODO: implement animateToEvent
-    throw UnimplementedError();
+    return animateToDateTime(
+      event.start,
+      pageDuration: pageDuration,
+      pageCurve: pageCurve,
+      scrollDuration: scrollDuration,
+      scrollCurve: scrollCurve,
+    );
   }
 
   @override

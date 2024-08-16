@@ -60,8 +60,10 @@ mixin CalendarNavigationFunctions<T> {
   /// [centerEvent] whether to center the event in the view.
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
-    Duration? duration,
-    Curve? curve,
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
     bool centerEvent = true,
   });
 }
