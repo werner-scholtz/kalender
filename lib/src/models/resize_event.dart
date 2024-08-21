@@ -17,7 +17,7 @@ class ResizeEvent<T> {
   ResizeEvent<T> updateDateTimeRange(
     DateTimeRange dateTimeRange,
   ) {
-    final updatedEvent = event.copyWith(dateTimeRange: dateTimeRange.asLocal);
+    final updatedEvent = event.copyWith(dateTimeRange: dateTimeRange);
     return ResizeEvent<T>(updatedEvent, direction);
   }
 }

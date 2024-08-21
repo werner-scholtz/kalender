@@ -305,7 +305,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration);
+    return startOfDate.add(duration).asLocal();
   }
 
   /// Calculate the date of the cursor.
@@ -410,8 +410,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     } else {
       throw Exception('Invalid resize direction.');
     }
-
-    /// TODO: add snapping.
 
     return resizeEvent.event.copyWith(dateTimeRange: dateTimeRange.asLocal);
   }

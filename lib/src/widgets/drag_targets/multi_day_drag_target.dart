@@ -234,7 +234,8 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     final cursorDateIndex = cursorDate.floor();
     if (cursorDateIndex < 0) return null;
     final date = visibleDates.elementAtOrNull(cursorDateIndex);
-    return date;
+
+    return date?.asLocal();
   }
 
   DateTime _calculateStartTime(DateTime start, DateTime date) {
