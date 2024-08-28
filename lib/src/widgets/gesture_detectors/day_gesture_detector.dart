@@ -133,7 +133,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   DateTimeRange? _calculateDateTimeRange(Offset position) {
     final start = _calculateTimeAndDate(position);
     if (start == null) return null;
-    return DateTimeRange(start: start, end: start.add(newEventDuration));
+    return DateTimeRange(start: start, end: start.add(newEventDuration)).asLocal;
   }
 
   DateTime? _calculateTimeAndDate(Offset position) {
@@ -153,7 +153,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     final start = timeOfDayRange.start.toDateTime(date);
     return start.add(
       Duration(minutes: snapIntervalMinutes * numberOfIntervals),
-    );
+    ).asLocal();
   }
 
   @override
