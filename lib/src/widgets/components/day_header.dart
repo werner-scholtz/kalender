@@ -20,11 +20,15 @@ class DayHeaderStyle {
   final TextStyle? numberTextStyle;
 }
 
-// TODO: document.
+/// A widget that displays the name of the day and the day number of the week.
 class DayHeader extends StatelessWidget {
   final DateTime date;
   final DayHeaderStyle? style;
 
+  /// Create a new [DayHeader].
+  /// 
+  /// The [date] is the date that will be displayed.
+  /// The [style] is the style of the [DayHeader].
   const DayHeader({
     super.key,
     required this.date,
@@ -34,8 +38,7 @@ class DayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Text(
-      style?.stringBuilder?.call(date) ??
-          date.dayNameEnglish.characters.take(3).toString(),
+      style?.stringBuilder?.call(date) ?? date.dayNameEnglish.characters.take(3).toString(),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 

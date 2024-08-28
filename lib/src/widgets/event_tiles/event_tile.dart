@@ -10,7 +10,9 @@ import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/type_definitions.dart';
 
-// TODO: document this.
+/// The base class for all event tiles.
+/// 
+/// Event tiles are used to display events in the calendar.
 abstract class EventTile<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
@@ -27,6 +29,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   /// The dateTimeRange of this tile
   final DateTimeRange dateTimeRange;
 
+  /// Creates a new [EventTile] widget.
   const EventTile({
     super.key,
     required this.controller,
@@ -57,8 +60,6 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   bool get showStart => allowRescheduling && event.canModify && !continuesBefore;
   bool get showEnd => allowRescheduling && event.canModify && !continuesAfter;
   bool get canReschedule => allowRescheduling && event.canModify;
-
-  // (DateTime date, List<DateTime> dates) eventDates(DateTime date) => (date, event.datesSpanned);
 
   ResizeEvent<T> resizeEvent(ResizeDirection direction) => ResizeEvent<T>(event, direction);
 

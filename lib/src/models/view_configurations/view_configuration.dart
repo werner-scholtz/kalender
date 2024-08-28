@@ -1,6 +1,7 @@
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
+
 export 'package:kalender/kalender_extensions.dart';
 
 /// The base class for all [ViewConfiguration]s.

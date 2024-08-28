@@ -19,7 +19,7 @@ class WeekDayHeaderStyle {
   final EdgeInsets? padding;
 }
 
-// TODO: document.
+/// A widget that displays the name of the day of the week.
 class WeekDayHeader extends StatelessWidget {
   const WeekDayHeader({
     super.key,

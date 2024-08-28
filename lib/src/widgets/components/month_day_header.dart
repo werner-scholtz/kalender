@@ -20,7 +20,7 @@ class MonthDayHeaderStyle {
   final TextStyle? numberTextStyle;
 }
 
-// TODO: document.
+/// A widget that displays the day number.
 class MonthDayHeader extends StatelessWidget {
   final DateTime date;
   final MonthDayHeaderStyle? style;

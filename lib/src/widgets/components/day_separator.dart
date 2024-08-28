@@ -22,7 +22,7 @@ class DaySeparatorStyle {
   });
 }
 
-// TODO: document.
+/// A widget that displays a separator between days.
 class DaySeparator extends StatelessWidget {
   final DaySeparatorStyle? style;
   const DaySeparator({super.key, this.style});

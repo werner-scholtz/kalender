@@ -27,8 +27,7 @@ class TimeIndicatorStyle {
   });
 }
 
-// TODO: document.
-
+/// A widget that displays the current time as a line and a circle.
 class TimeIndicator extends StatefulWidget {
   /// The [TimeOfDayRange] that will be used to display the hour lines.
   final TimeOfDayRange timeOfDayRange;
@@ -42,6 +41,7 @@ class TimeIndicator extends StatefulWidget {
   /// The style of the time indicator.
   final TimeIndicatorStyle? style;
 
+  /// Creates a new [TimeIndicator] widget.
   const TimeIndicator({
     super.key,
     required this.timeOfDayRange,
@@ -153,79 +153,3 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     );
   }
 }
-
-// class TimeIndicatorCircle extends StatefulWidget {
-//   final Size size;
-//   final Color color;
-//   final DateTime time;
-
-//   const TimeIndicatorCircle({
-//     super.key,
-//     required this.color,
-//     required this.size,
-//     required this.time,
-//   });
-
-//   @override
-//   State<TimeIndicatorCircle> createState() => _TimeIndicatorCircleState();
-// }
-
-// class _TimeIndicatorCircleState extends State<TimeIndicatorCircle> {
-//   bool hover = false;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     late final timeOfDay = TimeOfDay.fromDateTime(widget.time);
-//     late final text = timeOfDay.format(context);
-//     late final textStyle = Theme.of(context).textTheme.labelMedium;
-//     late final textSize = _textSize(text, textStyle);
-
-//     late final hoverWidget = OverflowBox(
-//       alignment: Alignment.centerRight,
-//       maxHeight: textSize.height + 4,
-//       maxWidth: textSize.width + 12,
-//       child: DecoratedBox(
-//         decoration: BoxDecoration(
-//           color: Theme.of(context).scaffoldBackgroundColor,
-//           borderRadius: BorderRadius.circular(widget.size.height),
-//           border: Border.all(color: widget.color, width: 2.0),
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
-//           child: Text(
-//             timeOfDay.format(context),
-//             style: textStyle,
-//           ),
-//         ),
-//       ),
-//     );
-
-//     late final circle = DecoratedBox(
-//       decoration: BoxDecoration(
-//         color: widget.color,
-//         shape: BoxShape.circle,
-//       ),
-//     );
-
-//     return MouseRegion(
-//       onHover: (event) {
-//         setState(() => hover = true);
-//       },
-//       onExit: (event) {
-//         setState(() => hover = false);
-//       },
-//       child: hover ? hoverWidget : circle,
-//     );
-//   }
-
-//   /// Returns the size of the text.
-//   Size _textSize(String text, TextStyle? style) {
-//     final textPainter = TextPainter(
-//       text: TextSpan(text: text, style: style),
-//       maxLines: 1,
-//       textDirection: TextDirection.ltr,
-//     )..layout(minWidth: 0, maxWidth: double.infinity);
-
-//     return textPainter.size;
-//   }
-// }

@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 
 abstract class PageNavigationFunctions {
   PageNavigationFunctions();
 
-  /// Creates a [PageNavigationFunctions] for a single day [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.singleDay].
   factory PageNavigationFunctions.singleDay(DateTimeRange dateTimeRange) {
     return DayPageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a week [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a week [MultiDayViewConfiguration.week].
   factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return WeekPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
-  /// Creates a [PageNavigationFunctions] for a work week [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
   factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
     return WorkWeekPageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a custom [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a custom [MultiDayViewConfiguration.custom].
   factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
     return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
-  /// Creates a [PageNavigationFunctions] for a single day [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
   factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
     return FreeScrollFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a month [ViewConfiguration].
+  /// Creates a [PageNavigationFunctions] for a month [MonthViewConfiguration.singleMonth].
   factory PageNavigationFunctions.month(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return MonthPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
@@ -45,8 +47,6 @@ abstract class PageNavigationFunctions {
     return dateTimeRangeFromIndex(index);
   }
 }
-
-// TODO: Document these.
 
 class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({
