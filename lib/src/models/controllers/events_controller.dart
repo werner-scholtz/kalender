@@ -10,6 +10,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
 
   /// The list of [CalendarEvent]s.
   final Map<int, CalendarEvent<T>> _events = {};
+  Iterable<CalendarEvent<T>> get events => _events.values;
 
   /// A Map of dates and event ids.
   final DateMap _dateMap = DateMap();
@@ -138,7 +139,6 @@ class EventsController<T extends Object?> with ChangeNotifier {
     });
   }
 }
-
 
 /// A class for searching the events by date more efficient.
 class DateMap {
