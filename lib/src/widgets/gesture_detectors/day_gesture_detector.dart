@@ -66,15 +66,11 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     if (dateTimeRange == null) return;
     start = dateTimeRange.start;
 
-    if (isMobileDevice && selectedEvent.value != null) {
-      selectedEvent.value = null;
-    } else {
-      final newEvent = callbacks?.onEventCreate?.call(
-        CalendarEvent<T>(dateTimeRange: dateTimeRange),
-      );
-      if (newEvent == null) return;
-      controller.selectEvent(newEvent, internal: true);
-    }
+    final newEvent = callbacks?.onEventCreate?.call(
+      CalendarEvent<T>(dateTimeRange: dateTimeRange),
+    );
+    if (newEvent == null) return;
+    controller.selectEvent(newEvent, internal: true);
   }
 
   void onUpdate(Offset localPosition) {
@@ -151,9 +147,11 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
 
     final start = timeOfDayRange.start.toDateTime(date);
-    return start.add(
-      Duration(minutes: snapIntervalMinutes * numberOfIntervals),
-    ).asLocal();
+    return start
+        .add(
+          Duration(minutes: snapIntervalMinutes * numberOfIntervals),
+        )
+        .asLocal();
   }
 
   @override

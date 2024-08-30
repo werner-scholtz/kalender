@@ -55,22 +55,17 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
     _onDown(details.localPosition);
   }
 
-
   void _onDown(Offset localPosition) {
     final dateTimeRange = _calculateDateTimeRange(localPosition);
 
     if (dateTimeRange == null) return;
     start = dateTimeRange.start;
 
-    if (isMobileDevice && selectedEvent.value != null) {
-      selectedEvent.value = null;
-    } else {
-      final newEvent = callbacks?.onEventCreate?.call(
-        CalendarEvent<T>(dateTimeRange: dateTimeRange),
-      );
-      if (newEvent == null) return;
-      controller.selectEvent(newEvent, internal: true);
-    }
+    final newEvent = callbacks?.onEventCreate?.call(
+      CalendarEvent<T>(dateTimeRange: dateTimeRange),
+    );
+    if (newEvent == null) return;
+    controller.selectEvent(newEvent, internal: true);
   }
 
   void _onUpdate(Offset localPosition) {
