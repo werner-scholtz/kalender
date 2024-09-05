@@ -373,7 +373,7 @@ class HorizontalGroupData {
 
   /// Whether the [HorizontalGroupData] overlaps with the given [top] and [bottom].
   bool overlaps(double top, double bottom) {
-    final inside = top >= this.top && bottom <= this.bottom;
+    final inside = top > this.top && bottom < this.bottom;
     final overlapTop = top < this.top && bottom > this.top;
     final overlapBottom = top < this.bottom && bottom > this.bottom;
     final outside = top <= this.top && bottom >= this.bottom;
