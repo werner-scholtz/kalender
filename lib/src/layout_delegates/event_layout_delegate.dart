@@ -103,10 +103,20 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
   }
 
+  /// This is used to sort the vertical layout data after calculation.
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
+    // Sort the data from top to bottom.
+    // If the top values are equal compare the bottom
+    return layoutData
+      ..sort((a, b) {
+        return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
+      });
+  }
+
   /// Vertical layout of the events.
   ///
   /// Calculates the top and bottom of each event.
-  Iterable<VerticalLayoutData> calculateVerticalLayoutData() {
+  List<VerticalLayoutData> calculateVerticalLayoutData() {
     final numberOfChildren = events.length;
     final layoutEvents = <VerticalLayoutData>[];
     // Calculate the top and bottom of each event.
@@ -120,12 +130,13 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
     }
-    return layoutEvents;
+
+    return sortVerticalLayoutData(layoutEvents);
   }
 
   /// Groups the [VerticalLayoutData] into horizontal groups.
-  Iterable<HorizontalGroupData> groupVerticalLayoutData(
-    Iterable<VerticalLayoutData> verticalLayoutData,
+  List<HorizontalGroupData> groupVerticalLayoutData(
+    List<VerticalLayoutData> verticalLayoutData,
   ) {
     final horizontalGroups = <HorizontalGroupData>[];
 
@@ -237,23 +248,34 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     for (var i = 0; i < horizontalGroups.length; i++) {
       final group = horizontalGroups.elementAt(i);
       final verticalLayoutData = group.verticalLayoutData
-        ..sort((a, b) => b.height.compareTo(a.height))
-        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? a.top.compareTo(b.top) : 0);
+        ..sort(
+          (a, b) => b.height.compareTo(a.height) == 0
+              ? b.top.compareTo(a.top)
+              : b.height.compareTo(a.height),
+        );
 
       final numberOfEvents = verticalLayoutData.length;
       final longest = _findLongestChain(verticalLayoutData);
       final childWidth = size.width / longest;
 
+      final tiles = <int, Offset>{};
+      final tileWidths = <int, double>{};
       for (var i = 0; i < numberOfEvents; i++) {
         final data = verticalLayoutData.elementAt(i);
         final id = data.id;
 
         // Find the overlaps to the left of the tile.
         final tilesToLeft = verticalLayoutData.getRange(0, i);
-        final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data)).length;
+        final overlapsLeft = tilesToLeft.where((e) => e.overlaps(data));
+        final lastOverlapLeft = overlapsLeft.lastOrNull;
 
         // Calculate the x offset of the tile.
-        final tileXOffset = childWidth * overlapsLeft;
+        final double tileXOffset; // = childWidth * overlapsLeft;
+        if (lastOverlapLeft != null) {
+          tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
+        } else {
+          tileXOffset = childWidth * overlapsLeft.length;
+        }
 
         // Find the overlaps to the right of the tile.
         final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
@@ -274,10 +296,12 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
           ),
         );
 
-        positionChild(
-          id,
-          Offset(tileXOffset, data.top),
-        );
+        tiles[id] = Offset(tileXOffset, data.top);
+        tileWidths[id] = tileWidth;
+      }
+
+      for (final tile in tiles.entries) {
+        positionChild(tile.key, tile.value);
       }
     }
   }
@@ -337,11 +361,15 @@ class VerticalLayoutData {
 
   /// Checks if this [VerticalLayoutData] overlaps with [other].
   bool overlaps(VerticalLayoutData other) {
-    final inside = other.top >= top && other.bottom <= bottom;
-    final overlapTop = other.top < top && other.bottom > top;
-    final overlapBottom = other.top < bottom && other.bottom > bottom;
+    final isInside = other.top > top && other.bottom < bottom;
+
+    final overlapTop = other.top <= top && other.bottom > top;
+
+    final overlapBottom = other.top < bottom && other.bottom >= bottom;
+
     final outside = other.top <= top && other.bottom >= bottom;
-    return inside || overlapTop || overlapBottom || outside;
+
+    return isInside || overlapTop || overlapBottom || outside;
   }
 
   @override
@@ -373,11 +401,19 @@ class HorizontalGroupData {
 
   /// Whether the [HorizontalGroupData] overlaps with the given [top] and [bottom].
   bool overlaps(double top, double bottom) {
-    final inside = top >= this.top && bottom <= this.bottom;
-    final overlapTop = top < this.top && bottom > this.top;
-    final overlapBottom = top < this.bottom && bottom > this.bottom;
-    final outside = top <= this.top && bottom >= this.bottom;
-    return inside || overlapTop || overlapBottom || outside;
+    // Check if it is inside the HorizontalGroup.
+    final isInside = top > this.top && bottom < this.bottom;
+
+    // Check if it overlaps with the top line.
+    final overlapsTop = top <= this.top && bottom > this.top;
+
+    // Check if it overlaps with the bottom line.
+    final overlapsBottom = top < this.bottom && bottom >= this.bottom;
+
+    // Check if it overlaps completely.
+    final isOutside = top <= this.top && bottom >= this.bottom;
+
+    return isInside || overlapsTop || overlapsBottom || isOutside;
   }
 
   /// Whether the [HorizontalGroupData] contains the [id].

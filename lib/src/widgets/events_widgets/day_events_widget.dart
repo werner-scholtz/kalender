@@ -41,27 +41,22 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
       builder: (context, child) {
         return Row(
           children: visibleDates.map((date) {
-            final visibleEvents = eventsController.eventsFromDateTimeRange(
-              date.dayRange,
-              includeDayEvents: true,
-              includeMultiDayEvents: showMultiDayEvents,
-            );
-
-            /// TODO: This should probably be a customizable.
-            final sortedEvents = visibleEvents.toList()
-              ..sort((a, b) => b.duration.compareTo(a.duration))
-              ..sort(
-                (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
-              );
+            final visibleEvents = eventsController
+                .eventsFromDateTimeRange(
+                  date.dayRange,
+                  includeDayEvents: true,
+                  includeMultiDayEvents: showMultiDayEvents,
+                )
+                .toList();
 
             final events = CustomMultiChildLayout(
               delegate: layoutStrategy.call(
-                sortedEvents,
+                visibleEvents,
                 date,
                 timeOfDayRange,
                 heightPerMinute,
               ),
-              children: sortedEvents.indexed
+              children: visibleEvents.indexed
                   .map(
                     (item) => LayoutId(
                       id: item.$1,
@@ -91,7 +86,7 @@ class DayEventsWidget<T extends Object?> extends StatelessWidget {
                 if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
                 if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
-                final events = sortedEvents.toList()
+                final events = visibleEvents.toList()
                   ..removeWhere((e) => e.id == controller.selectedEventId)
                   ..add(event);
 
