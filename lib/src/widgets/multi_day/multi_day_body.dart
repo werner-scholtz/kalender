@@ -162,6 +162,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   heightPerMinute: heightPerMinute,
                   style: timelineStyle,
                   eventBeingDragged: selectedEvent,
+                  visibleDateTimeRange: viewController.visibleDateTimeRange,
                 );
 
             final timeIndicatorStyle = componentStyles?.timeIndicatorStyle;

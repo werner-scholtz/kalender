@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 
@@ -18,11 +19,19 @@ class TimelineStyle {
   /// The function that will be used to build the string.
   final String Function(TimeOfDay timeOfDay)? stringBuilder;
 
+  /// The decoration for the event start time.
+  final Decoration? startDecoration;
+
+  /// The decoration for the event end time.
+  final Decoration? endDecoration;
+
   const TimelineStyle({
     this.textStyle,
     this.textDirection,
     this.stringBuilder,
     this.textPadding,
+    this.startDecoration,
+    this.endDecoration,
   });
 }
 
@@ -38,8 +47,10 @@ class TimeLine<T extends Object?> extends StatelessWidget {
   final TimelineStyle? style;
 
   /// The [ValueNotifier] that contains the event being dragged.
-  /// TODO: display the resulting start/end times of the dragged event.
   final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
+
+  /// The visibleDataTimeRange.
+  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
   const TimeLine({
@@ -47,6 +58,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
     required this.timeOfDayRange,
     required this.heightPerMinute,
     required this.eventBeingDragged,
+    required this.visibleDateTimeRange,
     this.style,
   });
 
@@ -115,16 +127,64 @@ class TimeLine<T extends Object?> extends StatelessWidget {
       },
     );
 
-    // TODO: calculate eventBeingDragged start/end times and display them.
-    // final eventBeingDraggedTimes = ValueListenableBuilder(
-    //   valueListenable: eventBeingDragged,
-    //   builder: (context, eventBeingDragged, child) {
-    //     return const SizedBox();
-    //   },
-    // );
+    final eventBeingDraggedTimes = ValueListenableBuilder(
+      valueListenable: visibleDateTimeRange,
+      builder: (context, visibleRange, child) {
+        return ValueListenableBuilder(
+          valueListenable: eventBeingDragged,
+          builder: (context, eventBeingDragged, child) {
+            // Ensure that there is a event being dragged.
+            if (eventBeingDragged == null) return const SizedBox();
+
+            // Ensure that the event is visible.
+            final eventRange = eventBeingDragged.dateTimeRange;
+            if (!eventRange.overlaps(visibleRange)) return const SizedBox();
+
+            final start = eventBeingDragged.start;
+            final end = eventBeingDragged.end;
+
+            // Calculate the top and bottom values.
+            final startTop = start.difference(start.startOfDay).inMinutes * heightPerMinute;
+            final endTop = end.difference(end.startOfDay).inMinutes * heightPerMinute;
+
+            final startTime = TimeOfDay.fromDateTime(start);
+            final endTime = TimeOfDay.fromDateTime(end);
+            final startText = style?.stringBuilder?.call(startTime) ?? startTime.format(context);
+            final endText = style?.stringBuilder?.call(endTime) ?? endTime.format(context);
+
+            late final decoration = BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+            );
+
+            return Stack(
+              children: [
+                Positioned(
+                  top: startTop,
+                  child: Container(
+                    decoration: style?.startDecoration ?? decoration,
+                    child: Center(child: Text(startText)),
+                  ),
+                ),
+                Positioned(
+                  top: endTop,
+                  child: Container(
+                    decoration: style?.endDecoration ?? decoration,
+                    child: Center(child: Text(endText)),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
 
     return Stack(
-      children: positionedTimes.nonNulls.toList(),
+      children: [
+        ...positionedTimes.nonNulls.toList(),
+        eventBeingDraggedTimes,
+      ],
     );
   }
 
