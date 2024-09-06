@@ -13,7 +13,7 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   ValueNotifier<DateTimeRange> get visibleDateTimeRange;
 
   /// The [CalendarEvent]s that are currently visible.
-  ValueNotifier<List<CalendarEvent<T>>> get visibleEvents;
+  ValueNotifier<Set<CalendarEvent<T>>> get visibleEvents;
 
   /// Jump to the given [DateTime].
   @override
@@ -98,7 +98,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     }
 
     scrollController = ScrollController();
-    visibleEvents.value = [];
+    visibleEvents.value = {};
 
     // This listener will sync the headerController with the pageController.
     // Note this only really works if both PageView's have the same horizontal 'size'.
@@ -134,7 +134,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   @override
-  final ValueNotifier<List<CalendarEvent<T>>> visibleEvents;
+  final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   @override
   Future<void> animateToDate(
@@ -247,7 +247,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     visibleDateTimeRange = ValueNotifier<DateTimeRange>(
       pageNavigationFunctions.dateTimeRangeFromIndex(initialPage),
     );
-    visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+    visibleEvents.value = {};
   }
 
   @override
@@ -266,7 +266,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   @override
-  late final ValueNotifier<List<CalendarEvent<T>>> visibleEvents;
+  late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   @override
   Future<void> animateToDate(

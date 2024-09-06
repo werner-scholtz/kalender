@@ -18,7 +18,7 @@ mixin SnapPoints {
   }
 
   /// Update the snap points from the [events].
-  void addEventSnapPoints(List<CalendarEvent> events) {
+  void addEventSnapPoints(Set<CalendarEvent> events) {
     // Add the start and end of each event to the snap points.
     for (final event in events) {
       _snapPoints.addAll([event.start, event.end]);

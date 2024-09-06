@@ -28,8 +28,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   );
 
   /// The [CalendarEvent]s that are currently visible.
-  /// TODO: Implement this so it works.
-  final visibleEvents = ValueNotifier<List<CalendarEvent<T>>>([]);
+  final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});
 
   /// The event currently being focused on.
   final selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);

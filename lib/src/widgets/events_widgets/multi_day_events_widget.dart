@@ -32,6 +32,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.layoutStrategy,
   });
 
+  ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -42,6 +44,12 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           includeDayEvents: showAllEvents,
           includeMultiDayEvents: true,
         );
+
+        // Add the events to the visible events.
+        visibleEventsNotifier.value = {
+          ...visibleEventsNotifier.value,
+          ...visibleEvents,
+        };
 
         final sortedEvents = visibleEvents.toList();
 
