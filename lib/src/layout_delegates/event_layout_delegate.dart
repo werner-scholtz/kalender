@@ -77,11 +77,11 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
 
-  // /// Sorts the [CalendarEvent]s.
-  // ///
-  // /// This is used to sort the events before passing them to the [EventLayoutDelegate].
-  // /// Override this method to provide custom sorting.
-  // List<CalendarEvent<T>> sortEvents(List<CalendarEvent<T>> events) => events;
+  /// Sorts the [CalendarEvent]s.
+  ///
+  /// This is used to sort the events before passing them to the [EventLayoutDelegate].
+  /// Override this method to provide custom sorting.
+  List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events);
 
   /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
   ///
@@ -104,14 +104,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   }
 
   /// This is used to sort the vertical layout data after calculation.
-  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
-    // Sort the data from top to bottom.
-    // If the top values are equal compare the bottom
-    return layoutData
-      ..sort((a, b) {
-        return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
-      });
-  }
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData);
 
   /// Vertical layout of the events.
   ///
@@ -181,6 +174,13 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   });
 
   @override
+  List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) {
+    return events.toList()
+      ..sort((a, b) => b.duration.compareTo(a.duration))
+      ..sort((a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0);
+  }
+
+  @override
   void performLayout(Size size) {
     // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData();
@@ -192,10 +192,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
       final group = horizontalGroups.elementAt(i);
 
       // Sort the vertical layout data by height and top.
-      final verticalLayoutData = group.verticalLayoutData
-        ..sort((a, b) => b.height.compareTo(a.height))
-        ..sort((a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : 0);
-
+      final verticalLayoutData = group.verticalLayoutData;
       final numberOfEvents = verticalLayoutData.length;
 
       final childWidth = size.width / numberOfEvents;
@@ -226,6 +223,10 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
       }
     }
   }
+
+  @override
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) =>
+      layoutData;
 }
 
 /// The [SideBySideLayoutDelegate] lays out [CalendarEvent]'s next to one another.
@@ -236,6 +237,18 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     required super.date,
     required super.timeOfDayRange,
   });
+
+  @override
+  List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) => events.toList();
+  @override
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
+    // Sort the data from top to bottom.
+    // If the top values are equal compare the bottom
+    return layoutData
+      ..sort((a, b) {
+        return a.top.compareTo(b.top) == 0 ? b.bottom.compareTo(a.bottom) : a.top.compareTo(b.top);
+      });
+  }
 
   @override
   void performLayout(Size size) {

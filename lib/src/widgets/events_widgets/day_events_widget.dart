@@ -51,20 +51,29 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
 
   /// Update the [eventsMap].
   void _updateEventsMap() => setState(_populateEventsMap);
-  
+
   /// Populate the [eventsMap].
   void _populateEventsMap() {
     final visibleDates = widget.visibleDateTimeRange.days;
     final showMultiDayEvents = widget.configuration.showMultiDayEvents;
+    final layoutStrategy = widget.configuration.eventLayoutStrategy;
 
-    eventsMap = {
-      for (var date in visibleDates)
-        date: widget.eventsController.eventsFromDateTimeRange(
-          date.dayRange,
-          includeDayEvents: true,
-          includeMultiDayEvents: showMultiDayEvents,
-        ),
-    };
+    final entries = visibleDates.map((date) {
+      final events = widget.eventsController.eventsFromDateTimeRange(
+        date.dayRange,
+        includeDayEvents: true,
+        includeMultiDayEvents: showMultiDayEvents,
+      );
+      final sortedEvents = layoutStrategy(
+        [],
+        date,
+        TimeOfDayRange.allDay(),
+        0,
+      ).sortEvents(events) as List<CalendarEvent<T>>;
+      return MapEntry(date, sortedEvents);
+    });
+
+    eventsMap = Map.fromEntries(entries);
   }
 
   @override
