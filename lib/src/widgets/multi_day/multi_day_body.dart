@@ -220,6 +220,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                         } else {
                           viewController.visibleDateTimeRange.value = visibleRange.asLocal;
                         }
+
+                        callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value);
                       },
                       itemBuilder: (context, index) {
                         final visibleRange = pageNavigation.dateTimeRangeFromIndex(

@@ -99,6 +99,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
           onPageChanged: (index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index).asLocal;
             viewController.visibleDateTimeRange.value = visibleRange;
+            callbacks?.onPageChanged?.call(visibleRange);
           },
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
