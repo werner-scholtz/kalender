@@ -4,13 +4,13 @@ import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
-  /// The [EventsController] that will be used by the [CalendarView].
+  /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController<T> eventsController;
 
-  /// The [CalendarController] that will be used by the [CalendarView].
+  /// The [CalendarController] that is used to control the calendar view.
   final CalendarController<T> calendarController;
 
-  /// The [ViewConfiguration] that will be used by the [CalendarView].
+  /// The [ViewConfiguration] that will be used to render the calendar view.
   final ViewConfiguration viewConfiguration;
 
   /// The [CalendarCallbacks] used by the [CalendarView]
@@ -48,6 +48,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   void initState() {
     super.initState();
     _viewController = _createViewController();
+    
     // Attach the view controller when the widget is initialized.
     widget.calendarController.attach(_viewController);
   }

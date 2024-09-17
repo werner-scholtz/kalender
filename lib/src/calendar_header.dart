@@ -33,13 +33,12 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// The styles of the components used by the [MultiDayHeader].
   final MonthHeaderComponentStyles? monthHeaderComponentStyles;
 
-
   /// Creates a CalendarHeader widget.
-  /// 
+  ///
   /// This creates the correct header based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayHeader]
   /// - [MonthHeader]
-  /// 
+  ///
   const CalendarHeader({
     super.key,
     this.eventsController,
@@ -56,8 +55,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final provider = CalendarProvider.maybeOf<T>(context);
-    final viewController =
-        calendarController?.viewController ?? provider?.viewController;
+    final viewController = calendarController?.viewController ?? provider?.viewController;
 
     assert(
       viewController != null,

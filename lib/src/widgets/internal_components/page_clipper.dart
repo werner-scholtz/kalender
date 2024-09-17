@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO: document this.
-
 /// A widget that clips the child widget a certain distance from the left.
 class PageClipWidget extends StatelessWidget {
   final double left;
@@ -10,13 +8,11 @@ class PageClipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      clipper: PageClipper(left),
-      child: child,
-    );
+    return ClipRect(clipper: PageClipper(left), child: child);
   }
 }
 
+/// A custom clipper that will clip a given value on the left.
 class PageClipper extends CustomClipper<Rect> {
   final double left;
   const PageClipper(this.left);
