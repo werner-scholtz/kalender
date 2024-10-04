@@ -165,39 +165,47 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     double? timelineWidth,
     int? firstDayOfWeek,
   }) {
+    final name0 = name ?? this.name;
+    final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
     final displayRange0 = displayRange ?? this.displayRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
+    final timelineWidth0 = timelineWidth ?? this.timelineWidth;
 
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
-          name: name ?? this.name,
-          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          name: name0,
+          timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          timelineWidth: timelineWidth0,
         ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
-          name: name ?? this.name,
-          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          name: name0,
+          timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          timelineWidth: timelineWidth0,
         ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
-          name: name ?? this.name,
-          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          name: name0,
+          timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
+          timelineWidth: timelineWidth0,
         ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
-          name: name ?? this.name,
-          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          name: name0,
+          timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
+          timelineWidth: timelineWidth0,
         ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
-          name: name ?? this.name,
-          timeOfDayRange: timeOfDayRange ?? this.timeOfDayRange,
+          name: name0,
+          timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
+          timelineWidth: timelineWidth0,
         ),
     };
   }
