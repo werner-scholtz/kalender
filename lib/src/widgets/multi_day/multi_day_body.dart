@@ -318,7 +318,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                               left: 0,
                               top: 0,
                               bottom: 0,
-                              width: 56.0,
+                              width: timelineWidth,
                               child: timeline,
                             ),
                             Positioned.fill(child: pageView),
