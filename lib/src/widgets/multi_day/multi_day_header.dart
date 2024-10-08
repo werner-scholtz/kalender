@@ -240,6 +240,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           controller: calendarController,
           callbacks: callbacks,
           createEventTrigger: configuration.createEventTrigger,
+          allowEventCreation: configuration.allowEventCreation,
           dayWidth: pageWidth,
         );
 
@@ -386,6 +387,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           callbacks: callbacks,
           createEventTrigger: configuration.createEventTrigger,
           dayWidth: dayWidth,
+          allowEventCreation: configuration.allowEventCreation,
         );
 
         final constraints = BoxConstraints(
@@ -508,7 +510,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
             child: dayHeader,
           );
         }).toList();
-
 
         /// TODO: figure out how to get multiday events to work with FreeScroll.
 

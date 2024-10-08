@@ -148,6 +148,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   visibleDateTimeRange: visibleDateTimeRange,
                   createEventTrigger: bodyConfiguration.createEventTrigger,
                   dayWidth: dayWidth,
+                  allowEventCreation: bodyConfiguration.allowEventCreation,
                 );
 
                 final dates = List.generate(7, (index) {

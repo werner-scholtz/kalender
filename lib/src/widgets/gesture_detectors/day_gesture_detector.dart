@@ -41,6 +41,7 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   double get heightPerMinute => widget.heightPerMinute;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
   double get dayWidth => widget.dayWidth;
+  bool get allowCreation => bodyConfiguration.allowEventCreation;
 
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
@@ -158,8 +159,8 @@ class _DayGestureDetectorState<T extends Object?> extends State<DayGestureDetect
   Widget build(BuildContext context) {
     final createEventTrigger = bodyConfiguration.createEventTrigger;
 
-    final tap = createEventTrigger == CreateEventTrigger.tap;
-    final long = createEventTrigger == CreateEventTrigger.longPress;
+    final tap = createEventTrigger == CreateEventTrigger.tap && allowCreation;
+    final long = createEventTrigger == CreateEventTrigger.longPress && allowCreation;
 
     return GestureDetector(
       // Tap

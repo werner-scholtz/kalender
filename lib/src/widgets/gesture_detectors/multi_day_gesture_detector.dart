@@ -14,6 +14,7 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
   final CreateEventTrigger createEventTrigger;
   final double dayWidth;
+  final bool allowEventCreation;
 
   const MultiDayGestureDetector({
     super.key,
@@ -23,6 +24,7 @@ class MultiDayGestureDetector<T extends Object?> extends StatefulWidget {
     required this.visibleDateTimeRange,
     required this.createEventTrigger,
     required this.dayWidth,
+    required this.allowEventCreation,
   });
 
   @override
@@ -36,6 +38,7 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
   CreateEventTrigger get createEventTrigger => widget.createEventTrigger;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
 
+  bool get allowCreation => widget.allowEventCreation;
   double get dayWidth => widget.dayWidth;
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
   DateTime? start;
@@ -121,8 +124,8 @@ class _MultiDayGestureDetectorState<T extends Object?> extends State<MultiDayGes
 
   @override
   Widget build(BuildContext context) {
-    final tap = createEventTrigger == CreateEventTrigger.tap;
-    final long = createEventTrigger == CreateEventTrigger.longPress;
+    final tap = createEventTrigger == CreateEventTrigger.tap && allowCreation;
+    final long = createEventTrigger == CreateEventTrigger.longPress && allowCreation;
 
     return MouseRegion(
       child: GestureDetector(

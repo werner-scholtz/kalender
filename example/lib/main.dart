@@ -66,7 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
     MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
     MonthViewConfiguration.singleMonth(),
-    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
+    MultiDayViewConfiguration.freeScroll(
+        displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
 
   @override
