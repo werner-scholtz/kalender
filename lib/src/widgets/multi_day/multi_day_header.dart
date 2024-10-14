@@ -28,12 +28,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? configuration;
 
-  /// The [MultiDayHeaderComponents] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderComponents? components;
-
-  /// The [MultiDayHeaderComponentStyles] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderComponentStyles? componentStyles;
-
   /// Creates a new [MultiDayHeader].
   const MultiDayHeader({
     super.key,
@@ -42,8 +36,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.configuration,
-    this.components,
-    this.componentStyles,
   });
 
   @override
@@ -82,6 +74,10 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
 
+    final calendarComponents = provider?.components;
+    final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
+    final components = calendarComponents?.multiDayComponents?.headerComponents;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
@@ -96,7 +92,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               configuration: headerConfiguration,
               tileComponents: tileComponents,
               components: components,
-              componentStyles: componentStyles,
+              componentStyles: styles,
               timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
               pageWidth: pageWidth,
@@ -110,7 +106,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               configuration: headerConfiguration,
               tileComponents: tileComponents,
               components: components,
-              componentStyles: componentStyles,
+              componentStyles: styles,
               timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
               pageWidth: pageWidth,
@@ -123,7 +119,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               configuration: headerConfiguration,
               tileComponents: tileComponents,
               components: components,
-              componentStyles: componentStyles,
+              componentStyles: styles,
               timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
               pageWidth: pageWidth,

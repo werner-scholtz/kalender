@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/components/components.dart';
 
 class CalendarProvider<T extends Object?> extends InheritedWidget {
   /// The [EventsController] that will be used by the Calendar.
@@ -10,6 +11,9 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
 
   /// The [CalendarCallbacks] that will be used by the Calendar.
   final CalendarCallbacks<T>? callbacks;
+
+  /// Components used by the CalendarView.
+  final CalendarComponents? components;
 
   /// The [ViewController] used by the [CalendarController] to controller this view.
   ViewController get viewController {
@@ -25,6 +29,7 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
     required this.calendarController,
     required this.eventsController,
     required this.callbacks,
+    required this.components,
     required super.child,
     super.key,
   });

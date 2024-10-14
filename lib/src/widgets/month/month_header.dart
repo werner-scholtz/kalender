@@ -9,17 +9,9 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
   /// The [CalendarController] that will be used by the [MonthBody].
   final CalendarController<T>? calendarController;
 
-  /// The components used by the [MonthHeader].
-  final MonthHeaderComponents? components;
-
-  /// The styles of the components used by the [MonthHeader].
-  final MonthHeaderComponentStyles? styles;
-
   const MonthHeader({
     super.key,
     this.calendarController,
-    this.components,
-    this.styles,
   });
 
   @override
@@ -47,6 +39,10 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
     );
 
     final viewController = calendarController!.viewController as MonthViewController<T>;
+    
+    final calendarComponents = provider?.components;
+    final styles = calendarComponents?.monthComponentStyles?.headerStyles;
+    final components = calendarComponents?.monthComponents?.headerComponents;
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
+import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
@@ -15,6 +16,9 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   /// The [CalendarCallbacks] used by the [CalendarView]
   final CalendarCallbacks<T>? callbacks;
+
+  /// 
+  final CalendarComponents? components;
 
   /// The header widget that will be displayed above the body.
   final Widget? header;
@@ -32,6 +36,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
     required this.calendarController,
     required this.viewConfiguration,
     this.callbacks,
+    this.components,
     this.header,
     this.body,
   });
@@ -48,7 +53,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   void initState() {
     super.initState();
     _viewController = _createViewController();
-    
+
     // Attach the view controller when the widget is initialized.
     widget.calendarController.attach(_viewController);
   }
@@ -59,7 +64,6 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
 
     // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
-
       setState(() {
         final initialDate = _viewController.visibleDateTimeRange.value.start;
         _viewController = _createViewController(initialDate: initialDate);
@@ -111,6 +115,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       eventsController: widget.eventsController,
       calendarController: widget.calendarController,
       callbacks: widget.callbacks,
+      components: widget.components,
       child: CustomMultiChildLayout(
         delegate: CalendarLayoutDelegate(headerId, bodyId),
         children: [

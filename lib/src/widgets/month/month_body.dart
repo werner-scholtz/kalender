@@ -27,12 +27,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MonthBody].
   final TileComponents<T> tileComponents;
 
-  /// The components used by the [MonthBody].
-  final MonthBodyComponents? components;
-
-  /// The styles of the components used by the [MonthBody].
-  final MonthBodyComponentStyles? styles;
-
   /// Creates a new [MonthBody].
   const MonthBody({
     super.key,
@@ -41,8 +35,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.configuration,
-    this.components,
-    this.styles,
   });
 
   @override
@@ -84,6 +76,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
 
+    final calendarComponents = provider?.components;
+    final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
+    final components = calendarComponents?.monthComponents?.bodyComponents;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
@@ -103,7 +99,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
           },
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            
+
             final multiDayEvents = List.generate(
               5,
               (index) {

@@ -1,6 +1,16 @@
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 
+class MonthComponents {
+  final MonthBodyComponents bodyComponents;
+  final MonthHeaderComponents headerComponents;
+
+  MonthComponents({
+    required this.bodyComponents,
+    required this.headerComponents,
+  });
+}
+
 /// The component builders used by the [MonthBody].
 ///
 /// - Using these will override the respective default components.

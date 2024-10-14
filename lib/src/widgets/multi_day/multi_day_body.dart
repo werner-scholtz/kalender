@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
-import 'package:kalender/src/models/components/multi_day_components.dart';
-import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
@@ -40,17 +38,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MultiDayBody].
   final TileComponents<T> tileComponents;
 
-  /// The components used by the [MultiDayBody].
-  final MultiDayBodyComponents? components;
-
-  /// The styles of the components.
-  final MultiDayBodyComponentStyles? componentStyles;
-
   /// The [ValueNotifier] containing the [heightPerMinute] value.
   final ValueNotifier<double>? heightPerMinute;
-
-  /// The [ScrollController] used by the scrollable body.
-  final ScrollController? scrollController;
 
   /// Creates a new [MultiDayBody].
   ///
@@ -63,9 +52,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.calendarController,
     this.callbacks,
     required this.tileComponents,
-    this.components,
-    this.componentStyles,
-    this.scrollController,
     this.heightPerMinute,
     this.configuration,
   });
@@ -110,14 +96,13 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final selectedEvent = calendarController.selectedEvent;
     final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
 
+    final calendarComponents = provider?.components;
+    final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
+    final components = calendarComponents?.multiDayComponents?.components;
+
     // Override the height per minute if it is provided.
     if (heightPerMinute != null) {
       viewController.heightPerMinute = heightPerMinute!;
-    }
-
-    // Override the scroll controller if it is provided.
-    if (scrollController != null) {
-      viewController.scrollController = scrollController!;
     }
 
     return LayoutBuilder(
@@ -139,7 +124,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             final dayDuration = timeOfDayRange.duration;
             final pageHeight = heightPerMinute * dayDuration.inMinutes;
 
-            final hourLinesStyle = componentStyles?.hourLinesStyle;
+            final hourLinesStyle = styles?.hourLinesStyle;
             final hourLines = components?.hourLines?.call(
                   heightPerMinute,
                   timeOfDayRange,
@@ -151,7 +136,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   style: hourLinesStyle,
                 );
 
-            final timelineStyle = componentStyles?.timelineStyle;
+            final timelineStyle = styles?.timelineStyle;
             final timeline = components?.timeline?.call(
                   heightPerMinute,
                   timeOfDayRange,
@@ -165,7 +150,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   visibleDateTimeRange: viewController.visibleDateTimeRange,
                 );
 
-            final timeIndicatorStyle = componentStyles?.timeIndicatorStyle;
+            final timeIndicatorStyle = styles?.timeIndicatorStyle;
             late final timeIndicator = components?.timeIndicator?.call(
                   timeOfDayRange,
                   heightPerMinute,
@@ -179,7 +164,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   style: timeIndicatorStyle,
                 );
 
-            final daySeparatorStyle = componentStyles?.daySeparatorStyle;
+            final daySeparatorStyle = styles?.daySeparatorStyle;
             final daySeparator = components?.daySeparator?.call(daySeparatorStyle) ??
                 DaySeparator(style: daySeparatorStyle);
             final daySeparators = List.generate(

@@ -76,8 +76,6 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         configuration: multiDayBodyConfiguration,
         callbacks: callbacks,
         tileComponents: multiDayTileComponents,
-        components: multiDayBodyComponents,
-        componentStyles: multiDayBodyComponentStyles,
       );
     } else if (viewController is MonthViewController<T>) {
       return MonthBody<T>(
@@ -86,8 +84,6 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         callbacks: callbacks,
         tileComponents: monthTileComponents,
         configuration: monthBodyConfiguration,
-        components: monthBodyComponents,
-        styles: monthBodyComponentStyles,
       );
     } else {
       throw UnimplementedError();

@@ -70,13 +70,10 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
         callbacks: callbacks,
         tileComponents: multiDayTileComponents,
         configuration: multiDayHeaderConfiguration,
-        components: multiDayHeaderComponents,
       );
     } else if (viewController is MonthViewController<T>) {
       return MonthHeader<T>(
         calendarController: calendarController,
-        components: monthHeaderComponents,
-        styles: monthHeaderComponentStyles,
       );
     } else {
       throw UnimplementedError();
