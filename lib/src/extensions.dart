@@ -44,10 +44,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
     final dates = <DateTime>[];
     for (var i = 0; i < dayDifference; i++) {
-      dates.add(localStartOfDate.add(Duration(days: i)));
+      dates.add(localStartOfDate.addDays(i));
     }
-
-    return dates;
+    print('DATES $start - $end');
+    print(dates.join('\n'));
+    return dates.toSet().toList();
   }
 
   /// The number of years spanned by the [DateTimeRange].
@@ -60,7 +61,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
   /// The center [DateTime] of the [DateTimeRange].
   DateTime get centerDateTime =>
-      start.add(Duration(days: (dayDifference / 2).floor()));
+      start.addDays((dayDifference / 2).floor());
 
   /// The visible month of the [DateTimeRange].
   DateTime get visibleMonth {
