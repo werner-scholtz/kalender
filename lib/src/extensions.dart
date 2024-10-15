@@ -46,8 +46,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     for (var i = 0; i < dayDifference; i++) {
       dates.add(localStartOfDate.addDays(i));
     }
-    print('DATES $start - $end');
-    print(dates.join('\n'));
+
     return dates.toSet().toList();
   }
 
