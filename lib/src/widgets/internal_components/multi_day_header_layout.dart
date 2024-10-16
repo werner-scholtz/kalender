@@ -91,14 +91,17 @@ class _RenderMultiDayHeaderWidget extends RenderBox
   @override
   void performLayout() {
     final page = firstChild!;
+    final pageParentData = (page.parentData! as MultiChildLayoutParentData);
     final timeline = childAfter(page)!;
     final weekNumber = childAfter(timeline)!;
+    final weekNumberParentData = (page.parentData! as MultiChildLayoutParentData);
 
     // layout the timeline the constraint height here is arbitrary as this does not affect the size.
     timeline.layout(const BoxConstraints(maxHeight: 50), parentUsesSize: true);
     final timelineWidth = timeline.size.width;
 
     // layout the page, the width of the page is affected by the timeline width.
+    pageParentData.offset = Offset(timelineWidth, 0);
     page.layout(
       BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth),
       parentUsesSize: true,
@@ -106,6 +109,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final pageHeight = page.size.height;
 
     // Layout the weekNumber, this size is determined from the timelineWidth and the pageHeight.
+    weekNumberParentData.offset = Offset.zero;
     weekNumber.layout(BoxConstraints.tightFor(width: timelineWidth, height: pageHeight));
 
     size = Size(constraints.maxWidth, pageHeight);
@@ -114,11 +118,12 @@ class _RenderMultiDayHeaderWidget extends RenderBox
   @override
   void paint(PaintingContext context, Offset offset) {
     final page = firstChild!;
+    final pageParentData = (page.parentData! as MultiChildLayoutParentData);
+    page.paint(context, offset + pageParentData.offset);
+
     final timeline = childAfter(page)!;
     final weekNumber = childAfter(timeline)!;
     weekNumber.paint(context, offset);
-    offset = offset + Offset(weekNumber.size.width, 0);
-    page.paint(context, offset);
   }
 
   @override
