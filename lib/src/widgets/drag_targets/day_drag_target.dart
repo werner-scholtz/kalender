@@ -327,13 +327,10 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Current scroll offset.
     final scrollOffset = Offset(0, scrollController.offset);
-    // print(scrollOffset);
 
     // Calculate the position of the cursor relative to the current widget.
     final relativeCursorPosition =
         cursorPosition + feedbackWidgetOffset + scrollOffset - widgetPosition!;
-
-    print(relativeCursorPosition);
 
     return relativeCursorPosition;
   }
@@ -428,6 +425,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     // Find the global position of the drop target widget.
     final renderObject = context.findRenderObject()! as RenderBox;
     final globalPosition = renderObject.localToGlobal(Offset.zero);
-    widgetPosition = globalPosition;
+    widgetPosition = globalPosition + Offset(0, scrollController.offset);
   }
 }
