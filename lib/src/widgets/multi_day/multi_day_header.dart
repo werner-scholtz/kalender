@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detector.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
-import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 
 // TODO: document this.
 // Maybe give a broad overview of what this widget and how it works.
@@ -80,10 +78,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final pageWidth = constraints.maxWidth;
-        late final dayWidth =
-            (pageWidth - viewConfiguration.timelineWidth) / viewConfiguration.numberOfDays;
-
         final header = switch (viewConfiguration.type) {
           MultiDayViewType.freeScroll => _FreeScrollHeader(
               key: ValueKey(viewConfiguration.hashCode),
@@ -93,10 +87,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileComponents: tileComponents,
               components: components,
               componentStyles: styles,
-              timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
-              pageWidth: pageWidth,
-              dayWidth: dayWidth,
               callbacks: callbacks,
             ),
           MultiDayViewType.singleDay => _SingleDayHeader(
@@ -107,9 +98,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileComponents: tileComponents,
               components: components,
               componentStyles: styles,
-              timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
-              pageWidth: pageWidth,
               callbacks: callbacks,
             ),
           _ => _MultiDayHeader(
@@ -120,10 +109,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileComponents: tileComponents,
               components: components,
               componentStyles: styles,
-              timelineWidth: viewConfiguration.timelineWidth,
               tileHeight: headerConfiguration.tileHeight,
-              pageWidth: pageWidth,
-              dayWidth: dayWidth,
               callbacks: callbacks,
             )
         };
@@ -144,9 +130,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
-  final double timelineWidth;
   final double tileHeight;
-  final double pageWidth;
 
   const _SingleDayHeader({
     super.key,
@@ -157,9 +141,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     required this.tileComponents,
     required this.components,
     required this.componentStyles,
-    required this.timelineWidth,
     required this.tileHeight,
-    required this.pageWidth,
   });
 
   @override
@@ -183,89 +165,76 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final dayHeader = SizedBox(
-      width: timelineWidth,
-      child: dayHeaderWidget,
-    );
+    final pageView = LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        return ExpandablePageView(
+          controller: viewController.headerController,
+          itemCount: viewController.numberOfPages,
+          itemBuilder: (context, index) {
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+              index,
+            );
 
-    final pageView = ExpandablePageView(
-      controller: viewController.headerController,
-      itemCount: viewController.numberOfPages,
-      itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-          index,
-        );
+            final constraints = BoxConstraints(
+              minHeight: tileHeight * 2,
+              minWidth: pageWidth,
+            );
 
-        final constraints = BoxConstraints(
-          minHeight: tileHeight * 2,
-          minWidth: pageWidth,
-        );
+            final multiDayEvents = MultiDayEventWidget<T>(
+              eventsController: eventsController,
+              controller: calendarController,
+              visibleDateTimeRange: visibleRange,
+              tileComponents: tileComponents,
+              dayWidth: pageWidth,
+              allowResizing: configuration.allowResizing,
+              allowRescheduling: configuration.allowRescheduling,
+              showAllEvents: false,
+              callbacks: callbacks,
+              tileHeight: tileHeight,
+              layoutStrategy: configuration.eventLayoutStrategy,
+            );
 
-        final multiDayEvents = MultiDayEventWidget<T>(
-          eventsController: eventsController,
-          controller: calendarController,
-          visibleDateTimeRange: visibleRange,
-          tileComponents: tileComponents,
-          dayWidth: pageWidth,
-          allowResizing: configuration.allowResizing,
-          allowRescheduling: configuration.allowRescheduling,
-          showAllEvents: false,
-          callbacks: callbacks,
-          tileHeight: tileHeight,
-          layoutStrategy: configuration.eventLayoutStrategy,
-        );
+            final multiDayDragTarget = MultiDayDragTarget<T>(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              callbacks: callbacks,
+              tileComponents: tileComponents,
+              pageTriggerSetup: configuration.pageTriggerConfiguration,
+              visibleDateTimeRange: visibleRange,
+              dayWidth: pageWidth,
+              pageWidth: pageWidth,
+              tileHeight: tileHeight,
+              allowSingleDayEvents: false,
+              leftPageTrigger: components?.leftTriggerBuilder,
+              rightPageTrigger: components?.rightTriggerBuilder,
+            );
 
-        final multiDayDragTarget = MultiDayDragTarget<T>(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          callbacks: callbacks,
-          tileComponents: tileComponents,
-          pageTriggerSetup: configuration.pageTriggerConfiguration,
-          visibleDateTimeRange: visibleRange,
-          dayWidth: pageWidth,
-          pageWidth: pageWidth,
-          tileHeight: tileHeight,
-          allowSingleDayEvents: false,
-          leftPageTrigger: components?.leftTriggerBuilder,
-          rightPageTrigger: components?.rightTriggerBuilder,
-        );
+            final gestureDetector = MultiDayGestureDetector<T>(
+              visibleDateTimeRange: visibleRange,
+              eventsController: eventsController,
+              controller: calendarController,
+              callbacks: callbacks,
+              createEventTrigger: configuration.createEventTrigger,
+              allowEventCreation: configuration.allowEventCreation,
+              dayWidth: pageWidth,
+            );
 
-        final gestureDetector = MultiDayGestureDetector<T>(
-          visibleDateTimeRange: visibleRange,
-          eventsController: eventsController,
-          controller: calendarController,
-          callbacks: callbacks,
-          createEventTrigger: configuration.createEventTrigger,
-          allowEventCreation: configuration.allowEventCreation,
-          dayWidth: pageWidth,
-        );
-
-        return Stack(
-          children: [
-            Positioned.fill(child: gestureDetector),
-            ConstrainedBox(constraints: constraints, child: multiDayEvents),
-            Positioned.fill(child: multiDayDragTarget),
-          ],
+            return Stack(
+              children: [
+                Positioned.fill(child: gestureDetector),
+                ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                Positioned.fill(child: multiDayDragTarget),
+              ],
+            );
+          },
         );
       },
     );
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: dayHeader,
-        ),
-        PageClipWidget(
-          left: viewConfiguration.leftPageClip,
-          child: Row(
-            children: [
-              SizedBox(width: timelineWidth),
-              Expanded(child: pageView),
-            ],
-          ),
-        ),
-      ],
+    return MultiDayHeaderWidget(
+      page: pageView,
+      leadingWidget: dayHeaderWidget,
     );
   }
 }
@@ -279,10 +248,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
-  final double timelineWidth;
   final double tileHeight;
-  final double pageWidth;
-  final double dayWidth;
 
   const _MultiDayHeader({
     super.key,
@@ -293,10 +259,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.tileComponents,
     required this.components,
     required this.componentStyles,
-    required this.timelineWidth,
     required this.tileHeight,
-    required this.pageWidth,
-    required this.dayWidth,
   });
 
   @override
@@ -321,111 +284,102 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final pageView = ExpandablePageView(
-      controller: viewController.headerController,
-      itemCount: viewController.numberOfPages,
-      itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-          index,
-        );
-        final visibleDates = visibleRange.days;
+    final pageView = LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
 
-        final dayHeaderStyle = componentStyles?.dayHeaderStyle;
-        final dayHeaders = visibleDates.map((date) {
-          final dayHeader = components?.dayHeaderBuilder?.call(
-                date,
-                dayHeaderStyle,
-              ) ??
-              DayHeader(
-                date: date,
-                style: dayHeaderStyle,
+        return ExpandablePageView(
+          controller: viewController.headerController,
+          itemCount: viewController.numberOfPages,
+          itemBuilder: (context, index) {
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+              index,
+            );
+            final visibleDates = visibleRange.days;
+
+            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
+            final dayHeaders = visibleDates.map((date) {
+              final dayHeader = components?.dayHeaderBuilder?.call(
+                    date,
+                    dayHeaderStyle,
+                  ) ??
+                  DayHeader(
+                    date: date,
+                    style: dayHeaderStyle,
+                  );
+
+              return SizedBox(
+                width: dayWidth,
+                child: dayHeader,
               );
+            }).toList();
 
-          return SizedBox(
-            width: dayWidth,
-            child: dayHeader,
-          );
-        }).toList();
+            final multiDayEvents = MultiDayEventWidget<T>(
+              controller: calendarController,
+              eventsController: eventsController,
+              visibleDateTimeRange: visibleRange,
+              tileComponents: tileComponents,
+              dayWidth: dayWidth,
+              allowResizing: configuration.allowResizing,
+              allowRescheduling: configuration.allowRescheduling,
+              showAllEvents: false,
+              callbacks: callbacks,
+              tileHeight: tileHeight,
+              layoutStrategy: configuration.eventLayoutStrategy,
+            );
 
-        final multiDayEvents = MultiDayEventWidget<T>(
-          controller: calendarController,
-          eventsController: eventsController,
-          visibleDateTimeRange: visibleRange,
-          tileComponents: tileComponents,
-          dayWidth: dayWidth,
-          allowResizing: configuration.allowResizing,
-          allowRescheduling: configuration.allowRescheduling,
-          showAllEvents: false,
-          callbacks: callbacks,
-          tileHeight: tileHeight,
-          layoutStrategy: configuration.eventLayoutStrategy,
-        );
+            final multiDayDragTarget = MultiDayDragTarget<T>(
+              calendarController: calendarController,
+              eventsController: eventsController,
+              callbacks: callbacks,
+              tileComponents: tileComponents,
+              pageTriggerSetup: configuration.pageTriggerConfiguration,
+              visibleDateTimeRange: visibleRange,
+              dayWidth: dayWidth,
+              pageWidth: pageWidth,
+              tileHeight: tileHeight,
+              allowSingleDayEvents: false,
+              leftPageTrigger: components?.leftTriggerBuilder,
+              rightPageTrigger: components?.rightTriggerBuilder,
+            );
 
-        final multiDayDragTarget = MultiDayDragTarget<T>(
-          calendarController: calendarController,
-          eventsController: eventsController,
-          callbacks: callbacks,
-          tileComponents: tileComponents,
-          pageTriggerSetup: configuration.pageTriggerConfiguration,
-          visibleDateTimeRange: visibleRange,
-          dayWidth: dayWidth,
-          pageWidth: pageWidth,
-          tileHeight: tileHeight,
-          allowSingleDayEvents: false,
-          leftPageTrigger: components?.leftTriggerBuilder,
-          rightPageTrigger: components?.rightTriggerBuilder,
-        );
+            final gestureDetector = MultiDayGestureDetector<T>(
+              visibleDateTimeRange: visibleRange,
+              eventsController: eventsController,
+              controller: calendarController,
+              callbacks: callbacks,
+              createEventTrigger: configuration.createEventTrigger,
+              dayWidth: dayWidth,
+              allowEventCreation: configuration.allowEventCreation,
+            );
 
-        final gestureDetector = MultiDayGestureDetector<T>(
-          visibleDateTimeRange: visibleRange,
-          eventsController: eventsController,
-          controller: calendarController,
-          callbacks: callbacks,
-          createEventTrigger: configuration.createEventTrigger,
-          dayWidth: dayWidth,
-          allowEventCreation: configuration.allowEventCreation,
-        );
+            final constraints = BoxConstraints(
+              minHeight: tileHeight,
+              minWidth: pageWidth,
+            );
 
-        final constraints = BoxConstraints(
-          minHeight: tileHeight,
-          minWidth: pageWidth,
-        );
-
-        return Column(
-          children: [
-            Row(children: [...dayHeaders]),
-            if (configuration.showTiles)
-              Stack(
-                children: [
-                  Positioned.fill(child: gestureDetector),
-                  ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                  Positioned.fill(child: multiDayDragTarget),
-                ],
-              ),
-          ],
+            return Column(
+              children: [
+                Row(children: [...dayHeaders]),
+                if (configuration.showTiles)
+                  Stack(
+                    children: [
+                      Positioned.fill(child: gestureDetector),
+                      ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                      Positioned.fill(child: multiDayDragTarget),
+                    ],
+                  ),
+              ],
+            );
+          },
         );
       },
     );
 
-    return Stack(
-      children: [
-        Positioned(
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: timelineWidth,
-          child: weekNumberWidget,
-        ),
-        PageClipWidget(
-          left: viewConfiguration.leftPageClip,
-          child: Row(
-            children: [
-              SizedBox(width: timelineWidth),
-              Expanded(child: pageView),
-            ],
-          ),
-        ),
-      ],
+    return MultiDayHeaderWidget(
+      page: pageView,
+      leadingWidget: weekNumberWidget,
     );
   }
 }
@@ -439,10 +393,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
-  final double timelineWidth;
   final double tileHeight;
-  final double pageWidth;
-  final double dayWidth;
 
   const _FreeScrollHeader({
     super.key,
@@ -453,10 +404,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
     required this.tileComponents,
     required this.components,
     required this.componentStyles,
-    required this.timelineWidth,
     required this.tileHeight,
-    required this.pageWidth,
-    required this.dayWidth,
   });
 
   @override
@@ -481,112 +429,102 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final pageView = ExpandablePageView(
-      controller: viewController.headerController,
-      itemCount: viewController.numberOfPages,
-      itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-          index,
-        );
-        final visibleDates = visibleRange.days;
+    final pageView = LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+        return ExpandablePageView(
+          controller: viewController.headerController,
+          itemCount: viewController.numberOfPages,
+          itemBuilder: (context, index) {
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
+              index,
+            );
+            final visibleDates = visibleRange.days;
 
-        final dayHeaderStyle = componentStyles?.dayHeaderStyle;
-        final dayHeaders = visibleDates.map((date) {
-          final dayHeader = components?.dayHeaderBuilder?.call(
-                date,
-                dayHeaderStyle,
-              ) ??
-              DayHeader(
-                date: date,
-                style: dayHeaderStyle,
+            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
+            final dayHeaders = visibleDates.map((date) {
+              final dayHeader = components?.dayHeaderBuilder?.call(
+                    date,
+                    dayHeaderStyle,
+                  ) ??
+                  DayHeader(
+                    date: date,
+                    style: dayHeaderStyle,
+                  );
+
+              return SizedBox(
+                width: dayWidth,
+                child: dayHeader,
               );
+            }).toList();
 
-          return SizedBox(
-            width: dayWidth,
-            child: dayHeader,
-          );
-        }).toList();
+            /// TODO: figure out how to get multiday events to work with FreeScroll.
 
-        /// TODO: figure out how to get multiday events to work with FreeScroll.
+            // final multiDayEvents = MultiDayEventWidget<T>(
+            //   controller: calendarController,
+            //   eventsController: eventsController,
+            //   visibleDateTimeRange: visibleRange,
+            //   tileComponents: tileComponents,
+            //   dayWidth: dayWidth,
+            //   allowResizing: configuration.allowResizing,
+            //   allowRescheduling: configuration.allowRescheduling,
+            //   showAllEvents: false,
+            //   callbacks: callbacks,
+            //   tileHeight: tileHeight,
+            //   layoutStrategy: configuration.eventLayoutStrategy,
+            // );
 
-        // final multiDayEvents = MultiDayEventWidget<T>(
-        //   controller: calendarController,
-        //   eventsController: eventsController,
-        //   visibleDateTimeRange: visibleRange,
-        //   tileComponents: tileComponents,
-        //   dayWidth: dayWidth,
-        //   allowResizing: configuration.allowResizing,
-        //   allowRescheduling: configuration.allowRescheduling,
-        //   showAllEvents: false,
-        //   callbacks: callbacks,
-        //   tileHeight: tileHeight,
-        //   layoutStrategy: configuration.eventLayoutStrategy,
-        // );
+            // final multiDayDragTarget = MultiDayDragTarget<T>(
+            //   calendarController: calendarController,
+            //   eventsController: eventsController,
+            //   callbacks: callbacks,
+            //   tileComponents: tileComponents,
+            //   pageTriggerSetup: configuration.pageTriggerConfiguration,
+            //   visibleDateTimeRange: visibleRange,
+            //   dayWidth: dayWidth,
+            //   pageWidth: pageWidth,
+            //   tileHeight: tileHeight,
+            //   allowSingleDayEvents: false,
+            //   leftPageTrigger: components?.leftTriggerBuilder,
+            //   rightPageTrigger: components?.rightTriggerBuilder,
+            // );
 
-        // final multiDayDragTarget = MultiDayDragTarget<T>(
-        //   calendarController: calendarController,
-        //   eventsController: eventsController,
-        //   callbacks: callbacks,
-        //   tileComponents: tileComponents,
-        //   pageTriggerSetup: configuration.pageTriggerConfiguration,
-        //   visibleDateTimeRange: visibleRange,
-        //   dayWidth: dayWidth,
-        //   pageWidth: pageWidth,
-        //   tileHeight: tileHeight,
-        //   allowSingleDayEvents: false,
-        //   leftPageTrigger: components?.leftTriggerBuilder,
-        //   rightPageTrigger: components?.rightTriggerBuilder,
-        // );
+            // final gestureDetector = MultiDayGestureDetector<T>(
+            //   visibleDateTimeRange: visibleRange,
+            //   eventsController: eventsController,
+            //   controller: calendarController,
+            //   callbacks: callbacks,
+            //   createEventTrigger: configuration.createEventTrigger,
+            //   dayWidth: dayWidth,
+            // );
 
-        // final gestureDetector = MultiDayGestureDetector<T>(
-        //   visibleDateTimeRange: visibleRange,
-        //   eventsController: eventsController,
-        //   controller: calendarController,
-        //   callbacks: callbacks,
-        //   createEventTrigger: configuration.createEventTrigger,
-        //   dayWidth: dayWidth,
-        // );
+            // final constraints = BoxConstraints(
+            //   minHeight: tileHeight,
+            //   minWidth: pageWidth,
+            // );
 
-        // final constraints = BoxConstraints(
-        //   minHeight: tileHeight,
-        //   minWidth: pageWidth,
-        // );
-
-        return Column(
-          children: [
-            Row(children: [...dayHeaders]),
-            // if (configuration.showTiles)
-            //   Stack(
-            //     children: [
-            //       // Positioned.fill(child: gestureDetector),
-            //       // ConstrainedBox(constraints: constraints, child: multiDayEvents),
-            //       // Positioned.fill(child: multiDayDragTarget),
-            //     ],
-            //   ),
-          ],
+            return Column(
+              children: [
+                Row(children: [...dayHeaders]),
+                // if (configuration.showTiles)
+                //   Stack(
+                //     children: [
+                //       // Positioned.fill(child: gestureDetector),
+                //       // ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                //       // Positioned.fill(child: multiDayDragTarget),
+                //     ],
+                //   ),
+              ],
+            );
+          },
         );
       },
     );
 
-    return Stack(
-      children: [
-        Positioned(
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: timelineWidth,
-          child: weekNumberWidget,
-        ),
-        PageClipWidget(
-          left: viewConfiguration.leftPageClip,
-          child: Row(
-            children: [
-              SizedBox(width: timelineWidth),
-              Expanded(child: pageView),
-            ],
-          ),
-        ),
-      ],
+    return MultiDayHeaderWidget(
+      page: pageView,
+      leadingWidget: weekNumberWidget,
     );
   }
 }

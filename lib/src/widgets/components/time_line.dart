@@ -67,12 +67,19 @@ class TimeLine<T extends Object?> extends StatelessWidget {
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.labelMedium;
     final textDirection = style?.textDirection ?? TextDirection.ltr;
 
-    final textHeight = _textSize('0', textStyle).height;
+    const displayTime = TimeOfDay(hour: 1, minute: 0);
+    final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+    final textSize = _textSize(text, textStyle);
+    final textHeight = textSize.height;
+    final textWidth = textSize.width;
+
     final textXOffset = textHeight / 2;
 
     // This includes the last hour for which we do not want to display the time.
     final hourRanges = timeOfDayRange.hourRanges;
     var previousXPosition = 0.0;
+
+    final textPadding = style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
 
     final positionedTimes = hourRanges.indexed.map(
       (e) {
@@ -110,8 +117,6 @@ class TimeLine<T extends Object?> extends StatelessWidget {
         // The time to display is the next hour.
         final displayTime = TimeOfDay(hour: range.start.hour + 1, minute: 0);
         final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
-
-        final textPadding = style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
 
         return Positioned(
           top: position - textXOffset,
@@ -180,11 +185,14 @@ class TimeLine<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return Stack(
-      children: [
-        ...positionedTimes.nonNulls.toList(),
-        eventBeingDraggedTimes,
-      ],
+    return SizedBox(
+      width: textWidth + textPadding.horizontal,
+      child: Stack(
+        children: [
+          ...positionedTimes.nonNulls.toList(),
+          eventBeingDraggedTimes,
+        ],
+      ),
     );
   }
 

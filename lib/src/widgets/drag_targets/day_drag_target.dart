@@ -327,10 +327,13 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Current scroll offset.
     final scrollOffset = Offset(0, scrollController.offset);
+    // print(scrollOffset);
 
     // Calculate the position of the cursor relative to the current widget.
     final relativeCursorPosition =
         cursorPosition + feedbackWidgetOffset + scrollOffset - widgetPosition!;
+
+    print(relativeCursorPosition);
 
     return relativeCursorPosition;
   }
