@@ -168,7 +168,8 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final timeDifference = date.difference(date.startOfDay);
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(date);
+    final timeDifference = date.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
     // Animate to the offset of the time.
@@ -187,25 +188,25 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     Duration? scrollDuration,
     Curve? scrollCurve,
     bool centerEvent = true,
-  }) {
+  }) async {
+    final DateTime date;
+
     if (centerEvent) {
-      // TODO: center the start of the event in the middle of the viewport.
-      return animateToDateTime(
-        event.start,
-        pageDuration: pageDuration,
-        pageCurve: pageCurve,
-        scrollDuration: scrollDuration,
-        scrollCurve: scrollCurve,
-      );
+      final eventCenter = event.start.add(Duration(minutes: event.duration.inMinutes ~/ 2));
+      final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
+      final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
+      date = eventCenter.subtract(duration);
     } else {
-      return animateToDateTime(
-        event.start,
-        pageDuration: pageDuration,
-        pageCurve: pageCurve,
-        scrollDuration: scrollDuration,
-        scrollCurve: scrollCurve,
-      );
+      date = event.start;
     }
+
+    return animateToDateTime(
+      date,
+      pageDuration: pageDuration,
+      pageCurve: pageCurve,
+      scrollDuration: scrollDuration,
+      scrollCurve: scrollCurve,
+    );
   }
 
   @override
