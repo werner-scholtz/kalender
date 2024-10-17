@@ -151,6 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (position.dy + height > size.height) {
       position = position.translate(0, size.height - (position.dy + height) - 25);
+    } else if (position.dy < 0) {
+      position = position.translate(0, -position.dy);
     }
 
     if (position.dx + width + selectedRenderBox!.size.width > size.width) {
@@ -158,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       position = position.translate(selectedRenderBox!.size.width, 0);
     }
+
     return Stack(
       fit: StackFit.expand,
       children: [
