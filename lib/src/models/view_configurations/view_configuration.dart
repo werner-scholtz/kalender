@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
@@ -29,3 +30,4 @@ const defaultSnapToOtherEvents = true;
 const defaultSnapRange = Duration(minutes: 15);
 const defaultSnapIntervalMinutes = 10;
 const defaultShowEventTiles = true;
+const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);

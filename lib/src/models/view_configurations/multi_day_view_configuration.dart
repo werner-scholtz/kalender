@@ -24,6 +24,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
     required this.type,
+    required this.initialTimeOfDay,
   }) : assert(
           firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
           'First day of week must be Monday, Saturday or Sunday\n'
@@ -36,6 +37,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
   }) {
     numberOfDays = 1;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -53,6 +55,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.numberOfDays = 7,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -69,6 +72,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
   }) {
     firstDayOfWeek = DateTime.monday;
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
@@ -86,6 +90,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
     this.firstDayOfWeek = DateTime.monday,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -102,6 +107,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
   }) {
     this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
     this.displayRange = displayRange ?? DateTime.now().yearRange;
@@ -135,17 +141,22 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// The number of days that can be displayed by [MultiDayBody] widgets using this configuration.
   late final int numberOfDays;
 
+  /// The initial time of day that the calendar should display.
+  late final TimeOfDay initialTimeOfDay;
+
   MultiDayViewConfiguration copyWith({
     String? name,
     TimeOfDayRange? timeOfDayRange,
     DateTimeRange? displayRange,
     int? numberOfDays,
     int? firstDayOfWeek,
+    TimeOfDay? initialTimeOfDay,
   }) {
     final name0 = name ?? this.name;
     final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
     final displayRange0 = displayRange ?? this.displayRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
+    final initialTimeOfDay0 = initialTimeOfDay ?? this.initialTimeOfDay;
 
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
@@ -153,17 +164,20 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          initialTimeOfDay: initialTimeOfDay0,
         ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
           name: name0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
+          initialTimeOfDay: initialTimeOfDay0,
         ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
           name: name0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
+          initialTimeOfDay: initialTimeOfDay0,
         ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
           name: name0,
@@ -171,12 +185,14 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
+          initialTimeOfDay: initialTimeOfDay0,
         ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
           name: name0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
+          initialTimeOfDay: initialTimeOfDay0,
         ),
     };
   }

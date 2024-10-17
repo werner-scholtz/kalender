@@ -78,8 +78,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
 
     final type = viewConfiguration.type;
-    final viewPortFraction =
-        type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
+    final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
@@ -97,7 +96,13 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
       visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
     }
 
-    scrollController = ScrollController();
+    // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
+    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toDateTime(DateTime.now());
+    final dayStart = viewConfiguration.timeOfDayRange.start.toDateTime(DateTime.now());
+    final timeDifference = initialTimeOfDay.difference(dayStart);
+    final initialScrollOffset = timeDifference.inMinutes * (heightPerMinute.value);
+    scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
+
     visibleEvents.value = {};
 
     // This listener will sync the headerController with the pageController.
@@ -163,7 +168,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    // TODO: Figure out how custom hours will work.
     final timeDifference = date.difference(date.startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
