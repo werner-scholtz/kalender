@@ -104,8 +104,16 @@ TileComponents(
   // The dragAnchorStrategy used by the [feedbackTileBuilder].
   dragAnchorStrategy: childDragAnchorStrategy,
 
+  // A widget that allows you to customize where the resize handles are placed vertically.
+  // Your widget should extend the `ResizeHandlePositionerWidget`
+  verticalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() , 
+
   // The vertical resize handle.
   verticalResizeHandle: Container(),
+
+  // A widget that allows you to customize where the resize handles are placed horizontally.
+  // Your widget should extend the `ResizeHandlePositionerWidget`
+  horizontalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() ,
 
   // The horizontal resize handle.
   horizontalResizeHandle: Container(),

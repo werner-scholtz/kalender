@@ -37,7 +37,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   );
 }
 
-/// A [EventLayoutStrategy] that lays out the tiles on top of each other.
+/// A [EventLayoutStrategy] that lays out the tiles side by side.
 EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   Iterable<CalendarEvent<T>> events,
   DateTime date,

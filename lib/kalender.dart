@@ -25,6 +25,8 @@ export 'package:kalender/src/widgets/components/time_line.dart';
 export 'package:kalender/src/widgets/components/week_number.dart';
 export 'package:kalender/src/widgets/components/week_day_header.dart';
 
+export 'package:kalender/src/widgets/components/resize_handle_positioner.dart';
+
 /// Models
 export 'package:kalender/src/models/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';

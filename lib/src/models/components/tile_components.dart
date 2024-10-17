@@ -29,8 +29,14 @@ class TileComponents<T extends Object?> {
   /// The dragAnchorStrategy used by the [feedbackTileBuilder].
   final DragAnchorStrategy? dragAnchorStrategy;
 
+  /// The widget that positions the resize handles vertically.
+  final ResizeHandlePositioner? verticalHandlePositioner;
+
   /// The vertical resize handle.
   final Widget? verticalResizeHandle;
+
+  /// The widget that positions the resize handles horizontally.
+  final ResizeHandlePositioner? horizontalHandlePositioner;
 
   /// The horizontal resize handle.
   final Widget? horizontalResizeHandle;
@@ -41,7 +47,9 @@ class TileComponents<T extends Object?> {
     this.tileWhenDraggingBuilder,
     this.feedbackTileBuilder,
     this.dragAnchorStrategy,
+    this.verticalHandlePositioner,
     this.verticalResizeHandle,
+    this.horizontalHandlePositioner,
     this.horizontalResizeHandle,
   });
 }

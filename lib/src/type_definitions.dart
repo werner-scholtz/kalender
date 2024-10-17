@@ -5,6 +5,7 @@ import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
+import 'package:kalender/src/widgets/components/resize_handle_positioner.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
@@ -57,7 +58,7 @@ typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 /// The default builder for the event tiles.
 ///
 /// [event] is the event that the tile will be built for.
-/// 
+///
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
 /// * (This can be compared to the [CalendarEvent.dateTimeRange] to determine on which day it falls.)
 typedef TileBuilder<T extends Object?> = Widget Function(
@@ -86,6 +87,19 @@ typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
 /// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
+);
+
+/// The builder that positions the ResizeHandles.
+///
+/// [startResizeDetector] the top/left resize detector.
+/// [endResizeDetector] the bottom/right resize detector.
+/// [showStart] should the start resize detector be show.
+/// [showEnd] should the end resize detector be show.
+typedef ResizeHandlePositioner = ResizeHandlePositionerWidget Function(
+  Widget startResizeHandle,
+  Widget endResizeHandle,
+  bool showStart,
+  bool showEnd,
 );
 
 /// The hour lines builder.

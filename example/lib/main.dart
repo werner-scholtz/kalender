@@ -66,8 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
     MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
     MonthViewConfiguration.singleMonth(),
-    MultiDayViewConfiguration.freeScroll(
-        displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
+    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
 
   @override
@@ -268,8 +267,7 @@ class NavigationHeader extends StatelessWidget {
             icon: const Icon(Icons.today),
           ),
           DropdownMenu(
-            dropdownMenuEntries:
-                viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+            dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
             initialSelection: selected,
             onSelected: (value) {
               if (value == null) return;
