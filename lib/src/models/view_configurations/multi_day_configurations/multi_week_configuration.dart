@@ -45,7 +45,7 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
   @override
   DateTimeRange calculateVisibleDateTimeRange(DateTime date) {
     final start = date.startOfWeekWithOffset(firstDayOfWeek);
-    final end = start.add(Duration(days: numberOfDays));
+    final end = start.addDays(numberOfDays);
 
     final dateTimeRange = DateTimeRange(
       start: start,
@@ -68,7 +68,7 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
         (normalizedDateTimeRange.duration.inDays / numberOfDays).ceil();
 
     final start = normalizedDateTimeRange.start;
-    final end = start.add(Duration(days: numberOfFullPages * numberOfDays));
+    final end = start.addDays(numberOfFullPages * numberOfDays);
 
     final adjustedDateTimeRange = DateTimeRange(
       start: start,
@@ -113,7 +113,7 @@ class MultiWeekConfiguration extends MultiDayViewConfiguration {
       calendarStart.day + (index * numberOfDays),
     );
 
-    final end = start.add(Duration(days: numberOfDays));
+    final end = start.addDays(numberOfDays);
 
     return DateTimeRange(
       start: start,

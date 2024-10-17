@@ -1,3 +1,10 @@
+## 0.4.2
+- Fixed duplicate days caused by DST bug
+
+## 0.4.1
+- Fixed visibleMonth returning incorrect value.
+- Fixed MonthView not showing current day.
+
 ## 0.4.0
 - Fixed WeekNumbers for CustomMultiDay views.
 - Fixed MultiDayEventTile datesSpanned issue.

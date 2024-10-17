@@ -97,6 +97,6 @@ class DayConfiguration extends MultiDayViewConfiguration
     required DateTime calendarStart,
     int? firstDayOfWeek,
   }) {
-    return calendarStart.add(Duration(days: index)).dayRange;
+    return calendarStart.addDays(index).dayRange;
   }
 }

@@ -12,7 +12,7 @@ class DefaultTileHandle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = CalendarStyleProvider.of(context).style.tileHandleStyle;
-    final color = style.color ?? Theme.of(context).colorScheme.onBackground;
+    final color = style.color ?? Theme.of(context).colorScheme.onSurface;
 
     return DecoratedBox(
       decoration: BoxDecoration(
