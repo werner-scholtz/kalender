@@ -13,12 +13,11 @@ class TimelineSizer<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create the timeline widget.
     final provider = CalendarProvider.of<T>(context);
     final calendarComponents = provider.components;
-
     final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
     final bodyComponents = calendarComponents?.multiDayComponents?.components;
-
     final timelineStyle = bodyStyles?.timelineStyle;
     const heightPerMinute = 1.0;
     final timeOfDayRange = TimeOfDayRange.allDay();

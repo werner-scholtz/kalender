@@ -3,6 +3,10 @@ import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
+/// The widget used for the MultiDayHeader.
+///
+/// This widget uses the [TimeLine] to determine the size of the [leadingWidget].
+/// It uses the [page] to determine the height of the [MultiDayHeaderWidget].
 class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
   final Widget page;
   final Widget leadingWidget;
@@ -14,6 +18,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create the timeline widget.
     final provider = CalendarProvider.of<T>(context);
     final calendarComponents = provider.components;
     final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
@@ -41,7 +46,6 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// This is just messed up truly xD
 class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
   _MultiDayHeaderWidget({
     required this.timelineWidget,
@@ -96,7 +100,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final weekNumber = childAfter(timeline)!;
     final weekNumberParentData = (page.parentData! as MultiChildLayoutParentData);
 
-    // layout the timeline the constraint height here is arbitrary as this does not affect the size.
+    // layout the timeline the height constraint here is arbitrary as this does not affect the size.
     timeline.layout(const BoxConstraints(maxHeight: 50), parentUsesSize: true);
     final timelineWidth = timeline.size.width;
 
@@ -108,7 +112,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     );
     final pageHeight = page.size.height;
 
-    // Layout the weekNumber, this size is determined from the timelineWidth and the pageHeight.
+    // Layout the weekNumber, this constraints are determined from the timelineWidth and the pageHeight.
     weekNumberParentData.offset = Offset.zero;
     weekNumber.layout(BoxConstraints.tightFor(width: timelineWidth, height: pageHeight));
 
