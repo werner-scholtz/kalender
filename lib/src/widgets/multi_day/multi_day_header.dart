@@ -79,7 +79,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final header = switch (viewConfiguration.type) {
-          MultiDayViewType.freeScroll => _FreeScrollHeader(
+          MultiDayViewType.freeScroll => _FreeScrollHeader<T>(
               key: ValueKey(viewConfiguration.hashCode),
               eventsController: eventsController!,
               calendarController: calendarController!,
@@ -90,7 +90,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
             ),
-          MultiDayViewType.singleDay => _SingleDayHeader(
+          MultiDayViewType.singleDay => _SingleDayHeader<T>(
               key: ValueKey(viewConfiguration.hashCode),
               eventsController: eventsController!,
               calendarController: calendarController!,
@@ -101,7 +101,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
             ),
-          _ => _MultiDayHeader(
+          _ => _MultiDayHeader<T>(
               key: ValueKey(viewConfiguration.hashCode),
               eventsController: eventsController!,
               calendarController: calendarController!,
@@ -232,7 +232,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget(
+    return MultiDayHeaderWidget<T>(
       content: pageView,
       leadingWidget: dayHeaderWidget,
     );
@@ -377,7 +377,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget(
+    return MultiDayHeaderWidget<T>(
       content: pageView,
       leadingWidget: weekNumberWidget,
     );

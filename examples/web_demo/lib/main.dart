@@ -82,7 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
   );
 
   ViewType _type = ViewType.single;
-  OverlayEntry? _overlayEntry;
+
+  final _portalController = OverlayPortalController();
+  CalendarEvent<Event>? selectedEvent;
+  RenderBox? selectedRenderBox;
 
   @override
   void initState() {
@@ -100,9 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton.filledTonal(
             onPressed: () => MyApp.of(context)!.toggleTheme(),
             icon: Icon(
-              MyApp.of(context)!.themeMode == ThemeMode.dark
-                  ? Icons.brightness_2_rounded
-                  : Icons.brightness_7_rounded,
+              MyApp.of(context)!.themeMode == ThemeMode.dark ? Icons.brightness_2_rounded : Icons.brightness_7_rounded,
             ),
           ),
           DropdownMenu<ViewType>(
@@ -117,74 +118,68 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: _type == ViewType.single
-          ? SingleCalendarView(
-              eventsController: eventsController,
-              callbacks: _calendarCallbacks,
-              viewConfigurations: _viewConfigurations,
-            )
-          : MultiCalendarView(
-              eventsController: eventsController,
-              callbacks: _calendarCallbacks,
-              viewConfigurations: _viewConfigurations,
-            ),
+      body: OverlayPortal(
+        controller: _portalController,
+        overlayChildBuilder: _buildOverlay,
+        child: _type == ViewType.single
+            ? SingleCalendarView(
+                eventsController: eventsController,
+                callbacks: _calendarCallbacks,
+                viewConfigurations: _viewConfigurations,
+              )
+            : MultiCalendarView(
+                eventsController: eventsController,
+                callbacks: _calendarCallbacks,
+                viewConfigurations: _viewConfigurations,
+              ),
+      ),
     );
   }
 
-  void _removeOverlay() {
-    if (_overlayEntry != null) {
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-    }
+  void _createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
+    selectedEvent = event;
+    selectedRenderBox = renderBox;
+    _portalController.show();
   }
 
-  void _createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
-    _removeOverlay();
-
-    var position = renderBox.localToGlobal(Offset.zero);
+  Widget _buildOverlay(BuildContext overlayContext) {
+    var position = selectedRenderBox!.localToGlobal(Offset.zero);
     const height = 300.0;
-    const width = 250.0;
+    const width = 300.0;
 
-    final size = context.size!;
+    final size = MediaQuery.sizeOf(context); //context.size!;
 
     if (position.dy + height > size.height) {
       position = position.translate(0, size.height - (position.dy + height) - 25);
     }
 
-    if (position.dx + width + renderBox.size.width > size.width) {
+    if (position.dx + width + selectedRenderBox!.size.width > size.width) {
       position = position.translate(-width - 16, 0);
     } else {
-      position = position.translate(renderBox.size.width, 0);
+      position = position.translate(selectedRenderBox!.size.width, 0);
     }
-
-    final overlayEntry = OverlayEntry(
-      builder: (context) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: _removeOverlay,
-              ),
-            ),
-            Positioned(
-              top: position.dy,
-              left: position.dx,
-              child: EventOverlayCard(
-                event: event,
-                position: position,
-                height: height,
-                width: width,
-                onDismiss: _removeOverlay,
-              ),
-            ),
-          ],
-        );
-      },
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _portalController.hide,
+          ),
+        ),
+        Positioned(
+          top: position.dy,
+          left: position.dx,
+          child: EventOverlayCard(
+            event: selectedEvent!,
+            position: position,
+            height: height,
+            width: width,
+            onDismiss: _portalController.hide,
+            eventsController: eventsController,
+          ),
+        ),
+      ],
     );
-
-    _overlayEntry = overlayEntry;
-    Overlay.of(context).insert(overlayEntry);
   }
 }
