@@ -6,13 +6,13 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The widget used for the MultiDayHeader.
 ///
 /// This widget uses the [TimeLine] to determine the size of the [leadingWidget].
-/// It uses the [page] to determine the height of the [MultiDayHeaderWidget].
+/// It uses the [content] to determine the height of the [MultiDayHeaderWidget].
 class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
-  final Widget page;
+  final Widget content;
   final Widget leadingWidget;
   const MultiDayHeaderWidget({
     super.key,
-    required this.page,
+    required this.content,
     required this.leadingWidget,
   });
 
@@ -41,7 +41,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     return _MultiDayHeaderWidget(
       timelineWidget: LayoutId(id: 1, child: timeline),
       weekNumberWidget: LayoutId(id: 2, child: leadingWidget),
-      page: LayoutId(id: 3, child: page),
+      page: LayoutId(id: 3, child: content),
     );
   }
 }
@@ -74,7 +74,6 @@ class _RenderMultiDayHeaderWidget extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   _RenderMultiDayHeaderWidget(TextDirection? textDirection) : _textDirection = textDirection;
 
-  // TODO: Directionality should be taken into consideration.
   TextDirection? get textDirection => _textDirection;
   TextDirection? _textDirection;
   set textDirection(TextDirection? value) {
@@ -92,42 +91,75 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     }
   }
 
-  @override
-  void performLayout() {
-    final page = firstChild!;
-    final pageParentData = (page.parentData! as MultiChildLayoutParentData);
-    final timeline = childAfter(page)!;
-    final weekNumber = childAfter(timeline)!;
-    final weekNumberParentData = (page.parentData! as MultiChildLayoutParentData);
-
+  static Size _layoutTimeline(RenderBox timeline) {
     // layout the timeline the height constraint here is arbitrary as this does not affect the size.
     timeline.layout(const BoxConstraints(maxHeight: 50), parentUsesSize: true);
-    final timelineWidth = timeline.size.width;
+    return timeline.size;
+  }
 
+  static Size _layoutContent(
+    RenderBox content,
+    double timelineWidth,
+    BoxConstraints constraints,
+    TextDirection textDirection,
+  ) {
     // layout the page, the width of the page is affected by the timeline width.
-    pageParentData.offset = Offset(timelineWidth, 0);
-    page.layout(
+    content.layout(
       BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth),
       parentUsesSize: true,
     );
-    final pageHeight = page.size.height;
 
+    // Setup the page offset
+    final contentParentData = (content.parentData! as MultiChildLayoutParentData);
+    contentParentData.offset = switch (textDirection) {
+      TextDirection.ltr => Offset(timelineWidth, 0),
+      TextDirection.rtl => const Offset(0, 0),
+    };
+
+    return content.size;
+  }
+
+  void _layoutLeading(
+    RenderBox leading,
+    double timelineWidth,
+    double contentHeight,
+    BoxConstraints constraints,
+    TextDirection textDirection,
+  ) {
     // Layout the weekNumber, this constraints are determined from the timelineWidth and the pageHeight.
-    weekNumberParentData.offset = Offset.zero;
-    weekNumber.layout(BoxConstraints.tightFor(width: timelineWidth, height: pageHeight));
+    leading.layout(BoxConstraints.tightFor(width: timelineWidth, height: contentHeight));
 
-    size = Size(constraints.maxWidth, pageHeight);
+    final leadingParentData = (leading.parentData! as MultiChildLayoutParentData);
+    leadingParentData.offset = switch (textDirection) {
+      TextDirection.ltr => const Offset(0, 0),
+      TextDirection.rtl => Offset(constraints.maxWidth - timelineWidth, 0),
+    };
+  }
+
+  @override
+  void performLayout() {
+    final content = firstChild!;
+    final timeline = childAfter(content)!;
+    final leading = childAfter(timeline)!;
+
+    final timelineSize = _layoutTimeline(timeline);
+    final contentSize = _layoutContent(content, timelineSize.width, constraints, textDirection!);
+    _layoutLeading(leading, timelineSize.width, contentSize.height, constraints, textDirection!);
+
+    size = Size(constraints.maxWidth, contentSize.height);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    final page = firstChild!;
-    final pageParentData = (page.parentData! as MultiChildLayoutParentData);
-    page.paint(context, offset + pageParentData.offset);
+    final content = firstChild!;
+    final contentParentData = content.parentData! as MultiChildLayoutParentData;
+    content.paint(context, contentParentData.offset + offset);
 
-    final timeline = childAfter(page)!;
-    final weekNumber = childAfter(timeline)!;
-    weekNumber.paint(context, offset);
+    final timeline = childAfter(content)!;
+
+    final leading = childAfter(timeline)!;
+    final leadingParentData = leading.parentData! as MultiChildLayoutParentData;
+    leading.paint(context, leadingParentData.offset + offset);
   }
 
   @override

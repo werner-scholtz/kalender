@@ -233,7 +233,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     );
 
     return MultiDayHeaderWidget(
-      page: pageView,
+      content: pageView,
       leadingWidget: dayHeaderWidget,
     );
   }
@@ -297,7 +297,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               index,
             );
             final visibleDates = visibleRange.days;
-
+        
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
               final dayHeader = components?.dayHeaderBuilder?.call(
@@ -308,13 +308,13 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                     date: date,
                     style: dayHeaderStyle,
                   );
-
+        
               return SizedBox(
                 width: dayWidth,
                 child: dayHeader,
               );
             }).toList();
-
+        
             final multiDayEvents = MultiDayEventWidget<T>(
               controller: calendarController,
               eventsController: eventsController,
@@ -328,7 +328,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: tileHeight,
               layoutStrategy: configuration.eventLayoutStrategy,
             );
-
+        
             final multiDayDragTarget = MultiDayDragTarget<T>(
               calendarController: calendarController,
               eventsController: eventsController,
@@ -343,7 +343,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               leftPageTrigger: components?.leftTriggerBuilder,
               rightPageTrigger: components?.rightTriggerBuilder,
             );
-
+        
             final gestureDetector = MultiDayGestureDetector<T>(
               visibleDateTimeRange: visibleRange,
               eventsController: eventsController,
@@ -353,12 +353,12 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               dayWidth: dayWidth,
               allowEventCreation: configuration.allowEventCreation,
             );
-
+        
             final constraints = BoxConstraints(
               minHeight: tileHeight,
               minWidth: pageWidth,
             );
-
+        
             return Column(
               children: [
                 Row(children: [...dayHeaders]),
@@ -378,7 +378,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     );
 
     return MultiDayHeaderWidget(
-      page: pageView,
+      content: pageView,
       leadingWidget: weekNumberWidget,
     );
   }
@@ -523,7 +523,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
     );
 
     return MultiDayHeaderWidget(
-      page: pageView,
+      content: pageView,
       leadingWidget: weekNumberWidget,
     );
   }
