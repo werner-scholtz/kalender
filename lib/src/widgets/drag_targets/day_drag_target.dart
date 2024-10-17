@@ -58,8 +58,7 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
 }
 
-class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
-    with SnapPoints, DragTargetUtils {
+class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints, DragTargetUtils {
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get controller => widget.calendarController;
   MultiDayViewController<T> get viewController => widget.viewController;
@@ -116,8 +115,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: widget.rightPageTrigger?.call(pageWidth) ??
-              SizedBox(width: triggerWidth, height: viewPortHeight),
+          child: widget.rightPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final leftTrigger = NavigationTrigger(
@@ -128,8 +126,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: pageAnimationCurve,
             );
           },
-          child: widget.leftPageTrigger?.call(pageWidth) ??
-              SizedBox(width: triggerWidth, height: viewPortHeight),
+          child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
@@ -148,8 +145,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: widget.topScrollTrigger?.call(viewPortHeight) ??
-              SizedBox(height: triggerHeight, width: pageWidth),
+          child: widget.topScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         final bottomScrollTrigger = NavigationTrigger(
@@ -161,8 +157,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
               curve: scrollAnimationCurve,
             );
           },
-          child: widget.bottomScrollTrigger?.call(viewPortHeight) ??
-              SizedBox(height: triggerHeight, width: pageWidth),
+          child: widget.bottomScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         return Stack(
@@ -329,8 +324,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     final scrollOffset = Offset(0, scrollController.offset);
 
     // Calculate the position of the cursor relative to the current widget.
-    final relativeCursorPosition =
-        cursorPosition + feedbackWidgetOffset + scrollOffset - widgetPosition!;
+    final relativeCursorPosition = cursorPosition + feedbackWidgetOffset + scrollOffset - widgetPosition!;
 
     return relativeCursorPosition;
   }
@@ -376,8 +370,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
 
     // Find the index of the snap point that is within a duration of snapRange of the end.
     late final endSnapPoint = findSnapPoint(end, bodyConfiguration.snapRange);
-    final canUseEndSnapPoint =
-        startSnapPoint == null && endSnapPoint != null && endSnapPoint.isAfter(start);
+    final canUseEndSnapPoint = startSnapPoint == null && endSnapPoint != null && endSnapPoint.isAfter(start);
     if (canUseEndSnapPoint) {
       // Calculate the new end time.
       end = endSnapPoint;
@@ -425,6 +418,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>>
     // Find the global position of the drop target widget.
     final renderObject = context.findRenderObject()! as RenderBox;
     final globalPosition = renderObject.localToGlobal(Offset.zero);
-    widgetPosition = globalPosition + Offset(0, scrollController.offset);
+    widgetPosition = globalPosition;
   }
 }

@@ -14,6 +14,7 @@ import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/gesture_detectors/day_gesture_detector.dart';
+import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 // TODO: document this.
 // Maybe give a broad overview of what this widget and how it works.
@@ -151,29 +152,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
         final content = LayoutBuilder(
           builder: (context, constraints) {
-            final pageHeight = constraints.maxHeight;
-            final pageWidth = constraints.maxWidth;
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
-
-            final dragTarget = DayDragTarget<T>(
-              eventsController: eventsController!,
-              calendarController: calendarController!,
-              viewController: viewController,
-              scrollController: viewController.scrollController,
-              callbacks: callbacks,
-              tileComponents: tileComponents,
-              bodyConfiguration: bodyConfiguration,
-              timeOfDayRange: timeOfDayRange,
-              pageWidth: pageWidth,
-              dayWidth: dayWidth,
-              viewPortHeight: pageHeight,
-              heightPerMinute: heightPerMinute,
-              leftPageTrigger: components?.leftTriggerBuilder,
-              rightPageTrigger: components?.rightTriggerBuilder,
-              topScrollTrigger: components?.topTriggerBuilder,
-              bottomScrollTrigger: components?.bottomTriggerBuilder,
-            );
-
             final pageView = PageView.builder(
               padEnds: false,
               key: ValueKey(viewConfiguration.hashCode),
@@ -206,8 +185,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final daySeparatorStyle = styles?.daySeparatorStyle;
-                final daySeparator = components?.daySeparator?.call(daySeparatorStyle) ??
-                    DaySeparator(style: daySeparatorStyle);
+                final daySeparator =
+                    components?.daySeparator?.call(daySeparatorStyle) ?? DaySeparator(style: daySeparatorStyle);
                 final daySeparators = List.generate(
                   numberOfDays + 1,
                   (index) {
@@ -265,35 +244,72 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
               },
             );
 
-            return Stack(
-              children: [
-                pageView,
-                Positioned.fill(child: dragTarget),
-              ],
+            return pageView;
+          },
+        );
+
+        final dragTarget = LayoutBuilder(
+          builder: (context, constraints) {
+            final pageHeight = constraints.maxHeight;
+            final pageWidth = constraints.maxWidth;
+            final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
+
+            return SizedBox(
+              height: pageHeight,
+              child: DayDragTarget<T>(
+                eventsController: eventsController!,
+                calendarController: calendarController!,
+                viewController: viewController,
+                scrollController: viewController.scrollController,
+                callbacks: callbacks,
+                tileComponents: tileComponents,
+                bodyConfiguration: bodyConfiguration,
+                timeOfDayRange: timeOfDayRange,
+                pageWidth: pageWidth,
+                dayWidth: dayWidth,
+                viewPortHeight: pageHeight,
+                heightPerMinute: heightPerMinute,
+                leftPageTrigger: components?.leftTriggerBuilder,
+                rightPageTrigger: components?.rightTriggerBuilder,
+                topScrollTrigger: components?.topTriggerBuilder,
+                bottomScrollTrigger: components?.bottomTriggerBuilder,
+              ),
             );
           },
         );
 
-        return Scrollbar(
-          controller: viewController.scrollController,
-          child: SingleChildScrollView(
-            controller: viewController.scrollController,
-            physics: configuration?.scrollPhysics,
-            child: SizedBox(
-              height: pageHeight,
-              child: Stack(
-                children: [
-                  Positioned.fill(child: hourLines),
-                  Row(
+        return Stack(
+          children: [
+            Scrollbar(
+              controller: viewController.scrollController,
+              child: SingleChildScrollView(
+                controller: viewController.scrollController,
+                physics: configuration?.scrollPhysics,
+                child: SizedBox(
+                  height: pageHeight,
+                  child: Stack(
                     children: [
-                      SizedBox(height: pageHeight, child: timeline),
-                      Expanded(child: content),
+                      Positioned.fill(child: hourLines),
+                      Row(
+                        children: [
+                          SizedBox(height: pageHeight, child: timeline),
+                          Expanded(child: content),
+                        ],
+                      ),
                     ],
                   ),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: Row(
+                children: [
+                  TimelineSizer<T>(child: const SizedBox()),
+                  Expanded(child: dragTarget),
                 ],
               ),
             ),
-          ),
+          ],
         );
       },
     );
