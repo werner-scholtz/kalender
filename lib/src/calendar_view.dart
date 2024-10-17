@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
-import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
@@ -17,7 +16,10 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [CalendarCallbacks] used by the [CalendarView]
   final CalendarCallbacks<T>? callbacks;
 
-  /// 
+  /// The components and styles used by the calendar.
+  ///
+  /// Components: [MultiDayComponents], [MonthComponents]
+  /// Styles: [MultiDayComponentStyles], [MonthComponentStyles]
   final CalendarComponents? components;
 
   /// The header widget that will be displayed above the body.
