@@ -46,8 +46,7 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   State<MultiDayDragTarget<T>> createState() => _MultiDayDragTargetState<T>();
 }
 
-class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>>
-    with DragTargetUtils {
+class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> with DragTargetUtils {
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get controller => widget.calendarController;
   ViewController<T> get viewController => controller.viewController!;
@@ -130,33 +129,39 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
   bool _onWillAcceptWithDetails(DragTargetDetails<Object> details) {
     final data = details.data;
+
+    // Update the widget position.
+    _updateWidgetPosition();
+
     if (data is CalendarEvent<T>) {
-      if (!widget.allowSingleDayEvents && !data.isMultiDayEvent) {
-        return false;
-      }
-
-      // Set the size of the feedback widget.
-      final feedBackWidth = dayWidth * data.datesSpanned.length;
-      feedbackWidgetSize.value = Size(
-        min(pageWidth, feedBackWidth),
-        tileHeight,
-      );
-
-      _updateWidgetPosition();
-
-      controller.selectEvent(data, internal: true);
-      return true;
+      return _handleCalendarEventAcceptance(data);
     } else if (data is ResizeEvent<T>) {
-      // Check that the resize direction is either top or bottom.
-      if (data.direction != ResizeDirection.left && data.direction != ResizeDirection.right) {
-        return false;
-      }
-
-      _updateWidgetPosition();
-      return true;
+      return _handleResizeEventAcceptance(data);
     } else {
       return false;
     }
+  }
+
+  /// Decide whether to accept the [CalendarEvent].
+  bool _handleCalendarEventAcceptance(CalendarEvent<T> event) {
+    if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
+
+    // Set the size of the feedback widget.
+    final feedBackWidth = dayWidth * event.datesSpanned.length;
+    feedbackWidgetSize.value = Size(
+      min(pageWidth, feedBackWidth),
+      tileHeight,
+    );
+
+    controller.selectEvent(event, internal: true);
+    return true;
+  }
+
+  /// Decide whether to accept the [ResizeEvent].
+  bool _handleResizeEventAcceptance(ResizeEvent<T> event) {
+    // Check that the resize direction is either top or bottom.
+    if (event.direction != ResizeDirection.left && event.direction != ResizeDirection.right) return false;
+    return true;
   }
 
   void _onMove(DragTargetDetails<Object> details) {
@@ -239,11 +244,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   }
 
   DateTime _calculateStartTime(DateTime start, DateTime date) {
-    return start.copyWith(
-      year: date.year,
-      month: date.month,
-      day: date.day,
-    );
+    return start.copyWith(year: date.year, month: date.month, day: date.day);
+  }
+
+  DateTime _calculateEndTime(DateTime start, DateTime date) {
+    return start.copyWith(year: date.year, month: date.month, day: date.day + 1);
   }
 
   CalendarEvent<T>? _rescheduleEvent(CalendarEvent<T> event, Offset offset) {
@@ -252,10 +257,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     if (date == null) return null;
 
     // Calculate the new dateTimeRange for the event.
-    final newStartTime = _calculateStartTime(
-      event.dateTimeRange.start,
-      date,
-    );
+    final newStartTime = _calculateStartTime(event.dateTimeRange.start, date);
     final duration = event.dateTimeRange.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
@@ -278,7 +280,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
       final newStartTime = _calculateStartTime(event.dateTimeRange.start, date);
       range = calculateDateTimeRangeFromStart(event.dateTimeRange, newStartTime);
     } else if (resizeEvent.direction == ResizeDirection.right) {
-      final newEndTime = _calculateStartTime(event.dateTimeRange.end, date);
+      final newEndTime = _calculateEndTime(event.dateTimeRange.end, date);
       range = calculateDateTimeRangeFromEnd(event.dateTimeRange, newEndTime);
     } else {
       throw Exception('Invalid resize direction.');
