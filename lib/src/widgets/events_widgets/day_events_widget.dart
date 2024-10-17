@@ -137,20 +137,27 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
             if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
             if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
-            final events = visibleEvents.toList()
-              ..removeWhere((e) => e.id == widget.controller.selectedEventId)
-              ..add(event);
+            final events = visibleEvents.toList();
+
+            // Find the index of the selected event.
+            final index = visibleEvents.indexWhere((e) => e.id == widget.controller.selectedEventId);
+            if (index != -1) {
+              // If it exists override it with the selectedEvent.
+              events[index] = event;
+            } else {
+              // Else add it at the start of the list.
+              events.insert(0, event);
+            }
 
             final dropTarget = widget.tileComponents.dropTargetTile;
 
             return CustomMultiChildLayout(
-              delegate:
-                  layoutStrategy.call(events, date, widget.timeOfDayRange, widget.heightPerMinute),
+              delegate: layoutStrategy.call(events, date, widget.timeOfDayRange, widget.heightPerMinute),
               children: events.indexed.map(
                 (item) {
                   final event = item.$2;
-                  final drawTile = dropTarget != null &&
-                      (event.id == -1 || event.id == widget.controller.selectedEventId);
+                  final drawTile =
+                      dropTarget != null && (event.id == -1 || event.id == widget.controller.selectedEventId);
 
                   return LayoutId(
                     id: item.$1,
