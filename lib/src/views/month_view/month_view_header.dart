@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/components/event_groups/multi_day_event_group_widget.dart';
 import 'package:kalender/src/components/general/material_header/material_header.dart';
+import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration_export.dart';
 import 'package:kalender/src/providers/calendar_scope.dart';
 import 'package:kalender/src/providers/calendar_style.dart';
@@ -33,7 +35,7 @@ class MonthViewHeader<T> extends StatelessWidget {
               ...List<Widget>.generate(
                 7,
                 (index) => components.monthHeaderBuilder(
-                  value.start.add(Duration(days: index)),
+                  value.start.addDays(index),
                 ),
               ),
             ],
