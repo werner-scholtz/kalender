@@ -2,12 +2,12 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 class MonthComponents {
-  final MonthBodyComponents bodyComponents;
-  final MonthHeaderComponents headerComponents;
+  final MonthBodyComponents? bodyComponents;
+  final MonthHeaderComponents? headerComponents;
 
   MonthComponents({
-    required this.bodyComponents,
-    required this.headerComponents,
+    this.bodyComponents,
+    this.headerComponents,
   });
 }
 

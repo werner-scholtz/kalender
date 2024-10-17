@@ -95,7 +95,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final components = calendarComponents?.multiDayComponents?.components;
+    final components = calendarComponents?.multiDayComponents?.bodyComponents;
 
     // Override the height per minute if it is provided.
     if (heightPerMinute != null) {

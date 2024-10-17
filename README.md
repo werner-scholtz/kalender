@@ -114,78 +114,78 @@ TileComponents(
 
 ### General Components
 
-The general components are split into `Header` and `Body` components.  
+The CalendarView takes a components object.
 
-Both of these parts have their own `Components` and `ComponentStyles` for every type of `ViewConfiguration`, along with a `TileComponents` for the views that can display tiles.
+- For every type of `ViewConfiguration` there are `Header` and `Body` components which can be customized.
 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
 
-### Header Components
-
 ```dart
-CalendarHeader(
-  multiDayHeaderComponents: MultiDayHeaderComponents(
-    // Custom Day Header builder.
-    dayHeaderBuilder: (date, style) => CustomWidget(),
+CalendarView(
+  eventsController: eventsController,
+  calendarController: calendarController,
+  viewConfiguration: viewConfiguration,
+  components: CalendarComponents(
+    monthComponents: MonthComponents(
+      headerComponents: MonthHeaderComponents(
+        // Custom day header builder.
+        weekDayHeaderBuilder: (date, style) => SizedBox(),
+      ),
+      bodyComponents: MonthBodyComponents(
+        // Custom grid builder.
+        monthGridBuilder: (style) => SizedBox(),
+        
+        // Custom left trigger. (Must constrain the width)
+        leftTriggerBuilder: (pageWidth) => SizedBox(),
+        
+        // Custom right trigger. (Must constrain the width)
+        rightTriggerBuilder: (pageWidth) => SizedBox(),
+      ),
+    ),
+    multiDayComponents: MultiDayComponents(
+      headerComponents: MultiDayHeaderComponents(
+        // Custom Day Header builder.
+        dayHeaderBuilder: (date, style) => CustomWidget(),
 
-    // Custom Week Number builder.
-    weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
+        // Custom Week Number builder.
+        weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
 
-    // Custom left trigger. (Must constrain the width)
-    leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        // Custom left trigger. (Must constrain the width)
+        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
 
-    /// Custom right trigger. (Must constrain the width)
-    rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-  ),
-  multiDayHeaderComponentStyles: MultiDayHeaderComponentStyles(
-    dayHeaderStyle: DayHeaderStyle(),
-    weekNumberStyle: WeekNumberStyle(),
+        // Custom right trigger. (Must constrain the width)
+        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+      ),
+      bodyComponents: MultiDayBodyComponents(
+        // Custom Hour Line builder.
+        hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+
+        // Custom time line builder.
+        timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+
+        // Custom day separator builder.
+        daySeparator: (style) => CustomWidget(),
+
+        // Custom event indicator builder.
+        timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
+
+        // Left trigger. (Must constrain the width)
+        leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+
+        // Right trigger. (Must constrain the width)
+        rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+
+        // Top trigger. (Must constrain the height)
+        topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+
+        // Bottom trigger. (Must constrain the height)
+        bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+      ),
+    ),
   ),
 );
-```  
-
-### Body Components
-
-```dart
-CalendarBody(
-  multiDayBodyComponents: MultiDayBodyComponents(
-    // Custom Hour Line builder.
-    hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
-    
-    // Custom time line builder.
-    timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
-    
-    // Custom day separator builder.
-    daySeparator: (style) => CustomWidget(),
-    
-    // Custom event indicator builder.
-    timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
-    
-    // Left trigger. (Must constrain the width)
-    leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
-    
-    // Right trigger. (Must constrain the width)
-    rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
-    
-    // Top trigger. (Must constrain the height)
-    topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-
-    // Bottom trigger. (Must constrain the height)
-    bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-  ),
-  monthBodyComponents: MonthBodyComponents(
-    // Custom month grid builder.
-    monthGridBuilder: (style) => CustomWidget(),  
-
-    // Left trigger. (Must constrain the width)
-    leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-
-    // Right trigger. (Must constrain the width)
-    rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-  ),
-);
-```  
+```
 
 ## Customizing the behavior
 
@@ -248,6 +248,7 @@ Some behaviors that can be customized:
   ```dart
   CalendarBody(
     multiDayBodyConfiguration: MultiDayBodyConfiguration(),
+    monthBodyConfiguration: MultiDayHeaderConfiguration(), // The MonthBody makes use the MultiDayHeaderConfiguration
   );
   ```
 

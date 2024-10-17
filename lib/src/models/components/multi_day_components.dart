@@ -4,10 +4,10 @@ import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
 class MultiDayComponents {
   final MultiDayHeaderComponents? headerComponents;
-  final MultiDayBodyComponents? components;
+  final MultiDayBodyComponents? bodyComponents;
 
   MultiDayComponents({
-    this.components,
+    this.bodyComponents,
     this.headerComponents,
   });
 }

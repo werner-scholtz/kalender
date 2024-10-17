@@ -16,6 +16,7 @@ export 'package:kalender/src/widgets/month/month_body.dart';
 export 'package:kalender/src/widgets/month/month_header.dart';
 
 /// Widgets - Components
+export 'package:kalender/src/models/components/components.dart';
 export 'package:kalender/src/widgets/components/day_header.dart';
 export 'package:kalender/src/widgets/components/day_separator.dart';
 export 'package:kalender/src/widgets/components/hour_lines.dart';

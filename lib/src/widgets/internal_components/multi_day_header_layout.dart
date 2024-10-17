@@ -22,7 +22,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     final provider = CalendarProvider.of<T>(context);
     final calendarComponents = provider.components;
     final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final bodyComponents = calendarComponents?.multiDayComponents?.components;
+    final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents;
     final timelineStyle = bodyStyles?.timelineStyle;
     const heightPerMinute = 1.0;
     final timeOfDayRange = TimeOfDayRange.allDay();

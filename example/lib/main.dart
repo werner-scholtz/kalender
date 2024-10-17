@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final eventsController = EventsController();
 
   /// Create [CalendarController]
-  final controller = CalendarController();
+  final calendarController = CalendarController();
 
   final displayRange = DateTimeRange(
     start: DateTime.now().subtractDays(363),
@@ -101,10 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
         child: CalendarView(
           eventsController: eventsController,
-          calendarController: controller,
+          calendarController: calendarController,
           viewConfiguration: viewConfiguration,
           callbacks: CalendarCallbacks(
-            onEventTapped: (event, renderBox) => controller.selectEvent(event),
+            onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
             onEventCreate: (event) => event,
             onEventCreated: (event) => eventsController.addEvent(event),
           ),
@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               children: [
                 NavigationHeader(
-                  controller: controller,
+                  controller: calendarController,
                   viewConfigurations: viewConfigurations,
                   selected: viewConfiguration,
                   onSelected: (config) => setState(() => viewConfiguration = config),
@@ -132,8 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: tileComponents,
             multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-                // eventLayoutStrategy: sideBySideLayoutStrategy,
-                showMultiDayEvents: false),
+              showMultiDayEvents: false,
+            ),
+            monthBodyConfiguration: MultiDayHeaderConfiguration(),
           ),
         ),
       ),
