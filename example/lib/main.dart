@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Container(
           decoration: BoxDecoration(color: color, borderRadius: radius),
           padding: const EdgeInsets.all(4),
-          child:  Text(event.data?.title ?? ""),
+          child: Text(event.data?.title ?? ""),
         );
       },
       dropTargetTile: _dropTargetTile,
@@ -155,29 +155,16 @@ class _MyHomePageState extends State<MyHomePage> {
       duration: const Duration(milliseconds: 250),
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
-      decoration: BoxDecoration(
-        color: color.withAlpha(100),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
     );
   }
 
   Widget _tileWhenDraggingBuilder(CalendarEvent event) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color.withAlpha(50),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
+    return Container(decoration: BoxDecoration(color: color.withAlpha(50), borderRadius: radius));
   }
 
   Widget _dropTargetTile(CalendarEvent event) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: color, width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
+    return DecoratedBox(decoration: BoxDecoration(border: Border.all(color: color, width: 2), borderRadius: radius));
   }
 
   Widget _calendarToolbar() {
@@ -195,9 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     final month = value.start.monthNameEnglish;
                     return FilledButton.tonal(
                       onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(160, kMinInteractiveDimension),
-                      ),
+                      style: FilledButton.styleFrom(minimumSize: const Size(160, kMinInteractiveDimension)),
                       child: Text('$month $year'),
                     );
                   },
