@@ -16,10 +16,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kalender Example',
       themeMode: ThemeMode.light,
-      theme: ThemeData(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        cardTheme: const CardTheme(
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        ),
+      ),
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+        cardTheme: const CardTheme(
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -109,15 +120,15 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 _calendarToolbar(),
                 CalendarHeader<Event>(
-                  multiDayTileComponents: tileComponents,
+                  multiDayTileComponents: tileComponents(body: false),
                   multiDayHeaderComponents: const MultiDayHeaderComponents(),
                 ),
               ],
             ),
           ),
           body: CalendarBody<Event>(
-            multiDayTileComponents: tileComponents,
-            monthTileComponents: tileComponents,
+            multiDayTileComponents: tileComponents(),
+            monthTileComponents: tileComponents(),
             multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
               showMultiDayEvents: false,
@@ -130,14 +141,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Color get color => Theme.of(context).colorScheme.primaryContainer;
-  BorderRadius get radius => BorderRadius.circular(4);
+  BorderRadius get radius => BorderRadius.circular(8);
 
-  TileComponents<Event> get tileComponents {
+  TileComponents<Event> tileComponents({bool body = true}) {
     return TileComponents<Event>(
       tileBuilder: (event, tileRange) {
-        return Container(
-          decoration: BoxDecoration(color: color, borderRadius: radius),
-          padding: const EdgeInsets.all(4),
+        return Card(
+          margin: body ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 1),
+          color: color,
           child: Text(event.data?.title ?? ""),
         );
       },
@@ -160,11 +171,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _tileWhenDraggingBuilder(CalendarEvent event) {
-    return Container(decoration: BoxDecoration(color: color.withAlpha(50), borderRadius: radius));
+    return Container(decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius));
   }
 
   Widget _dropTargetTile(CalendarEvent event) {
-    return DecoratedBox(decoration: BoxDecoration(border: Border.all(color: color, width: 2), borderRadius: radius));
+    return DecoratedBox(decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2), borderRadius: radius));
   }
 
   Widget _calendarToolbar() {
