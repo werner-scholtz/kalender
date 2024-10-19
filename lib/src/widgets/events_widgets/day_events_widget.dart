@@ -173,8 +173,8 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Positioned.fill(child: dropTargetWidget),
               Positioned.fill(child: events),
+              Positioned.fill(child: dropTargetWidget),
             ],
           ),
         );
