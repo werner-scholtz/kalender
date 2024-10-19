@@ -11,8 +11,7 @@ import 'package:kalender/src/calendar_view.dart';
 /// The [CalendarView] attaches itself to the [CalendarController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
-class CalendarController<T extends Object?> extends ChangeNotifier
-    with CalendarNavigationFunctions<T> {
+class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T> {
   CalendarController({DateTime? initialDate}) : initialDate = initialDate ?? DateTime.now();
 
   late final DateTime initialDate;
@@ -36,7 +35,8 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   int? get selectedEventId => _selectedEventId;
 
   /// This is used to determine if focus on the event is coming from within the package or from outside.
-  bool internalFocus = false;
+  bool _internalFocus = false;
+  bool get internalFocus => _internalFocus;
 
   /// Place focus on an event.
   ///
@@ -45,18 +45,18 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
     selectedEvent.value = event;
     _selectedEventId = event.id;
-    internalFocus = internal;
+    _internalFocus = internal;
   }
 
   void updateEvent(CalendarEvent<T> event, {bool internal = false}) {
     selectedEvent.value = event;
-    internalFocus = internal;
+    _internalFocus = internal;
   }
 
   /// Deselect the event.
   void deselectEvent() {
     selectedEvent.value = null;
-    internalFocus = false;
+    _internalFocus = false;
     _selectedEventId = null;
   }
 
@@ -130,7 +130,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     Duration? duration,
     Curve? curve,
   }) async {
-    await viewController?.animateToDate(
+    return viewController?.animateToDate(
       date,
       duration: duration,
       curve: curve,
@@ -152,7 +152,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    await viewController?.animateToDateTime(
+    return viewController?.animateToDateTime(
       date,
       pageDuration: pageDuration,
       pageCurve: pageCurve,
@@ -176,8 +176,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    
-    await viewController?.animateToEvent(
+    return viewController?.animateToEvent(
       event,
       centerEvent: centerEvent,
     );

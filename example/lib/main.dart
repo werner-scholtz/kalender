@@ -16,29 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kalender Example',
       themeMode: ThemeMode.light,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.dark,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
       ),
       home: const MyHomePage(),
     );
   }
-}
-
-class Event {
-  final String title;
-  final Color? color;
-
-  Event(this.title, this.color);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -49,17 +34,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  /// Create [EventsController]
-  final eventsController = EventsController();
+  /// Create [EventsController], this is used to add and remove events.
+  final eventsController = EventsController<Event>();
 
-  /// Create [CalendarController]
-  final calendarController = CalendarController();
+  /// Create [CalendarController],
+  /// This is used to control a calendar view with functions such as:
+  /// - [CalendarController.animateToDate]
+  /// - [CalendarController.animateToDateTime]
+  /// - [CalendarController.animateToEvent]
+  ///
+  /// It can also be used to listen to changes in the calendar view such as:
+  /// - [CalendarController.visibleEvents]
+  /// - [CalendarController.selectedEvent]
+  /// - [CalendarController.visibleDateTimeRange]
+  ///
+  final calendarController = CalendarController<Event>();
 
-  final displayRange = DateTimeRange(
-    start: DateTime.now().subtractDays(363),
-    end: DateTime.now().addDays(365),
-  );
-  late ViewConfiguration viewConfiguration = viewConfigurations[0];
+  final now = DateTime.now();
+  late final displayRange = DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
@@ -68,6 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
     MonthViewConfiguration.singleMonth(),
     MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
+
+  late ViewConfiguration viewConfiguration = viewConfigurations[0];
 
   @override
   void initState() {
@@ -98,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CalendarView(
+        child: CalendarView<Event>(
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: viewConfiguration,
@@ -113,20 +107,15 @@ class _MyHomePageState extends State<MyHomePage> {
             elevation: 2,
             child: Column(
               children: [
-                NavigationHeader(
-                  controller: calendarController,
-                  viewConfigurations: viewConfigurations,
-                  selected: viewConfiguration,
-                  onSelected: (config) => setState(() => viewConfiguration = config),
-                ),
-                CalendarHeader(
-                  multiDayTileComponents: multiDayTileComponents,
+                _calendarToolbar(),
+                CalendarHeader<Event>(
+                  multiDayTileComponents: tileComponents,
                   multiDayHeaderComponents: const MultiDayHeaderComponents(),
                 ),
               ],
             ),
           ),
-          body: CalendarBody(
+          body: CalendarBody<Event>(
             multiDayTileComponents: tileComponents,
             monthTileComponents: tileComponents,
             multiDayBodyComponents: const MultiDayBodyComponents(),
@@ -140,36 +129,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  TileComponents get tileComponents {
-    return TileComponents(
+  Color get color => Theme.of(context).colorScheme.primaryContainer;
+  BorderRadius get radius => BorderRadius.circular(4);
+
+  TileComponents<Event> get tileComponents {
+    return TileComponents<Event>(
       tileBuilder: (event, tileRange) {
         return Container(
-          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Text('data'),
-        );
-      },
-      dropTargetTile: _dropTargetTile,
-      feedbackTileBuilder: _feedbackTileBuilder,
-      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-  }
-
-  TileComponents get multiDayTileComponents {
-    return TileComponents(
-      tileBuilder: (event, tileRange) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Text('data'),
+          decoration: BoxDecoration(color: color, borderRadius: radius),
+          padding: const EdgeInsets.all(4),
+          child:  Text(event.data?.title ?? ""),
         );
       },
       dropTargetTile: _dropTargetTile,
@@ -187,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(
-        color: Colors.green.withAlpha(150),
+        color: color.withAlpha(100),
         borderRadius: BorderRadius.circular(8),
       ),
     );
@@ -196,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _tileWhenDraggingBuilder(CalendarEvent event) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green.withAlpha(20),
+        color: color.withAlpha(50),
         borderRadius: BorderRadius.circular(8),
       ),
     );
@@ -205,28 +174,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _dropTargetTile(CalendarEvent event) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.green, width: 2),
+        border: Border.all(color: color, width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
     );
   }
-}
 
-class NavigationHeader extends StatelessWidget {
-  final CalendarController controller;
-  final List<ViewConfiguration> viewConfigurations;
-  final ViewConfiguration selected;
-  final void Function(ViewConfiguration config) onSelected;
-  const NavigationHeader({
-    required this.controller,
-    required this.viewConfigurations,
-    required this.onSelected,
-    super.key,
-    required this.selected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _calendarToolbar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -235,11 +189,10 @@ class NavigationHeader extends StatelessWidget {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: controller.visibleDateTimeRange,
+                  valueListenable: calendarController.visibleDateTimeRange,
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;
-
                     return FilledButton.tonal(
                       onPressed: () {},
                       style: FilledButton.styleFrom(
@@ -254,28 +207,35 @@ class NavigationHeader extends StatelessWidget {
           ),
           if (!Platform.isAndroid && !Platform.isIOS)
             IconButton.filledTonal(
-              onPressed: () => controller.animateToPreviousPage(),
+              onPressed: () => calendarController.animateToPreviousPage(),
               icon: const Icon(Icons.chevron_left),
             ),
           if (!Platform.isAndroid && !Platform.isIOS)
             IconButton.filledTonal(
-              onPressed: () => controller.animateToNextPage(),
+              onPressed: () => calendarController.animateToNextPage(),
               icon: const Icon(Icons.chevron_right),
             ),
           IconButton.filledTonal(
-            onPressed: () => controller.animateToDate(DateTime.now()),
+            onPressed: () => calendarController.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
           DropdownMenu(
             dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-            initialSelection: selected,
+            initialSelection: viewConfiguration,
             onSelected: (value) {
               if (value == null) return;
-              onSelected(value);
+              setState(() => viewConfiguration = value);
             },
           ),
         ],
       ),
     );
   }
+}
+
+class Event {
+  final String title;
+  final Color? color;
+
+  Event(this.title, this.color);
 }
