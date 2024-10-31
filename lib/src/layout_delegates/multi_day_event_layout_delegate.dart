@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// Signature for the strategy that determines how multi-day events are layed out.
 typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(

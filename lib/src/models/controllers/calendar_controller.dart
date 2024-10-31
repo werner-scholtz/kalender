@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/calendar_view.dart';
+import 'package:kalender/src/models/mixins/new_event.dart';
 
 /// The [CalendarController] is used to controller a single [CalendarView].
 /// It provides some useful functions for navigating the [CalendarView].
@@ -11,8 +12,13 @@ import 'package:kalender/src/calendar_view.dart';
 /// The [CalendarView] attaches itself to the [CalendarController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
-class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T> {
-  CalendarController({DateTime? initialDate}) : initialDate = initialDate ?? DateTime.now();
+class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
+  CalendarController({DateTime? initialDate})
+      : initialDate = initialDate ?? DateTime.now(),
+        id = DateTime.now().millisecondsSinceEpoch;
+
+  /// This controllers id.
+  final int id;
 
   late final DateTime initialDate;
 

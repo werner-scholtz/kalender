@@ -103,37 +103,40 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CalendarView<Event>(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: viewConfiguration,
-          callbacks: CalendarCallbacks(
-            onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-            onEventCreate: (event) => event,
-            onEventCreated: (event) => eventsController.addEvent(event),
-          ),
-          header: Material(
-            color: Theme.of(context).colorScheme.surface,
-            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-            elevation: 2,
-            child: Column(
-              children: [
-                _calendarToolbar(),
-                CalendarHeader<Event>(
-                  multiDayTileComponents: tileComponents(body: false),
-                  multiDayHeaderComponents: const MultiDayHeaderComponents(),
-                ),
-              ],
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: CalendarView<Event>(
+            eventsController: eventsController,
+            calendarController: calendarController,
+            viewConfiguration: viewConfiguration,
+            callbacks: CalendarCallbacks<Event>(
+              onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+              onEventCreate: (event) => event,
+              onEventCreated: (event) => eventsController.addEvent(event),
             ),
-          ),
-          body: CalendarBody<Event>(
-            multiDayTileComponents: tileComponents(),
-            monthTileComponents: tileComponents(),
-            multiDayBodyComponents: const MultiDayBodyComponents(),
-            multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              showMultiDayEvents: false,
+            header: Material(
+              color: Theme.of(context).colorScheme.surface,
+              surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+              elevation: 2,
+              child: Column(
+                children: [
+                  _calendarToolbar(),
+                  CalendarHeader<Event>(
+                    multiDayTileComponents: tileComponents(body: false),
+                    multiDayHeaderComponents: const MultiDayHeaderComponents(),
+                  ),
+                ],
+              ),
             ),
-            monthBodyConfiguration: MultiDayHeaderConfiguration(),
+            body: CalendarBody<Event>(
+              multiDayTileComponents: tileComponents(),
+              monthTileComponents: tileComponents(),
+              multiDayBodyComponents: const MultiDayBodyComponents(),
+              multiDayBodyConfiguration: MultiDayBodyConfiguration(
+                showMultiDayEvents: false,
+              ),
+              monthBodyConfiguration: MultiDayHeaderConfiguration(),
+            ),
           ),
         ),
       ),
@@ -158,6 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
       dragAnchorStrategy: pointerDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
+
     );
   }
 
@@ -175,7 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _dropTargetTile(CalendarEvent event) {
-    return DecoratedBox(decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2), borderRadius: radius));
+    return DecoratedBox(
+        decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+            borderRadius: radius));
   }
 
   Widget _calendarToolbar() {
@@ -215,13 +222,16 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => calendarController.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
-          DropdownMenu(
-            dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-            initialSelection: viewConfiguration,
-            onSelected: (value) {
-              if (value == null) return;
-              setState(() => viewConfiguration = value);
-            },
+          SizedBox(
+            width: 120,
+            child: DropdownMenu(
+              dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+              initialSelection: viewConfiguration,
+              onSelected: (value) {
+                if (value == null) return;
+                setState(() => viewConfiguration = value);
+              },
+            ),
           ),
         ],
       ),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
-import 'package:kalender/src/models/resize_event.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
 
@@ -46,34 +45,51 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   State<MultiDayDragTarget<T>> createState() => _MultiDayDragTargetState<T>();
 }
 
-class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> with DragTargetUtils {
+class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> with DragTargetUtilities<T> {
+  @override
   EventsController<T> get eventsController => widget.eventsController;
+  @override
   CalendarController<T> get controller => widget.calendarController;
-  ViewController<T> get viewController => controller.viewController!;
+  @override
+  double get dayWidth => widget.dayWidth;
+  @override
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  @override
+  List<DateTime> get visibleDates => visibleDateTimeRange.days;
+  @override
+  bool get multiDayDragTarget => true;
+
+  ViewController<T> get viewController => controller.viewController!;
   TileComponents<T> get tileComponents => widget.tileComponents;
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
-  List<DateTime> get visibleDates => visibleDateTimeRange.days;
   PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
 
-  ValueNotifier<Size> get feedbackWidgetSize {
-    return eventsController.feedbackWidgetSize;
-  }
+  ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
-  double get dayWidth => widget.dayWidth;
   double get pageWidth => widget.pageWidth;
   double get tileHeight => widget.tileHeight;
-
-  /// The position of the widget.
-  Offset? widgetPosition;
 
   @override
   Widget build(BuildContext context) {
     return DragTarget(
-      onWillAcceptWithDetails: _onWillAcceptWithDetails,
-      onMove: _onMove,
-      onAcceptWithDetails: _onAcceptWithDetails,
-      onLeave: _onLeave,
+      onWillAcceptWithDetails: (details) {
+        return onWillAcceptWithDetails(
+          details,
+          onResize: (event, direction) => direction.horizontal,
+          onReschedule: (event) {
+            if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
+
+            // Set the size of the feedback widget.
+            feedbackWidgetSize.value = Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
+
+            controller.selectEvent(event, internal: true);
+            return true;
+          },
+        );
+      },
+      onMove: onMove,
+      onAcceptWithDetails: onAcceptWithDetails,
+      onLeave: onLeave,
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
@@ -127,137 +143,28 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     );
   }
 
-  bool _onWillAcceptWithDetails(DragTargetDetails<Object> details) {
-    final data = details.data;
-
-    // Update the widget position.
-    _updateWidgetPosition();
-
-    if (data is CalendarEvent<T>) {
-      return _handleCalendarEventAcceptance(data);
-    } else if (data is ResizeEvent<T>) {
-      return _handleResizeEventAcceptance(data);
-    } else {
-      return false;
-    }
-  }
-
-  /// Decide whether to accept the [CalendarEvent].
-  bool _handleCalendarEventAcceptance(CalendarEvent<T> event) {
-    if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
-
-    // Set the size of the feedback widget.
-    final feedBackWidth = dayWidth * event.datesSpanned.length;
-    feedbackWidgetSize.value = Size(
-      min(pageWidth, feedBackWidth),
-      tileHeight,
-    );
-
-    controller.selectEvent(event, internal: true);
-    return true;
-  }
-
-  /// Decide whether to accept the [ResizeEvent].
-  bool _handleResizeEventAcceptance(ResizeEvent<T> event) {
-    // Check that the resize direction is either top or bottom.
-    if (event.direction != ResizeDirection.left && event.direction != ResizeDirection.right) return false;
-    return true;
-  }
-
-  void _onMove(DragTargetDetails<Object> details) {
-    final data = details.data;
-    if (data is CalendarEvent<T>) {
-      final updatedEvent = _rescheduleEvent(data, details.offset);
-      if (updatedEvent == null) return;
-
-      controller.updateEvent(updatedEvent, internal: true);
-    } else if (data is ResizeEvent<T>) {
-      final updatedEvent = _resizeEvent(data, details.offset);
-      if (updatedEvent == null) return;
-      controller.updateEvent(updatedEvent, internal: true);
-    }
-  }
-
-  void _onAcceptWithDetails(DragTargetDetails<Object> details) {
-    final data = details.data;
-    CalendarEvent<T>? updatedEvent;
-    CalendarEvent<T>? originalEvent;
-
-    if (data is CalendarEvent<T>) {
-      originalEvent = data;
-      updatedEvent = _rescheduleEvent(data, details.offset);
-    } else if (data is ResizeEvent<T>) {
-      originalEvent = data.event;
-      updatedEvent = _resizeEvent(data, details.offset);
-    }
-
-    if (updatedEvent == null || originalEvent == null) return;
-
-    // Update the event in the events controller.
-    eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-
-    eventsController.feedbackWidgetSize.value = Size.zero;
-    widgetPosition = null;
-    controller.deselectEvent();
-
-    callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
-  }
-
-  void _onLeave(Object? data) {
-    widgetPosition = null;
-    controller.deselectEvent();
-  }
-
-  void _updateWidgetPosition() {
-    // Find the global position of the drop target widget.
-    final renderObject = context.findRenderObject()! as RenderBox;
-    final globalPosition = renderObject.localToGlobal(Offset.zero);
-    widgetPosition = globalPosition;
-  }
-
-  /// Calculate the relative cursor position.
-  Offset? _calculateRelativeCursorPosition(Offset cursorPosition) {
-    if (widgetPosition == null) return null;
-
-    // Calculate the widget offset.
-    final feedbackWidgetOffset = Offset(dayWidth / 2, 0);
-
-    // Calculate the position of the cursor relative to the current widget.
-    final relativeCursorPosition = cursorPosition + feedbackWidgetOffset - widgetPosition!;
-
-    return relativeCursorPosition;
-  }
-
-  /// Calculate the date of the cursor.
-  DateTime? _calculateCursorDate(Offset offset) {
+  @override
+  DateTime? calculateCursorDateTime(
+    Offset offset, {
+    Offset feedbackWidgetOffset = Offset.zero,
+  }) {
     // Calculate the relative cursor position.
-    final cursorPosition = _calculateRelativeCursorPosition(offset);
-    if (cursorPosition == null) return null;
+    final localCursorPosition = calculateLocalCursorPosition(offset);
+    if (localCursorPosition == null) return null;
 
-    // Calculate the date of the cursor.
-    final cursorDate = (cursorPosition.dx / dayWidth);
-    final cursorDateIndex = cursorDate.floor();
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).round();
     if (cursorDateIndex < 0) return null;
-    final date = visibleDates.elementAtOrNull(cursorDateIndex);
+    final date = cursorDateIndex > visibleDates.length
+        ? visibleDates.elementAt(visibleDates.length - 1).endOfDay
+        : visibleDates.elementAtOrNull(cursorDateIndex);
 
     return date?.asLocal();
   }
 
-  DateTime _calculateStartTime(DateTime start, DateTime date) {
-    return start.copyWith(year: date.year, month: date.month, day: date.day);
-  }
-
-  DateTime _calculateEndTime(DateTime start, DateTime date) {
-    return start.copyWith(year: date.year, month: date.month, day: date.day + 1);
-  }
-
-  CalendarEvent<T>? _rescheduleEvent(CalendarEvent<T> event, Offset offset) {
-    // Calculate the date of the cursor.
-    final date = _calculateCursorDate(offset);
-    if (date == null) return null;
-
+  @override
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final newStartTime = _calculateStartTime(event.dateTimeRange.start, date);
+    final newStartTime = cursorDateTime;
     final duration = event.dateTimeRange.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
@@ -268,24 +175,34 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     return updatedEvent;
   }
 
-  CalendarEvent<T>? _resizeEvent(ResizeEvent<T> resizeEvent, Offset offset) {
-    // Calculate the date of the cursor.
-    final date = _calculateCursorDate(offset);
-    if (date == null) return null;
+  @override
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+    final range = switch (direction) {
+      // TODO: fix this so it works correctly
+      ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
+      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),
+      _ => null
+    };
+    if (range == null) return null;
 
-    final event = resizeEvent.event;
+    return event.copyWith(dateTimeRange: range.asLocal);
+  }
 
-    DateTimeRange range;
-    if (resizeEvent.direction == ResizeDirection.left) {
-      final newStartTime = _calculateStartTime(event.dateTimeRange.start, date);
-      range = calculateDateTimeRangeFromStart(event.dateTimeRange, newStartTime);
-    } else if (resizeEvent.direction == ResizeDirection.right) {
-      final newEndTime = _calculateEndTime(event.dateTimeRange.end, date);
-      range = calculateDateTimeRangeFromEnd(event.dateTimeRange, newEndTime);
-    } else {
-      throw Exception('Invalid resize direction.');
+  @override
+  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+    final event = super.createEvent(cursorDateTime);
+    if (event == null) return null;
+
+    var range = newEvent!.dateTimeRange;
+
+    print(range);
+    if (cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) {
+    } else if (cursorDateTime.isAfter(range.start)) {
+      range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
+    } else if (cursorDateTime.isBefore(range.start)) {
+      range = DateTimeRange(start: cursorDateTime, end: range.start.startOfDay);
     }
 
-    return resizeEvent.event.copyWith(dateTimeRange: range.asLocal);
+    return event.copyWith(dateTimeRange: range.asLocal);
   }
 }

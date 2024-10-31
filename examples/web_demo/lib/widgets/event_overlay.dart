@@ -50,7 +50,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
-                      event.data!.title,
+                      event.data?.title ?? "err", 
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),

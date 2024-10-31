@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 mixin CalendarNavigationFunctions<T> {
   /// Jump to the given [DateTime].

@@ -5,7 +5,7 @@ import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
-import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detector.dart';
+import 'package:kalender/src/widgets/gesture_detectors/multi_day_draggable.dart';
 
 // TODO: document this.
 // Maybe give a broad overview of what this widget does.
@@ -137,7 +137,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   rightPageTrigger: components?.rightTriggerBuilder,
                 );
 
-                final gestureDetector = MultiDayGestureDetector(
+                final draggable = NewMultiDayEventDraggableWidgets<T>(
                   eventsController: eventsController,
                   controller: calendarController,
                   callbacks: callbacks,
@@ -164,7 +164,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                           child: Stack(
                             fit: StackFit.loose,
                             children: [
-                              Positioned.fill(child: gestureDetector),
+                              Positioned.fill(child: draggable),
                               ConstrainedBox(
                                 constraints: BoxConstraints(minHeight: weekHeight - 32),
                                 child: multiDayEvents,

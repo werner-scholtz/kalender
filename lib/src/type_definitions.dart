@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';

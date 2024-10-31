@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
-import 'package:kalender/src/widgets/gesture_detectors/multi_day_gesture_detector.dart';
+import 'package:kalender/src/widgets/gesture_detectors/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 
@@ -210,19 +210,19 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               rightPageTrigger: components?.rightTriggerBuilder,
             );
 
-            final gestureDetector = MultiDayGestureDetector<T>(
-              visibleDateTimeRange: visibleRange,
+            final draggable = NewMultiDayEventDraggableWidgets<T>(
               eventsController: eventsController,
               controller: calendarController,
               callbacks: callbacks,
+              visibleDateTimeRange: visibleRange,
               createEventTrigger: configuration.createEventTrigger,
-              allowEventCreation: configuration.allowEventCreation,
               dayWidth: pageWidth,
+              allowEventCreation: configuration.allowEventCreation,
             );
 
             return Stack(
               children: [
-                Positioned.fill(child: gestureDetector),
+                Positioned.fill(child: draggable),
                 ConstrainedBox(constraints: constraints, child: multiDayEvents),
                 Positioned.fill(child: multiDayDragTarget),
               ],
@@ -297,7 +297,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               index,
             );
             final visibleDates = visibleRange.days;
-        
+
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
               final dayHeader = components?.dayHeaderBuilder?.call(
@@ -308,13 +308,13 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                     date: date,
                     style: dayHeaderStyle,
                   );
-        
+
               return SizedBox(
                 width: dayWidth,
                 child: dayHeader,
               );
             }).toList();
-        
+
             final multiDayEvents = MultiDayEventWidget<T>(
               controller: calendarController,
               eventsController: eventsController,
@@ -328,7 +328,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: tileHeight,
               layoutStrategy: configuration.eventLayoutStrategy,
             );
-        
+
             final multiDayDragTarget = MultiDayDragTarget<T>(
               calendarController: calendarController,
               eventsController: eventsController,
@@ -343,29 +343,29 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               leftPageTrigger: components?.leftTriggerBuilder,
               rightPageTrigger: components?.rightTriggerBuilder,
             );
-        
-            final gestureDetector = MultiDayGestureDetector<T>(
-              visibleDateTimeRange: visibleRange,
+
+            final draggable = NewMultiDayEventDraggableWidgets<T>(
               eventsController: eventsController,
               controller: calendarController,
               callbacks: callbacks,
+              visibleDateTimeRange: visibleRange,
               createEventTrigger: configuration.createEventTrigger,
               dayWidth: dayWidth,
               allowEventCreation: configuration.allowEventCreation,
             );
-        
+
             final constraints = BoxConstraints(
               minHeight: tileHeight,
               minWidth: pageWidth,
             );
-        
+
             return Column(
               children: [
                 Row(children: [...dayHeaders]),
                 if (configuration.showTiles)
                   Stack(
                     children: [
-                      Positioned.fill(child: gestureDetector),
+                      Positioned.fill(child: draggable),
                       ConstrainedBox(constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],
@@ -522,7 +522,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget(
+    return MultiDayHeaderWidget<T>(
       content: pageView,
       leadingWidget: weekNumberWidget,
     );

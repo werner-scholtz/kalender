@@ -100,7 +100,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) {
       setState(() {
         // Update the current time.
         _currentTime = DateTime.now();

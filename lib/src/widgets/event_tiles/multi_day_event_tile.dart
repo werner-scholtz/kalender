@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/resize_event.dart';
+import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
@@ -27,7 +27,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
       valueListenable: selectedEvent,
       builder: (context, value, child) {
         if (value != null || controller.internalFocus) return const SizedBox();
-        return Draggable<ResizeEvent<T>>(
+        return Draggable<Resize<T>>(
           data: resizeEvent(ResizeDirection.left),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -41,7 +41,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
       valueListenable: selectedEvent,
       builder: (context, value, child) {
         if (value != null || controller.internalFocus) return const SizedBox();
-        return Draggable<ResizeEvent<T>>(
+        return Draggable<Resize<T>>(
           data: resizeEvent(ResizeDirection.right),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -63,8 +63,8 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
     final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
     final isDragging = controller.selectedEventId == event.id;
     late final draggableTile = isMobileDevice
-        ? LongPressDraggable<CalendarEvent<T>>(
-            data: event,
+        ? LongPressDraggable<Reschedule<T>>(
+            data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
@@ -72,8 +72,8 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
             maxSimultaneousDrags: 1,
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           )
-        : Draggable<CalendarEvent<T>>(
-            data: event,
+        : Draggable<Reschedule<T>>(
+            data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,

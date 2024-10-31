@@ -5,6 +5,7 @@ import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.da
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/platform.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -242,7 +243,7 @@ class MultiDayBodyConfiguration {
     this.allowEventCreation = defaultAllowEventCreation,
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
-    this.createEventTrigger = defaultCreateEventTrigger,
+    CreateEventTrigger? createEventTrigger,
     this.newEventDuration = defaultNewEventDuration,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
@@ -256,6 +257,8 @@ class MultiDayBodyConfiguration {
   }) {
     this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+    this.createEventTrigger =
+        createEventTrigger ?? (isMobileDevice ? CreateEventTrigger.longPress : CreateEventTrigger.tap);
   }
 
   /// Whether to show events that are longer than 1 day in the [MultiDayBody].
@@ -271,7 +274,7 @@ class MultiDayBodyConfiguration {
   final bool allowEventCreation;
 
   /// Gesture type for creating events.
-  final CreateEventTrigger createEventTrigger;
+  late final CreateEventTrigger createEventTrigger;
 
   /// The snap interval in minutes for events in the [MultiDayBody].
   /// * This is used when not snapping to the time indicator or other events.

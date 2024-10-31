@@ -104,3 +104,4 @@ class CalendarEvent<T extends Object?> {
     return 'id: $id, data: $data, start: $start, end: $end';
   }
 }
+
