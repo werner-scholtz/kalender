@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
-import 'package:kalender/src/widgets/gesture_detectors/day_draggables.dart';
+import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
