@@ -7,9 +7,11 @@ import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
 
-// TODO: more detailed documentation.
-// Consider moving the logic into a separate class.
+import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
+/// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
+///
+/// The [MultiDayDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
@@ -62,7 +64,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   ViewController<T> get viewController => controller.viewController!;
   TileComponents<T> get tileComponents => widget.tileComponents;
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
-  PageTriggerConfiguration get pageTriggerSetup => widget.pageTriggerSetup;
+  PageTriggerConfiguration get pageTrigger => widget.pageTriggerSetup;
 
   ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
@@ -78,10 +80,8 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
           onResize: (event, direction) => direction.horizontal,
           onReschedule: (event) {
             if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
-
             // Set the size of the feedback widget.
             feedbackWidgetSize.value = Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
-
             controller.selectEvent(event, internal: true);
             return true;
           },
@@ -95,48 +95,29 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
         if (candidateData.firstOrNull == null) return const SizedBox();
 
         final triggerWidth = pageWidth / 50;
-        final pageAnimationDuration = pageTriggerSetup.animationDuration;
-        final pageTriggerDelay = pageTriggerSetup.triggerDelay;
-        final pageAnimationCurve = pageTriggerSetup.animationCurve;
+        final pageAnimationDuration = pageTrigger.animationDuration;
+        final pageTriggerDelay = pageTrigger.triggerDelay;
+        final pageAnimationCurve = pageTrigger.animationCurve;
 
         final rightTrigger = NavigationTrigger(
           triggerDelay: pageTriggerDelay,
-          onTrigger: () {
-            viewController.animateToNextPage(
-              duration: pageAnimationDuration,
-              curve: pageAnimationCurve,
-            );
-          },
+          onTrigger: () => viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
           child: widget.rightPageTrigger?.call(pageWidth) ??
               ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
         );
 
         final leftTrigger = NavigationTrigger(
           triggerDelay: pageTriggerDelay,
-          onTrigger: () {
-            viewController.animateToPreviousPage(
-              duration: pageAnimationDuration,
-              curve: pageAnimationCurve,
-            );
-          },
+          onTrigger: () =>
+              viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
           child: widget.leftPageTrigger?.call(pageWidth) ??
               ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
         );
 
         return Stack(
           children: [
-            PositionedDirectional(
-              end: 0,
-              top: 0,
-              bottom: 0,
-              child: rightTrigger,
-            ),
-            PositionedDirectional(
-              start: 0,
-              top: 0,
-              bottom: 0,
-              child: leftTrigger,
-            ),
+            PositionedDirectional(end: 0, top: 0, bottom: 0, child: rightTrigger),
+            PositionedDirectional(start: 0, top: 0, bottom: 0, child: leftTrigger),
           ],
         );
       },
@@ -178,7 +159,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
     final range = switch (direction) {
-      // TODO: fix this so it works correctly
       ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
       ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),
       _ => null
@@ -195,7 +175,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     var range = newEvent!.dateTimeRange;
 
-    print(range);
     if (cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) {
     } else if (cursorDateTime.isAfter(range.start)) {
       range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);

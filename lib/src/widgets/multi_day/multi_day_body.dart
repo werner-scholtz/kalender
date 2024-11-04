@@ -154,8 +154,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         final content = LayoutBuilder(
           builder: (context, constraints) {
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
-
-
+            
             final pageView = PageClipWidget(
               left: -16,
               child: PageView.builder(
@@ -255,7 +254,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
           },
         );
 
-        late final dragTarget = LayoutBuilder(
+        final dragTarget = LayoutBuilder(
           builder: (context, constraints) {
             final pageHeight = constraints.maxHeight;
             final pageWidth = constraints.maxWidth;

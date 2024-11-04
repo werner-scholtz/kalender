@@ -7,10 +7,11 @@ import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
 
-// TODO: more detailed documentation.
-// Consider moving the logic into a separate class.
+import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
-/// A [StatefulWidget] that provides a [DragTarget] for [CalendarEvent]s on a [MultiDayBody].
+/// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
+///
+/// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class DayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
@@ -60,28 +61,41 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints, DragTargetUtilities<T> {
   @override
   EventsController<T> get eventsController => widget.eventsController;
+  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
+
   @override
   CalendarController<T> get controller => widget.calendarController;
+
   @override
-  List<DateTime> get visibleDates => visibleDateTimeRange.days;
+  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.days;
+
   @override
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
+
   @override
   double get dayWidth => widget.dayWidth;
+
   @override
   bool get multiDayDragTarget => false;
 
   MultiDayViewController<T> get viewController => widget.viewController;
   ScrollController get scrollController => widget.scrollController;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
-  DateTimeRange get visibleDateTimeRange => viewController.visibleDateTimeRange.value;
+
+  /// Body configuration.
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+
+  PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
+  ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
+  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
+  bool get snapToOtherEvents => bodyConfiguration.snapToOtherEvents;
+  int get snapIntervalMinutes => bodyConfiguration.snapIntervalMinutes;
+  bool get snapToTimeIndicator => bodyConfiguration.snapToTimeIndicator;
+  Duration get snapRange => bodyConfiguration.snapRange;
+
   double get heightPerMinute => widget.heightPerMinute;
   double get pageWidth => widget.pageWidth;
   double get viewPortHeight => widget.viewPortHeight;
-  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
-
-  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   @override
   void initState() {
@@ -93,7 +107,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
   /// Update the snap points.
   void _updateSnapPoints() {
-    if (!bodyConfiguration.snapToOtherEvents) return;
+    if (!snapToOtherEvents) return;
     clearSnapPoints();
     addEventSnapPoints(viewController.visibleEvents.value);
   }
@@ -129,56 +143,44 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
 
-        final pageTriggerSetup = bodyConfiguration.pageTriggerConfiguration;
         final triggerWidth = pageWidth / 50;
-        final pageAnimationDuration = pageTriggerSetup.animationDuration;
-        final pageTriggerDelay = pageTriggerSetup.triggerDelay;
-        final pageAnimationCurve = pageTriggerSetup.animationCurve;
-
         final rightTrigger = NavigationTrigger(
-          triggerDelay: pageTriggerDelay,
-          onTrigger: () {
-            viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve);
-          },
+          triggerDelay: pageTrigger.triggerDelay,
+          onTrigger: () => viewController.animateToNextPage(
+            duration: pageTrigger.animationDuration,
+            curve: pageTrigger.animationCurve,
+          ),
           child: widget.rightPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final leftTrigger = NavigationTrigger(
-          triggerDelay: pageTriggerDelay,
-          onTrigger: () {
-            viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve);
-          },
+          triggerDelay: pageTrigger.triggerDelay,
+          onTrigger: () => viewController.animateToPreviousPage(
+            duration: pageTrigger.animationDuration,
+            curve: pageTrigger.animationCurve,
+          ),
           child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
-        final scrollTriggerSetup = bodyConfiguration.scrollTriggerConfiguration;
-        final triggerHeight = scrollTriggerSetup.triggerHeight.call(viewPortHeight);
-        final scrollTriggerDelay = scrollTriggerSetup.triggerDelay;
-        final scrollAnimationDuration = scrollTriggerSetup.animationDuration;
-        final scrollAnimationCurve = scrollTriggerSetup.animationCurve;
-        final scrollAmount = scrollTriggerSetup.scrollAmount.call(viewPortHeight);
-
+        final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
+        final scrollAmount = scrollTrigger.scrollAmount.call(viewPortHeight);
         final topScrollTrigger = NavigationTrigger(
-          triggerDelay: scrollTriggerDelay,
-          onTrigger: () {
-            scrollController.animateTo(
-              scrollController.offset - scrollAmount,
-              duration: scrollAnimationDuration,
-              curve: scrollAnimationCurve,
-            );
-          },
+          triggerDelay: scrollTrigger.triggerDelay,
+          onTrigger: () => scrollController.animateTo(
+            scrollController.offset - scrollAmount,
+            duration: scrollTrigger.animationDuration,
+            curve: scrollTrigger.animationCurve,
+          ),
           child: widget.topScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         final bottomScrollTrigger = NavigationTrigger(
-          triggerDelay: scrollTriggerDelay,
-          onTrigger: () {
-            scrollController.animateTo(
-              scrollController.offset + scrollAmount,
-              duration: scrollAnimationDuration,
-              curve: scrollAnimationCurve,
-            );
-          },
+          triggerDelay: scrollTrigger.triggerDelay,
+          onTrigger: () => scrollController.animateTo(
+            scrollController.offset + scrollAmount,
+            duration: scrollTrigger.animationDuration,
+            curve: scrollTrigger.animationCurve,
+          ),
           child: widget.bottomScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
@@ -237,7 +239,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = bodyConfiguration.snapIntervalMinutes;
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
@@ -269,17 +270,17 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
     // Add now to the snap points.
     late final now = DateTime.now();
-    if (bodyConfiguration.snapToTimeIndicator) addSnapPoint(now);
+    if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
-    final startSnapPoint = findSnapPoint(start, bodyConfiguration.snapRange);
+    final startSnapPoint = findSnapPoint(start, snapRange);
     if (startSnapPoint != null && startSnapPoint.isBefore(end)) {
       start = startSnapPoint;
       end = start.add(duration);
     }
 
     // Find the index of the snap point that is within a duration of snapRange of the end.
-    late final endSnapPoint = findSnapPoint(end, bodyConfiguration.snapRange);
+    late final endSnapPoint = findSnapPoint(end, snapRange);
     final canUseEndSnapPoint = startSnapPoint == null && endSnapPoint != null && endSnapPoint.isAfter(start);
     if (canUseEndSnapPoint) {
       // Calculate the new end time.
@@ -292,7 +293,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
 
     // Remove now from the snap points.
-    if (bodyConfiguration.snapToTimeIndicator) removeSnapPoint(now);
+    if (snapToTimeIndicator) removeSnapPoint(now);
 
     return updatedEvent;
   }
@@ -317,7 +318,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
   @override
   CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
-    // TODO: take the day time range into account.
+    // TODO: take the day time range into account ?
 
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
