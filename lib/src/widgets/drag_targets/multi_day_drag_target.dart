@@ -133,7 +133,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).round();
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
     if (cursorDateIndex < 0) return null;
     final date = cursorDateIndex > visibleDates.length
         ? visibleDates.elementAt(visibleDates.length - 1).endOfDay
@@ -175,11 +175,11 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     var range = newEvent!.dateTimeRange;
 
-    if (cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) {
-    } else if (cursorDateTime.isAfter(range.start)) {
+    if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
+        cursorDateTime.isAfter(range.start)) {
       range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start.startOfDay);
+      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
     }
 
     return event.copyWith(dateTimeRange: range.asLocal);
