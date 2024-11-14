@@ -37,10 +37,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
 
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent<T> event) {
-    assert(
-      event.id != -1,
-      'The id of the event must be set before removing it.',
-    );
+    assert(event.id != -1, 'The id of the event must be set before removing it.');
     _events.remove(event.id);
     _dateMap.removeEvent(event);
     notifyListeners();
@@ -83,10 +80,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
 
   /// Assigns an id to the [event] and adds it to the [_events] Map.
   void _assignIdAndAdd(CalendarEvent<T> event) {
-    assert(
-      event.id == -1,
-      'The id of the event must not be set manually.',
-    );
+    assert(event.id == -1, 'The id of the event must not be set manually.');
 
     event.id = _nextId;
     _dateMap.addEvent(event);
