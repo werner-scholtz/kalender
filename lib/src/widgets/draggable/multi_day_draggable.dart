@@ -4,7 +4,7 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
-class NewMultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> {
+class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> {
   final EventsController<T> eventsController;
   final CalendarCallbacks<T>? callbacks;
   final DateTimeRange visibleDateTimeRange;
@@ -12,7 +12,7 @@ class NewMultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWi
   final double dayWidth;
   final bool allowEventCreation;
 
-  const NewMultiDayEventDraggableWidgets({
+  const MultiDayEventDraggableWidgets({
     super.key,
     required super.controller,
     required this.eventsController,
@@ -66,23 +66,8 @@ class NewMultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWi
   /// [localPosition] is the last known position of the cursor.
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
-    final start = _calculateTimeAndDate(date, localPosition);
+    final start = date.asLocal();
     final end = start.endOfDay;
     return DateTimeRange(start: start, end: end);
-  }
-
-  // TODO: look into detemine if the cursor is closer to start / end of day.
-  DateTime _calculateTimeAndDate(DateTime date, Offset localPosition) {
-    // Calculate the date of the position.
-    final visibleDates = visibleDateTimeRange.days;
-    final cursorDate = (localPosition.dx / dayWidth);
-
-    final cursorDateIndex = cursorDate.floor();
-    if (cursorDateIndex < 0) return visibleDates.first;
-
-    final date = visibleDates.elementAtOrNull(cursorDateIndex);
-    if (date == null) return visibleDates.first;
-
-    return date.asLocal();
   }
 }

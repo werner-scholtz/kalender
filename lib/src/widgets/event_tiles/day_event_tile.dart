@@ -6,9 +6,9 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
-// TODO: more detailed documentation.
-// Simplify the boolean logic to an enum if possible.
-
+/// This widget renders the tile widget and resize handles in a stack.
+/// 
+/// The tile widget is rendered below the resize handles.
 class DayEventTile<T extends Object?> extends EventTile<T> {
   const DayEventTile({
     super.key,

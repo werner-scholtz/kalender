@@ -176,17 +176,15 @@ mixin DragTargetUtilities<T> {
 
   /// Calculate the local position of the cursor for the [DragTarget] widget.
   ///
-  /// [cursorPosition] comes from the [DragTargetDetails.offset].
-  /// [feedbackWidgetOffset] TODO: ???
-  /// [scrollOffset] TODO: ???
+  /// [cursorPosition] Comes from the [DragTargetDetails.offset].
+  /// [scrollOffset] The scroll offset of the current view.
   ///
   /// This calculates the local position of the cursor on the [DragTarget] widget.
   Offset? calculateLocalCursorPosition(
     Offset cursorPosition, {
-    Offset feedbackWidgetOffset = Offset.zero,
     Offset scrollOffset = Offset.zero,
   }) {
-    final cursorWithFeedbackWidget = cursorPosition + feedbackWidgetOffset + scrollOffset;
+    final cursorWithFeedbackWidget = cursorPosition + scrollOffset;
     return dragTargetRenderBox.globalToLocal(cursorWithFeedbackWidget);
   }
 

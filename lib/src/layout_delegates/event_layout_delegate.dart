@@ -7,7 +7,7 @@ export 'package:kalender/src/models/calendar_events/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/extensions.dart';
 
-/// Signature for the strategy that determines how DayEvents are layed out.
+/// Signature for the strategy that determines how DayEvents are laid out.
 ///
 /// There are two built-in strategies:
 ///
@@ -71,7 +71,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.timeOfDayRange,
   });
 
-  /// The list of events that will be layed out. (The order of these events are the same as the widget's)
+  /// The list of events that will be laid out. (The order of these events are the same as the widget's)
   final Iterable<CalendarEvent<T>> events;
   final DateTime date;
   final TimeOfDayRange timeOfDayRange;

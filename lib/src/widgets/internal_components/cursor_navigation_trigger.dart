@@ -2,13 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-// TODO: document.
-class NavigationTrigger extends StatefulWidget {
+/// This widget uses a [DragTarget] to trigger navigation of the calendar.
+class CursorNavigationTrigger extends StatefulWidget {
+  /// The child.
   final Widget? child;
+
+  /// Callback for when a trigger event happened.
   final Function() onTrigger;
+
+  /// The delay before the trigger triggers.
   final Duration triggerDelay;
 
-  const NavigationTrigger({
+  const CursorNavigationTrigger({
     super.key,
     this.child,
     required this.onTrigger,
@@ -16,10 +21,10 @@ class NavigationTrigger extends StatefulWidget {
   });
 
   @override
-  State<NavigationTrigger> createState() => _NavigationTriggerState();
+  State<CursorNavigationTrigger> createState() => _CursorNavigationTriggerState();
 }
 
-class _NavigationTriggerState extends State<NavigationTrigger> {
+class _CursorNavigationTriggerState extends State<CursorNavigationTrigger> {
   /// The timer used to trigger the navigation.
   Timer? triggerTimer;
 

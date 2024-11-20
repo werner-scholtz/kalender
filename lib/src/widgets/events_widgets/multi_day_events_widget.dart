@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
-// TODO: document this.
+/// This widget is renders all the multi-day event tiles that are visible on the provided dateTimeRange.
+///
+/// It fetches the events that need to be rendered from the [EventsController],
+/// the [EventsController] is also listened to in-case events are added or updated.
+///
+/// This widget also takes responsibility for updating the [CalendarController.visibleEvents],
+/// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
+///
+/// To render the event tiles it uses [CustomMultiChildLayout],
+/// along with a [defaultMultiDayLayoutStrategy] or custom strategy defined by the user.
+///
+/// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
+///         This is somewhat expensive computationally as it lays out all the events again to determine the position
+///         of the event being modified. See todo for a possible solution.
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
@@ -79,7 +92,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           children: [...children],
         );
 
-        // // TODO: investigate a more efficient way to do this.
+        // TODO: investigate a more efficient way to do this.
         final dropTargetWidget = ValueListenableBuilder(
           valueListenable: controller.selectedEvent,
           builder: (context, event, child) {

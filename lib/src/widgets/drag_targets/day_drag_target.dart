@@ -5,7 +5,7 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
+import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
@@ -144,7 +144,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
         if (candidateData.firstOrNull == null) return const SizedBox();
 
         final triggerWidth = pageWidth / 50;
-        final rightTrigger = NavigationTrigger(
+        final rightTrigger = CursorNavigationTrigger(
           triggerDelay: pageTrigger.triggerDelay,
           onTrigger: () => viewController.animateToNextPage(
             duration: pageTrigger.animationDuration,
@@ -153,7 +153,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
           child: widget.rightPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
-        final leftTrigger = NavigationTrigger(
+        final leftTrigger = CursorNavigationTrigger(
           triggerDelay: pageTrigger.triggerDelay,
           onTrigger: () => viewController.animateToPreviousPage(
             duration: pageTrigger.animationDuration,
@@ -164,7 +164,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
         final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
         final scrollAmount = scrollTrigger.scrollAmount.call(viewPortHeight);
-        final topScrollTrigger = NavigationTrigger(
+        final topScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () => scrollController.animateTo(
             scrollController.offset - scrollAmount,
@@ -174,7 +174,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
           child: widget.topScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
-        final bottomScrollTrigger = NavigationTrigger(
+        final bottomScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () => scrollController.animateTo(
             scrollController.offset + scrollAmount,
@@ -220,11 +220,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
-    final localCursorPosition = calculateLocalCursorPosition(
-      offset,
-      feedbackWidgetOffset: feedbackWidgetOffset,
-      scrollOffset: Offset(0, scrollController.offset),
-    );
+    final localCursorPosition = calculateLocalCursorPosition(offset, scrollOffset: Offset(0, scrollController.offset));
     if (localCursorPosition == null) return null;
 
     // Calculate only the date of the cursor from the local cursor position.
@@ -301,28 +297,25 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
-    //TODO: decide if this is valid, maybe it could resize the event anyways ?.
+    // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
-    DateTimeRange dateTimeRange;
-    if (direction == ResizeDirection.top) {
-      dateTimeRange = calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime);
-    } else if (direction == ResizeDirection.bottom) {
-      dateTimeRange = calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime);
-    } else {
-      throw Exception('Invalid resize direction.');
-    }
+    final dateTimeRange = switch (direction) {
+      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),
+      _ => null
+    };
+    if (dateTimeRange == null) return null;
 
     return event.copyWith(dateTimeRange: dateTimeRange.asLocal);
   }
 
   @override
   CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
-    // TODO: take the day time range into account ?
-
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
-
+    
+    // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
     var range = newEvent!.dateTimeRange;
 
     if (cursorDateTime.isAfter(range.start)) {

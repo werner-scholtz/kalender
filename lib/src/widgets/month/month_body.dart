@@ -7,10 +7,11 @@ import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 
-// TODO: document this.
-// Maybe give a broad overview of what this widget does.
-
-/// This widget is used to display a multi-day body.
+/// This widget is used to display a month body.
+///
+/// The month body's content:
+///   - Static content [MonthGrid].
+///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayEventDraggableWidgets].
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MonthBody].
   final EventsController<T>? eventsController;
@@ -137,7 +138,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   rightPageTrigger: components?.rightTriggerBuilder,
                 );
 
-                final draggable = NewMultiDayEventDraggableWidgets<T>(
+                final draggable = MultiDayEventDraggableWidgets<T>(
                   eventsController: eventsController,
                   controller: calendarController,
                   callbacks: callbacks,
@@ -185,10 +186,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
         );
 
         final monthGridStyle = styles?.monthGridStyle;
-        final monthGrid = components?.monthGridBuilder?.call(monthGridStyle) ??
-            MonthGrid(
-              style: monthGridStyle,
-            );
+        final monthGrid = components?.monthGridBuilder?.call(monthGridStyle) ?? MonthGrid(style: monthGridStyle);
 
         return SizedBox(
           width: pageWidth,

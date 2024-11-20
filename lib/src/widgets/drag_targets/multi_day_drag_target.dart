@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/internal_components/navigation_trigger.dart';
+import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
@@ -99,14 +99,14 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
         final pageTriggerDelay = pageTrigger.triggerDelay;
         final pageAnimationCurve = pageTrigger.animationCurve;
 
-        final rightTrigger = NavigationTrigger(
+        final rightTrigger = CursorNavigationTrigger(
           triggerDelay: pageTriggerDelay,
           onTrigger: () => viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
           child: widget.rightPageTrigger?.call(pageWidth) ??
               ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
         );
 
-        final leftTrigger = NavigationTrigger(
+        final leftTrigger = CursorNavigationTrigger(
           triggerDelay: pageTriggerDelay,
           onTrigger: () =>
               viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
@@ -158,6 +158,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+    // TODO: Fix the issue where when resizing end causes the cursor is slightly offset, and unable to resize to the last day of the visible range.
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
       ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),

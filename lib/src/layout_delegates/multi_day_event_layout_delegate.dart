@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
-/// Signature for the strategy that determines how multi-day events are layed out.
+/// Signature for the strategy that determines how multi-day events are laid out.
 typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
@@ -32,7 +32,7 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
     required this.multiDayTileHeight,
   });
 
-  /// The list of events that will be layed out. (The order of these events are the same as the widget's)
+  /// The list of events that will be laid out. (The order of these events are the same as the widget's)
   final List<CalendarEvent<T>> events;
   final DateTimeRange dateTimeRange;
   final double multiDayTileHeight;

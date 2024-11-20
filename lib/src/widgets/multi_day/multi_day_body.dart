@@ -17,10 +17,16 @@ import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
-// TODO: document this.
-// Maybe give a broad overview of what this widget and how it works.
-
 /// This widget is used to display a multi-day body.
+/// 
+/// The multi-day body has two big parts to it:
+/// 1. The content:
+///   - Static content such as [HourLines] and [TimeLine].
+///   - Dynamic content such as the [PageView] which displays:
+///     [DaySeparator], [DayEventDraggableWidgets], [DayEventsWidget] and the [TimeIndicator]
+/// 
+/// 2. The [DayDragTarget] 
+///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayBody].
   final EventsController<T>? eventsController;
@@ -217,7 +223,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     timeOfDayRange: timeOfDayRange,
                   );
               
-                  final draggable = NewDayEventDraggableWidgets<T>(
+                  final draggable = DayEventDraggableWidgets<T>(
                     controller: calendarController,
                     callbacks: callbacks,
                     bodyConfiguration: bodyConfiguration,
