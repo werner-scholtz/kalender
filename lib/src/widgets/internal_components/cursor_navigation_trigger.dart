@@ -8,7 +8,7 @@ class CursorNavigationTrigger extends StatefulWidget {
   final Widget? child;
 
   /// Callback for when a trigger event happened.
-  final Function() onTrigger;
+  final void Function() onTrigger;
 
   /// The delay before the trigger triggers.
   final Duration triggerDelay;

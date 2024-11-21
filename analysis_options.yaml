@@ -4,6 +4,10 @@ include: package:flutter_lints/flutter.yaml
 # https://dart.dev/guides/language/analysis-options
 
 analyzer:
+  language:
+    strict-inference: true
+    strict-raw-types: true
+
   exclude:
     # - other_examples/**
     # - example/**

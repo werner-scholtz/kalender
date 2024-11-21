@@ -60,20 +60,16 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   @override
   Size getSize(BoxConstraints constraints) {
     super.getSize(constraints);
+
     /// TODO: this does not work 100% correctly.
     /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
     for (final event in events) {
-      final overlaps = events.where(
-        (e) => e.datesSpanned.any(event.datesSpanned.contains),
-      );
+      final overlaps = events.where((e) => e.datesSpanned.any(event.datesSpanned.contains));
       maxOverlaps = max(maxOverlaps, overlaps.length);
     }
 
-    return Size(
-      constraints.maxWidth,
-      maxOverlaps * multiDayTileHeight + multiDayTileHeight,
-    );
+    return Size(constraints.maxWidth, maxOverlaps * multiDayTileHeight + multiDayTileHeight);
   }
 
   @override
@@ -92,16 +88,10 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
       final eventDates = event.datesSpannedAsUtc;
 
       // first visible date.
-      final firstVisibleDate = eventDates.firstWhere(
-        visibleDates.contains,
-        orElse: () => eventDates.first,
-      );
+      final firstVisibleDate = eventDates.firstWhere(visibleDates.contains, orElse: () => eventDates.first);
 
       // last visible date.
-      final lastVisibleDate = eventDates.lastWhere(
-        visibleDates.contains,
-        orElse: () => eventDates.last,
-      );
+      final lastVisibleDate = eventDates.lastWhere(visibleDates.contains, orElse: () => eventDates.last);
 
       final visibleEventDates = eventDates.getRange(
         eventDates.indexOf(firstVisibleDate),
@@ -116,13 +106,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
       final tileWidth = ((visibleEventDates.length) * dayWidth).roundToDouble();
 
       // Layout the tile.
-      final childSize = layoutChild(
-        i,
-        BoxConstraints.tightFor(
-          width: tileWidth,
-          height: multiDayTileHeight,
-        ),
-      );
+      final childSize = layoutChild(i, BoxConstraints.tightFor(width: tileWidth, height: multiDayTileHeight));
 
       tileSizes[i] = childSize;
     }
@@ -132,11 +116,10 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
       final event = events[id];
 
       // Find events that fill the same dates as the current event.
-      final eventsAbove = tilePositions.keys.map((e) => events[e]).where(
-        (eventAbove) {
-          return eventAbove.datesSpannedAsUtc.any(event.datesSpannedAsUtc.contains);
-        },
-      ).toList();
+      final eventsAbove = tilePositions.keys
+          .map((e) => events[e])
+          .where((eventAbove) => eventAbove.datesSpannedAsUtc.any(event.datesSpannedAsUtc.contains))
+          .toList();
 
       var dy = 0.0;
       if (eventsAbove.isNotEmpty) {
@@ -144,17 +127,11 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
         dy = tilePositions[eventAboveID]!.dy + multiDayTileHeight;
       }
 
-      tilePositions[id] = Offset(
-        tileDx[id]!,
-        dy.roundToDouble(),
-      );
+      tilePositions[id] = Offset(tileDx[id]!, dy.roundToDouble());
     }
 
     for (var id = 0; id < numberOfChildren; id++) {
-      positionChild(
-        id,
-        tilePositions[id]!,
-      );
+      positionChild(id, tilePositions[id]!);
     }
   }
 }

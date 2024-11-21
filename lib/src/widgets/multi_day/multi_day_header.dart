@@ -12,7 +12,7 @@ import 'package:kalender/src/widgets/internal_components/multi_day_header_layout
 /// - [_MultiDayHeader] this is used for a body that displays multiple days.
 /// - [_FreeScrollHeader] this is a special case for a body that scrolls freely (WIP/Not working)
 ///
-/// All Header widgets make use of the [ExpandablePageView] which decides on the Height of these widgets, this is so they can resize dynamically.
+/// All Header widgets make use of the [ExpandablePageView] which uses a [SizeReportingWidget]to set the the Height of the header, this is so they can resize dynamically.
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayHeader].
   final EventsController<T>? eventsController;
@@ -123,7 +123,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// TODO: Document this.
+/// A header catered for displaying multi-day events for a single day body.
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
@@ -176,15 +176,10 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           controller: viewController.headerController,
           itemCount: viewController.numberOfPages,
           itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-              index,
-            );
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
 
-            final constraints = BoxConstraints(
-              minHeight: tileHeight * 2,
-              minWidth: pageWidth,
-            );
-
+            // Minimum constraints for the multiDayEvents.
+            final constraints = BoxConstraints(minHeight: tileHeight * 2, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               eventsController: eventsController,
               controller: calendarController,
@@ -243,7 +238,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// TODO: Document this.
+/// A header catered for displaying multi-day events for a multi-day body.
 class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
@@ -298,9 +293,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           controller: viewController.headerController,
           itemCount: viewController.numberOfPages,
           itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-              index,
-            );
+            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
             final visibleDates = visibleRange.days;
 
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
@@ -320,6 +313,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               );
             }).toList();
 
+            final constraints = BoxConstraints(minHeight: tileHeight, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               controller: calendarController,
               eventsController: eventsController,
@@ -359,11 +353,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               allowEventCreation: configuration.allowEventCreation,
             );
 
-            final constraints = BoxConstraints(
-              minHeight: tileHeight,
-              minWidth: pageWidth,
-            );
-
             return Column(
               children: [
                 Row(children: [...dayHeaders]),
@@ -389,7 +378,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   }
 }
 
-/// TODO: Document this.
+/// TODO: Fix and Ensure this works.
 class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
@@ -439,6 +428,10 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
         final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+
+        /// TODO: figure out how to get multi-day events to work with FreeScroll.
+        /// 
+        /// To do this the header would need to display a single page and not multiple. see viewport fraction.
         return ExpandablePageView(
           controller: viewController.headerController,
           itemCount: viewController.numberOfPages,
@@ -462,8 +455,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                 child: dayHeader,
               );
             }).toList();
-
-            /// TODO: figure out how to get multi-day events to work with FreeScroll.
 
             final multiDayEvents = MultiDayEventWidget<T>(
               controller: calendarController,
