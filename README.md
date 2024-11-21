@@ -1,6 +1,7 @@
-This Flutter package offers a Calendar Widget featuring integrated Day, MultiDay view ... TODO: finish this
+This Flutter package offers a Calendar Widget featuring a Day, MultiDay and Month views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
 
 ## Note
+- Consider v0.5.0 a new package as it has undergone major changes.
 - This is a WIP package so there will be some breaking changes until version 1.0.0.
 
 ## Web Example
@@ -9,66 +10,58 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
+* **Views:** Day, Multi-day and Month.
+* **Reschedule:** Drag and Drop events. 
+* **Resize:** Resize events on desktop, see this for mobile.
+* **Interaction:** Decide how you want to handle interaction with the calendar. [find out more]()
+* **Appearance:** Customize the default components or provide custom builders. [find out more]()
+* **Event layout:** Use a provided layout delegate or create a custom one. [find out more]()
+
 ...
 
+## Planned Features
+
+* **Views:** Schedule and FreeScroll.
+* **Directionality:** Right to Left directionality.
+* **Repeating Events:** Repeating events that only have to be added once.
+* **Event layout:** More examples of how to leverage this to achieve different things.
+
+...
 
 ## Basic Usage
 
 ```dart
-/// Create [EventsController]
 final eventsController = EventsController();
-
-/// Create [CalendarController]
 final calendarController = CalendarController();
-
-/// Create a [ViewConfiguration]
-/// 
-/// Options:
-/// - [MultiDayViewConfiguration.singleDay]
-/// - [MultiDayViewConfiguration.week]
-/// - [MultiDayViewConfiguration.workWeek]
-/// - [MultiDayViewConfiguration.custom]
-final viewConfiguration = MultiDayViewConfiguration.singleDay();
+final tileComponents = TileComponents(
+  tileBuilder: (event) => Container(color: Colors.green),
+);
 
 @override
 void initState() {
   super.initState();
 
-  /// Add events to the [EventsController]
+  /// Add [CalendarEvent]s to the [EventsController].
   eventsController.addEvents([...]);
 }
 
 Widget build(BuildContext context) {  
-  // Create your TileComponents.
-  final tileComponents = TileComponents(
-    tileBuilder: (event) => Container(color: Colors.green),
-  );
-
-  // Create the header Widget.
-  final header = CalendarHeader(
-    multiDayTileComponents: tileComponents,
-  );
-
-  // Create the body Widget.
-  final body = CalendarBody(
-    multiDayTileComponents: tileComponents,
-    monthTileComponents: tileComponents,
-  );
-
-  // Specify some callbacks.
-  final callbacks = CalendarCallbacks(
-    onEventTapped: (event, renderBox) => controller.selectEvent(event),
-    onEventCreate: (event) => event.copyWith(data: "Some data"),
-    onEventCreated: (event) => eventsController.addEvent(event),
-  );
-
-
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
-    viewConfiguration: viewConfiguration,
-    header: header,
-    body: body,
+    viewConfiguration: MultiDayViewConfiguration.singleDay(),
+    callbacks: CalendarCallbacks(
+      onEventTapped: (event, renderBox) => controller.selectEvent(event),
+      onEventCreate: (event) => event.copyWith(data: "Some data"),
+      onEventCreated: (event) => eventsController.addEvent(event),
+    ),
+    header: CalendarHeader(
+      multiDayTileComponents: tileComponents,
+    ),
+    body: CalendarBody(
+      multiDayTileComponents: tileComponents,
+      monthTileComponents: tileComponents,
+    ),
   );
 }
 ```
@@ -78,9 +71,10 @@ Widget build(BuildContext context) {
 
 There are a few ways to customize the look of the calendar:
 - [Tile Components](#tile-components)
-- General Components
-  - [Header Components](#header-components)
-  - [Body Components](#body-components)
+
+General Components:
+- [Multi-day Components](#month-components)
+- [Month Components](#tile-components)
 
 ### Tile Components
 
@@ -95,7 +89,7 @@ TileComponents(
   // The builder for the stationary event tile. (When it is being dragged)
   tileWhenDraggingBuilder: (event) => Container(),
 
-  // The builder for the feedback tile. (When it is being dragged)
+  // The builder for the feedback tile, follows the cursor/finger. (When it is being dragged)
   feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
 
   // The builder for the drop target event tile.
@@ -128,12 +122,10 @@ The CalendarView takes a components object.
 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
+#### Month Components
 
 ```dart
 CalendarView(
-  eventsController: eventsController,
-  calendarController: calendarController,
-  viewConfiguration: viewConfiguration,
   components: CalendarComponents(
     monthComponents: MonthComponents(
       headerComponents: MonthHeaderComponents(
@@ -151,6 +143,15 @@ CalendarView(
         rightTriggerBuilder: (pageWidth) => SizedBox(),
       ),
     ),
+  ),
+);
+```
+
+#### Multi-day Components
+
+```dart
+CalendarView(
+  components: CalendarComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
         // Custom Day Header builder.
@@ -197,7 +198,6 @@ CalendarView(
 
 ## Customizing the behavior
 
-
 ### Callbacks
 
 The calendar has a few useful callback functions:
@@ -210,26 +210,30 @@ CalendarCallbacks(
   // Called when an event is about to be created.
   onEventCreate: (event) {
     // This allows you to modify the event before it is created.
-    event.copyWith(data: data);
+    return event.copyWith(data: data);
   }
   
-  // Called when a new event is created.
+  // Called when a new event has been created.
   onEventCreated: (event) {
     // Add the event to the eventsController.
     eventsController.addEvent(event);
   },
 
-  // Called when a event has been changed (rescheduling / resizing)
+  // Called before a event is changed.
+  onEventChange: (event) {}
+
+  // Called when a event has been changed (rescheduled / resized)
   onEventChanged: (event, updatedEvent) {
     // Do something with the updated event.
     // ex. Update it in your database/long term storage.
   },
 
   // Called when a page is changed.
+  //
+  // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
   onPageChanged: (visibleDateTimeRange) {},
 )
 ```
-
 
 ### Header and Body
 
@@ -245,19 +249,86 @@ Some behaviors that can be customized:
 - Page/Scroll physics.
 - Event layout strategy.
 
-1. Header
-  ```dart
-  CalendarHeader(
-    multiDayHeaderConfiguration: MultiDayHeaderConfiguration(),
-  );
-  ```
+#### Header
+```dart
+CalendarHeader(
+  multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+    // Whether to show event tiles, useful if you want to display the header but not the tiles.
+    showTiles: true,
+    // The height of the tiles.
+    tileHeight: 24,
+    // Allow events to be resized.
+    allowResizing: true,
+    // Allow events to be rescheduled.
+    allowRescheduling: true,
+    // Allow events to be created.
+    allowEventCreation: true,
+    // The layout strategy used to layout events.
+    eventLayoutStrategy: defaultMultiDayLayoutStrategy,
+    // The configuration for the page navigation.
+    pageTriggerConfiguration: PageTriggerConfiguration(),
+    // The configuration for the scroll navigation.
+    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+  ),
+);
+```
 
-2. Body
-  ```dart
-  CalendarBody(
-    multiDayBodyConfiguration: MultiDayBodyConfiguration(),
-    monthBodyConfiguration: MultiDayHeaderConfiguration(), // The MonthBody makes use the MultiDayHeaderConfiguration
-  );
-  ```
+#### Body
+```dart
+CalendarBody(
+  multiDayBodyConfiguration: MultiDayBodyConfiguration(
+    // Whether to show events that are longer than 1 day.
+    showMultiDayEvents: true,
+    // Allow events to be resized.
+    allowResizing: true,
+    // Allow events to be rescheduled.
+    allowRescheduling: true,
+    // Allow events to be created.
+    allowEventCreation: true,
+    // The gesture used to create new events.
+    createEventGesture: CreateEventGesture.tap,
+    // The snap interval ex. 15 events will snap to every 15 minute interval.
+    snapIntervalMinutes: 15,
+    // Whether to snap to the time indicator.
+    snapToTimeIndicator: true,
+    // Whether to snap to other events.
+    snapToOtherEvents: true,
+    // The range in which events will be snapped, 
+    // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
+    snapRange: Duration(minutes: 5),
+    // The duration of events created by the `createEventGesture`
+    newEventDuration: Duration(minutes: 30),
+    // The configuration for the page navigation.
+    pageTriggerConfiguration: PageTriggerConfiguration(),
+    // The configuration for the scroll navigation.
+    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+    // The layout strategy used by the body to layout events.
+    eventLayoutStrategy: overlapLayoutStrategy,
+    // The physics used by the scrollable body.
+    scrollPhysics: BouncingScrollPhysics(),
+    // The physics used by the page view.
+    pageScrollPhysics: BouncingScrollPhysics(),
+  ),
+  // The MonthBody makes use the MultiDayHeaderConfiguration
+  monthBodyConfiguration: MultiDayHeaderConfiguration(
+    // Whether to show event tiles, useful if you want to display the header but not the tiles.
+    showTiles: true,
+    // The height of the tiles.
+    tileHeight: 24,
+    // Allow events to be resized.
+    allowResizing: true,
+    // Allow events to be rescheduled.
+    allowRescheduling: true,
+    // Allow events to be created.
+    allowEventCreation: true,
+    // The layout strategy used to layout events.
+    eventLayoutStrategy: defaultMultiDayLayoutStrategy,
+    // The configuration for the page navigation.
+    pageTriggerConfiguration: PageTriggerConfiguration(),
+    // The configuration for the scroll navigation.
+    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+  ), 
+);
+```
 
 

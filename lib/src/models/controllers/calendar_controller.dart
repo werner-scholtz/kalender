@@ -28,9 +28,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   bool get isAttached => _viewController != null;
 
   /// The [DateTimeRange] that is currently visible.
-  final visibleDateTimeRange = ValueNotifier<DateTimeRange>(
-    DateTime.now().dayRange,
-  );
+  late final visibleDateTimeRange = ValueNotifier<DateTimeRange>(initialDate.dayRange);
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});

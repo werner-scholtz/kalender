@@ -243,7 +243,7 @@ class MultiDayBodyConfiguration {
     this.allowEventCreation = defaultAllowEventCreation,
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
-    CreateEventTrigger? createEventTrigger,
+    CreateEventGesture? createEventGesture,
     this.newEventDuration = defaultNewEventDuration,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
@@ -257,11 +257,11 @@ class MultiDayBodyConfiguration {
   }) {
     this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
     this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-    this.createEventTrigger =
-        createEventTrigger ?? (isMobileDevice ? CreateEventTrigger.longPress : CreateEventTrigger.tap);
+    this.createEventGesture =
+        createEventGesture ?? (isMobileDevice ? CreateEventGesture.longPress : CreateEventGesture.tap);
   }
 
-  /// Whether to show events that are longer than 1 day in the [MultiDayBody].
+  /// Whether to show events that are longer than 1 day.
   final bool showMultiDayEvents;
 
   /// Allow the resizing of events.
@@ -274,9 +274,9 @@ class MultiDayBodyConfiguration {
   final bool allowEventCreation;
 
   /// Gesture type for creating events.
-  late final CreateEventTrigger createEventTrigger;
+  late final CreateEventGesture createEventGesture;
 
-  /// The snap interval in minutes for events in the [MultiDayBody].
+  /// The snap interval in minutes for events.
   /// * This is used when not snapping to the time indicator or other events.
   final int snapIntervalMinutes;
 
@@ -298,7 +298,7 @@ class MultiDayBodyConfiguration {
   /// The configuration for the scroll navigation triggers.
   late final ScrollTriggerConfiguration scrollTriggerConfiguration;
 
-  /// The layout strategy used by the [MultiDayBody] to layout events.
+  /// The layout strategy used by the body to layout events.
   final EventLayoutStrategy eventLayoutStrategy;
 
   /// The [ScrollPhysics] used by the scrollable body.
@@ -313,7 +313,7 @@ class MultiDayBodyConfiguration {
     bool? allowEventCreation,
     bool? allowResizing,
     bool? allowRescheduling,
-    CreateEventTrigger? createEventTrigger,
+    CreateEventGesture? createEventGesture,
     Duration? newEventDuration,
     bool? snapToTimeIndicator,
     bool? snapToOtherEvents,
@@ -330,7 +330,7 @@ class MultiDayBodyConfiguration {
       allowEventCreation: allowEventCreation ?? this.allowEventCreation,
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
-      createEventTrigger: createEventTrigger ?? this.createEventTrigger,
+      createEventGesture: createEventGesture ?? this.createEventGesture,
       newEventDuration: newEventDuration ?? this.newEventDuration,
       snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
@@ -353,7 +353,7 @@ class MultiDayBodyConfiguration {
         other.allowEventCreation == allowEventCreation &&
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
-        other.createEventTrigger == createEventTrigger &&
+        other.createEventGesture == createEventGesture &&
         other.newEventDuration == newEventDuration &&
         other.snapToTimeIndicator == snapToTimeIndicator &&
         other.snapToOtherEvents == snapToOtherEvents &&
@@ -373,7 +373,7 @@ class MultiDayBodyConfiguration {
       allowEventCreation,
       allowResizing,
       allowRescheduling,
-      createEventTrigger,
+      createEventGesture,
       newEventDuration,
       snapToTimeIndicator,
       snapToOtherEvents,
@@ -405,7 +405,7 @@ class MultiDayHeaderConfiguration {
     this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
   }
 
-  /// The height of the tiles in the [MultiDayHeader].
+  /// The height of the tiles.
   final double tileHeight;
 
   /// Allow the resizing of events.
@@ -418,12 +418,12 @@ class MultiDayHeaderConfiguration {
   final bool allowEventCreation;
 
   /// Gesture type for creating events.
-  final CreateEventTrigger createEventTrigger;
+  final CreateEventGesture createEventTrigger;
 
   /// Whether to show event tiles.
   final bool showTiles;
 
-  /// The layout strategy used by the [MultiDayHeader] to layout events.
+  /// The layout strategy used to layout events.
   final MultiDayEventLayoutStrategy eventLayoutStrategy;
 
   /// The configuration for the page navigation triggers.
@@ -435,7 +435,7 @@ class MultiDayHeaderConfiguration {
     bool? allowEventCreation,
     bool? allowResizing,
     bool? allowRescheduling,
-    CreateEventTrigger? createEventTrigger,
+    CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
   }) {
     return MultiDayHeaderConfiguration(

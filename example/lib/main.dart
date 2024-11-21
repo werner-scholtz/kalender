@@ -62,7 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final calendarController = CalendarController<Event>();
 
   final now = DateTime.now();
+
+  /// Decide on a range you want to display.
   late final displayRange = DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
+  late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
@@ -72,27 +75,17 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
 
-  late ViewConfiguration viewConfiguration = viewConfigurations[0];
-
   @override
   void initState() {
     super.initState();
-
-    final now = DateTime.now();
     eventsController.addEvents(
       [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
-            start: now,
-            end: now.add(const Duration(hours: 1)),
-          ),
+          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
           data: Event('My Event', Colors.green),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(
-            start: now,
-            end: now.add(const Duration(hours: 1)),
-          ),
+          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
           data: Event('My Event', Colors.blue),
         ),
       ],
@@ -103,40 +96,37 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: CalendarView<Event>(
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: viewConfiguration,
-            callbacks: CalendarCallbacks<Event>(
-              onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-              onEventCreate: (event) => event,
-              onEventCreated: (event) => eventsController.addEvent(event),
+        child: CalendarView<Event>(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: viewConfiguration,
+          callbacks: CalendarCallbacks<Event>(
+            onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+            onEventCreate: (event) => event,
+            onEventCreated: (event) => eventsController.addEvent(event),
+          ),
+          header: Material(
+            color: Theme.of(context).colorScheme.surface,
+            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+            elevation: 2,
+            child: Column(
+              children: [
+                _calendarToolbar(),
+                CalendarHeader<Event>(
+                  multiDayTileComponents: tileComponents(body: false),
+                  multiDayHeaderComponents: const MultiDayHeaderComponents(),
+                ),
+              ],
             ),
-            header: Material(
-              color: Theme.of(context).colorScheme.surface,
-              surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-              elevation: 2,
-              child: Column(
-                children: [
-                  _calendarToolbar(),
-                  CalendarHeader<Event>(
-                    multiDayTileComponents: tileComponents(body: false),
-                    multiDayHeaderComponents: const MultiDayHeaderComponents(),
-                  ),
-                ],
-              ),
+          ),
+          body: CalendarBody<Event>(
+            multiDayTileComponents: tileComponents(),
+            monthTileComponents: tileComponents(),
+            multiDayBodyComponents: const MultiDayBodyComponents(),
+            multiDayBodyConfiguration: MultiDayBodyConfiguration(
+              showMultiDayEvents: false,
             ),
-            body: CalendarBody<Event>(
-              multiDayTileComponents: tileComponents(),
-              monthTileComponents: tileComponents(),
-              multiDayBodyComponents: const MultiDayBodyComponents(),
-              multiDayBodyConfiguration: MultiDayBodyConfiguration(
-                showMultiDayEvents: false,
-              ),
-              monthBodyConfiguration: MultiDayHeaderConfiguration(),
-            ),
+            monthBodyConfiguration: MultiDayHeaderConfiguration(),
           ),
         ),
       ),
@@ -161,7 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
       dragAnchorStrategy: pointerDragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
-
     );
   }
 

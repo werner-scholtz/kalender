@@ -31,7 +31,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
   Widget build(BuildContext context) {
     var localPosition = Offset.zero;
     final allowCreation = bodyConfiguration.allowEventCreation;
-    final createEventTrigger = bodyConfiguration.createEventTrigger;
+    final createEventTrigger = bodyConfiguration.createEventGesture;
 
     return Listener(
       onPointerDown: (event) => localPosition = event.localPosition,
@@ -42,7 +42,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
           if (allowCreation)
             for (final date in visibleDateTimeRange.days)
               switch (createEventTrigger) {
-                CreateEventTrigger.tap => Draggable(
+                CreateEventGesture.tap => Draggable(
                     dragAnchorStrategy: pointerDragAnchorStrategy,
                     onDragStarted: () => createNewEvent(date, localPosition),
                     onDraggableCanceled: onDragFinished,
@@ -51,7 +51,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
                     feedback: Container(color: Colors.transparent, width: 1, height: 1),
                     child: Container(color: Colors.transparent, width: dayWidth, height: pageHeight),
                   ),
-                CreateEventTrigger.longPress => LongPressDraggable(
+                CreateEventGesture.longPress => LongPressDraggable(
                     dragAnchorStrategy: pointerDragAnchorStrategy,
                     onDragStarted: () => createNewEvent(date, localPosition),
                     onDraggableCanceled: onDragFinished,

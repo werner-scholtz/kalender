@@ -8,7 +8,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
   final EventsController<T> eventsController;
   final CalendarCallbacks<T>? callbacks;
   final DateTimeRange visibleDateTimeRange;
-  final CreateEventTrigger createEventTrigger;
+  final CreateEventGesture createEventTrigger;
   final double dayWidth;
   final bool allowEventCreation;
 
@@ -36,7 +36,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
           if (allowEventCreation)
             for (final date in visibleDateTimeRange.days)
               switch (createEventTrigger) {
-                CreateEventTrigger.tap => Draggable(
+                CreateEventGesture.tap => Draggable(
                     onDragStarted: () => createNewEvent(date, localPosition),
                     onDraggableCanceled: onDragFinished,
                     onDragEnd: onDragFinished,
@@ -45,7 +45,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
                     feedback: Container(color: Colors.transparent, width: 1, height: 1),
                     child: Container(color: Colors.transparent, width: dayWidth),
                   ),
-                CreateEventTrigger.longPress => LongPressDraggable(
+                CreateEventGesture.longPress => LongPressDraggable(
                     onDragStarted: () => createNewEvent(date, localPosition),
                     onDraggableCanceled: onDragFinished,
                     onDragEnd: onDragFinished,

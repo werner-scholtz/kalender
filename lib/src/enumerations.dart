@@ -1,5 +1,5 @@
-/// The [CreateEventTrigger] is used to differentiate between the different ways to create an event.
-enum CreateEventTrigger {
+/// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
+enum CreateEventGesture {
   /// Creates event on tap gesture.
   tap,
 
