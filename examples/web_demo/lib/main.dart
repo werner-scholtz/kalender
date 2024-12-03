@@ -33,16 +33,11 @@ class MyAppState extends State<MyApp> {
       themeMode: themeMode,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.dark,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
       ),
       home: const MyHomePage(title: 'Kalender Demo'),
     );
@@ -77,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late final _calendarCallbacks = CalendarCallbacks<Event>(
     onEventTapped: (event, renderBox) => _createOverlay(event, renderBox),
-    onEventCreate: (event) => event.copyWith(data: Event(title: 'new')),
+    onEventCreate: (event) => event.copyWith(data: Event(title: 'New Event')),
     onEventCreated: (event) => eventsController.addEvent(event),
   );
 
@@ -147,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const height = 300.0;
     const width = 300.0;
 
-    final size = MediaQuery.sizeOf(context); //context.size!;
+    final size = MediaQuery.sizeOf(context);
 
     if (position.dy + height > size.height) {
       position = position.translate(0, size.height - (position.dy + height) - 25);

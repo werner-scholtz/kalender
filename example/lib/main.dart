@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         cardTheme: const CardTheme(
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-        ),
+            margin: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -35,6 +33,12 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(),
     );
   }
+}
+
+class Event {
+  final String title;
+  final Color? color;
+  const Event(this.title, this.color);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -82,11 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
       [
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          data: Event('My Event', Colors.green),
+          data: const Event('My Event', Colors.green),
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          data: Event('My Event', Colors.blue),
+          data: const Event('My Event', Colors.blue),
         ),
       ],
     );
@@ -226,11 +230,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-class Event {
-  final String title;
-  final Color? color;
-
-  Event(this.title, this.color);
 }
