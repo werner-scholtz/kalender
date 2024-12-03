@@ -24,7 +24,7 @@ class TimelineSizer<T extends Object?> extends StatelessWidget {
     final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
     final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
-    final timeline = bodyComponents?.timeline?.call(0.7, timeOfDayRange, timelineStyle) ??
+    final timeline = bodyComponents?.timeline?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
         TimeLine(
           timeOfDayRange: timeOfDayRange,
           heightPerMinute: heightPerMinute,
@@ -72,7 +72,7 @@ class _RenderTimelineSizer extends RenderBox
   @override
   void performLayout() {
     final timeline = firstChild!;
-    timeline.layout(const BoxConstraints(maxHeight: 50), parentUsesSize: true);
+    timeline.layout(const BoxConstraints(maxHeight: 1440), parentUsesSize: true);
 
     final child = childAfter(timeline)!;
     child.layout(constraints, parentUsesSize: true);

@@ -67,7 +67,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.labelMedium;
     final textDirection = style?.textDirection ?? TextDirection.ltr;
 
-    const displayTime = TimeOfDay(hour: 1, minute: 0);
+    const displayTime = TimeOfDay(hour: 12, minute: 0);
     final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
     final textSize = _textSize(text, textStyle);
     final textHeight = textSize.height;

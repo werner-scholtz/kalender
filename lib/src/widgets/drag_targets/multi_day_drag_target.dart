@@ -139,7 +139,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
         ? visibleDates.elementAt(visibleDates.length - 1).endOfDay
         : visibleDates.elementAtOrNull(cursorDateIndex);
 
-    return date?.asLocal();
+    return date;
   }
 
   @override
@@ -158,14 +158,12 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
-    // TODO: Fix the issue where when resizing end causes the cursor is slightly offset, and unable to resize to the last day of the visible range.
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
-      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),
+      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
-
     return event.copyWith(dateTimeRange: range.asLocal);
   }
 

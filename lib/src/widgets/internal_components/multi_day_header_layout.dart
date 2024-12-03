@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
@@ -29,7 +31,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
     final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
-    final timeline = bodyComponents?.timeline?.call(0.7, timeOfDayRange, timelineStyle) ??
+    final timeline = bodyComponents?.timeline?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
         TimeLine(
           timeOfDayRange: timeOfDayRange,
           heightPerMinute: heightPerMinute,
@@ -40,7 +42,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
 
     return _MultiDayHeaderWidget(
       timelineWidget: LayoutId(id: 1, child: timeline),
-      weekNumberWidget: LayoutId(id: 2, child: leadingWidget),
+      leadingWidget: LayoutId(id: 2, child: leadingWidget),
       page: LayoutId(id: 3, child: content),
     );
   }
@@ -49,12 +51,12 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
 class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
   _MultiDayHeaderWidget({
     required this.timelineWidget,
-    required this.weekNumberWidget,
+    required this.leadingWidget,
     required this.page,
-  }) : super(children: [page, timelineWidget, weekNumberWidget]);
+  }) : super(children: [page, timelineWidget, leadingWidget]);
 
   final Widget timelineWidget;
-  final Widget weekNumberWidget;
+  final Widget leadingWidget;
   final Widget page;
 
   @override
@@ -93,7 +95,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
 
   static Size _layoutTimeline(RenderBox timeline) {
     // layout the timeline the height constraint here is arbitrary as this does not affect the size.
-    timeline.layout(const BoxConstraints(maxHeight: 50), parentUsesSize: true);
+    timeline.layout(const BoxConstraints(maxHeight: 1440), parentUsesSize: true);
     return timeline.size;
   }
 
@@ -127,7 +129,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     TextDirection textDirection,
   ) {
     // Layout the weekNumber, this constraints are determined from the timelineWidth and the pageHeight.
-    leading.layout(BoxConstraints.tightFor(width: timelineWidth, height: contentHeight));
+    leading.layout(BoxConstraints.tightFor(width: timelineWidth), parentUsesSize: true);
 
     final leadingParentData = (leading.parentData! as MultiChildLayoutParentData);
     leadingParentData.offset = switch (textDirection) {
@@ -146,7 +148,8 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final contentSize = _layoutContent(content, timelineSize.width, constraints, textDirection!);
     _layoutLeading(leading, timelineSize.width, contentSize.height, constraints, textDirection!);
 
-    size = Size(constraints.maxWidth, contentSize.height);
+    final height = max(contentSize.height, leading.size.height);
+    size = Size(constraints.maxWidth, height);
   }
 
   @override
