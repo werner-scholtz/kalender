@@ -3,10 +3,12 @@ import 'package:kalender/kalender.dart';
 
 abstract class NewDraggableWidget<T extends Object?> extends StatelessWidget {
   final CalendarController<T> controller;
+  final CalendarCallbacks<T>? callbacks;
 
   const NewDraggableWidget({
     super.key,
     required this.controller,
+    required this.callbacks,
   });
 
   /// Calculate the DateTimeRange of the new event.
@@ -16,8 +18,9 @@ abstract class NewDraggableWidget<T extends Object?> extends StatelessWidget {
   void createNewEvent(DateTime date, Offset localPosition) {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
     final newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
-    controller.setNewEvent(newEvent);
-    controller.selectEvent(newEvent);
+    final event = callbacks?.onEventCreate?.call(newEvent) ?? newEvent;
+    controller.setNewEvent(event);
+    controller.selectEvent(event);
   }
 
   /// Deselect the new event.

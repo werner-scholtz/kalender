@@ -95,7 +95,7 @@ mixin DragTargetUtilities<T> {
         final updatedEvent = createEvent(date);
         if (updatedEvent == null) return null;
 
-        eventsController.addEvent(updatedEvent);
+        callbacks?.onEventCreated?.call(updatedEvent);
         newEvent = null;
         controller.deselectEvent();
 

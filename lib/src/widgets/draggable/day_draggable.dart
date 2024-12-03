@@ -8,23 +8,23 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// - These draggable widgets are used to create new events.
 ///
 class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> {
-  final CalendarCallbacks<T>? callbacks;
   final MultiDayBodyConfiguration bodyConfiguration;
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
   final double pageHeight;
   final double heightPerMinute;
+
   const DayEventDraggableWidgets({
     super.key,
     required super.controller,
-    required this.callbacks,
     required this.bodyConfiguration,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
     required this.pageHeight,
     required this.dayWidth,
     required this.heightPerMinute,
+    required super.callbacks,
   });
 
   @override
@@ -92,4 +92,3 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
     return startOfDay.add(durationFromTop).asLocal();
   }
 }
-

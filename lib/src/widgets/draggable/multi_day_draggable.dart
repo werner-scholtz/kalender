@@ -6,7 +6,6 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> {
   final EventsController<T> eventsController;
-  final CalendarCallbacks<T>? callbacks;
   final DateTimeRange visibleDateTimeRange;
   final CreateEventGesture createEventTrigger;
   final double dayWidth;
@@ -16,11 +15,11 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
     super.key,
     required super.controller,
     required this.eventsController,
-    required this.callbacks,
     required this.visibleDateTimeRange,
     required this.createEventTrigger,
     required this.dayWidth,
     required this.allowEventCreation,
+    required super.callbacks,
   });
 
   @override
