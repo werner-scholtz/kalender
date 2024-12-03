@@ -7,7 +7,7 @@ import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 /// This widget renders the tile widget and resize handles in a stack.
-/// 
+///
 /// The tile widget is rendered below the resize handles.
 class DayEventTile<T extends Object?> extends EventTile<T> {
   const DayEventTile({
@@ -28,7 +28,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
       valueListenable: selectedEvent,
       builder: (context, value, child) {
         if (!isMobileDevice) {
-          if (value != null || controller.internalFocus) return const SizedBox();
+          if (controller.internalFocus) return const SizedBox();
         } else {
           if (value != event) return const SizedBox();
         }
@@ -47,10 +47,11 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
       valueListenable: selectedEvent,
       builder: (context, value, child) {
         if (!isMobileDevice) {
-          if (value != null || controller.internalFocus) return const SizedBox();
+          if (controller.internalFocus) return const SizedBox();
         } else {
           if (value != event) return const SizedBox();
         }
+
         return Draggable<Resize<T>>(
           data: resizeEvent(ResizeDirection.bottom),
           feedback: const SizedBox(),

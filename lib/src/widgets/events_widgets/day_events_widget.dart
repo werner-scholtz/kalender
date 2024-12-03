@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
+import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// This widget is renders all the event tiles that are visible on the provided dateTimeRange.
-/// 
+///
 /// It fetches the events that need to be rendered from the [EventsController],
 /// the [EventsController] is also listened to in-case events are added or updated.
-/// 
+///
 /// This widget also takes responsibility for updating the [CalendarController.visibleEvents].
-/// 
+///
 /// To render the event tiles it uses [CustomMultiChildLayout],
 /// along with a [overlapLayoutStrategy], [sideBySideLayoutStrategy] or custom strategy defined by the user.
-/// 
+///
 /// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
@@ -186,7 +187,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
             fit: StackFit.expand,
             children: [
               Positioned.fill(child: events),
-              Positioned.fill(child: dropTargetWidget),
+              Positioned.fill(child: PassThroughPointer(child: dropTargetWidget)),
             ],
           ),
         );

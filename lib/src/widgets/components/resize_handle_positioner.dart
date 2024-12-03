@@ -40,16 +40,16 @@ class VerticalTileResizeHandlePositioner extends ResizeHandlePositionerWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        late final showTop = constraints.maxHeight > kMinInteractiveDimension;
-        late final resizeHeight = min(constraints.maxHeight * 0.25, 12.0);
+        late final showTop = constraints.maxHeight > (isMobileDevice ? kMinInteractiveDimension : 24);
+        const resizeHeight = 12.0;
 
         return Stack(
           children: [
             if (showTop && showStart)
               Positioned(
                 top: 0,
-                left: isMobileDevice ? null : 0,
-                right: 0,
+                left: 0,
+                right: isMobileDevice ? null : 0,
                 width: isMobileDevice ? resizeHeight : null,
                 height: resizeHeight,
                 child: startResizeDetector,
