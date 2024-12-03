@@ -225,8 +225,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   }
 
   @override
-  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) =>
-      layoutData;
+  List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) => layoutData;
 }
 
 /// The [SideBySideLayoutDelegate] lays out [CalendarEvent]'s next to one another.
@@ -262,9 +261,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
       final group = horizontalGroups.elementAt(i);
       final verticalLayoutData = group.verticalLayoutData
         ..sort(
-          (a, b) => b.height.compareTo(a.height) == 0
-              ? b.top.compareTo(a.top)
-              : b.height.compareTo(a.height),
+          (a, b) => b.height.compareTo(a.height) == 0 ? b.top.compareTo(a.top) : b.height.compareTo(a.height),
         );
 
       final numberOfEvents = verticalLayoutData.length;

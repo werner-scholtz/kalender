@@ -21,8 +21,9 @@ enum ResizeDirection {
   /// Resizes the event to the bottom.
   bottom;
 
-  const ResizeDirection();
-
+  /// Is the [ResizeDirection] in a vertical direction. [top]/[bottom]
   bool get vertical => this == top || this == bottom;
+
+  /// Is the [ResizeDirection] in a horizontal direction. [left]/[right]
   bool get horizontal => this == left || this == right;
 }
