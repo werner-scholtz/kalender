@@ -18,12 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
+      
+      - name: Remove examples folder.
+        run: rm -rf examples/
+        shell: bash
+        working-directory: ./
 
       - name: Install dependencies
         run: flutter pub get
         shell: bash
         working-directory: ./
-
+      
       - name: Formatting check
         run: dart analyze 
         shell: bash
