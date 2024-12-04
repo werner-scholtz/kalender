@@ -91,23 +91,26 @@ class CalendarWidget extends StatelessWidget {
     );
 
     final navigationHeader = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           calendarDateTime,
+          const SizedBox(width: 4),
           IconButton.filledTonal(
             onPressed: () async {
               await controller.animateToPreviousPage();
             },
             icon: const Icon(Icons.navigate_before),
           ),
+          const SizedBox(width: 4),
           IconButton.filledTonal(
             onPressed: () {
               controller.animateToNextPage();
             },
             icon: const Icon(Icons.navigate_next),
           ),
+          const SizedBox(width: 4),
           IconButton.filledTonal(
             onPressed: () {
               controller.animateToDate(DateTime.now());
@@ -119,8 +122,17 @@ class CalendarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 DropdownMenu(
-                  dropdownMenuEntries:
-                      viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+                  dropdownMenuEntries: viewConfigurations.map((e) {
+                    return DropdownMenuEntry(value: e, label: e.name);
+                  }).toList(),
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+                        borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
+                  ),
                   initialSelection: viewConfiguration,
                   onSelected: (value) {
                     if (value == null) return;
