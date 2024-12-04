@@ -120,7 +120,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
       fit: StackFit.expand,
       children: [
         tileWidget,
-        Positioned.fill(child: resizeHandles),
+        if (allowResizing) Positioned.fill(child: resizeHandles),
       ],
     );
   }
