@@ -12,19 +12,19 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Views:** Day, Multi-day and Month.
 * **Reschedule:** Drag and Drop events. 
-* **Resize:** Resize events on desktop, see this for mobile.
-* **Interaction:** Decide how you want to handle interaction with the calendar. [find out more]()
-* **Appearance:** Customize the default components or provide custom builders. [find out more]()
-* **Event layout:** Use a provided layout delegate or create a custom one. [find out more]()
-
+* **Resize:** Resize events on desktop and mobile.
+* **Controllers:** Manage your calendar widget with these controllers. [find out more](#controllers)
+* **Behavior:** Decide how you want to handle interaction with the calendar. [find out more](#customizing-the-behavior)
+* **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
+* **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 ...
 
 ## Planned Features
 
-* **Views:** Schedule and FreeScroll.
+* **Views:** Add Schedule and FreeScroll, improvements to the Month view.
 * **Directionality:** Right to Left directionality.
 * **Repeating Events:** Repeating events that only have to be added once.
-* **Event layout:** More examples of how to leverage this to achieve different things.
+* **Event layout:** More examples of how to leverage this to achieve specific tasks.
 
 ...
 
@@ -66,15 +66,209 @@ Widget build(BuildContext context) {
 }
 ```
 
+## Controllers
+
+The two controllers [EventsController] and [CalendarController] do what their names imply:
+
+### EventsController
+
+The [EventsController]() manages and exposes events to calendar widgets.
+It has a few functions to manipulate events:
+- [addEvent]() Add a new event.
+- [addEvents]() Add multiple new events.
+- [removeEvent]() Remove a event.
+- [removeWhere]() Remove events where they match a test case.
+- [updateEvent]() Updates an event.
+- [clearEvents]() Clear all the stored events.
+
+### CalendarController
+
+The [CalendarController]() allows you to manage a single calendar widget, and it also exposes details about what the widget is displaying.
+This controller has a few functions for navigating:
+- [jumpToPage](): Jump to a specific page.
+- [jumpToDate](): Jump to a specific date.
+- [animateToNextPage](): Animate to the next page.
+- [animateToPreviousPage](): Animate to the previous page.
+- [animateToDate](): Animate to the given date.
+- [animateToDateTime](): Animate to the given date time.
+- [animateToEvent]() Animate to the given event.
+
+Note:
+- The CalendarController makes use of a [ViewController] which implements these functions for a specific view type (MultiDay, Month).
+  These specific implementations of the [ViewController] ([MultiDayViewController], [MonthViewController]) uses a [ViewConfiguration],
+  which has specific implementations these functions.
+ 
+## Customizing the behavior
+
+### Callbacks
+
+The calendar has a few useful callback functions, which can change how interactions with the calendar widget is handled.
+
+<details>
+  <summary>CalendarCallbacks details</summary>
+
+  ```dart
+  CalendarCallbacks(
+    // Called when an event is tapped.
+    onEventTapped: (event, renderBox) {},
+
+    // Called when an event is about to be created.
+    onEventCreate: (event) {
+      // This allows you to modify the event before it is created.
+      return event.copyWith(data: data);
+    }
+    
+    // Called when a new event has been created.
+    onEventCreated: (event) {
+      // Add the event to the eventsController.
+      eventsController.addEvent(event);
+    },
+
+    // Called before a event is changed.
+    onEventChange: (event) {}
+
+    // Called when a event has been changed (rescheduled / resized)
+    onEventChanged: (event, updatedEvent) {
+      // Do something with the updated event.
+      // ex. Update it in your database/long term storage.
+    },
+
+    // Called when a page is changed.
+    //
+    // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
+    onPageChanged: (visibleDateTimeRange) {},
+  )
+  ```
+  </summary>
+</details>
+
+
+
+### Header and Body
+
+The `CalendarHeader` and `CalendarBody` both take configuration object's for the different `ViewConfigurations`.
+These configuration classes allow you to choose what interactions are allowed and how they work.
+
+Some behaviors that can be customized:
+- Allow the user to create events.
+- Allow the user to resize events.
+- Allow the user to reschedule events.
+- The trigger to create a new event.
+- Event snapping.
+- Page/Scroll navigation when rescheduling events.
+- Page/Scroll physics.
+- Event layout strategy.
+
+
+Examples:
+<details>
+  <summary>MultiDayHeaderConfiguration</summary>
+
+  ```dart
+  CalendarHeader(
+    multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+      // Whether to show event tiles, useful if you want to display the header but not the tiles.
+      showTiles: true,
+      // The height of the tiles.
+      tileHeight: 24,
+      // Allow events to be resized.
+      allowResizing: true,
+      // Allow events to be rescheduled.
+      allowRescheduling: true,
+      // Allow events to be created.
+      allowEventCreation: true,
+      // The layout strategy used to layout events.
+      eventLayoutStrategy: defaultMultiDayLayoutStrategy,
+      // The configuration for triggering page navigation.
+      pageTriggerConfiguration: PageTriggerConfiguration(),
+      // The configuration for triggering scroll navigation.
+      scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+    ),
+  );
+  ```
+  </summary>
+</details>
+
+<details>
+  <summary>MultiDayBodyConfiguration</summary>
+
+  ```dart
+  CalendarBody(
+    multiDayBodyConfiguration: MultiDayBodyConfiguration(
+      // Whether to show events that are longer than 1 day.
+      showMultiDayEvents: true,
+      // Allow events to be resized.
+      allowResizing: true,
+      // Allow events to be rescheduled.
+      allowRescheduling: true,
+      // Allow events to be created.
+      allowEventCreation: true,
+      // The gesture used to create new events.
+      createEventGesture: CreateEventGesture.tap,
+      // The snap interval ex. 15 events will snap to every 15 minute interval.
+      snapIntervalMinutes: 15,
+      // Whether to snap to the time indicator.
+      snapToTimeIndicator: true,
+      // Whether to snap to other events.
+      snapToOtherEvents: true,
+      // The range in which events will be snapped, 
+      // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
+      snapRange: Duration(minutes: 5),
+      // The duration of events created by the `createEventGesture`
+      newEventDuration: Duration(minutes: 30),
+      // The configuration for triggering page navigation.
+      pageTriggerConfiguration: PageTriggerConfiguration(),
+      // The configuration for triggering scroll navigation.
+      scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+      // The layout strategy used by the body to layout events.
+      eventLayoutStrategy: overlapLayoutStrategy,
+      // The physics used by the scrollable body.
+      scrollPhysics: BouncingScrollPhysics(),
+      // The physics used by the page view.
+      pageScrollPhysics: BouncingScrollPhysics(),
+    ),
+  );
+  ```
+  </summary>
+</details>
+
+<details>
+  <summary>MultiDayHeaderConfiguration</summary>
+
+  ```dart
+  CalendarBody(
+    // The MonthBody makes use the MultiDayHeaderConfiguration
+    monthBodyConfiguration: MultiDayHeaderConfiguration(
+      // Whether to show event tiles, useful if you want to display the header but not the tiles.
+      showTiles: true,
+      // The height of the tiles.
+      tileHeight: 24,
+      // Allow events to be resized.
+      allowResizing: true,
+      // Allow events to be rescheduled.
+      allowRescheduling: true,
+      // Allow events to be created.
+      allowEventCreation: true,
+      // The layout strategy used to layout events.
+      eventLayoutStrategy: defaultMultiDayLayoutStrategy,
+      // The configuration for triggering page navigation.
+      pageTriggerConfiguration: PageTriggerConfiguration(),
+      // The configuration for triggering scroll navigation.
+      scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+    ), 
+  );
+  ```
+  </summary>
+</details>
 
 ## Customizing the look
 
 There are a few ways to customize the look of the calendar:
-- [Tile Components](#tile-components)
+- [Tile Components](#tile-components) allows you change the look of events rendered in the calendar.
 
 General Components:
-- [Multi-day Components](#month-components)
-- [Month Components](#tile-components)
+- [Multi-day Components](#month-components) allows you to change the look of the day and multi-day views.
+- [Month Components](#tile-components) allows you to change the look of the month view.
 
 ### Tile Components
 
@@ -196,139 +390,10 @@ CalendarView(
 );
 ```
 
-## Customizing the behavior
+### Event layout
 
-### Callbacks
+The packages makes use of [CustomMultiChildLayout](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) to layout event tiles.
+The `CustomMultiChildLayout` uses a [MultiChildLayoutDelegate](https://api.flutter.dev/flutter/rendering/MultiChildLayoutDelegate-class.html) to determine the positions of tiles.
 
-The calendar has a few useful callback functions:
-
-```dart
-CalendarCallbacks(
-  // Called when an event is tapped.
-  onEventTapped: (event, renderBox) {},
-
-  // Called when an event is about to be created.
-  onEventCreate: (event) {
-    // This allows you to modify the event before it is created.
-    return event.copyWith(data: data);
-  }
-  
-  // Called when a new event has been created.
-  onEventCreated: (event) {
-    // Add the event to the eventsController.
-    eventsController.addEvent(event);
-  },
-
-  // Called before a event is changed.
-  onEventChange: (event) {}
-
-  // Called when a event has been changed (rescheduled / resized)
-  onEventChanged: (event, updatedEvent) {
-    // Do something with the updated event.
-    // ex. Update it in your database/long term storage.
-  },
-
-  // Called when a page is changed.
-  //
-  // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
-  onPageChanged: (visibleDateTimeRange) {},
-)
-```
-
-### Header and Body
-
-The `CalendarHeader` and `CalendarBody` both take configuration object's for the different `ViewConfigurations`.
-
-Some behaviors that can be customized:
-- Allow the user to create events.
-- Allow the user to resize events.
-- Allow the user to reschedule events.
-- The trigger to create a new event.
-- Event snapping.
-- Page/Scroll navigation when rescheduling events.
-- Page/Scroll physics.
-- Event layout strategy.
-
-#### Header
-```dart
-CalendarHeader(
-  multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
-    // Whether to show event tiles, useful if you want to display the header but not the tiles.
-    showTiles: true,
-    // The height of the tiles.
-    tileHeight: 24,
-    // Allow events to be resized.
-    allowResizing: true,
-    // Allow events to be rescheduled.
-    allowRescheduling: true,
-    // Allow events to be created.
-    allowEventCreation: true,
-    // The layout strategy used to layout events.
-    eventLayoutStrategy: defaultMultiDayLayoutStrategy,
-    // The configuration for the page navigation.
-    pageTriggerConfiguration: PageTriggerConfiguration(),
-    // The configuration for the scroll navigation.
-    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
-  ),
-);
-```
-
-#### Body
-```dart
-CalendarBody(
-  multiDayBodyConfiguration: MultiDayBodyConfiguration(
-    // Whether to show events that are longer than 1 day.
-    showMultiDayEvents: true,
-    // Allow events to be resized.
-    allowResizing: true,
-    // Allow events to be rescheduled.
-    allowRescheduling: true,
-    // Allow events to be created.
-    allowEventCreation: true,
-    // The gesture used to create new events.
-    createEventGesture: CreateEventGesture.tap,
-    // The snap interval ex. 15 events will snap to every 15 minute interval.
-    snapIntervalMinutes: 15,
-    // Whether to snap to the time indicator.
-    snapToTimeIndicator: true,
-    // Whether to snap to other events.
-    snapToOtherEvents: true,
-    // The range in which events will be snapped, 
-    // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
-    snapRange: Duration(minutes: 5),
-    // The duration of events created by the `createEventGesture`
-    newEventDuration: Duration(minutes: 30),
-    // The configuration for the page navigation.
-    pageTriggerConfiguration: PageTriggerConfiguration(),
-    // The configuration for the scroll navigation.
-    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
-    // The layout strategy used by the body to layout events.
-    eventLayoutStrategy: overlapLayoutStrategy,
-    // The physics used by the scrollable body.
-    scrollPhysics: BouncingScrollPhysics(),
-    // The physics used by the page view.
-    pageScrollPhysics: BouncingScrollPhysics(),
-  ),
-  // The MonthBody makes use the MultiDayHeaderConfiguration
-  monthBodyConfiguration: MultiDayHeaderConfiguration(
-    // Whether to show event tiles, useful if you want to display the header but not the tiles.
-    showTiles: true,
-    // The height of the tiles.
-    tileHeight: 24,
-    // Allow events to be resized.
-    allowResizing: true,
-    // Allow events to be rescheduled.
-    allowRescheduling: true,
-    // Allow events to be created.
-    allowEventCreation: true,
-    // The layout strategy used to layout events.
-    eventLayoutStrategy: defaultMultiDayLayoutStrategy,
-    // The configuration for the page navigation.
-    pageTriggerConfiguration: PageTriggerConfiguration(),
-    // The configuration for the scroll navigation.
-    scrollTriggerConfiguration: ScrollTriggerConfiguration(),
-  ), 
-);
-```
-
-
+The package provides some default layoutStrategies, `overlapLayoutStrategy` and `sideBySideLayoutStrategy` for day/multi-day views.
+You can create your own layoutStrategy, using the two provided strategies as a reference might be useful.
