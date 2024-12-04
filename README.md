@@ -146,7 +146,6 @@ The calendar has a few useful callback functions, which can change how interacti
 </details>
 
 
-
 ### Header and Body
 
 The `CalendarHeader` and `CalendarBody` both take configuration object's for the different `ViewConfigurations`.
@@ -278,38 +277,45 @@ General Components:
 The `TileComponents` object is used to customize the look of the tiles displayed in the calendar.
 The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can be customized.
 
-```dart
-TileComponents(
-  // The default builder for stationary event tiles.
-  tileBuilder: (event) => Container(),
+<details>
+  <summary>TileComponents details</summary>
 
-  // The builder for the stationary event tile. (When it is being dragged)
-  tileWhenDraggingBuilder: (event) => Container(),
+  ```dart
+  TileComponents(
+    // The default builder for stationary event tiles.
+    tileBuilder: (event) => Container(),
 
-  // The builder for the feedback tile, follows the cursor/finger. (When it is being dragged)
-  feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+    // The builder for the stationary event tile. (When it is being dragged)
+    tileWhenDraggingBuilder: (event) => Container(),
 
-  // The builder for the drop target event tile.
-  dropTargetTile: (event) => Container(),
+    // The builder for the feedback tile, follows the cursor/finger. (When it is being dragged)
+    feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
 
-  // The dragAnchorStrategy used by the [feedbackTileBuilder].
-  dragAnchorStrategy: childDragAnchorStrategy,
+    // The builder for the drop target event tile.
+    dropTargetTile: (event) => Container(),
 
-  // A widget that allows you to customize where the resize handles are placed vertically.
-  // Your widget should extend the `ResizeHandlePositionerWidget`
-  verticalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() , 
+    // The dragAnchorStrategy used by the [feedbackTileBuilder].
+    dragAnchorStrategy: childDragAnchorStrategy,
 
-  // The vertical resize handle.
-  verticalResizeHandle: Container(),
+    // A widget that allows you to customize where the resize handles are placed vertically.
+    // Your widget should extend the `ResizeHandlePositionerWidget`
+    verticalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() , 
 
-  // A widget that allows you to customize where the resize handles are placed horizontally.
-  // Your widget should extend the `ResizeHandlePositionerWidget`
-  horizontalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() ,
+    // The vertical resize handle.
+    verticalResizeHandle: Container(),
 
-  // The horizontal resize handle.
-  horizontalResizeHandle: Container(),
-)
-```
+    // A widget that allows you to customize where the resize handles are placed horizontally.
+    // Your widget should extend the `ResizeHandlePositionerWidget`
+    horizontalHandlePositioner: (startResizeHandle, endResizeHandle, showStart, showEnd) => ResizeHandlePositionerWidget() ,
+
+    // The horizontal resize handle.
+    horizontalResizeHandle: Container(),
+  )
+  ```
+  </summary>
+</details>
+
+
 
 ### General Components
 
@@ -319,79 +325,88 @@ The CalendarView takes a components object.
 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
-#### Month Components
 
-```dart
-CalendarView(
-  components: CalendarComponents(
-    monthComponents: MonthComponents(
-      headerComponents: MonthHeaderComponents(
-        // Custom day header builder.
-        weekDayHeaderBuilder: (date, style) => SizedBox(),
-      ),
-      bodyComponents: MonthBodyComponents(
-        // Custom grid builder.
-        monthGridBuilder: (style) => SizedBox(),
-        
-        // Custom left trigger. (Must constrain the width)
-        leftTriggerBuilder: (pageWidth) => SizedBox(),
-        
-        // Custom right trigger. (Must constrain the width)
-        rightTriggerBuilder: (pageWidth) => SizedBox(),
-      ),
-    ),
-  ),
-);
-```
+<details>
+  <summary>MonthComponents</summary>
 
-#### Multi-day Components
-
-```dart
-CalendarView(
-  components: CalendarComponents(
-    multiDayComponents: MultiDayComponents(
-      headerComponents: MultiDayHeaderComponents(
-        // Custom Day Header builder.
-        dayHeaderBuilder: (date, style) => CustomWidget(),
-
-        // Custom Week Number builder.
-        weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
-
-        // Custom left trigger. (Must constrain the width)
-        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-
-        // Custom right trigger. (Must constrain the width)
-        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-      ),
-      bodyComponents: MultiDayBodyComponents(
-        // Custom Hour Line builder.
-        hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
-
-        // Custom time line builder.
-        timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
-
-        // Custom day separator builder.
-        daySeparator: (style) => CustomWidget(),
-
-        // Custom event indicator builder.
-        timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
-
-        // Left trigger. (Must constrain the width)
-        leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
-
-        // Right trigger. (Must constrain the width)
-        rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
-
-        // Top trigger. (Must constrain the height)
-        topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-
-        // Bottom trigger. (Must constrain the height)
-        bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+  ```dart
+  CalendarView(
+    components: CalendarComponents(
+      monthComponents: MonthComponents(
+        headerComponents: MonthHeaderComponents(
+          // Custom day header builder.
+          weekDayHeaderBuilder: (date, style) => SizedBox(),
+        ),
+        bodyComponents: MonthBodyComponents(
+          // Custom grid builder.
+          monthGridBuilder: (style) => SizedBox(),
+          
+          // Custom left trigger. (Must constrain the width)
+          leftTriggerBuilder: (pageWidth) => SizedBox(),
+          
+          // Custom right trigger. (Must constrain the width)
+          rightTriggerBuilder: (pageWidth) => SizedBox(),
+        ),
       ),
     ),
-  ),
-);
-```
+  );
+  ```
+  </summary>
+</details>
+
+
+<details>
+  <summary>MultiDayComponents</summary>
+
+  ```dart
+  CalendarView(
+    components: CalendarComponents(
+      multiDayComponents: MultiDayComponents(
+        headerComponents: MultiDayHeaderComponents(
+          // Custom Day Header builder.
+          dayHeaderBuilder: (date, style) => CustomWidget(),
+
+          // Custom Week Number builder.
+          weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
+
+          // Custom left trigger. (Must constrain the width)
+          leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+
+          // Custom right trigger. (Must constrain the width)
+          rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        ),
+        bodyComponents: MultiDayBodyComponents(
+          // Custom Hour Line builder.
+          hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+
+          // Custom time line builder.
+          timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+
+          // Custom day separator builder.
+          daySeparator: (style) => CustomWidget(),
+
+          // Custom event indicator builder.
+          timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
+
+          // Left trigger. (Must constrain the width)
+          leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+
+          // Right trigger. (Must constrain the width)
+          rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+
+          // Top trigger. (Must constrain the height)
+          topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+
+          // Bottom trigger. (Must constrain the height)
+          bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+        ),
+      ),
+    ),
+  );
+  ```
+  </summary>
+</details>
+
 
 ### Event layout
 
