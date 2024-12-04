@@ -93,10 +93,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     viewController?.jumpToDate(date);
   }
 
-  /// Animate to the next page.
-  ///
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToNextPage({
     Duration? duration,
@@ -108,10 +104,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     );
   }
 
-  /// Animate to the previous page.
-  ///
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToPreviousPage({
     Duration? duration,
@@ -123,11 +115,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     );
   }
 
-  /// Animate to the date part of the given [DateTime].
-  ///
-  /// [date] the [DateTime] to animate to.
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
   @override
   Future<void> animateToDate(
     DateTime date, {
@@ -141,13 +128,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     );
   }
 
-  /// Animate to the date and time parts of the given [DateTime].
-  ///
-  /// [date] the [DateTime] to animate to.
-  /// [pageDuration] the [Duration] of the page animation.
-  /// [pageCurve] the [Curve] of the page animation.
-  /// [scrollDuration] the [Duration] of the scroll animation.
-  /// [scrollCurve] the [Curve] of the scroll animation.
   @override
   Future<void> animateToDateTime(
     DateTime date, {
@@ -165,12 +145,6 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     );
   }
 
-  /// Animate to the given [CalendarEvent].
-  ///
-  /// [event] the [CalendarEvent] to animate to.
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
-  /// [centerEvent] whether to center the event in the view.
   @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {

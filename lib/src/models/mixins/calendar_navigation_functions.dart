@@ -11,6 +11,7 @@ mixin CalendarNavigationFunctions<T> {
   /// Animate to the next page.
   ///
   /// [duration] the [Duration] of the animation.
+  ///
   /// [curve] the [Curve] of the animation.
   Future<void> animateToNextPage({
     Duration? duration,
@@ -20,16 +21,19 @@ mixin CalendarNavigationFunctions<T> {
   /// Animate to the previous page.
   ///
   /// [duration] the [Duration] of the animation.
+  ///
   /// [curve] the [Curve] of the animation.
   Future<void> animateToPreviousPage({
     Duration? duration,
     Curve? curve,
   });
 
-  /// Animate to the given [DateTime].
+  /// Animate to the date part of the given [DateTime].
   ///
   /// [date] the [DateTime] to animate to.
+  ///
   /// [duration] the [Duration] of the animation.
+  ///
   /// [curve] the [Curve] of the animation.
   Future<void> animateToDate(
     DateTime date, {
@@ -37,12 +41,18 @@ mixin CalendarNavigationFunctions<T> {
     Curve? curve,
   });
 
-  /// Animate to the given [DateTime].
+  /// Animate to the date and time parts of the given [DateTime].
   ///
   /// [date] the [DateTime] to animate to.
+  ///
   /// [pageDuration] the [Duration] of the page animation.
+  ///
   /// [pageCurve] the [Curve] of the page animation.
+  ///
   /// [scrollDuration] the [Duration] of the scroll animation.
+  ///
+  /// [scrollCurve] the [Curve] of the scroll animation.
+  ///
   /// [scrollCurve] the [Curve] of the scroll animation.
   Future<void> animateToDateTime(
     DateTime date, {
@@ -55,9 +65,16 @@ mixin CalendarNavigationFunctions<T> {
   /// Animate to the given [CalendarEvent].
   ///
   /// [event] the [CalendarEvent] to animate to.
-  /// [duration] the [Duration] of the animation.
-  /// [curve] the [Curve] of the animation.
-  /// [centerEvent] whether to center the event in the view.
+  ///
+  /// [pageDuration] the [Duration] of the page animation.
+  ///
+  /// [pageCurve] the [Curve] of the page animation.
+  ///
+  /// [scrollDuration] the [Duration] of the scroll animation.
+  ///
+  /// [scrollCurve] the [Curve] of the scroll animation.
+  ///
+  /// [centerEvent] center the event on the viewport.
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
     Duration? pageDuration,
