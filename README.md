@@ -2,7 +2,7 @@ This Flutter package offers a Calendar Widget featuring a Day, MultiDay and Mont
 
 ## Note
 - Consider v0.5.0 a new package as it has undergone major changes.
-- This is a WIP package so there will be some breaking changes until version 1.0.0.
+- This is a WIP package so there will be breaking changes until version 1.0.0.
 
 ## Web Example
 
@@ -17,6 +17,9 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Behavior:** Decide how you want to handle interaction with the calendar. [find out more](#customizing-the-behavior)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
+
+<img src="https://github.com/werner-scholtz/kalender/blob/calendar_rework/readme_assets/all_views.png?raw=true" width="100%"/> 
+
 ...
 
 ## Planned Features
@@ -68,34 +71,34 @@ Widget build(BuildContext context) {
 
 ## Controllers
 
-The two controllers [EventsController] and [CalendarController] do what their names imply:
+The two controllers EventsController and CalendarController do what their names imply:
 
 ### EventsController
 
-The [EventsController]() manages and exposes events to calendar widgets.
+The [EventsController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to calendar widgets.
 It has a few functions to manipulate events:
-- [addEvent]() Add a new event.
-- [addEvents]() Add multiple new events.
-- [removeEvent]() Remove a event.
-- [removeWhere]() Remove events where they match a test case.
-- [updateEvent]() Updates an event.
-- [clearEvents]() Clear all the stored events.
+- `addEvent` Add a new event.
+- `addEvents` Add multiple new events.
+- `removeEvent` Remove a event.
+- `removeWhere` Remove events where they match a test case.
+- `updateEvent` Updates an event.
+- `clearEvents` Clear all the stored events.
 
 ### CalendarController
 
-The [CalendarController]() allows you to manage a single calendar widget, and it also exposes details about what the widget is displaying.
+The [CalendarController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/calendar_controller.dart#L15) allows you to manage a single calendar widget, and it also exposes details about what the widget is displaying.
 This controller has a few functions for navigating:
-- [jumpToPage](): Jump to a specific page.
-- [jumpToDate](): Jump to a specific date.
-- [animateToNextPage](): Animate to the next page.
-- [animateToPreviousPage](): Animate to the previous page.
-- [animateToDate](): Animate to the given date.
-- [animateToDateTime](): Animate to the given date time.
-- [animateToEvent]() Animate to the given event.
+- `jumpToPage`: Jump to a specific page.
+- `jumpToDate`: Jump to a specific date.
+- `animateToNextPage`: Animate to the next page.
+- `animateToPreviousPage`: Animate to the previous page.
+- `animateToDate`: Animate to the given date.
+- `animateToDateTime`: Animate to the given date time.
+- `animateToEvent` Animate to the given event.
 
 Note:
-- The CalendarController makes use of a [ViewController] which implements these functions for a specific view type (MultiDay, Month).
-  These specific implementations of the [ViewController] ([MultiDayViewController], [MonthViewController]) uses a [ViewConfiguration],
+- The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
+  These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses a [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
   which has specific implementations these functions.
  
 ## Customizing the behavior
@@ -395,5 +398,5 @@ CalendarView(
 The packages makes use of [CustomMultiChildLayout](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) to layout event tiles.
 The `CustomMultiChildLayout` uses a [MultiChildLayoutDelegate](https://api.flutter.dev/flutter/rendering/MultiChildLayoutDelegate-class.html) to determine the positions of tiles.
 
-The package provides some default layoutStrategies, `overlapLayoutStrategy` and `sideBySideLayoutStrategy` for day/multi-day views.
+The package provides some default layoutStrategies, [overlapLayoutStrategy](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/layout_delegates/event_layout_delegate.dart#L26) and [sideBySideLayoutStrategy](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/layout_delegates/event_layout_delegate.dart#L41) for day/multi-day views.
 You can create your own layoutStrategy, using the two provided strategies as a reference might be useful.
