@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
-import 'package:web_demo/widgets/trigger.dart';
 import 'package:web_demo/widgets/zoom.dart';
 
 class CalendarWidget extends StatelessWidget {
@@ -59,19 +58,6 @@ class CalendarWidget extends StatelessWidget {
       dragAnchorStrategy: dragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-
-    final monthBodyComponents = MonthBodyComponents(
-      leftTriggerBuilder: _horizontalTrigger,
-      rightTriggerBuilder: _horizontalTrigger,
-    );
-    final multiDayBodyComponents = MultiDayBodyComponents(
-      leftTriggerBuilder: _horizontalTrigger,
-      rightTriggerBuilder: _horizontalTrigger,
-    );
-    final multiDayHeaderComponents = MultiDayHeaderComponents(
-      leftTriggerBuilder: _horizontalTrigger,
-      rightTriggerBuilder: _horizontalTrigger,
     );
 
     final calendarDateTime = ValueListenableBuilder(
@@ -149,7 +135,6 @@ class CalendarWidget extends StatelessWidget {
     final calendarHeader = CalendarHeader<Event>(
       multiDayTileComponents: multiDayTileComponents,
       multiDayHeaderConfiguration: headerConfiguration,
-      multiDayHeaderComponents: multiDayHeaderComponents,
     );
 
     final header = Material(
@@ -167,8 +152,6 @@ class CalendarWidget extends StatelessWidget {
     final calendarBody = CalendarBody<Event>(
       multiDayTileComponents: tileComponents,
       monthTileComponents: tileComponents,
-      monthBodyComponents: monthBodyComponents,
-      multiDayBodyComponents: multiDayBodyComponents,
       multiDayBodyConfiguration: bodyConfiguration,
       monthBodyConfiguration: headerConfiguration,
     );
@@ -237,10 +220,6 @@ class CalendarWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     );
-  }
-
-  Widget _horizontalTrigger(double pageWidth) {
-    return TriggerWidget(size: Size.fromWidth(pageWidth / 50));
   }
 
   Offset dragAnchorStrategy(

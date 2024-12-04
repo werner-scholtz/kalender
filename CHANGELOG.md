@@ -1,166 +1,22 @@
-## 0.4.0
-- Fixed WeekNumbers for CustomMultiDay views.
+## 0.5.0
 
-## 0.3.9
-- Removed Intl dependency.
-- Added `stringBuilders` to all StyleClasses that display Names or the like.
-- Fixed MonthViewConfiguration showHeader option.
+### Breaking changes:
+Version 0.5.0 has quite a few Breaking changes, there is no easy way to migrate to this version. Here are a few important things that have changed.
 
-## 0.3.8
-- Fixed displaying incorrect page when changing firstDayOfWeek
-- Updated decencies.
+- The [CalendarView](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_view.dart) now takes a `header` [CalendarHeader](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_header.dart) and `body` [CalendarBody](https://github.com/werner-scholtz/kalender/blob/main/lib/src/calendar_body.dart) widgets. You can wrap these widgets in other widgets to style them as seen [here](https://github.com/werner-scholtz/kalender/blob/9a053c9daac51985bbbb336393d5013ef3977bd0/example/lib/main.dart#L112)
 
-## 0.3.7
-- Increased minimum dart sdk version to 3.0.0.
-- Added firstDayOfWeek to WeekConfiguration.
-- Fixed WeekNumber component displaying incorrect week number.
+- Event tiles now make use of the [Draggable](https://api.flutter.dev/flutter/widgets/Draggable-class.html) widget provided by flutter.
+Take a look at the [TileComponents](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/tile_components.dart) for more details on how tiles work now. This opens some interesting possibilities for displaying multiple calendars.
 
-## 0.3.6
-- Changed `showHeader` to `showDayHeader` in `MultiDayViewConfiguration` to better reflect its purpose.
-- Added `showMultiDayHeader` to `MultiDayViewConfiguration` to show/hide the multi day header.
-  Disabling this will render any multi day events in the calendar 'grid'.
+- The [CalendarCallbacks](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/calendar_callbacks.dart) (previously `CalendarEventHandlers`) have been changed so more information is given when an interaction occurs.
 
-## 0.3.5
-- Added animateToDateTime to CalendarController.
-- Fixed visibleStartTimeOfDay so it takes start hour into account.
+- The schedule view has been removed, but will be reimplemented in the future.
 
-## 0.3.4
-- NA
+### What's new
 
-## 0.3.3
-- Split animateToDate into animateToDate and animateToDateTime.
-- Added visibleStartTimeOfDay to calendar state.
-  This is the current timeOfDay that the viewport's upper edge is displaying.
+- Auto scroll/paging (https://github.com/werner-scholtz/kalender/issues/75 && https://github.com/werner-scholtz/kalender/issues/64)
+- Calender can now accept Draggable's (https://github.com/werner-scholtz/kalender/issues/48)
+- More information for the TileBuilder (https://github.com/werner-scholtz/kalender/issues/83)
 
-## 0.3.2
-- Fixed some more DST bugs.
-- animateToDate now animates to the specified time.
-
-## 0.3.1
-* Fixed DST navigation issues.
-
-## 0.3.0
-* Fixed DST issues.
-* Added export for tile_handle_style.
-
-## 0.2.3
-* Fixed incorrect display of events in the MonthView.
-* Added intl package to dependencies.
-* DayHeaderStyle: now takes a dateFormat String.
-* MonthHeaderStyle: now takes a dateFormat String.
-
-#### Breaking Changes:
-* ScheduleMonthHeaderStyle now takes a dateFormat String instead.
-
-## 0.2.2
-* Fixed issue with EventGroupBasicLayoutDelegate.
-
-## 0.2.1
-* Improvements to the MultiDayHeaderPanel.
-* Improvements to the EventGroupBasicLayoutDelegate.
-* Added CreateEventTrigger.
-* Minor bug fixes.
-
-## 0.2.0
-* Added initialHeightPerMinute.
-* Fixed MultiDayView header shadow issue.
-* Added hourLineLeftMargin to control the left margin of the hour line.
-
-## 0.1.9
-* Fixed start and end hour issue.
-
-## 0.1.8
-* Fixed enable resize option not working.
-  
-## 0.1.7
-* Fixed alignment issues.
-* Changes to layout.
-* Added options to enable/disable Resizing and Rescheduling.
-* ViewConfiguration is now a ChangeNotifier so making changes to it will now update the view.
-* Added Custom Start and End Hours to MultiDayViewConfiguration.
-
-#### Breaking Changes:
-* onCreateEvent is now split into onCreateEvent and onEventCreated.
-
-## 0.1.6
-* Fixed some gesture bugs.
-* Added name parameter to pre-defined multi day configurations.
-* Fixed time indicator bug.
-
-## 0.1.5
-* Added event tileHandleBuilder for mobile.
-* Added mobile reschedule / resize docs.
-* Changed event tile layout to use integer values.
-* Bug fixes.
-
-## 0.1.4
-* Fixed selected date.
-
-## 0.1.3
-* Updated example.
-* Renamed MultiDayEventGroupLayoutController to MultiDayEventsLayoutController.
-
-## 0.1.2
-#### Breaking Changes:
-* Added schedule view (so CalendarView now requires schedule widget)
-* Fixed typo in CalendarEvent (modifyable => modifiable)
-
-## 0.1.1
-* Fixed custom layout delegate.
-
-## 0.1.0
-
-#### Breaking Changes:
-* Changed the way events are rendered. (See example)
-* Removed Single Day view (Is now classified as multi day view with 1 day visible).
-
-## 0.0.8
-
-* Fixed FirstDayOfWeek bugs.
-* Tile stack improvements.
-
-## 0.0.7
-
-* Reworked Event Selection and Changing events.
-
-## 0.0.6
-
-* Added onChangeStart callback.
-* Added vertical scroll lock and unlock.
-* Fixed timeIndicator snap points.
-
-## 0.0.5
-* Added verticalStepDuration (Duration of each vertical step while dragging).
-* Added custom LayoutControllers.
-* Added custom LayoutControllers example.
-* Added modifiable parameter to CalendarEvent.
-* Bug fixes (Getting stuck while dragging event)
-
-## 0.0.4
-
-* Fixed link to web example.
-* Fixed bugs on mobile.
-* Removed intl dependency.
-
-## 0.0.3
-
-* Fixed desktop_views.png in README.md
-
-## 0.0.2
-
-* Fixed images in README.md
-
-## 0.0.1
-
-* Initial Release
-
-
-
-
-
-
-
-
-
-
-
+## pre-0.5.0
+- https://github.com/werner-scholtz/kalender/blob/main-0.4.2/CHANGELOG.md

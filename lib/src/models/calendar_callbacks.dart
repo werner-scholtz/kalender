@@ -1,5 +1,5 @@
-import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/calendar_view.dart';
+import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 
 /// The callbacks used by the [CalendarView].
 ///
@@ -22,3 +22,45 @@ class CalendarCallbacks<T extends Object?> {
     this.onPageChanged,
   });
 }
+
+/// The callback for when an event is tapped.
+///
+/// The [event] is the event that was tapped.
+/// The [renderBox] is the [RenderBox] of the event tile.
+typedef OnEventTapped<T extends Object?> = void Function(
+  CalendarEvent<T> event,
+  RenderBox renderBox,
+);
+
+/// The callback for when an event is about to be changed.
+typedef OnEventChange<T extends Object?> = void Function(
+  CalendarEvent<T> event,
+);
+
+/// The callback for when an event is changed.
+///
+/// [event] is the original event.
+/// [updatedEvent] is the updated event.
+typedef OnEventChanged<T extends Object?> = void Function(
+  CalendarEvent<T> event,
+  CalendarEvent<T> updatedEvent,
+);
+
+/// The call back for creating a new event.
+///
+/// [event] is the event that will be created.
+typedef OnEventCreate<T extends Object?> = CalendarEvent<T>? Function(
+  CalendarEvent<T> event,
+);
+
+/// The callback for a new event has been created.
+///
+/// [event] is the event that was created.
+typedef OnEventCreated<T extends Object?> = void Function(
+  CalendarEvent<T> event,
+);
+
+/// The callback for when a calendar page is changed.
+///
+/// [visibleDateTimeRange] is the range of dates that are visible.
+typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);

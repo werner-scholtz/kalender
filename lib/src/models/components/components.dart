@@ -1,13 +1,13 @@
 import 'package:kalender/kalender.dart';
 
 class CalendarComponents {
-  /// Components used by the month view.
+  /// Components used to override the default month components
   final MonthComponents? monthComponents;
 
   /// Styles used by the month view.
   final MonthComponentStyles? monthComponentStyles;
 
-  /// Components used by the multi day view.
+  /// Components used to override the default multi day components.
   final MultiDayComponents? multiDayComponents;
 
   /// Styles used by the multi day view.

@@ -19,19 +19,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MultiDayHeader].
   final TileComponents<T> multiDayTileComponents;
 
-  /// The components used by the [MultiDayHeader].
-  final MultiDayHeaderComponents? multiDayHeaderComponents;
-
   /// Month
-
-  /// The styles of the components used by the [MultiDayHeader].
-  final MultiDayHeaderComponentStyles? multiDayHeaderComponentStyles;
-
-  /// The tile components used by the [MultiDayHeader].
-  final MonthHeaderComponents? monthHeaderComponents;
-
-  /// The styles of the components used by the [MultiDayHeader].
-  final MonthHeaderComponentStyles? monthHeaderComponentStyles;
 
   /// Creates a CalendarHeader widget.
   ///
@@ -41,15 +29,11 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   ///
   const CalendarHeader({
     super.key,
+    required this.multiDayTileComponents,
     this.eventsController,
     this.calendarController,
     this.callbacks,
-    required this.multiDayTileComponents,
-    this.monthHeaderComponents,
-    this.monthHeaderComponentStyles,
     this.multiDayHeaderConfiguration,
-    this.multiDayHeaderComponents,
-    this.multiDayHeaderComponentStyles,
   });
 
   @override

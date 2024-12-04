@@ -109,6 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
             onEventCreate: (event) => event,
             onEventCreated: (event) => eventsController.addEvent(event),
           ),
+          components: CalendarComponents(
+            multiDayComponents: MultiDayComponents(),
+            multiDayComponentStyles: MultiDayComponentStyles(),
+            monthComponents: MonthComponents(),
+            monthComponentStyles: MonthComponentStyles(),
+          ),
           header: Material(
             color: Theme.of(context).colorScheme.surface,
             surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
@@ -118,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 _calendarToolbar(),
                 CalendarHeader<Event>(
                   multiDayTileComponents: tileComponents(body: false),
-                  multiDayHeaderComponents: const MultiDayHeaderComponents(),
                 ),
               ],
             ),
@@ -126,7 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
           body: CalendarBody<Event>(
             multiDayTileComponents: tileComponents(),
             monthTileComponents: tileComponents(),
-            multiDayBodyComponents: const MultiDayBodyComponents(),
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
               showMultiDayEvents: false,
             ),

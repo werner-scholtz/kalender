@@ -15,23 +15,11 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MultiDayBody].
   final TileComponents<T> multiDayTileComponents;
 
-  /// The components used by the [MultiDayBody].
-  final MultiDayBodyComponents? multiDayBodyComponents;
-
-  /// The styles of the components used by the [MultiDayBody].
-  final MultiDayBodyComponentStyles? multiDayBodyComponentStyles;
-
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
   final TileComponents<T> monthTileComponents;
-
-  /// The components used by the [MonthBody].
-  final MonthBodyComponents? monthBodyComponents;
-
-  /// The styles of the components used by the [MonthBody].
-  final MonthBodyComponentStyles? monthBodyComponentStyles;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration? monthBodyConfiguration;
@@ -50,12 +38,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
-    this.multiDayBodyComponents,
-    this.multiDayBodyComponentStyles,
     required this.monthTileComponents,
     this.monthBodyConfiguration,
-    this.monthBodyComponents,
-    this.monthBodyComponentStyles,
   });
 
   @override
