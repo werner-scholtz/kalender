@@ -32,14 +32,12 @@ class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tileComponents = TileComponents<Event>(
-      tileBuilder: (event, tileRange) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
+      tileBuilder: (event, range) => _tileBuilder(
+        event,
+        range,
+        const EdgeInsets.symmetric(horizontal: 1),
+        const EdgeInsets.all(4),
+      ),
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
@@ -49,15 +47,12 @@ class CalendarWidget extends StatelessWidget {
     );
 
     final multiDayTileComponents = TileComponents<Event>(
-      tileBuilder: (event, tileRange) {
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
-          decoration: BoxDecoration(
-            color: Colors.green.withAlpha(150),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        );
-      },
+      tileBuilder: (event, range) => _tileBuilder(
+        event,
+        range,
+        const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
+        const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+      ),
       dropTargetTile: _dropTargetTile,
       feedbackTileBuilder: _feedbackTileBuilder,
       tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
@@ -124,9 +119,8 @@ class CalendarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 DropdownMenu(
-                  dropdownMenuEntries: viewConfigurations
-                      .map((e) => DropdownMenuEntry(value: e, label: e.name))
-                      .toList(),
+                  dropdownMenuEntries:
+                      viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
                   initialSelection: viewConfiguration,
                   onSelected: (value) {
                     if (value == null) return;
@@ -180,31 +174,54 @@ class CalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _feedbackTileBuilder(CalendarEvent event, Size dropTargetWidgetSize) {
+  Widget _tileBuilder(
+    CalendarEvent<Event> event,
+    DateTimeRange tileRange,
+    EdgeInsets margin,
+    EdgeInsets padding,
+  ) {
+    final color = (event.data?.color ?? Colors.blueGrey);
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        color: color.withAlpha(150),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: padding,
+        child: Text(
+          event.data?.title ?? "New Event",
+          style: TextStyle(color: textColor(color)),
+        ),
+      ),
+    );
+  }
+
+  Widget _feedbackTileBuilder(CalendarEvent<Event> event, Size dropTargetWidgetSize) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(
-        color: Colors.green.withAlpha(150),
+        color: (event.data?.color ?? Colors.blueGrey).withAlpha(150),
         borderRadius: BorderRadius.circular(8),
       ),
     );
   }
 
-  Widget _tileWhenDraggingBuilder(CalendarEvent event) {
+  Widget _tileWhenDraggingBuilder(CalendarEvent<Event> event) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green.withAlpha(20),
+        color: (event.data?.color ?? Colors.blueGrey).withAlpha(20),
         borderRadius: BorderRadius.circular(8),
       ),
     );
   }
 
-  Widget _dropTargetTile(CalendarEvent event) {
+  Widget _dropTargetTile(CalendarEvent<Event> event) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.green, width: 2),
+        border: Border.all(color: (event.data?.color ?? Colors.blueGrey), width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
     );
@@ -224,5 +241,9 @@ class CalendarWidget extends StatelessWidget {
       20,
       renderObject.size.height / 2,
     );
+  }
+
+  Color textColor(Color background) {
+    return background.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 }

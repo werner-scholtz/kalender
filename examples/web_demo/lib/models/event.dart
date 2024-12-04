@@ -15,4 +15,16 @@ class Event {
 
   /// The color of the [Event] tile.
   final Color? color;
+
+  Event copyWith({
+    String? title,
+    String? description,
+    Color? color,
+  }) {
+    return Event(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      color: color ?? this.color,
+    );
+  }
 }

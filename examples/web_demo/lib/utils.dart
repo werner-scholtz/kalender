@@ -6,7 +6,7 @@ import 'package:web_demo/models/event.dart';
 
 
 /// Generate a list of events for the demo.
-List<CalendarEvent<Event>> generateEvents() {
+List<CalendarEvent<Event>> generateEvents(BuildContext context) {
   final now = DateTime.now();
   return List.generate(14, (index) {
     final start = now.add(Duration(days: index - 7));
@@ -14,7 +14,7 @@ List<CalendarEvent<Event>> generateEvents() {
     return CalendarEvent(
       data: Event(
         title: 'Event $index',
-        color: Colors.blue,
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       dateTimeRange: DateTimeRange(start: start, end: end),
     );

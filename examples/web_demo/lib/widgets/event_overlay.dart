@@ -44,21 +44,33 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
           padding: const EdgeInsets.all(8),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      event.data?.title ?? "err", 
-                      style: Theme.of(context).textTheme.titleMedium,
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: TextFormField(
+                          initialValue: event.data?.title,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Title"),
+                          onChanged: (value) {
+                            final updatedEvent = event.copyWith(data: event.data?.copyWith(title: value));
+                            widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
+                            setState(() => event = updatedEvent);
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  IconButton.filledTonal(
-                    onPressed: () => widget.onDismiss(),
-                    icon: const Icon(Icons.close),
-                  )
-                ],
+                    const SizedBox(width: 8),
+                    IconButton.filledTonal(
+                      onPressed: () => widget.onDismiss(),
+                      icon: const Icon(Icons.close),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(height: 8),
               ListTile(

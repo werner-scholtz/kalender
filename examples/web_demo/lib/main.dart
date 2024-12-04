@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    eventsController.addEvents(generateEvents());
+    WidgetsBinding.instance.addPostFrameCallback((_) => eventsController.addEvents(generateEvents(context)));
   }
 
   @override
