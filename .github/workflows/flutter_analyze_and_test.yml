@@ -7,9 +7,9 @@ name: Analyze and Test
 
 on:
   pull_request:
-    branches: [ main, testing ]
+    branches: [ master ]
   push:
-    branches: [ main, testing ]
+    branches: [ master ]
 
 jobs:
   build:
