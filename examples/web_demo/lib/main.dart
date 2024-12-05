@@ -14,9 +14,7 @@ void main() {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  static MyAppState? of(BuildContext context) {
-    return context.findAncestorStateOfType<MyAppState>();
-  }
+  static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
 
   @override
   State<MyApp> createState() => MyAppState();

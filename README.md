@@ -33,6 +33,8 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Basic Usage
 
+A minimal example to get you started:
+
 ```dart
 final eventsController = EventsController();
 final calendarController = CalendarController();
@@ -69,6 +71,17 @@ Widget build(BuildContext context) {
 }
 ```
 
+## Views
+
+[ViewConfiguration]s are used to configure the view of the calendar.
+
+There are currently two types, [MultiDayViewConfiguration] and [MonthViewConfiguration] for the Multi-day and Month views respectively.
+The [MultiDayViewConfiguration] has a few constructors for generic use-cases:
+- [week]
+- [workWeek]
+- [custom]
+
+
 ## Controllers
 
 The two controllers EventsController and CalendarController do what their names imply:
@@ -100,7 +113,8 @@ Note:
 - The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
   These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses a [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
   which has specific implementations these functions.
- 
+
+
 ## Customizing the behavior
 
 ### Callbacks
