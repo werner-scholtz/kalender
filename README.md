@@ -14,11 +14,9 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Reschedule:** Drag and Drop events. 
 * **Resize:** Resize events on desktop and mobile.
 * **Controllers:** Manage your calendar widget with these controllers. [find out more](#controllers)
-* **Behavior:** Decide how you want to handle interaction with the calendar. [find out more](#customizing-the-behavior)
+* **Behavior:** Decide how you want to handle interaction with the calendar. [find out more](#behavior)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
-
-<img src="https://github.com/werner-scholtz/kalender/blob/calendar_rework/readme_assets/all_views.png?raw=true" width="100%"/> 
 
 ## Planned Features
 
@@ -69,12 +67,35 @@ Widget build(BuildContext context) {
 
 ## Views
 
-[ViewConfiguration]s are used to configure the view of the calendar.
+Currently there are two views the MultiDayView and MonthView.
+- The MultiDayView displays time on the vertical axis. (This view is special in that the header can display time on the horizontal axis as well)
+- The MonthView displays time on a horizontal axis.
 
-There are currently two types, [MultiDayViewConfiguration] and [MonthViewConfiguration] for the Multi-day and Month views respectively.
-The [MultiDayViewConfiguration] has a few constructors for generic use-cases such as [singleDay](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36), [week](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53) and [custom](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L88)
+These two views can be configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
+- The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
+- The MonthView is configured with the [MonthViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L6).
 
+### MultiDayViewConfiguration
+The `MultiDayViewConfiguration` has constructors for generic use cases such as:
 
+- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36)
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
+
+- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53)
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
+
+- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87)
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/> 
+
+### MonthViewConfiguration
+The `MonthViewConfiguration` currently only has one constructor.
+
+- [singleMonth](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/> 
 
 ## Controllers
 
@@ -105,11 +126,11 @@ This controller has a few functions for navigating:
 
 Note:
 - The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
-  These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses a [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
+  These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses the [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
   which has specific implementations these functions.
 
 
-## Customizing the behavior
+## Behavior
 
 ### Callbacks
 
