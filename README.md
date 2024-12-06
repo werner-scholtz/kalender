@@ -20,16 +20,12 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 <img src="https://github.com/werner-scholtz/kalender/blob/calendar_rework/readme_assets/all_views.png?raw=true" width="100%"/> 
 
-...
-
 ## Planned Features
 
 * **Views:** Add Schedule and FreeScroll, improvements to the Month view.
 * **Directionality:** Right to Left directionality.
 * **Repeating Events:** Repeating events that only have to be added once.
 * **Event layout:** More examples of how to leverage this to achieve specific tasks.
-
-...
 
 ## Basic Usage
 
@@ -42,12 +38,12 @@ final tileComponents = TileComponents(
   tileBuilder: (event) => Container(color: Colors.green),
 );
 
-@override
-void initState() {
-  super.initState();
-
-  /// Add [CalendarEvent]s to the [EventsController].
-  eventsController.addEvents([...]);
+/// Add a [CalendarEvent] to the [EventsController].
+void addEvents() {
+  eventsController.addEvent(CalendarEvent(
+    dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
+    data: "Event 1",
+  ));
 }
 
 Widget build(BuildContext context) {  
@@ -76,10 +72,8 @@ Widget build(BuildContext context) {
 [ViewConfiguration]s are used to configure the view of the calendar.
 
 There are currently two types, [MultiDayViewConfiguration] and [MonthViewConfiguration] for the Multi-day and Month views respectively.
-The [MultiDayViewConfiguration] has a few constructors for generic use-cases:
-- [week]
-- [workWeek]
-- [custom]
+The [MultiDayViewConfiguration] has a few constructors for generic use-cases such as [singleDay](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36), [week](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53) and [custom](https://github.com/werner-scholtz/kalender/blob/c536bebe993e45552ba1321ecd20bb48532b6dd6/lib/src/models/view_configurations/multi_day_view_configuration.dart#L88)
+
 
 
 ## Controllers
