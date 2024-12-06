@@ -32,7 +32,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           onDragStarted: selectEvent,
-          child: verticalResizeHandle ?? const SizedBox(),
+          child: verticalResizeHandle ?? Container(color: Colors.transparent),
         );
       },
     );
@@ -46,7 +46,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
           onDragStarted: selectEvent,
-          child: verticalResizeHandle ?? const SizedBox(),
+          child: verticalResizeHandle ?? Container(color: Colors.transparent),
         );
       },
     );
