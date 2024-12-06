@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:example/resize_handle.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -99,43 +98,42 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: CalendarView<Event>(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: viewConfiguration,
-          callbacks: CalendarCallbacks<Event>(
-            onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-            onEventCreate: (event) => event,
-            onEventCreated: (event) => eventsController.addEvent(event),
+      body: CalendarView<Event>(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: viewConfiguration,
+        // Handle the callbacks made by the calendar.
+        callbacks: CalendarCallbacks<Event>(
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventCreate: (event) => event,
+          onEventCreated: (event) => eventsController.addEvent(event),
+        ),
+        // Customize the components.
+        components: CalendarComponents(
+          multiDayComponents: MultiDayComponents(),
+          multiDayComponentStyles: MultiDayComponentStyles(),
+          monthComponents: MonthComponents(),
+          monthComponentStyles: MonthComponentStyles(),
+        ),
+        // Style the header with a martial widget.
+        header: Material(
+          color: Theme.of(context).colorScheme.surface,
+          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+          elevation: 2,
+          child: Column(
+            children: [
+              // Add some useful controls.
+              _calendarToolbar(),
+              // Ad display the default header.
+              CalendarHeader<Event>(multiDayTileComponents: tileComponents(body: false)),
+            ],
           ),
-          components: CalendarComponents(
-            multiDayComponents: MultiDayComponents(),
-            multiDayComponentStyles: MultiDayComponentStyles(),
-            monthComponents: MonthComponents(),
-            monthComponentStyles: MonthComponentStyles(),
-          ),
-          header: Material(
-            color: Theme.of(context).colorScheme.surface,
-            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-            elevation: 2,
-            child: Column(
-              children: [
-                _calendarToolbar(),
-                CalendarHeader<Event>(
-                  multiDayTileComponents: tileComponents(body: false),
-                ),
-              ],
-            ),
-          ),
-          body: CalendarBody<Event>(
-            multiDayTileComponents: tileComponents(),
-            monthTileComponents: tileComponents(),
-            multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              showMultiDayEvents: false,
-            ),
-            monthBodyConfiguration: MultiDayHeaderConfiguration(),
-          ),
+        ),
+        body: CalendarBody<Event>(
+          multiDayTileComponents: tileComponents(),
+          monthTileComponents: tileComponents(body: false),
+          multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
+          monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),
       ),
     );
@@ -153,33 +151,23 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text(event.data?.title ?? ""),
         );
       },
-      dropTargetTile: _dropTargetTile,
-      feedbackTileBuilder: _feedbackTileBuilder,
-      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-  }
-
-  Widget _feedbackTileBuilder(CalendarEvent event, Size dropTargetWidgetSize) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: dropTargetWidgetSize.width * 0.8,
-      height: dropTargetWidgetSize.height,
-      decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
-    );
-  }
-
-  Widget _tileWhenDraggingBuilder(CalendarEvent event) {
-    return Container(decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius));
-  }
-
-  Widget _dropTargetTile(CalendarEvent event) {
-    return DecoratedBox(
+      dropTargetTile: (event) => DecoratedBox(
         decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
-            borderRadius: radius));
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+          borderRadius: radius,
+        ),
+      ),
+      feedbackTileBuilder: (event, dropTargetWidgetSize) => AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        width: dropTargetWidgetSize.width * 0.8,
+        height: dropTargetWidgetSize.height,
+        decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
+      ),
+      tileWhenDraggingBuilder: (event) => Container(
+        decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
+      ),
+      dragAnchorStrategy: pointerDragAnchorStrategy,
+    );
   }
 
   Widget _calendarToolbar() {
