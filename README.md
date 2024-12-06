@@ -114,8 +114,18 @@ It has a few functions to manipulate events:
 
 ### CalendarController
 
-The [CalendarController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/calendar_controller.dart#L15) allows you to manage a single calendar widget, and it also exposes details about what the widget is displaying.
-This controller has a few functions for navigating:
+The [CalendarController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/calendar_controller.dart#L15) allows you to manage a single calendar widget. 
+
+It exposes details about what the widget is displaying.
+
+- `visibleDateTimeRange`: A `ValueNotifier` containing the `DateTimeRange` that is currently visible.
+- `visibleEvents`: A `ValueNotifier` that contains the `CalendarEvent`s that are currently visible. 
+- `selectedEvent`: A `ValueNotifier` that contains the selected `CalendarEvent`.
+
+> The `selectedEvent` is the event that currently has focus within the calendar widget. This results in the [TileComponents.dropTargetTile](https://github.com/werner-scholtz/kalender/blob/4506024937ae4e0d500bf169d297cb3f20604e92/lib/src/models/components/tile_components.dart#L27) being rendered on top of the selected event's widget, on mobile if a event is selected it wil render the resize handles as well.
+
+This controller has a few functions for navigating the calendar widget:
+
 - `jumpToPage`: Jump to a specific page.
 - `jumpToDate`: Jump to a specific date.
 - `animateToNextPage`: Animate to the next page.
@@ -124,8 +134,7 @@ This controller has a few functions for navigating:
 - `animateToDateTime`: Animate to the given date time.
 - `animateToEvent` Animate to the given event.
 
-Note:
-- The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
+> The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
   These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses the [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
   which has specific implementations these functions.
 
@@ -292,6 +301,11 @@ Examples:
   </summary>
 </details>
 
+
+### Zooming
+
+TODO: add some details about how to achieve this.
+
 ## Customizing the look
 
 There are a few ways to customize the look of the calendar:
@@ -350,10 +364,15 @@ The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can 
 
 The CalendarView takes a components object.
 
-- For every type of `ViewConfiguration` there are `Header` and `Body` components which can be customized.
+> For every type of `ViewConfiguration` there are `Header` and `Body` components which can be customized.
 
 By default the calendar uses default components which can be customized with `ComponentStyles`, you have the option to override these components by supplying a builder to the `Components` object.
 
+#### Default Component Styles
+
+TODO: add code blocks for this.
+
+#### Custom Components
 
 <details>
   <summary>MonthComponents</summary>
