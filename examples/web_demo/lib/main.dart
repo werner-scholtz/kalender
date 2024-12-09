@@ -66,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MultiDayViewConfiguration.workWeek(),
     MultiDayViewConfiguration.custom(numberOfDays: 3),
     MonthViewConfiguration.singleMonth(),
+    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)"),
   ];
 
   late final _calendarCallbacks = CalendarCallbacks<Event>(
