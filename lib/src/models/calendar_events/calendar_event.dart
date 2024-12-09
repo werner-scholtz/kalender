@@ -56,10 +56,13 @@ class CalendarEvent<T extends Object?> {
 
   /// Whether the [CalendarEvent] is during the given [DateTimeRange].
   ///
-  /// This expects the [DateTimeRange]'s dates to be constructed in the [DateTime.utc] format.
+  /// This expects the [DateTimeRange]'s start and end dates to be constructed in the [DateTime.utc] format.
   bool occursDuringDateTimeRange(DateTimeRange dateTimeRange) {
     final rangeStart = dateTimeRange.start;
+    assert(rangeStart.isUtc);
+
     final rangeEnd = dateTimeRange.end;
+    assert(rangeEnd.isUtc);
 
     // Check if the event starts before the range and ends after the range.
     final startsBeforeEndsAfter = (start.isBefore(rangeStart) && _endAsUTC.isAfter(rangeEnd));
@@ -76,17 +79,26 @@ class CalendarEvent<T extends Object?> {
   /// Whether the [CalendarEvent] continues before the given [DateTime].
   ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  bool continuesBefore(DateTime date) => start.isBefore(date.startOfDay);
+  bool continuesBefore(DateTime date) {
+    assert(date.isUtc, 'The $date should be in utc time.');
+    return _startAsUTC.isBefore(date.startOfDay);
+  }
 
   /// Whether the [CalendarEvent] continues after the given [DateTime].
   ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  bool continuesAfter(DateTime date) => end.isAfter(date.endOfDay);
+  bool continuesAfter(DateTime date) {
+    assert(date.isUtc, 'The $date should be in utc time.');
+    return _endAsUTC.isAfter(date.endOfDay);
+  }
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
   ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  DateTimeRange dateTimeRangeOnDate(DateTime date) => _dateTimeRangeAsUtc.dateTimeRangeOnDate(date);
+  DateTimeRange dateTimeRangeOnDate(DateTime date) {
+    assert(date.isUtc, 'The $date should be in utc time.');
+    return _dateTimeRangeAsUtc.dateTimeRangeOnDate(date);
+  }
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
@@ -104,4 +116,3 @@ class CalendarEvent<T extends Object?> {
     return 'id: $id, data: $data, start: $start, end: $end';
   }
 }
-
