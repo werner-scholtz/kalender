@@ -1,10 +1,10 @@
 This Flutter package offers a Calendar Widget featuring a Day, MultiDay and Month views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
 
-## Note
+## Important
 - Consider v0.5.0 a new package as it has undergone major changes.
 - This is a WIP package so there will be breaking changes until version 1.0.0.
 
-## Web Example
+## Web Demo
 
 Try it out [here](https://werner-scholtz.github.io/kalender/)
 
@@ -93,7 +93,7 @@ The `MultiDayViewConfiguration` has constructors for generic use cases such as:
 ### MonthViewConfiguration
 The `MonthViewConfiguration` currently only has one constructor.
 
-- [singleMonth](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
+- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
 
 <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/> 
 
