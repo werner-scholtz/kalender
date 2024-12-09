@@ -1,14 +1,12 @@
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
 
+/// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
 class MonthComponents {
   final MonthBodyComponents? bodyComponents;
   final MonthHeaderComponents? headerComponents;
 
-  MonthComponents({
-    this.bodyComponents,
-    this.headerComponents,
-  });
+  MonthComponents({this.bodyComponents, this.headerComponents});
 }
 
 /// The component builders used by the [MonthBody].

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 
+/// A class representing a object that can be displayed by the calendar.
+/// 
+/// A calendar event requires a [DateTimeRange] this is used by the [CalendarView] to render the event.
+/// 
+/// Any calculations done with the [_dateTimeRange] should be done in utc time and then converted back to local time.
 class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
   T? data;

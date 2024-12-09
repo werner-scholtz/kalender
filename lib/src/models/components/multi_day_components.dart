@@ -2,14 +2,12 @@ import 'package:kalender/src/type_definitions.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
+/// A class containing custom widget builders for the [MultiDayBody] and [MultiDayHeader].
 class MultiDayComponents {
   final MultiDayHeaderComponents? headerComponents;
   final MultiDayBodyComponents? bodyComponents;
 
-  MultiDayComponents({
-    this.bodyComponents,
-    this.headerComponents,
-  });
+  MultiDayComponents({this.bodyComponents, this.headerComponents});
 }
 
 /// The component builders used by the [MultiDayHeader].

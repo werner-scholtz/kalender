@@ -7,14 +7,12 @@ import 'package:kalender/src/widgets/components/week_number.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
+/// A class containing styles for the [MultiDayBody] and [MultiDayHeader].
 class MultiDayComponentStyles {
   final MultiDayHeaderComponentStyles? headerStyles;
   final MultiDayBodyComponentStyles? bodyStyles;
 
-  MultiDayComponentStyles({
-    this.headerStyles,
-    this.bodyStyles,
-  });
+  MultiDayComponentStyles({this.headerStyles, this.bodyStyles});
 }
 
 /// The styles of the default components used by the [MultiDayHeader].
