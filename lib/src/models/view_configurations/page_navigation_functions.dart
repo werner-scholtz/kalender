@@ -52,10 +52,10 @@ class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start.asUtc().startOfDay;
+    final start = dateTimeRange.start.asUtc.startOfDay;
     dateTimeRangeFromIndex = (index) => start.addDays(index).dayRange;
     indexFromDate = (date) {
-      final dateAsUtc = date.asUtc().startOfDay;
+      final dateAsUtc = date.asUtc.startOfDay;
       return dateAsUtc.difference(start).inDays;
     };
     numberOfPages = dateTimeRange.dayDifference;
@@ -76,8 +76,8 @@ class WeekPageFunctions extends PageNavigationFunctions {
     required DateTimeRange dateTimeRange,
     required int firstDayOfWeek,
   }) {
-    final start = dateTimeRange.start.asUtc();
-    final end = dateTimeRange.end.asUtc();
+    final start = dateTimeRange.start.asUtc;
+    final end = dateTimeRange.end.asUtc;
     final shiftedStart = start.startOfWeekWithOffset(firstDayOfWeek).startOfDay;
     final shiftedEnd = end.endOfWeekWithOffset(firstDayOfWeek).startOfDay;
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
@@ -94,7 +94,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
       ).weekRangeWithOffset(firstDayOfWeek);
     };
     indexFromDate = (date) {
-      final dateAsUtc = date.asUtc();
+      final dateAsUtc = date.asUtc;
       final shiftedDate = dateAsUtc.startOfWeekWithOffset(firstDayOfWeek);
       final range = DateTimeRange(start: shiftedStart, end: shiftedDate);
       final index = range.dayDifference / DateTime.daysPerWeek;
@@ -117,8 +117,8 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   WorkWeekPageFunctions({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start.asUtc();
-    final end = dateTimeRange.end.asUtc();
+    final start = dateTimeRange.start.asUtc;
+    final end = dateTimeRange.end.asUtc;
     final shiftedStart = start.startOfWeekWithOffset(1).startOfDay;
     final shiftedEnd = end.endOfWeekWithOffset(1).startOfDay;
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
@@ -140,7 +140,7 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
       );
     };
     indexFromDate = (date) {
-      final dateAsUtc = date.asUtc();
+      final dateAsUtc = date.asUtc;
       final shiftedDate = dateAsUtc.startOfWeekWithOffset(1);
       final range = DateTimeRange(start: shiftedStart, end: shiftedDate);
       final index = range.dayDifference / DateTime.daysPerWeek;
@@ -196,10 +196,10 @@ class FreeScrollFunctions extends PageNavigationFunctions {
   FreeScrollFunctions({
     required DateTimeRange dateTimeRange,
   }) {
-    final start = dateTimeRange.start.asUtc().startOfDay;
+    final start = dateTimeRange.start.asUtc.startOfDay;
     dateTimeRangeFromIndex = (index) => start.addDays(index).dayRange;
     indexFromDate = (date) {
-      final dateAsUtc = date.asUtc().startOfDay;
+      final dateAsUtc = date.asUtc.startOfDay;
       return dateAsUtc.difference(start).inDays;
     };
     numberOfPages = dateTimeRange.dayDifference;

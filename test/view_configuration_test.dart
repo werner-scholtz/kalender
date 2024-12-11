@@ -55,8 +55,8 @@ void testDayConfiguration(List<DateTimeRange> calendarRanges) {
       for (var i = 0; i < range.dayDifference; i++) {
         final dateTimeRange = functions.dateTimeRangeFromIndex(i);
 
-        expect(dateTimeRange.start, start.addDays(i).asUtc());
-        expect(dateTimeRange.end, start.addDays(i).endOfDay.asUtc());
+        expect(dateTimeRange.start, start.addDays(i).asUtc);
+        expect(dateTimeRange.end, start.addDays(i).endOfDay.asUtc);
       }
     }
   });

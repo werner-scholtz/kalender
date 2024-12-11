@@ -89,6 +89,6 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
     final startOfDay = timeOfDayRange.start.toDateTime(date);
 
     // Add the calculated duration to the startOfDay and convert to local.
-    return startOfDay.add(durationFromTop).asLocal();
+    return startOfDay.add(durationFromTop).asLocal;
   }
 }

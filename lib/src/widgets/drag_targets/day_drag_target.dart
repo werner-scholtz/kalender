@@ -238,7 +238,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration).asLocal();
+    return startOfDate.add(duration).asLocal;
   }
 
   /// Update the [CalendarEvent] based on the [Offset] delta.

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 extension DateTimeRangeExtensions on DateTimeRange {
   /// The time difference in days between the [start] and [end] of the [DateTimeRange].
   int get dayDifference {
-    final startDate = start.asUtc();
-    final endDate = end.asUtc();
+    final startDate = start.asUtc;
+    final endDate = end.asUtc;
     final difference = endDate.difference(startDate).inDays;
     return difference;
   }
@@ -26,8 +26,8 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// Includes the [start] date.
   /// Includes the [end] date only if it is not the start of the day. (after 00:00:00)
   List<DateTime> get days {
-    final start = this.start.asUtc();
-    final end = this.end.asUtc();
+    final start = this.start.asUtc;
+    final end = this.end.asUtc;
 
     if (start.isSameDay(end)) return [this.start.startOfDay];
 
@@ -84,8 +84,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
 
     // This is custom so that if the user sets firstDayOfWeek to
     // monday, sunday or saturday we only show one week number.
-    final showOnlyOneWeekNumber =
-        isSingleWeek && (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
+    final showOnlyOneWeekNumber = isSingleWeek && (start.weekday == 1 || start.weekday == 6 || start.weekday == 7);
 
     if (!showOnlyOneWeekNumber) {
       if (days.first.weekNumber == days.last.weekNumber) {
@@ -110,11 +109,31 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return start.isBefore(other.end) && end.isAfter(other.start);
   }
 
+  /// Check if the [dateTimeRange] occurs during this.
+  bool occursDuring(DateTimeRange dateTimeRange) {
+    final rangeStart = dateTimeRange.start;
+    final rangeEnd = dateTimeRange.end;
+
+    // Check if the event starts before the range and ends after the range.
+    final startsBeforeEndsAfter = (start.isBefore(rangeStart) && end.isAfter(rangeEnd));
+
+    // Check if the event is within the range.
+    final isWithin = start.isWithin(dateTimeRange) || end.isWithin(dateTimeRange);
+
+    // Check if the start or end of the event is equal to the start or end of the range.
+    final isStartOrEndSameMoment = start.isAtSameMomentAs(rangeStart)  || end.isAtSameMomentAs(rangeEnd);
+
+    return startsBeforeEndsAfter || isWithin || isStartOrEndSameMoment;
+  }
+
+  /// Check if the [start] and [end] times are in utc.
+  bool get isUtc => start.isUtc && end.isUtc;
+
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
-  DateTimeRange get asUtc => DateTimeRange(start: start.asUtc(), end: end.asUtc());
+  DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);
 
   /// Returns a [DateTimeRange] with the [DateTime]s as local values without converting them.
-  DateTimeRange get asLocal => DateTimeRange(start: start.asLocal(), end: end.asLocal());
+  DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
 }
 
 extension DateTimeExtensions on DateTime {
@@ -135,12 +154,12 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Returns a [DateTime] as a UTC value without converting it.
-  DateTime asUtc() {
+  DateTime get asUtc {
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
   }
 
   /// Returns a [DateTime] as a local value without converting it.
-  DateTime asLocal() {
+  DateTime get asLocal {
     return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
   }
 

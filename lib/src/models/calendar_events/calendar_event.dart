@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions.dart';
 
 /// A class representing a object that can be displayed by the calendar.
-/// 
+///
 /// A calendar event requires a [DateTimeRange] this is used by the [CalendarView] to render the event.
-/// 
+///
 /// Any calculations done with the [_dateTimeRange] should be done in utc time and then converted back to local time.
 class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
@@ -36,16 +36,16 @@ class CalendarEvent<T extends Object?> {
   }) : _dateTimeRange = dateTimeRange;
 
   /// The start [DateTime] of the [CalendarEvent].
-  DateTime get start => dateTimeRange.start.asLocal();
+  DateTime get start => dateTimeRange.start.asLocal;
 
   /// The start [DateTime.utc] of the [CalendarEvent].
-  DateTime get _startAsUTC => start.asUtc();
+  DateTime get _startAsUTC => start.asUtc;
 
   /// The end [DateTime] of the [CalendarEvent].
-  DateTime get end => dateTimeRange.end.asLocal();
+  DateTime get end => dateTimeRange.end.asLocal;
 
   /// The end [DateTime.utc] of the [CalendarEvent].
-  DateTime get _endAsUTC => end.asUtc();
+  DateTime get _endAsUTC => end.asUtc;
 
   /// Whether the [CalendarEvent] is a multi day event.
   bool get isMultiDayEvent => dateTimeRange.dayDifference >= 1;
@@ -63,22 +63,8 @@ class CalendarEvent<T extends Object?> {
   ///
   /// This expects the [DateTimeRange]'s start and end dates to be constructed in the [DateTime.utc] format.
   bool occursDuringDateTimeRange(DateTimeRange dateTimeRange) {
-    final rangeStart = dateTimeRange.start;
-    assert(rangeStart.isUtc);
-
-    final rangeEnd = dateTimeRange.end;
-    assert(rangeEnd.isUtc);
-
-    // Check if the event starts before the range and ends after the range.
-    final startsBeforeEndsAfter = (start.isBefore(rangeStart) && _endAsUTC.isAfter(rangeEnd));
-
-    // Check if the event is within the range.
-    final isWithin = _startAsUTC.isWithin(dateTimeRange) || _endAsUTC.isWithin(dateTimeRange);
-
-    // Check if the start or end of the event is equal to the start or end of the range.
-    final startOrEndEquals = _startAsUTC == rangeStart || _endAsUTC == rangeEnd;
-
-    return startsBeforeEndsAfter || isWithin || startOrEndEquals;
+    assert(dateTimeRange.isUtc);
+    return _dateTimeRangeAsUtc.occursDuring(dateTimeRange);
   }
 
   /// Whether the [CalendarEvent] continues before the given [DateTime].
