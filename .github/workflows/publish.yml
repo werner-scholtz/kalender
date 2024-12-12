@@ -20,50 +20,18 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
+      
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable' 
+
+      - name: Remove examples folder.
+        run: rm -rf examples/
+        shell: bash
+        working-directory: ./
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Publish
         run: flutter pub publish --force
-
-      # For Dart package
-      # - uses: dart-lang/setup-dart@v1
-      # - name: Install dependencies
-      #   run: dart pub get
-      # - name: Publish
-      #   run: dart pub publish --force
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v3
-#       - uses: dart-lang/setup-dart@v1
-#       - name: Install Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: '3.10.6'
-#       - name: Install dependencies
-#         run: flutter pub get
-#       - name: Analyze
-#         run: flutter analyze
-#       - name: Run tests
-#         run: flutter test
-#       - name: Setup Pub Credentials
-#         shell: bash
-#         env:
-#           PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
-#           PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
-#           PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
-#           PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
-#         run: |
-#           sh ./pub_login.sh
-#       - name: Check Publish Warnings
-#         run: pub publish --dry-run
-#       - name: Publish Package
-#         run: pub publish -f
-            
