@@ -83,7 +83,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     numberOfPages = pageNavigationFunctions.numberOfPages;
-    heightPerMinute = ValueNotifier<double>(0.7);
+    heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
 
     final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
 

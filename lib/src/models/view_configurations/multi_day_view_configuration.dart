@@ -26,6 +26,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.pageNavigationFunctions,
     required this.type,
     required this.initialTimeOfDay,
+    required this.initialHeightPerMinute,
   }) : assert(
           firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
           'First day of week must be Monday, Saturday or Sunday\n'
@@ -39,14 +40,12 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
-  }) {
-    numberOfDays = 1;
-    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
-    this.displayRange = displayRange ?? DateTime.now().yearRange;
-    pageNavigationFunctions = PageNavigationFunctions.singleDay(
-      this.displayRange,
-    );
-    type = MultiDayViewType.singleDay;
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        displayRange = displayRange ?? DateTime.now().yearRange,
+        numberOfDays = 1,
+        type = MultiDayViewType.singleDay {
+    pageNavigationFunctions = PageNavigationFunctions.singleDay(this.displayRange);
   }
 
   /// Creates a [MultiDayViewConfiguration] for a week.
@@ -57,14 +56,11 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.numberOfDays = 7,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
-  }) {
-    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
-    this.displayRange = displayRange ?? DateTime.now().yearRange;
-    pageNavigationFunctions = PageNavigationFunctions.week(
-      this.displayRange,
-      firstDayOfWeek,
-    );
-    type = MultiDayViewType.week;
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        displayRange = displayRange ?? DateTime.now().yearRange,
+        type = MultiDayViewType.week {
+    pageNavigationFunctions = PageNavigationFunctions.week(this.displayRange, firstDayOfWeek);
   }
 
   /// Creates a [MultiDayViewConfiguration] for a work week.
@@ -74,14 +70,12 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
-  }) {
-    firstDayOfWeek = DateTime.monday;
-    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
-    this.displayRange = displayRange ?? DateTime.now().yearRange;
-    pageNavigationFunctions = PageNavigationFunctions.workWeek(
-      this.displayRange,
-    );
-    type = MultiDayViewType.workWeek;
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        displayRange = displayRange ?? DateTime.now().yearRange,
+        firstDayOfWeek = DateTime.monday,
+        type = MultiDayViewType.workWeek {
+    pageNavigationFunctions = PageNavigationFunctions.workWeek(this.displayRange);
   }
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
@@ -92,14 +86,11 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.numberOfDays,
     this.firstDayOfWeek = DateTime.monday,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
-  }) {
-    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
-    this.displayRange = displayRange ?? DateTime.now().yearRange;
-    pageNavigationFunctions = PageNavigationFunctions.custom(
-      this.displayRange,
-      numberOfDays,
-    );
-    type = MultiDayViewType.custom;
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        displayRange = displayRange ?? DateTime.now().yearRange,
+        type = MultiDayViewType.custom {
+    pageNavigationFunctions = PageNavigationFunctions.custom(this.displayRange, numberOfDays);
   }
 
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
@@ -109,21 +100,21 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
-  }) {
-    this.timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay();
-    this.displayRange = displayRange ?? DateTime.now().yearRange;
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        displayRange = displayRange ?? DateTime.now().yearRange,
+        firstDayOfWeek = DateTime.monday,
+        type = MultiDayViewType.freeScroll {
     pageNavigationFunctions = PageNavigationFunctions.freeScroll(this.displayRange);
-    type = MultiDayViewType.freeScroll;
-    firstDayOfWeek = DateTime.monday;
   }
 
-  late final MultiDayViewType type;
+  final MultiDayViewType type;
 
   /// The functions for navigating the [PageView].
   late final PageNavigationFunctions pageNavigationFunctions;
 
   /// The [DateTimeRange] that can be displayed by [MultiDayBody] widgets using this configuration.
-  late final DateTimeRange displayRange;
+  final DateTimeRange displayRange;
 
   /// The start of the [displayRange].
   DateTime get start => displayRange.start;
@@ -132,18 +123,21 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   DateTime get end => displayRange.end;
 
   /// The [TimeOfDayRange] that can be displayed by [MultiDayBody] widgets using this configuration.
-  late final TimeOfDayRange timeOfDayRange;
+  final TimeOfDayRange timeOfDayRange;
 
   /// The first day of the week.
   ///
   /// This can be [DateTime.monday], [DateTime.saturday] or [DateTime.sunday].
-  late final int firstDayOfWeek;
+  final int firstDayOfWeek;
 
   /// The number of days that can be displayed by [MultiDayBody] widgets using this configuration.
-  late final int numberOfDays;
+  final int numberOfDays;
 
   /// The initial time of day that the calendar should display.
-  late final TimeOfDay initialTimeOfDay;
+  final TimeOfDay initialTimeOfDay;
+
+  /// The initial heightPerMinute (zoom level).
+  final double initialHeightPerMinute;
 
   MultiDayViewConfiguration copyWith({
     String? name,

@@ -31,3 +31,4 @@ const defaultSnapRange = Duration(minutes: 15);
 const defaultSnapIntervalMinutes = 10;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
+const defaultHeightPerMinute = 0.7;

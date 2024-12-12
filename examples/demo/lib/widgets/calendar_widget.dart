@@ -2,6 +2,7 @@ import 'package:demo/data/event.dart';
 import 'package:demo/main.dart';
 import 'package:demo/widgets/navigation_header.dart';
 import 'package:demo/widgets/tile_components.dart';
+import 'package:demo/widgets/zoom.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -38,9 +39,12 @@ class CalendarWidget extends StatelessWidget {
               ],
             ),
           ),
-          body: CalendarBody(
-            multiDayTileComponents: multiDayBodyComponents,
-            monthTileComponents: multiDayHeaderTileComponents,
+          body: CalendarZoomDetector(
+            controller: controller,
+            child: CalendarBody(
+              multiDayTileComponents: multiDayBodyComponents,
+              monthTileComponents: multiDayHeaderTileComponents,
+            ),
           ),
         );
       },

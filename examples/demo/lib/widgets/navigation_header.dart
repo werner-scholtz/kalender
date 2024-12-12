@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:demo/data/event.dart';
 import 'package:demo/main.dart';
 import 'package:flutter/material.dart';
@@ -34,20 +36,24 @@ class NavigationHeader extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            onPressed: () async {
-              await controller.animateToPreviousPage();
-            },
-            icon: const Icon(Icons.navigate_before),
-          ),
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToNextPage();
-            },
-            icon: const Icon(Icons.navigate_next),
-          ),
+          if (!Platform.isAndroid && !Platform.isIOS) ...[
+            const SizedBox(width: 4),
+            IconButton.filledTonal(
+              onPressed: () async {
+                await controller.animateToPreviousPage();
+              },
+              icon: const Icon(Icons.navigate_before),
+            ),
+          ],
+          if (!Platform.isAndroid && !Platform.isIOS) ...[
+            const SizedBox(width: 4),
+            IconButton.filledTonal(
+              onPressed: () {
+                controller.animateToNextPage();
+              },
+              icon: const Icon(Icons.navigate_next),
+            ),
+          ],
           const SizedBox(width: 4),
           IconButton.filledTonal(
             onPressed: () {
