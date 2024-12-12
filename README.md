@@ -13,17 +13,22 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Views:** Day, Multi-day and Month.
 * **Reschedule:** Drag and Drop events. 
 * **Resize:** Resize events on desktop and mobile.
-* **Controllers:** Manage your calendar widget with these controllers. [find out more](#controllers)
-* **Behavior:** Decide how you want to handle interaction with the calendar. [find out more](#behavior)
+* **Controllers:** Manage your calendar with these controllers. [find out more](#controllers)
+* **Behavior:** Choose how you want to handle interaction with the calendar. [find out more](#behavior)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 
-## Planned Features
+## Plans
+
+### Features 
 
 * **Views:** Add Schedule and FreeScroll, improvements to the Month view.
 * **Directionality:** Right to Left directionality.
 * **Repeating Events:** Repeating events that only have to be added once.
-* **Event layout:** More examples of how to leverage this to achieve specific tasks.
+
+### Examples
+
+* **Event layout:** Examples of how to leverage this to achieve specific tasks.
 
 ## Basic Usage
 
@@ -301,10 +306,11 @@ Examples:
   </summary>
 </details>
 
+### Zoom Example
 
-### Zooming
+It is possible to zoom the calendar in/out.
+The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo) example shows how this can be accomplished with the [CalendarZoomDetector](https://github.com/werner-scholtz/kalender/blob/main/examples/demo/lib/widgets/zoom.dart)
 
-TODO: add some details about how to achieve this.
 
 ## Customizing the look
 
@@ -370,7 +376,7 @@ By default the calendar uses default components which can be customized with `Co
 
 #### Default Component Styles
 
-TODO: add code blocks for this.
+> You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart).
 
 #### Custom Components
 
