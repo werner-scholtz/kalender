@@ -19,14 +19,18 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         cardTheme: const CardTheme(
-            margin: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
+            margin: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)))),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue, brightness: Brightness.dark),
         cardTheme: const CardTheme(
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
       ),
       home: const MyHomePage(),
@@ -48,6 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // This is fork one
   /// Create [EventsController], this is used to add and remove events.
   final eventsController = EventsController<Event>();
 
@@ -67,15 +72,19 @@ class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
 
   /// Decide on a range you want to display.
-  late final displayRange = DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
+  late final displayRange =
+      DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
-    MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
+    MultiDayViewConfiguration.week(
+        displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
+    MultiDayViewConfiguration.custom(
+        numberOfDays: 3, displayRange: displayRange),
     MonthViewConfiguration.singleMonth(),
-    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
+    MultiDayViewConfiguration.freeScroll(
+        displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
   ];
 
   @override
@@ -84,11 +93,13 @@ class _MyHomePageState extends State<MyHomePage> {
     eventsController.addEvents(
       [
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
+          dateTimeRange:
+              DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
           data: const Event('My Event', Colors.green),
         ),
         CalendarEvent(
-          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
+          dateTimeRange:
+              DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
           data: const Event('My Event', Colors.blue),
         ),
       ],
@@ -104,7 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: viewConfiguration,
         // Handle the callbacks made by the calendar.
         callbacks: CalendarCallbacks<Event>(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) =>
+              calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
@@ -125,14 +137,16 @@ class _MyHomePageState extends State<MyHomePage> {
               // Add some useful controls.
               _calendarToolbar(),
               // Ad display the default header.
-              CalendarHeader<Event>(multiDayTileComponents: tileComponents(body: false)),
+              CalendarHeader<Event>(
+                  multiDayTileComponents: tileComponents(body: false)),
             ],
           ),
         ),
         body: CalendarBody<Event>(
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
-          multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
+          multiDayBodyConfiguration:
+              MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),
       ),
@@ -146,14 +160,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return TileComponents<Event>(
       tileBuilder: (event, tileRange) {
         return Card(
-          margin: body ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 1),
+          margin:
+              body ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 1),
           color: color,
           child: Text(event.data?.title ?? ""),
         );
       },
       dropTargetTile: (event) => DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+          border: Border.all(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(80),
+              width: 2),
           borderRadius: radius,
         ),
       ),
@@ -161,10 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
         duration: const Duration(milliseconds: 250),
         width: dropTargetWidgetSize.width * 0.8,
         height: dropTargetWidgetSize.height,
-        decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
+        decoration:
+            BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
       ),
       tileWhenDraggingBuilder: (event) => Container(
-        decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
+        decoration:
+            BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
       ),
       dragAnchorStrategy: pointerDragAnchorStrategy,
     );
@@ -185,7 +204,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     final month = value.start.monthNameEnglish;
                     return FilledButton.tonal(
                       onPressed: () {},
-                      style: FilledButton.styleFrom(minimumSize: const Size(160, kMinInteractiveDimension)),
+                      style: FilledButton.styleFrom(
+                          minimumSize:
+                              const Size(160, kMinInteractiveDimension)),
                       child: Text('$month $year'),
                     );
                   },
@@ -210,7 +231,9 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             width: 120,
             child: DropdownMenu(
-              dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+              dropdownMenuEntries: viewConfigurations
+                  .map((e) => DropdownMenuEntry(value: e, label: e.name))
+                  .toList(),
               initialSelection: viewConfiguration,
               onSelected: (value) {
                 if (value == null) return;
