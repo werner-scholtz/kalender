@@ -10,6 +10,7 @@ export 'package:kalender/src/calendar_view.dart';
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 export 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 export 'package:kalender/src/models/calendar_callbacks.dart';
+export 'package:kalender/src/models/calendar_events/base_event.dart';
 
 /// Models
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
