@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
@@ -72,7 +71,8 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
 
     final tile = tileBuilder.call(event, localDateTimeRange);
     final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
-    final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
+    final isDragging =
+        controller.selectedEventId == event.id && controller.internalFocus;
     late final draggable = isMobileDevice
         ? LongPressDraggable<Reschedule<T>>(
             data: rescheduleEvent,
@@ -81,7 +81,9 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
             onDragStarted: selectEvent,
             maxSimultaneousDrags: 1,
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
+            child: isDragging && tileWhenDragging != null
+                ? tileWhenDragging
+                : tile,
           )
         : Draggable<Reschedule<T>>(
             data: rescheduleEvent,
@@ -89,7 +91,9 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
             childWhenDragging: tileWhenDragging,
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
             onDragStarted: selectEvent,
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
+            child: isDragging && tileWhenDragging != null
+                ? tileWhenDragging
+                : tile,
           );
 
     final tileWidget = GestureDetector(
