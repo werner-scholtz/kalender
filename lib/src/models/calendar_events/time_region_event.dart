@@ -3,13 +3,10 @@ import 'package:kalender/src/models/calendar_events/base_event.dart';
 
 /// A class representing an time range event with additional data.
 class TimeRegionEvent<T extends Object?> extends BaseEvent<T> {
-  /// Additional data for the [TimeRegionEvent].
-  T? data;
-
   TimeRegionEvent({
     required DateTimeRange dateTimeRange,
-    this.data,
-  }) : super(dateTimeRange: dateTimeRange);
+    T? data,
+  }) : super(dateTimeRange: dateTimeRange, data: data);
 
   /// Copy the [TimeRegionEvent] with the new values.
   @override

@@ -7,6 +7,9 @@ import 'package:kalender/src/extensions.dart';
 ///
 /// Any calculations done with the [_dateTimeRange] should be done in utc time and then converted back to local time.
 class BaseEvent<T extends Object?> {
+  /// Additional data for the [BaseEvent].
+  T? data;
+
   /// The [DateTimeRange] of the [BaseEvent].
   final DateTimeRange _dateTimeRange;
   DateTimeRange get dateTimeRange => _dateTimeRange;
@@ -25,6 +28,7 @@ class BaseEvent<T extends Object?> {
 
   BaseEvent({
     required DateTimeRange dateTimeRange,
+    this.data,
   }) : _dateTimeRange = dateTimeRange;
 
   /// The start [DateTime] of the [BaseEvent].
@@ -86,9 +90,11 @@ class BaseEvent<T extends Object?> {
   /// Copy the [BaseEvent] with the new values.
   BaseEvent<T> copyWith({
     DateTimeRange? dateTimeRange,
+    T? data,
   }) {
     return BaseEvent<T>(
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      data: data ?? this.data,
     );
   }
 
