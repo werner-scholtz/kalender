@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ///
   /// It can also be used to listen to changes in the calendar view such as:
   /// - [CalendarController.visibleEvents]
+  /// - [CalendarController.visibleTimeRegionEvents]
   /// - [CalendarController.selectedEvent]
   /// - [CalendarController.visibleDateTimeRange]
   ///
@@ -104,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ],
     );
+    eventsController.addTimeRegionEvents(timeRegions);
   }
 
   @override
@@ -143,6 +145,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: CalendarBody<Event>(
+          multiDayTimeRegionTileComponents: TimeRegionTileComponents<Event>(
+            tileBuilder: (event, tileRange) {
+              return Container(
+                color: Colors.blue,
+                alignment: Alignment.topCenter,
+                child: Text(
+                  event.data?.title ?? '',
+                  textAlign: TextAlign.center,
+                ),
+              );
+            },
+          ),
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
           multiDayBodyConfiguration:
@@ -155,6 +169,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Color get color => Theme.of(context).colorScheme.primaryContainer;
   BorderRadius get radius => BorderRadius.circular(8);
+
+  List<TimeRegionEvent<Event>> get timeRegions => [
+        TimeRegionEvent(
+            data: const Event("Time region", Colors.greenAccent),
+            dateTimeRange: DateTimeRange(
+                start: DateTime.now().add(Duration(hours: 0)),
+                end: DateTime.now().add(Duration(hours: 9)))),
+        TimeRegionEvent(
+            data: const Event("Time region", Colors.blueAccent),
+            dateTimeRange: DateTimeRange(
+                start: DateTime.now().add(Duration(days: 1, hours: 5)),
+                end: DateTime.now().add(Duration(days: 1, hours: 7)))),
+        TimeRegionEvent(
+            data: const Event("Time region", Colors.redAccent),
+            dateTimeRange: DateTimeRange(
+                start: DateTime.now().add(Duration(days: 2, hours: 5)),
+                end: DateTime.now().add(Duration(days: 2, hours: 7)))),
+        TimeRegionEvent(
+            data: const Event("Time region", Colors.pinkAccent),
+            dateTimeRange: DateTimeRange(
+                start: DateTime.now().add(Duration(days: 3, hours: 0)),
+                end: DateTime.now().add(Duration(days: 3, hours: 9))))
+      ];
 
   TileComponents<Event> tileComponents({bool body = true}) {
     return TileComponents<Event>(
