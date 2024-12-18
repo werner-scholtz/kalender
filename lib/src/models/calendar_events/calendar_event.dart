@@ -22,7 +22,7 @@ class CalendarEvent<T extends Object?> extends BaseEvent<T> {
     return CalendarEvent<T>(
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       canModify: canModify ?? this.canModify,
-      data: data,
+      data: data ?? this.data,
     );
   }
 

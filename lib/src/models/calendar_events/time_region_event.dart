@@ -15,7 +15,7 @@ class TimeRegionEvent<T extends Object?> extends BaseEvent<T> {
     T? data,
   }) {
     return TimeRegionEvent<T>(
-      data: data,
+      data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
     );
   }
