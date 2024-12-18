@@ -4,10 +4,10 @@ import 'package:kalender/src/models/calendar_events/base_event.dart';
 /// A class representing an event with additional data and modifiable behavior.
 class CalendarEvent<T extends Object?> extends BaseEvent<T> {
   /// Additional data for the [CalendarEvent].
-  final T? data;
+  T? data;
 
   /// Whether this [CalendarEvent] can be modified.
-  final bool canModify;
+  bool canModify;
 
   CalendarEvent({
     required DateTimeRange dateTimeRange,
