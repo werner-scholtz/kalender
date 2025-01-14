@@ -250,9 +250,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages;
-    visibleDateTimeRange = ValueNotifier<DateTimeRange>(
-      pageNavigationFunctions.dateTimeRangeFromIndex(initialPage),
-    );
+    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
     visibleEvents.value = {};
   }
 
