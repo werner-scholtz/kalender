@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/time_region_tile/day_time_reange_tile.dart';
+import 'package:kalender/src/widgets/time_region_tile/day_time_range_tile.dart';
 
 /// This widget is renders all the time region event tiles that are visible on the provided dateTimeRange.
 ///

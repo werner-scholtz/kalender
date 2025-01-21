@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/controllers/date_as_map.dart';
+import 'package:kalender/src/models/controllers/date_map.dart';
 
 /// A controller for [TimeRegionEvent]s.
 ///

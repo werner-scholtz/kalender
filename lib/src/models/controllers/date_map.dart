@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/base_event.dart';
 
 /// A class for searching the events by date more efficient.
 class DateMap {

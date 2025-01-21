@@ -6,6 +6,9 @@ export 'package:kalender/src/calendar_header.dart';
 /// Widgets - Views
 export 'package:kalender/src/calendar_view.dart';
 
+/// enums
+export 'package:kalender/src/enumerations.dart';
+
 /// Layout Delegates
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 export 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';

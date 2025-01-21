@@ -52,7 +52,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // This is fork one
   /// Create [EventsController], this is used to add and remove events.
   final eventsController = EventsController<Event>();
 
@@ -159,8 +158,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
-          multiDayBodyConfiguration:
-              MultiDayBodyConfiguration(showMultiDayEvents: false),
+          multiDayBodyConfiguration: MultiDayBodyConfiguration(
+              createEventGesture: CreateEventGesture.longPress,
+              showMultiDayEvents: false),
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),
       ),
