@@ -119,8 +119,8 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => animateToDateTime(
         initialDate ?? DateTime.now().copyWith(hour: 0),
-        scrollDuration: Duration.zero,
-        pageDuration: Duration.zero,
+        scrollDuration: const Duration(microseconds: 1),
+        pageDuration: const Duration(microseconds: 1),
       ),
     );
     // ------------------------------------------------------------------------
