@@ -117,7 +117,11 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
     // ---- SHILO ADD THIS: to jump also to the time of the initial date not only tha date ----
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => animateToDateTime(initialDate ?? DateTime.now().copyWith(hour: 0)),
+      (_) => animateToDateTime(
+        initialDate ?? DateTime.now().copyWith(hour: 0),
+        scrollDuration: Duration.zero,
+        pageDuration: Duration.zero,
+      ),
     );
     // ------------------------------------------------------------------------
     visibleEvents.value = {};
