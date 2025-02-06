@@ -121,7 +121,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     final isWithin = start.isWithin(dateTimeRange) || end.isWithin(dateTimeRange);
 
     // Check if the start or end of the event is equal to the start or end of the range.
-    final isStartOrEndSameMoment = start.isAtSameMomentAs(rangeStart)  || end.isAtSameMomentAs(rangeEnd);
+    final isStartOrEndSameMoment = start.isAtSameMomentAs(rangeStart) || end.isAtSameMomentAs(rangeEnd);
 
     return startsBeforeEndsAfter || isWithin || isStartOrEndSameMoment;
   }

@@ -22,17 +22,21 @@ class EventsController<T extends Object?> with ChangeNotifier {
   }
 
   /// Adds an [CalendarEvent] to the [EventsController].
-  void addEvent(CalendarEvent<T> event) {
-    _assignIdAndAdd(event);
+  ///
+  /// Returns the id assigned to the event.
+  int addEvent(CalendarEvent<T> event) {
+    final id = _assignIdAndAdd(event);
     notifyListeners();
+    return id;
   }
 
   /// Adds a list of [CalendarEvent]s to the [EventsController].
-  void addEvents(List<CalendarEvent<T>> events) {
-    for (final event in events) {
-      _assignIdAndAdd(event);
-    }
+  ///
+  /// Returns the id's assigned to the events in order.
+  List<int> addEvents(List<CalendarEvent<T>> events) {
+    final ids = events.map(_assignIdAndAdd).toList();
     notifyListeners();
+    return ids;
   }
 
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
@@ -40,6 +44,14 @@ class EventsController<T extends Object?> with ChangeNotifier {
     assert(event.id != -1, 'The id of the event must be set before removing it.');
     _events.remove(event.id);
     _dateMap.removeEvent(event);
+    notifyListeners();
+  }
+
+  /// Remove an [CalendarEvent] with its id.
+  void removeById(int id) {
+    assert(id != -1, 'Must be a valid id.');
+    _dateMap.removeEvent(_events[id]!);
+    _events.remove(id);
     notifyListeners();
   }
 
@@ -78,8 +90,11 @@ class EventsController<T extends Object?> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Retrieve a [CalendarEvent] by it's id if it exists.
+  CalendarEvent<T>? byId(int id) => _events[id];
+
   /// Assigns an id to the [event] and adds it to the [_events] Map.
-  void _assignIdAndAdd(CalendarEvent<T> event) {
+  int _assignIdAndAdd(CalendarEvent<T> event) {
     assert(event.id == -1, 'The id of the event must not be set manually.');
 
     event.id = _nextId;
@@ -87,6 +102,8 @@ class EventsController<T extends Object?> with ChangeNotifier {
 
     // Add the event to the Map.
     _events[event.id] = event;
+
+    return event.id;
   }
 
   /// Finds the [CalendarEvent]s that occur during the [dateTimeRange].
