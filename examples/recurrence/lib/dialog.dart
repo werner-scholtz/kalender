@@ -17,13 +17,29 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Recurrence ?"),
+      title: Text("Do you want this event to recur ?"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
+          Row(
+            spacing: 8,
+            children: [
+              Icon(Icons.play_arrow),
+              Text(formatDate(widget.event.dateTimeRange.start)),
+            ],
+          ),
+          Row(
+            spacing: 8,
+            children: [
+              Icon(Icons.stop),
+              Text(formatDate(widget.event.dateTimeRange.end)),
+            ],
+          ),
           DropdownMenu<RecurrenceType>(
             initialSelection: type,
-            label: Text("Type"),
+            label: Text("Recurrence Type"),
             onSelected: (value) => setState(() => type = value ?? type),
             dropdownMenuEntries: [
               DropdownMenuEntry(
@@ -36,7 +52,6 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
               ),
             ],
           ),
-          Text(widget.event.dateTimeRange.toString()),
           if (type != RecurrenceType.none) ...[
             FilledButton(
               onPressed: () async {
@@ -52,7 +67,9 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                   dateTimeRange = DateTimeRange(start: recurrence.start.startOfDay, end: recurrence.end.endOfDay);
                 });
               },
-              child: Text(dateTimeRange.toString()),
+              child: Text(
+                "${MaterialLocalizations.of(context).formatCompactDate(dateTimeRange.start)} - ${MaterialLocalizations.of(context).formatCompactDate(dateTimeRange.end)}",
+              ),
             ),
           ],
           FilledButton(
@@ -70,5 +87,9 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
         ],
       ),
     );
+  }
+
+  String formatDate(DateTime date) {
+    return "${MaterialLocalizations.of(context).formatCompactDate(date)} ${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(date))}";
   }
 }
