@@ -243,6 +243,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
+    required this.visibleDateTimeRange,
     required this.visibleEvents,
     DateTime? initialDate,
   }) {

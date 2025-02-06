@@ -101,6 +101,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
         ),
       MonthViewConfiguration => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
+          visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: widget.calendarController.initialDate,
         ),
