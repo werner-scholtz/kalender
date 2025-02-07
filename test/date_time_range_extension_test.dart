@@ -10,7 +10,6 @@ import 'package:kalender/src/extensions.dart';
 import 'package:collection/collection.dart' show ListEquality;
 
 Future<void> main() async {
-  final systemTimezone = (await Process.run('cat', ['/etc/timezone'])).stdout as String;
   final timezones = [
     'America/New_York',
     'Europe/London',
@@ -19,7 +18,9 @@ Future<void> main() async {
     'Africa/Johannesburg',
     'UTC',
   ];
-  final currentTimezone = timezones.firstWhere((zone) => zone.contains(systemTimezone.trim()));
+  final systemTimezone =
+      Platform.environment['TZ'] ?? ((await Process.run('cat', ['/etc/timezone'])).stdout as String).trim();
+  final currentTimezone = timezones.firstWhere((zone) => zone == systemTimezone);
   group('DateTimeRangeExtensions.dates', () {
     group(
       'UTC',
@@ -61,6 +62,7 @@ Future<void> main() async {
       'Australia/Sydney',
       () {
         // TODO: add test for DST switching
+
         testBasic();
       },
       skip: currentTimezone != 'Australia/Sydney',
