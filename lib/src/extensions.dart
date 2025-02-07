@@ -21,6 +21,63 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return DateTimeRange(start: start.add(duration), end: end.add(duration));
   }
 
+  /// Generates a list of [DateTime] objects representing the dates within this [DateTimeRange].
+  ///
+  /// The [inclusive] parameter controls whether the end date is included in the list. (The function will always return at least one date)
+  ///
+  /// **Important Considerations:**
+  ///
+  /// * **Time Zone Consistency:** The start and end [DateTime] of the [DateTimeRange]
+  ///   must be in the same time zone. An assertion will be thrown if they are not.
+  ///   This is crucial for accurate date calculations.
+  /// * **Daylight Saving Time (DST):** This function handles DST transitions correctly.
+  ///   It uses date components (year, month, day) for incrementing to avoid DST-related
+  ///   issues.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// final startDate = DateTime(2024, 10, 26);
+  /// final endDate = DateTime(2024, 10, 29);
+  /// final range = DateTimeRange(start: startDate, end: endDate);
+  /// final dates = range.dates(inclusive: true);
+  /// print(dates); // Output: [2024-10-26, 2024-10-27, 2024-10-28, 2024-10-29]
+  /// ```
+  ///
+  List<DateTime> dates({bool inclusive = false}) {
+    assert(
+      start.isUtc == end.isUtc,
+      'This calculation requires the start and end DateTime objects to be in the same timezone. '
+      'Start: $start, End: $end',
+    );
+
+    // Start with the beginning of the start date.
+    final dates = [start.startOfDay];
+
+    // Handle the case where the start and end dates are the same.
+    if (start.isSameDay(end)) return dates;
+
+    // Iterate through the dates, incrementing by one day at a time.
+    var current = dates.last;
+    while (current.isBefore(end) || (inclusive && current.isAtSameMomentAs(end))) {
+      // Increment using date components (DST-safe)
+      final next = current.copyWith(day: current.day + 1);
+
+      // Add the next date to the list if it's within the range.
+      if (next.isBefore(end) || (inclusive && next.isAtSameMomentAs(end))) {
+        dates.add(next);
+        current = next;
+      } else if (inclusive && next.isAtSameMomentAs(end)) {
+        dates.add(next);
+        current = next;
+      } else {
+        break;
+      }
+    }
+
+    return dates;
+  }
+
   /// A list of [DateTime]s that the [DateTimeRange] spans.
   ///
   /// Includes the [start] date.
