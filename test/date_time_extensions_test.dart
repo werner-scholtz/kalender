@@ -8,14 +8,6 @@ import 'package:kalender/src/extensions.dart';
 import 'package:collection/collection.dart' show ListEquality;
 
 Future<void> main() async {
-  final timezones = [
-    'America/New_York',
-    'Europe/London',
-    'Asia/Tokyo',
-    'Australia/Sydney',
-    'Africa/Johannesburg',
-    'UTC',
-  ];
   final timezone = Platform.environment['TZ'] ?? 'UTC';
 
   final testDates = [
@@ -67,36 +59,10 @@ Future<void> main() async {
     group('DateTimeExtensions', () => dateTimeTests(dates));
     group('DateTimeRangeExtensions', () => dateTimeRangeTests(dates));
   });
-
-  // for (final timezone in timezones) {
-  //   group(
-  //     timezone,
-  //     () {
-  // final isUtc = timezone == 'UTC';
-  // final dates = isUtc ? testDates.map((e) => e.toUtc()) : testDates;
-  // group('DateTimeExtensions', () => dateTimeTests(dates));
-  // group('DateTimeRangeExtensions', () => dateTimeRangeTests(dates));
-  //     },
-  //     skip: timezone != systemTimezone,
-  //   );
-  // }
 }
 
 void dateTimeRangeTests(Iterable<DateTime> testDates) {
   group('dayDifference', () {
-    // TODO: decide if this is needed.
-    // // Loop through 2024, and check that the `dayDifference` is calculated correctly for all 3 day ranges.
-    // final start = DateTime(2024, 1, 1);
-    // for (var day = 0; day < 366; day++) {
-    //   final today = start.copyWith(day: start.day + day);
-    //   final tomorrow = today.copyWith(day: today.day + 3);
-    // test('dayDifference: from $today until $tomorrow', () {
-    //   final range = DateTimeRange(start: today, end: tomorrow);
-    //   final difference = range.dayDifference;
-    //   expect(difference, 3);
-    // });
-    // }
-
     for (var dayDifference = 1; dayDifference <= 3; dayDifference = dayDifference + 1) {
       for (final date in testDates) {
         for (var adjustment = -4; adjustment <= 4; adjustment++) {
