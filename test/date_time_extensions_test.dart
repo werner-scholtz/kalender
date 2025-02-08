@@ -16,7 +16,7 @@ Future<void> main() async {
     'Africa/Johannesburg',
     'UTC',
   ];
-  final systemTimezone = Platform.environment['TZ'] ?? 'UTC';
+  final timezone = Platform.environment['TZ'] ?? 'UTC';
 
   final testDates = [
     DateTime.now(),
@@ -61,18 +61,25 @@ Future<void> main() async {
     DateTime(2025, 10, 5, 2),
   ];
 
-  for (final timezone in timezones) {
-    group(
-      timezone,
-      () {
-        final isUtc = timezone == 'UTC';
-        final dates = isUtc ? testDates.map((e) => e.toUtc()) : testDates;
-        group('DateTimeExtensions', () => dateTimeTests(dates));
-        group('DateTimeRangeExtensions', () => dateTimeRangeTests(dates));
-      },
-      skip: timezone != systemTimezone,
-    );
-  }
+  group(timezone, () {
+    final isUtc = timezone == 'UTC';
+    final dates = isUtc ? testDates.map((e) => e.toUtc()) : testDates;
+    group('DateTimeExtensions', () => dateTimeTests(dates));
+    group('DateTimeRangeExtensions', () => dateTimeRangeTests(dates));
+  });
+
+  // for (final timezone in timezones) {
+  //   group(
+  //     timezone,
+  //     () {
+  // final isUtc = timezone == 'UTC';
+  // final dates = isUtc ? testDates.map((e) => e.toUtc()) : testDates;
+  // group('DateTimeExtensions', () => dateTimeTests(dates));
+  // group('DateTimeRangeExtensions', () => dateTimeRangeTests(dates));
+  //     },
+  //     skip: timezone != systemTimezone,
+  //   );
+  // }
 }
 
 void dateTimeRangeTests(Iterable<DateTime> testDates) {
