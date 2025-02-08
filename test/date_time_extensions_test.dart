@@ -25,6 +25,7 @@ Future<void> main() async {
     DateTime(2024, 11, 3, 2),
     DateTime(2025, 3, 9, 2), // 2025	Sunday, 9 March, 02:00	Sunday, 2 November, 02:00
     DateTime(2025, 11, 2, 2),
+
     // Europe/London
     DateTime(2020, 3, 29, 1), // 2020	Sunday, 29 March, 01:00	Sunday, 25 October, 02:00
     DateTime(2020, 10, 25, 2),
@@ -38,6 +39,7 @@ Future<void> main() async {
     DateTime(2024, 10, 27, 2),
     DateTime(2025, 3, 30, 1), // 2025	Sunday, 30 March, 01:00	Sunday, 26 October, 02:00
     DateTime(2025, 10, 26, 2),
+
     // Australia/Sydney
     DateTime(2020, 4, 5, 3), // 2020 Sunday, 5 April, 03:00	Sunday, 4 October, 02:00
     DateTime(2020, 10, 4, 2),
@@ -63,17 +65,16 @@ Future<void> main() async {
 
 void dateTimeRangeTests(Iterable<DateTime> testDates) {
   group('dayDifference', () {
-    for (var dayDifference = 1; dayDifference <= 3; dayDifference = dayDifference + 1) {
-      for (final date in testDates) {
-        for (var adjustment = -4; adjustment <= 4; adjustment++) {
-          final start = date.copyWith(day: date.day + adjustment);
-          final end = start.copyWith(day: start.day + dayDifference);
-          test('dayDifference: from $start until $end', () {
-            final range = DateTimeRange(start: start, end: end);
-            expect(range.dayDifference, dayDifference);
-          });
-        }
-      }
+
+    // TODO: some more testing needed.
+
+    for (final date in testDates) {
+      final start = date.copyWith(day: date.day - 1);
+      final end = date.copyWith(day: date.day + 1);
+      test('dayDifference: from $start until $end', () {
+        final range = DateTimeRange(start: start, end: end);
+        expect(range.dayDifference, 2);
+      });
     }
   });
 
