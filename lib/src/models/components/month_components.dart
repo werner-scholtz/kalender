@@ -16,6 +16,9 @@ class MonthBodyComponents {
   /// A function that builds the month grid widget.
   final MonthGridBuilder? monthGridBuilder;
 
+  /// A function that builds the month day header widget.
+  final MonthDayHeaderBuilder? monthDayHeaderBuilder;
+
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
 
@@ -25,6 +28,7 @@ class MonthBodyComponents {
   /// Creates overrides for the default components used by the [MonthBody].
   const MonthBodyComponents({
     this.monthGridBuilder,
+    this.monthDayHeaderBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
   });
