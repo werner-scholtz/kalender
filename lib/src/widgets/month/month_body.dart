@@ -150,7 +150,13 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
                 final dates = List.generate(7, (index) {
                   final date = visibleDateTimeRange.start.addDays(index);
-                  return MonthDayHeader(date: date);
+
+                  final monthDayHeaderStyle = styles?.monthDayHeaderStyle;
+                  final monthDayHeder = components?.monthDayHeaderBuilder
+                          ?.call(date, monthDayHeaderStyle) ??
+                      MonthDayHeader(date: date, style: monthDayHeaderStyle);
+
+                  return monthDayHeder;
                 });
 
                 return Expanded(
