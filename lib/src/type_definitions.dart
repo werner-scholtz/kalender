@@ -4,6 +4,7 @@ import 'package:kalender/src/models/time_of_day_range.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
+import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/resize_handle_positioner.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
@@ -134,6 +135,12 @@ typedef WeekDayHeaderBuilder = Widget Function(
 /// The [style] is used to style the month grid.
 typedef MonthGridBuilder = Widget Function(
   MonthGridStyle? style,
+);
+
+/// The month day header builder.
+typedef MonthDayHeaderBuilder = Widget Function(
+  DateTime date,
+  MonthDayHeaderStyle? style,
 );
 
 /// The trigger widget builder, should be constrained in width.
