@@ -412,7 +412,7 @@ void dateTimeTests(Iterable<DateTime> testDates) {
         expect(start.second, 0);
         expect(start.millisecond, 0);
         expect(start.microsecond, 0);
-        expect(start.isUtc, isTrue);
+        expect(start.isUtc, date.isUtc);
         expect(start.timeZoneOffset, date.timeZoneOffset);
       });
     }
