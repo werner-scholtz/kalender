@@ -64,8 +64,24 @@ Future<void> main() async {
 }
 
 void dateTimeRangeTests(Iterable<DateTime> testDates) {
-  group('dayDifference', () {
+  group('isUtc', () {
+    final start = DateTime.now();
+    final end = start.copyWith(hour: start.hour + 1);
+    test('start and end in local', () {
+      expect(DateTimeRange(start: start, end: end).isUtc, isFalse);
+    });
+    test('start in utc and end in local', () {
+      expect(DateTimeRange(start: start.toUtc(), end: end).isUtc, isFalse);
+    });
+    test('start in local and end in utc', () {
+      expect(DateTimeRange(start: start, end: end.toUtc()).isUtc, isFalse);
+    });
+    test('start and end in utc', () {
+      expect(DateTimeRange(start: start.toUtc(), end: end.toUtc()).isUtc, isTrue);
+    });
+  });
 
+  group('dayDifference', () {
     // TODO: some more testing needed.
 
     for (final date in testDates) {
@@ -116,6 +132,50 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
     test('Same date across years', () {
       final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 1, 1));
       expect(range.monthDifference, 24);
+    });
+  });
+
+  group('weekNumbers', () {
+    test('Single week', () {
+      final range = DateTimeRange(start: DateTime(2025, 1, 6), end: DateTime(2025, 1, 12));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 2);
+      expect(secondWeekNumber, null);
+    });
+
+    test('Single week - crosses year boundary', () {
+      final range = DateTimeRange(start: DateTime(2024, 12, 30), end: DateTime(2025, 1, 5));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 1);
+      expect(secondWeekNumber, null);
+    });
+
+    test('Single week - tue to wed', () {
+      final range = DateTimeRange(start: DateTime(2025, 1, 7), end: DateTime(2025, 1, 12));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 2);
+      expect(secondWeekNumber, null);
+    });
+
+    test('Multiple weeks', () {
+      final range = DateTimeRange(start: DateTime(2025, 1, 6), end: DateTime(2025, 1, 14));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 2);
+      expect(secondWeekNumber, 3);
+    });
+
+    test('Multiple weeks - ends on monday', () {
+      final range = DateTimeRange(start: DateTime(2025, 1, 6), end: DateTime(2025, 1, 13));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 2);
+      expect(secondWeekNumber, 3);
+    });
+
+    test('Multiple weeks - spans across years', () {
+      final range = DateTimeRange(start: DateTime(2024, 12, 23), end: DateTime(2025, 12, 22));
+      final (weekNumber, secondWeekNumber) = range.weekNumbers;
+      expect(weekNumber, 52);
+      expect(secondWeekNumber, 52);
     });
   });
 
@@ -212,11 +272,29 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
       expect(range2.overlaps(range1), isFalse);
     });
 
+    test('No overlap - before (touching)', () {
+      final range1 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
+      final range2 = DateTimeRange(start: DateTime(2024, 1, 10), end: DateTime(2024, 1, 20));
+      expect(range1.overlaps(range2), isFalse);
+      expect(range2.overlaps(range1), isFalse);
+      expect(range1.overlaps(range2, touching: true), isTrue);
+      expect(range2.overlaps(range1, touching: true), isTrue);
+    });
+
     test('No overlap - after', () {
       final range1 = DateTimeRange(start: DateTime(2024, 1, 11), end: DateTime(2024, 1, 20));
       final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
       expect(range1.overlaps(range2), isFalse);
       expect(range2.overlaps(range1), isFalse);
+    });
+
+    test('No overlap - after (touching)', () {
+      final range1 = DateTimeRange(start: DateTime(2024, 1, 10), end: DateTime(2024, 1, 20));
+      final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
+      expect(range1.overlaps(range2), isFalse);
+      expect(range2.overlaps(range1), isFalse);
+      expect(range1.overlaps(range2, touching: true), isTrue);
+      expect(range2.overlaps(range1, touching: true), isTrue);
     });
 
     test('Overlap', () {
@@ -240,11 +318,18 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
       expect(range2.overlaps(range1), isTrue);
     });
 
-    test('Touching - no overlap (original logic)', () {
+    test('Overlap - same end different start', () {
       final range1 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-      final range2 = DateTimeRange(start: DateTime(2024, 1, 10), end: DateTime(2024, 1, 20));
-      expect(range1.overlaps(range2), isFalse);
-      expect(range2.overlaps(range1), isFalse);
+      final range2 = DateTimeRange(start: DateTime(2024, 1, 2), end: DateTime(2024, 1, 10));
+      expect(range1.overlaps(range2), isTrue);
+      expect(range2.overlaps(range1), isTrue);
+    });
+
+    test('Overlap - range2 contains range1', () {
+      final range1 = DateTimeRange(start: DateTime(2024, 1, 5), end: DateTime(2024, 1, 10));
+      final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));
+      expect(range1.overlaps(range2), isTrue);
+      expect(range2.overlaps(range1), isTrue);
     });
 
     test('Same range', () {
@@ -260,10 +345,6 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
       expect(range2.overlaps(range1), isTrue);
     });
   });
-
-  group('occursDuring()', () {});
-  // group('description', () {});
-  // group('description', () {});
 }
 
 void dateTimeTests(Iterable<DateTime> testDates) {
