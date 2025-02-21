@@ -402,17 +402,19 @@ void dateTimeTests(Iterable<DateTime> testDates) {
     });
 
     for (final date in testDates) {
-      final start = date.startOfDay;
-      expect(start.year, date.year);
-      expect(start.month, date.month);
-      expect(start.day, date.day);
-      expect(start.hour, 0);
-      expect(start.minute, 0);
-      expect(start.second, 0);
-      expect(start.millisecond, 0);
-      expect(start.microsecond, 0);
-      expect(start.isUtc, isTrue);
-      expect(start.timeZoneOffset, date.timeZoneOffset);
+      test('Start of day - $date', () {
+        final start = date.startOfDay;
+        expect(start.year, date.year);
+        expect(start.month, date.month);
+        expect(start.day, date.day);
+        expect(start.hour, 0);
+        expect(start.minute, 0);
+        expect(start.second, 0);
+        expect(start.millisecond, 0);
+        expect(start.microsecond, 0);
+        expect(start.isUtc, isTrue);
+        expect(start.timeZoneOffset, date.timeZoneOffset);
+      });
     }
   });
 
@@ -446,20 +448,6 @@ void dateTimeTests(Iterable<DateTime> testDates) {
       expect(start.isUtc, isTrue);
       expect(start.timeZoneOffset, Duration.zero);
     });
-
-    for (final date in testDates) {
-      final start = date.startOfDay;
-      expect(start.year, date.year);
-      expect(start.month, date.month);
-      expect(start.day, date.day);
-      expect(start.hour, 0);
-      expect(start.minute, 0);
-      expect(start.second, 0);
-      expect(start.millisecond, 0);
-      expect(start.microsecond, 0);
-      expect(start.isUtc, isTrue);
-      expect(start.timeZoneOffset, date.timeZoneOffset);
-    }
   });
 
   group('dayRange', () {
