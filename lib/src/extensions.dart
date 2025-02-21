@@ -255,6 +255,119 @@ extension DateTimeRangeExtensions on DateTimeRange {
 }
 
 extension DateTimeExtensions on DateTime {
+  /// Check if the [DateTime] is today in the current time zone.
+  ///
+  /// This method compares the year, month, and day of this [DateTime] object
+  /// with the current date in the system's local time zone.  It returns `true`
+  /// if they are the same, and `false` otherwise.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime.now();
+  /// print(date.isToday); // Output: true (if called today)
+  ///
+  /// final otherDate = DateTime(2024, 1, 1);
+  /// print(otherDate.isToday); // Output: false (if not called on Jan 1, 2024)
+  /// ```
+  bool get isToday {
+    final now = DateTime.now();
+    final comparison = isUtc ? now.toUtc() : now; // Use local time for comparison.
+    return year == comparison.year && month == comparison.month && day == comparison.day;
+  }
+
+  /// Gets the start of the date.
+  ///
+  /// This returns a new [DateTime] object representing the start of the day
+  /// (midnight) in the same time zone as the original [DateTime].
+  ///
+  /// Example (local):
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfDay;
+  /// print(start); // Output: 2024-01-15 00:00:00.000
+  /// ```
+  ///
+  /// Example (utc):
+  /// ```dart
+  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfDay;
+  /// print(start); // Output: 2024-01-15 00:00:00.000Z
+  /// ```
+  DateTime get startOfDay {
+    return copyWith(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  }
+
+  /// Gets the end of the date. (aka the start of the next day).
+  ///
+  /// This returns a new [DateTime] object representing the end of the date
+  /// (midnight of the next day), in the same time zone as the original [DateTime].
+  ///
+  /// Example (local):
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final end = date.endOfDay;
+  /// print(end); // Output: 2024-01-16 00:00:00.000
+  /// ```
+  ///
+  /// Example (utc):
+  /// ```dart
+  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final end = date.endOfDay;
+  /// print(end); // Output: 2024-01-16 00:00:00.000Z
+  /// ```
+  DateTime get endOfDay => startOfDay.copyWith(day: day + 1);
+
+  /// Gets the [DateTimeRange] representing the entire day in which this
+  /// [DateTime] falls.
+  ///
+  /// The returned [DateTimeRange] starts at the beginning of the day (midnight)
+  /// and ends at the beginning of the next day, both in the same
+  /// time zone as this [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.dayRange;
+  /// print(range.start); // Output: 2024-01-15 00:00:00.000
+  /// print(range.end);   // Output: 2024-01-16 00:00:00.000
+  /// ```
+  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
+
+  /// Gets the start of the month.
+  ///
+  /// This returns a new [DateTime] object representing the first day of the
+  /// month (midnight) in the same time zone as the original [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfMonth;
+  /// print(start); // Output: 2024-01-01 00:00:00.000
+  /// ```
+  DateTime get startOfMonth => (isUtc ? DateTime.new : DateTime.utc)(year, month);
+
+  /// Gets the end of the month. (aka start of the next month)
+  ///
+  /// This returns a new [DateTime] object representing the last day of the
+  /// month, (midnight of the start of the next month) in the same time zone
+  /// as the original [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfMonth;
+  /// print(start); // Output: 2024-01-01 00:00:00.000
+  /// ```
+  DateTime get endOfMonth => (isUtc ? DateTime.new : DateTime.utc)(year, month + 1);
+
+  /// Gets the month range in which the [DateTime] is in.
+  DateTimeRange get monthRange {
+    return DateTimeRange(
+      start: startOfMonth,
+      end: endOfMonth,
+    );
+  }
+
   /// Checks if the [DateTime] is within the [DateTimeRange].
   bool isWithin(DateTimeRange dateTimeRange) {
     return isAfter(dateTimeRange.start) && isBefore(dateTimeRange.end);
@@ -270,12 +383,6 @@ extension DateTimeExtensions on DateTime {
     return year == date.year && month == date.month && day == date.day;
   }
 
-  /// Check if the [DateTime] is today.
-  bool get isToday {
-    final now = DateTime.now();
-    return year == now.year && month == now.month && day == now.day;
-  }
-
   /// Returns a [DateTime] as a UTC value without converting it.
   DateTime get asUtc {
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
@@ -284,43 +391,6 @@ extension DateTimeExtensions on DateTime {
   /// Returns a [DateTime] as a local value without converting it.
   DateTime get asLocal {
     return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
-
-  /// Gets the start of the date.
-  ///
-  /// * DateTime(year, month, day)
-  DateTime get startOfDay => copyWith(
-        year: year,
-        month: month,
-        day: day,
-        hour: 0,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-        microsecond: 0,
-      );
-
-  /// Gets the end of the date.
-  ///
-  /// * DateTime(year, month, day + 1)
-  /// * Same as the start of next day
-  DateTime get endOfDay => startOfDay.copyWith(day: day + 1);
-
-  /// Gets the day range in which the [DateTime] is in.
-  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
-
-  /// Gets the start of the month.
-  DateTime get startOfMonth => DateTime(year, month);
-
-  /// Gets the end of the month.
-  DateTime get endOfMonth => DateTime(year, month + 1);
-
-  /// Gets the month range in which the [DateTime] is in.
-  DateTimeRange get monthRange {
-    return DateTimeRange(
-      start: startOfMonth,
-      end: endOfMonth,
-    );
   }
 
   /// Gets the year range in which the [DateTime] is in.

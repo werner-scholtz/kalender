@@ -348,6 +348,176 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
 }
 
 void dateTimeTests(Iterable<DateTime> testDates) {
+  group('isToday', () {
+    test('Is today', () {
+      final now = DateTime.now();
+      expect(now.isToday, isTrue);
+    });
+
+    test('Is not today', () {
+      final pastDate = DateTime(2023, 1, 1);
+      expect(pastDate.isToday, isFalse);
+    });
+
+    test('Is today - UTC', () {
+      final now = DateTime.now().toUtc();
+      expect(now.isToday, isTrue);
+    });
+
+    test('Is not today - UTC', () {
+      final pastDate = DateTime(2023, 1, 1).toUtc();
+      expect(pastDate.isToday, isFalse);
+    });
+  });
+
+  group('startOfDay', () {
+    test('Start of day - local time', () {
+      final date = DateTime(2024, 1, 15, 10, 30);
+      final start = date.startOfDay;
+      expect(start.year, 2024);
+      expect(start.month, 1);
+      expect(start.day, 15);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, date.isUtc);
+      expect(start.timeZoneOffset, date.timeZoneOffset);
+    });
+
+    test('Start of day - UTC', () {
+      final date = DateTime.utc(2024, 1, 15, 10, 30);
+      final start = date.startOfDay;
+      expect(start.year, 2024);
+      expect(start.month, 1);
+      expect(start.day, 15);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, isTrue);
+      expect(start.timeZoneOffset, Duration.zero);
+    });
+
+    for (final date in testDates) {
+      final start = date.startOfDay;
+      expect(start.year, date.year);
+      expect(start.month, date.month);
+      expect(start.day, date.day);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, isTrue);
+      expect(start.timeZoneOffset, date.timeZoneOffset);
+    }
+  });
+
+  group('endOfDay', () {
+    test('Start of day - local time', () {
+      final date = DateTime(2024, 1, 15, 10, 30);
+      final start = date.startOfDay;
+      expect(start.year, 2024);
+      expect(start.month, 1);
+      expect(start.day, 15);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, date.isUtc);
+      expect(start.timeZoneOffset, date.timeZoneOffset);
+    });
+
+    test('End of day - UTC', () {
+      final date = DateTime.utc(2024, 1, 15, 10, 30);
+      final start = date.startOfDay;
+      expect(start.year, 2024);
+      expect(start.month, 1);
+      expect(start.day, 15);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, isTrue);
+      expect(start.timeZoneOffset, Duration.zero);
+    });
+
+    for (final date in testDates) {
+      final start = date.startOfDay;
+      expect(start.year, date.year);
+      expect(start.month, date.month);
+      expect(start.day, date.day);
+      expect(start.hour, 0);
+      expect(start.minute, 0);
+      expect(start.second, 0);
+      expect(start.millisecond, 0);
+      expect(start.microsecond, 0);
+      expect(start.isUtc, isTrue);
+      expect(start.timeZoneOffset, date.timeZoneOffset);
+    }
+  });
+
+  group('dayRange', () {
+    test('Day range - local time', () {
+      final date = DateTime(2024, 1, 15, 10, 30);
+      final range = date.dayRange;
+      expect(range.start.year, 2024);
+      expect(range.start.month, 1);
+      expect(range.start.day, 15);
+      expect(range.start.hour, 0);
+      expect(range.start.minute, 0);
+      expect(range.start.second, 0);
+      expect(range.start.millisecond, 0);
+      expect(range.start.microsecond, 0);
+      expect(range.start.isUtc, date.isUtc);
+      expect(range.start.timeZoneOffset, date.timeZoneOffset);
+
+      expect(range.end.year, 2024);
+      expect(range.end.month, 1);
+      expect(range.end.day, 16); // Next day
+      expect(range.end.hour, 0);
+      expect(range.end.minute, 0);
+      expect(range.end.second, 0);
+      expect(range.end.millisecond, 0);
+      expect(range.end.microsecond, 0);
+      expect(range.end.isUtc, date.isUtc);
+      expect(range.end.timeZoneOffset, date.timeZoneOffset);
+    });
+
+    test('Day range - UTC', () {
+      final date = DateTime(2024, 1, 15, 10, 30).toUtc();
+      final range = date.dayRange;
+      expect(range.start.year, 2024);
+      expect(range.start.month, 1);
+      expect(range.start.day, 15);
+      expect(range.start.hour, 0);
+      expect(range.start.minute, 0);
+      expect(range.start.second, 0);
+      expect(range.start.millisecond, 0);
+      expect(range.start.microsecond, 0);
+      expect(range.start.isUtc, isTrue);
+      expect(range.start.timeZoneOffset, Duration.zero);
+
+      expect(range.end.year, 2024);
+      expect(range.end.month, 1);
+      expect(range.end.day, 16); // Next day
+      expect(range.end.hour, 0);
+      expect(range.end.minute, 0);
+      expect(range.end.second, 0);
+      expect(range.end.millisecond, 0);
+      expect(range.end.microsecond, 0);
+      expect(range.end.isUtc, isTrue);
+      expect(range.end.timeZoneOffset, Duration.zero);
+    });
+  });
+
+  group('monthRange', () {});
+
   test('startOfDay', () {
     final date = DateTime(2024, 1, 1, 5);
     final startOfDay = date.startOfDay;
