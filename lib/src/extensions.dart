@@ -258,8 +258,8 @@ extension DateTimeExtensions on DateTime {
   /// Check if the [DateTime] is today in the current time zone.
   ///
   /// This method compares the year, month, and day of this [DateTime] object
-  /// with the current date in the system's local time zone.  It returns `true`
-  /// if they are the same, and `false` otherwise.
+  /// with the current date in the local or UTC time zone, depending on the
+  /// original [DateTime] object.  It returns `true` if the dates match.
   ///
   /// Example:
   /// ```dart
@@ -360,13 +360,19 @@ extension DateTimeExtensions on DateTime {
   /// ```
   DateTime get endOfMonth => (isUtc ? DateTime.new : DateTime.utc)(year, month + 1);
 
-  /// Gets the month range in which the [DateTime] is in.
-  DateTimeRange get monthRange {
-    return DateTimeRange(
-      start: startOfMonth,
-      end: endOfMonth,
-    );
-  }
+  /// Gets a [DateTimeRange] representing the entire month in which this [DateTime] falls.
+  ///
+  /// The returned [DateTimeRange] starts at the beginning of the month (midnight of the first day)
+  /// and ends at the beginning of the next month, both in the same time zone as this [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.monthRange;
+  /// print(range.start); // Output: 2024-01-01 00:00:00.000
+  /// print(range.end);   // Output: 2024-02-01 00:00:00.000
+  /// ```
+  DateTimeRange get monthRange => DateTimeRange(start: startOfMonth, end: endOfMonth);
 
   /// Checks if the [DateTime] is within the [DateTimeRange].
   bool isWithin(DateTimeRange dateTimeRange) {

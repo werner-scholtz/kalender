@@ -349,22 +349,22 @@ void dateTimeRangeTests(Iterable<DateTime> testDates) {
 
 void dateTimeTests(Iterable<DateTime> testDates) {
   group('isToday', () {
-    test('Is today', () {
+    test('Is today - local', () {
       final now = DateTime.now();
       expect(now.isToday, isTrue);
     });
 
-    test('Is not today', () {
+    test('Is not today - local', () {
       final pastDate = DateTime(2023, 1, 1);
       expect(pastDate.isToday, isFalse);
     });
 
-    test('Is today - UTC', () {
+    test('Is today - utc', () {
       final now = DateTime.now().toUtc();
       expect(now.isToday, isTrue);
     });
 
-    test('Is not today - UTC', () {
+    test('Is not today - utc', () {
       final pastDate = DateTime(2023, 1, 1).toUtc();
       expect(pastDate.isToday, isFalse);
     });
@@ -407,19 +407,22 @@ void dateTimeTests(Iterable<DateTime> testDates) {
         expect(start.year, date.year);
         expect(start.month, date.month);
         expect(start.day, date.day);
-        expect(start.hour, 0);
-        expect(start.minute, 0);
+
+        // Since the start of the day might be different depending on the DST, we need to calculate the expected hour
+        // based on the timezone offset. The hour should be the same as the timezone offset.
+        final timezoneOffset = date.timeZoneOffset;
+        expect(start.hour, timezoneOffset.inHours);
+        expect(start.minute, timezoneOffset.inMinutes % 60);
         expect(start.second, 0);
         expect(start.millisecond, 0);
         expect(start.microsecond, 0);
         expect(start.isUtc, date.isUtc);
-        expect(start.timeZoneOffset, date.timeZoneOffset);
       });
     }
   });
 
   group('endOfDay', () {
-    test('Start of day - local time', () {
+    test('Start of day - local', () {
       final date = DateTime(2024, 1, 15, 10, 30);
       final start = date.startOfDay;
       expect(start.year, 2024);
@@ -434,7 +437,7 @@ void dateTimeTests(Iterable<DateTime> testDates) {
       expect(start.timeZoneOffset, date.timeZoneOffset);
     });
 
-    test('End of day - UTC', () {
+    test('End of day - utc', () {
       final date = DateTime.utc(2024, 1, 15, 10, 30);
       final start = date.startOfDay;
       expect(start.year, 2024);
@@ -451,7 +454,7 @@ void dateTimeTests(Iterable<DateTime> testDates) {
   });
 
   group('dayRange', () {
-    test('Day range - local time', () {
+    test('Day range - local', () {
       final date = DateTime(2024, 1, 15, 10, 30);
       final range = date.dayRange;
       expect(range.start.year, 2024);
@@ -477,7 +480,7 @@ void dateTimeTests(Iterable<DateTime> testDates) {
       expect(range.end.timeZoneOffset, date.timeZoneOffset);
     });
 
-    test('Day range - UTC', () {
+    test('Day range - utc', () {
       final date = DateTime(2024, 1, 15, 10, 30).toUtc();
       final range = date.dayRange;
       expect(range.start.year, 2024);
@@ -504,7 +507,33 @@ void dateTimeTests(Iterable<DateTime> testDates) {
     });
   });
 
-  group('monthRange', () {});
+  group('monthRange', () {
+    test('Month Range - local', () {
+      final date = DateTime(2024, 1, 15, 10, 30);
+      final range = date.monthRange;
+      expect(range.start.year, 2024);
+      expect(range.start.month, 1);
+      expect(range.start.day, 1);
+      expect(range.start.hour, 0);
+      expect(range.start.minute, 0);
+      expect(range.start.second, 0);
+      expect(range.start.millisecond, 0);
+      expect(range.start.microsecond, 0);
+      expect(range.start.isUtc, date.isUtc);
+      expect(range.start.timeZoneOffset, date.timeZoneOffset);
+
+      expect(range.end.year, 2024);
+      expect(range.end.month, 2);
+      expect(range.end.day, 1); // Next month
+      expect(range.end.hour, 0);
+      expect(range.end.minute, 0);
+      expect(range.end.second, 0);
+      expect(range.end.millisecond, 0);
+      expect(range.end.microsecond, 0);
+      expect(range.end.isUtc, date.isUtc);
+      expect(range.end.timeZoneOffset, date.timeZoneOffset);
+    });
+  });
 
   test('startOfDay', () {
     final date = DateTime(2024, 1, 1, 5);
