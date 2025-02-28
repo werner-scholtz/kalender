@@ -1,4 +1,8 @@
-final datesToTest = [
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+final _datesToTest = [
   DateTime.now(),
   // America/New_York
   DateTime(2020, 3, 8, 2), // 2020	Sunday, 8 March, 02:00	Sunday, 1 November, 02:00
@@ -42,3 +46,12 @@ final datesToTest = [
   DateTime(2025, 4, 6, 3), // 2025 Sunday, 6 April, 03:00	Sunday, 5 October, 02:00
   DateTime(2025, 10, 5, 2),
 ];
+
+void testWithTimeZones({required void Function(String timezone, Iterable<DateTime> testDates) body}) {
+  final timezone = Platform.environment['TZ'] ?? 'UTC';
+  return group(timezone, () {
+    final isUtc = timezone == 'UTC';
+    final testDates = isUtc ? _datesToTest.map((e) => e.toUtc()) : _datesToTest;
+    body(timezone, testDates);
+  });
+}

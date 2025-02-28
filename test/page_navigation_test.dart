@@ -5,7 +5,7 @@ import 'utilities.dart';
 void main() {
   testWithTimeZones(
     body: (timezone, testDates) {
-      group('MultiDayViewConfiguration', () {
+      group('PageNavigationFunctions', () {
         group('singleDay', () {
           // TODO: Implement tests
         });
@@ -21,9 +21,7 @@ void main() {
         group('freeScroll', () {
           // TODO: Implement tests
         });
-      });
-      group('MonthViewConfiguration', () {
-        group('singleMonth', () {
+        group('month', () {
           // TODO: Implement tests
         });
       });
