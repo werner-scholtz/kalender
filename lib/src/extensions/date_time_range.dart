@@ -230,7 +230,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
   }
 
-  /// TODO: Remove these [DateTimeRangeExtensions]. ???
+  /// TODO: Document these two extension methods.
 
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
   DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);

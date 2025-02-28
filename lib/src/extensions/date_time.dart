@@ -390,6 +390,8 @@ extension DateTimeExtensions on DateTime {
         _ => throw Exception('Invalid month'),
       };
 
+  /// TODO: Document these two extension methods.
+  ///
   /// Returns a [DateTime] as a UTC value without converting it.
   DateTime get asUtc {
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
