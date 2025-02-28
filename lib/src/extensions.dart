@@ -258,8 +258,11 @@ extension DateTimeExtensions on DateTime {
   /// Check if the [DateTime] is today in the current time zone.
   ///
   /// This method compares the year, month, and day of this [DateTime] object
-  /// with the current date in the local or UTC time zone, depending on the
-  /// original [DateTime] object.  It returns `true` if the dates match.
+  /// with the current date. It returns `true` if the dates match.
+  ///
+  /// The comparison is done in the same time zone as the calling object.
+  /// - This means that the [DateTime.now] is converted to the same time zone
+  ///   as the calling object before the comparison.
   ///
   /// Example:
   /// ```dart
@@ -269,10 +272,29 @@ extension DateTimeExtensions on DateTime {
   /// final otherDate = DateTime(2024, 1, 1);
   /// print(otherDate.isToday); // Output: false (if not called on Jan 1, 2024)
   /// ```
-  bool get isToday {
-    final now = DateTime.now();
-    final comparison = isUtc ? now.toUtc() : now; // Use local time for comparison.
-    return year == comparison.year && month == comparison.month && day == comparison.day;
+  bool get isToday => isSameDay(DateTime.now());
+
+  /// Checks if the [DateTime] is the same day as the calling object.
+  ///
+  /// This method compares the year, month, and day of this [DateTime] object
+  /// with the given [date]. It returns `true` if the dates match.
+  ///
+  /// The [date] parameter can be in either local or UTC time, and the comparison
+  /// will be done in the same time zone as the calling object.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15);
+  /// print(date.isSameDay(DateTime(2024, 1, 15))); // Output: true
+  /// print(date.isSameDay(DateTime(2024, 1, 16))); // Output: false
+  /// ```
+  bool isSameDay(DateTime date) {
+    final other = isUtc != date.isUtc
+        ? isUtc
+            ? date.toUtc()
+            : date.toLocal()
+        : date;
+    return year == other.year && month == other.month && day == other.day;
   }
 
   /// Gets the start of the date.
@@ -344,7 +366,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfMonth;
   /// print(start); // Output: 2024-01-01 00:00:00.000
   /// ```
-  DateTime get startOfMonth => (isUtc ? DateTime.new : DateTime.utc)(year, month);
+  DateTime get startOfMonth => (isUtc ? DateTime.utc : DateTime.new)(year, month);
 
   /// Gets the end of the month. (aka start of the next month)
   ///
@@ -358,9 +380,9 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfMonth;
   /// print(start); // Output: 2024-01-01 00:00:00.000
   /// ```
-  DateTime get endOfMonth => (isUtc ? DateTime.new : DateTime.utc)(year, month + 1);
+  DateTime get endOfMonth => (isUtc ? DateTime.utc : DateTime.new)(year, month + 1);
 
-  /// Gets a [DateTimeRange] representing the entire month in which this [DateTime] falls.
+  /// Gets a [DateTimeRange] representing the entire month in which this [DateTime] occurs.
   ///
   /// The returned [DateTimeRange] starts at the beginning of the month (midnight of the first day)
   /// and ends at the beginning of the next month, both in the same time zone as this [DateTime].
@@ -374,37 +396,83 @@ extension DateTimeExtensions on DateTime {
   /// ```
   DateTimeRange get monthRange => DateTimeRange(start: startOfMonth, end: endOfMonth);
 
-  /// Checks if the [DateTime] is within the [DateTimeRange].
-  bool isWithin(DateTimeRange dateTimeRange) {
-    return isAfter(dateTimeRange.start) && isBefore(dateTimeRange.end);
-  }
+  /// Gets the start of the year.
+  ///
+  /// This returns a new [DateTime] object representing the first day of the year
+  /// (midnight) in the same time zone as the original [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfYear;
+  /// print(start); // Output: 2024-01-01 00:00:00.000
+  /// ```
+  DateTime get startOfYear => (isUtc ? DateTime.utc : DateTime.new)(year);
 
-  bool isDuring(DateTimeRange dateTimeRange) {
-    return (isAtSameMomentAs(dateTimeRange.start) || isAfter(dateTimeRange.start)) &&
-        (isAtSameMomentAs(dateTimeRange.end) || isBefore(dateTimeRange.end));
-  }
+  /// Gets the end of the year. (aka start of the next year)
+  ///
+  /// This returns a new [DateTime] object representing the last day of the year
+  /// (midnight of the start of the next year) in the same time zone as the original [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.endOfYear;
+  /// print(start); // Output: 2025-01-01 00:00:00.000
+  /// ```
+  DateTime get endOfYear => (isUtc ? DateTime.utc : DateTime.new)(year + 1);
 
-  /// Checks if the [DateTime] is the same day as the calling object.
-  bool isSameDay(DateTime date) {
-    return year == date.year && month == date.month && day == date.day;
-  }
+  /// Gets a [DateTimeRange] representing the entire year in which this [DateTime] occurs.
+  ///
+  /// The returned [DateTimeRange] starts at the beginning of the year (midnight of the first day)
+  /// and ends at the beginning of the next year, both in the same time zone as this [DateTime].
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.yearRange;
+  /// print(range.start); // Output: 2024-01-01 00:00:00.000
+  /// print(range.end);   // Output: 2025-01-01 00:00:00.000
+  /// ```
+  DateTimeRange get yearRange => DateTimeRange(start: startOfYear, end: endOfYear);
 
-  /// Returns a [DateTime] as a UTC value without converting it.
-  DateTime get asUtc {
-    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
+  /// Checks if this [DateTime] occurs during the given [DateTimeRange].
+  ///
+  /// By default, the start time is included in the range, but the end time is not.
+  /// This behavior can be changed by setting the `includeStart` and `includeEnd` parameters.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));
+  /// print(date.isWithin(range)); // Output: true
+  ///
+  /// final date2 = DateTime(2024, 1, 1); // January 1, 2024, 12:00 AM
+  /// print(date2.isWithin(range)); // Output: true
+  /// print(date2.isWithin(range, includeStart: false)); // Output: false
+  ///
+  /// final date3 = DateTime(2024, 1, 31); // January 31, 2024, 12:00 AM
+  /// print(date3.isWithin(range)); // Output: false
+  /// print(date3.isWithin(range, includeEnd: true)); // Output: true
+  /// ```
+  bool isWithin(DateTimeRange dateTimeRange, {bool includeStart = true, bool includeEnd = false}) {
+    final isWithin = isAfter(dateTimeRange.start) && isBefore(dateTimeRange.end);
+    late final isAtStart = isAtSameMomentAs(dateTimeRange.start);
+    late final isAtEnd = isAtSameMomentAs(dateTimeRange.end);
 
-  /// Returns a [DateTime] as a local value without converting it.
-  DateTime get asLocal {
-    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
-
-  /// Gets the year range in which the [DateTime] is in.
-  DateTimeRange get yearRange {
-    return DateTimeRange(
-      start: DateTime(year, 1, 1),
-      end: DateTime(year + 1, 1, 1),
-    );
+    if (includeStart && includeEnd) {
+      // If both are included, the date must be within or at the start or end.
+      return isWithin || isAtStart || isAtEnd;
+    } else if (includeStart) {
+      // If only the start is included, the date must be within or at the start.
+      return isWithin || isAtStart;
+    } else if (includeEnd) {
+      // If only the end is included, the date must be within or at the end.
+      return isWithin || isAtEnd;
+    } else {
+      // If neither are included, the date must be strictly within the range.
+      return isWithin;
+    }
   }
 
   /// Add specific amount of [days] (ignoring DST)
@@ -422,9 +490,7 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Subtract specific amount of [days] (ignoring DST)
-  DateTime subtractDays(int days) {
-    return addDays(-days);
-  }
+  DateTime subtractDays(int days) => addDays(-days);
 
   /// Get the start of the week with an offset.
   DateTime startOfWeekWithOffset(int firstDayOfWeek) {
@@ -443,31 +509,21 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Gets the end of the week with an offset.
-  DateTime endOfWeekWithOffset(int firstDayOfWeek) {
-    return startOfWeekWithOffset(firstDayOfWeek).addDays(7).startOfDay;
-  }
+  DateTime endOfWeekWithOffset(int firstDayOfWeek) => startOfWeekWithOffset(firstDayOfWeek).addDays(7).startOfDay;
 
   /// Find a [DateTimeRange] spanning 7 days that contains this date.
   ///
   /// Starting on the [firstDayOfWeek]
   DateTimeRange weekRangeWithOffset(int firstDayOfWeek) {
     var startOfWeek = subtractDays(weekday - firstDayOfWeek).startOfDay;
-    if (startOfWeek.isAfter(this)) {
-      startOfWeek = startOfWeek.subtractDays(7);
-    }
+    if (startOfWeek.isAfter(this)) startOfWeek = startOfWeek.subtractDays(7);
 
-    return DateTimeRange(
-      start: startOfWeek,
-      end: startOfWeek.addDays(7),
-    );
+    return DateTimeRange(start: startOfWeek, end: startOfWeek.addDays(7));
   }
 
   /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
   DateTimeRange multiDayDateTimeRange(int numberOfDays) {
-    return DateTimeRange(
-      start: startOfDay,
-      end: endOfDay.addDays(numberOfDays - 1),
-    );
+    return DateTimeRange(start: startOfDay, end: endOfDay.addDays(numberOfDays - 1));
   }
 
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
@@ -533,6 +589,23 @@ extension DateTimeExtensions on DateTime {
         12 => 'December',
         _ => throw Exception('Invalid month'),
       };
+
+  /// TODO: remove these extensions.
+  /// Checks if this [DateTime]
+  bool isDuring(DateTimeRange dateTimeRange) {
+    return (isAtSameMomentAs(dateTimeRange.start) || isAfter(dateTimeRange.start)) &&
+        (isAtSameMomentAs(dateTimeRange.end) || isBefore(dateTimeRange.end));
+  }
+
+  /// Returns a [DateTime] as a UTC value without converting it.
+  DateTime get asUtc {
+    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
+  /// Returns a [DateTime] as a local value without converting it.
+  DateTime get asLocal {
+    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
 }
 
 extension TimeOfDayExtension on TimeOfDay {
