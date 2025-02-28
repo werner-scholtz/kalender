@@ -46,13 +46,13 @@ void testDayConfiguration(List<DateTimeRange> calendarRanges) {
 
       // The index of the end date should be the difference between the start and end date.
       final endIndex = functions.indexFromDate(end);
-      expect(endIndex, range.dayDifference);
+      expect(endIndex, range.dates());
 
       // The number of pages should be the difference between the start and end date.
       final numberOfPages = functions.numberOfPages;
-      expect(numberOfPages, range.dayDifference);
+      expect(numberOfPages, range.dates().length);
 
-      for (var i = 0; i < range.dayDifference; i++) {
+      for (var i = 0; i < range.dates().length; i++) {
         final dateTimeRange = functions.dateTimeRangeFromIndex(i);
 
         expect(dateTimeRange.start, start.addDays(i).asUtc);

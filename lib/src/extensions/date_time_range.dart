@@ -6,22 +6,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// Check if both the [start] and [end] times are in utc.
   bool get isUtc => start.isUtc && end.isUtc;
 
-  /// The time difference in days between the [start] and [end] of this range.
-  ///
-  /// This calculates the difference in days using UTC time to ensure consistent
-  /// results regardless of time zones.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));
-  /// print(range.dayDifference); // Output: 30
-  /// ```
-  int get dayDifference {
-    final startDate = start.asUtc;
-    final endDate = end.asUtc;
-    final difference = endDate.difference(startDate).inDays;
-    return difference;
-  }
+  /// Converts the [start] and [end] times to utc.
+  DateTimeRange toUtc() => DateTimeRange(start: start.toUtc(), end: end.toUtc());
+
+  /// Converts the [start] and [end] times to local time.
+  DateTimeRange toLocal() => DateTimeRange(start: start.toLocal(), end: end.toLocal());
 
   /// The difference in months between the [start] and [end] dates of this range.
   ///
@@ -225,28 +214,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
   }
 
   /// TODO: Remove these [DateTimeRangeExtensions].
-  /// A list of [DateTime]s that the [DateTimeRange] spans.
-  ///
-  /// Includes the [start] date.
-  /// Includes the [end] date only if it is not the start of the day. (after 00:00:00)
-  List<DateTime> get days {
-    final start = this.start.asUtc;
-    final end = this.end.asUtc;
-
-    if (start.isSameDay(end)) return [this.start.startOfDay];
-
-    final dateTimeRange = DateTimeRange(
-      start: start.startOfDay,
-      end: end.startOfDay == end ? end.startOfDay : end.endOfDay,
-    );
-
-    final numberOfDays = dateTimeRange.dayDifference;
-    final dates = <DateTime>[];
-    for (var i = 0; i < numberOfDays; i++) {
-      dates.add(this.start.startOfDay.add(Duration(days: i)));
-    }
-    return dates;
-  }
 
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
   DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);

@@ -40,7 +40,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
       child: Row(
         children: [
           if (allowCreation)
-            for (final date in visibleDateTimeRange.days)
+            for (final date in visibleDateTimeRange.dates())
               switch (createEventTrigger) {
                 CreateEventGesture.tap => Draggable(
                     dragAnchorStrategy: pointerDragAnchorStrategy,

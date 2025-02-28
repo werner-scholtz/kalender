@@ -32,19 +32,6 @@ Future<void> main() async {
       });
     });
 
-    group('dayDifference', () {
-      // TODO: some more testing needed.
-
-      for (final date in testDates) {
-        final start = date.copyWith(day: date.day - 1);
-        final end = date.copyWith(day: date.day + 1);
-        test('dayDifference: from $start until $end', () {
-          final range = DateTimeRange(start: start, end: end);
-          expect(range.dayDifference, 2);
-        });
-      }
-    });
-
     group('monthDifference', () {
       test('Same month', () {
         final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));

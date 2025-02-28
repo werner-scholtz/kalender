@@ -55,8 +55,8 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   Widget? get verticalResizeHandle => tileComponents.verticalResizeHandle;
   Widget? get horizontalResizeHandle => tileComponents.horizontalResizeHandle;
 
-  bool get continuesBefore => event.continuesBefore(dateTimeRange.start);
-  bool get continuesAfter => event.continuesAfter(dateTimeRange.end);
+  bool get continuesBefore => event.start.isBefore(dateTimeRange.start);
+  bool get continuesAfter => event.end.isAfter(dateTimeRange.end);
   bool get showStart => allowResizing && event.canModify && !continuesBefore;
   bool get showEnd => allowResizing && event.canModify && !continuesAfter;
   bool get canReschedule => allowRescheduling && event.canModify;

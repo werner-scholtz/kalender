@@ -71,7 +71,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
 
   /// Populate the [eventsMap].
   void _populateEventsMap() {
-    final visibleDates = widget.visibleDateTimeRange.days;
+    final visibleDates = widget.visibleDateTimeRange.dates();
     final showMultiDayEvents = widget.configuration.showMultiDayEvents;
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
 
@@ -147,7 +147,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
           builder: (context, event, child) {
             // If there is no event being dragged, return an empty widget.
             if (event == null) return const SizedBox();
-            if (!event.occursDuringDateTimeRange(date.dayRange)) return const SizedBox();
+            if (!event.dateTimeRange.overlaps(date.dayRange)) return const SizedBox();
             if (!showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
             final events = visibleEvents.toList();

@@ -10,12 +10,11 @@ class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
   T? data;
 
-  /// The [DateTimeRange] of the [CalendarEvent].
+  /// The [DateTimeRange] of the [CalendarEvent] stored in utc time.
   final DateTimeRange _dateTimeRange;
-  DateTimeRange get dateTimeRange => _dateTimeRange;
 
-  /// The [DateTimeRange] of the [CalendarEvent] in the [DateTime.utc] format.
-  DateTimeRange get _dateTimeRangeAsUtc => _dateTimeRange.asUtc;
+  /// The [DateTimeRange] of the [CalendarEvent] stored in local time.
+  late final DateTimeRange _dateTimeRangeLocal = _dateTimeRange.toLocal();
 
   /// Whether this [CalendarEvent] can be modified.
   bool canModify;
@@ -33,55 +32,34 @@ class CalendarEvent<T extends Object?> {
     required DateTimeRange dateTimeRange,
     this.data,
     this.canModify = true,
-  }) : _dateTimeRange = dateTimeRange;
+  }) : _dateTimeRange = dateTimeRange.toUtc();
 
-  /// The start [DateTime] of the [CalendarEvent].
-  DateTime get start => dateTimeRange.start.asLocal;
+  /// The [DateTimeRange] of the [CalendarEvent] in utc time.
+  DateTimeRange get dateTimeRange => _dateTimeRange;
 
-  /// The start [DateTime.utc] of the [CalendarEvent].
-  DateTime get _startAsUTC => start.asUtc;
+  /// The start [DateTime] of the [CalendarEvent] in utc time.
+  DateTime get start => dateTimeRange.start;
 
-  /// The end [DateTime] of the [CalendarEvent].
-  DateTime get end => dateTimeRange.end.asLocal;
+  /// The end [DateTime] of the [CalendarEvent] in utc time.
+  DateTime get end => dateTimeRange.end;
 
-  /// The end [DateTime.utc] of the [CalendarEvent].
-  DateTime get _endAsUTC => end.asUtc;
+  /// The [DateTimeRange] of the [CalendarEvent] in local time.
+  DateTimeRange get dateTimeRangeLocal => _dateTimeRangeLocal;
+  
+  /// The start [DateTime] of the [CalendarEvent] in local time.
+  DateTime get startLocal => dateTimeRangeLocal.start;
 
-  /// Whether the [CalendarEvent] is a multi day event.
-  bool get isMultiDayEvent => dateTimeRange.dayDifference >= 1;
+  /// The end [DateTime] of the [CalendarEvent] in local time.
+  DateTime get endLocal => dateTimeRangeLocal.end;
 
-  /// The [DateTime]s that the [CalendarEvent] spans.
-  List<DateTime> get datesSpanned => dateTimeRange.days;
-
-  /// The [DateTime]s that the [CalendarEvent] spans as UTC [DateTime]s.
-  List<DateTime> get datesSpannedAsUtc => _dateTimeRangeAsUtc.days;
-
-  /// The total duration of the [CalendarEvent].
+  /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
   Duration get duration => dateTimeRange.duration;
 
-  /// Whether the [CalendarEvent] is during the given [DateTimeRange].
-  ///
-  /// This expects the [DateTimeRange]'s start and end dates to be constructed in the [DateTime.utc] format.
-  bool occursDuringDateTimeRange(DateTimeRange dateTimeRange) {
-    assert(dateTimeRange.isUtc);
-    return _dateTimeRangeAsUtc.overlaps(dateTimeRange);
-  }
+  /// Whether the [CalendarEvent] spans multiple days in the local timezone.
+  bool get isMultiDayEvent => datesSpanned.length > 1;
 
-  /// Whether the [CalendarEvent] continues before the given [DateTime].
-  ///
-  /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  bool continuesBefore(DateTime date) {
-    assert(date.isUtc, 'The $date should be in utc time.');
-    return _startAsUTC.isBefore(date.startOfDay);
-  }
-
-  /// Whether the [CalendarEvent] continues after the given [DateTime].
-  ///
-  /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  bool continuesAfter(DateTime date) {
-    assert(date.isUtc, 'The $date should be in utc time.');
-    return _endAsUTC.isAfter(date.endOfDay);
-  }
+  /// The [DateTime]s that the [CalendarEvent] spans in the local timezone.
+  List<DateTime> get datesSpanned => dateTimeRangeLocal.dates();
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
   ///
@@ -90,7 +68,7 @@ class CalendarEvent<T extends Object?> {
   /// TODO: Check that all usages of this still works as expected.
   DateTimeRange? dateTimeRangeOnDate(DateTime date) {
     assert(date.isUtc, 'The $date should be in utc time.');
-    return _dateTimeRangeAsUtc.dateTimeRangeOnDate(date);
+    return dateTimeRange.dateTimeRangeOnDate(date);
   }
 
   /// Copy the [CalendarEvent] with the new values.

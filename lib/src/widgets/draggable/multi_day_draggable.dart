@@ -33,7 +33,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
       child: Row(
         children: [
           if (allowEventCreation)
-            for (final date in visibleDateTimeRange.days)
+            for (final date in visibleDateTimeRange.dates())
               switch (createEventTrigger) {
                 CreateEventGesture.tap => Draggable(
                     onDragStarted: () => createNewEvent(date, localPosition),

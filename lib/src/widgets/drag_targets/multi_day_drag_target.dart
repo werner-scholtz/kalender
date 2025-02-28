@@ -57,7 +57,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   @override
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
   @override
-  List<DateTime> get visibleDates => visibleDateTimeRange.days;
+  List<DateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 

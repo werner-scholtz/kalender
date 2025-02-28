@@ -116,7 +116,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     final events = eventIds.map((id) => _events[id]).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
-      return events.where((event) => event.occursDuringDateTimeRange(dateTimeRange));
+      return events.where((event) => event.dateTimeRange.overlaps(dateTimeRange));
     } else if (includeMultiDayEvents) {
       return _multiDayEventsFromDateTimeRange(events, dateTimeRange);
     } else if (includeDayEvents) {
@@ -134,7 +134,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is not a multi day event, return false.
       if (!event.isMultiDayEvent) return false;
-      return event.occursDuringDateTimeRange(dateTimeRange);
+      return event.dateTimeRange.overlaps(dateTimeRange);
     });
   }
 
@@ -146,7 +146,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;
-      return event.occursDuringDateTimeRange(dateTimeRange);
+      return event.dateTimeRange.overlaps(dateTimeRange);
     });
   }
 }
@@ -162,7 +162,7 @@ class DateMap {
   /// Add an [event] to the map.
   void addEvent(CalendarEvent event) {
     final id = event.id;
-    final dates = event.datesSpannedAsUtc;
+    final dates = event.datesSpanned;
     for (final date in dates) {
       _dateMap.update(
         date,
@@ -175,7 +175,7 @@ class DateMap {
   /// Remove an [event] from the map.
   void removeEvent(CalendarEvent event) {
     final id = event.id;
-    final dates = event.datesSpannedAsUtc;
+    final dates = event.datesSpanned;
     for (final date in dates) {
       _dateMap.update(
         date,
@@ -192,7 +192,7 @@ class DateMap {
 
   /// Retrieve a [Set] of event id's from the map.
   Set<int> eventIdsFromDateTimeRange(DateTimeRange dateTimeRange) {
-    final days = dateTimeRange.asUtc.days;
+    final days = dateTimeRange.asUtc.dates();
     final eventIds = <int>{};
     for (final day in days) {
       eventIds.addAll(_dateMap[day] ?? {});

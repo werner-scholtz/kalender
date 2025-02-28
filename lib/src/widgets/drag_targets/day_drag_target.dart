@@ -67,7 +67,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   CalendarController<T> get controller => widget.calendarController;
 
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.days;
+  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => widget.callbacks;

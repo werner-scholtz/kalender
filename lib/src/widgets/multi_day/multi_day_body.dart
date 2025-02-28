@@ -190,7 +190,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     index,
                   );
               
-                  final visibleDates = visibleRange.days;
+                  final visibleDates = visibleRange.dates();
                   final timeIndicatorDateIndex = visibleDates.indexWhere(
                     (date) => date.isToday,
                   );

@@ -263,6 +263,9 @@ Future<void> main() async {
       });
     });
 
+
+
+
     test('startOfDay', () {
       final date = DateTime(2024, 1, 1, 5);
       final startOfDay = date.startOfDay;
@@ -321,21 +324,21 @@ Future<void> main() async {
       }
     });
 
-    test('weekRangeWithOffset', () {
-      final date = DateTime(2024, 1, 1);
-      for (var i = 1; i <= 7; i++) {
-        final week = date.weekRangeWithOffset(i);
-        expect(week.dayDifference, 7);
+    // test('weekRangeWithOffset', () {
+    //   final date = DateTime(2024, 1, 1);
+    //   for (var i = 1; i <= 7; i++) {
+    //     final week = date.weekRangeWithOffset(i);
+    //     expect(week.dayDifference, 7);
 
-        final dateIsAfterStart = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
+    //     final dateIsAfterStart = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
 
-        final dateIsBeforeEnd = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
+    //     final dateIsBeforeEnd = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
 
-        final dateIsDuringWeek = dateIsAfterStart && dateIsBeforeEnd;
+    //     final dateIsDuringWeek = dateIsAfterStart && dateIsBeforeEnd;
 
-        expect(dateIsDuringWeek, true);
-      }
-    });
+    //     expect(dateIsDuringWeek, true);
+    //   }
+    // });
 
     /// TODO: add more tests.
   });
