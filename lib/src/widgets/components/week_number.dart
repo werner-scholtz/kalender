@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/kalender_extensions.dart';
 
 /// The style of the [WeekNumber].
 class WeekNumberStyle {
