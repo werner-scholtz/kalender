@@ -22,11 +22,9 @@ class MonthViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
   }) {
+    // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
     this.displayRange = displayRange ?? DateTime.now().yearRange;
-    pageNavigationFunctions = PageNavigationFunctions.month(
-      this.displayRange,
-      firstDayOfWeek,
-    );
+    pageNavigationFunctions = PageNavigationFunctions.month(this.displayRange, firstDayOfWeek);
   }
 
   /// The functions for navigating the [PageView].

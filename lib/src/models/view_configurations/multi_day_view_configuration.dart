@@ -42,6 +42,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
         displayRange = displayRange ?? DateTime.now().yearRange,
         numberOfDays = 1,
         type = MultiDayViewType.singleDay {
@@ -58,6 +59,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
         displayRange = displayRange ?? DateTime.now().yearRange,
         type = MultiDayViewType.week {
     pageNavigationFunctions = PageNavigationFunctions.week(this.displayRange, firstDayOfWeek);
@@ -72,6 +74,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
         displayRange = displayRange ?? DateTime.now().yearRange,
         firstDayOfWeek = DateTime.monday,
         type = MultiDayViewType.workWeek {
@@ -88,6 +91,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
         displayRange = displayRange ?? DateTime.now().yearRange,
         type = MultiDayViewType.custom {
     pageNavigationFunctions = PageNavigationFunctions.custom(this.displayRange, numberOfDays);
@@ -102,6 +106,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
         displayRange = displayRange ?? DateTime.now().yearRange,
         firstDayOfWeek = DateTime.monday,
         type = MultiDayViewType.freeScroll {
