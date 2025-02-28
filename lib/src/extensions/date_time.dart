@@ -222,7 +222,72 @@ extension DateTimeExtensions on DateTime {
     }
   }
 
+  /// Gets the start of the week.
+  ///
+  /// The start of the week is determined by the [DateTime.monday] constant.
+  /// This means that the start of the week is always Monday.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start = date.startOfWeek;
+  /// print(start); // Output: 2024-01-15 00:00:00.000
+  /// ```
+  DateTime get startOfWeek {
+    final difference = weekday - DateTime.monday;
+    return subtractDays(difference).startOfDay;
+  }
+
+  /// Gets the end of the week.
+  ///
+  /// The end of the week is the start of the next week, monday at midnight.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final end = date.endOfWeek;
+  /// print(end); // Output: 2024-01-22 00:00:00.000
+  /// ```
+  DateTime get endOfWeek => startOfWeek.addDays(7);
+
+  /// Get the week range.
+  ///
+  /// The week range is a [DateTimeRange] that starts at the beginning of the week
+  /// (Monday) and ends at the beginning of the next week (Monday).
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.weekRange;
+  /// print(range.start); // Output: 2024-01-15 00:00:00.000
+  /// print(range.end);   // Output: 2024-01-22 00:00:00.000
+  /// ```
+  DateTimeRange get weekRange => DateTimeRange(start: startOfWeek, end: endOfWeek);
+
+  /// Get the work week range.
+  ///
+  /// The work week range is a [DateTimeRange] that starts at the beginning of the week
+  /// (Monday) and ends at the end of the work week (Saturday) at 00:00:00.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.workWeekRange;
+  /// print(range.start); // Output: 2024-01-15 00:00:00.000
+  /// print(range.end);   // Output: 2024-01-20 00:00:00.000
+  /// ```
+  DateTimeRange get workWeekRange => DateTimeRange(start: startOfWeek, end: endOfWeek.subtractDays(2));
+
   /// Add specific amount of [days] (ignoring DST)
+  ///
+  /// This method adds the given number of [days] to the [DateTime] object.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final newDate = date.addDays(5);
+  /// print(newDate); // Output: 2024-01-20 10:30:00.000
+  /// ```
   DateTime addDays(int days) {
     return copyWith(
       year: year,
@@ -237,40 +302,28 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Subtract specific amount of [days] (ignoring DST)
+  ///
+  /// This method subtracts the given number of [days] from the [DateTime] object.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final newDate = date.subtractDays(5);
+  /// print(newDate); // Output: 2024-01-10 10:30:00.000
+  /// ```
   DateTime subtractDays(int days) => addDays(-days);
 
-  /// Get the start of the week with an offset.
-  DateTime startOfWeekWithOffset(int firstDayOfWeek) {
-    assert(
-      firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-      'firstDayOfWeek must be between 1 and 7',
-    );
-
-    final difference = weekday - firstDayOfWeek;
-
-    if (difference < 0) {
-      return subtractDays(7 + difference).startOfDay;
-    } else {
-      return subtractDays(difference).startOfDay;
-    }
-  }
-
-  /// Gets the end of the week with an offset.
-  DateTime endOfWeekWithOffset(int firstDayOfWeek) => startOfWeekWithOffset(firstDayOfWeek).addDays(7).startOfDay;
-
-  /// Find a [DateTimeRange] spanning 7 days that contains this date.
-  ///
-  /// Starting on the [firstDayOfWeek]
-  DateTimeRange weekRangeWithOffset(int firstDayOfWeek) {
-    var startOfWeek = subtractDays(weekday - firstDayOfWeek).startOfDay;
-    if (startOfWeek.isAfter(this)) startOfWeek = startOfWeek.subtractDays(7);
-
-    return DateTimeRange(start: startOfWeek, end: startOfWeek.addDays(7));
-  }
-
   /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
-  DateTimeRange multiDayDateTimeRange(int numberOfDays) {
-    return DateTimeRange(start: startOfDay, end: endOfDay.addDays(numberOfDays - 1));
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final range = date.customDateTimeRange(5);
+  /// print(range.start); // Output: 2024-01-15 10:30:00.000
+  /// print(range.end);   // Output: 2024-01-20 10:30:00.000
+  /// ```
+  DateTimeRange customDateTimeRange(int numberOfDays) {
+    return DateTimeRange(start: this, end: addDays(numberOfDays));
   }
 
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
@@ -337,13 +390,6 @@ extension DateTimeExtensions on DateTime {
         _ => throw Exception('Invalid month'),
       };
 
-  /// TODO: remove these extensions.
-  /// Checks if this [DateTime]
-  bool isDuring(DateTimeRange dateTimeRange) {
-    return (isAtSameMomentAs(dateTimeRange.start) || isAfter(dateTimeRange.start)) &&
-        (isAtSameMomentAs(dateTimeRange.end) || isBefore(dateTimeRange.end));
-  }
-
   /// Returns a [DateTime] as a UTC value without converting it.
   DateTime get asUtc {
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
@@ -352,5 +398,13 @@ extension DateTimeExtensions on DateTime {
   /// Returns a [DateTime] as a local value without converting it.
   DateTime get asLocal {
     return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
+  /// TODO: remove these extensions.
+
+  /// Checks if this [DateTime]
+  bool isDuring(DateTimeRange dateTimeRange) {
+    return (isAtSameMomentAs(dateTimeRange.start) || isAfter(dateTimeRange.start)) &&
+        (isAtSameMomentAs(dateTimeRange.end) || isBefore(dateTimeRange.end));
   }
 }

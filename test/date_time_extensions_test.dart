@@ -259,81 +259,102 @@ Future<void> main() async {
         });
       });
 
-      test('startOfDay', () {
-        final date = DateTime(2024, 1, 1, 5);
-        final startOfDay = date.startOfDay;
-        expect(startOfDay, DateTime(2024, 1, 1));
+      group('startOfWeek', () {
+        test('Every day of the week', () {
+          final monday = DateTime(2025, 2, 24);
+          final tuesday = monday.addDays(1);
+          final wednesday = monday.addDays(2);
+          final thursday = monday.addDays(3);
+          final friday = monday.addDays(4);
+          final saturday = monday.addDays(5);
+          final sunday = monday.addDays(6);
+
+          expect(monday.startOfWeek, monday);
+          expect(tuesday.startOfWeek, monday);
+          expect(wednesday.startOfWeek, monday);
+          expect(thursday.startOfWeek, monday);
+          expect(friday.startOfWeek, monday);
+          expect(saturday.startOfWeek, monday);
+          expect(sunday.startOfWeek, monday);
+        });
       });
 
-      test('endOfDay', () {
-        final date = DateTime(2024, 1, 1, 5);
-        final startOfDay = date.endOfDay;
-        expect(startOfDay, DateTime(2024, 1, 2));
+      group('endOfWeek', () {
+        test('Every day of the week', () {
+          final monday = DateTime(2025, 2, 24);
+          final tuesday = monday.addDays(1);
+          final wednesday = monday.addDays(2);
+          final thursday = monday.addDays(3);
+          final friday = monday.addDays(4);
+          final saturday = monday.addDays(5);
+          final sunday = monday.addDays(6);
+
+          final endOfWeek = DateTime(2025, 3, 3);
+
+          expect(monday.endOfWeek, endOfWeek);
+          expect(tuesday.endOfWeek, endOfWeek);
+          expect(wednesday.endOfWeek, endOfWeek);
+          expect(thursday.endOfWeek, endOfWeek);
+          expect(friday.endOfWeek, endOfWeek);
+          expect(saturday.endOfWeek, endOfWeek);
+          expect(sunday.endOfWeek, endOfWeek);
+        });
       });
 
-      test('dayRange', () {
-        final date = DateTime(2024, 1, 1);
-        final dayRange = date.dayRange;
-        expect(
-          dayRange,
-          DateTimeRange(
-            start: DateTime(2024, 1, 1),
-            end: DateTime(2024, 1, 2),
-          ),
-        );
+      group('weekRange', () {
+        test('Every day of the week', () {
+          final monday = DateTime(2025, 2, 24);
+          final tuesday = monday.addDays(1);
+          final wednesday = monday.addDays(2);
+          final thursday = monday.addDays(3);
+          final friday = monday.addDays(4);
+          final saturday = monday.addDays(5);
+          final sunday = monday.addDays(6);
+          final endOfWeek = DateTime(2025, 3, 3);
+
+          final weekRange = DateTimeRange(start: monday, end: endOfWeek);
+
+          expect(monday.weekRange, weekRange);
+          expect(tuesday.weekRange, weekRange);
+          expect(wednesday.weekRange, weekRange);
+          expect(thursday.weekRange, weekRange);
+          expect(friday.weekRange, weekRange);
+          expect(saturday.weekRange, weekRange);
+          expect(sunday.weekRange, weekRange);
+        });
+      });
+
+      group('workWeekRange', () {
+        test('Every day of the week', () {
+          final monday = DateTime(2025, 2, 24);
+          final tuesday = monday.addDays(1);
+          final wednesday = monday.addDays(2);
+          final thursday = monday.addDays(3);
+          final friday = monday.addDays(4);
+          final saturday = monday.addDays(5);
+          final sunday = monday.addDays(6);
+
+          final workWeekRange = DateTimeRange(start: monday, end: saturday);
+
+          expect(monday.workWeekRange, workWeekRange);
+          expect(tuesday.workWeekRange, workWeekRange);
+          expect(wednesday.workWeekRange, workWeekRange);
+          expect(thursday.workWeekRange, workWeekRange);
+          expect(friday.workWeekRange, workWeekRange);
+          expect(saturday.workWeekRange, workWeekRange);
+          expect(sunday.workWeekRange, workWeekRange);
+        });
       });
 
       test('addDays', () {
         final date = DateTime(2024, 1, 1);
-        final added = date.addDays(10);
-        expect(
-          added,
-          DateTime(2024, 1, 11),
-        );
+        expect(date.addDays(10), DateTime(2024, 1, 11));
       });
 
       test('subtractDays', () {
         final date = DateTime(2024, 1, 1);
-        final added = date.subtractDays(10);
-        expect(
-          added,
-          DateTime(2023, 12, 22),
-        );
+        expect(date.subtractDays(10), DateTime(2023, 12, 22));
       });
-
-      test('startOfWeekWithOffset', () {
-        final date = DateTime(2024, 1, 1);
-        for (var i = 1; i <= 7; i++) {
-          final startOfWeek = date.startOfWeekWithOffset(i);
-          expect(startOfWeek.weekday, i);
-        }
-      });
-
-      test('endOfWeekWithOffset', () {
-        final date = DateTime(2024, 1, 1);
-        for (var i = 1; i <= 7; i++) {
-          final startOfWeek = date.endOfWeekWithOffset(i);
-          expect(startOfWeek.weekday, i);
-        }
-      });
-
-      // test('weekRangeWithOffset', () {
-      //   final date = DateTime(2024, 1, 1);
-      //   for (var i = 1; i <= 7; i++) {
-      //     final week = date.weekRangeWithOffset(i);
-      //     expect(week.dayDifference, 7);
-
-      //     final dateIsAfterStart = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
-
-      //     final dateIsBeforeEnd = (date.isAfter(week.start) || date.isAtSameMomentAs(week.start));
-
-      //     final dateIsDuringWeek = dateIsAfterStart && dateIsBeforeEnd;
-
-      //     expect(dateIsDuringWeek, true);
-      //   }
-      // });
-
-      /// TODO: add more tests.
     },
   );
 }

@@ -213,7 +213,24 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return startTouching || endTouching;
   }
 
-  /// TODO: Remove these [DateTimeRangeExtensions].
+  /// Returns a [DateTimeRange] shifted by the given number of [numberOfDays].
+  ///
+  /// This method returns a new [DateTimeRange] with the [start] and [end] times
+  /// shifted by the given [numberOfDays].  The [numberOfDays] can be positive or negative,
+  /// and the new range will be adjusted accordingly.
+  ///
+  /// Example:
+  /// ```dart
+  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
+  /// final shiftedRange = range.shiftByDays(5);
+  /// print(shiftedRange.start); // Output: 2024-01-06 00:00:00.000
+  /// print(shiftedRange.end);   // Output: 2024-01-15 00:00:00.000
+  /// ```
+  DateTimeRange shiftByDays(int numberOfDays) {
+    return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
+  }
+
+  /// TODO: Remove these [DateTimeRangeExtensions]. ???
 
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
   DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);

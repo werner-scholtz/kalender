@@ -157,13 +157,3 @@ typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
 );
 
-/// Calculates the VisibleDateRange from the [index].
-///
-/// [index] is the page index.
-typedef DateTimeRangeFromIndex = DateTimeRange Function(int index);
-
-/// Calculates the page index of the [date].
-typedef IndexFromDate = int Function(DateTime date);
-
-/// The number of pages for the [DateTimeRange] of the calendar.
-typedef NumberOfPages = int Function();
