@@ -89,7 +89,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
-    final durationOnDate = event.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
+    final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
     return ((durationOnDate.inSeconds / 60) * heightPerMinute);
   }
 
@@ -99,7 +99,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent<T> event) {
-    final eventStart = event.dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
+    final eventStart = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     final dateStart = timeOfDayRange.start.toDateTime(date);
     return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
   }
@@ -178,7 +178,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort((a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0);
+      ..sort((a, b) => b.duration.compareTo(a.duration) == 0 ? b.startAsUtc.compareTo(a.startAsUtc) : 0);
   }
 
   @override

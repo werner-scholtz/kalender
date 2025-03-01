@@ -19,7 +19,7 @@ import 'package:kalender/src/widgets/components/week_number.dart';
 /// [event] is the event that the tile will be built for.
 ///
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
-/// * (This can be compared to the [CalendarEvent.dateTimeRange] to determine on which day it falls.)
+/// * (This can be compared to the [CalendarEvent.dateTimeRangeAsUtc] to determine on which day it falls.)
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTimeRange tileRange,

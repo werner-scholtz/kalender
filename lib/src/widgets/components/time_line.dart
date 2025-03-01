@@ -142,11 +142,11 @@ class TimeLine<T extends Object?> extends StatelessWidget {
             if (eventBeingDragged == null) return const SizedBox();
 
             // Ensure that the event is visible.
-            final eventRange = eventBeingDragged.dateTimeRange;
+            final eventRange = eventBeingDragged.dateTimeRangeAsUtc;
             if (!eventRange.overlaps(visibleRange)) return const SizedBox();
 
-            final start = eventBeingDragged.start;
-            final end = eventBeingDragged.end;
+            final start = eventBeingDragged.startAsUtc;
+            final end = eventBeingDragged.endAsUtc;
 
             // Calculate the top and bottom values.
             final startTop = start.difference(timeOfDayRange.start.toDateTime(start)).inMinutes * heightPerMinute;

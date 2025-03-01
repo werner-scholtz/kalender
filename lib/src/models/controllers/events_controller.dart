@@ -116,7 +116,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     final events = eventIds.map((id) => _events[id]).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
-      return events.where((event) => event.dateTimeRange.overlaps(dateTimeRange));
+      return events.where((event) => event.dateTimeRangeAsUtc.overlaps(dateTimeRange));
     } else if (includeMultiDayEvents) {
       return _multiDayEventsFromDateTimeRange(events, dateTimeRange);
     } else if (includeDayEvents) {
@@ -134,7 +134,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is not a multi day event, return false.
       if (!event.isMultiDayEvent) return false;
-      return event.dateTimeRange.overlaps(dateTimeRange);
+      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange);
     });
   }
 
@@ -146,7 +146,7 @@ class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;
-      return event.dateTimeRange.overlaps(dateTimeRange);
+      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange);
     });
   }
 }
@@ -154,6 +154,9 @@ class EventsController<T extends Object?> with ChangeNotifier {
 /// A class for searching the events by date more efficient.
 class DateMap {
   /// Map of the [DateTime] and event ids.
+  ///
+  /// The [DateTime] is the date.
+  /// The [Set] of [int] is the ids of the events.
   final Map<DateTime, Set<int>> _dateMap = {};
 
   /// Clear the [_dateMap].
@@ -192,7 +195,8 @@ class DateMap {
 
   /// Retrieve a [Set] of event id's from the map.
   Set<int> eventIdsFromDateTimeRange(DateTimeRange dateTimeRange) {
-    final days = dateTimeRange.asUtc.dates();
+    assert(dateTimeRange.isUtc, 'The DateTimeRange must be in UTC.');
+    final days = dateTimeRange.dates();
     final eventIds = <int>{};
     for (final day in days) {
       eventIds.addAll(_dateMap[day] ?? {});

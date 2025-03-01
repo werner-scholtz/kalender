@@ -144,10 +144,7 @@ mixin DragTargetUtilities<T> {
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime);
 
   /// Reschedule an event.
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
-    newEvent ??= controller.newEvent;
-    return newEvent;
-  }
+  CalendarEvent<T>? createEvent(DateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
   ///
