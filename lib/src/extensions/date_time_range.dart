@@ -63,7 +63,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// print(secondWeekNumber); // Output: 3 (ISO week 3)
   /// ```
   (int first, int? last) get weekNumbers {
-    final days = dates(inclusive: true);
+    final days = dates(inclusive: false);
     final isSingleWeek = days.length <= 7;
 
     if (start.year != end.year && !isSingleWeek) {

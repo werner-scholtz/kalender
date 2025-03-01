@@ -97,8 +97,15 @@ Future<void> main() async {
           expect(secondWeekNumber, 3);
         });
 
-        test('Multiple weeks - ends on monday', () {
+        test('Multiple weeks - ends on monday (midnight)', () {
           final range = DateTimeRange(start: DateTime(2025, 1, 6), end: DateTime(2025, 1, 13));
+          final (weekNumber, secondWeekNumber) = range.weekNumbers;
+          expect(weekNumber, 2);
+          expect(secondWeekNumber, null);
+        });
+
+        test('Multiple weeks - ends on monday', () {
+          final range = DateTimeRange(start: DateTime(2025, 1, 6), end: DateTime(2025, 1, 13, 1));
           final (weekNumber, secondWeekNumber) = range.weekNumbers;
           expect(weekNumber, 2);
           expect(secondWeekNumber, 3);
