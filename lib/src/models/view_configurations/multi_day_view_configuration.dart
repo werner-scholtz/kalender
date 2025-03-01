@@ -17,109 +17,10 @@ enum MultiDayViewType {
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
-  MultiDayViewConfiguration({
-    required super.name,
-    required this.timeOfDayRange,
-    required this.displayRange,
-    required this.numberOfDays,
-    required this.firstDayOfWeek,
-    required this.pageNavigationFunctions,
-    required this.type,
-    required this.initialTimeOfDay,
-    required this.initialHeightPerMinute,
-  }) : assert(
-          firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
-          'First day of week must be Monday, Saturday or Sunday\n'
-          'Use DateTime.monday, DateTime.saturday or DateTime.sunday if unsure.',
-        );
-
-  /// Creates a [MultiDayViewConfiguration] for a single day.
-  MultiDayViewConfiguration.singleDay({
-    super.name = 'Day',
-    DateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
-    this.firstDayOfWeek = defaultFirstDayOfWeek,
-    this.initialTimeOfDay = defaultInitialTimeOfDay,
-    this.initialHeightPerMinute = defaultHeightPerMinute,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
-        displayRange = displayRange ?? DateTime.now().yearRange,
-        numberOfDays = 1,
-        type = MultiDayViewType.singleDay {
-    pageNavigationFunctions = PageNavigationFunctions.singleDay(this.displayRange);
-  }
-
-  /// Creates a [MultiDayViewConfiguration] for a week.
-  MultiDayViewConfiguration.week({
-    super.name = 'Week',
-    DateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
-    this.firstDayOfWeek = defaultFirstDayOfWeek,
-    this.numberOfDays = 7,
-    this.initialTimeOfDay = defaultInitialTimeOfDay,
-    this.initialHeightPerMinute = defaultHeightPerMinute,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
-        displayRange = displayRange ?? DateTime.now().yearRange,
-        type = MultiDayViewType.week {
-    pageNavigationFunctions = PageNavigationFunctions.week(this.displayRange, firstDayOfWeek);
-  }
-
-  /// Creates a [MultiDayViewConfiguration] for a work week.
-  MultiDayViewConfiguration.workWeek({
-    super.name = 'Work Week',
-    DateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
-    this.numberOfDays = 5,
-    this.initialTimeOfDay = defaultInitialTimeOfDay,
-    this.initialHeightPerMinute = defaultHeightPerMinute,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
-        displayRange = displayRange ?? DateTime.now().yearRange,
-        firstDayOfWeek = DateTime.monday,
-        type = MultiDayViewType.workWeek {
-    pageNavigationFunctions = PageNavigationFunctions.workWeek(this.displayRange);
-  }
-
-  /// Creates a [MultiDayViewConfiguration] for a custom number of days.
-  MultiDayViewConfiguration.custom({
-    super.name = 'Custom',
-    DateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
-    required this.numberOfDays,
-    this.firstDayOfWeek = DateTime.monday,
-    this.initialTimeOfDay = defaultInitialTimeOfDay,
-    this.initialHeightPerMinute = defaultHeightPerMinute,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
-        displayRange = displayRange ?? DateTime.now().yearRange,
-        type = MultiDayViewType.custom {
-    pageNavigationFunctions = PageNavigationFunctions.custom(this.displayRange, numberOfDays);
-  }
-
-  /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
-  MultiDayViewConfiguration.freeScroll({
-    super.name = 'Free Scroll',
-    DateTimeRange? displayRange,
-    TimeOfDayRange? timeOfDayRange,
-    required this.numberOfDays,
-    this.initialTimeOfDay = defaultInitialTimeOfDay,
-    this.initialHeightPerMinute = defaultHeightPerMinute,
-  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        // TODO: This display range should be calculated by the page navigation functions, since the display range might change depending on the type of view.
-        displayRange = displayRange ?? DateTime.now().yearRange,
-        firstDayOfWeek = DateTime.monday,
-        type = MultiDayViewType.freeScroll {
-    pageNavigationFunctions = PageNavigationFunctions.freeScroll(this.displayRange);
-  }
-
   final MultiDayViewType type;
 
-  /// The functions for navigating the [PageView].
-  late final PageNavigationFunctions pageNavigationFunctions;
-
-  /// The [DateTimeRange] that can be displayed by [MultiDayBody] widgets using this configuration.
-  final DateTimeRange displayRange;
+  @override
+  final PageNavigationFunctions pageNavigationFunctions;
 
   /// The start of the [displayRange].
   DateTime get start => displayRange.start;
@@ -143,6 +44,90 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   /// The initial heightPerMinute (zoom level).
   final double initialHeightPerMinute;
+
+  MultiDayViewConfiguration({
+    required super.name,
+    required this.timeOfDayRange,
+    required this.numberOfDays,
+    required this.firstDayOfWeek,
+    required this.pageNavigationFunctions,
+    required this.type,
+    required this.initialTimeOfDay,
+    required this.initialHeightPerMinute,
+  }) : assert(
+          firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
+          'First day of week must be Monday, Saturday or Sunday\n'
+          'Use DateTime.monday, DateTime.saturday or DateTime.sunday if unsure.',
+        );
+
+  /// Creates a [MultiDayViewConfiguration] for a single day.
+  MultiDayViewConfiguration.singleDay({
+    super.name = 'Day',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        numberOfDays = 1,
+        type = MultiDayViewType.singleDay,
+        pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+
+  /// Creates a [MultiDayViewConfiguration] for a week.
+  MultiDayViewConfiguration.week({
+    super.name = 'Week',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.numberOfDays = 7,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        type = MultiDayViewType.week,
+        pageNavigationFunctions = PageNavigationFunctions.week(
+          displayRange ?? DateTime.now().yearRange,
+          firstDayOfWeek,
+        );
+
+  /// Creates a [MultiDayViewConfiguration] for a work week.
+  MultiDayViewConfiguration.workWeek({
+    super.name = 'Work Week',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    this.numberOfDays = 5,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        firstDayOfWeek = DateTime.monday,
+        type = MultiDayViewType.workWeek,
+        pageNavigationFunctions = PageNavigationFunctions.workWeek(displayRange ?? DateTime.now().yearRange);
+
+  /// Creates a [MultiDayViewConfiguration] for a custom number of days.
+  MultiDayViewConfiguration.custom({
+    super.name = 'Custom',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    required this.numberOfDays,
+    this.firstDayOfWeek = DateTime.monday,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        type = MultiDayViewType.custom,
+        pageNavigationFunctions =
+            PageNavigationFunctions.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
+
+  /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
+  MultiDayViewConfiguration.freeScroll({
+    super.name = 'Free Scroll',
+    DateTimeRange? displayRange,
+    TimeOfDayRange? timeOfDayRange,
+    required this.numberOfDays,
+    this.initialTimeOfDay = defaultInitialTimeOfDay,
+    this.initialHeightPerMinute = defaultHeightPerMinute,
+  })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
+        firstDayOfWeek = DateTime.monday,
+        type = MultiDayViewType.freeScroll,
+        pageNavigationFunctions = PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
 
   MultiDayViewConfiguration copyWith({
     String? name,
@@ -236,30 +221,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
 /// The configuration used by the [MultiDayBody].
 class MultiDayBodyConfiguration {
-  /// Creates a new [MultiDayHeaderConfiguration].
-  MultiDayBodyConfiguration({
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    CreateEventGesture? createEventGesture,
-    this.newEventDuration = defaultNewEventDuration,
-    this.snapToTimeIndicator = defaultSnapToTimeIndicator,
-    this.snapToOtherEvents = defaultSnapToOtherEvents,
-    this.snapRange = defaultSnapRange,
-    this.snapIntervalMinutes = defaultSnapIntervalMinutes,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.eventLayoutStrategy = defaultEventLayoutStrategy,
-    this.scrollPhysics,
-    this.pageScrollPhysics,
-  }) {
-    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
-    this.scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
-    this.createEventGesture =
-        createEventGesture ?? (isMobileDevice ? CreateEventGesture.longPress : CreateEventGesture.tap);
-  }
-
   /// Whether to show events that are longer than 1 day.
   final bool showMultiDayEvents;
 
@@ -305,6 +266,28 @@ class MultiDayBodyConfiguration {
 
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
+
+  /// Creates a new [MultiDayHeaderConfiguration].
+  MultiDayBodyConfiguration({
+    this.showMultiDayEvents = defaultShowMultiDayEvents,
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
+    CreateEventGesture? createEventGesture,
+    this.newEventDuration = defaultNewEventDuration,
+    this.snapToTimeIndicator = defaultSnapToTimeIndicator,
+    this.snapToOtherEvents = defaultSnapToOtherEvents,
+    this.snapRange = defaultSnapRange,
+    this.snapIntervalMinutes = defaultSnapIntervalMinutes,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.eventLayoutStrategy = defaultEventLayoutStrategy,
+    this.scrollPhysics,
+    this.pageScrollPhysics,
+  })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
+        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration(),
+        createEventGesture =
+            createEventGesture ?? (isMobileDevice ? CreateEventGesture.longPress : CreateEventGesture.tap);
 
   /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
   MultiDayBodyConfiguration copyWith({
@@ -389,21 +372,6 @@ class MultiDayBodyConfiguration {
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
 class MultiDayHeaderConfiguration {
-  /// Creates a new [MultiDayHeaderConfiguration].
-  MultiDayHeaderConfiguration({
-    this.showTiles = defaultShowEventTiles,
-    this.tileHeight = defaultTileHeight,
-    this.allowEventCreation = defaultAllowEventCreation,
-    this.allowResizing = defaultAllowResizing,
-    this.allowRescheduling = defaultAllowRescheduling,
-    this.createEventTrigger = defaultCreateEventTrigger,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
-  }) {
-    this.pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
-  }
-
   /// The height of the tiles.
   final double tileHeight;
 
@@ -426,7 +394,20 @@ class MultiDayHeaderConfiguration {
   final MultiDayEventLayoutStrategy eventLayoutStrategy;
 
   /// The configuration for the page navigation triggers.
-  late final PageTriggerConfiguration pageTriggerConfiguration;
+  final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// Creates a new [MultiDayHeaderConfiguration].
+  MultiDayHeaderConfiguration({
+    this.showTiles = defaultShowEventTiles,
+    this.tileHeight = defaultTileHeight,
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
+    this.createEventTrigger = defaultCreateEventTrigger,
+    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+  }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   MultiDayHeaderConfiguration copyWith({
