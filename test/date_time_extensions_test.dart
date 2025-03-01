@@ -355,8 +355,57 @@ Future<void> main() async {
         final date = DateTime(2024, 1, 1);
         expect(date.subtractDays(10), DateTime(2023, 12, 22));
       });
-    
-      /// TODO: test asUtc and asLocal
+
+      group('customDateTimeRange()', () {
+        test('Custom range', () {
+          const numberOfDays = 15;
+          final start = DateTime(2024, 1, 1);
+          final end = DateTime(2024, 1, 16);
+          final range = start.customDateTimeRange(numberOfDays);
+          expect(range.start, start);
+          expect(range.end, end);
+        });
+
+        test('Custom range - negative', () {
+          const numberOfDays = -15;
+          final start = DateTime(2024, 1, 16);
+          final end = DateTime(2024, 1, 1);
+          final range = start.customDateTimeRange(numberOfDays);
+          expect(range.start, end);
+          expect(range.end, start);
+        });
+      });
+
+      group('asUtc', () {
+        test('asUtc', () {
+          final date = DateTime(2024, 1, 15, 10, 30);
+          final utc = date.asUtc;
+          expect(utc.year, date.year);
+          expect(utc.month, date.month);
+          expect(utc.day, date.day);
+          expect(utc.hour, date.hour);
+          expect(utc.minute, date.minute);
+          expect(utc.second, date.second);
+          expect(utc.millisecond, date.millisecond);
+          expect(utc.microsecond, date.microsecond);
+          expect(utc.isUtc, isTrue);
+        });
+      });
+      group('asLocal', () {
+        test('asLocal', () {
+          final date = DateTime.utc(2024, 1, 15, 10, 30);
+          final local = date.asLocal;
+          expect(local.year, date.year);
+          expect(local.month, date.month);
+          expect(local.day, date.day);
+          expect(local.hour, date.hour);
+          expect(local.minute, date.minute);
+          expect(local.second, date.second);
+          expect(local.millisecond, date.millisecond);
+          expect(local.microsecond, date.microsecond);
+          expect(local.isUtc, isFalse);
+        });
+      });
     },
   );
 }

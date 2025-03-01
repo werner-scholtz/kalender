@@ -233,10 +233,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfWeek;
   /// print(start); // Output: 2024-01-15 00:00:00.000
   /// ```
-  DateTime get startOfWeek {
-    final difference = weekday - DateTime.monday;
-    return subtractDays(difference).startOfDay;
-  }
+  DateTime get startOfWeek => subtractDays(weekday - DateTime.monday).startOfDay;
 
   /// Gets the end of the week.
   ///
@@ -315,22 +312,31 @@ extension DateTimeExtensions on DateTime {
 
   /// Returns a [DateTimeRange] with the [DateTime] as the start that spans the given number of days.
   ///
+  /// The [numberOfDays] parameter cannot be zero.
+  ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
   /// final range = date.customDateTimeRange(5);
   /// print(range.start); // Output: 2024-01-15 10:30:00.000
   /// print(range.end);   // Output: 2024-01-20 10:30:00.000
+  ///
+  /// final range2 = date.customDateTimeRange(-5);
+  /// print(range2.start); // Output: 2024-01-10 10:30:00.000
+  /// print(range2.end);   // Output: 2024-01-15 10:30:00.000
   /// ```
   DateTimeRange customDateTimeRange(int numberOfDays) {
-    return DateTimeRange(start: this, end: addDays(numberOfDays));
+    assert(numberOfDays != 0, 'The number of days cannot be zero.');
+    final start = numberOfDays.isNegative ? addDays(numberOfDays) : this;
+    final end = numberOfDays.isNegative ? this : addDays(numberOfDays);
+    return DateTimeRange(start: start, end: end);
   }
 
   /// Returns a [DateTime] as a UTC value without converting it.
-  /// 
+  ///
   /// This method returns a new [DateTime] object with the same date and time
   /// as the original, but with the time zone set to UTC.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
@@ -338,14 +344,15 @@ extension DateTimeExtensions on DateTime {
   /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
   /// ```
   DateTime get asUtc {
+    assert(!isUtc, 'The date is already in UTC time zone. ($this)');
     return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
   }
 
   /// Returns a [DateTime] as a local value without converting it.
-  /// 
+  ///
   /// This method returns a new [DateTime] object with the same date and time
   /// as the original, but with the time zone set to the local time zone.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
@@ -353,6 +360,7 @@ extension DateTimeExtensions on DateTime {
   /// print(localDate); // Output: 2024-01-15 10:30:00.000
   /// ```
   DateTime get asLocal {
+    assert(isUtc, 'The date is already in local time zone. ($this)');
     return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
   }
 
