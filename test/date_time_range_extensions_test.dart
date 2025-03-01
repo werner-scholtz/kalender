@@ -202,6 +202,13 @@ Future<void> main() async {
           final expectedRange = DateTimeRange(start: DateTime(2024, 1, 15), end: DateTime(2024, 1, 16));
           expect(range.dateTimeRangeOnDate(date), expectedRange);
         });
+
+        test('Date is not within range but on same day', () {
+          final range = DateTimeRange(start: DateTime(2024, 1, 1, 5), end: DateTime(2024, 1, 1, 7));
+          final date = DateTime(2024, 1, 1);
+          final expectedRange = DateTimeRange(start: DateTime(2024, 1, 1, 5), end: DateTime(2024, 1, 1, 7));
+          expect(range.dateTimeRangeOnDate(date), expectedRange);
+        });
       });
 
       group('overlaps()', () {

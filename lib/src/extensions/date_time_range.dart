@@ -171,6 +171,9 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// print(rangeOnDateOutside); // Output: null
   /// ```
   DateTimeRange? dateTimeRangeOnDate(DateTime date) {
+    // Check if the start and end dates are the same day and the given date is within the day range.
+    if (start.isSameDay(end) && start.isWithin(date.dayRange)) return this;
+
     // Check if the given date is outside the range. If so, return null.
     if (!date.isWithin(this, includeStart: true, includeEnd: true)) return null;
 
