@@ -70,10 +70,18 @@ extension DateTimeRangeExtensions on DateTimeRange {
       return (start.weekNumber, end.weekNumber);
     }
 
-    if (!isSingleWeek) {
-      return (start.weekNumber, end.weekNumber);
+    final first = start.weekNumber;
+    var second = end.weekNumber;
+
+    // If the end is the start of the day, then it should be considered as the previous day.
+    if (end == end.startOfDay) {
+      second = end.subtractDays(1).weekNumber;
+    }
+
+    if (first == second) {
+      return (first, null);
     } else {
-      return (start.weekNumber, null);
+      return (first, second);
     }
   }
 
