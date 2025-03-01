@@ -326,6 +326,43 @@ extension DateTimeExtensions on DateTime {
     return DateTimeRange(start: this, end: addDays(numberOfDays));
   }
 
+  /// Returns a [DateTime] as a UTC value without converting it.
+  /// 
+  /// This method returns a new [DateTime] object with the same date and time
+  /// as the original, but with the time zone set to UTC.
+  /// 
+  /// Example:
+  /// ```dart
+  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final utcDate = date.asUtc;
+  /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
+  /// ```
+  DateTime get asUtc {
+    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
+  /// Returns a [DateTime] as a local value without converting it.
+  /// 
+  /// This method returns a new [DateTime] object with the same date and time
+  /// as the original, but with the time zone set to the local time zone.
+  /// 
+  /// Example:
+  /// ```dart
+  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final localDate = date.asLocal;
+  /// print(localDate); // Output: 2024-01-15 10:30:00.000
+  /// ```
+  DateTime get asLocal {
+    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+  }
+
+  /// TODO: Proposal depend on the intl package so this can be removed.
+  /// If we do start depending on the intl package, then we might as well
+  /// look into allowing the calendar to display events for different timezones.
+  /// This will open a lot of possibilities for the calendar package.
+  ///
+  /// But first lets sort out all current tests, and make sure the package is stable.
+
   /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
   int get weekNumber {
     // Add 3 to always compare with January 4th, which is always in week 1
@@ -389,24 +426,4 @@ extension DateTimeExtensions on DateTime {
         12 => 'December',
         _ => throw Exception('Invalid month'),
       };
-
-  /// TODO: Document these two extension methods.
-  ///
-  /// Returns a [DateTime] as a UTC value without converting it.
-  DateTime get asUtc {
-    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
-
-  /// Returns a [DateTime] as a local value without converting it.
-  DateTime get asLocal {
-    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
-
-  /// TODO: remove these extensions.
-
-  /// Checks if this [DateTime]
-  bool isDuring(DateTimeRange dateTimeRange) {
-    return (isAtSameMomentAs(dateTimeRange.start) || isAfter(dateTimeRange.start)) &&
-        (isAtSameMomentAs(dateTimeRange.end) || isBefore(dateTimeRange.end));
-  }
 }

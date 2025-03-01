@@ -7,9 +7,15 @@ extension DateTimeRangeExtensions on DateTimeRange {
   bool get isUtc => start.isUtc && end.isUtc;
 
   /// Converts the [start] and [end] times to utc.
+  ///
+  /// This method returns a new [DateTimeRange] with the [start] and [end] times
+  /// converted to UTC.  The original [DateTimeRange] is not modified.
   DateTimeRange toUtc() => DateTimeRange(start: start.toUtc(), end: end.toUtc());
 
   /// Converts the [start] and [end] times to local time.
+  ///
+  /// This method returns a new [DateTimeRange] with the [start] and [end] times
+  /// converted to local time.  The original [DateTimeRange] is not modified.
   DateTimeRange toLocal() => DateTimeRange(start: start.toLocal(), end: end.toLocal());
 
   /// The difference in months between the [start] and [end] dates of this range.
@@ -158,7 +164,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// ```
   DateTimeRange? dateTimeRangeOnDate(DateTime date) {
     // Check if the given date is outside the range. If so, return null.
-    if (!date.isDuring(this)) return null;
+    if (!date.isWithin(this, includeStart: true, includeEnd: true)) return null;
 
     // Check if the start and end dates are the same day. If so, the entire range is on that day.
     if (start.isSameDay(end)) return this;
@@ -230,11 +236,31 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
   }
 
-  /// TODO: Document these two extension methods.
-
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
+  ///
+  /// This method returns a new [DateTimeRange] with the [start] and [end] times
+  /// as UTC values without converting them.  The original [DateTimeRange] is not modified.
+  ///
+  /// Example:
+  /// ```dart
+  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
+  /// final utcRange = range.asUtc;
+  /// print(utcRange.start); // Output: 2024-01-01 00:00:00.000Z
+  /// print(utcRange.end);   // Output: 2024-01-10 00:00:00.000Z
+  /// ```
   DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);
 
   /// Returns a [DateTimeRange] with the [DateTime]s as local values without converting them.
+  ///
+  /// This method returns a new [DateTimeRange] with the [start] and [end] times
+  /// as local values without converting them.  The original [DateTimeRange] is not modified.
+  ///
+  /// Example:
+  /// ```dart
+  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
+  /// final localRange = range.asLocal;
+  /// print(localRange.start); // Output: 2024-01-01 00:00:00.000
+  /// print(localRange.end);   // Output: 2024-01-10 00:00:00.000
+  /// ```
   DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
 }
