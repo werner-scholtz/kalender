@@ -59,13 +59,11 @@ class CalendarEvent<T extends Object?> {
   bool get isMultiDayEvent => datesSpanned.length > 1;
 
   /// The [DateTime]s that the [CalendarEvent] spans in the local timezone.
-  List<DateTime> get datesSpanned => dateTimeRangeLocal.dates();
+  List<DateTime> get datesSpanned => dateTimeRange.dates();
 
   /// The [DateTimeRange] of the [CalendarEvent] on a specific date.
   ///
   /// This expects the [DateTime] to be constructed with [DateTime.utc].
-  ///
-  /// TODO: Check that all usages of this still works as expected.
   DateTimeRange? dateTimeRangeOnDate(DateTime date) {
     assert(date.isUtc, 'The $date should be in utc time.');
     return dateTimeRange.dateTimeRangeOnDate(date);

@@ -9,6 +9,8 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
+/// TODO: FIX THIS
+
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
