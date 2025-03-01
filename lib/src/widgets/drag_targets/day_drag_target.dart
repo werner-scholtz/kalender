@@ -9,6 +9,8 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
+/// TODO: FIX THIS
+
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
@@ -67,7 +69,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   CalendarController<T> get controller => widget.calendarController;
 
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.days;
+  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
@@ -238,7 +240,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration).asLocal;
+    return startOfDate.add(duration);
   }
 
   /// Update the [CalendarEvent] based on the [Offset] delta.
@@ -261,11 +263,11 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     }
 
     // Calculate the new dateTimeRange for the event.
-    final duration = event.dateTimeRange.duration;
+    final duration = event.dateTimeRangeAsUtc.duration;
     var end = start.add(duration);
 
     // Add now to the snap points.
-    late final now = DateTime.now();
+    late final now = DateTime.now().asUtc;
     if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
@@ -286,7 +288,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange);
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -301,22 +303,22 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     if (!direction.vertical) return null;
 
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRange, cursorDateTime),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRange, cursorDateTime),
+      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorDateTime),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorDateTime),
       _ => null
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange.asLocal);
+    return event.copyWith(dateTimeRange: dateTimeRange);
   }
 
   @override
   CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
-    
+
     // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.dateTimeRange;
+    var range = newEvent!.dateTimeRangeAsUtc;
 
     if (cursorDateTime.isAfter(range.start)) {
       range = DateTimeRange(start: range.start, end: cursorDateTime);
@@ -324,6 +326,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
       range = DateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: range.asLocal);
+    return event.copyWith(dateTimeRange: range);
   }
 }

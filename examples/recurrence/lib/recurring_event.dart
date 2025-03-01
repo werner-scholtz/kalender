@@ -13,7 +13,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
 
   factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent<Event> event, int groupId) {
     return RecurringCalendarEvent(
-      dateTimeRange: event.dateTimeRange,
+      dateTimeRange: event.dateTimeRangeAsUtc,
       groupId: groupId,
       data: event.data,
       canModify: event.canModify,
@@ -25,10 +25,11 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
   RecurringCalendarEvent<Event> copyWith({
     DateTimeRange? dateTimeRange,
     Event? data,
+    bool? canModify,
   }) {
     return RecurringCalendarEvent<Event>(
       data: data ?? this.data,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      dateTimeRange: dateTimeRange ?? dateTimeRangeAsUtc,
       groupId: groupId,
     );
   }

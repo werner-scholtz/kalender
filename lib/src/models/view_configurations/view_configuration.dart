@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
+import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
@@ -13,6 +14,14 @@ abstract class ViewConfiguration {
 
   /// The name of the [ViewConfiguration].
   final String name;
+
+  /// The functions for navigating the [PageView].
+  PageNavigationFunctions get pageNavigationFunctions;
+
+  /// The [DateTimeRange] that can be displayed by the calendar.
+  /// * This is the range that is adjusted by the [pageNavigationFunctions].
+  ///   Which means that it is UTC.
+  DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
 }
 
 const defaultTileHeight = 24.0;

@@ -99,7 +99,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           builder: (context, event, child) {
             if (event == null) return const SizedBox();
             if (!showAllEvents && !event.isMultiDayEvent) return const SizedBox();
-            if (!event.occursDuringDateTimeRange(visibleDateTimeRange)) return const SizedBox();
+            if (!event.dateTimeRangeAsUtc.overlaps(visibleDateTimeRange)) return const SizedBox();
 
             final events = sortedEvents.toList()
               ..removeWhere((e) => e.id == controller.selectedEventId)

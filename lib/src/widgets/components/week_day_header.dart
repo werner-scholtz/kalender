@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/kalender_extensions.dart';
 
 /// The [WeekDayHeaderStyle] class is used by the default [WeekDayHeader] widget.
 class WeekDayHeaderStyle {

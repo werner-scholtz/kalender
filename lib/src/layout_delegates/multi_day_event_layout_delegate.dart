@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// Signature for the strategy that determines how multi-day events are laid out.
@@ -75,7 +75,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   @override
   void performLayout(Size size) {
     final numberOfChildren = events.length;
-    final visibleDates = dateTimeRange.days;
+    final visibleDates = dateTimeRange.dates();
     final dayWidth = size.width / visibleDates.length;
 
     final tileSizes = <int, Size>{};
@@ -85,7 +85,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
     for (var i = 0; i < numberOfChildren; i++) {
       final event = events[i];
 
-      final eventDates = event.datesSpannedAsUtc;
+      final eventDates = event.datesSpanned;
 
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(visibleDates.contains, orElse: () => eventDates.first);
@@ -118,7 +118,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
       // Find events that fill the same dates as the current event.
       final eventsAbove = tilePositions.keys
           .map((e) => events[e])
-          .where((eventAbove) => eventAbove.datesSpannedAsUtc.any(event.datesSpannedAsUtc.contains))
+          .where((eventAbove) => eventAbove.datesSpanned.any(event.datesSpanned.contains))
           .toList();
 
       var dy = 0.0;

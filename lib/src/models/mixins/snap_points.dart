@@ -21,12 +21,13 @@ mixin SnapPoints {
   void addEventSnapPoints(Set<CalendarEvent> events) {
     // Add the start and end of each event to the snap points.
     for (final event in events) {
-      _snapPoints.addAll([event.start, event.end]);
+      _snapPoints.addAll([event.startAsUtc, event.endAsUtc]);
     }
   }
 
   /// Add a [DateTime] snap point.
   void addSnapPoint(DateTime dateTime) {
+    assert(dateTime.isUtc, 'The DateTime must be in UTC.');
     _snapPoints.add(dateTime);
   }
 

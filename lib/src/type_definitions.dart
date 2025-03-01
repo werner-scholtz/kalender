@@ -19,7 +19,7 @@ import 'package:kalender/src/widgets/components/week_number.dart';
 /// [event] is the event that the tile will be built for.
 ///
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
-/// * (This can be compared to the [CalendarEvent.dateTimeRange] to determine on which day it falls.)
+/// * (This can be compared to the [CalendarEvent.dateTimeRangeAsUtc] to determine on which day it falls.)
 typedef TileBuilder<T extends Object?> = Widget Function(
   CalendarEvent<T> event,
   DateTimeRange tileRange,
@@ -157,13 +157,3 @@ typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
 );
 
-/// Calculates the VisibleDateRange from the [index].
-///
-/// [index] is the page index.
-typedef DateTimeRangeFromIndex = DateTimeRange Function(int index);
-
-/// Calculates the page index of the [date].
-typedef IndexFromDate = int Function(DateTime date);
-
-/// The number of pages for the [DateTimeRange] of the calendar.
-typedef NumberOfPages = int Function();

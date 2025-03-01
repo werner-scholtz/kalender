@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/kalender_extensions.dart';
 
 /// The style of the [DayHeader].
 class DayHeaderStyle {
@@ -26,7 +26,7 @@ class DayHeader extends StatelessWidget {
   final DayHeaderStyle? style;
 
   /// Create a new [DayHeader].
-  /// 
+  ///
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [DayHeader].
   const DayHeader({

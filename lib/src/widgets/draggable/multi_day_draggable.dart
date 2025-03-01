@@ -33,7 +33,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
       child: Row(
         children: [
           if (allowEventCreation)
-            for (final date in visibleDateTimeRange.days)
+            for (final date in visibleDateTimeRange.dates())
               switch (createEventTrigger) {
                 CreateEventGesture.tap => Draggable(
                     onDragStarted: () => createNewEvent(date, localPosition),
@@ -65,7 +65,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
   /// [localPosition] is the last known position of the cursor.
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
-    final start = date.asLocal;
+    final start = date;
     final end = start.endOfDay;
     return DateTimeRange(start: start, end: end);
   }

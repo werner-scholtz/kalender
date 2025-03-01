@@ -294,7 +294,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           itemCount: viewController.numberOfPages,
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            final visibleDates = visibleRange.days;
+            final visibleDates = visibleRange.dates();
 
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
@@ -437,7 +437,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
           itemCount: viewController.numberOfPages,
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            final visibleDates = visibleRange.days;
+            final visibleDates = visibleRange.dates();
 
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {

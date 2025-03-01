@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions.dart';
+import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
@@ -190,7 +190,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     index,
                   );
               
-                  final visibleDates = visibleRange.days;
+                  final visibleDates = visibleRange.dates();
                   final timeIndicatorDateIndex = visibleDates.indexWhere(
                     (date) => date.isToday,
                   );
