@@ -7,12 +7,6 @@ class MonthViewConfiguration extends ViewConfiguration {
   @override
   final PageNavigationFunctions pageNavigationFunctions;
 
-  /// The start of the [displayRange].
-  DateTime get start => displayRange.start;
-
-  /// The end of the [displayRange].
-  DateTime get end => displayRange.end;
-
   /// The first day of the week.
   final int firstDayOfWeek;
 

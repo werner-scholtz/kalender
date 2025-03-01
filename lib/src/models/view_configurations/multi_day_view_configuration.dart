@@ -17,16 +17,11 @@ enum MultiDayViewType {
 
 /// The configuration used by the [MultiDayBody] and [MultiDayHeader].
 class MultiDayViewConfiguration extends ViewConfiguration {
+  /// The type of the [MultiDayViewConfiguration].
   final MultiDayViewType type;
 
   @override
   final PageNavigationFunctions pageNavigationFunctions;
-
-  /// The start of the [displayRange].
-  DateTime get start => displayRange.start;
-
-  /// The end of the [displayRange].
-  DateTime get end => displayRange.end;
 
   /// The [TimeOfDayRange] that can be displayed by [MultiDayBody] widgets using this configuration.
   final TimeOfDayRange timeOfDayRange;
