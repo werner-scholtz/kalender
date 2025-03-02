@@ -170,9 +170,9 @@ Future<void> main() async {
         });
 
         test('Start and end on same day', () {
-          final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 1));
+          final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2));
           final date = DateTime(2024, 1, 1);
-          expect(range.dateTimeRangeOnDate(date), range); // Should return the same range
+          expect(range.dateTimeRangeOnDate(date), range);
         });
 
         test('Date is start date', () {
@@ -207,6 +207,13 @@ Future<void> main() async {
           final range = DateTimeRange(start: DateTime(2024, 1, 1, 5), end: DateTime(2024, 1, 1, 7));
           final date = DateTime(2024, 1, 1);
           final expectedRange = DateTimeRange(start: DateTime(2024, 1, 1, 5), end: DateTime(2024, 1, 1, 7));
+          expect(range.dateTimeRangeOnDate(date), expectedRange);
+        });
+
+        test('AAAAAAAA', () {
+          final range = DateTimeRange(start: DateTime(2025, 2, 25, 22, 40), end: DateTime(2025, 2, 26, 1, 50));
+          final date = DateTime(2025, 2, 25);
+          final expectedRange = DateTimeRange(start: DateTime(2025, 2, 25, 22, 40), end: DateTime(2025, 2, 26));
           expect(range.dateTimeRangeOnDate(date), expectedRange);
         });
       });

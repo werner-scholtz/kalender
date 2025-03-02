@@ -158,24 +158,24 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// final date = DateTime(2024, 1, 15);
   /// final rangeOnDate = range.dateTimeRangeOnDate(date);
   /// print(rangeOnDate?.start); // Output: 2024-01-15 00:00:00.000
-  /// print(rangeOnDate?.end);   // Output: 2024-01-15 23:59:59.999
-  ///
-  /// final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 1));
-  /// final date2 = DateTime(2024, 1, 1);
-  /// final rangeOnDate2 = range2.dateTimeRangeOnDate(date2);
-  /// print(rangeOnDate2?.start); // Output: 2024-01-01 00:00:00.000
-  /// print(rangeOnDate2?.end);   // Output: 2024-01-01 23:59:59.999
-  ///
+  /// print(rangeOnDate?.end);   // Output: 2024-01-16 00:00:00.000
+  /// 
   /// final dateOutsideRange = DateTime(2024, 2, 1);
   /// final rangeOnDateOutside = range.dateTimeRangeOnDate(dateOutsideRange);
   /// print(rangeOnDateOutside); // Output: null
+  /// 
+  /// final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2));
+  /// final date2 = DateTime(2024, 1, 1);
+  /// final rangeOnDate2 = range2.dateTimeRangeOnDate(date2);
+  /// print(rangeOnDate2?.start); // Output: 2024-01-01 00:00:00.000
+  /// print(rangeOnDate2?.end);   // Output: 2024-01-02 00:00:00.000
   /// ```
   DateTimeRange? dateTimeRangeOnDate(DateTime date) {
-    // Check if the start and end dates are the same day and the given date is within the day range.
-    if (start.isSameDay(end) && start.isWithin(date.dayRange)) return this;
+    // Adjust the start and end times to the beginning and end of the day.
+    final range = DateTimeRange(start: start.startOfDay, end: end.endOfDay);
 
     // Check if the given date is outside the range. If so, return null.
-    if (!date.isWithin(this, includeStart: true, includeEnd: true)) return null;
+    if (!date.isWithin(range, includeStart: true)) return null;
 
     // Check if the start and end dates are the same day. If so, the entire range is on that day.
     if (start.isSameDay(end)) return this;

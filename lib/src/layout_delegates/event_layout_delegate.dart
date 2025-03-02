@@ -90,7 +90,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
     final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
-    return ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    return height;
   }
 
   /// Calculates the distance from the start of the day to the start of the [event].
