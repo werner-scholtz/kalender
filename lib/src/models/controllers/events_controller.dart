@@ -197,6 +197,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   /// Add an [event] to the map.
   void _addEvent(CalendarEvent<T> event) {
     final id = event.id;
+    _events[id] = event;
     final dates = event.datesSpanned;
     for (final date in dates) {
       _dateMap.update(
@@ -206,7 +207,6 @@ class DefaultDateMap<T> extends DateMap<T> {
       );
     }
   }
-
 
   @override
   int addNewEvent(CalendarEvent<T> event) {
