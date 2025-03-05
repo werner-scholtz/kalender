@@ -11,6 +11,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnEventChange<T>? onEventChange;
   final OnEventChanged<T>? onEventChanged;
   final OnPageChanged? onPageChanged;
+  final OnTapped? onTapped;
 
   /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
@@ -20,6 +21,7 @@ class CalendarCallbacks<T extends Object?> {
     this.onEventCreate,
     this.onEventCreated,
     this.onPageChanged,
+    this.onTapped,
   });
 }
 
@@ -64,3 +66,8 @@ typedef OnEventCreated<T extends Object?> = void Function(
 ///
 /// [visibleDateTimeRange] is the range of dates that are visible.
 typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
+
+/// The callback for when a user taps on the calendar.
+/// 
+/// [date] is the DateTime that was tapped.
+typedef OnTapped = void Function(DateTime date);

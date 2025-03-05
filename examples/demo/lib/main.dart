@@ -81,6 +81,7 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
     onEventTapped: (event, renderBox) => createOverlay(event, renderBox),
     onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
     onEventCreated: (event) => eventsController.addEvent(event),
+    onTapped: (date) => print(date),
   );
 
   @override
