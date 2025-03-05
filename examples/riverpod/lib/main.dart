@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 
 /// Provider for the calendar view.
 final kalenderView = ChangeNotifierProvider<KalenderView>((ref) => KalenderView());
-final eventsProvider = ChangeNotifierProvider<EventsController>((ref) => EventsController());
+final eventsProvider = ChangeNotifierProvider<EventsController>((ref) => DefaultEventsController());
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

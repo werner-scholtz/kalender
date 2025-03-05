@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
-abstract class AbstractEventController<T extends Object?> with ChangeNotifier {
+abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// The feedback widget's size.
   ValueNotifier<Size> feedbackWidgetSize = ValueNotifier(Size.zero);
 
@@ -128,7 +128,7 @@ abstract class AbstractEventController<T extends Object?> with ChangeNotifier {
 /// A controller for [CalendarEvent]s.
 ///
 /// This is used to store and manage the [CalendarEvent]s.
-class EventsController<T extends Object?> extends AbstractEventController<T> {
+class DefaultEventsController<T extends Object?> extends EventsController<T> {
   @override
   final dateMap = DefaultDateMap<T>();
 

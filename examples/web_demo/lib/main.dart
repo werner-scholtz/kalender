@@ -58,7 +58,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final eventsController = EventsController<Event>();
+  final eventsController = DefaultEventsController<Event>();
 
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),

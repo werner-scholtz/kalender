@@ -38,7 +38,7 @@ class AppState extends State<App> {
 
   void toggleTheme() => themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
-  final eventsController = EventsController<Event>();
+  final eventsController = DefaultEventsController<Event>();
 
   final controller1 = CalendarController<Event>();
   late final viewConfiguration1 = ValueNotifier(viewConfigurations[1]);

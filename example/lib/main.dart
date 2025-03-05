@@ -49,7 +49,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   /// Create [EventsController], this is used to add and remove events.
-  final eventsController = EventsController<Event>();
+  final eventsController = DefaultEventsController<Event>();
 
   /// Create [CalendarController],
   /// This is used to control a calendar view with functions such as:
