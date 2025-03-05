@@ -288,7 +288,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -309,7 +309,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange);
+    return event.copyWith(dateTimeRange: dateTimeRange.asLocal);
   }
 
   @override
@@ -326,6 +326,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
       range = DateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: range);
+    return event.copyWith(dateTimeRange: range.asLocal);
   }
 }
