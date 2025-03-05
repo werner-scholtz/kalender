@@ -210,10 +210,16 @@ class DefaultDateMap<T> extends DateMap<T> {
 
   @override
   int addNewEvent(CalendarEvent<T> event) {
+    final eventWithId = assignId(event);
+    _addEvent(eventWithId);
+    return eventWithId.id;
+  }
+
+  /// Assign and id to an event.
+  CalendarEvent<T> assignId(CalendarEvent<T> event) {
     assert(event.id == -1, 'The id of the event must not be set manually.');
     event.id = _nextId;
-    _addEvent(event);
-    return event.id;
+    return event;
   }
 
   @override
