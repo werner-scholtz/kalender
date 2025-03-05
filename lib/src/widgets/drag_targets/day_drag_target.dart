@@ -251,8 +251,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
     } else {
-      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime);
-      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime);
+      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime).asUtc;
+      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime).asUtc;
       if (cursorDateTime.isBefore(startOfDate)) {
         start = startOfDate;
       } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {
@@ -302,9 +302,18 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
+    // Add now to the snap points.
+    late final now = DateTime.now().asUtc;
+    if (snapToTimeIndicator) addSnapPoint(now);
+
+    final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
+
+    // Remove now from the snap points.
+    if (snapToTimeIndicator) removeSnapPoint(now);
+
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorDateTime),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorDateTime),
+      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorSnapPoint),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
