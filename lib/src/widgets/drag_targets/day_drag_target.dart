@@ -102,9 +102,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      viewController.visibleEvents.addListener(_updateSnapPoints);
-    });
+    viewController.visibleEvents.addListener(_updateSnapPoints);
   }
 
   /// Update the snap points.
