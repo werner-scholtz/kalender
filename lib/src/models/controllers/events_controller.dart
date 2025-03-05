@@ -47,6 +47,12 @@ class EventsController<T extends Object?> with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Remove a list of [CalendarEvent] from the controller.
+  void removeEvents(List<CalendarEvent<T>> events) {
+    events.forEach(removeEvent);
+    notifyListeners();
+  }
+
   /// Remove an [CalendarEvent] with its id.
   void removeById(int id) {
     assert(id != -1, 'Must be a valid id.');

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// A mixin that adds snap points to a class.
@@ -7,10 +8,13 @@ mixin SnapPoints {
 
   /// Get the closest snap point to the [dateTime] within a [snapRange].
   DateTime? findSnapPoint(DateTime dateTime, Duration snapRange) {
+    debugPrint('Looking for SnapPoint: $dateTime');
     // Find the index of the snap point that is within a duration of snapRange of the start.
     final index = _snapPoints.indexWhere(
       (point) => point.difference(dateTime).abs() <= snapRange,
     );
+
+    debugPrint(index == -1 ? 'None found' : 'Found ${_snapPoints[index]}');
 
     // If the index is not -1 and the snap point is before the end, snap to the snap point.
     if (index != -1) return _snapPoints[index];
@@ -19,8 +23,10 @@ mixin SnapPoints {
 
   /// Update the snap points from the [events].
   void addEventSnapPoints(Set<CalendarEvent> events) {
+    debugPrint('Adding Snap points');
     // Add the start and end of each event to the snap points.
     for (final event in events) {
+      debugPrint('Added ${event.startAsUtc} and ${event.endAsUtc}');
       _snapPoints.addAll([event.startAsUtc, event.endAsUtc]);
     }
   }
