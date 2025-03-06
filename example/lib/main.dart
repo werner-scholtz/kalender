@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// It can also be used to listen to changes in the calendar view such as:
   /// - [CalendarController.visibleEvents]
   /// - [CalendarController.selectedEvent]
-  /// - [CalendarController.visibleDateTimeRange]
+  /// - [CalendarController.visibleDateTimeRangeUtc]
   ///
   final calendarController = CalendarController<Event>();
 
@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: calendarController.visibleDateTimeRange,
+                  valueListenable: calendarController.visibleDateTimeRangeUtc,
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;

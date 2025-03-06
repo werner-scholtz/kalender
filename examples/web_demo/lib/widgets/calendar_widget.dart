@@ -61,7 +61,7 @@ class CalendarWidget extends StatelessWidget {
     );
 
     final calendarDateTime = ValueListenableBuilder(
-      valueListenable: controller.visibleDateTimeRange,
+      valueListenable: controller.visibleDateTimeRangeUtc,
       builder: (context, value, child) {
         final year = value.start.year;
         final month = value.start.monthNameEnglish;
