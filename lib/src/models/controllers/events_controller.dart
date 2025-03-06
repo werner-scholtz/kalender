@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
+/// TODO: Document
 abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// The feedback widget's size.
   ValueNotifier<Size> feedbackWidgetSize = ValueNotifier(Size.zero);
@@ -32,14 +33,13 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
 
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent<T> event) {
-    assert(event.id != -1, 'The id of the event must be set before removing it.');
     dateMap.removeEvent(event);
     notifyListeners();
   }
 
   /// Remove a list of [CalendarEvent] from the controller.
   void removeEvents(List<CalendarEvent<T>> events) {
-    events.forEach(removeEvent);
+    dateMap.removeEvents(events);
     notifyListeners();
   }
 
@@ -126,8 +126,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
 }
 
 /// A controller for [CalendarEvent]s.
-///
-/// This is used to store and manage the [CalendarEvent]s.
+/// TODO: Document
 class DefaultEventsController<T extends Object?> extends EventsController<T> {
   @override
   final dateMap = DefaultDateMap<T>();
@@ -136,6 +135,7 @@ class DefaultEventsController<T extends Object?> extends EventsController<T> {
   Iterable<CalendarEvent<T>> get events => dateMap.events;
 }
 
+/// TODO: Document
 abstract class DateMap<T> {
   Iterable<CalendarEvent<T>> get events;
 
@@ -149,7 +149,9 @@ abstract class DateMap<T> {
   void updateEvent(CalendarEvent<T> event, CalendarEvent<T> updatedEvent);
 
   /// Remove the [event].
-  void removeEvent(CalendarEvent event);
+  void removeEvent(CalendarEvent<T> event);
+
+  void removeEvents(List<CalendarEvent<T>> event);
 
   /// Remove an event by its id.
   void removeById(int id);
@@ -160,23 +162,24 @@ abstract class DateMap<T> {
   /// Clear all events.
   void clear();
 
-  /// Retrieve a [Set] of event id's from the map.
+  /// Retrieve a [Set] of event id's from the map that occur during the [dateTimeRange].
   Set<int> eventIdsFromDateTimeRange(DateTimeRange dateTimeRange);
 }
 
-/// A class for searching the events by date more efficient.
+/// The default class for storing [CalendarEvent]s.
+/// TODO: Document
 class DefaultDateMap<T> extends DateMap<T> {
   /// Map of the [DateTime] and event ids.
   ///
   /// The [DateTime] is the date.
   /// The [Set] of [int] is the ids of the events.
-  final Map<DateTime, Set<int>> _dateMap = {};
+  final Map<DateTime, Set<int>> dateIds = {};
 
   /// A Map containing all events.
-  final _events = <int, CalendarEvent<T>>{};
+  final idEvent = <int, CalendarEvent<T>>{};
 
   @override
-  Iterable<CalendarEvent<T>> get events => _events.values;
+  Iterable<CalendarEvent<T>> get events => idEvent.values;
 
   int _lastId = 0;
   int get _nextId {
@@ -185,22 +188,22 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  CalendarEvent<T>? byId(int id) => _events[id];
+  CalendarEvent<T>? byId(int id) => idEvent[id];
 
-  /// Clear the [_dateMap].
+  /// Clear the [dateIds].
   @override
   void clear() {
-    _dateMap.clear();
-    _events.clear();
+    dateIds.clear();
+    idEvent.clear();
   }
 
   /// Add an [event] to the map.
   void _addEvent(CalendarEvent<T> event) {
     final id = event.id;
-    _events[id] = event;
+    idEvent[id] = event;
     final dates = event.datesSpanned;
     for (final date in dates) {
-      _dateMap.update(
+      dateIds.update(
         date,
         (value) => value..add(id),
         ifAbsent: () => {id},
@@ -224,23 +227,27 @@ class DefaultDateMap<T> extends DateMap<T> {
 
   @override
   void removeById(int id) {
-    final event = _events[id];
+    final event = idEvent[id];
     if (event == null) return;
     removeEvent(event);
   }
 
   @override
   void removeEvent(CalendarEvent event) {
-    _events.remove(event.id);
     final id = event.id;
+    idEvent.remove(id);
+
     final dates = event.datesSpanned;
     for (final date in dates) {
-      _dateMap.update(
+      dateIds.update(
         date,
         (value) => value..remove(id),
       );
     }
   }
+
+  @override
+  void removeEvents(List<CalendarEvent<T>> event) => events.forEach(removeEvent);
 
   @override
   void updateEvent(CalendarEvent<T> event, CalendarEvent<T> updatedEvent) {
@@ -250,7 +257,7 @@ class DefaultDateMap<T> extends DateMap<T> {
 
   @override
   void removeWhere(bool Function(int key, CalendarEvent<T> element) test) {
-    _events.removeWhere(
+    idEvent.removeWhere(
       (key, event) {
         final remove = test(key, event);
         if (remove) removeEvent(event);
@@ -265,7 +272,7 @@ class DefaultDateMap<T> extends DateMap<T> {
     final days = dateTimeRange.dates();
     final eventIds = <int>{};
     for (final day in days) {
-      eventIds.addAll(_dateMap[day] ?? {});
+      eventIds.addAll(dateIds[day] ?? {});
     }
     return eventIds;
   }
