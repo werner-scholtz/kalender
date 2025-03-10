@@ -1,4 +1,3 @@
-TODO: Finish this.
 # Examples
 
 ### Basic example
