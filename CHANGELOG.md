@@ -1,3 +1,15 @@
+## 0.5.1
+
+### Breaking changes:
+- The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
+
+### What's new
+- There is a new callback `onTapped` in `CalendarCallbacks`.
+
+### Boring stuff
+- Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
+- Example directory layout has changed.
+
 ## 0.5.0
 
 ### Breaking changes:
