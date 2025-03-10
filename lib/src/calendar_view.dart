@@ -95,13 +95,13 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     return switch (viewConfiguration.runtimeType) {
       MultiDayViewConfiguration => MultiDayViewController<T>(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
+          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: widget.calendarController.initialDate,
         ),
       MonthViewConfiguration => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
+          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: widget.calendarController.initialDate,
         ),

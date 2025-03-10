@@ -38,7 +38,7 @@ class AppState extends State<App> {
 
   void toggleTheme() => themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
-  final eventsController = EventsController<Event>();
+  final eventsController = DefaultEventsController<Event>();
 
   final controller1 = CalendarController<Event>();
   late final viewConfiguration1 = ValueNotifier(viewConfigurations[1]);
@@ -81,6 +81,12 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
     onEventTapped: (event, renderBox) => createOverlay(event, renderBox),
     onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
     onEventCreated: (event) => eventsController.addEvent(event),
+    onTapped: (date) => eventsController.addEvent(
+      CalendarEvent(
+        dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(hours: 1))),
+        data: const Event(title: 'New Event'),
+      ),
+    ),
   );
 
   @override

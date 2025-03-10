@@ -12,11 +12,8 @@ class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
   T? data;
 
-  /// The [DateTimeRange] of the [CalendarEvent] stored in utc time.
-  final DateTimeRange _dateTimeRange;
-
   /// The [DateTimeRange] of the [CalendarEvent] stored in local time.
-  late final DateTimeRange _dateTimeRangeLocal = _dateTimeRange.toLocal();
+  final DateTimeRange _dateTimeRange;
 
   /// Whether this [CalendarEvent] can be modified.
   ///
@@ -36,28 +33,25 @@ class CalendarEvent<T extends Object?> {
     required DateTimeRange dateTimeRange,
     this.data,
     this.canModify = true,
-  }) : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange : dateTimeRange.toUtc();
+  }) : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange;
 
   /// The [DateTimeRange] of the [CalendarEvent] in the local timezone.
-  DateTimeRange get dateTimeRange => _dateTimeRangeLocal;
+  DateTimeRange get dateTimeRange => _dateTimeRange;
 
   /// The start [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get start => _dateTimeRangeLocal.start;
+  DateTime get start => _dateTimeRange.start;
 
   /// The end [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get end => _dateTimeRangeLocal.end;
+  DateTime get end => _dateTimeRange.end;
 
   /// The [DateTimeRange] of the [CalendarEvent] in utc time.
-  DateTimeRange get dateTimeRangeAsUtc => _dateTimeRange;
+  DateTimeRange get dateTimeRangeAsUtc => _dateTimeRange.asUtc;
 
   /// The start [DateTime] of the [CalendarEvent] in utc time.
   DateTime get startAsUtc => dateTimeRangeAsUtc.start;
 
   /// The end [DateTime] of the [CalendarEvent] in utc time.
   DateTime get endAsUtc => dateTimeRangeAsUtc.end;
-
-  /// The [DateTimeRange] of the [CalendarEvent] in local time.
-  DateTimeRange get dateTimeRangeLocal => _dateTimeRangeLocal;
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
   Duration get duration => dateTimeRangeAsUtc.duration;
@@ -76,7 +70,7 @@ class CalendarEvent<T extends Object?> {
   }) {
     return CalendarEvent<T>(
       data: data ?? this.data,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRangeAsUtc,
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       canModify: canModify ?? this.canModify,
     );
   }

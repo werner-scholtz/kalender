@@ -129,7 +129,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     TextDirection textDirection,
   ) {
     // Layout the weekNumber, this constraints are determined from the timelineWidth and the pageHeight.
-    leading.layout(BoxConstraints.tightFor(width: timelineWidth), parentUsesSize: true);
+    leading.layout(BoxConstraints(maxHeight: contentHeight, maxWidth: timelineWidth), parentUsesSize: true);
 
     final leadingParentData = (leading.parentData! as MultiChildLayoutParentData);
     leadingParentData.offset = switch (textDirection) {

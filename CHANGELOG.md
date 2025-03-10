@@ -1,3 +1,19 @@
+## 0.5.1
+
+### Breaking changes
+- The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
+
+### What's new
+- There is a new callback `onTapped` in `CalendarCallbacks`.
+
+### Boring stuff
+- Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
+- Example directory layout has changed.
+
+### Fixes
+- Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115)
+- Month grid export [PR #112](https://github.com/werner-scholtz/kalender/pull/112)
+
 ## 0.5.0
 
 ### Breaking changes:

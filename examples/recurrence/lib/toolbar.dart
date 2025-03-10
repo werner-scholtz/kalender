@@ -17,7 +17,7 @@ class CalendarToolBar extends StatelessWidget {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: calendarController.visibleDateTimeRange,
+                  valueListenable: calendarController.visibleDateTimeRangeUtc,
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;

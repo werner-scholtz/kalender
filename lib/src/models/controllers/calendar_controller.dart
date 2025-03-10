@@ -15,7 +15,9 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
   CalendarController({DateTime? initialDate})
       : initialDate = initialDate ?? DateTime.now(),
-        id = DateTime.now().millisecondsSinceEpoch;
+        id = DateTime.now().millisecondsSinceEpoch {
+    visibleDateTimeRangeUtc.addListener(() => visibleDateTimeRange.value = visibleDateTimeRangeUtc.value.asLocal);
+  }
 
   /// This controllers id.
   final int id;
@@ -28,7 +30,8 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   bool get isAttached => _viewController != null;
 
   /// The [DateTimeRange] that is currently visible.
-  late final visibleDateTimeRange = ValueNotifier<DateTimeRange>(initialDate.dayRange);
+  late final visibleDateTimeRangeUtc = ValueNotifier<DateTimeRange>(initialDate.asUtc.dayRange);
+  late final visibleDateTimeRange = ValueNotifier<DateTimeRange>(visibleDateTimeRangeUtc.value.asLocal);
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});

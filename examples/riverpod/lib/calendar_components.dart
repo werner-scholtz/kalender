@@ -50,7 +50,7 @@ class CalendarToolBar extends ConsumerWidget {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: view.controller.visibleDateTimeRange,
+                  valueListenable: view.controller.visibleDateTimeRangeUtc,
                   builder: (context, value, child) {
                     final year = value.start.year;
                     final month = value.start.monthNameEnglish;
