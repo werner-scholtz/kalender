@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final datesToTest = [
@@ -47,6 +48,7 @@ final datesToTest = [
   DateTime(2025, 10, 5, 2),
 ];
 
+/// Runs the given [body] with the given timezone and [datesToTest].
 void testWithTimeZones({
   required void Function(String timezone, Iterable<DateTime> testDates) body,
   List<DateTime>? dates,
@@ -57,4 +59,13 @@ void testWithTimeZones({
     final testDates = dates ?? (isUtc ? datesToTest.map((e) => e.toUtc()) : datesToTest);
     body(timezone, testDates);
   });
+}
+
+/// Wraps the given [child] with a [MaterialApp] and [Scaffold].
+MaterialApp wrapWithMaterialApp(Widget child) {
+  return MaterialApp(
+    home: Scaffold(
+      body: child,
+    ),
+  );
 }
