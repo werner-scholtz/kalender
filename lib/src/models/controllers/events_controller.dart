@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
-/// TODO: Document
+/// The [EventsController] is used to manage [CalendarEvent]s.
+/// 
+/// This class can be extended to create custom [EventsController]s.
+/// e.g. [DefaultEventsController]
 abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// The feedback widget's size.
   ValueNotifier<Size> feedbackWidgetSize = ValueNotifier(Size.zero);
@@ -125,8 +128,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   }
 }
 
-/// A controller for [CalendarEvent]s.
-/// TODO: Document
+/// The default [EventsController] for managing [CalendarEvent]s.
 class DefaultEventsController<T extends Object?> extends EventsController<T> {
   @override
   final dateMap = DefaultDateMap<T>();
@@ -135,7 +137,9 @@ class DefaultEventsController<T extends Object?> extends EventsController<T> {
   Iterable<CalendarEvent<T>> get events => dateMap.events;
 }
 
-/// TODO: Document
+/// A class that maps [CalendarEvent]s to dates.
+/// 
+/// This class is used to store [CalendarEvent]s and retrieve them based on the date.
 abstract class DateMap<T> {
   Iterable<CalendarEvent<T>> get events;
 
@@ -167,7 +171,6 @@ abstract class DateMap<T> {
 }
 
 /// The default class for storing [CalendarEvent]s.
-/// TODO: Document
 class DefaultDateMap<T> extends DateMap<T> {
   /// Map of the [DateTime] and event ids.
   ///
