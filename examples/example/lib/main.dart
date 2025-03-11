@@ -52,23 +52,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController<Event>();
 
   /// Create [CalendarController],
-  /// This is used to control a calendar view with functions such as:
-  /// - [CalendarController.animateToDate]
-  /// - [CalendarController.animateToDateTime]
-  /// - [CalendarController.animateToEvent]
-  ///
-  /// It can also be used to listen to changes in the calendar view such as:
-  /// - [CalendarController.visibleEvents]
-  /// - [CalendarController.selectedEvent]
-  /// - [CalendarController.visibleDateTimeRangeUtc]
-  ///
   final calendarController = CalendarController<Event>();
 
   final now = DateTime.now();
 
   /// Decide on a range you want to display.
   late final displayRange = DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
+
+  /// Set the initial view configuration.
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
+
+  /// Create a list of view configurations to choose from.
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
