@@ -35,7 +35,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 A minimal example to get you started:
 
 ```dart
-final eventsController = EventsController();
+final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
 final tileComponents = TileComponents(
   tileBuilder: (event) => Container(color: Colors.green),
@@ -113,9 +113,12 @@ It has a few functions to manipulate events:
 - `addEvent` Add a new event.
 - `addEvents` Add multiple new events.
 - `removeEvent` Remove a event.
+- `removeEvents` Removes a list of events.
 - `removeWhere` Remove events where they match a test case.
 - `updateEvent` Updates an event.
+- `byId` Returns an event with the given id if it exists.
 - `clearEvents` Clear all the stored events.
+- `eventsFromDateTimeRange` Returns events that occur during the given dateTimeRange.
 
 ### CalendarController
 
@@ -183,6 +186,9 @@ The calendar has a few useful callback functions, which can change how interacti
     //
     // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
     onPageChanged: (visibleDateTimeRange) {},
+
+    /// Called when a user taps on the multi-day body.
+    onTapped(date) {},
   )
   ```
   </summary>
