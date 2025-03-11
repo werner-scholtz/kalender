@@ -4,7 +4,7 @@ import 'package:recurrence/recurring_event.dart';
 
 class RecurrenceController {
   RecurrenceController();
-  final controller = EventsController();
+  final controller = DefaultEventsController();
 
   final Map<int, RecurrenceGroup> groups = {};
 

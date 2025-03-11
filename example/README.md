@@ -1,16 +1,31 @@
-# example
+# Examples
 
-A new Flutter project.
+### Basic example
 
-## Getting Started
+The default example that shows a minimal implementation of the package.
 
-This project is a starting point for a Flutter application.
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/example)
 
-A few resources to get you started if this is your first Flutter project:
+### Demo 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+A demo that shows how to use more advanced features of the package.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/demo)
+
+### Recurrence
+
+Example showing how recurrence can be implemented.
+
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/recurrence)
+
+### Riverpod
+
+Example showing how to use the package with riverpod.
+
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/riverpod)
+
+### Web demo
+
+Example that shows how the web demo is implemented.
+
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo)
