@@ -148,6 +148,17 @@ class CalendarController<T extends Object?> extends ChangeNotifier
   }
 
   @override
+  Future<void> jumpToDateTime(
+    DateTime date, {
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
+  }) async {
+    return viewController?.jumpToDateTime(date);
+  }
+
+  @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
     Duration? pageDuration,

@@ -67,14 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
   /// - [CalendarController.selectedEvent]
   /// - [CalendarController.visibleDateTimeRange]
   ///
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController<Event>(
+      initialDate: DateTime.now().addDays(10).copyWith(hour: 3));
 
   final now = DateTime.now();
 
   /// Decide on a range you want to display.
   late final displayRange =
       DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
-  late ViewConfiguration viewConfiguration = viewConfigurations[0];
+  late ViewConfiguration viewConfiguration = viewConfigurations.last;
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(
         displayRange: displayRange, firstDayOfWeek: 1),
@@ -110,6 +111,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Text("reion"),
+        onPressed: () => setState(
+          () {},
+        ),
+      ),
       body: CalendarView<Event>(
         eventsController: eventsController,
         calendarController: calendarController,

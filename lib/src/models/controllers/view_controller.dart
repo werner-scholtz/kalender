@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
@@ -53,6 +55,9 @@ abstract class ViewController<T extends Object?>
   });
 
   @override
+  void jumpToDateTime(DateTime date);
+
+  @override
   Future<void> animateToEvent(
     CalendarEvent<T> event, {
     Duration? pageDuration,
@@ -78,7 +83,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
     initialPage =
         pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
-
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll
         ? 1 / viewConfiguration.numberOfDays
@@ -110,19 +114,14 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final dayStart =
         viewConfiguration.timeOfDayRange.start.toDateTime(DateTime.now());
     final timeDifference = initialTimeOfDay.difference(dayStart);
-    final initialScrollOffset =
-        timeDifference.inMinutes * (heightPerMinute.value);
+
+    final initialScrollOffset = initialDate == null
+        ? timeDifference.inMinutes * (heightPerMinute.value)
+        : _calculateTimeOffset(initialDate);
+
     scrollController =
         ScrollController(initialScrollOffset: initialScrollOffset);
 
-    // ---- SHILO ADD THIS: to jump also to the time of the initial date not only tha date ----
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => animateToDateTime(
-        initialDate ?? DateTime.now().copyWith(hour: 0),
-        scrollDuration: const Duration(microseconds: 1),
-        pageDuration: const Duration(microseconds: 1),
-      ),
-    );
     // ------------------------------------------------------------------------
     visibleEvents.value = {};
 
@@ -179,6 +178,19 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     );
   }
 
+  double _calculateTimeOffset(
+    DateTime date,
+  ) {
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(date);
+    final timeDifference = date.difference(startOfDay);
+    // the (-60) to fix issue it scrolls to onw hour later
+    final timeOffset =
+        max(0, (timeDifference.inMinutes - 60) * (heightPerMinute.value))
+            .toDouble();
+
+    return timeOffset;
+  }
+
   @override
   Future<void> animateToDateTime(
     DateTime date, {
@@ -190,15 +202,22 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(date);
-    final timeDifference = date.difference(startOfDay);
-    final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
-
     // Animate to the offset of the time.
     return scrollController.animateTo(
-      timeOffset,
+      _calculateTimeOffset(date),
       duration: scrollDuration ?? const Duration(milliseconds: 300),
       curve: scrollCurve ?? Curves.easeInOut,
+    );
+  }
+
+  @override
+  void jumpToDateTime(DateTime date) async {
+    // jumps to the date.
+    jumpToDate(date);
+
+    // jumps to the offset of the time.
+    return scrollController.jumpTo(
+      _calculateTimeOffset(date),
     );
   }
 
@@ -329,6 +348,18 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   }) async {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
+  }
+
+  @override
+  Future<void> jumpToDateTime(
+    DateTime date, {
+    Duration? pageDuration,
+    Curve? pageCurve,
+    Duration? scrollDuration,
+    Curve? scrollCurve,
+  }) async {
+    // Jumps to the date.
+    jumpToDate(date);
   }
 
   @override

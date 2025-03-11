@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
-import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/type_definitions.dart';
 
 abstract class PageNavigationFunctions {
   PageNavigationFunctions();
@@ -13,8 +13,10 @@ abstract class PageNavigationFunctions {
   }
 
   /// Creates a [PageNavigationFunctions] for a week [MultiDayViewConfiguration.week].
-  factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return WeekPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
+  factory PageNavigationFunctions.week(
+      DateTimeRange dateTimeRange, int firstDayOfWeek) {
+    return WeekPageFunctions(
+        dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
   /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
@@ -23,8 +25,10 @@ abstract class PageNavigationFunctions {
   }
 
   /// Creates a [PageNavigationFunctions] for a custom [MultiDayViewConfiguration.custom].
-  factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
-    return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
+  factory PageNavigationFunctions.custom(
+      DateTimeRange dateTimeRange, int numberOfDays) {
+    return CustomPageFunctions(
+        dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
@@ -33,8 +37,10 @@ abstract class PageNavigationFunctions {
   }
 
   /// Creates a [PageNavigationFunctions] for a month [MonthViewConfiguration.singleMonth].
-  factory PageNavigationFunctions.month(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return MonthPageFunctions(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
+  factory PageNavigationFunctions.month(
+      DateTimeRange dateTimeRange, int firstDayOfWeek) {
+    return MonthPageFunctions(
+        dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
   DateTimeRangeFromIndex get dateTimeRangeFromIndex;
@@ -83,7 +89,8 @@ class WeekPageFunctions extends PageNavigationFunctions {
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
     final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
     if (weekDifference != weekDifference.round()) {
-      debugPrint('Week difference is not a whole number, this should not happen and is a bug');
+      debugPrint(
+          'Week difference is not a whole number, this should not happen and is a bug');
     }
     numberOfPages = weekDifference.round();
     dateTimeRangeFromIndex = (index) {
@@ -124,7 +131,8 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
     final shiftedRange = DateTimeRange(start: shiftedStart, end: shiftedEnd);
     final weekDifference = (shiftedRange.dayDifference / DateTime.daysPerWeek);
     if (weekDifference != weekDifference.round()) {
-      debugPrint('Week difference is not a whole number, this should not happen and is a bug');
+      debugPrint(
+          'Week difference is not a whole number, this should not happen and is a bug');
     }
     numberOfPages = weekDifference.round();
     dateTimeRangeFromIndex = (index) {
@@ -222,7 +230,8 @@ class MonthPageFunctions extends PageNavigationFunctions {
   }) {
     final start = dateTimeRange.start;
     dateTimeRangeFromIndex = (index) {
-      final range = DateTime.utc(start.year, start.month + index, 1).monthRange.asUtc;
+      final range =
+          DateTime.utc(start.year, start.month + index, 1).monthRange.asUtc;
       var rangeStart = range.start.startOfWeekWithOffset(firstDayOfWeek);
       if (rangeStart.isAfter(range.start)) {
         rangeStart = rangeStart.subtractDays(7);

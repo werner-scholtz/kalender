@@ -62,6 +62,21 @@ mixin CalendarNavigationFunctions<T> {
     Curve? scrollCurve,
   });
 
+  /// Jump to the date and time parts of the given [DateTime].
+  ///
+  /// [date] the [DateTime] to animate to.
+  ///
+  /// [pageDuration] the [Duration] of the page animation.
+  ///
+  /// [pageCurve] the [Curve] of the page animation.
+  ///
+  /// [scrollDuration] the [Duration] of the scroll animation.
+  ///
+  /// [scrollCurve] the [Curve] of the scroll animation.
+  ///
+  /// [scrollCurve] the [Curve] of the scroll animation.
+  void jumpToDateTime(DateTime date);
+
   /// Animate to the given [CalendarEvent].
   ///
   /// [event] the [CalendarEvent] to animate to.
