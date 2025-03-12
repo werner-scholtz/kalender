@@ -46,9 +46,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.controller.initialPage);
     return SizedBox(
-      height: 74,
+      height: 65,
       child: PageView.builder(
         padEnds: false,
         controller: widget.controller,
@@ -87,8 +86,6 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       alignment: Alignment.topCenter,
       child: SizeReportingWidget(
         onSizeChange: (size) {
-          print("index: $index");
-          print(_heights[index]);
           setState(() => _heights[index] = size.height);
         },
         child: item,
