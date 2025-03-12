@@ -170,5 +170,8 @@ typedef DateTimeRangeFromIndex = DateTimeRange Function(int index);
 /// Calculates the page index of the [date].
 typedef IndexFromDate = int Function(DateTime date);
 
+/// Calculates the page index of the [date].
+typedef DateFromIndex = DateTime Function(int index);
+
 /// The number of pages for the [DateTimeRange] of the calendar.
 typedef NumberOfPages = int Function();

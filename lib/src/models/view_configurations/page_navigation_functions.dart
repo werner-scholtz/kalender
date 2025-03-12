@@ -46,6 +46,7 @@ abstract class PageNavigationFunctions {
   DateTimeRangeFromIndex get dateTimeRangeFromIndex;
   IndexFromDate get indexFromDate;
   int get numberOfPages;
+  // DateFromIndex get dateFromIndex;
 
   /// Returns the [DateTimeRange] that is displayed for the given [date].
   DateTimeRange dateTimeRangeFromDate(DateTime date) {
@@ -64,6 +65,8 @@ class DayPageFunctions extends PageNavigationFunctions {
       final dateAsUtc = date.asUtc.startOfDay;
       return dateAsUtc.difference(start).inDays;
     };
+
+    // dateFromIndex = start.addDays;
     numberOfPages = dateTimeRange.dayDifference;
   }
 
@@ -72,6 +75,9 @@ class DayPageFunctions extends PageNavigationFunctions {
 
   @override
   late IndexFromDate indexFromDate;
+
+  // @override
+  // DateFromIndex dateFromIndex;
 
   @override
   late int numberOfPages;
@@ -210,6 +216,8 @@ class FreeScrollFunctions extends PageNavigationFunctions {
       final dateAsUtc = date.asUtc.startOfDay;
       return dateAsUtc.difference(start).inDays;
     };
+    dateFromIndex = start.addDays;
+
     numberOfPages = dateTimeRange.dayDifference;
   }
 
@@ -218,6 +226,9 @@ class FreeScrollFunctions extends PageNavigationFunctions {
 
   @override
   late IndexFromDate indexFromDate;
+
+  @override
+  late DateFromIndex dateFromIndex;
 
   @override
   late int numberOfPages;

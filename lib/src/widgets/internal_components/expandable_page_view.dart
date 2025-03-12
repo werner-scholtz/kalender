@@ -46,17 +46,35 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.controller.initialPage);
+    return SizedBox(
+      height: 74,
+      child: PageView.builder(
+        padEnds: false,
+        controller: widget.controller,
+        itemCount: widget.itemCount,
+        itemBuilder: _itemBuilder,
+        // physics: const NeverScrollableScrollPhysics(),
+      ),
+    );
+    print("11 ${_heights[widget.controller.initialPage]}");
+    print("1222 ${_currentHeight}");
     return TweenAnimationBuilder<double>(
       curve: Curves.easeInOutCubic,
-      tween: Tween<double>(begin: _heights.first, end: _currentHeight),
-      duration: const Duration(milliseconds: 100),
+      tween: Tween<double>(
+          begin:
+              // The current displayed page
+              _heights[widget.controller.initialPage],
+          //_heights.first,
+          end: _currentHeight),
+      duration: const Duration(milliseconds: 1000),
       builder: (context, value, child) => SizedBox(height: value, child: child),
       child: PageView.builder(
         padEnds: false,
         controller: widget.controller,
         itemCount: widget.itemCount,
         itemBuilder: _itemBuilder,
-        physics: const NeverScrollableScrollPhysics(),
+        // physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }
@@ -68,7 +86,11 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       maxHeight: double.infinity,
       alignment: Alignment.topCenter,
       child: SizeReportingWidget(
-        onSizeChange: (size) => setState(() => _heights[index] = size.height),
+        onSizeChange: (size) {
+          print("index: $index");
+          print(_heights[index]);
+          setState(() => _heights[index] = size.height);
+        },
         child: item,
       ),
     );

@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// - [CalendarController.visibleDateTimeRange]
   ///
   final calendarController = CalendarController<Event>(
-      initialDate: DateTime.now().addDays(10).copyWith(hour: 3));
+      initialDate: DateTime.now().addDays(10).copyWith(hour: 15));
 
   final now = DateTime.now();
 
@@ -110,12 +110,49 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // final MultiViewPageController _pageController =
+    //     MultiViewPageController(viewportFraction: .5);
+    // return Scaffold(
+    //   body: Column(
+    //     children: [
+    //       Expanded(
+    //         child: PageView.builder(
+    //           controller: _pageController, // Assign controller
+    //           itemBuilder: (context, index) {
+    //             return Container(
+    //               width: 100,
+    //               color: Colors.red,
+    //               child: Center(
+    //                 child: Text("$index"),
+    //               ),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //       Expanded(
+    //         child: PageView.builder(
+    //           controller: _pageController, // Assign same controller
+    //           itemBuilder: (context, index) {
+    //             return Container(
+    //               color: Colors.green,
+    //               width: 100,
+    //               child: Center(
+    //                 child: Text("$index"),
+    //               ),
+    //             );
+    //           },
+    //         ),
+    //       )
+    //     ],
+    //   ),
+    // );
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Text("reion"),
-        onPressed: () => setState(
-          () {},
-        ),
+        onPressed: () {
+          setState(() {});
+        },
       ),
       body: CalendarView<Event>(
         eventsController: eventsController,
@@ -130,7 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         // Customize the components.
         components: CalendarComponents(
-          multiDayComponents: MultiDayComponents(),
+          multiDayComponents: MultiDayComponents(
+            headerComponents: MultiDayHeaderComponents(
+              weekNumberBuilder: (visibleDateTimeRange, style) =>
+                  const SizedBox(),
+              dayHeaderBuilder: daysHeaderBuilder,
+            ),
+          ),
           multiDayComponentStyles: MultiDayComponentStyles(),
           monthComponents: MonthComponents(),
           monthComponentStyles: MonthComponentStyles(),
@@ -171,6 +214,36 @@ class _MyHomePageState extends State<MyHomePage> {
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),
       ),
+    );
+  }
+
+  Widget daysHeaderBuilder(DateTime date, DayHeaderStyle? style) {
+    return Column(
+      children: [
+        Text(
+          "aa",
+          // style: R.fonts.infoTextMedium.copyWith(color: R.colors.black),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        date.isToday
+            ? Container(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFFAB90FF),
+                ),
+                child: Text(
+                  date.day.toString(),
+                  // style: R.fonts.auxillary1.copyWith(color: R.colors.white),
+                ),
+              )
+            : Text(
+                date.day.toString(),
+                // style: R.fonts.auxillary1.copyWith(color: R.colors.black),
+              ),
+      ],
     );
   }
 
@@ -289,4 +362,103 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class MultiViewPageController extends PageController {
+  MultiViewPageController({
+    double viewportFraction = 1.0,
+    int initialPage = 0,
+    bool keepPage = true,
+  }) : super(
+          viewportFraction: viewportFraction,
+          initialPage: initialPage,
+          keepPage: keepPage,
+        );
+
+  final List<ScrollPosition> _positions = [];
+  bool _isSyncing = false; // Prevent recursive updates
+
+  @override
+  void attach(ScrollPosition position) {
+    if (!_positions.contains(position)) {
+      _positions.add(position);
+      position.isScrollingNotifier.addListener(() {
+        if (!_isSyncing && position.pixels != offset) {
+          _syncPositions(position);
+        }
+      });
+    }
+    // Don’t call super.attach to avoid the single-position assertion
+    notifyListeners();
+  }
+
+  @override
+  void detach(ScrollPosition position) {
+    _positions.remove(position);
+    // Don’t call super.detach to maintain control
+    notifyListeners();
+  }
+
+  @override
+  bool get hasClients => _positions.isNotEmpty;
+
+  @override
+  ScrollPosition get position {
+    // Return the first position as the "primary" one for compatibility
+    if (_positions.isEmpty) {
+      throw FlutterError('No ScrollPosition attached to $this');
+    }
+    return _positions.first;
+  }
+
+  @override
+  double get offset =>
+      hasClients ? position.pixels : initialPage * viewportSize;
+
+  void _syncPositions(ScrollPosition source) {
+    _isSyncing = true;
+    for (final pos in _positions) {
+      if (pos != source) {
+        pos.jumpTo(source.pixels);
+      }
+    }
+    _isSyncing = false;
+  }
+
+  @override
+  void jumpTo(double value) {
+    if (_positions.isNotEmpty) {
+      for (final pos in _positions) {
+        pos.jumpTo(value);
+      }
+    }
+  }
+
+  @override
+  Future<void> animateToPage(
+    int page, {
+    required Duration duration,
+    required Curve curve,
+  }) async {
+    if (_positions.isNotEmpty) {
+      await Future.wait(
+        _positions.map(
+          (pos) => pos.animateTo(
+            page * viewportSize,
+            duration: duration,
+            curve: curve,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _positions.clear();
+    super.dispose();
+  }
+
+  double get viewportSize =>
+      viewportFraction * (position.hasPixels ? position.viewportDimension : 0);
 }

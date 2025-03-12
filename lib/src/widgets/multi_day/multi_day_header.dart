@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
-import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
+import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 
@@ -71,9 +71,11 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
     );
 
-    final viewController = calendarController!.viewController as MultiDayViewController<T>;
+    final viewController =
+        calendarController!.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
+    final headerConfiguration =
+        this.configuration ?? MultiDayHeaderConfiguration();
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
@@ -150,7 +152,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final viewController =
+        calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
@@ -179,7 +182,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
 
             // Minimum constraints for the multiDayEvents.
-            final constraints = BoxConstraints(minHeight: tileHeight * 2, minWidth: pageWidth);
+            final constraints =
+                BoxConstraints(minHeight: tileHeight * 2, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               eventsController: eventsController,
               controller: calendarController,
@@ -264,7 +268,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final viewController =
+        calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
@@ -313,7 +318,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               );
             }).toList();
 
-            final constraints = BoxConstraints(minHeight: tileHeight, minWidth: pageWidth);
+            final constraints =
+                BoxConstraints(minHeight: tileHeight, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               controller: calendarController,
               eventsController: eventsController,
@@ -360,7 +366,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                   Stack(
                     children: [
                       Positioned.fill(child: draggable),
-                      ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                      ConstrainedBox(
+                          constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],
                   ),
@@ -404,7 +411,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final viewController =
+        calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
@@ -430,7 +438,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
         final dayWidth = pageWidth / viewConfiguration.numberOfDays;
 
         /// TODO: figure out how to get multi-day events to work with FreeScroll.
-        /// 
+        ///
         /// To do this the header would need to display a single page and not multiple. see viewport fraction.
         return ExpandablePageView(
           controller: viewController.headerController,
@@ -507,7 +515,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                   Stack(
                     children: [
                       Positioned.fill(child: draggable),
-                      ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                      ConstrainedBox(
+                          constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],
                   ),

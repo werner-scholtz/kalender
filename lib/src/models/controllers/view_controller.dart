@@ -90,8 +90,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
     pageController = PageController(
         initialPage: initialPage, viewportFraction: viewPortFraction);
-    headerController = PageController(
-        initialPage: initialPage, viewportFraction: viewPortFraction);
+    headerController = // pageController;
+        PageController(
+            initialPage: initialPage, viewportFraction: viewPortFraction);
     numberOfPages = pageNavigationFunctions.numberOfPages;
     heightPerMinute =
         ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
@@ -129,8 +130,24 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Note this only really works if both PageView's have the same horizontal 'size'.
     pageController.addListener(() {
       if (!headerController.hasClients) return;
+      if (!pageController.position.isScrollingNotifier.value) return;
+
+      // We give the pageController higher priority so if both are scrolled symultanely
+      // they will follow pageController
+
+      // if (headerController.position.isScrollingNotifier.value) return;
       headerController.position.correctPixels(pageController.offset);
       headerController.position.notifyListeners();
+    });
+
+    // This listener will sync the pageController with the headerController.
+    // Note this only really works if both PageView's have the same horizontal 'size'.
+    headerController.addListener(() {
+      if (!pageController.hasClients) return;
+      if (!headerController.position.isScrollingNotifier.value) return;
+      if (pageController.position.isScrollingNotifier.value) return;
+      pageController.position.correctPixels(headerController.offset);
+      pageController.position.notifyListeners();
     });
   }
 
