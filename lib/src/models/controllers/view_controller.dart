@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
@@ -201,9 +199,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(date);
     final timeDifference = date.difference(startOfDay);
     // the (-60) to fix issue it scrolls to onw hour later
-    final timeOffset =
-        max(0, (timeDifference.inMinutes - 60) * (heightPerMinute.value))
-            .toDouble();
+    final timeOffset = (timeDifference.inMinutes) * (heightPerMinute.value);
 
     return timeOffset;
   }
