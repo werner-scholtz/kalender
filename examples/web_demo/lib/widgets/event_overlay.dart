@@ -138,6 +138,14 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                   ),
                 ),
               ),
+              const Spacer(),
+              FilledButton.tonal(
+                onPressed: () {
+                  widget.eventsController.removeEvent(event);
+                  widget.onDismiss();
+                },
+                child: const Text("Delete"),
+              ),
             ],
           ),
         ),
