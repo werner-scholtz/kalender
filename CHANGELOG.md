@@ -8,7 +8,7 @@
     * This is now called when the user taps on an empty space a calendar (Multiday body).
 - There is a new callback `onMultiDayTapped` in `CalendarCallbacks`.
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
-- MultiDayBodyConfiguration added `horizontalDayPadding` this padding is located between events and the edge of day. 
+- MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day. 
 
 ### Fixes
 - Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115)

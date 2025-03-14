@@ -110,7 +110,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
         for (final entry in eventsMap.entries)
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.configuration.horizontalDayPadding),
+              padding: widget.configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
               child: _SingleDayWidget<T>(
                 date: entry.key,
                 events: entry.value,

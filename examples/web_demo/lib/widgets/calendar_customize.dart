@@ -184,6 +184,30 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       },
     );
 
+    final horizontalLeft = IntEditor(
+      title: "Horizontal Padding (left)",
+      suffix: "",
+      initialValue: bodyConfiguration.horizontalPadding.left.toInt(),
+      items: const [0, 1, 2, 3, 4, 5, 6],
+      onChanged: (value) {
+        widget.onBodyChanged(bodyConfiguration.copyWith(
+          horizontalPadding: bodyConfiguration.horizontalPadding.copyWith(left: value.toDouble()),
+        ));
+      },
+    );
+
+    final horizontalRight = IntEditor(
+      title: "Horizontal Padding (right)",
+      suffix: "",
+      initialValue: bodyConfiguration.horizontalPadding.right.toInt(),
+      items: const [0, 1, 2, 3, 4, 5, 6],
+      onChanged: (value) {
+        widget.onBodyChanged(bodyConfiguration.copyWith(
+          horizontalPadding: bodyConfiguration.horizontalPadding.copyWith(right: value.toDouble()),
+        ));
+      },
+    );
+
     final layoutStrategy = DropdownMenu(
       initialSelection: overlapLayoutStrategy,
       expandedInsets: const EdgeInsets.only(left: 16, right: 32),
@@ -227,6 +251,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
         snapIntervalMinutes,
         spacer,
         snapRange,
+        spacer,
+        horizontalLeft,
+        spacer,
+        horizontalRight,
         spacer,
         layoutStrategy,
       ],

@@ -269,7 +269,7 @@ Examples:
       // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
       snapRange: Duration(minutes: 5),
       // The padding between events and the edge of the day.
-      horizontalDayPadding: 8.0,
+      horizontalPadding: EdgeInsets.only(left: 0, right: 4),
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.
