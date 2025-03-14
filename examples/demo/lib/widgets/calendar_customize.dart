@@ -184,19 +184,6 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       },
     );
 
-    final newEventDuration = IntEditor(
-      title: 'New Event Duration',
-      suffix: 'minute(s)',
-      initialValue: bodyConfiguration.newEventDuration.inMinutes,
-      items: const [15, 30, 60],
-      onChanged: (value) {
-        widget.onBodyChanged(
-          bodyConfiguration.copyWith(
-            newEventDuration: Duration(minutes: value),
-          ),
-        );
-      },
-    );
 
     final layoutStrategy = DropdownMenu(
       initialSelection: overlapLayoutStrategy,
@@ -241,8 +228,6 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
         snapIntervalMinutes,
         spacer,
         snapRange,
-        spacer,
-        newEventDuration,
         spacer,
         layoutStrategy,
       ],
