@@ -187,8 +187,11 @@ The calendar has a few useful callback functions, which can change how interacti
     // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
     onPageChanged: (visibleDateTimeRange) {},
 
-    /// Called when a user taps on the multi-day body.
+    /// Called when a user taps on the calendar (Multiday body).
     onTapped(date) {},
+
+    /// Called when a user taps on the calendar (Multiday header / Month body).
+    onMultiDayTapped(dateRange) {},
   )
   ```
   </summary>
@@ -265,8 +268,8 @@ Examples:
       // The range in which events will be snapped, 
       // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
       snapRange: Duration(minutes: 5),
-      // The duration of events created by the `createEventGesture`
-      newEventDuration: Duration(minutes: 30),
+      // The padding between events and the edge of the day.
+      horizontalDayPadding: 8.0,
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.
