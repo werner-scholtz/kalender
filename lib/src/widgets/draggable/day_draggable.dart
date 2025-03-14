@@ -76,7 +76,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
-    final end = start.add(bodyConfiguration.newEventDuration);
+    final end = start.copyWith(minute: start.minute + bodyConfiguration.snapIntervalMinutes);
     return DateTimeRange(start: start, end: end);
   }
 
@@ -90,7 +90,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
 
     // Calculate the start of the day.
     final startOfDay = timeOfDayRange.start.toDateTime(date);
-  
+
     // Add the calculated duration to the startOfDay and convert to local.
     final startOfEvent = startOfDay.add(durationFromTop);
 

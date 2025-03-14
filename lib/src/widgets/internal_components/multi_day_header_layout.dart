@@ -31,7 +31,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
     final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
-    final timeline = bodyComponents?.timeline?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
+    final timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
         TimeLine(
           timeOfDayRange: timeOfDayRange,
           heightPerMinute: heightPerMinute,

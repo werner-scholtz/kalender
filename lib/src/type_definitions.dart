@@ -83,6 +83,17 @@ typedef TimeLineBuilder = Widget Function(
   TimelineStyle? style,
 );
 
+/// The prototype time line builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
+/// The [style] is used to style the time line.
+typedef PrototypeTimeLineBuilder = Widget Function(
+  double heightPerMinute,
+  TimeOfDayRange timeOfDayRange,
+  TimelineStyle? style,
+);
+
 /// The day separator builder.
 ///
 /// The [style] is used to style the day separator.

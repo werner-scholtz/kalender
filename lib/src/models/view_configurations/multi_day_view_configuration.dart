@@ -244,9 +244,6 @@ class MultiDayBodyConfiguration {
   /// The [Duration] in which events will snap to other events.
   final Duration snapRange;
 
-  /// The duration of the new event when created by tapping on the [MultiDayBody].
-  final Duration newEventDuration;
-
   /// The configuration for the page navigation triggers.
   late final PageTriggerConfiguration pageTriggerConfiguration;
 
@@ -269,7 +266,6 @@ class MultiDayBodyConfiguration {
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
     CreateEventGesture? createEventGesture,
-    this.newEventDuration = defaultNewEventDuration,
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
     this.snapRange = defaultSnapRange,
@@ -308,7 +304,6 @@ class MultiDayBodyConfiguration {
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       createEventGesture: createEventGesture ?? this.createEventGesture,
-      newEventDuration: newEventDuration ?? this.newEventDuration,
       snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
@@ -331,7 +326,6 @@ class MultiDayBodyConfiguration {
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
         other.createEventGesture == createEventGesture &&
-        other.newEventDuration == newEventDuration &&
         other.snapToTimeIndicator == snapToTimeIndicator &&
         other.snapToOtherEvents == snapToOtherEvents &&
         other.snapRange == snapRange &&
@@ -351,7 +345,6 @@ class MultiDayBodyConfiguration {
       allowResizing,
       allowRescheduling,
       createEventGesture,
-      newEventDuration,
       snapToTimeIndicator,
       snapToOtherEvents,
       snapRange,

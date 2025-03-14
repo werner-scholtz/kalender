@@ -195,9 +195,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
       final eventCenter = event.startAsUtc.add(Duration(minutes: event.duration.inMinutes ~/ 2));
       final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
       final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
-      date = eventCenter.subtract(duration);
+      date = eventCenter.subtract(duration).asLocal;
     } else {
-      date = event.startAsUtc;
+      date = event.start;
     }
 
     return animateToDateTime(
@@ -312,7 +312,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     bool centerEvent = true,
   }) {
     return animateToDateTime(
-      event.startAsUtc,
+      event.start,
       pageDuration: pageDuration,
       pageCurve: pageCurve,
       scrollDuration: scrollDuration,

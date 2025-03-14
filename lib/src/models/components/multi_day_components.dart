@@ -35,6 +35,7 @@ class MultiDayHeaderComponents {
 class MultiDayBodyComponents {
   final HourLinesBuilder? hourLines;
   final TimeLineBuilder? timeline;
+  final PrototypeTimeLineBuilder? prototypeTimeLine;
   final DaySeparatorBuilder? daySeparator;
   final TimeIndicatorBuilder? timeIndicator;
 
@@ -47,6 +48,7 @@ class MultiDayBodyComponents {
   const MultiDayBodyComponents({
     this.hourLines,
     this.timeline,
+    this.prototypeTimeLine,
     this.daySeparator,
     this.timeIndicator,
     this.leftTriggerBuilder,

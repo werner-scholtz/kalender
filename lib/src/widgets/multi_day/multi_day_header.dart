@@ -159,11 +159,11 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleRange, child) {
         return components?.dayHeaderBuilder?.call(
-              visibleRange.start,
+              visibleRange.start.asLocal,
               dayHeaderStyle,
             ) ??
             DayHeader(
-              date: visibleRange.start,
+              date: visibleRange.start.asLocal,
               style: dayHeaderStyle,
             );
       },
@@ -299,11 +299,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
               final dayHeader = components?.dayHeaderBuilder?.call(
-                    date,
+                    date.asLocal,
                     dayHeaderStyle,
                   ) ??
                   DayHeader(
-                    date: date,
+                    date: date.asLocal,
                     style: dayHeaderStyle,
                   );
 
@@ -430,7 +430,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
         final dayWidth = pageWidth / viewConfiguration.numberOfDays;
 
         /// TODO: figure out how to get multi-day events to work with FreeScroll.
-        /// 
+        ///
         /// To do this the header would need to display a single page and not multiple. see viewport fraction.
         return ExpandablePageView(
           controller: viewController.headerController,
@@ -442,11 +442,11 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
               final dayHeader = components?.dayHeaderBuilder?.call(
-                    date,
+                    date.asLocal,
                     dayHeaderStyle,
                   ) ??
                   DayHeader(
-                    date: date,
+                    date: date.asLocal,
                     style: dayHeaderStyle,
                   );
 
