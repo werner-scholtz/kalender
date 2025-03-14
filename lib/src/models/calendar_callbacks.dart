@@ -12,6 +12,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnEventChanged<T>? onEventChanged;
   final OnPageChanged? onPageChanged;
   final OnTapped? onTapped;
+  final OnMultiDayTapped? onMultiDayTapped;
 
   /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
@@ -22,7 +23,30 @@ class CalendarCallbacks<T extends Object?> {
     this.onEventCreated,
     this.onPageChanged,
     this.onTapped,
+    this.onMultiDayTapped,
   });
+
+  CalendarCallbacks<T> copyWith({
+    OnEventTapped<T>? onEventTapped,
+    OnEventCreate<T>? onEventCreate,
+    OnEventCreated<T>? onEventCreated,
+    OnEventChange<T>? onEventChange,
+    OnEventChanged<T>? onEventChanged,
+    OnPageChanged? onPageChanged,
+    OnTapped? onTapped,
+    OnMultiDayTapped? onMultiDayTapped,
+  }) {
+    return CalendarCallbacks<T>(
+      onEventTapped: onEventTapped ?? this.onEventTapped,
+      onEventCreate: onEventCreate ?? this.onEventCreate,
+      onEventCreated: onEventCreated ?? this.onEventCreated,
+      onEventChange: onEventChange ?? this.onEventChange,
+      onEventChanged: onEventChanged ?? this.onEventChanged,
+      onPageChanged: onPageChanged ?? this.onPageChanged,
+      onTapped: onTapped ?? this.onTapped,
+      onMultiDayTapped: onMultiDayTapped ?? this.onMultiDayTapped,
+    );
+  }
 }
 
 /// The callback for when an event is tapped.
@@ -68,6 +92,11 @@ typedef OnEventCreated<T extends Object?> = void Function(
 typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 
 /// The callback for when a user taps on the calendar.
-/// 
+///
 /// [date] is the DateTime that was tapped.
 typedef OnTapped = void Function(DateTime date);
+
+/// The callback for when a user taps on a multi-day calendar.
+/// 
+/// [dateRange] is the range of dates that was tapped.
+typedef OnMultiDayTapped = void Function(DateTimeRange dateRange);

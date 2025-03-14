@@ -34,26 +34,29 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
         children: [
           if (allowEventCreation)
             for (final date in visibleDateTimeRange.dates())
-              switch (createEventTrigger) {
-                CreateEventGesture.tap => Draggable(
-                    onDragStarted: () => createNewEvent(date, localPosition),
-                    onDraggableCanceled: onDragFinished,
-                    onDragEnd: onDragFinished,
-                    dragAnchorStrategy: pointerDragAnchorStrategy,
-                    data: Create(controllerId: controller.id),
-                    feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                    child: Container(color: Colors.transparent, width: dayWidth),
-                  ),
-                CreateEventGesture.longPress => LongPressDraggable(
-                    onDragStarted: () => createNewEvent(date, localPosition),
-                    onDraggableCanceled: onDragFinished,
-                    onDragEnd: onDragFinished,
-                    dragAnchorStrategy: pointerDragAnchorStrategy,
-                    data: Create(controllerId: controller.id),
-                    feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                    child: Container(color: Colors.transparent, width: dayWidth),
-                  ),
-              },
+              GestureDetector(
+                onTapUp: (details) => callbacks?.onMultiDayTapped?.call(calculateDateTimeRange(date, localPosition).asLocal),
+                child: switch (createEventTrigger) {
+                  CreateEventGesture.tap => Draggable(
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      data: Create(controllerId: controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, width: dayWidth),
+                    ),
+                  CreateEventGesture.longPress => LongPressDraggable(
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      data: Create(controllerId: controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, width: dayWidth),
+                    ),
+                },
+              ),
         ],
       ),
     );
