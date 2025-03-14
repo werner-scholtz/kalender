@@ -97,6 +97,7 @@ mixin DragTargetUtilities<T> {
 
         callbacks?.onEventCreated?.call(updatedEvent);
         newEvent = null;
+        controller.deselectEvent();
 
         return null;
       },

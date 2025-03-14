@@ -73,6 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
     onEventTapped: (event, renderBox) => _createOverlay(event, renderBox),
     onEventCreate: (event) => event.copyWith(data: Event(title: 'New Event')),
     onEventCreated: (event) => eventsController.addEvent(event),
+    onTapped: (date) {
+      final newEvent = CalendarEvent<Event>(
+        dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(minutes: 45))),
+      );
+      eventsController.addEvent(newEvent);
+    },
+    onMultiDayTapped: (dateRange) {
+      final newEvent = CalendarEvent<Event>(dateTimeRange: dateRange);
+      eventsController.addEvent(newEvent);
+    },
   );
 
   ViewType _type = ViewType.single;
