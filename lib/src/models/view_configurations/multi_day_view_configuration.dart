@@ -244,6 +244,11 @@ class MultiDayBodyConfiguration {
   /// The [Duration] in which events will snap to other events.
   final Duration snapRange;
 
+  /// The horizontal padding between events and the edge of the day.
+  ///
+  /// * Vertical values are ignored.
+  final EdgeInsets horizontalPadding;
+
   /// The configuration for the page navigation triggers.
   late final PageTriggerConfiguration pageTriggerConfiguration;
 
@@ -269,6 +274,7 @@ class MultiDayBodyConfiguration {
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
     this.snapRange = defaultSnapRange,
+    this.horizontalPadding = defaultHorizontalPadding,
     this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
@@ -291,6 +297,7 @@ class MultiDayBodyConfiguration {
     bool? snapToTimeIndicator,
     bool? snapToOtherEvents,
     Duration? snapRange,
+    EdgeInsets? horizontalPadding,
     int? snapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
@@ -307,6 +314,7 @@ class MultiDayBodyConfiguration {
       snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
+      horizontalPadding: horizontalPadding ?? this.horizontalPadding,
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
@@ -329,6 +337,7 @@ class MultiDayBodyConfiguration {
         other.snapToTimeIndicator == snapToTimeIndicator &&
         other.snapToOtherEvents == snapToOtherEvents &&
         other.snapRange == snapRange &&
+        other.horizontalPadding == horizontalPadding &&
         other.snapIntervalMinutes == snapIntervalMinutes &&
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
         other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
@@ -348,6 +357,7 @@ class MultiDayBodyConfiguration {
       snapToTimeIndicator,
       snapToOtherEvents,
       snapRange,
+      horizontalPadding,
       snapIntervalMinutes,
       pageTriggerConfiguration,
       scrollTriggerConfiguration,

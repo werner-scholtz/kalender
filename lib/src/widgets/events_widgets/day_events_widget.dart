@@ -109,16 +109,19 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
       children: [
         for (final entry in eventsMap.entries)
           Expanded(
-            child: _SingleDayWidget<T>(
-              date: entry.key,
-              events: entry.value,
-              heightPerMinute: widget.heightPerMinute,
-              timeOfDayRange: widget.timeOfDayRange,
-              eventsController: widget.eventsController,
-              controller: widget.controller,
-              callbacks: widget.callbacks,
-              tileComponents: widget.tileComponents,
-              configuration: widget.configuration,
+            child: Padding(
+              padding: widget.configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
+              child: _SingleDayWidget<T>(
+                date: entry.key,
+                events: entry.value,
+                heightPerMinute: widget.heightPerMinute,
+                timeOfDayRange: widget.timeOfDayRange,
+                eventsController: widget.eventsController,
+                controller: widget.controller,
+                callbacks: widget.callbacks,
+                tileComponents: widget.tileComponents,
+                configuration: widget.configuration,
+              ),
             ),
           ),
       ],
