@@ -10,13 +10,13 @@
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
 - MultiDayBodyConfiguration added `horizontalDayPadding` this padding is located between events and the edge of day. 
 
-### Boring stuff
-- Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
-- Example directory layout has changed.
-
 ### Fixes
 - Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115)
 - Month grid export [PR #112](https://github.com/werner-scholtz/kalender/pull/112)
+
+### Boring stuff
+- Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
+- Example directory layout has changed.
 
 ## 0.5.0
 
