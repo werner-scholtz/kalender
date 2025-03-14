@@ -8,7 +8,7 @@
     * This is now called when the user taps on an empty space a calendar (Multiday body).
 - There is a new callback `onMultiDayTapped` in `CalendarCallbacks`.
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
-- MultiDayBodyConfiguration added `horizontalEdgePadding` this padding is located between events and the edge of day. 
+- MultiDayBodyConfiguration added `horizontalDayPadding` this padding is located between events and the edge of day. 
 
 ### Boring stuff
 - Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
