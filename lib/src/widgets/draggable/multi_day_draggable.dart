@@ -62,7 +62,7 @@ class MultiDayEventDraggableWidgets<T extends Object?> extends NewDraggableWidge
               ],
             );
           },
-        ),);
+        ));
   }
 
   /// Calculate the initial dateTimeRange of a new event.
