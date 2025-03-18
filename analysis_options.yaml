@@ -8,6 +8,10 @@ analyzer:
     strict-inference: true
     strict-raw-types: true
 
+  exclude:
+    # - other_examples/**
+    # - example/**
+
 linter:
   rules:
     always_use_package_imports: true
@@ -25,6 +29,3 @@ linter:
     prefer_final_fields: true
     prefer_final_locals: true
     dangling_library_doc_comments: true
-
-formatter:
-  page_width: 120
