@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {
@@ -24,6 +25,12 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration? monthBodyConfiguration;
 
+  /// The [CalendarInteraction] that will be used by the [CalendarBody].
+  final ValueNotifier<CalendarInteraction>? interaction;
+
+  /// The snapping that will be used by the [CalendarBody].
+  final ValueNotifier<CalendarSnapping>? snapping;
+
   /// Creates a CalendarBody widget.
   ///
   /// This creates the correct body based on the [ViewController] inside the [CalendarController]
@@ -36,6 +43,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.eventsController,
     this.calendarController,
     this.callbacks,
+    this.interaction,
+    this.snapping,
     required this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
     required this.monthTileComponents,
@@ -59,6 +68,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         configuration: multiDayBodyConfiguration,
         callbacks: callbacks,
+        interaction: interaction,
+        snapping: snapping,
         tileComponents: multiDayTileComponents,
       );
     } else if (viewController is MonthViewController<T>) {
@@ -68,6 +79,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         callbacks: callbacks,
         tileComponents: monthTileComponents,
         configuration: monthBodyConfiguration,
+        interaction: interaction,
       );
     } else {
       throw UnimplementedError();

@@ -84,8 +84,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   void didUpdateWidget(covariant TimeIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final hasChangedTimeOfDayRange =
-        widget.timeOfDayRange != oldWidget.timeOfDayRange;
+    final hasChangedTimeOfDayRange = widget.timeOfDayRange != oldWidget.timeOfDayRange;
 
     if (hasChangedTimeOfDayRange) {
       _startTime = widget.timeOfDayRange.start.toDateTime(_currentTime);

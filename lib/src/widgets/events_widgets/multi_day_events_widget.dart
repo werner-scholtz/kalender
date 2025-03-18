@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -26,10 +27,9 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayEventLayoutStrategy layoutStrategy;
   final double dayWidth;
-  final bool allowResizing;
-  final bool allowRescheduling;
   final bool showAllEvents;
   final double tileHeight;
+  final ValueNotifier<CalendarInteraction> interaction;
 
   const MultiDayEventWidget({
     super.key,
@@ -38,8 +38,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.tileComponents,
     required this.dayWidth,
-    required this.allowResizing,
-    required this.allowRescheduling,
+    required this.interaction,
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
@@ -77,8 +76,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
               controller: controller,
               callbacks: callbacks,
               tileComponents: tileComponents,
-              allowResizing: allowResizing,
-              allowRescheduling: allowRescheduling,
+              interaction: interaction,
               dateTimeRange: visibleDateTimeRange,
             ),
           );

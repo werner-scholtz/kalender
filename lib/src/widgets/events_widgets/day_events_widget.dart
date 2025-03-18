@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -28,6 +29,7 @@ class DayEventsWidget<T extends Object?> extends StatefulWidget {
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
   final double heightPerMinute;
+  final ValueNotifier<CalendarInteraction> interaction;
 
   /// Creates a [DayEventsWidget].
   const DayEventsWidget({
@@ -41,6 +43,7 @@ class DayEventsWidget<T extends Object?> extends StatefulWidget {
     required this.heightPerMinute,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
+    required this.interaction,
   });
 
   @override
@@ -121,6 +124,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
                 callbacks: widget.callbacks,
                 tileComponents: widget.tileComponents,
                 configuration: widget.configuration,
+                interaction: widget.interaction,
               ),
             ),
           ),
@@ -139,6 +143,7 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
   final MultiDayBodyConfiguration configuration;
+  final ValueNotifier<CalendarInteraction> interaction;
 
   const _SingleDayWidget({
     super.key,
@@ -151,6 +156,7 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
     required this.callbacks,
     required this.tileComponents,
     required this.configuration,
+    required this.interaction,
   });
 
   @override
@@ -196,8 +202,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
                 callbacks: widget.callbacks,
                 tileComponents: widget.tileComponents,
                 dateTimeRange: date.dayRange,
-                allowResizing: widget.configuration.allowResizing,
-                allowRescheduling: widget.configuration.allowRescheduling,
+                interaction: widget.interaction,
               ),
             ),
           )

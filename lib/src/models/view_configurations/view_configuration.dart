@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -26,18 +25,10 @@ abstract class ViewConfiguration {
 
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
-const defaultAllowEventCreation = true;
-const defaultAllowResizing = true;
-const defaultAllowRescheduling = true;
-const defaultCreateEventTrigger = CreateEventGesture.tap;
 const defaultShowMultiDayEvents = false;
 const defaultEventLayoutStrategy = overlapLayoutStrategy;
 const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
-const defaultSnapToTimeIndicator = true;
-const defaultSnapToOtherEvents = true;
-const defaultSnapRange = Duration(minutes: 15);
-const defaultSnapIntervalMinutes = 10;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;

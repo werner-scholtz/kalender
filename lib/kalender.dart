@@ -41,6 +41,7 @@ export 'package:kalender/src/models/components/multi_day_styles.dart';
 export 'package:kalender/src/models/components/month_styles.dart';
 
 export 'package:kalender/src/models/calendar_callbacks.dart';
+export 'package:kalender/src/models/calendar_interaction.dart';
 
 /// View Configurations
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';
