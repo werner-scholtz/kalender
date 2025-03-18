@@ -90,16 +90,17 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
   DateTime _calculateTimeAndDate(DateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
     final durationFromStart = localPosition.dy ~/ heightPerMinute;
-    final snapIntervalMinutes = snapping.value.snapIntervalMinutes;
-    final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
-    final durationFromTop = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
+    final durationFromTop = Duration(minutes: durationFromStart.round());
 
     // Calculate the start of the day.
     final startOfDay = timeOfDayRange.start.toDateTime(date);
 
-    // Add the calculated duration to the startOfDay and convert to local.
+    // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);
 
-    return startOfEvent;
+    // Snap the datetime based on the snap strategy.
+    final snappedDateTime = snapping.value.eventSnapStrategy(startOfEvent, startOfDay, snapping.value.snapIntervalMinutes);
+
+    return snappedDateTime;
   }
 }

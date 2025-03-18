@@ -123,6 +123,11 @@ class CalendarSnapping {
   final Duration snapRange;
   static const defaultSnapRange = Duration(minutes: 15);
 
+  /// The strategy used to snap events to specific intervals.
+  /// 
+  /// This strategy is only used by the multi-day body.
+  final EventSnapStrategy eventSnapStrategy;
+
   /// Creates a new [CalendarSnapping] instance with the specified settings.
   ///
   /// All parameters are optional and default to the values defined in the class.
@@ -131,6 +136,7 @@ class CalendarSnapping {
     this.snapToTimeIndicator = defaultSnapToTimeIndicator,
     this.snapToOtherEvents = defaultSnapToOtherEvents,
     this.snapRange = defaultSnapRange,
+    this.eventSnapStrategy = defaultSnapStrategy,
   });
 
   /// Creates a copy of this [CalendarSnapping] but with the given fields replaced with the new values.
@@ -165,4 +171,19 @@ class CalendarSnapping {
         snapToOtherEvents,
         snapRange,
       );
+}
+
+/// The [EventSnapStrategy] typedef defines a function that snaps events to specific intervals.
+///
+/// This function takes a [cursorDate] and a [startOfDay] date, and returns a new date that is snapped
+/// based on the defined strategy.
+typedef EventSnapStrategy = DateTime Function(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes);
+
+/// The default snap strategy used to snap events to a the [snapIntervalMinutes].
+DateTime defaultSnapStrategy(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes) {
+  final minutes = cursorDate.difference(startOfDay).inMinutes;
+  final numberOfIntervals = (minutes / snapIntervalMinutes).round();
+  final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
+  final snappedDate = startOfDay.add(Duration(minutes: snappedMinutes));
+  return snappedDate;
 }
