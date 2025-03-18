@@ -1,4 +1,4 @@
-## 0.6.0
+## 0.5.6
 
 ### Breaking changes
 - The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
