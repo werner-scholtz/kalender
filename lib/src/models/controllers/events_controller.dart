@@ -3,7 +3,7 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// The [EventsController] is used to manage [CalendarEvent]s.
-///
+/// 
 /// This class can be extended to create custom [EventsController]s.
 /// e.g. [DefaultEventsController]
 abstract class EventsController<T extends Object?> with ChangeNotifier {
@@ -138,7 +138,7 @@ class DefaultEventsController<T extends Object?> extends EventsController<T> {
 }
 
 /// A class that maps [CalendarEvent]s to dates.
-///
+/// 
 /// This class is used to store [CalendarEvent]s and retrieve them based on the date.
 abstract class DateMap<T> {
   Iterable<CalendarEvent<T>> get events;

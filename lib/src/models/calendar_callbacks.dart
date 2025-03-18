@@ -97,6 +97,6 @@ typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
 typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on a multi-day calendar.
-///
+/// 
 /// [dateRange] is the range of dates that was tapped.
 typedef OnMultiDayTapped = void Function(DateTimeRange dateRange);

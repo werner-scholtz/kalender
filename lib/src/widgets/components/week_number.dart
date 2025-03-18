@@ -40,14 +40,17 @@ class WeekNumber extends StatelessWidget {
   Widget build(BuildContext context) {
     final tooltip = weekNumberStyle?.tooltip ?? 'Week Number';
 
-    final visualDensity = weekNumberStyle?.visualDensity ?? VisualDensity.compact;
+    final visualDensity =
+        weekNumberStyle?.visualDensity ?? VisualDensity.compact;
 
-    final textStyle = weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
+    final textStyle =
+        weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
 
     final (start, end) = visibleDateTimeRange.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
-    final padding = weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
+    final padding =
+        weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
 
     return Center(
       child: Padding(
