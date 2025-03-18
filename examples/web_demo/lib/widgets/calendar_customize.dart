@@ -145,6 +145,34 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       },
     );
 
+    final horizontalPaddingLeft = IntEditor(
+      title: 'Horizontal Padding (left)',
+      suffix: '',
+      initialValue: bodyConfiguration.horizontalPadding.left.toInt(),
+      items: const [0, 4, 8],
+      onChanged: (value) {
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(
+            horizontalPadding: bodyConfiguration.horizontalPadding.copyWith(left: value.toDouble()),
+          ),
+        );
+      },
+    );
+
+    final horizontalPaddingRight = IntEditor(
+      title: 'Horizontal Padding (right)',
+      suffix: '',
+      initialValue: bodyConfiguration.horizontalPadding.right.toInt(),
+      items: const [0, 4, 8],
+      onChanged: (value) {
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(
+            horizontalPadding: bodyConfiguration.horizontalPadding.copyWith(right: value.toDouble()),
+          ),
+        );
+      },
+    );
+
     final bodyConfigurationTile = ExpansionTile(
       title: const Text('Body Configuration'),
       initiallyExpanded: true,
@@ -154,6 +182,12 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       ),
       children: [
         showMultiDayEvents,
+        spacer,
+        layoutStrategy,
+        spacer,
+        horizontalPaddingLeft,
+        spacer,
+        horizontalPaddingRight,
         spacer,
         ValueListenableBuilder(
           valueListenable: widget.interaction,
@@ -236,12 +270,11 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
                 snapIntervalMinutes,
                 spacer,
                 snapRange,
+                spacer,
               ],
             );
           },
         ),
-        spacer,
-        layoutStrategy,
       ],
     );
 
