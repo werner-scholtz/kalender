@@ -14,6 +14,9 @@ class CalendarWidget extends StatelessWidget {
   final MultiDayBodyConfiguration bodyConfiguration;
   final MultiDayHeaderConfiguration headerConfiguration;
   final bool showHeader;
+  final ValueNotifier<CalendarInteraction>? interactionHeader;
+  final ValueNotifier<CalendarInteraction>? interactionBody;
+  final ValueNotifier<CalendarSnapping>? snapping;
 
   const CalendarWidget({
     super.key,
@@ -26,6 +29,9 @@ class CalendarWidget extends StatelessWidget {
     required this.bodyConfiguration,
     required this.headerConfiguration,
     required this.showHeader,
+    this.interactionHeader,
+    this.interactionBody,
+    this.snapping,
   });
 
   @override
@@ -117,7 +123,8 @@ class CalendarWidget extends StatelessWidget {
                     ),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-                        borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
+                        borderSide:
+                            BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
                   ),
                   initialSelection: viewConfiguration,
                   onSelected: (value) {
@@ -135,6 +142,7 @@ class CalendarWidget extends StatelessWidget {
     final calendarHeader = CalendarHeader<Event>(
       multiDayTileComponents: multiDayTileComponents,
       multiDayHeaderConfiguration: headerConfiguration,
+      interaction: interactionHeader,
     );
 
     final header = Material(
@@ -154,6 +162,8 @@ class CalendarWidget extends StatelessWidget {
       monthTileComponents: tileComponents,
       multiDayBodyConfiguration: bodyConfiguration,
       monthBodyConfiguration: headerConfiguration,
+      interaction: interactionBody,
+      snapping: snapping,
     );
 
     return CalendarZoomDetector(
