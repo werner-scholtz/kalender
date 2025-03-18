@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 /// This widget generates draggable widgets for each visible day.
