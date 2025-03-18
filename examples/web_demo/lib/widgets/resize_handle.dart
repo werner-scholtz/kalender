@@ -13,9 +13,7 @@ class _VerticalResizeHandleState extends State<VerticalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = hovering
-        ? theme.colorScheme.onSurface.withOpacity(0.5)
-        : Colors.transparent;
+    final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 8)
         : const EdgeInsets.symmetric(vertical: 4, horizontal: 32);
@@ -54,9 +52,7 @@ class _HorizontalResizeHandleState extends State<HorizontalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = hovering
-        ? theme.colorScheme.onSurface.withOpacity(0.5)
-        : Colors.transparent;
+    final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 4)
         : const EdgeInsets.symmetric(vertical: 8, horizontal: 8);

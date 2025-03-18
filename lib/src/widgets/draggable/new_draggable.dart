@@ -19,7 +19,7 @@ abstract class NewDraggableWidget<T extends Object?> extends StatelessWidget {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
     final newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange.asLocal);
     final event = callbacks?.onEventCreate?.call(newEvent) ?? newEvent;
-  
+
     controller.setNewEvent(event);
     controller.selectEvent(event);
   }

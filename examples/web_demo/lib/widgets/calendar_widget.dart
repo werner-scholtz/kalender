@@ -123,8 +123,7 @@ class CalendarWidget extends StatelessWidget {
                     ),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-                        borderSide:
-                            BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
+                        borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
                   ),
                   initialSelection: viewConfiguration,
                   onSelected: (value) {
