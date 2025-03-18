@@ -201,18 +201,23 @@ The calendar has a few useful callback functions, which can change how interacti
 ### Header and Body
 
 The `CalendarHeader` and `CalendarBody` both take configuration object's for the different `ViewConfigurations`.
-These configuration classes allow you to choose what interactions are allowed and how they work.
-
 Some behaviors that can be customized:
-- Allow the user to create events.
-- Allow the user to resize events.
-- Allow the user to reschedule events.
-- The trigger to create a new event.
-- Event snapping.
 - Page/Scroll navigation when rescheduling events.
 - Page/Scroll physics.
 - Event layout strategy.
 
+The `CalendarHeader` and `CalendarBody` also take a `CalendarInteraction` ValueNotifier, which allows you to change how the user is allowed to interact with the calendar.
+- allowResizing
+- allowRescheduling
+- allowEventCreation
+- createEventGesture
+
+The `CalendarBody` takes a `CalendarSnapping` ValueNotifier that allows you to customize how snapping works.
+- snapIntervalMinutes
+- snapToTimeIndicator
+- snapToOtherEvents
+- snapRange
+- eventSnapStrategy
 
 Examples:
 <details>
@@ -225,18 +230,22 @@ Examples:
       showTiles: true,
       // The height of the tiles.
       tileHeight: 24,
-      // Allow events to be resized.
-      allowResizing: true,
-      // Allow events to be rescheduled.
-      allowRescheduling: true,
-      // Allow events to be created.
-      allowEventCreation: true,
       // The layout strategy used to layout events.
       eventLayoutStrategy: defaultMultiDayLayoutStrategy,
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.
       scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+    ),
+    interaction: ValueNotifier(
+      CalendarInteraction(
+        // Allow events to be resized.
+        allowResizing: true,
+        // Allow events to be rescheduled.
+        allowRescheduling: true,
+        // Allow events to be created.
+        allowEventCreation: true,
+      ),
     ),
   );
   ```
@@ -251,23 +260,6 @@ Examples:
     multiDayBodyConfiguration: MultiDayBodyConfiguration(
       // Whether to show events that are longer than 1 day.
       showMultiDayEvents: true,
-      // Allow events to be resized.
-      allowResizing: true,
-      // Allow events to be rescheduled.
-      allowRescheduling: true,
-      // Allow events to be created.
-      allowEventCreation: true,
-      // The gesture used to create new events.
-      createEventGesture: CreateEventGesture.tap,
-      // The snap interval ex. 15 events will snap to every 15 minute interval.
-      snapIntervalMinutes: 15,
-      // Whether to snap to the time indicator.
-      snapToTimeIndicator: true,
-      // Whether to snap to other events.
-      snapToOtherEvents: true,
-      // The range in which events will be snapped, 
-      // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
-      snapRange: Duration(minutes: 5),
       // The padding between events and the edge of the day.
       horizontalPadding: EdgeInsets.only(left: 0, right: 4),
       // The configuration for triggering page navigation.
@@ -280,6 +272,30 @@ Examples:
       scrollPhysics: BouncingScrollPhysics(),
       // The physics used by the page view.
       pageScrollPhysics: BouncingScrollPhysics(),
+    ),
+    interaction: ValueNotifier(
+      CalendarInteraction(
+        // Allow events to be resized.
+        allowResizing: true,
+        // Allow events to be rescheduled.
+        allowRescheduling: true,
+        // Allow events to be created.
+        allowEventCreation: true,
+      ),
+    ),
+    snapping: ValueNotifier(
+      CalendarSnapping(
+        snapIntervalMinutes: 15,
+        // Whether to snap to the time indicator.
+        snapToTimeIndicator: true,
+        // Whether to snap to other events.
+        snapToOtherEvents: true,
+        // The range in which events will be snapped,
+        // ex. 15 minutes: A event will snap to other events that are within 15 minutes from it.
+        snapRange: Duration(minutes: 5),
+        // The strategy used to snap events to specific intervals.
+        eventSnapStrategy: defaultSnapStrategy,
+      ),
     ),
   );
   ```
@@ -297,19 +313,23 @@ Examples:
       showTiles: true,
       // The height of the tiles.
       tileHeight: 24,
-      // Allow events to be resized.
-      allowResizing: true,
-      // Allow events to be rescheduled.
-      allowRescheduling: true,
-      // Allow events to be created.
-      allowEventCreation: true,
       // The layout strategy used to layout events.
       eventLayoutStrategy: defaultMultiDayLayoutStrategy,
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.
       scrollTriggerConfiguration: ScrollTriggerConfiguration(),
-    ), 
+    ),
+    interaction: ValueNotifier(
+      CalendarInteraction(
+        // Allow events to be resized.
+        allowResizing: true,
+        // Allow events to be rescheduled.
+        allowRescheduling: true,
+        // Allow events to be created.
+        allowEventCreation: true,
+      ),
+    ),
   );
   ```
   </summary>
