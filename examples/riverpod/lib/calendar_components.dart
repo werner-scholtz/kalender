@@ -40,7 +40,6 @@ class CalendarToolBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
     final view = ref.watch(kalenderView);
     return Padding(
       padding: const EdgeInsets.all(8.0),

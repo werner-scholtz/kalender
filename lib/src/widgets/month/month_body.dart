@@ -26,6 +26,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [MonthBody].
   final TileComponents<T> tileComponents;
 
+  /// The [CalendarInteraction] that will be used by the [MonthBody].
+  final ValueNotifier<CalendarInteraction>? interaction;
+
   /// Creates a new [MonthBody].
   const MonthBody({
     super.key,
@@ -34,6 +37,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.configuration,
+    required this.interaction,
   });
 
   @override
@@ -79,6 +83,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
     final components = calendarComponents?.monthComponents?.bodyComponents;
 
+    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
@@ -113,8 +119,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   visibleDateTimeRange: visibleDateTimeRange,
                   tileComponents: tileComponents,
                   dayWidth: dayWidth,
-                  allowResizing: bodyConfiguration.allowResizing,
-                  allowRescheduling: bodyConfiguration.allowRescheduling,
+                  interaction: interaction,
                   tileHeight: tileHeight,
                   showAllEvents: true,
                   callbacks: callbacks,
@@ -141,17 +146,15 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   controller: calendarController,
                   callbacks: callbacks,
                   visibleDateTimeRange: visibleDateTimeRange,
-                  createEventTrigger: bodyConfiguration.createEventTrigger,
                   dayWidth: dayWidth,
-                  allowEventCreation: bodyConfiguration.allowEventCreation,
+                  interaction: interaction,
                 );
 
                 final dates = List.generate(7, (index) {
                   final date = visibleDateTimeRange.start.addDays(index);
 
                   final monthDayHeaderStyle = styles?.monthDayHeaderStyle;
-                  final monthDayHeder = components?.monthDayHeaderBuilder
-                          ?.call(date, monthDayHeaderStyle) ??
+                  final monthDayHeder = components?.monthDayHeaderBuilder?.call(date, monthDayHeaderStyle) ??
                       MonthDayHeader(date: date, style: monthDayHeaderStyle);
 
                   return monthDayHeder;

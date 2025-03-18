@@ -159,11 +159,11 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// final rangeOnDate = range.dateTimeRangeOnDate(date);
   /// print(rangeOnDate?.start); // Output: 2024-01-15 00:00:00.000
   /// print(rangeOnDate?.end);   // Output: 2024-01-16 00:00:00.000
-  /// 
+  ///
   /// final dateOutsideRange = DateTime(2024, 2, 1);
   /// final rangeOnDateOutside = range.dateTimeRangeOnDate(dateOutsideRange);
   /// print(rangeOnDateOutside); // Output: null
-  /// 
+  ///
   /// final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2));
   /// final date2 = DateTime(2024, 1, 1);
   /// final rangeOnDate2 = range2.dateTimeRangeOnDate(date2);

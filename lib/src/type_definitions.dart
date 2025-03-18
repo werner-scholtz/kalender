@@ -167,4 +167,3 @@ typedef HorizontalTriggerWidgetBuilder = Widget Function(
 typedef VerticalTriggerWidgetBuilder = Widget Function(
   double viewPortHeight,
 );
-

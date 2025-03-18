@@ -117,7 +117,6 @@ class MaterialTheme {
       textTheme: const TextTheme().apply(bodyColor: colorScheme.onSurface, displayColor: colorScheme.onSurface),
       scaffoldBackgroundColor: colorScheme.surface,
       canvasColor: colorScheme.surface,
-      
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -18,14 +19,14 @@ import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 /// This widget is used to display a multi-day body.
-/// 
+///
 /// The multi-day body has two big parts to it:
 /// 1. The content:
 ///   - Static content such as [HourLines] and [TimeLine].
 ///   - Dynamic content such as the [PageView] which displays:
 ///     [DaySeparator], [DayEventDraggableWidgets], [DayEventsWidget] and the [TimeIndicator]
-/// 
-/// 2. The [DayDragTarget] 
+///
+/// 2. The [DayDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [EventsController] that will be used by the [MultiDayBody].
@@ -46,6 +47,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [ValueNotifier] containing the [heightPerMinute] value.
   final ValueNotifier<double>? heightPerMinute;
 
+  /// The [ValueNotifier] containing the [CalendarInteraction] value.
+  final ValueNotifier<CalendarInteraction>? interaction;
+
+  /// The [ValueNotifier] containing the [CalendarSnapping] value.
+  final ValueNotifier<CalendarSnapping>? snapping;
+
   /// Creates a new [MultiDayBody].
   ///
   /// This widget is used to display events in a day/week view format.
@@ -59,6 +66,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     required this.tileComponents,
     this.heightPerMinute,
     this.configuration,
+    this.interaction,
+    this.snapping,
   });
 
   @override
@@ -104,6 +113,9 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
     final components = calendarComponents?.multiDayComponents?.bodyComponents;
+
+    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+    final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
 
     // Override the height per minute if it is provided.
     if (heightPerMinute != null) {
@@ -160,7 +172,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         final content = LayoutBuilder(
           builder: (context, constraints) {
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
-            
+
             final pageView = PageClipWidget(
               left: -16,
               child: PageView.builder(
@@ -172,7 +184,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 clipBehavior: Clip.none,
                 onPageChanged: (index) {
                   final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-              
+
                   if (viewConfiguration.type == MultiDayViewType.freeScroll) {
                     final range = DateTimeRange(
                       start: visibleRange.start,
@@ -182,19 +194,19 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   } else {
                     viewController.visibleDateTimeRange.value = visibleRange;
                   }
-              
+
                   callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
                 },
                 itemBuilder: (context, index) {
                   final visibleRange = pageNavigation.dateTimeRangeFromIndex(
                     index,
                   );
-              
+
                   final visibleDates = visibleRange.dates();
                   final timeIndicatorDateIndex = visibleDates.indexWhere(
                     (date) => date.isToday,
                   );
-              
+
                   final daySeparatorStyle = styles?.daySeparatorStyle;
                   final daySeparator =
                       components?.daySeparator?.call(daySeparatorStyle) ?? DaySeparator(style: daySeparatorStyle);
@@ -210,7 +222,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       );
                     },
                   );
-              
+
                   final events = DayEventsWidget<T>(
                     eventsController: eventsController!,
                     controller: calendarController!,
@@ -221,21 +233,23 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     heightPerMinute: heightPerMinute,
                     visibleDateTimeRange: visibleRange,
                     timeOfDayRange: timeOfDayRange,
+                    interaction: interaction,
                   );
-              
+
                   final draggable = DayEventDraggableWidgets<T>(
                     controller: calendarController,
                     callbacks: callbacks,
-                    bodyConfiguration: bodyConfiguration,
                     visibleDateTimeRange: visibleRange,
                     timeOfDayRange: timeOfDayRange,
                     dayWidth: dayWidth,
                     pageHeight: pageHeight,
                     heightPerMinute: heightPerMinute,
+                    interaction: interaction,
+                    snapping: snapping,
                   );
-              
+
                   late final left = dayWidth * timeIndicatorDateIndex;
-              
+
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -285,6 +299,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 rightPageTrigger: components?.rightTriggerBuilder,
                 topScrollTrigger: components?.topTriggerBuilder,
                 bottomScrollTrigger: components?.bottomTriggerBuilder,
+                snapping: snapping,
               ),
             );
           },
