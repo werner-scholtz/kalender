@@ -92,7 +92,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
         // Calculate the width of a single day.
         final dayWidth = pageWidth / DateTime.daysPerWeek;
-        final weekHeight = pageHeight / 5;
 
         final pageView = PageView.builder(
           controller: viewController.pageController,
@@ -104,9 +103,11 @@ class MonthBody<T extends Object?> extends StatelessWidget {
           },
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+            final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
+            final weekHeight = pageHeight / numberOfRows;
 
             final multiDayEvents = List.generate(
-              5,
+              numberOfRows,
               (index) {
                 final visibleDateTimeRange = DateTimeRange(
                   start: visibleRange.start.addDays(index * 7),

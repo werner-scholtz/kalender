@@ -293,6 +293,8 @@ void main() {
             );
           });
 
+          test('description', body)
+
           group('Test Dates', () {
             for (final testDate in testDates.indexed) {
               test('indexFromDate - $testDate', () {

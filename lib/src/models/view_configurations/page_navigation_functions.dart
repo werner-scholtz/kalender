@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
-import 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 
 /// A class that contains functions to navigate between pages in a view.
 ///
@@ -38,11 +37,6 @@ abstract class PageNavigationFunctions {
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
   factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
     return FreeScrollFunctions(dateTimeRange: dateTimeRange);
-  }
-
-  /// Creates a [PageNavigationFunctions] for a month [MonthViewConfiguration.singleMonth].
-  factory PageNavigationFunctions.month(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return MonthPageFunctions(dateTimeRange: dateTimeRange, shift: firstDayOfWeek - 1);
   }
 
   /// Calculates the VisibleDateRange from the [index].
@@ -244,9 +238,12 @@ class MonthPageFunctions extends PageNavigationFunctions {
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
     final range = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
-    var rangeStart = range.start.startOfWeek.addDays(shift);
+    var rangeStart = range.start.startOfWeek.addDays(shift - 1);
     if (rangeStart.isAfter(range.start)) rangeStart = rangeStart.subtractDays(7);
-    final rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * numberOfRows);
+
+    var rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * numberOfRows);
+    if (rangeEnd.isBefore(range.end)) rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
+
     return DateTimeRange(start: rangeStart, end: rangeEnd);
   }
 
@@ -254,6 +251,11 @@ class MonthPageFunctions extends PageNavigationFunctions {
   int indexFromDate(DateTime date) {
     final dateTimeRange = DateTimeRange(start: adjustedRange.start, end: date.asUtc);
     return dateTimeRange.monthDifference;
+  }
+
+  /// Returns the number of rows that need to be displayed for the given [range].
+  int numberOfRowsForRange(DateTimeRange range) {
+    return range.dates().length ~/ DateTime.daysPerWeek;
   }
 
   @override

@@ -5,7 +5,7 @@ import 'package:kalender/src/models/view_configurations/page_navigation_function
 
 class MonthViewConfiguration extends ViewConfiguration {
   @override
-  final PageNavigationFunctions pageNavigationFunctions;
+  final MonthPageFunctions pageNavigationFunctions;
 
   /// The first day of the week.
   final int firstDayOfWeek;
@@ -29,8 +29,8 @@ class MonthViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
-  }) : pageNavigationFunctions = PageNavigationFunctions.month(
-          displayRange ?? DateTime.now().yearRange,
-          firstDayOfWeek,
+  }) : pageNavigationFunctions = MonthPageFunctions(
+          dateTimeRange: displayRange ?? DateTime.now().yearRange,
+          shift: firstDayOfWeek,
         );
 }
