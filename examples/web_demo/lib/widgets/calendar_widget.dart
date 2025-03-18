@@ -67,10 +67,21 @@ class CalendarWidget extends StatelessWidget {
     );
 
     final calendarDateTime = ValueListenableBuilder(
-      valueListenable: controller.visibleDateTimeRangeUtc,
+      valueListenable: controller.visibleDateTimeRange,
       builder: (context, value, child) {
-        final year = value.start.year;
-        final month = value.start.monthNameEnglish;
+        final String month;
+        final int year;
+
+        if (viewConfiguration is MonthViewConfiguration) {
+          // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
+          // we need to check the second week of the visibleDateTimeRange to determine the month and year.
+          final secondWeek = value.start.addDays(7);
+          year = secondWeek.year;
+          month = secondWeek.monthNameEnglish;
+        } else {
+          year = value.start.year;
+          month = value.start.monthNameEnglish;
+        }
 
         return FilledButton.tonal(
           onPressed: () {},
