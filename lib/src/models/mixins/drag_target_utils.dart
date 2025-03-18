@@ -95,9 +95,9 @@ mixin DragTargetUtilities<T> {
         final updatedEvent = createEvent(date);
         if (updatedEvent == null) return null;
 
-        controller.deselectEvent();
         callbacks?.onEventCreated?.call(updatedEvent);
         newEvent = null;
+        controller.deselectEvent();
 
         return null;
       },
@@ -141,8 +141,7 @@ mixin DragTargetUtilities<T> {
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime);
 
   /// Resize an event.
-  CalendarEvent<T>? resizeEvent(
-      CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime);
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime);
 
   /// Reschedule an event.
   CalendarEvent<T>? createEvent(DateTime cursorDateTime) => newEvent ??= controller.newEvent;
