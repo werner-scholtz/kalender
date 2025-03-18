@@ -27,10 +27,6 @@ class _SingleCalendarViewState extends State<SingleCalendarView> {
   MultiDayBodyConfiguration _bodyConfiguration = MultiDayBodyConfiguration();
   MultiDayHeaderConfiguration _headerConfiguration = MultiDayHeaderConfiguration();
 
-  final ValueNotifier<CalendarInteraction> _interactionHeader = ValueNotifier(CalendarInteraction());
-  final ValueNotifier<CalendarInteraction> _interactionBody = ValueNotifier(CalendarInteraction());
-  final ValueNotifier<CalendarSnapping> _snapping = ValueNotifier(const CalendarSnapping());
-
   bool showHeader = true;
 
   @override
@@ -44,9 +40,6 @@ class _SingleCalendarViewState extends State<SingleCalendarView> {
       onHeaderChanged: (value) => setState(() => _headerConfiguration = value),
       showHeader: showHeader,
       onShowHeaderChanged: (value) => setState(() => showHeader = value),
-      interaction: _interactionBody,
-      interactionHeader: _interactionHeader,
-      snapping: _snapping,
     );
 
     final calendar = CalendarWidget(
@@ -59,9 +52,6 @@ class _SingleCalendarViewState extends State<SingleCalendarView> {
       bodyConfiguration: _bodyConfiguration,
       headerConfiguration: _headerConfiguration,
       showHeader: showHeader,
-      interactionHeader: _interactionHeader,
-      interactionBody: _interactionBody,
-      snapping: _snapping,
     );
 
     return Row(

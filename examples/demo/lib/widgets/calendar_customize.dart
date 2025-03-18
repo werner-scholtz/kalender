@@ -14,9 +14,6 @@ class CalendarCustomize extends StatefulWidget {
   final bool showHeader;
   final void Function(bool value) onShowHeaderChanged;
 
-  final ValueNotifier<CalendarInteraction> interaction;
-  final ValueNotifier<CalendarSnapping> snapping;
-
   const CalendarCustomize({
     super.key,
     required this.viewConfiguration,
@@ -27,8 +24,6 @@ class CalendarCustomize extends StatefulWidget {
     required this.onHeaderChanged,
     required this.showHeader,
     required this.onShowHeaderChanged,
-    required this.interaction,
-    required this.snapping,
   });
 
   @override
@@ -39,8 +34,6 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
   ViewConfiguration get viewConfiguration => widget.viewConfiguration;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
   MultiDayHeaderConfiguration get headerConfiguration => widget.headerConfiguration;
-  CalendarInteraction get interaction => widget.interaction.value;
-  CalendarSnapping get snapping => widget.snapping.value;
   SizedBox get spacer => const SizedBox(height: 12.0);
 
   EdgeInsets get childrenPadding => const EdgeInsets.only(top: 16, bottom: 16, left: 32);
@@ -126,58 +119,71 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
     final allowResizing = SwitchTileEditor(
       title: 'Allow Resizing',
       subtitle: 'Allow resizing of events',
-      initialValue: interaction.allowResizing,
+      initialValue: bodyConfiguration.allowResizing,
       onChanged: (value) {
-        widget.interaction.value = interaction.copyWith(allowResizing: value);
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(allowResizing: value),
+        );
       },
     );
 
     final allowRescheduling = SwitchTileEditor(
       title: 'Allow Rescheduling',
       subtitle: 'Allow dragging of events',
-      initialValue: interaction.allowRescheduling,
+      initialValue: bodyConfiguration.allowRescheduling,
       onChanged: (value) {
-        widget.interaction.value = interaction.copyWith(allowRescheduling: value);
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(allowRescheduling: value),
+        );
       },
     );
 
     final snapToTimeIndicator = SwitchTileEditor(
       title: 'Snap to Time Indicator',
       subtitle: 'Snap events to the time indicator',
-      initialValue: snapping.snapToTimeIndicator,
+      initialValue: bodyConfiguration.snapToTimeIndicator,
       onChanged: (value) {
-        widget.snapping.value = snapping.copyWith(snapToTimeIndicator: value);
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(snapToTimeIndicator: value),
+        );
       },
     );
 
     final snapToOtherEvents = SwitchTileEditor(
       title: 'Snap to Other Events',
       subtitle: 'Snap events to other events',
-      initialValue: snapping.snapToOtherEvents,
+      initialValue: bodyConfiguration.snapToOtherEvents,
       onChanged: (value) {
-        widget.snapping.value = snapping.copyWith(snapToOtherEvents: value);
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(snapToOtherEvents: value),
+        );
       },
     );
 
     final snapIntervalMinutes = IntEditor(
       title: 'Snap interval',
       suffix: 'minute(s)',
-      initialValue: snapping.snapIntervalMinutes,
+      initialValue: bodyConfiguration.snapIntervalMinutes,
       items: const [1, 5, 10, 15, 30],
       onChanged: (value) {
-        widget.snapping.value = snapping.copyWith(snapIntervalMinutes: value);
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(snapIntervalMinutes: value),
+        );
       },
     );
 
     final snapRange = IntEditor(
       title: 'Snap Range',
       suffix: 'minute(s)',
-      initialValue: snapping.snapRange.inMinutes,
+      initialValue: bodyConfiguration.snapRange.inMinutes,
       items: const [1, 5, 10, 15, 30],
       onChanged: (value) {
-        widget.snapping.value = snapping.copyWith(snapRange: Duration(minutes: value));
+        widget.onBodyChanged(
+          bodyConfiguration.copyWith(snapRange: Duration(minutes: value)),
+        );
       },
     );
+
 
     final layoutStrategy = DropdownMenu(
       initialSelection: overlapLayoutStrategy,
@@ -211,35 +217,17 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       children: [
         showMultiDayEvents,
         spacer,
-        ValueListenableBuilder(
-          valueListenable: widget.interaction,
-          builder: (context, value, child) {
-            return ListBody(
-              children: [
-                allowResizing,
-                spacer,
-                allowRescheduling,
-                spacer,
-              ],
-            );
-          },
-        ),
-        ValueListenableBuilder(
-          valueListenable: widget.snapping,
-          builder: (context, value, child) {
-            return ListBody(
-              children: [
-                snapToTimeIndicator,
-                spacer,
-                snapToOtherEvents,
-                spacer,
-                snapIntervalMinutes,
-                spacer,
-                snapRange,
-              ],
-            );
-          },
-        ),
+        allowResizing,
+        spacer,
+        allowRescheduling,
+        spacer,
+        snapToTimeIndicator,
+        spacer,
+        snapToOtherEvents,
+        spacer,
+        snapIntervalMinutes,
+        spacer,
+        snapRange,
         spacer,
         layoutStrategy,
       ],
@@ -260,18 +248,22 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
     final headerAllowResizing = SwitchTileEditor(
       title: 'Allow Resizing',
       subtitle: 'Allow resizing of events',
-      initialValue: interaction.allowResizing,
+      initialValue: headerConfiguration.allowResizing,
       onChanged: (value) {
-        widget.interaction.value = interaction.copyWith(allowResizing: value);
+        widget.onHeaderChanged(
+          headerConfiguration.copyWith(allowResizing: value),
+        );
       },
     );
 
     final headerAllowRescheduling = SwitchTileEditor(
       title: 'Allow Rescheduling',
       subtitle: 'Allow dragging of events',
-      initialValue: interaction.allowRescheduling,
+      initialValue: headerConfiguration.allowRescheduling,
       onChanged: (value) {
-        widget.interaction.value = interaction.copyWith(allowRescheduling: value);
+        widget.onHeaderChanged(
+          headerConfiguration.copyWith(allowRescheduling: value),
+        );
       },
     );
 
