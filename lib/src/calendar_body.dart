@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {

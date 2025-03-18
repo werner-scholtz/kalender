@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 
 import 'utilities.dart';

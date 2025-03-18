@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
