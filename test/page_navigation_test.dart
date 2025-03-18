@@ -253,7 +253,7 @@ void main() {
           });
         });
         group('month', () {
-          final navigation = PageNavigationFunctions.month(testRange, 1);
+          final navigation = MonthPageFunctions(dateTimeRange: testRange, shift: 1);
           const numberOfPages = 72;
 
           test('numberOfPages', () {
@@ -280,6 +280,45 @@ void main() {
                 start: DateTime.utc(2025, 12, 29),
                 end: DateTime.utc(2026, 2, 2),
               ),
+            );
+
+            expect(
+              navigation.dateTimeRangeFromIndex(62),
+              DateTimeRange(start: DateTime.utc(2025, 2, 24), end: DateTime.utc(2025, 4, 7)),
+            );
+
+            expect(
+              navigation.dateTimeRangeFromIndex(65),
+              DateTimeRange(start: DateTime.utc(2025, 5, 26), end: DateTime.utc(2025, 7, 7)),
+            );
+          });
+
+          test('numberOfRowsForRange', () {
+            expect(
+              navigation.numberOfRowsForRange(
+                DateTimeRange(start: DateTime.utc(2019, 12, 30), end: DateTime.utc(2020, 2, 3)),
+              ),
+              5,
+            );
+
+            expect(
+              navigation.numberOfRowsForRange(
+                DateTimeRange(start: DateTime.utc(2025, 12, 29), end: DateTime.utc(2026, 2, 2)),
+              ),
+              5,
+            );
+
+            expect(
+              navigation.numberOfRowsForRange(
+                DateTimeRange(start: DateTime.utc(2025, 2, 24), end: DateTime.utc(2025, 4, 7)),
+              ),
+              6,
+            );
+            expect(
+              navigation.numberOfRowsForRange(
+                DateTimeRange(start: DateTime.utc(2025, 5, 26), end: DateTime.utc(2025, 7, 7)),
+              ),
+              6,
             );
           });
 
