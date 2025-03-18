@@ -8,7 +8,6 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/type_definitions.dart';
 
 /// The base class for all event tiles.
@@ -21,7 +20,11 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
 
-  final ValueNotifier<CalendarInteraction> interaction;
+  /// Whether the event can be resized.
+  final bool allowResizing;
+
+  /// Whether the event can be rescheduled.
+  final bool allowRescheduling;
 
   /// The dateTimeRange of this tile
   final DateTimeRange dateTimeRange;
@@ -34,7 +37,8 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
     required this.callbacks,
     required this.tileComponents,
     required this.event,
-    required this.interaction,
+    required this.allowRescheduling,
+    required this.allowResizing,
     required this.dateTimeRange,
   });
 
@@ -53,9 +57,9 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
 
   bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
   bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
-  bool get showStart => interaction.value.allowResizing && event.canModify && !continuesBefore;
-  bool get showEnd => interaction.value.allowResizing && event.canModify && !continuesAfter;
-  bool get canReschedule => interaction.value.allowRescheduling && event.canModify;
+  bool get showStart => allowResizing && event.canModify && !continuesBefore;
+  bool get showEnd => allowResizing && event.canModify && !continuesAfter;
+  bool get canReschedule => allowRescheduling && event.canModify;
 
   Reschedule<T> get rescheduleEvent => Reschedule<T>(event: event);
   Resize<T> resizeEvent(ResizeDirection direction) => Resize<T>(event: event, direction: direction);

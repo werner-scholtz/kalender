@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 
 import 'utilities.dart';
@@ -39,7 +38,6 @@ void main() {
   testWidgets('DayEventsWidget lays out events correctly', (tester) async {
     final calendarController = CalendarController<int>();
     final configuration = MultiDayBodyConfiguration();
-    final interaction = ValueNotifier(CalendarInteraction());
     // The range to display in the DayEventsWidget.
     final displayRange = start.asUtc.startOfDay.weekRange;
 
@@ -64,7 +62,6 @@ void main() {
           heightPerMinute: 1,
           visibleDateTimeRange: displayRange,
           timeOfDayRange: timeOfDayRange,
-          interaction: interaction,
         ),
       ),
     );
@@ -95,7 +92,7 @@ void main() {
 
     // We expect that the second event extends further down the screen than the first event.
     expect(event1BottomRight.dy, lessThan(event2BottomRight.dy));
-
+    
     // We expect that the third event extends further down the screen than the first and second events.
     expect(event1BottomRight.dy, lessThan(event3BottomRight.dy));
     expect(event2BottomRight.dy, lessThan(event3BottomRight.dy));

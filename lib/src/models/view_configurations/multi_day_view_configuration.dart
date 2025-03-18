@@ -3,9 +3,9 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/platform.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -219,6 +219,31 @@ class MultiDayBodyConfiguration {
   /// Whether to show events that are longer than 1 day.
   final bool showMultiDayEvents;
 
+  /// Allow the resizing of events.
+  final bool allowResizing;
+
+  /// Allow the rescheduling of events.
+  final bool allowRescheduling;
+
+  /// Allow the creation of events.
+  final bool allowEventCreation;
+
+  /// Gesture type for creating events.
+  late final CreateEventGesture createEventGesture;
+
+  /// The snap interval in minutes for events.
+  /// * This is used when not snapping to the time indicator or other events.
+  final int snapIntervalMinutes;
+
+  /// Whether to snap to the time indicator when altering an event.
+  final bool snapToTimeIndicator;
+
+  /// Whether to snap to other events when altering an event.
+  final bool snapToOtherEvents;
+
+  /// The [Duration] in which events will snap to other events.
+  final Duration snapRange;
+
   /// The horizontal padding between events and the edge of the day.
   ///
   /// * Vertical values are ignored.
@@ -242,22 +267,38 @@ class MultiDayBodyConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayBodyConfiguration({
     this.showMultiDayEvents = defaultShowMultiDayEvents,
-    CalendarInteraction? calendarInteraction,
-    CalendarSnapping? calendarSnapping,
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
     CreateEventGesture? createEventGesture,
+    this.snapToTimeIndicator = defaultSnapToTimeIndicator,
+    this.snapToOtherEvents = defaultSnapToOtherEvents,
+    this.snapRange = defaultSnapRange,
     this.horizontalPadding = defaultHorizontalPadding,
+    this.snapIntervalMinutes = defaultSnapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.eventLayoutStrategy = defaultEventLayoutStrategy,
     this.scrollPhysics,
     this.pageScrollPhysics,
   })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
-        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration(),
+        createEventGesture =
+            createEventGesture ?? (isMobileDevice ? CreateEventGesture.longPress : CreateEventGesture.tap);
 
   /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
   MultiDayBodyConfiguration copyWith({
     bool? showMultiDayEvents,
+    bool? allowEventCreation,
+    bool? allowResizing,
+    bool? allowRescheduling,
+    CreateEventGesture? createEventGesture,
+    Duration? newEventDuration,
+    bool? snapToTimeIndicator,
+    bool? snapToOtherEvents,
+    Duration? snapRange,
     EdgeInsets? horizontalPadding,
+    int? snapIntervalMinutes,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     EventLayoutStrategy? eventLayoutStrategy,
@@ -266,7 +307,15 @@ class MultiDayBodyConfiguration {
   }) {
     return MultiDayBodyConfiguration(
       showMultiDayEvents: showMultiDayEvents ?? this.showMultiDayEvents,
+      allowEventCreation: allowEventCreation ?? this.allowEventCreation,
+      allowResizing: allowResizing ?? this.allowResizing,
+      allowRescheduling: allowRescheduling ?? this.allowRescheduling,
+      createEventGesture: createEventGesture ?? this.createEventGesture,
+      snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
+      snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
+      snapRange: snapRange ?? this.snapRange,
       horizontalPadding: horizontalPadding ?? this.horizontalPadding,
+      snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
       eventLayoutStrategy: eventLayoutStrategy ?? this.eventLayoutStrategy,
@@ -281,7 +330,15 @@ class MultiDayBodyConfiguration {
 
     return other is MultiDayBodyConfiguration &&
         other.showMultiDayEvents == showMultiDayEvents &&
+        other.allowEventCreation == allowEventCreation &&
+        other.allowResizing == allowResizing &&
+        other.allowRescheduling == allowRescheduling &&
+        other.createEventGesture == createEventGesture &&
+        other.snapToTimeIndicator == snapToTimeIndicator &&
+        other.snapToOtherEvents == snapToOtherEvents &&
+        other.snapRange == snapRange &&
         other.horizontalPadding == horizontalPadding &&
+        other.snapIntervalMinutes == snapIntervalMinutes &&
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
         other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
         other.eventLayoutStrategy == eventLayoutStrategy &&
@@ -293,7 +350,15 @@ class MultiDayBodyConfiguration {
   int get hashCode {
     return Object.hash(
       showMultiDayEvents,
+      allowEventCreation,
+      allowResizing,
+      allowRescheduling,
+      createEventGesture,
+      snapToTimeIndicator,
+      snapToOtherEvents,
+      snapRange,
       horizontalPadding,
+      snapIntervalMinutes,
       pageTriggerConfiguration,
       scrollTriggerConfiguration,
       eventLayoutStrategy,
@@ -308,6 +373,18 @@ class MultiDayHeaderConfiguration {
   /// The height of the tiles.
   final double tileHeight;
 
+  /// Allow the resizing of events.
+  final bool allowResizing;
+
+  /// Allow the rescheduling of events.
+  final bool allowRescheduling;
+
+  /// Allow the creation of events.
+  final bool allowEventCreation;
+
+  /// Gesture type for creating events.
+  final CreateEventGesture createEventTrigger;
+
   /// Whether to show event tiles.
   final bool showTiles;
 
@@ -321,6 +398,10 @@ class MultiDayHeaderConfiguration {
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
+    this.allowEventCreation = defaultAllowEventCreation,
+    this.allowResizing = defaultAllowResizing,
+    this.allowRescheduling = defaultAllowRescheduling,
+    this.createEventTrigger = defaultCreateEventTrigger,
     this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
@@ -329,12 +410,18 @@ class MultiDayHeaderConfiguration {
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   MultiDayHeaderConfiguration copyWith({
     double? tileHeight,
-    CalendarInteraction? interaction,
+    bool? allowEventCreation,
+    bool? allowResizing,
+    bool? allowRescheduling,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
+      allowEventCreation: allowEventCreation ?? this.allowEventCreation,
+      allowResizing: allowResizing ?? this.allowResizing,
+      allowRescheduling: allowRescheduling ?? this.allowRescheduling,
+      createEventTrigger: createEventTrigger ?? this.createEventTrigger,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
   }
@@ -345,11 +432,22 @@ class MultiDayHeaderConfiguration {
 
     return other is MultiDayHeaderConfiguration &&
         other.tileHeight == tileHeight &&
+        other.allowEventCreation == allowEventCreation &&
+        other.allowResizing == allowResizing &&
+        other.allowRescheduling == allowRescheduling &&
+        other.createEventTrigger == createEventTrigger &&
         other.pageTriggerConfiguration == pageTriggerConfiguration;
   }
 
   @override
   int get hashCode {
-    return Object.hash(tileHeight, pageTriggerConfiguration);
+    return Object.hash(
+      tileHeight,
+      allowEventCreation,
+      allowResizing,
+      allowRescheduling,
+      createEventTrigger,
+      pageTriggerConfiguration,
+    );
   }
 }

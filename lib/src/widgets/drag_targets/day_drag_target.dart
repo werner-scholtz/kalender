@@ -33,8 +33,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   final VerticalTriggerWidgetBuilder? topScrollTrigger;
   final VerticalTriggerWidgetBuilder? bottomScrollTrigger;
 
-  final ValueNotifier<CalendarSnapping> snapping;
-
   /// Creates a [DayDragTarget].
   const DayDragTarget({
     super.key,
@@ -54,7 +52,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
     required this.rightPageTrigger,
     required this.topScrollTrigger,
     required this.bottomScrollTrigger,
-    required this.snapping,
   });
 
   @override
@@ -85,16 +82,16 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   ScrollController get scrollController => widget.scrollController;
   TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
 
+  /// Body configuration.
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
-  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
+
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
-
-  CalendarSnapping get snapping => widget.snapping.value;
-  bool get snapToOtherEvents => snapping.snapToOtherEvents;
-  int get snapIntervalMinutes => snapping.snapIntervalMinutes;
-  bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
-  Duration get snapRange => snapping.snapRange;
+  bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
+  bool get snapToOtherEvents => bodyConfiguration.snapToOtherEvents;
+  int get snapIntervalMinutes => bodyConfiguration.snapIntervalMinutes;
+  bool get snapToTimeIndicator => bodyConfiguration.snapToTimeIndicator;
+  Duration get snapRange => bodyConfiguration.snapRange;
 
   double get heightPerMinute => widget.heightPerMinute;
   double get pageWidth => widget.pageWidth;
@@ -103,19 +100,10 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSnapPoints();
-      widget.snapping.addListener(_updateSnapPoints);
       controller.visibleEvents.addListener(_updateSnapPoints);
     });
-  }
-
-  @override
-  void dispose() {
-    widget.snapping.removeListener(_updateSnapPoints);
-    controller.visibleEvents.removeListener(_updateSnapPoints);
-    super.dispose();
   }
 
   /// Update the snap points.

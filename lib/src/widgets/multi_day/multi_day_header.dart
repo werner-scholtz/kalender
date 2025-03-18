@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
@@ -30,9 +29,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration? configuration;
 
-  /// The [ValueNotifier] containing the [CalendarInteraction] value.
-  final ValueNotifier<CalendarInteraction>? interaction;
-
   /// Creates a new [MultiDayHeader].
   const MultiDayHeader({
     super.key,
@@ -41,7 +37,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     this.callbacks,
     required this.tileComponents,
     this.configuration,
-    this.interaction,
   });
 
   @override
@@ -84,8 +79,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
     final components = calendarComponents?.multiDayComponents?.headerComponents;
 
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final header = switch (viewConfiguration.type) {
@@ -99,7 +92,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               componentStyles: styles,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
-              interaction: interaction,
             ),
           MultiDayViewType.singleDay => _SingleDayHeader<T>(
               key: ValueKey(viewConfiguration.hashCode),
@@ -111,7 +103,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               componentStyles: styles,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
-              interaction: interaction,
             ),
           _ => _MultiDayHeader<T>(
               key: ValueKey(viewConfiguration.hashCode),
@@ -123,7 +114,6 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               componentStyles: styles,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
-              interaction: interaction,
             )
         };
 
@@ -145,7 +135,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double tileHeight;
-  final ValueNotifier<CalendarInteraction> interaction;
 
   const _SingleDayHeader({
     super.key,
@@ -157,7 +146,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     required this.components,
     required this.componentStyles,
     required this.tileHeight,
-    required this.interaction,
   });
 
   @override
@@ -198,7 +186,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               visibleDateTimeRange: visibleRange,
               tileComponents: tileComponents,
               dayWidth: pageWidth,
-              interaction: interaction,
+              allowResizing: configuration.allowResizing,
+              allowRescheduling: configuration.allowRescheduling,
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: tileHeight,
@@ -225,8 +214,9 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               controller: calendarController,
               callbacks: callbacks,
               visibleDateTimeRange: visibleRange,
+              createEventTrigger: configuration.createEventTrigger,
               dayWidth: pageWidth,
-              interaction: interaction,
+              allowEventCreation: configuration.allowEventCreation,
             );
 
             return Stack(
@@ -259,7 +249,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double tileHeight;
-  final ValueNotifier<CalendarInteraction> interaction;
 
   const _MultiDayHeader({
     super.key,
@@ -271,7 +260,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.components,
     required this.componentStyles,
     required this.tileHeight,
-    required this.interaction,
   });
 
   @override
@@ -332,7 +320,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               visibleDateTimeRange: visibleRange,
               tileComponents: tileComponents,
               dayWidth: dayWidth,
-              interaction: interaction,
+              allowResizing: configuration.allowResizing,
+              allowRescheduling: configuration.allowRescheduling,
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: tileHeight,
@@ -359,8 +348,9 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               controller: calendarController,
               callbacks: callbacks,
               visibleDateTimeRange: visibleRange,
+              createEventTrigger: configuration.createEventTrigger,
               dayWidth: dayWidth,
-              interaction: interaction,
+              allowEventCreation: configuration.allowEventCreation,
             );
 
             return Column(
@@ -399,7 +389,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final MultiDayHeaderComponents? components;
   final MultiDayHeaderComponentStyles? componentStyles;
   final double tileHeight;
-  final ValueNotifier<CalendarInteraction> interaction;
 
   const _FreeScrollHeader({
     super.key,
@@ -411,7 +400,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
     required this.components,
     required this.componentStyles,
     required this.tileHeight,
-    required this.interaction,
   });
 
   @override
@@ -474,7 +462,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               visibleDateTimeRange: visibleRange,
               tileComponents: tileComponents,
               dayWidth: dayWidth,
-              interaction: interaction,
+              allowResizing: configuration.allowResizing,
+              allowRescheduling: configuration.allowRescheduling,
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: tileHeight,
@@ -501,8 +490,9 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               controller: calendarController,
               callbacks: callbacks,
               visibleDateTimeRange: visibleRange,
+              createEventTrigger: configuration.createEventTrigger,
               dayWidth: dayWidth,
-              interaction: interaction,
+              allowEventCreation: configuration.allowEventCreation,
             );
 
             final constraints = BoxConstraints(
