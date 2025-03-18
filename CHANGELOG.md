@@ -1,22 +1,24 @@
-## 0.5.1
+## 0.6.0
 
 ### Breaking changes
 - The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
 - The `ViewConfiguration` no longer contains the configuration for `interaction` and `snapping`.
-    These are now seperate classes that are passed directly to the `Body`/`Header`.
+    These are now separate classes that are passed directly to the `Body`/`Header`.
 
 ### What's new
 - There is a new callback `onTapped` in `CalendarCallbacks`.
     * This is now called when the user taps on an empty space a calendar (Multiday body).
 - There is a new callback `onMultiDayTapped` in `CalendarCallbacks`.
     * This is called when the user taps on an empty space in the calendar (Multiday Header / Month body).
-- MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day. 
-- There is now a `CalendarInteraction` and `CalendarSnapping` class that can be passed to the `CalendarBody` / `CalendarHeader` as a valuenotifier.
-    This allows the calendar view to change these behaviours without rebuilding the entire view.
+- MultiDayBodyConfiguration added `horizontalPadding` this padding is located between events and the edge of day.
+- There is now a `CalendarInteraction` and `CalendarSnapping` class that can be passed to the `CalendarBody` / `CalendarHeader` as a ValueNotifier.
+    This allows the calendar view to change these behaviors without rebuilding the entire view.
+- `CalendarSnapping` now has a `eventSnapStrategy` that can be used to define custom snapping behavior when creating new events. [#119](https://github.com/werner-scholtz/kalender/issues/119)
 
 ### Fixes
 - Month day header export [PR #115](https://github.com/werner-scholtz/kalender/pull/115)
 - Month grid export [PR #112](https://github.com/werner-scholtz/kalender/pull/112)
+- Month not display all dates [PR #129](https://github.com/werner-scholtz/kalender/pull/129)
 
 ### Boring stuff
 - Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
