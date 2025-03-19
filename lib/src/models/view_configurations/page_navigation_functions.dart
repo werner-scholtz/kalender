@@ -71,7 +71,10 @@ abstract class PageNavigationFunctions {
 class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({
     required DateTimeRange dateTimeRange,
-  }) : adjustedRange = dateTimeRange.asUtc;
+  }) : adjustedRange = DateTimeRange(
+          start: dateTimeRange.start.asUtc.startOfDay,
+          end: dateTimeRange.end.asUtc.startOfDay,
+        );
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
@@ -180,7 +183,10 @@ class CustomPageFunctions extends PageNavigationFunctions {
   CustomPageFunctions({
     required DateTimeRange dateTimeRange,
     required this.numberOfDays,
-  }) : adjustedRange = dateTimeRange.asUtc;
+  }) : adjustedRange = DateTimeRange(
+          start: dateTimeRange.start.asUtc.startOfDay,
+          end: dateTimeRange.end.asUtc.startOfDay,
+        );
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
@@ -208,7 +214,10 @@ class CustomPageFunctions extends PageNavigationFunctions {
 class FreeScrollFunctions extends PageNavigationFunctions {
   FreeScrollFunctions({
     required DateTimeRange dateTimeRange,
-  }) : adjustedRange = dateTimeRange.asUtc;
+  }) : adjustedRange = DateTimeRange(
+          start: dateTimeRange.start.asUtc.startOfDay,
+          end: dateTimeRange.end.asUtc.startOfDay,
+        );
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) => adjustedRange.start.addDays(index).dayRange;
@@ -233,7 +242,10 @@ class MonthPageFunctions extends PageNavigationFunctions {
   MonthPageFunctions({
     required DateTimeRange dateTimeRange,
     required this.shift,
-  }) : adjustedRange = dateTimeRange.asUtc;
+  }) : adjustedRange = DateTimeRange(
+          start: dateTimeRange.start.asUtc.startOfDay,
+          end: dateTimeRange.end.asUtc.startOfDay,
+        );
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
