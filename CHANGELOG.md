@@ -1,3 +1,7 @@
+## 0.6.2
+
+- fix: Calendar sometimes displays wrong initial date. [314ff4e](https://github.com/werner-scholtz/kalender/commit/314ff4e3a649f9d6dc97442a13207de7c382dd39)
+
 ## 0.6.1
 
 - Changed `VerticalTileResizeHandlePositioner` to never use more than 1/4 of the height of the event tile on desktop.
