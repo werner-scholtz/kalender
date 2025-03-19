@@ -1,3 +1,7 @@
+## 0.6.1
+
+- Changed `VerticalTileResizeHandlePositioner` to never use more than 1/4 of the height of the event tile on desktop.
+
 ## 0.6.0
 * Package will use Semantic versioning from 0.6.0 onwards.
 
