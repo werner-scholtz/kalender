@@ -1,3 +1,7 @@
+## 0.6.3
+
+- fix Event snapping not always working.
+
 ## 0.6.2
 
 - fix: Calendar sometimes displays wrong initial date. [314ff4e](https://github.com/werner-scholtz/kalender/commit/314ff4e3a649f9d6dc97442a13207de7c382dd39)

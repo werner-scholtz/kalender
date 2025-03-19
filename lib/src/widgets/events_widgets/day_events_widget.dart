@@ -50,9 +50,6 @@ class DayEventsWidget<T extends Object?> extends StatefulWidget {
 }
 
 class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>> {
-  /// The visible events value notifier.
-  ValueNotifier<Set<CalendarEvent<T>>> get visibleEvents => widget.controller.visibleEvents;
-
   /// A map containing all the days and Events that will be displayed.
   late Map<DateTime, List<CalendarEvent<T>>> eventsMap;
 
@@ -80,8 +77,9 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
 
     // Clear the visible events.
     final allEvents = <CalendarEvent<T>>{};
+    final entries = <MapEntry<DateTime, List<CalendarEvent<T>>>>[];
 
-    final entries = visibleDates.map((date) {
+    for (final date in visibleDates) {
       final events = widget.eventsController.eventsFromDateTimeRange(
         date.dayRange,
         includeDayEvents: true,
@@ -96,12 +94,10 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
         TimeOfDayRange.allDay(),
         0,
       ).sortEvents(events) as List<CalendarEvent<T>>;
-      return MapEntry(date, sortedEvents);
-    });
+      entries.add(MapEntry(date, sortedEvents));
+    }
 
-    // Add the events to the visible events.
-    visibleEvents.value = allEvents;
-
+    widget.controller.visibleEvents.value = allEvents;
     eventsMap = Map.fromEntries(entries);
   }
 

@@ -112,6 +112,19 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   }
 
   @override
+  void didUpdateWidget(covariant DayDragTarget<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.snapping != widget.snapping) {
+      oldWidget.snapping.removeListener(_updateSnapPoints);
+      widget.snapping.addListener(_updateSnapPoints);
+    }
+    if (oldWidget.calendarController.visibleEvents != controller.visibleEvents) {
+      oldWidget.calendarController.visibleEvents.removeListener(_updateSnapPoints);
+      controller.visibleEvents.addListener(_updateSnapPoints);
+    }
+  }
+
+  @override
   void dispose() {
     widget.snapping.removeListener(_updateSnapPoints);
     controller.visibleEvents.removeListener(_updateSnapPoints);
