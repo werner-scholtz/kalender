@@ -1,4 +1,5 @@
 ## 0.6.0
+* Package will use Semantic versioning from 0.6.0 onwards.
 
 ### Breaking changes
 - The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
@@ -24,7 +25,6 @@
 - Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
 - Example directory layout has changed.
 
-* Updated changelog and version to follow Semantic Versioning.
 
 ## 0.5.0
 
