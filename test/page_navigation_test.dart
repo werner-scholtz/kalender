@@ -53,7 +53,7 @@ void main() {
   testWithTimeZones(
     dates: datesToTest,
     body: (timezone, testDates) {
-      final testRange = DateTimeRange(start: DateTime(2020), end: DateTime(2026));
+      final testRange = DateTimeRange(start: DateTime(2020, 1, 1, 10), end: DateTime(2026));
 
       group('PageNavigationFunctions', () {
         group('singleDay', () {
@@ -189,7 +189,7 @@ void main() {
           test('dateTimeRangeFromIndex', () {
             expect(
               navigation.dateTimeRangeFromIndex(0),
-              testRange.start.asUtc.customDateTimeRange(numberOfDays),
+              testRange.start.asUtc.startOfDay.customDateTimeRange(numberOfDays),
             );
 
             expect(
