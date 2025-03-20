@@ -93,7 +93,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
         // Calculate the width of a single day.
         final dayWidth = pageWidth / DateTime.daysPerWeek;
 
-        final pageView = PageView.builder(
+        return PageView.builder(
           controller: viewController.pageController,
           itemCount: pageNavigation.numberOfPages,
           onPageChanged: (index) {
@@ -189,22 +189,21 @@ class MonthBody<T extends Object?> extends StatelessWidget {
               },
             );
 
-            return Column(children: multiDayEvents);
+            final monthGridStyle = styles?.monthGridStyle;
+            final monthGrid = components?.monthGridBuilder?.call(monthGridStyle, numberOfRows) ??
+                MonthGrid(style: monthGridStyle, numberOfRows: numberOfRows);
+
+            return SizedBox(
+              width: pageWidth,
+              height: pageHeight,
+              child: Stack(
+                children: [
+                  Positioned.fill(child: monthGrid),
+                  Positioned.fill(child: Column(children: multiDayEvents)),
+                ],
+              ),
+            );
           },
-        );
-
-        final monthGridStyle = styles?.monthGridStyle;
-        final monthGrid = components?.monthGridBuilder?.call(monthGridStyle) ?? MonthGrid(style: monthGridStyle);
-
-        return SizedBox(
-          width: pageWidth,
-          height: pageHeight,
-          child: Stack(
-            children: [
-              Positioned.fill(child: monthGrid),
-              Positioned.fill(child: pageView),
-            ],
-          ),
         );
       },
     );

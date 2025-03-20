@@ -146,6 +146,7 @@ typedef WeekDayHeaderBuilder = Widget Function(
 /// The [style] is used to style the month grid.
 typedef MonthGridBuilder = Widget Function(
   MonthGridStyle? style,
+  int numberOfRows,
 );
 
 /// The month day header builder.

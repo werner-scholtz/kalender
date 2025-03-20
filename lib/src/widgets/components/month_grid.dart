@@ -17,10 +17,12 @@ class MonthGridStyle {
 /// A widget that displays the month grid.
 class MonthGrid extends StatelessWidget {
   final MonthGridStyle? style;
+  final int numberOfRows;
 
   const MonthGrid({
     super.key,
     this.style,
+    required this.numberOfRows
   });
 
   @override
@@ -44,7 +46,7 @@ class MonthGrid extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < numberOfRows + 1; i++)
               Divider(
                 height: thickness,
                 thickness: thickness,
