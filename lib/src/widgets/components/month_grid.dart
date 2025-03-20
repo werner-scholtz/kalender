@@ -22,7 +22,7 @@ class MonthGrid extends StatelessWidget {
   const MonthGrid({
     super.key,
     this.style,
-    required this.numberOfRows
+    required this.numberOfRows,
   });
 
   @override
