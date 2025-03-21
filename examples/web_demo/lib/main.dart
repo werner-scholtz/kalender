@@ -86,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
   );
 
   ViewType _type = ViewType.single;
-  var textDirection = TextDirection.ltr;
 
   final _portalController = OverlayPortalController();
   CalendarEvent<Event>? selectedEvent;
@@ -100,58 +99,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: textDirection,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          actions: [
-            IconButton.filledTonal(
-              onPressed: () => MyApp.of(context)!.toggleTheme(),
-              icon: Icon(
-                MyApp.of(context)!.themeMode == ThemeMode.dark
-                    ? Icons.brightness_2_rounded
-                    : Icons.brightness_7_rounded,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+        actions: [
+          IconButton.filledTonal(
+            onPressed: () => MyApp.of(context)!.toggleTheme(),
+            icon: Icon(
+              MyApp.of(context)!.themeMode == ThemeMode.dark ? Icons.brightness_2_rounded : Icons.brightness_7_rounded,
+            ),
+          ),
+          DropdownMenu<ViewType>(
+            initialSelection: _type,
+            dropdownMenuEntries: [
+              ...ViewType.values.map((e) => DropdownMenuEntry(value: e, label: e.label)),
+            ],
+            onSelected: (value) {
+              if (value == null) return;
+              setState(() => _type = value);
+            },
+          ),
+        ],
+      ),
+      body: OverlayPortal(
+        controller: _portalController,
+        overlayChildBuilder: _buildOverlay,
+        child: _type == ViewType.single
+            ? SingleCalendarView(
+                eventsController: eventsController,
+                callbacks: _calendarCallbacks,
+                viewConfigurations: _viewConfigurations,
+              )
+            : MultiCalendarView(
+                eventsController: eventsController,
+                callbacks: _calendarCallbacks,
+                viewConfigurations: _viewConfigurations,
               ),
-            ),
-            IconButton.filledTonal(
-              onPressed: () => setState(() {
-                textDirection == TextDirection.ltr
-                    ? textDirection = TextDirection.rtl
-                    : textDirection = TextDirection.ltr;
-              }),
-              icon: textDirection == TextDirection.ltr
-                  ? const Icon(Icons.format_textdirection_r_to_l)
-                  : const Icon(Icons.format_textdirection_l_to_r),
-            ),
-            DropdownMenu<ViewType>(
-              initialSelection: _type,
-              dropdownMenuEntries: [
-                ...ViewType.values.map((e) => DropdownMenuEntry(value: e, label: e.label)),
-              ],
-              onSelected: (value) {
-                if (value == null) return;
-                setState(() => _type = value);
-              },
-            ),
-          ],
-        ),
-        body: OverlayPortal(
-          controller: _portalController,
-          overlayChildBuilder: _buildOverlay,
-          child: _type == ViewType.single
-              ? SingleCalendarView(
-                  eventsController: eventsController,
-                  callbacks: _calendarCallbacks,
-                  viewConfigurations: _viewConfigurations,
-                )
-              : MultiCalendarView(
-                  eventsController: eventsController,
-                  callbacks: _calendarCallbacks,
-                  viewConfigurations: _viewConfigurations,
-                ),
-        ),
       ),
     );
   }
