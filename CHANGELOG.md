@@ -1,3 +1,7 @@
+## 0.6.5
+
+- fix SingleDayView RenderFlex overflow.
+
 ## 0.6.4
 
 - fix MonthGrid not taking number of rows into consideration. [#131](https://github.com/werner-scholtz/kalender/issues/131)
