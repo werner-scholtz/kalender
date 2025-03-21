@@ -8,10 +8,19 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The widget used for the MultiDayHeader.
 ///
 /// This widget uses the [TimeLine] to determine the size of the [leadingWidget].
-/// It uses the [content] to determine the height of the [MultiDayHeaderWidget].
+/// It uses the [content] and [leadingWidget] to determine the height of the [MultiDayHeaderWidget].
+///
+/// TODO: implement a widget test for this widget.
 class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
+  /// The content that will be displayed in the [MultiDayHeaderWidget].
   final Widget content;
+
+  /// The leading widget that will be displayed in the [MultiDayHeaderWidget].
+  /// TODO: rename to leading.
   final Widget leadingWidget;
+
+  /// Creates a MultiDayHeaderWidget.
+  /// This widget is used to display the header of the MultiDayView.
   const MultiDayHeaderWidget({
     super.key,
     required this.content,
@@ -32,6 +41,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
     final timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
+        // TODO: implement a default prototypeTimeLine.
         TimeLine(
           timeOfDayRange: timeOfDayRange,
           heightPerMinute: heightPerMinute,
@@ -53,11 +63,24 @@ class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
     required this.timelineWidget,
     required this.leadingWidget,
     required this.page,
+    // required this.maxHeight,
   }) : super(children: [page, timelineWidget, leadingWidget]);
 
+  /// The widget that will be used to display the timeline.
+  /// TODO: rename to prototypeTimeLine.
   final Widget timelineWidget;
+
+  /// The widget that will be used to display the leading widget.
+  /// TODO: rename to leading.
   final Widget leadingWidget;
+
+  /// The widget that will be used to display the page.
+  /// TODO: rename to content.
   final Widget page;
+
+  /// TODO: this will be used when we start limiting the number of tiles that can be displayed.
+  /// The maximum height of the MultiDayHeaderWidget.
+  // final double maxHeight;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -86,56 +109,21 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     markNeedsLayout();
   }
 
+  double get maxHeight => _maxHeight;
+  double _maxHeight = 0;
+  set maxHeight(double value) {
+    if (_maxHeight == value) {
+      return;
+    }
+    _maxHeight = value;
+    markNeedsLayout();
+  }
+
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! MultiChildLayoutParentData) {
       child.parentData = MultiChildLayoutParentData();
     }
-  }
-
-  static Size _layoutTimeline(RenderBox timeline) {
-    // layout the timeline the height constraint here is arbitrary as this does not affect the size.
-    timeline.layout(const BoxConstraints(maxHeight: 1440), parentUsesSize: true);
-    return timeline.size;
-  }
-
-  static Size _layoutContent(
-    RenderBox content,
-    double timelineWidth,
-    BoxConstraints constraints,
-    TextDirection textDirection,
-  ) {
-    // layout the page, the width of the page is affected by the timeline width.
-    content.layout(
-      BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth),
-      parentUsesSize: true,
-    );
-
-    // Setup the page offset
-    final contentParentData = (content.parentData! as MultiChildLayoutParentData);
-    contentParentData.offset = switch (textDirection) {
-      TextDirection.ltr => Offset(timelineWidth, 0),
-      TextDirection.rtl => const Offset(0, 0),
-    };
-
-    return content.size;
-  }
-
-  void _layoutLeading(
-    RenderBox leading,
-    double timelineWidth,
-    double contentHeight,
-    BoxConstraints constraints,
-    TextDirection textDirection,
-  ) {
-    // Layout the weekNumber, this constraints are determined from the timelineWidth and the pageHeight.
-    leading.layout(BoxConstraints(maxHeight: contentHeight, maxWidth: timelineWidth), parentUsesSize: true);
-
-    final leadingParentData = (leading.parentData! as MultiChildLayoutParentData);
-    leadingParentData.offset = switch (textDirection) {
-      TextDirection.ltr => const Offset(0, 0),
-      TextDirection.rtl => Offset(constraints.maxWidth - timelineWidth, 0),
-    };
   }
 
   @override
@@ -144,22 +132,46 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final timeline = childAfter(content)!;
     final leading = childAfter(timeline)!;
 
-    final timelineSize = _layoutTimeline(timeline);
-    final contentSize = _layoutContent(content, timelineSize.width, constraints, textDirection!);
-    _layoutLeading(leading, timelineSize.width, contentSize.height, constraints, textDirection!);
+    // Layout the timeline to get the width.
+    timeline.layout(const BoxConstraints(maxHeight: 1000), parentUsesSize: true);
+    final timelineWidth = timeline.size.width;
 
-    final height = max(contentSize.height, leading.size.height);
-    size = Size(constraints.maxWidth, height);
+    // Layout the content to get the height.
+    content.layout(constraints, parentUsesSize: true);
+    final contentHeight = content.size.height;
+
+    // Layout the leading to get the height.
+    leading.layout(constraints, parentUsesSize: true);
+    final leadingHeight = leading.size.height;
+
+    // The maxHeight is the maximum height of the content and leading.
+    final maxHeight = max(contentHeight, leadingHeight);
+
+    // Relay out the content and leading with the maxHeight.
+    leading.layout(BoxConstraints(maxHeight: maxHeight, maxWidth: timelineWidth));
+    content.layout(BoxConstraints(maxHeight: maxHeight, maxWidth: constraints.maxWidth - timelineWidth));
+
+    // Position the content.
+    final contentParentData = (content.parentData! as MultiChildLayoutParentData);
+    contentParentData.offset = switch (textDirection!) {
+      TextDirection.ltr => Offset(timelineWidth, 0),
+      TextDirection.rtl => const Offset(0, 0),
+    };
+
+    size = Size(constraints.maxWidth, maxHeight);
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
+    // Paint the content.
     final content = firstChild!;
     final contentParentData = content.parentData! as MultiChildLayoutParentData;
     content.paint(context, contentParentData.offset + offset);
 
+    // Do not paint the timeline.
     final timeline = childAfter(content)!;
 
+    // Paint the timeline.
     final leading = childAfter(timeline)!;
     final leadingParentData = leading.parentData! as MultiChildLayoutParentData;
     leading.paint(context, leadingParentData.offset + offset);
