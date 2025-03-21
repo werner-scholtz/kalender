@@ -86,6 +86,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
             events: sortedEvents,
             dateTimeRange: visibleDateTimeRange,
             multiDayTileHeight: tileHeight,
+            textDirection: Directionality.of(context),
           ),
           children: [...children],
         );
@@ -117,6 +118,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
                 events: events,
                 dateTimeRange: visibleDateTimeRange,
                 multiDayTileHeight: tileHeight,
+                textDirection: Directionality.of(context),
               ),
               children: children.toList(),
             );
