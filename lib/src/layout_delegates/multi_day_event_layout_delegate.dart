@@ -9,6 +9,7 @@ typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDele
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
   double multiDayTileHeight,
+  TextDirection textDirection,
 );
 
 /// The default [MultiDayEventLayoutStrategy].
@@ -16,11 +17,13 @@ MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
   double multiDayTileHeight,
+  TextDirection textDirection,
 ) {
   return DefaultMultiDayLayoutDelegate<T>(
     events: events,
     dateTimeRange: dateTimeRange,
     multiDayTileHeight: multiDayTileHeight,
+    textDirection: textDirection,
   );
 }
 
@@ -30,12 +33,14 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
     required this.events,
     required this.dateTimeRange,
     required this.multiDayTileHeight,
+    required this.textDirection,
   });
 
   /// The list of events that will be laid out. (The order of these events are the same as the widget's)
   final List<CalendarEvent<T>> events;
   final DateTimeRange dateTimeRange;
   final double multiDayTileHeight;
+  final TextDirection textDirection;
 
   @override
   bool shouldRelayout(covariant MultiDayEventLayoutDelegate oldDelegate) {
@@ -55,6 +60,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
     required super.events,
     required super.dateTimeRange,
     required super.multiDayTileHeight,
+    required super.textDirection,
   });
 
   @override
@@ -76,6 +82,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   void performLayout(Size size) {
     final numberOfChildren = events.length;
     final visibleDates = dateTimeRange.dates();
+
     final dayWidth = size.width / visibleDates.length;
 
     final tileSizes = <int, Size>{};
@@ -127,7 +134,8 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
         dy = tilePositions[eventAboveID]!.dy + multiDayTileHeight;
       }
 
-      tilePositions[id] = Offset(tileDx[id]!, dy.roundToDouble());
+      final dx = textDirection == TextDirection.ltr ? tileDx[id]! : size.width - tileDx[id]! - tileSizes[id]!.width;
+      tilePositions[id] = Offset(dx, dy.roundToDouble());
     }
 
     for (var id = 0; id < numberOfChildren; id++) {
