@@ -135,10 +135,9 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
 
     final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
     if (cursorDateIndex < 0) return null;
-
-    final date = Directionality.of(context) == TextDirection.ltr
-        ? visibleDates.elementAtOrNull(cursorDateIndex)
-        : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
+    final date = cursorDateIndex > visibleDates.length
+        ? visibleDates.elementAt(visibleDates.length - 1).endOfDay
+        : visibleDates.elementAtOrNull(cursorDateIndex);
 
     return date;
   }

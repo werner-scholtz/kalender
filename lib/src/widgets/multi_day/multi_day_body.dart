@@ -174,7 +174,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
 
             final pageView = PageClipWidget(
-              start: -16,
+              left: -16,
               child: PageView.builder(
                 padEnds: false,
                 key: ValueKey(viewConfiguration.hashCode),
@@ -214,11 +214,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     numberOfDays + 1,
                     (index) {
                       final left = dayWidth * index;
-                      // TODO check that this is correct ?
-                      return PositionedDirectional(
+                      return Positioned(
                         top: 0,
                         bottom: 0,
-                        start: left,
+                        left: left,
                         child: daySeparator,
                       );
                     },
@@ -258,10 +257,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       Positioned.fill(child: draggable),
                       Positioned.fill(child: events),
                       if (timeIndicatorDateIndex != -1)
-                        PositionedDirectional(
+                        Positioned(
                           top: 0,
                           bottom: 0,
-                          start: left,
+                          left: left,
                           width: dayWidth,
                           child: timeIndicator,
                         ),
