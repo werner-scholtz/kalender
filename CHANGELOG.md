@@ -1,3 +1,8 @@
+## 0.6.6
+
+- fix MultiDayHeaderWidget layout regressions.
+- Added widget tests for MultiDayHeaderWidget.
+
 ## 0.6.5
 
 - fix SingleDayView RenderFlex overflow.
