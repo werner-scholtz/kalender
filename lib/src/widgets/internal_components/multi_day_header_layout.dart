@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
@@ -19,36 +17,43 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
   /// TODO: rename to leading.
   final Widget leadingWidget;
 
+  /// The prototype timeline widget that will be used to display the timeline.
+  final Widget? prototypeTimelineOverride;
+
   /// Creates a MultiDayHeaderWidget.
   /// This widget is used to display the header of the MultiDayView.
   const MultiDayHeaderWidget({
     super.key,
     required this.content,
     required this.leadingWidget,
+    this.prototypeTimelineOverride,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Create the timeline widget.
-    final provider = CalendarProvider.of<T>(context);
-    final calendarComponents = provider.components;
-    final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents;
-    final timelineStyle = bodyStyles?.timelineStyle;
-    const heightPerMinute = 1.0;
-    final timeOfDayRange = TimeOfDayRange.allDay();
-    final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
-    final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
+    var timeline = prototypeTimelineOverride;
+    if (timeline == null) {
+      // Create the timeline widget.
+      final provider = CalendarProvider.of<T>(context);
+      final calendarComponents = provider.components;
+      final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
+      final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents;
+      final timelineStyle = bodyStyles?.timelineStyle;
+      const heightPerMinute = 1.0;
+      final timeOfDayRange = TimeOfDayRange.allDay();
+      final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
+      final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
-    final timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
-        // TODO: implement a default prototypeTimeLine.
-        TimeLine(
-          timeOfDayRange: timeOfDayRange,
-          heightPerMinute: heightPerMinute,
-          style: timelineStyle,
-          eventBeingDragged: ValueNotifier(selectedEvent),
-          visibleDateTimeRange: ValueNotifier(dateTimeRange),
-        );
+      timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
+          // TODO: implement a default prototypeTimeLine.
+          TimeLine(
+            timeOfDayRange: timeOfDayRange,
+            heightPerMinute: heightPerMinute,
+            style: timelineStyle,
+            eventBeingDragged: ValueNotifier(selectedEvent),
+            visibleDateTimeRange: ValueNotifier(dateTimeRange),
+          );
+    }
 
     return _MultiDayHeaderWidget(
       timelineWidget: LayoutId(id: 1, child: timeline),
@@ -109,15 +114,15 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     markNeedsLayout();
   }
 
-  double get maxHeight => _maxHeight;
-  double _maxHeight = 0;
-  set maxHeight(double value) {
-    if (_maxHeight == value) {
-      return;
-    }
-    _maxHeight = value;
-    markNeedsLayout();
-  }
+  // double get maxHeight => _maxHeight;
+  // double _maxHeight = 0;
+  // set maxHeight(double value) {
+  //   if (_maxHeight == value) {
+  //     return;
+  //   }
+  //   _maxHeight = value;
+  //   markNeedsLayout();
+  // }
 
   @override
   void setupParentData(RenderBox child) {
@@ -133,23 +138,26 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final leading = childAfter(timeline)!;
 
     // Layout the timeline to get the width.
-    timeline.layout(const BoxConstraints(maxHeight: 1000), parentUsesSize: true);
+    timeline.layout(const BoxConstraints(maxHeight: 10), parentUsesSize: true);
     final timelineWidth = timeline.size.width;
 
     // Layout the content to get the height.
-    content.layout(constraints, parentUsesSize: true);
+    content.layout(BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth), parentUsesSize: true);
     final contentHeight = content.size.height;
 
     // Layout the leading to get the height.
-    leading.layout(constraints, parentUsesSize: true);
+    leading.layout(BoxConstraints(maxWidth: timelineWidth), parentUsesSize: true);
     final leadingHeight = leading.size.height;
 
     // The maxHeight is the maximum height of the content and leading.
-    final maxHeight = max(contentHeight, leadingHeight);
-
-    // Relay out the content and leading with the maxHeight.
-    leading.layout(BoxConstraints(maxHeight: maxHeight, maxWidth: timelineWidth));
-    content.layout(BoxConstraints(maxHeight: maxHeight, maxWidth: constraints.maxWidth - timelineWidth));
+    final double height;
+    if (contentHeight >= leadingHeight) {
+      height = contentHeight;
+      leading.layout(BoxConstraints(maxHeight: height, maxWidth: timelineWidth));
+    } else {
+      height = leadingHeight;
+      content.layout(BoxConstraints(maxHeight: height, maxWidth: constraints.maxWidth - timelineWidth));
+    }
 
     // Position the content.
     final contentParentData = (content.parentData! as MultiChildLayoutParentData);
@@ -158,7 +166,7 @@ class _RenderMultiDayHeaderWidget extends RenderBox
       TextDirection.rtl => const Offset(0, 0),
     };
 
-    size = Size(constraints.maxWidth, maxHeight);
+    size = Size(constraints.maxWidth, height);
   }
 
   @override
