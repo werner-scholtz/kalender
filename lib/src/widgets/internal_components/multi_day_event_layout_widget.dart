@@ -7,11 +7,17 @@ import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// A function that generates the layout frame for the events.
+///
+/// The layout frame contains all the data needed to layout the events with [MultiDayLayout].
 typedef MultiDayGenerateLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
   required DateTimeRange dateTimeRange,
   required List<CalendarEvent<T>> events,
 });
 
+/// A default implementation of [MultiDayGenerateLayoutFrame].
+///
+/// The default implementation sorts the events in descending order and then lays them out
+/// in a vertical layout where events that overlap are placed on a new row.
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required DateTimeRange dateTimeRange,
   required List<CalendarEvent<T>> events,
@@ -19,36 +25,33 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   // Sort the events in descending order.
   final sortedEvents = events.toList()..sort((a, b) => b.duration.compareTo(a.duration));
 
-  // Generate the horizontal layout info for the events.
-  final horizontalInfo = sortedEvents.map(
-    (event) {
-      final rangeAsUtc = event.dateTimeRangeAsUtc;
-
-      final layoutInfo = EventLayoutInfo(
-        id: event.id,
-        row: 0,
-        range: DateTimeRange(
-          start: rangeAsUtc.start,
-          // If the end date is the start of the day, we use the start of the day otherwise
-          // we use the end of the day so that the day is included.
-          end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
-        ),
-      );
-
-      return layoutInfo;
-    },
-  );
-
-  /// Generate the vertical layout info for the events.
-  final verticalInfo = <EventLayoutInfo>[];
+  final layoutInfo = <EventLayoutInfo>[];
   var maxRow = 0;
   final map = <DateTime, int>{
     for (final date in dateTimeRange.dates()) date: 0,
   };
 
-  for (final eventLayoutInfo in horizontalInfo) {
-    final overlaps = verticalInfo.where((e) {
-      return e.range.overlaps(eventLayoutInfo.range);
+  for (final event in sortedEvents) {
+    // Get the range of the event as UTC.
+    final rangeAsUtc = event.dateTimeRangeAsUtc;
+
+    // Create a range that uses the correct start and end date.
+    final range = DateTimeRange(
+      start: rangeAsUtc.start,
+      // If the end date is the start of the day, we use the start of the day otherwise
+      // we use the end of the day so that the day is included.
+      end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
+    );
+
+    final info = EventLayoutInfo(
+      id: event.id,
+      row: 0,
+      range: range,
+    );
+
+    // From all the existing layout info find the ones that overlap with the current event.
+    final overlaps = layoutInfo.where((e) {
+      return e.range.overlaps(info.range);
     }).toList();
 
     // Find the first row that doesn't overlap with any other event.
@@ -58,18 +61,19 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
     maxRow = max(maxRow, row);
 
     // Update the map with the number of rows for each date.
-    final days = eventLayoutInfo.range.dates().toList();
+    final days = info.range.dates().toList();
     for (final date in days) {
       map[date] = max(map[date] ?? 0, row);
     }
 
-    final info = eventLayoutInfo.copyWith(row: row);
-    verticalInfo.add(info);
+    layoutInfo.add(info.copyWith(row: row));
   }
+
+  // TODO: add a compacting step that moves events up to a row if there is a empty space.
 
   return MultiDayLayoutFrame(
     dateTimeRange: dateTimeRange,
-    layoutInfo: verticalInfo,
+    layoutInfo: layoutInfo,
     events: sortedEvents,
     totalNumberOfRows: maxRow + 1,
     dateToNumberOfRows: map,
@@ -146,30 +150,28 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   @override
   Widget build(BuildContext context) {
-    final children = _frame.events.map((item) {
-      final event = item;
-      final id = event.id;
-
-      return LayoutId(
-        id: id,
-        child: MultiDayEventTile<T>(
-          event: event,
-          eventsController: widget.eventsController,
-          controller: widget.controller,
-          callbacks: widget.callbacks,
-          tileComponents: widget.tileComponents,
-          interaction: widget.interaction,
-          dateTimeRange: widget.visibleDateTimeRange,
-        ),
-      );
-    });
-
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
         frame: _frame,
         tileHeight: widget.tileHeight,
       ),
-      children: [...children],
+      children: _frame.events.map((item) {
+        final event = item;
+        final id = event.id;
+
+        return LayoutId(
+          id: id,
+          child: MultiDayEventTile<T>(
+            event: event,
+            eventsController: widget.eventsController,
+            controller: widget.controller,
+            callbacks: widget.callbacks,
+            tileComponents: widget.tileComponents,
+            interaction: widget.interaction,
+            dateTimeRange: widget.visibleDateTimeRange,
+          ),
+        );
+      }).toList(),
     );
 
     final dropTargetWidget = ValueListenableBuilder(
@@ -228,14 +230,13 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                 return Container(
                   color: Colors.red.withAlpha(100),
                   width: widget.dayWidth,
-                  
                   child: const Text('...'),
                 );
               } else {
                 return SizedBox(width: widget.dayWidth);
               }
             }).toList(),
-          )
+          ),
       ],
     );
   }
