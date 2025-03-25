@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
-import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 /// This widget is renders all the multi-day event tiles that are visible on the provided dateTimeRange.
 ///
@@ -11,6 +10,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// This widget also takes responsibility for updating the [CalendarController.visibleEvents],
 /// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
 ///
+/// TODO: Chanage docs
 /// To render the event tiles it uses [CustomMultiChildLayout],
 /// along with a [defaultMultiDayLayoutStrategy] or custom strategy defined by the user.
 ///
@@ -20,11 +20,9 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
-
   final DateTimeRange visibleDateTimeRange;
   final TileComponents<T> tileComponents;
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayEventLayoutStrategy layoutStrategy;
   final double dayWidth;
   final bool showAllEvents;
   final double tileHeight;
@@ -41,7 +39,6 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.showAllEvents,
     required this.callbacks,
     required this.tileHeight,
-    required this.layoutStrategy,
   });
 
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
@@ -51,85 +48,29 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     return ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
+        // Get the visible events from the events controller.
         final visibleEvents = eventsController.eventsFromDateTimeRange(
           visibleDateTimeRange,
           includeDayEvents: showAllEvents,
           includeMultiDayEvents: true,
         );
 
-        // Add the events to the visible events.
-        visibleEventsNotifier.value = {
-          ...visibleEventsNotifier.value,
-          ...visibleEvents,
-        };
+        // Add the events to the visible events notifier.
+        visibleEventsNotifier.value = {...visibleEventsNotifier.value, ...visibleEvents};
 
-        final sortedEvents = visibleEvents.toList();
-
-        final children = sortedEvents.indexed.map((item) {
-          final (id, event) = item;
-          return LayoutId(
-            id: id,
-            child: MultiDayEventTile<T>(
-              event: event,
-              eventsController: eventsController,
-              controller: controller,
-              callbacks: callbacks,
-              tileComponents: tileComponents,
-              interaction: interaction,
-              dateTimeRange: visibleDateTimeRange,
-            ),
-          );
-        });
-
-        final multiDayEventsWidget = CustomMultiChildLayout(
-          delegate: DefaultMultiDayLayoutDelegate(
-            events: sortedEvents,
-            dateTimeRange: visibleDateTimeRange,
-            multiDayTileHeight: tileHeight,
-            textDirection: Directionality.of(context),
-          ),
-          children: [...children],
-        );
-
-        // TODO: investigate a more efficient way to do this.
-        final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: controller.selectedEvent,
-          builder: (context, event, child) {
-            if (event == null) return const SizedBox();
-            if (!showAllEvents && !event.isMultiDayEvent) return const SizedBox();
-            if (!event.dateTimeRangeAsUtc.overlaps(visibleDateTimeRange)) return const SizedBox();
-
-            final events = sortedEvents.toList()
-              ..removeWhere((e) => e.id == controller.selectedEventId)
-              ..add(event);
-
-            final children = events.indexed.map((item) {
-              final (id, event) = item;
-              return LayoutId(
-                id: id,
-                child: event.id == -1 || event.id == controller.selectedEventId
-                    ? tileComponents.dropTargetTile?.call(event) ?? const SizedBox()
-                    : const SizedBox(),
-              );
-            });
-
-            return CustomMultiChildLayout(
-              delegate: DefaultMultiDayLayoutDelegate(
-                events: events,
-                dateTimeRange: visibleDateTimeRange,
-                multiDayTileHeight: tileHeight,
-                textDirection: Directionality.of(context),
-              ),
-              children: children.toList(),
-            );
-          },
-        );
-
-        return Stack(
-          children: [
-            multiDayEventsWidget,
-            PassThroughPointer(child: dropTargetWidget),
-          ],
+        return MultiDayEventLayoutWidget<T>(
+          events: visibleEvents.toList(),
+          eventsController: eventsController,
+          controller: controller,
+          visibleDateTimeRange: visibleDateTimeRange,
+          tileComponents: tileComponents,
+          callbacks: callbacks,
+          dayWidth: dayWidth,
+          showAllEvents: showAllEvents,
+          tileHeight: tileHeight,
+          interaction: interaction,
+          // TODO: use from the view configuration if available.
+          generateFrame: defaultMultiDayGenerateFrame<T>,
         );
       },
     );

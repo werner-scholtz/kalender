@@ -10,14 +10,10 @@ class MonthViewConfiguration extends ViewConfiguration {
   /// The first day of the week.
   final int firstDayOfWeek;
 
-  /// The layout strategy used by the [MultiDayHeader] to layout events.
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
-
   MonthViewConfiguration({
     required super.name,
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
-    required this.eventLayoutStrategy,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be between 1 and 7 (inclusive)\n'
@@ -28,7 +24,6 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.name = 'Month',
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
   }) : pageNavigationFunctions = MonthPageFunctions(
           dateTimeRange: displayRange ?? DateTime.now().yearRange,
           shift: firstDayOfWeek,

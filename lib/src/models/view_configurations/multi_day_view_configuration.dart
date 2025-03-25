@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -304,6 +304,8 @@ class MultiDayBodyConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
+/// 
+/// TODO: add type for layoutEvents
 class MultiDayHeaderConfiguration {
   /// The height of the tiles.
   final double tileHeight;
@@ -311,17 +313,20 @@ class MultiDayHeaderConfiguration {
   /// Whether to show event tiles.
   final bool showTiles;
 
-  /// The layout strategy used to layout events.
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
-
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// The function used to generate the frame for the events.
+  final MultiDayGenerateLayoutFrame? generateFrame;
+
+  /// TODO: add int for max number of rows.
+  /// TODO: add int for default number of rows.
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
+    this.generateFrame,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
@@ -332,6 +337,7 @@ class MultiDayHeaderConfiguration {
     CalendarInteraction? interaction,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
+    // TODO: add new parameters
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
