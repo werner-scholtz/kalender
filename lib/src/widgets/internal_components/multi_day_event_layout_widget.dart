@@ -16,14 +16,16 @@ typedef MultiDayGenerateLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 
 /// A default implementation of [MultiDayGenerateLayoutFrame].
 ///
-/// The default implementation sorts the events in descending order and then lays them out
-/// in a vertical layout where events that overlap are placed on a new row.
+/// The default implementation sorts the events from the latest to the earliest and longest to shortest.
+/// Then it finds the first row that doesn't overlap with any other event and assigns the event to that row.
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required DateTimeRange dateTimeRange,
   required List<CalendarEvent<T>> events,
 }) {
   // Sort the events in descending order.
-  final sortedEvents = events.toList()..sort((a, b) => b.duration.compareTo(a.duration));
+  final sortedEvents = events.toList()
+    ..sort((a, b) => b.start.compareTo(a.start))
+    ..sort((a, b) => b.duration.compareTo(a.duration));
 
   final layoutInfo = <EventLayoutInfo>[];
   var maxRow = 0;
@@ -192,23 +194,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         if (event == null) return const SizedBox();
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
-
-        final displayed = events.toList()
-          ..removeWhere((e) => e.id == widget.controller.selectedEventId)
-          ..add(event);
-
-        final frame = widget.generateFrame(dateTimeRange: widget.visibleDateTimeRange, events: displayed);
-
-        final children = frame.events.map((item) {
-          final event = item;
-          final id = event.id;
-          return LayoutId(
-            id: id,
-            child: event.id == -1 || event.id == widget.controller.selectedEventId
-                ? widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox()
-                : const SizedBox(),
-          );
-        });
+        final frame = widget.generateFrame(dateTimeRange: widget.visibleDateTimeRange, events: [event]);
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
@@ -217,12 +203,17 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             numberOfRows: frame.totalNumberOfRows,
             tileHeight: widget.tileHeight,
           ),
-          children: [...children],
+          children: [
+            LayoutId(
+              id: event.id,
+              child: event.id == -1 || event.id == widget.controller.selectedEventId
+                  ? widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox()
+                  : const SizedBox(),
+            ),
+          ],
         );
       },
     );
-
-    print(_frame.dateToNumberOfRows.length);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
