@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
 class MonthViewConfiguration extends ViewConfiguration {
   @override
   final MonthPageFunctions pageNavigationFunctions;
+
+  /// The layout strategy used by the [MultiDayHeader] to layout events.
+  /// TODO: More detail in the depricated message.
+  @Deprecated('This has been deprecated in favor of the MultiDayLayoutFrame')
+  final MultiDayEventLayoutStrategy eventLayoutStrategy;
 
   /// The first day of the week.
   final int firstDayOfWeek;
@@ -14,6 +20,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     required super.name,
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
+    required this.eventLayoutStrategy,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be between 1 and 7 (inclusive)\n'
@@ -24,6 +31,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.name = 'Month',
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
   }) : pageNavigationFunctions = MonthPageFunctions(
           dateTimeRange: displayRange ?? DateTime.now().yearRange,
           shift: firstDayOfWeek,

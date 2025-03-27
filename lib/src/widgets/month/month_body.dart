@@ -18,7 +18,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   final CalendarController<T>? calendarController;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final MonthBodyConfiguration? configuration;
+  final MultiDayHeaderConfiguration? configuration;
 
   /// The callbacks used by the [MonthBody].
   final CalendarCallbacks<T>? callbacks;
@@ -71,6 +71,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       calendarController!.viewController is MonthViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
+
+    if (configuration !is MonthBodyConfiguration) {
+      debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
+    }
 
     final viewController = calendarController!.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
