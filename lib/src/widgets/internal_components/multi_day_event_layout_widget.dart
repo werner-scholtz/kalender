@@ -16,7 +16,7 @@ typedef MultiDayGenerateLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 
 /// A default implementation of [MultiDayGenerateLayoutFrame].
 ///
-/// The default implementation sorts the events from the latest to the earliest and longest to shortest.
+/// The default implementation sorts the events from the earliest to the latest and longest to shortest.
 /// Then it finds the first row that doesn't overlap with any other event and assigns the event to that row.
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required DateTimeRange dateTimeRange,
@@ -24,7 +24,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 }) {
   // Sort the events in descending order.
   final sortedEvents = events.toList()
-    ..sort((a, b) => b.start.compareTo(a.start))
+    ..sort((a, b) => a.start.compareTo(b.start))
     ..sort((a, b) => b.duration.compareTo(a.duration));
 
   final layoutInfo = <EventLayoutInfo>[];
@@ -71,7 +71,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
     layoutInfo.add(info.copyWith(row: row));
   }
 
-  // TODO: add a compacting step that moves events up to a row if there is a empty space.
+  // TODO: add a compacting step that moves events up to a row if there is a empty space above it.
 
   return MultiDayLayoutFrame(
     dateTimeRange: dateTimeRange,
