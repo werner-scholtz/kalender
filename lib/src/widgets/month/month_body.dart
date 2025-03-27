@@ -4,6 +4,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 /// This widget is used to display a month body.
 ///
@@ -72,7 +73,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    if (configuration !is MonthBodyConfiguration) {
+    if (configuration! is MonthBodyConfiguration) {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
@@ -130,6 +131,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   maxNumberOfRows: numberOfRows,
                   showAllEvents: true,
                   callbacks: callbacks,
+                  generateFrame: configuration?.generateFrame as MultiDayGenerateLayoutFrame<T>? ??
+                      defaultMultiDayGenerateFrame<T>,
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(

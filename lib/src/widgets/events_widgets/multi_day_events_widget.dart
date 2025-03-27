@@ -27,6 +27,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final int? maxNumberOfRows;
   final double tileHeight;
   final bool showAllEvents;
+  // TODO: rename
+  final MultiDayGenerateLayoutFrame<T> generateFrame;
   final ValueNotifier<CalendarInteraction> interaction;
 
   const MultiDayEventWidget({
@@ -41,6 +43,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.maxNumberOfRows,
     required this.interaction,
     required this.callbacks,
+    required this.generateFrame,
   });
 
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
@@ -73,7 +76,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           maxNumberOfRows: maxNumberOfRows,
           interaction: interaction,
           // TODO: use from the view configuration if available.
-          generateFrame: defaultMultiDayGenerateFrame<T>,
+          generateFrame: generateFrame,
         );
       },
     );
