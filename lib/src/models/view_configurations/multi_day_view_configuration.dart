@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
+import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -314,20 +315,26 @@ class MultiDayHeaderConfiguration {
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
 
-  /// The function used to generate the frame for the events.
+  /// The layout strategy used to layout events.
+  /// TODO: More detail in the depricated message.
+  @Deprecated('This has been deprecated use generateFrame instead')
+  final MultiDayEventLayoutStrategy eventLayoutStrategy;
+
+  /// TODO: document better
   final MultiDayGenerateLayoutFrame? generateFrame;
 
-  /// The maximum number of rows that can be displayed.
-  /// 
+  /// The maximum number of events that can be displayed vertically.
+  ///
   /// If this is null, then there is no limit.
-  final int? maxNumberOfRows;
+  final int? maximumNumberOfVerticalEvents;
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
     this.generateFrame,
-    this.maxNumberOfRows,
+    this.maximumNumberOfVerticalEvents,
+    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
@@ -339,13 +346,13 @@ class MultiDayHeaderConfiguration {
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
     MultiDayGenerateLayoutFrame? generateFrame,
-    int? maxNumberOfRows,
+    int? maximumNumberOfVerticalEvents,
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       generateFrame: generateFrame ?? this.generateFrame,
-      maxNumberOfRows: maxNumberOfRows ?? this.maxNumberOfRows,
+      maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
     );
   }
 

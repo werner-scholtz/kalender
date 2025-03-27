@@ -63,7 +63,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
     // Update the map with the number of rows for each date.
     final days = info.range.dates().toList();
     for (final date in days) {
-      map[date] = max(map[date] ?? 0, row);
+      if (map[date] != null) map[date] = max(map[date] ?? 0, row);
     }
 
     layoutInfo.add(info.copyWith(row: row));
@@ -91,7 +91,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.showAllEvents,
     required this.tileHeight,
-    required this.maxNumberOfRows,
+    required this.maxNumberOfVerticalEvents,
     required this.interaction,
     required this.generateFrame,
     super.key,
@@ -105,7 +105,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final double dayWidth;
   final bool showAllEvents;
   final double tileHeight;
-  final int? maxNumberOfRows;
+  final int? maxNumberOfVerticalEvents;
   final ValueNotifier<CalendarInteraction> interaction;
 
   /// The list of events that will be laid out.
@@ -154,11 +154,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   @override
   Widget build(BuildContext context) {
-    final (events, layoutInfo) = _frame.visibleEvents(widget.maxNumberOfRows);
+    final (events, layoutInfo) = _frame.visibleEvents(widget.maxNumberOfVerticalEvents);
 
-    final maxNumberOfRows = widget.maxNumberOfRows == null
+    final maxNumberOfRows = widget.maxNumberOfVerticalEvents == null
         ? _frame.totalNumberOfRows
-        : min(_frame.totalNumberOfRows, widget.maxNumberOfRows!);
+        : min(_frame.totalNumberOfRows, widget.maxNumberOfVerticalEvents!);
 
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
@@ -222,6 +222,8 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       },
     );
 
+    print(_frame.dateToNumberOfRows.length);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -235,17 +237,19 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           Row(
             children: _frame.dateToNumberOfRows.entries.map((entry) {
               final rows = entry.value;
-
-              if (rows >= maxNumberOfRows) {
-                // TODO make a component for this.
-                return Container(
-                  color: Colors.red.withAlpha(100),
-                  width: widget.dayWidth,
-                  child: const Text('...'),
-                );
-              } else {
-                return SizedBox(width: widget.dayWidth);
-              }
+              return Expanded(
+                child: rows >= maxNumberOfRows
+                    // TODO: make this a custom widget.
+                    // This widget will be passed some information like position date and events
+                    // I don't think it is worth the hassle to implement a overlay within the package.
+                    // for now this will have to be done by developers.
+                    ? Container(
+                        color: Colors.red.withAlpha(100),
+                        width: widget.dayWidth,
+                        child: const Text('...'),
+                      )
+                    : SizedBox(width: widget.dayWidth),
+              );
             }).toList(),
           ),
       ],

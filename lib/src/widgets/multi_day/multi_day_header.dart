@@ -202,7 +202,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maxNumberOfRows,
+              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
                   configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );
@@ -338,7 +338,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maxNumberOfRows,
+              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
                   configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );
@@ -482,7 +482,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               showAllEvents: false,
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maxNumberOfRows,
+              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
                   configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );

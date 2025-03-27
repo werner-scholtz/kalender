@@ -73,9 +73,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           dayWidth: dayWidth,
           showAllEvents: showAllEvents,
           tileHeight: tileHeight,
-          maxNumberOfRows: maxNumberOfRows,
+          maxNumberOfVerticalEvents: maxNumberOfRows,
           interaction: interaction,
-          // TODO: use from the view configuration if available.
           generateFrame: generateFrame,
         );
       },

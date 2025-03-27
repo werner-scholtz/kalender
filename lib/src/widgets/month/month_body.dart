@@ -119,25 +119,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   end: visibleRange.start.addDays((index * 7) + 7),
                 );
 
-                final multiDayEvents = MultiDayEventWidget<T>(
-                  controller: calendarController!,
-                  eventsController: eventsController!,
-                  visibleDateTimeRange: visibleDateTimeRange,
-                  tileComponents: tileComponents,
-                  dayWidth: dayWidth,
-                  interaction: interaction,
-                  tileHeight: bodyConfiguration.tileHeight,
-                  // TODO determine this
-                  maxNumberOfRows: numberOfRows,
-                  showAllEvents: true,
-                  callbacks: callbacks,
-                  generateFrame: configuration?.generateFrame as MultiDayGenerateLayoutFrame<T>? ??
-                      defaultMultiDayGenerateFrame<T>,
-                );
-
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  eventsController: eventsController,
-                  calendarController: calendarController,
+                  eventsController: eventsController!,
+                  calendarController: calendarController!,
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
@@ -170,27 +154,44 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 });
 
                 return Expanded(
-                  child: Column(
+                  child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: dates,
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Stack(
-                            fit: StackFit.loose,
-                            children: [
-                              Positioned.fill(child: draggable),
-                              ConstrainedBox(
-                                constraints: BoxConstraints(minHeight: weekHeight - 32),
-                                child: multiDayEvents,
+                      Positioned.fill(child: draggable),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: weekHeight,
+                        child: Column(
+                          children: [
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: dates),
+                            Expanded(
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  // Subtract 1 to account for the extra widget at the bottom.
+                                  final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
+                                  return MultiDayEventWidget<T>(
+                                    controller: calendarController!,
+                                    eventsController: eventsController!,
+                                    visibleDateTimeRange: visibleDateTimeRange,
+                                    tileComponents: tileComponents,
+                                    dayWidth: dayWidth,
+                                    interaction: interaction,
+                                    tileHeight: bodyConfiguration.tileHeight,
+                                    maxNumberOfRows: maxNumberOfVerticalEvents,
+                                    showAllEvents: true,
+                                    callbacks: callbacks,
+                                    generateFrame: configuration?.generateFrame as MultiDayGenerateLayoutFrame<T>? ??
+                                        defaultMultiDayGenerateFrame<T>,
+                                  );
+                                },
                               ),
-                              Positioned.fill(child: multiDayDragTarget),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
+                      Positioned.fill(child: multiDayDragTarget),
                     ],
                   ),
                 );
