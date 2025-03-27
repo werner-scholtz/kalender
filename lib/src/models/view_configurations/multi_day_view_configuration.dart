@@ -304,8 +304,6 @@ class MultiDayBodyConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
-/// 
-/// TODO: add type for layoutEvents
 class MultiDayHeaderConfiguration {
   /// The height of the tiles.
   final double tileHeight;
@@ -319,14 +317,17 @@ class MultiDayHeaderConfiguration {
   /// The function used to generate the frame for the events.
   final MultiDayGenerateLayoutFrame? generateFrame;
 
-  /// TODO: add int for max number of rows.
-  /// TODO: add int for default number of rows.
+  /// The maximum number of rows that can be displayed.
+  /// 
+  /// If this is null, then there is no limit.
+  final int? maxNumberOfRows;
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
     this.generateFrame,
+    this.maxNumberOfRows,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
@@ -337,11 +338,14 @@ class MultiDayHeaderConfiguration {
     CalendarInteraction? interaction,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
-    // TODO: add new parameters
+    MultiDayGenerateLayoutFrame? generateFrame,
+    int? maxNumberOfRows,
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      generateFrame: generateFrame ?? this.generateFrame,
+      maxNumberOfRows: maxNumberOfRows ?? this.maxNumberOfRows,
     );
   }
 

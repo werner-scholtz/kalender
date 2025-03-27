@@ -29,3 +29,13 @@ class MonthViewConfiguration extends ViewConfiguration {
           shift: firstDayOfWeek,
         );
 }
+
+class MonthBodyConfiguration extends MultiDayHeaderConfiguration {
+  MonthBodyConfiguration({
+    super.generateFrame,
+    super.pageTriggerConfiguration,
+    super.scrollTriggerConfiguration,
+    super.showTiles,
+    super.tileHeight,
+  });
+}

@@ -74,7 +74,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   return MultiDayLayoutFrame(
     dateTimeRange: dateTimeRange,
     layoutInfo: layoutInfo,
-    events: sortedEvents,
+    events: events,
     totalNumberOfRows: maxRow + 1,
     dateToNumberOfRows: map,
   );
@@ -91,6 +91,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.showAllEvents,
     required this.tileHeight,
+    required this.maxNumberOfRows,
     required this.interaction,
     required this.generateFrame,
     super.key,
@@ -104,6 +105,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final double dayWidth;
   final bool showAllEvents;
   final double tileHeight;
+  final int? maxNumberOfRows;
   final ValueNotifier<CalendarInteraction> interaction;
 
   /// The list of events that will be laid out.
@@ -111,6 +113,8 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// * Note: not all of these events will necessarily be visible,
   ///         it depends on the height constraint.
   final List<CalendarEvent<T>> events;
+
+  /// The function that generates the layout frame for the events.
   final MultiDayGenerateLayoutFrame<T> generateFrame;
 
   @override
@@ -150,12 +154,20 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   @override
   Widget build(BuildContext context) {
+    final (events, layoutInfo) = _frame.visibleEvents(widget.maxNumberOfRows);
+
+    final maxNumberOfRows = widget.maxNumberOfRows == null
+        ? _frame.totalNumberOfRows
+        : min(_frame.totalNumberOfRows, widget.maxNumberOfRows!);
+
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
-        frame: _frame,
+        dateTimeRange: widget.visibleDateTimeRange,
+        layoutInfo: layoutInfo,
+        numberOfRows: maxNumberOfRows,
         tileHeight: widget.tileHeight,
       ),
-      children: _frame.events.map((item) {
+      children: events.map((item) {
         final event = item;
         final id = event.id;
 
@@ -181,11 +193,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
 
-        final events = _frame.events.toList()
+        final displayed = events.toList()
           ..removeWhere((e) => e.id == widget.controller.selectedEventId)
           ..add(event);
 
-        final frame = widget.generateFrame(dateTimeRange: widget.visibleDateTimeRange, events: events);
+        final frame = widget.generateFrame(dateTimeRange: widget.visibleDateTimeRange, events: displayed);
 
         final children = frame.events.map((item) {
           final event = item;
@@ -200,16 +212,15 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
-            frame: frame,
+            dateTimeRange: widget.visibleDateTimeRange,
+            layoutInfo: frame.layoutInfo,
+            numberOfRows: frame.totalNumberOfRows,
             tileHeight: widget.tileHeight,
           ),
           children: [...children],
         );
       },
     );
-
-    // TODO: make this a parameter.
-    const maxNumberOfRows = 4;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -242,52 +253,6 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   }
 }
 
-class MultiDayLayout extends MultiChildLayoutDelegate {
-  MultiDayLayout({
-    required this.frame,
-    required this.tileHeight,
-  });
-
-  /// The frame that contains all the data needed to layout the events.
-  final MultiDayLayoutFrame<dynamic> frame;
-
-  /// The height of each tile.
-  final double tileHeight;
-
-  @override
-  Size getSize(BoxConstraints constraints) {
-    super.getSize(constraints);
-    return Size(constraints.maxWidth, (frame.totalNumberOfRows + 1) * tileHeight);
-  }
-
-  @override
-  void performLayout(Size size) {
-    final numberOfChildren = frame.layoutInfo.length;
-    final visibleDates = frame.dateTimeRange.dates();
-    final dayWidth = size.width / visibleDates.length;
-
-    for (var i = 0; i < numberOfChildren; i++) {
-      final info = frame.layoutInfo[i];
-      var startIndex = visibleDates.indexOf(info.range.start);
-      if (startIndex == -1) startIndex = 0;
-      var endIndex = visibleDates.indexOf(info.range.end);
-      if (endIndex == -1) endIndex = visibleDates.length;
-
-      final dx = startIndex * dayWidth;
-      final dy = info.row * tileHeight;
-      final width = (endIndex - startIndex) * dayWidth;
-
-      layoutChild(info.id, BoxConstraints.tightFor(width: width, height: tileHeight));
-      positionChild(info.id, Offset(dx, dy));
-    }
-  }
-
-  @override
-  bool shouldRelayout(covariant MultiDayLayout oldDelegate) {
-    return oldDelegate.frame != frame || oldDelegate.tileHeight != tileHeight;
-  }
-}
-
 /// Frame containing all the data to layout the events with [MultiDayLayout].
 @immutable
 class MultiDayLayoutFrame<T> {
@@ -300,7 +265,7 @@ class MultiDayLayoutFrame<T> {
   /// The layout info for each event.
   final List<EventLayoutInfo> layoutInfo;
 
-  /// The total number of rows that are needed to layout all the events.
+  /// The number of rows needed to layout all the events.
   final int totalNumberOfRows;
 
   /// A map that contains the number of rows for each date.
@@ -313,6 +278,23 @@ class MultiDayLayoutFrame<T> {
     required this.totalNumberOfRows,
     required this.dateToNumberOfRows,
   });
+
+  (List<CalendarEvent<T>> events, List<EventLayoutInfo> layoutInfo) visibleEvents(int? maxNumberOfRows) {
+    // If there is no max number of rows we return all the events.
+    if (maxNumberOfRows == null) return (this.events, layoutInfo);
+
+    // If the number of rows is less than the max number of rows we return all the events.
+    if (totalNumberOfRows <= maxNumberOfRows) return (this.events, layoutInfo);
+
+    // If the number of rows is greater than the max number of rows we only return the events that
+    // should be fitted in the max number of rows.
+    final info = layoutInfo.where((e) => e.row < maxNumberOfRows).toList();
+    final events = info.map((e) {
+      return this.events.firstWhere((event) => event.id == e.id);
+    }).toList();
+
+    return (events, info);
+  }
 }
 
 /// Contains all the data needed to layout a single event.
@@ -348,5 +330,62 @@ class EventLayoutInfo {
   @override
   String toString() {
     return 'EventLayoutInfo(id: $id, row: $row, start: ${range.start}, end: ${range.end})';
+  }
+}
+
+class MultiDayLayout extends MultiChildLayoutDelegate {
+  MultiDayLayout({
+    required this.dateTimeRange,
+    required this.layoutInfo,
+    required this.numberOfRows,
+    required this.tileHeight,
+  });
+
+  /// The date range that the events are laid out on.
+  final DateTimeRange dateTimeRange;
+
+  /// The layout info for each event.
+  final List<EventLayoutInfo> layoutInfo;
+
+  /// The number of rows needed to layout all the events.
+  final int numberOfRows;
+
+  /// The height of each tile.
+  final double tileHeight;
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    super.getSize(constraints);
+    return Size(constraints.maxWidth, numberOfRows * tileHeight);
+  }
+
+  @override
+  void performLayout(Size size) {
+    final numberOfChildren = layoutInfo.length;
+    final visibleDates = dateTimeRange.dates();
+    final dayWidth = size.width / visibleDates.length;
+
+    for (var i = 0; i < numberOfChildren; i++) {
+      final info = layoutInfo[i];
+      var startIndex = visibleDates.indexOf(info.range.start);
+      if (startIndex == -1) startIndex = 0;
+      var endIndex = visibleDates.indexOf(info.range.end);
+      if (endIndex == -1) endIndex = visibleDates.length;
+
+      final dx = startIndex * dayWidth;
+      final dy = info.row * tileHeight;
+      final width = (endIndex - startIndex) * dayWidth;
+
+      layoutChild(info.id, BoxConstraints.tightFor(width: width, height: tileHeight));
+      positionChild(info.id, Offset(dx, dy));
+    }
+  }
+
+  @override
+  bool shouldRelayout(covariant MultiDayLayout oldDelegate) {
+    return oldDelegate.dateTimeRange != dateTimeRange ||
+        oldDelegate.layoutInfo != layoutInfo ||
+        oldDelegate.numberOfRows != numberOfRows ||
+        oldDelegate.tileHeight != tileHeight;
   }
 }

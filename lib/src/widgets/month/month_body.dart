@@ -18,7 +18,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   final CalendarController<T>? calendarController;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration? configuration;
+  final MonthBodyConfiguration? configuration;
 
   /// The callbacks used by the [MonthBody].
   final CalendarCallbacks<T>? callbacks;
@@ -121,7 +121,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   tileComponents: tileComponents,
                   dayWidth: dayWidth,
                   interaction: interaction,
-                  tileHeight: tileHeight,
+                  tileHeight: bodyConfiguration.tileHeight,
+                  // TODO determine this
+                  maxNumberOfRows: numberOfRows,
                   showAllEvents: true,
                   callbacks: callbacks,
                 );

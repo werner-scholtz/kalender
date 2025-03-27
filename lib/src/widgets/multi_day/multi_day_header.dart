@@ -200,7 +200,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               interaction: interaction,
               showAllEvents: false,
               callbacks: callbacks,
-              tileHeight: tileHeight,
+              tileHeight: configuration.tileHeight,
+              maxNumberOfRows: configuration.maxNumberOfRows,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -333,7 +334,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               interaction: interaction,
               showAllEvents: false,
               callbacks: callbacks,
-              tileHeight: tileHeight,
+              tileHeight: configuration.tileHeight,
+              maxNumberOfRows: configuration.maxNumberOfRows,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -474,7 +476,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               interaction: interaction,
               showAllEvents: false,
               callbacks: callbacks,
-              tileHeight: tileHeight,
+              tileHeight: configuration.tileHeight,
+              maxNumberOfRows: configuration.maxNumberOfRows,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
