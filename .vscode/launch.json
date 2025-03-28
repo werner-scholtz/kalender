@@ -1,0 +1,108 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "example",
+            "cwd": "examples/example",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "example (profile mode)",
+            "cwd": "examples/example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "example (release mode)",
+            "cwd": "examples/example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "demo",
+            "cwd": "examples/demo",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "demo (profile mode)",
+            "cwd": "examples/demo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "demo (release mode)",
+            "cwd": "examples/demo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "recurrence",
+            "cwd": "examples/recurrence",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "recurrence (profile mode)",
+            "cwd": "examples/recurrence",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "recurrence (release mode)",
+            "cwd": "examples/recurrence",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "riverpod",
+            "cwd": "examples/riverpod",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "riverpod (profile mode)",
+            "cwd": "examples/riverpod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "riverpod (release mode)",
+            "cwd": "examples/riverpod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "web_demo",
+            "cwd": "examples/web_demo",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "web_demo (profile mode)",
+            "cwd": "examples/web_demo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "web_demo (release mode)",
+            "cwd": "examples/web_demo",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
