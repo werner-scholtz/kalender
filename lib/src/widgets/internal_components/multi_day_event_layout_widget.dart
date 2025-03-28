@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/widgets/components/multi_day_expand.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -165,6 +166,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.maxNumberOfVerticalEvents,
     required this.interaction,
     required this.generateFrame,
+    required this.multiDayExpandBuilder,
     super.key,
   });
 
@@ -187,6 +189,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
 
   /// The function that generates the layout frame for the events.
   final GenerateMultiDayLayoutFrame<T> generateFrame;
+
+  /// The builder for the multi-day expand widget.
+  final MultiDayExpandBuilder? multiDayExpandBuilder;
 
   @override
   State<MultiDayEventLayoutWidget<T>> createState() => _MultiDayEventLayoutWidgetState<T>();
@@ -286,6 +291,25 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       },
     );
 
+    late final expandWidgets = [
+      const Spacer(),
+      Row(
+        children: _frame.columnRowMap.entries.map((entry) {
+          final column = entry.key;
+          final row = entry.value;
+
+          final date = _frame.dateFromColumn(column);
+          final onExpand = widget.callbacks?.onMultiDayExpand;
+          final expandWidget =
+              widget.multiDayExpandBuilder?.call(date, onExpand) ?? MultiDayExpand(date: date, onExpand: onExpand);
+
+          return Expanded(
+            child: row >= maxNumberOfRows ? expandWidget : SizedBox(width: widget.dayWidth),
+          );
+        }).toList(),
+      ),
+    ];
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -295,25 +319,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             PassThroughPointer(child: dropTargetWidget),
           ],
         ),
-        if (_frame.totalNumberOfRows >= maxNumberOfRows)
-          Row(
-            children: _frame.columnRowMap.entries.map((entry) {
-              final rows = entry.value;
-              return Expanded(
-                child: rows >= maxNumberOfRows
-                    // TODO: make this a custom widget.
-                    // This widget will be passed some information like position date and events
-                    // I don't think it is worth the hassle to implement a overlay within the package.
-                    // for now this will have to be done by developers.
-                    ? Container(
-                        color: Colors.red.withAlpha(100),
-                        width: widget.dayWidth,
-                        child: const Text('...'),
-                      )
-                    : SizedBox(width: widget.dayWidth),
-              );
-            }).toList(),
-          ),
+        if (_frame.totalNumberOfRows >= maxNumberOfRows) ...expandWidgets,
       ],
     );
   }
@@ -345,8 +351,11 @@ class MultiDayLayoutFrame<T> {
     required this.columnRowMap,
   });
 
+  /// Returns the date for the given column index.
+  DateTime dateFromColumn(int column) => dateTimeRange.start.addDays(column);
+
   /// Returns the visible events and their layout information based on the provided max number of rows.
-  /// 
+  ///
   /// If [maxNumberOfRows] is null, all events are returned.
   (List<CalendarEvent<T>> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
     // If there is no max number of rows we return all the events.

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/widgets/components/multi_day_expand.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 /// This widget is renders all the multi-day event tiles that are visible on the provided dateTimeRange.
@@ -30,6 +31,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   // TODO: rename
   final GenerateMultiDayLayoutFrame<T> generateFrame;
   final ValueNotifier<CalendarInteraction> interaction;
+  final MultiDayExpandBuilder? multiDayExpandBuilder;
 
   const MultiDayEventWidget({
     super.key,
@@ -44,6 +46,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.interaction,
     required this.callbacks,
     required this.generateFrame,
+    required this.multiDayExpandBuilder,
   });
 
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
@@ -76,6 +79,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           maxNumberOfVerticalEvents: maxNumberOfRows,
           interaction: interaction,
           generateFrame: generateFrame,
+          multiDayExpandBuilder: multiDayExpandBuilder,
         );
       },
     );
