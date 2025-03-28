@@ -57,7 +57,7 @@ class HomeScreen extends ConsumerWidget {
           multiDayTileComponents: tileComponents(context),
           monthTileComponents: tileComponents(context, body: false),
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: MultiDayHeaderConfiguration(),
+          monthBodyConfiguration: MonthBodyConfiguration(),
         ),
       ),
     );

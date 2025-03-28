@@ -13,6 +13,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnPageChanged? onPageChanged;
   final OnTapped? onTapped;
   final OnMultiDayTapped? onMultiDayTapped;
+  final OnMultiDayExpand? onMultiDayExpand;
 
   /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
@@ -24,6 +25,7 @@ class CalendarCallbacks<T extends Object?> {
     this.onPageChanged,
     this.onTapped,
     this.onMultiDayTapped,
+    this.onMultiDayExpand,
   });
 
   CalendarCallbacks<T> copyWith({
@@ -100,3 +102,13 @@ typedef OnTapped = void Function(DateTime date);
 ///
 /// [dateRange] is the range of dates that was tapped.
 typedef OnMultiDayTapped = void Function(DateTimeRange dateRange);
+
+
+/// The callback for when a user taps on a expandable multi-day calendar widget.
+/// 
+/// [date] is the date for which the expand widget is displayed for.
+/// [renderBox] is the [RenderBox] of the expand widget.
+typedef OnMultiDayExpand = void Function(
+  DateTime date,
+  RenderBox renderBox,
+);

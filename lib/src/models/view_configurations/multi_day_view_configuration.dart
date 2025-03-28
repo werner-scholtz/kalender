@@ -6,6 +6,7 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -311,16 +312,28 @@ class MultiDayHeaderConfiguration {
   /// Whether to show event tiles.
   final bool showTiles;
 
-  /// The layout strategy used to layout events.
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
-
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// The layout strategy used to layout events.
+  /// TODO: More detail in the depricated message.
+  @Deprecated('This has been deprecated use generateFrame instead')
+  final MultiDayEventLayoutStrategy eventLayoutStrategy;
+
+  /// TODO: document better
+  final GenerateMultiDayLayoutFrame? generateFrame;
+
+  /// The maximum number of events that can be displayed vertically.
+  ///
+  /// If this is null, then there is no limit.
+  final int? maximumNumberOfVerticalEvents;
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
+    this.generateFrame,
+    this.maximumNumberOfVerticalEvents,
     this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
@@ -332,10 +345,14 @@ class MultiDayHeaderConfiguration {
     CalendarInteraction? interaction,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
+    GenerateMultiDayLayoutFrame? generateFrame,
+    int? maximumNumberOfVerticalEvents,
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      generateFrame: generateFrame ?? this.generateFrame,
+      maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
     );
   }
 
