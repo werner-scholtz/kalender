@@ -10,8 +10,8 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///
 /// This function is responsible for calculating the layout information required
 /// to position and size multi-day events within a calendar view. The layout frame
-/// includes metadata such as the row assignments for events, the total number of rows,
-/// and a mapping of dates to the number of rows.
+/// includes metadata such as the row and column assignments for events, the total number of rows,
+/// and a mapping of columns (dates) to the number of rows.
 ///
 /// ## Parameters:
 /// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
