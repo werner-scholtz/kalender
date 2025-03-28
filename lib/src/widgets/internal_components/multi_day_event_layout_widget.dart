@@ -6,38 +6,79 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-/// A function that generates the layout frame for the events.
+/// A function type that generates a layout frame for multi-day events.
 ///
-/// The layout frame contains all the data needed to layout the events with [MultiDayLayout].
-typedef MultiDayGenerateLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
-  required DateTimeRange dateTimeRange,
+/// This function is responsible for calculating the layout information required
+/// to position and size multi-day events within a calendar view. The layout frame
+/// includes metadata such as the row assignments for events, the total number of rows,
+/// and a mapping of dates to the number of rows.
+///
+/// ## Parameters:
+/// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
+/// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
+typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
+  required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
 });
 
-/// A default implementation of [MultiDayGenerateLayoutFrame].
+/// The default implementation of [GenerateMultiDayLayoutFrame].
 ///
-/// The default implementation sorts the events from the earliest to the latest and longest to shortest.
-/// Then it finds the first row that doesn't overlap with any other event and assigns the event to that row.
+/// This function generates a layout frame for multi-day events by:
+/// 1. Sorting the events by their duration (descending) and start time (ascending).
+/// 2. Calculating the column (date) indices for each event based on its range.
+/// 3. Assigning each event to the first available row that does not overlap with other events.
+/// 4. Calculating the total number of rows each column requires.
+///
+/// ## Returns:
+/// A [MultiDayLayoutFrame] object containing:
+/// - The sorted list of events.
+/// - Layout information for each event, including row and column assignments.
+/// - The total number of rows required to display all events.
+/// - A mapping of columns to the number of rows.
+///
+/// ## Algorithm:
+/// 1. **Sorting**:
+///    - Events are sorted by duration in descending order.
+///    - If two events have the same duration, they are sorted by start time in ascending order.
+/// 2. **Row Assignment**:
+///    - Each event is assigned to the first available row that does not overlap with other events.
+///    - Overlaps are determined based on the columns (dates) the event spans.
+/// 3. **Row Count Calculation**:
+///    - The total number of rows is updated as events are assigned to rows.
+///    - A map is maintained to track the number of rows required for each date.
+///
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
-  required DateTimeRange dateTimeRange,
+  required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
 }) {
-  // Sort the events in descending order.
-  final sortedEvents = events.toList()
-    ..sort((a, b) => a.start.compareTo(b.start))
-    ..sort((a, b) => b.duration.compareTo(a.duration));
+  // A list of dates that are visible in the current date range.
+  final visibleDates = visibleDateTimeRange.dates();
 
-  final layoutInfo = <EventLayoutInfo>[];
+  // Sort the events.
+  final sortedEvents = events.toList()
+    ..sort((a, b) {
+      // Sort by duration (descending)
+      final comparison = b.duration.compareTo(a.duration);
+      if (comparison != 0) return comparison;
+      // Sort by start time (ascending) if durations are equal
+      return a.start.compareTo(b.start);
+    });
+
+  // A list containing the layout information for each event.
+  final layoutInfo = <EventLayoutInformation>[];
+
+  // The maximum number of rows needed to layout all the events.
   var maxRow = 0;
-  final map = <DateTime, int>{
-    for (final date in dateTimeRange.dates()) date: 0,
+
+  // A map that contains the number of rows for each of the columns.
+  final columnRowMap = <int, int>{
+    for (final date in visibleDates) visibleDates.indexOf(date): 0,
   };
 
   for (final event in sortedEvents) {
-    // Get the range of the event as UTC.
     final rangeAsUtc = event.dateTimeRangeAsUtc;
 
-    // Create a range that uses the correct start and end date.
+    // Create a range that rounds the start and end dates to the start and end of the day.
     final range = DateTimeRange(
       start: rangeAsUtc.start,
       // If the end date is the start of the day, we use the start of the day otherwise
@@ -45,43 +86,71 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
       end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
     );
 
-    final info = EventLayoutInfo(
-      id: event.id,
-      row: 0,
-      range: range,
-    );
+    // Find all the columns that the event will appear on.
+    final columns = <int>[];
+    for (final date in range.dates()) {
+      final index = visibleDates.indexOf(date);
 
-    // From all the existing layout info find the ones that overlap with the current event.
-    final overlaps = layoutInfo.where((e) {
-      return e.range.overlaps(info.range);
-    }).toList();
+      // If the date is not in the visible dates, we skip it.
+      if (index == -1) continue;
 
-    // Find the first row that doesn't overlap with any other event.
-    final row = overlaps.isEmpty ? 0 : overlaps.last.row + 1;
-
-    // Update the max row.
-    maxRow = max(maxRow, row);
-
-    // Update the map with the number of rows for each date.
-    final days = info.range.dates().toList();
-    for (final date in days) {
-      if (map[date] != null) map[date] = max(map[date] ?? 0, row);
+      // Add the index to the columns list.
+      columns.add(index);
     }
 
-    layoutInfo.add(info.copyWith(row: row));
+    // Create a preliminary layout information for the event.
+    final preliminaryLayout = EventLayoutInformation.preliminary(id: event.id, columns: columns);
+
+    // From all the existing layout info find the ones that overlap with the current event.
+    final overlaps = layoutInfo.where(preliminaryLayout.overlaps).toList();
+
+    // Find the first row with enough space to fit the event.
+    int? firstAvailableRow;
+    for (var row = 0; row <= maxRow; row++) {
+      final hasOverlap = overlaps.any((info) => info.row == row);
+      if (!hasOverlap) {
+        firstAvailableRow = row;
+        break;
+      }
+    }
+
+    // Find the first row that doesn't overlap with any other event.
+    late final nextRow = overlaps.isEmpty ? 0 : overlaps.last.row + 1;
+
+    // If no row with space is found, use the next open row.
+    final rowToUse = firstAvailableRow ?? nextRow;
+
+    // Create the final layout information for the event.
+    final layout = preliminaryLayout.copyWith(row: rowToUse);
+
+    // Update the max row.
+    maxRow = max(maxRow, layout.row);
+
+    // Update the map with the number of rows for each column.
+    for (final column in columns) {
+      columnRowMap[column] = max(columnRowMap[column] ?? 0, layout.row);
+    }
+
+    layoutInfo.add(layout);
   }
 
-  // TODO: add a compacting step that moves events up to a row if there is a empty space above it.
-
   return MultiDayLayoutFrame(
-    dateTimeRange: dateTimeRange,
+    dateTimeRange: visibleDateTimeRange,
     layoutInfo: layoutInfo,
     events: events,
     totalNumberOfRows: maxRow + 1,
-    dateToNumberOfRows: map,
+    columnRowMap: columnRowMap,
   );
 }
 
+/// A widget that lays out events spanning multiple days in a calendar view.
+///
+/// The [MultiDayEventLayoutWidget] is responsible for arranging and displaying
+/// events that occur over multiple days in a visually organized manner. It ensures
+/// that overlapping or adjacent events are properly aligned and do not overlap
+/// visually.
+///
+/// This widget is used by month views and in day view headers, for  displaying multi-day activities.
 class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   const MultiDayEventLayoutWidget({
     required this.events,
@@ -113,11 +182,11 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The list of events that will be laid out.
   ///
   /// * Note: not all of these events will necessarily be visible,
-  ///         it depends on the height constraint.
+  ///         it depends on [maxNumberOfVerticalEvents].
   final List<CalendarEvent<T>> events;
 
   /// The function that generates the layout frame for the events.
-  final MultiDayGenerateLayoutFrame<T> generateFrame;
+  final GenerateMultiDayLayoutFrame<T> generateFrame;
 
   @override
   State<MultiDayEventLayoutWidget<T>> createState() => _MultiDayEventLayoutWidgetState<T>();
@@ -134,13 +203,13 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   void initState() {
     super.initState();
     _dateTimeRange = widget.visibleDateTimeRange;
-    _frame = widget.generateFrame(dateTimeRange: _dateTimeRange, events: widget.events);
+    _frame = widget.generateFrame(visibleDateTimeRange: _dateTimeRange, events: widget.events);
   }
 
   @override
   void didUpdateWidget(covariant MultiDayEventLayoutWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // TODO: add all needed checks.
+    // TODO: add all needed checks this is a minimal implementation.
     final didUpdate = !oldWidget.events.equals(widget.events) ||
         oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
         oldWidget.generateFrame != widget.generateFrame;
@@ -149,7 +218,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       _dateTimeRange = widget.visibleDateTimeRange;
 
       setState(() {
-        _frame = widget.generateFrame(dateTimeRange: _dateTimeRange, events: widget.events);
+        _frame = widget.generateFrame(visibleDateTimeRange: _dateTimeRange, events: widget.events);
       });
     }
   }
@@ -162,6 +231,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         ? _frame.totalNumberOfRows
         : min(_frame.totalNumberOfRows, widget.maxNumberOfVerticalEvents!);
 
+    // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
       delegate: MultiDayLayout(
         dateTimeRange: widget.visibleDateTimeRange,
@@ -188,13 +258,14 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       }).toList(),
     );
 
+    // The drop target widget is used to show the drop target for the event that is being dragged.
     final dropTargetWidget = ValueListenableBuilder(
       valueListenable: widget.controller.selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
-        final frame = widget.generateFrame(dateTimeRange: widget.visibleDateTimeRange, events: [event]);
+        final frame = widget.generateFrame(visibleDateTimeRange: widget.visibleDateTimeRange, events: [event]);
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
@@ -226,7 +297,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         ),
         if (_frame.totalNumberOfRows >= maxNumberOfRows)
           Row(
-            children: _frame.dateToNumberOfRows.entries.map((entry) {
+            children: _frame.columnRowMap.entries.map((entry) {
               final rows = entry.value;
               return Expanded(
                 child: rows >= maxNumberOfRows
@@ -248,33 +319,36 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   }
 }
 
-/// Frame containing all the data to layout the events with [MultiDayLayout].
+/// Frame containing all the data to layout the [CalendarEvent]s with [MultiDayLayout].
 @immutable
 class MultiDayLayoutFrame<T> {
   /// The range of dates that the events are laid out on.
   final DateTimeRange dateTimeRange;
 
-  /// The sorted events that will be used to generate [MultiDayEventTile].
+  /// The sorted events that will be used to generate [MultiDayEventTile]s.
   final List<CalendarEvent<T>> events;
 
-  /// The layout info for each event.
-  final List<EventLayoutInfo> layoutInfo;
+  /// The layout information for each event.
+  final List<EventLayoutInformation> layoutInfo;
 
   /// The number of rows needed to layout all the events.
   final int totalNumberOfRows;
 
   /// A map that contains the number of rows for each date.
-  final Map<DateTime, int> dateToNumberOfRows;
+  final Map<int, int> columnRowMap;
 
   const MultiDayLayoutFrame({
     required this.dateTimeRange,
     required this.layoutInfo,
     required this.events,
     required this.totalNumberOfRows,
-    required this.dateToNumberOfRows,
+    required this.columnRowMap,
   });
 
-  (List<CalendarEvent<T>> events, List<EventLayoutInfo> layoutInfo) visibleEvents(int? maxNumberOfRows) {
+  /// Returns the visible events and their layout information based on the provided max number of rows.
+  /// 
+  /// If [maxNumberOfRows] is null, all events are returned.
+  (List<CalendarEvent<T>> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
     // If there is no max number of rows we return all the events.
     if (maxNumberOfRows == null) return (this.events, layoutInfo);
 
@@ -292,42 +366,73 @@ class MultiDayLayoutFrame<T> {
   }
 }
 
-/// Contains all the data needed to layout a single event.
+/// Contains all the data needed to layout a single event with the [MultiDayLayout].
 @immutable
-class EventLayoutInfo {
+class EventLayoutInformation {
   /// The id of the event.
   final int id;
 
   /// The row that the event should be laid out on.
   final int row;
 
-  /// The range of dates that the event is laid out on.
-  final DateTimeRange range;
+  /// The columns that the event should be laid out on.
+  final List<int> columns;
 
-  const EventLayoutInfo({
+  /// The starting column of the event.
+  int get start => columns.first;
+
+  /// The ending column of the event.
+  int get end => columns.last;
+
+  EventLayoutInformation({
     required this.id,
     required this.row,
-    required this.range,
-  });
+    required this.columns,
+  }) : assert(columns.isNotEmpty, 'Columns cannot be empty');
 
-  /// Creates a copy of the [EventLayoutInfo] with the provided values.
-  EventLayoutInfo copyWith({
-    int? row,
-    DateTimeRange? range,
+  factory EventLayoutInformation.preliminary({
+    required int id,
+    required List<int> columns,
   }) {
-    return EventLayoutInfo(
+    return EventLayoutInformation(
+      id: id,
+      row: 0,
+      columns: columns,
+    );
+  }
+
+  /// Creates a copy of the [EventLayoutInformation] with the provided values.
+  EventLayoutInformation copyWith({
+    int? row,
+    List<int>? columns,
+  }) {
+    return EventLayoutInformation(
       id: id,
       row: row ?? this.row,
-      range: range ?? this.range,
+      columns: columns ?? this.columns,
     );
+  }
+
+  /// Checks if this overlaps with another [EventLayoutInformation].
+  bool overlaps(EventLayoutInformation other) {
+    // TODO: this can be improved by just comparing the start and end columns.
+    return columns.any((column) => other.columns.contains(column));
   }
 
   @override
   String toString() {
-    return 'EventLayoutInfo(id: $id, row: $row, start: ${range.start}, end: ${range.end})';
+    return 'EventLayoutInfo(id: $id, row: $row, start: $start, end: $end)';
   }
 }
 
+/// A custom layout delegate for arranging multi-day events in a calendar view.
+///
+/// The [MultiDayLayout] is responsible for positioning and sizing event tiles
+/// within a multi-day calendar view. It calculates the layout based on the
+/// provided date range, event layout information, number of rows, and tile height.
+///
+/// This layout ensures that events spanning multiple days are displayed correctly
+/// across the corresponding date columns and rows.
 class MultiDayLayout extends MultiChildLayoutDelegate {
   MultiDayLayout({
     required this.dateTimeRange,
@@ -340,7 +445,7 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   final DateTimeRange dateTimeRange;
 
   /// The layout info for each event.
-  final List<EventLayoutInfo> layoutInfo;
+  final List<EventLayoutInformation> layoutInfo;
 
   /// The number of rows needed to layout all the events.
   final int numberOfRows;
@@ -348,34 +453,42 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   /// The height of each tile.
   final double tileHeight;
 
+  /// Calculates the [Size] of the layout based on the number of rows and tile height.
+  ///
+  /// The height is determined as [numberOfRows] * [tileHeight], and the width
+  /// is constrained by the parent widget.
   @override
   Size getSize(BoxConstraints constraints) {
     super.getSize(constraints);
     return Size(constraints.maxWidth, numberOfRows * tileHeight);
   }
 
+  /// Positions and sizes each child (event tile) based on its layout information.
   @override
   void performLayout(Size size) {
     final numberOfChildren = layoutInfo.length;
     final visibleDates = dateTimeRange.dates();
     final dayWidth = size.width / visibleDates.length;
-
     for (var i = 0; i < numberOfChildren; i++) {
-      final info = layoutInfo[i];
-      var startIndex = visibleDates.indexOf(info.range.start);
-      if (startIndex == -1) startIndex = 0;
-      var endIndex = visibleDates.indexOf(info.range.end);
-      if (endIndex == -1) endIndex = visibleDates.length;
+      // Get the layout information for the current child.
+      final information = layoutInfo[i];
 
-      final dx = startIndex * dayWidth;
-      final dy = info.row * tileHeight;
-      final width = (endIndex - startIndex) * dayWidth;
+      // Calculate the x position based on the start column and day width.
+      final dx = information.start * dayWidth;
 
-      layoutChild(info.id, BoxConstraints.tightFor(width: width, height: tileHeight));
-      positionChild(info.id, Offset(dx, dy));
+      // Calculate the y position based on the row and tile height.
+      final dy = information.row * tileHeight;
+
+      // Calculate the width of the child based on the number of columns and day width.
+      final width = information.columns.length * dayWidth;
+
+      layoutChild(information.id, BoxConstraints.tightFor(width: width, height: tileHeight));
+      positionChild(information.id, Offset(dx, dy));
     }
   }
 
+  /// Determines if the layout should be re-calculated based on changes in the
+  /// [dateTimeRange], [layoutInfo], [numberOfRows], or [tileHeight].
   @override
   bool shouldRelayout(covariant MultiDayLayout oldDelegate) {
     return oldDelegate.dateTimeRange != dateTimeRange ||

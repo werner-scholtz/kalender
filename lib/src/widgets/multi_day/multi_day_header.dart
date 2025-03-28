@@ -204,7 +204,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
-                  configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -340,7 +340,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
-                  configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -484,7 +484,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateFrame:
-                  configuration.generateFrame as MultiDayGenerateLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(

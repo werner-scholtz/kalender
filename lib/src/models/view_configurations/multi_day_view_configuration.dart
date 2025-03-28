@@ -321,7 +321,7 @@ class MultiDayHeaderConfiguration {
   final MultiDayEventLayoutStrategy eventLayoutStrategy;
 
   /// TODO: document better
-  final MultiDayGenerateLayoutFrame? generateFrame;
+  final GenerateMultiDayLayoutFrame? generateFrame;
 
   /// The maximum number of events that can be displayed vertically.
   ///
@@ -345,7 +345,7 @@ class MultiDayHeaderConfiguration {
     CalendarInteraction? interaction,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
-    MultiDayGenerateLayoutFrame? generateFrame,
+    GenerateMultiDayLayoutFrame? generateFrame,
     int? maximumNumberOfVerticalEvents,
   }) {
     return MultiDayHeaderConfiguration(

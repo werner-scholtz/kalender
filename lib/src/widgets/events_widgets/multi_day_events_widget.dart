@@ -28,7 +28,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final double tileHeight;
   final bool showAllEvents;
   // TODO: rename
-  final MultiDayGenerateLayoutFrame<T> generateFrame;
+  final GenerateMultiDayLayoutFrame<T> generateFrame;
   final ValueNotifier<CalendarInteraction> interaction;
 
   const MultiDayEventWidget({

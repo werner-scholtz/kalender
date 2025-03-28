@@ -182,7 +182,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,
                                     callbacks: callbacks,
-                                    generateFrame: configuration?.generateFrame as MultiDayGenerateLayoutFrame<T>? ??
+                                    generateFrame: configuration?.generateFrame as GenerateMultiDayLayoutFrame<T>? ??
                                         defaultMultiDayGenerateFrame<T>,
                                   );
                                 },
