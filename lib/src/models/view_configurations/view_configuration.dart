@@ -27,9 +27,12 @@ const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultShowMultiDayEvents = false;
 const defaultEventLayoutStrategy = overlapLayoutStrategy;
-const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
+
+// TODO: add msg
+@Deprecated('')
+const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

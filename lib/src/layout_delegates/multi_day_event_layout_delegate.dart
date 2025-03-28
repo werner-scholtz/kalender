@@ -5,6 +5,8 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// Signature for the strategy that determines how multi-day events are laid out.
+/// TODO: add msg
+@Deprecated('')
 typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
@@ -13,6 +15,8 @@ typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDele
 );
 
 /// The default [MultiDayEventLayoutStrategy].
+/// TODO: add msg
+@Deprecated('')
 MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
@@ -28,6 +32,8 @@ MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
 }
 
 /// The base class for [MultiDayEventLayoutDelegate]'s.
+/// TODO: add msg
+@Deprecated('')
 abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
   MultiDayEventLayoutDelegate({
     required this.events,
@@ -55,6 +61,8 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
 }
 
 /// TODO: This is still a WIP
+/// TODO: add msg
+@Deprecated('')
 class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   DefaultMultiDayLayoutDelegate({
     required super.events,
