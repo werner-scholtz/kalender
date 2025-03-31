@@ -5,8 +5,10 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// Signature for the strategy that determines how multi-day events are laid out.
-/// TODO: add msg
-@Deprecated('')
+@Deprecated('''
+This method is deprecated and will be removed in a future release.
+Please make use of the new `generateFrame` methods in the `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` configurations instead.
+''')
 typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDelegate<T> Function(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
@@ -15,8 +17,9 @@ typedef MultiDayEventLayoutStrategy<T extends Object?> = MultiDayEventLayoutDele
 );
 
 /// The default [MultiDayEventLayoutStrategy].
-/// TODO: add msg
-@Deprecated('')
+@Deprecated('''
+This method is deprecated and will be removed in a future release.
+''')
 MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
   List<CalendarEvent<T>> events,
   DateTimeRange dateTimeRange,
@@ -32,8 +35,10 @@ MultiDayEventLayoutDelegate defaultMultiDayLayoutStrategy<T extends Object?>(
 }
 
 /// The base class for [MultiDayEventLayoutDelegate]'s.
-/// TODO: add msg
-@Deprecated('')
+@Deprecated('''
+This class is deprecated and will be removed in a future release.
+Please make use of the new `GenerateMultiDayLayoutFrame` typedef to customize your multi-day layout instead..
+''')
 abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
   MultiDayEventLayoutDelegate({
     required this.events,
@@ -60,9 +65,10 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
   Size getSize(BoxConstraints constraints);
 }
 
-/// TODO: This is still a WIP
-/// TODO: add msg
-@Deprecated('')
+
+@Deprecated('''
+This class is deprecated and will be removed in a future release.
+''')
 class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   DefaultMultiDayLayoutDelegate({
     required super.events,

@@ -316,9 +316,11 @@ class MultiDayHeaderConfiguration {
   final PageTriggerConfiguration pageTriggerConfiguration;
 
   /// The layout strategy used to layout events.
-  /// TODO: More detail in the depricated message.
-  @Deprecated('This has been deprecated use generateFrame instead')
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
+  @Deprecated('''
+This method is deprecated and will be removed in a future release. 
+Please use the `generateFrame` method instead.
+''')
+  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
   /// TODO: document better
   final GenerateMultiDayLayoutFrame? generateFrame;
@@ -334,7 +336,7 @@ class MultiDayHeaderConfiguration {
     this.tileHeight = defaultTileHeight,
     this.generateFrame,
     this.maximumNumberOfVerticalEvents,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
+    this.eventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();

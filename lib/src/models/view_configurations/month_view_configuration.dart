@@ -9,9 +9,11 @@ class MonthViewConfiguration extends ViewConfiguration {
   final MonthPageFunctions pageNavigationFunctions;
 
   /// The layout strategy used by the [MultiDayHeader] to layout events.
-  /// TODO: More detail in the depricated message.
-  @Deprecated('This has been deprecated use generateFrame in the MonthBodyConfiguration instead')
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
+  @Deprecated('''
+This method is deprecated and will be removed in a future release. 
+Please use the `generateFrame` method in the `MonthBodyConfiguration` configuration instead.
+''')
+  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
   /// The first day of the week.
   final int firstDayOfWeek;
@@ -31,7 +33,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.name = 'Month',
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
+    this.eventLayoutStrategy,
   }) : pageNavigationFunctions = MonthPageFunctions(
           dateTimeRange: displayRange ?? DateTime.now().yearRange,
           shift: firstDayOfWeek,

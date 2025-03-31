@@ -54,7 +54,7 @@ void main() {
       ),
     );
 
-    print(find.byKey(const ValueKey('multiDayExpand')).evaluate().length);
+    // print(find.byKey(const ValueKey('multiDayExpand')).evaluate().length);
 
     // Verify that the events are laid out correctly
     expect(find.byKey(const ValueKey(1)), findsOneWidget);
