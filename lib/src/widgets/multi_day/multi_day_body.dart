@@ -16,6 +16,7 @@ import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
+import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 /// This widget is used to display a multi-day body.
@@ -69,6 +70,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.interaction,
     this.snapping,
   });
+
+  static const contentKey = ValueKey('contentKey');
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +173,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             );
 
         final content = LayoutBuilder(
+          key: contentKey,
           builder: (context, constraints) {
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
 
@@ -198,14 +202,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
                 },
                 itemBuilder: (context, index) {
-                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(
-                    index,
-                  );
-
+                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
                   final visibleDates = visibleRange.dates();
-                  final timeIndicatorDateIndex = visibleDates.indexWhere(
-                    (date) => date.isToday,
-                  );
 
                   final daySeparatorStyle = styles?.daySeparatorStyle;
                   final daySeparator =
@@ -249,22 +247,17 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     snapping: snapping,
                   );
 
-                  late final left = dayWidth * timeIndicatorDateIndex;
-
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
                       ...daySeparators,
                       Positioned.fill(child: draggable),
                       Positioned.fill(child: events),
-                      if (timeIndicatorDateIndex != -1)
-                        PositionedDirectional(
-                          top: 0,
-                          bottom: 0,
-                          start: left,
-                          width: dayWidth,
-                          child: timeIndicator,
-                        ),
+                      PositionedTimeIndicator(
+                        visibleDates: visibleDates,
+                        dayWidth: dayWidth,
+                        child: timeIndicator,
+                      ),
                     ],
                   );
                 },
