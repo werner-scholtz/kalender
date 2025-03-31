@@ -1,19 +1,23 @@
+## 0.6.7
+
+- fix: Drag event cause an exception. [#144](https://github.com/werner-scholtz/kalender/issues/144)
+
 ## 0.6.6
 
-- fix MultiDayHeaderWidget layout regressions.
+- fix: MultiDayHeaderWidget layout regressions.
 - Added widget tests for MultiDayHeaderWidget.
 
 ## 0.6.5
 
-- fix SingleDayView RenderFlex overflow.
+- fix: SingleDayView RenderFlex overflow.
 
 ## 0.6.4
 
-- fix MonthGrid not taking number of rows into consideration. [#131](https://github.com/werner-scholtz/kalender/issues/131)
+- fix: MonthGrid not taking number of rows into consideration. [#131](https://github.com/werner-scholtz/kalender/issues/131)
 
 ## 0.6.3
 
-- fix Event snapping not always working.
+- fix: Event snapping not always working.
 
 ## 0.6.2
 
