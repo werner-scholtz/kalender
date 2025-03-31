@@ -12,7 +12,8 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// This function is responsible for calculating the layout information required
 /// to position and size multi-day events within a calendar view. The layout frame
 /// includes metadata such as the row and column assignments for events, the total number of rows,
-/// and a mapping of columns (dates) to the number of rows.
+/// and a mapping of columns (dates) to the number of rows. 
+/// * (columns and rows in this context does not refer to widgets instead it is a concept used within within the [MultiDayLayout] to position and layout events)
 ///
 /// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
 /// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
@@ -364,13 +365,15 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 /// Frame containing all the data to layout the [CalendarEvent]s with [MultiDayLayout].
 @immutable
 class MultiDayLayoutFrame<T> {
-  /// The range of dates that the events are laid out on.
+  /// The range of dates that this frame is for.
+  /// 
+  /// ex. 1 Week (7 days).
   final DateTimeRange dateTimeRange;
 
-  /// The sorted events that will be used to generate [MultiDayEventTile]s.
+  /// The sorted events for this frame that will be used to generate [MultiDayEventTile]s.
   final List<CalendarEvent<T>> events;
 
-  /// The layout information for each event.
+  /// The layout information for each event in this frame.
   final List<EventLayoutInformation> layoutInfo;
 
   /// The number of rows needed to layout all the events.

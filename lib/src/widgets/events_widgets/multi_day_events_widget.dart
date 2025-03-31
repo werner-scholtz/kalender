@@ -11,7 +11,7 @@ import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_
 /// This widget also takes responsibility for updating the [CalendarController.visibleEvents],
 /// unlike the DayEventsWidget that can clear the visibleEvents it only adds the events that are visible.
 ///
-/// TODO: Chanage docs
+/// TODO: Change docs
 /// To render the event tiles it uses [CustomMultiChildLayout],
 /// along with a [defaultMultiDayLayoutStrategy] or custom strategy defined by the user.
 ///
