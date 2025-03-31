@@ -20,6 +20,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
+  required TextDirection textDirection,
 });
 
 /// The default implementation of [GenerateMultiDayLayoutFrame].
@@ -51,7 +52,10 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
+  required TextDirection textDirection,
 }) {
+  // TODO: implement directionality.
+
   // A list of dates that are visible in the current date range.
   final visibleDates = visibleDateTimeRange.dates();
 
@@ -61,8 +65,13 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
       // Sort by duration (descending)
       final comparison = b.duration.compareTo(a.duration);
       if (comparison != 0) return comparison;
+
+      final aStart = a.dateTimeRangeAsUtc.start;
+      final bRange = b.dateTimeRangeAsUtc;
+      final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
+
       // Sort by start time (ascending) if durations are equal
-      return a.start.compareTo(b.start);
+      return aStart.compareTo(bStart);
     });
 
   // A list containing the layout information for each event.
@@ -167,6 +176,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.interaction,
     required this.generateFrame,
     required this.multiDayExpandBuilder,
+    required this.textDirection,
     super.key,
   });
 
@@ -193,6 +203,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The builder for the multi-day expand widget.
   final MultiDayExpandBuilder? multiDayExpandBuilder;
 
+  /// The directionality of the widget.
+  final TextDirection textDirection;
+
   @override
   State<MultiDayEventLayoutWidget<T>> createState() => _MultiDayEventLayoutWidgetState<T>();
 }
@@ -208,7 +221,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   void initState() {
     super.initState();
     _dateTimeRange = widget.visibleDateTimeRange;
-    _frame = widget.generateFrame(visibleDateTimeRange: _dateTimeRange, events: widget.events);
+    _frame = widget.generateFrame(
+      visibleDateTimeRange: _dateTimeRange,
+      events: widget.events,
+      textDirection: widget.textDirection,
+    );
   }
 
   @override
@@ -223,7 +240,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       _dateTimeRange = widget.visibleDateTimeRange;
 
       setState(() {
-        _frame = widget.generateFrame(visibleDateTimeRange: _dateTimeRange, events: widget.events);
+        _frame = widget.generateFrame(
+          visibleDateTimeRange: _dateTimeRange,
+          events: widget.events,
+          textDirection: widget.textDirection,
+        );
       });
     }
   }
@@ -270,7 +291,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         if (event == null) return const SizedBox();
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
-        final frame = widget.generateFrame(visibleDateTimeRange: widget.visibleDateTimeRange, events: [event]);
+        final frame = widget.generateFrame(
+          visibleDateTimeRange: widget.visibleDateTimeRange,
+          events: [event],
+          textDirection: widget.textDirection,
+        );
 
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
@@ -319,7 +344,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             PassThroughPointer(child: dropTargetWidget),
           ],
         ),
-        if (_frame.totalNumberOfRows >= maxNumberOfRows) ...expandWidgets,
+        if (_frame.totalNumberOfRows > maxNumberOfRows) ...expandWidgets,
       ],
     );
   }

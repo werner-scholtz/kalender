@@ -80,6 +80,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           interaction: interaction,
           generateFrame: generateFrame,
           multiDayExpandBuilder: multiDayExpandBuilder,
+          textDirection: Directionality.of(context),
         );
       },
     );
