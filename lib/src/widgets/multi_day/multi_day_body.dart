@@ -70,6 +70,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.snapping,
   });
 
+  static const contentKey = ValueKey('contentKey');
+
   @override
   Widget build(BuildContext context) {
     var eventsController = this.eventsController;
@@ -170,6 +172,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             );
 
         final content = LayoutBuilder(
+          key: contentKey,
           builder: (context, constraints) {
             final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
 
