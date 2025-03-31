@@ -193,7 +193,7 @@ void main() {
       }
     });
 
-    group('PositionedTimeIndicator', () {
+    group('PositionedTimeIndicator Tests', () {
       final now = DateTime.now();
       final start = now.startOfWeek;
       final end = now.endOfWeek;
@@ -204,8 +204,8 @@ void main() {
         final day = visibleDates[weekday];
 
         for (var i = 0; i < 24; i++) {
-          testWidgets('PositionedTimeIndicator Tests', (tester) async {
-            final nowOverride = start.copyWith(year: day.year, month: day.month, day: day.day, hour: i);
+          final nowOverride = start.copyWith(year: day.year, month: day.month, day: day.day, hour: i);
+          testWidgets('$nowOverride', (tester) async {
             const dayWidth = 50.0;
             await tester.pumpWidget(
               wrapWithMaterialApp(
