@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart' show DayEventTile;
+import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
 
 import 'utilities.dart';
 
@@ -192,70 +193,51 @@ void main() {
       }
     });
 
-    group('Layout Tests', () {
-      late DateTime now;
-      late CalendarController calendarController;
-      setUp(() {
-        now = DateTime.now();
-        calendarController = CalendarController(initialDate: now);
-      });
+    group('PositionedTimeIndicator', () {
+      final now = DateTime.now();
+      final start = now.startOfWeek;
+      final end = now.endOfWeek;
+      final range = DateTimeRange(start: start, end: end);
+      final visibleDates = range.asUtc.dates();
 
-      testWidgets('Time Indicator (singleDay)', (tester) async {
-        final viewConfiguration = MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 0.5);
-        await tester.pumpWidget(
-          wrapWithMaterialApp(
-            CalendarView(
-              eventsController: eventsController,
-              calendarController: calendarController,
-              viewConfiguration: viewConfiguration,
-              callbacks: callbacks,
-              body: CalendarBody(
-                multiDayTileComponents: components,
-                monthTileComponents: components,
+      for (var weekday = 0; weekday < 7; weekday++) {
+        final day = visibleDates[weekday];
+        for (var i = 0; i < 4; i++) {
+          testWidgets('PositionedTimeIndicator Tests', (tester) async {
+            final nowOverride = now.copyWith(year: now.year, month: now.month, day: day.day, hour: i);
+            const dayWidth = 50.0;
+            await tester.pumpWidget(
+              wrapWithMaterialApp(
+                Stack(
+                  children: [
+                    const SizedBox(width: dayWidth * 7),
+                    PositionedTimeIndicator(
+                      visibleDates: visibleDates,
+                      dayWidth: dayWidth,
+                      nowOverride: nowOverride,
+                      child: const SizedBox(
+                        width: dayWidth,
+                        key: ValueKey('child'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
+            );
+            await tester.pumpAndSettle();
 
-        expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
-        final timeIndicator = find.byType(TimeIndicator);
-        expect(timeIndicator, findsOneWidget, reason: 'TimeIndicator should be rendered');
-      });
+            final child = find.byKey(const ValueKey('child'));
+            expect(child, findsOneWidget);
 
-      testWidgets('Time Indicator (week)', (tester) async {
-        final viewConfiguration = MultiDayViewConfiguration.week(initialHeightPerMinute: 0.5);
-
-        await tester.pumpWidget(
-          wrapWithMaterialApp(
-            CalendarView(
-              eventsController: eventsController,
-              calendarController: calendarController,
-              viewConfiguration: viewConfiguration,
-              callbacks: callbacks,
-              body: CalendarBody(
-                multiDayTileComponents: components,
-                monthTileComponents: components,
-              ),
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
-
-        final content = find.byKey(MultiDayBody.contentKey);
-        final contentLeft = tester.getTopLeft(content);
-        final contentSize = tester.getSize(content);
-        final dayWidth = contentSize.width / 7;
-
-        final timeIndicator = find.byType(TimeIndicator);
-        expect(timeIndicator, findsOneWidget, reason: 'TimeIndicator should be rendered');
-
-        final timeIndicatorLeft = tester.getTopLeft(timeIndicator);
-        final expectedLeft = contentLeft.dx + dayWidth * (now.weekday - 1);
-
-        expect(timeIndicatorLeft.dx == expectedLeft, isTrue);
-      });
+            final childPosition = tester.getTopLeft(child);
+            expect(
+              childPosition,
+              Offset(weekday * dayWidth, 0),
+              reason: 'Child should be positioned correctly',
+            );
+          });
+        }
+      }
     });
   });
 }
