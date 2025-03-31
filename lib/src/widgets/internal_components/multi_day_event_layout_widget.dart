@@ -54,10 +54,9 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
 }) {
-  // TODO: implement directionality.
-
   // A list of dates that are visible in the current date range.
-  final visibleDates = visibleDateTimeRange.dates();
+  final dates = visibleDateTimeRange.dates();
+  final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
   // Sort the events.
   final sortedEvents = events.toList()
@@ -98,7 +97,8 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];
-    for (final date in range.dates()) {
+    final dates = textDirection == TextDirection.ltr ? range.dates() : range.dates().reversed.toList();
+    for (final date in dates) {
       final index = visibleDates.indexOf(date);
 
       // If the date is not in the visible dates, we skip it.
@@ -143,6 +143,10 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 
     layoutInfo.add(layout);
   }
+
+  // for (final column in columnRowMap.entries) {
+  //   print('Column: ${column.key}, Rows: ${column.value}');
+  // }
 
   return MultiDayLayoutFrame(
     dateTimeRange: visibleDateTimeRange,
@@ -231,10 +235,19 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   @override
   void didUpdateWidget(covariant MultiDayEventLayoutWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // TODO: add all needed checks this is a minimal implementation.
     final didUpdate = !oldWidget.events.equals(widget.events) ||
         oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
-        oldWidget.generateFrame != widget.generateFrame;
+        oldWidget.generateFrame != widget.generateFrame ||
+        oldWidget.textDirection != widget.textDirection ||
+        oldWidget.tileHeight != widget.tileHeight ||
+        oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
+        oldWidget.showAllEvents != widget.showAllEvents ||
+        oldWidget.dayWidth != widget.dayWidth ||
+        oldWidget.interaction != widget.interaction ||
+        oldWidget.tileComponents != widget.tileComponents ||
+        oldWidget.callbacks != widget.callbacks ||
+        oldWidget.multiDayExpandBuilder != widget.multiDayExpandBuilder ||
+        oldWidget.controller != widget.controller;
 
     if (didUpdate) {
       _dateTimeRange = widget.visibleDateTimeRange;
@@ -447,10 +460,16 @@ class EventLayoutInformation {
     );
   }
 
-  /// Checks if this overlaps with another [EventLayoutInformation].
+  /// Checks if this event overlaps with another [EventLayoutInformation].
+  ///
+  /// Two events are considered overlapping if their column ranges intersect.
+  /// This method compares the start and end columns of both events to determine
+  /// if there is any overlap.
+  ///
+  /// ## Returns:
+  /// - `true` if the events overlap; otherwise, `false`.
   bool overlaps(EventLayoutInformation other) {
-    // TODO: this can be improved by just comparing the start and end columns.
-    return columns.any((column) => other.columns.contains(column));
+    return !(end < other.start || start > other.end);
   }
 
   @override
