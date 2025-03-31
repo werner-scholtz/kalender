@@ -14,9 +14,9 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// includes metadata such as the row and column assignments for events, the total number of rows,
 /// and a mapping of columns (dates) to the number of rows.
 ///
-/// ## Parameters:
 /// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
 /// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
+/// - [textDirection]: The text direction (LTR or RTL) for the layout.
 typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
@@ -56,6 +56,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 }) {
   // A list of dates that are visible in the current date range.
   final dates = visibleDateTimeRange.dates();
+  // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
   // Sort the events.
@@ -97,6 +98,7 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];
+    // Take the text direction into account so that the columns are in the correct order.
     final dates = textDirection == TextDirection.ltr ? range.dates() : range.dates().reversed.toList();
     for (final date in dates) {
       final index = visibleDates.indexOf(date);
@@ -143,10 +145,6 @@ MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
 
     layoutInfo.add(layout);
   }
-
-  // for (final column in columnRowMap.entries) {
-  //   print('Column: ${column.key}, Rows: ${column.value}');
-  // }
 
   return MultiDayLayoutFrame(
     dateTimeRange: visibleDateTimeRange,
