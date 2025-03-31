@@ -1,6 +1,7 @@
 ## 0.6.7
 
 - fix: Drag event cause an exception. [#144](https://github.com/werner-scholtz/kalender/issues/144)
+- fix: TimeIndicator rendering on incorrect day. [#143](https://github.com/werner-scholtz/kalender/issues/143) 
 
 ## 0.6.6
 
