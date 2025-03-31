@@ -10,8 +10,20 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 ///
 /// The tile widget is rendered below the resize handles.
 class DayEventTile<T extends Object?> extends EventTile<T> {
+  /// A key used to identify the tile.
+  static ValueKey<String> getKey(int eventId) => ValueKey('DayEventTile-$eventId');
+
+  /// A key used to identify the top resize handle.
+  static const topResizeDraggable = ValueKey('TopResizeDraggable');
+
+  /// A key used to identify the bottom resize handle.
+  static const bottomResizeDraggable = ValueKey('BottomResizeDraggable');
+
+  /// A key used to identify the reschedule draggable.
+  static const rescheduleDraggable = ValueKey('RescheduleDraggable');
+
   const DayEventTile({
-    super.key,
+    required super.key,
     required super.controller,
     required super.eventsController,
     required super.callbacks,
@@ -36,6 +48,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
             }
 
             return Draggable<Resize<T>>(
+              key: topResizeDraggable,
               data: resizeEvent(ResizeDirection.top),
               feedback: const SizedBox(),
               dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -55,6 +68,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
             }
 
             return Draggable<Resize<T>>(
+              key: bottomResizeDraggable,
               data: resizeEvent(ResizeDirection.bottom),
               feedback: const SizedBox(),
               dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -77,6 +91,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
         final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
         late final draggable = isMobileDevice
             ? LongPressDraggable<Reschedule<T>>(
+                key: rescheduleDraggable,
                 data: rescheduleEvent,
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,
@@ -86,6 +101,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
                 child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
               )
             : Draggable<Reschedule<T>>(
+                key: rescheduleDraggable,
                 data: rescheduleEvent,
                 feedback: feedback,
                 childWhenDragging: tileWhenDragging,

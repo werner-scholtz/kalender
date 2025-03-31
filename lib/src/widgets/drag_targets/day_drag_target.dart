@@ -279,8 +279,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
     } else {
-      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime).asUtc;
-      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime).asUtc;
+      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime);
+      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime);
       if (cursorDateTime.isBefore(startOfDate)) {
         start = startOfDate;
       } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {

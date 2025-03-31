@@ -191,6 +191,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
             (item) => LayoutId(
               id: item.$1,
               child: DayEventTile(
+                key: DayEventTile.getKey(item.$2.id),
                 event: item.$2,
                 eventsController: widget.eventsController,
                 controller: widget.controller,
