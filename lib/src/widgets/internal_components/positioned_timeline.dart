@@ -49,7 +49,7 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
 
   void _update() {
     final newIndex = widget.nowOverride != null
-        ? widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!))
+        ? widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!.asUtc))
         // Compare with the current date as UTC.
         : widget.visibleDates.indexWhere((date) => date.isSameDay(DateTime.now().asUtc));
 
