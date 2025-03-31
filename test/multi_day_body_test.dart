@@ -193,21 +193,68 @@ void main() {
     });
 
     group('Layout Tests', () {
-      testWidgets('Time Indicator', (tester) async {
-        //   await tester.pumpWidget(
-        //     wrapWithMaterialApp(
-        //       CalendarView(
-        //         eventsController: eventsController,
-        //         calendarController: calendarController,
-        //         viewConfiguration: viewConfiguration,
-        //         callbacks: callbacks,
-        //         body: CalendarBody(
-        //           multiDayTileComponents: components,
-        //           monthTileComponents: components,
-        //         ),
-        //       ),
-        //     ),
-        //   );
+      late DateTime now;
+      late CalendarController calendarController;
+      setUp(() {
+        now = DateTime.now();
+        calendarController = CalendarController(initialDate: now);
+      });
+
+      testWidgets('Time Indicator (singleDay)', (tester) async {
+        final viewConfiguration = MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 0.5);
+        await tester.pumpWidget(
+          wrapWithMaterialApp(
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: viewConfiguration,
+              callbacks: callbacks,
+              body: CalendarBody(
+                multiDayTileComponents: components,
+                monthTileComponents: components,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+        final timeIndicator = find.byType(TimeIndicator);
+        expect(timeIndicator, findsOneWidget, reason: 'TimeIndicator should be rendered');
+      });
+
+      testWidgets('Time Indicator (week)', (tester) async {
+        final viewConfiguration = MultiDayViewConfiguration.week(initialHeightPerMinute: 0.5);
+
+        await tester.pumpWidget(
+          wrapWithMaterialApp(
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: viewConfiguration,
+              callbacks: callbacks,
+              body: CalendarBody(
+                multiDayTileComponents: components,
+                monthTileComponents: components,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+
+        final content = find.byKey(MultiDayBody.contentKey);
+        final contentLeft = tester.getTopLeft(content);
+        final contentSize = tester.getSize(content);
+        final dayWidth = contentSize.width / 7;
+
+        final timeIndicator = find.byType(TimeIndicator);
+        expect(timeIndicator, findsOneWidget, reason: 'TimeIndicator should be rendered');
+
+        final timeIndicatorLeft = tester.getTopLeft(timeIndicator);
+        final expectedLeft = contentLeft.dx + dayWidth * (now.weekday - 1);
+
+        expect(timeIndicatorLeft.dx == expectedLeft, isTrue);
       });
     });
   });
