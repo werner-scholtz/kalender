@@ -49,9 +49,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 /// 3. **Row Count Calculation**:
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
-///
-/// TODO: rename defaultMultiDayFrameGenerator
-MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
+MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,

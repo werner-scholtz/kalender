@@ -33,6 +33,5 @@ const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
-// TODO: add msg
-@Deprecated('')
+@Deprecated('This will be removed in the future. Use `generateMultiDayLayoutFrame` instead.')
 const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

@@ -322,8 +322,10 @@ Please use the `generateFrame` method instead.
 ''')
   final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
-  /// TODO: document better
-  final GenerateMultiDayLayoutFrame? generateFrame;
+  /// The function that generates the layout frame for the multi-day event.
+  ///
+  /// * see [defaultMultiDayFrameGenerator] for default implementation.
+  final GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame;
 
   /// The maximum number of events that can be displayed vertically.
   ///
@@ -334,7 +336,7 @@ Please use the `generateFrame` method instead.
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
-    this.generateFrame,
+    this.generateMultiDayLayoutFrame,
     this.maximumNumberOfVerticalEvents,
     this.eventLayoutStrategy,
     PageTriggerConfiguration? pageTriggerConfiguration,
@@ -347,13 +349,13 @@ Please use the `generateFrame` method instead.
     CalendarInteraction? interaction,
     CreateEventGesture? createEventTrigger,
     PageTriggerConfiguration? pageTriggerConfiguration,
-    GenerateMultiDayLayoutFrame? generateFrame,
+    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
     int? maximumNumberOfVerticalEvents,
   }) {
     return MultiDayHeaderConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
-      generateFrame: generateFrame ?? this.generateFrame,
+      generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
       maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
     );
   }

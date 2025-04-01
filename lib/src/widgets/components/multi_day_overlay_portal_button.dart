@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 /// The builder used to create the button for the [MultiDayPortalOverlayButton].
 ///
-/// TODO: docs
+/// [portalController] is the controller for the overlay portal.
+/// [numberOfHiddenEvents] is the number of events that are not displayed because of constraints.
+/// [style] is the style of the button.
 typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
   OverlayPortalController portalController,
   int numberOfHiddenEvents,
@@ -10,8 +12,12 @@ typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
 );
 
 class MultiDayPortalOverlayButtonStyle {
+  /// The text style of the button.
   final TextStyle? textStyle;
+
+  /// The padding of the text.
   final EdgeInsetsGeometry? textPadding;
+
   const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding});
 }
 

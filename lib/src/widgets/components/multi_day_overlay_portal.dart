@@ -4,7 +4,13 @@ import 'package:kalender/kalender.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///
-/// TODO: docs
+/// [date] is the date for which the widget is created.
+/// [events] are all the events that can be displayed for the given [date]. (They are not necessarily all displayed.)
+/// [numberOfHiddenEvents] is the number of hidden events.
+/// [tileHeight] is the height of the tile.
+/// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
+/// [overlayBuilders] is the builders for the overlay event tile.
+/// [overlayStyles] is the styles for the overlay event tile.
 typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
   required DateTime date,
   required List<CalendarEvent<T>> events,

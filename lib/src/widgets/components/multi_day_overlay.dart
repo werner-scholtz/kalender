@@ -18,6 +18,15 @@ typedef RenderBoxCallback = RenderBox Function();
 
 
 /// A function that returns a [MultiDayOverlay] widget.
+/// 
+/// The [date] is the date for which the widget is created.
+/// The [events] are all the events that should be displayed for the given [date].
+/// The [tileHeight] is the height of the tile.
+/// The [portalController] is the controller for the overlay portal.
+/// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the [MultiDayEventLayoutWidget].
+/// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
+/// The [overlayTileBuilder] is the builder for the overlay event tile.
+/// The [style] is the style for the overlay.
 typedef MultiDayOverlayBuilder<T extends Object?> = Widget Function({
   required DateTime date,
   required List<CalendarEvent<T>> events,

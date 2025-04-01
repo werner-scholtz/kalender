@@ -203,8 +203,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateFrame:
-                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+              generateMultiDayLayoutFrame:
+                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );
@@ -341,8 +341,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateFrame:
-                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+              generateMultiDayLayoutFrame:
+                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );
@@ -487,8 +487,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateFrame:
-                  configuration.generateFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayGenerateFrame<T>,
+              generateMultiDayLayoutFrame:
+                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );

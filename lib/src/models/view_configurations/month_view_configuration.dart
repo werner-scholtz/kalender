@@ -42,7 +42,7 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
 class MonthBodyConfiguration extends MultiDayHeaderConfiguration {
   MonthBodyConfiguration({
-    super.generateFrame,
+    super.generateMultiDayLayoutFrame,
     super.pageTriggerConfiguration,
     super.scrollTriggerConfiguration,
     super.showTiles,

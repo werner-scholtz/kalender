@@ -81,7 +81,6 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
   Size getSize(BoxConstraints constraints) {
     super.getSize(constraints);
 
-    /// TODO: this does not work 100% correctly.
     /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
     for (final event in events) {

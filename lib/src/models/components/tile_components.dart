@@ -15,6 +15,11 @@ class TileComponents<T extends Object?> {
   /// The default builder for stationary event tiles.
   final TileBuilder<T> tileBuilder;
 
+  /// The builder used when events are displayed in a [Overlay].
+  ///
+  /// If this is not provided, the [tileBuilder] will be used instead.
+  final TileBuilder<T>? overlayTileBuilder;
+
   /// The builder for the stationary event tile. (When dragging)
   final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
 
@@ -23,11 +28,6 @@ class TileComponents<T extends Object?> {
 
   /// The builder for the drop target event tile.
   final TileDropTargetBuilder<T>? dropTargetTile;
-
-  /// The builder for the overlay event tile.
-  /// 
-  /// TODO: Better description.
-  final TileBuilder<T>? overlayTileBuilder;
 
   /// The dragAnchorStrategy used by the [feedbackTileBuilder].
   final DragAnchorStrategy? dragAnchorStrategy;

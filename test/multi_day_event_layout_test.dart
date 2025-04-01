@@ -49,7 +49,7 @@ void main() {
           tileHeight: tileHeight,
           maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
           interaction: interaction,
-          generateFrame: defaultMultiDayGenerateFrame<int>,
+          generateFrame: defaultMultiDayFrameGenerator<int>,
           textDirection: TextDirection.rtl,
           multiDayOverlayBuilders: null,
           multiDayOverlayStyles: null,
