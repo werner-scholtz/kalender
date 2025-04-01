@@ -13,7 +13,6 @@ class CalendarCallbacks<T extends Object?> {
   final OnPageChanged? onPageChanged;
   final OnTapped? onTapped;
   final OnMultiDayTapped? onMultiDayTapped;
-  final OnMultiDayExpand? onMultiDayExpand;
 
   /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
@@ -25,7 +24,6 @@ class CalendarCallbacks<T extends Object?> {
     this.onPageChanged,
     this.onTapped,
     this.onMultiDayTapped,
-    this.onMultiDayExpand,
   });
 
   CalendarCallbacks<T> copyWith({

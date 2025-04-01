@@ -153,8 +153,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   return monthDayHeder;
                 });
 
-
-                
                 return Expanded(
                   child: Stack(
                     fit: StackFit.expand,
@@ -184,7 +182,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,
                                     callbacks: callbacks,
-                                    multiDayExpandBuilder: components?.multiDayExpandBuilder,
                                     generateFrame: configuration?.generateFrame as GenerateMultiDayLayoutFrame<T>? ??
                                         defaultMultiDayGenerateFrame<T>,
                                   );

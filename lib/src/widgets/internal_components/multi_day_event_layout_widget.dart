@@ -12,7 +12,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// This function is responsible for calculating the layout information required
 /// to position and size multi-day events within a calendar view. The layout frame
 /// includes metadata such as the row and column assignments for events, the total number of rows,
-/// and a mapping of columns (dates) to the number of rows. 
+/// and a mapping of columns (dates) to the number of rows.
 /// * (columns and rows in this context does not refer to widgets instead it is a concept used within within the [MultiDayLayout] to position and layout events)
 ///
 /// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
@@ -50,6 +50,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
 ///
+/// TODO: rename defaultMultiDayFrameGenerator
 MultiDayLayoutFrame<T> defaultMultiDayGenerateFrame<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
@@ -178,7 +179,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.maxNumberOfVerticalEvents,
     required this.interaction,
     required this.generateFrame,
-    required this.multiDayExpandBuilder,
+    // required this.multiDayExpandBuilder,
     required this.textDirection,
     super.key,
   });
@@ -203,9 +204,6 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The function that generates the layout frame for the events.
   final GenerateMultiDayLayoutFrame<T> generateFrame;
 
-  /// The builder for the multi-day expand widget.
-  final MultiDayExpandBuilder? multiDayExpandBuilder;
-
   /// The directionality of the widget.
   final TextDirection textDirection;
 
@@ -219,6 +217,9 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// The layout frame that contains all the data needed to display the events.
   late MultiDayLayoutFrame<T> _frame;
+
+  /// Get the render box of the widget.
+  RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
 
   @override
   void initState() {
@@ -245,7 +246,6 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         oldWidget.interaction != widget.interaction ||
         oldWidget.tileComponents != widget.tileComponents ||
         oldWidget.callbacks != widget.callbacks ||
-        oldWidget.multiDayExpandBuilder != widget.multiDayExpandBuilder ||
         oldWidget.controller != widget.controller;
 
     if (didUpdate) {
@@ -328,24 +328,29 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       },
     );
 
-    late final expandWidgets = [
-      const Spacer(),
-      Row(
-        children: _frame.columnRowMap.entries.map((entry) {
-          final column = entry.key;
-          final row = entry.value;
+    late final expandWidgets = Row(
+      children: _frame.columnRowMap.entries.map((entry) {
+        final column = entry.key;
+        final row = entry.value;
+        final date = _frame.dateFromColumn(column);
 
-          final date = _frame.dateFromColumn(column);
-          final onExpand = widget.callbacks?.onMultiDayExpand;
-          final expandWidget =
-              widget.multiDayExpandBuilder?.call(date, onExpand) ?? MultiDayExpand(date: date, onExpand: onExpand);
+        final expandWidget = MultiDayOverlayPortalWidget<T>(
+          controller: widget.controller,
+          eventsController: widget.eventsController,
+          callbacks: widget.callbacks,
+          tileComponents: widget.tileComponents,
+          interaction: widget.interaction,
+          date: date,
+          events: _frame.eventsForColumn(column),
+          tileHeight: widget.tileHeight,
+          getMultiDayEventLayoutRenderBox: getRenderBox,
+        );
 
-          return Expanded(
-            child: row >= maxNumberOfRows ? expandWidget : SizedBox(width: widget.dayWidth),
-          );
-        }).toList(),
-      ),
-    ];
+        return Expanded(
+          child: row >= maxNumberOfRows ? expandWidget : SizedBox(width: widget.dayWidth),
+        );
+      }).toList(),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -356,7 +361,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             PassThroughPointer(child: dropTargetWidget),
           ],
         ),
-        if (_frame.totalNumberOfRows > maxNumberOfRows) ...expandWidgets,
+        if (_frame.totalNumberOfRows > maxNumberOfRows) expandWidgets,
       ],
     );
   }
@@ -366,7 +371,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 @immutable
 class MultiDayLayoutFrame<T> {
   /// The range of dates that this frame is for.
-  /// 
+  ///
   /// ex. 1 Week (7 days).
   final DateTimeRange dateTimeRange;
 
@@ -411,6 +416,13 @@ class MultiDayLayoutFrame<T> {
     }).toList();
 
     return (events, info);
+  }
+
+  /// Returns the events that should be displayed in the given column.
+  List<CalendarEvent<T>> eventsForColumn(int column) {
+    return layoutInfo.where((info) => info.columns.contains(column)).map((info) {
+      return events.firstWhere((event) => event.id == info.id);
+    }).toList();
   }
 }
 

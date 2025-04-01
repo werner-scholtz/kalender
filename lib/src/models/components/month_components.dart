@@ -1,6 +1,5 @@
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/components/multi_day_expand.dart';
 
 /// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
 class MonthComponents {
@@ -20,8 +19,6 @@ class MonthBodyComponents {
   /// A function that builds the month day header widget.
   final MonthDayHeaderBuilder? monthDayHeaderBuilder;
 
-  final MultiDayExpandBuilder? multiDayExpandBuilder;
-
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
 
@@ -32,7 +29,6 @@ class MonthBodyComponents {
   const MonthBodyComponents({
     this.monthGridBuilder,
     this.monthDayHeaderBuilder,
-    this.multiDayExpandBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
   });

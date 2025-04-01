@@ -1,10 +1,9 @@
 import 'package:kalender/src/type_definitions.dart';
-import 'package:kalender/src/widgets/components/multi_day_expand.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 
 /// A class containing custom widget builders for the [MultiDayBody] and [MultiDayHeader].
-class MultiDayComponents {
+class MultiDayComponents<T extends Object?> {
   final MultiDayHeaderComponents? headerComponents;
   final MultiDayBodyComponents? bodyComponents;
 
@@ -17,8 +16,6 @@ class MultiDayComponents {
 class MultiDayHeaderComponents {
   final DayHeaderBuilder? dayHeaderBuilder;
   final WeekNumberBuilder? weekNumberBuilder;
-  final MultiDayExpandBuilder? multiDayExpandBuilder;
-
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
   final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
@@ -26,7 +23,6 @@ class MultiDayHeaderComponents {
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder,
     this.weekNumberBuilder,
-    this.multiDayExpandBuilder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
   });

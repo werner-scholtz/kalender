@@ -9,7 +9,6 @@ import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
-import 'package:kalender/src/type_definitions.dart';
 
 /// The base class for all event tiles.
 ///
@@ -46,6 +45,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   OnEventTapped<T>? get onEventTapped => callbacks?.onEventTapped;
 
   TileBuilder<T> get tileBuilder => tileComponents.tileBuilder;
+  TileBuilder<T> get overlayTileBuilder => tileComponents.overlayTileBuilder ?? tileBuilder;
   TileWhenDraggingBuilder<T>? get tileWhenDraggingBuilder => tileComponents.tileWhenDraggingBuilder;
   FeedbackTileBuilder<T>? get feedbackTileBuilder => tileComponents.feedbackTileBuilder;
   Widget? get verticalResizeHandle => tileComponents.verticalResizeHandle;
