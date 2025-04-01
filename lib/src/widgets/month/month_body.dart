@@ -86,7 +86,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components = calendarComponents?.monthComponents?.bodyComponents;
+    final components = calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>?;
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
@@ -184,6 +184,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     callbacks: callbacks,
                                     generateFrame: configuration?.generateFrame as GenerateMultiDayLayoutFrame<T>? ??
                                         defaultMultiDayGenerateFrame<T>,
+                                    overlayBuilders: components?.overlayBuilders,
+                                    overlayStyles: styles?.overlayStyles,
+                                    
                                   );
                                 },
                               ),

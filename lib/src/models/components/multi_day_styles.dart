@@ -1,3 +1,4 @@
+import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -19,9 +20,14 @@ class MultiDayComponentStyles {
 class MultiDayHeaderComponentStyles {
   final DayHeaderStyle? dayHeaderStyle;
   final WeekNumberStyle? weekNumberStyle;
+  final OverlayStyles? overlayStyles;
 
   /// Creates a override for the default styles used by the [MultiDayHeader].
-  const MultiDayHeaderComponentStyles({this.dayHeaderStyle, this.weekNumberStyle});
+  const MultiDayHeaderComponentStyles({
+    this.dayHeaderStyle,
+    this.weekNumberStyle,
+    this.overlayStyles,
+  });
 }
 
 /// The styles of the default components used by the [MultiDayBody].

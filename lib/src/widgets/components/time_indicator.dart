@@ -4,6 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 
+/// The time indicator builder.
+///
+/// The [timeOfDayRange] is the range of time that the time indicator will be displayed for.
+/// The [heightPerMinute] is the height of each minute.
+/// The [timelineWidth] is the width of the timeline.
+/// The [style] is used to style the time indicator.
+typedef TimeIndicatorBuilder = Widget Function(
+  TimeOfDayRange timeOfDayRange,
+  double heightPerMinute,
+  double timelineWidth,
+  TimeIndicatorStyle? style,
+);
+
 /// The style of the [TimeIndicator] widget.
 class TimeIndicatorStyle {
   /// The [Color] of the time indicator.
@@ -135,7 +148,6 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        
         PositionedDirectional(
           top: top,
           start: widget.timelineWidth,

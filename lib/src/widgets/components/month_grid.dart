@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// The month grid builder.
+///
+/// The [style] is used to style the month grid.
+typedef MonthGridBuilder = Widget Function(
+  MonthGridStyle? style,
+  int numberOfRows,
+);
+
 /// The [MonthGridStyle] class is used by the [MonthGrid] widget.
 class MonthGridStyle {
   const MonthGridStyle({

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/components/multi_day_expand.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// A function type that generates a layout frame for multi-day events.
@@ -179,8 +179,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.maxNumberOfVerticalEvents,
     required this.interaction,
     required this.generateFrame,
-    // required this.multiDayExpandBuilder,
     required this.textDirection,
+    required this.multiDayOverlayBuilders,
+    required this.multiDayOverlayStyles,
     super.key,
   });
 
@@ -194,6 +195,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final double tileHeight;
   final int? maxNumberOfVerticalEvents;
   final ValueNotifier<CalendarInteraction> interaction;
+
+  final OverlayBuilders<T>? multiDayOverlayBuilders;
+  final OverlayStyles? multiDayOverlayStyles;
 
   /// The list of events that will be laid out.
   ///
@@ -220,6 +224,23 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
+
+  MultiDayOverlayEventTile<T> overlayTileBuilder(
+    CalendarEvent<T> event,
+    DateTimeRange dateTimeRange,
+    VoidCallback dismissOverlay,
+  ) {
+    return MultiDayOverlayEventTile<T>(
+      event: event,
+      dateTimeRange: dateTimeRange,
+      eventsController: widget.eventsController,
+      controller: widget.controller,
+      callbacks: widget.callbacks,
+      tileComponents: widget.tileComponents,
+      interaction: widget.interaction,
+      dismissOverlay: dismissOverlay,
+    );
+  }
 
   @override
   void initState() {
@@ -333,21 +354,32 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         final column = entry.key;
         final row = entry.value;
         final date = _frame.dateFromColumn(column);
+        final eventsForColumn = _frame.eventsForColumn(column);
+        late final numberOfEvents = eventsForColumn.length;
+        late final numberOfHiddenEvents = numberOfEvents - (widget.maxNumberOfVerticalEvents ?? 0);
 
-        final expandWidget = MultiDayOverlayPortalWidget<T>(
-          controller: widget.controller,
-          eventsController: widget.eventsController,
-          callbacks: widget.callbacks,
-          tileComponents: widget.tileComponents,
-          interaction: widget.interaction,
-          date: date,
-          events: _frame.eventsForColumn(column),
-          tileHeight: widget.tileHeight,
-          getMultiDayEventLayoutRenderBox: getRenderBox,
-        );
+        late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
+              date: date,
+              events: eventsForColumn,
+              numberOfHiddenEvents: numberOfHiddenEvents,
+              tileHeight: widget.tileHeight,
+              getMultiDayEventLayoutRenderBox: getRenderBox,
+              overlayBuilders: widget.multiDayOverlayBuilders,
+              overlayStyles: widget.multiDayOverlayStyles,
+            ) ??
+            MultiDayOverlayPortal<T>(
+              date: date,
+              events: eventsForColumn,
+              numberOfHiddenEvents: numberOfHiddenEvents,
+              tileHeight: widget.tileHeight,
+              getMultiDayEventLayoutRenderBox: getRenderBox,
+              overlayBuilders: widget.multiDayOverlayBuilders,
+              overlayStyles: widget.multiDayOverlayStyles,
+              overlayTileBuilder: overlayTileBuilder,
+            );
 
         return Expanded(
-          child: row >= maxNumberOfRows ? expandWidget : SizedBox(width: widget.dayWidth),
+          child: row >= maxNumberOfRows ? overlayPortal : SizedBox(width: widget.dayWidth),
         );
       }).toList(),
     );

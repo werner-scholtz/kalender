@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 
+/// The day header builder.
+///
+/// The [date] is the date that the header will be displayed for.
+/// The [style] is used to style the day header.
+typedef DayHeaderBuilder = Widget Function(
+  DateTime date,
+  DayHeaderStyle? style,
+);
+
 /// The style of the [DayHeader].
 class DayHeaderStyle {
   /// Creates a new [DayHeaderStyle].

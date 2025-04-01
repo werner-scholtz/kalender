@@ -31,6 +31,9 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final GenerateMultiDayLayoutFrame<T> generateFrame;
   final ValueNotifier<CalendarInteraction> interaction;
 
+  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayStyles? overlayStyles;
+
   const MultiDayEventWidget({
     super.key,
     required this.visibleDateTimeRange,
@@ -44,6 +47,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.interaction,
     required this.callbacks,
     required this.generateFrame,
+    required this.overlayBuilders,
+    required this.overlayStyles,
   });
 
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
@@ -77,6 +82,8 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           interaction: interaction,
           generateFrame: generateFrame,
           textDirection: Directionality.of(context),
+          multiDayOverlayBuilders: overlayBuilders,
+          multiDayOverlayStyles: overlayStyles,
         );
       },
     );

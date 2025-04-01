@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
+import 'package:kalender/kalender.dart' show CalendarEvent, ResizeHandlePositionerWidget;
 
 /// The components used by the [MultiDayBody] to render the event tiles.
 ///

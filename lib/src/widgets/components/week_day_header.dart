@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 
+/// The week day header builder.
+///
+/// The [date] is the date that the header will be displayed for.
+/// The [style] is used to style the week day header.
+typedef WeekDayHeaderBuilder = Widget Function(
+  DateTime date,
+  WeekDayHeaderStyle? style,
+);
+
 /// The [WeekDayHeaderStyle] class is used by the default [WeekDayHeader] widget.
 class WeekDayHeaderStyle {
   const WeekDayHeaderStyle({

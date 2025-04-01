@@ -1,3 +1,4 @@
+import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
@@ -20,10 +21,14 @@ class MonthBodyComponentStyles {
   /// The style of the day header.
   final MonthDayHeaderStyle? monthDayHeaderStyle;
 
+  /// The styles of the overlay components.
+  final OverlayStyles? overlayStyles; 
+
   /// Creates a override(s) for the default styles used by the [MonthBody].
   const MonthBodyComponentStyles({
     this.monthGridStyle,
     this.monthDayHeaderStyle,
+    this.overlayStyles,
   });
 }
 

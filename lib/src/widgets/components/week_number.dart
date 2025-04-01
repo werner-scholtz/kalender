@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 
+/// The week number builder.
+///
+/// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.
+/// The [style] is used to style the week number.
+typedef WeekNumberBuilder = Widget Function(
+  DateTimeRange visibleDateTimeRange,
+  WeekNumberStyle? style,
+);
+
 /// The style of the [WeekNumber].
 class WeekNumberStyle {
   /// Creates a new [WeekNumberStyle].
