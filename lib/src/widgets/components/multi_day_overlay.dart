@@ -16,9 +16,8 @@ typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayEventTile<T> Functio
 /// A function that returns a [RenderBox] for the multi-day event layout.
 typedef RenderBoxCallback = RenderBox Function();
 
-
 /// A function that returns a [MultiDayOverlay] widget.
-/// 
+///
 /// The [date] is the date for which the widget is created.
 /// The [events] are all the events that should be displayed for the given [date].
 /// The [tileHeight] is the height of the tile.
@@ -39,7 +38,36 @@ typedef MultiDayOverlayBuilder<T extends Object?> = Widget Function({
 });
 
 class MultiDayOverlayStyle {
-  /// TODO: Add styling options.
+  /// The function that returns the name of the day.
+  final String Function(DateTime date)? dayNameBuilder;
+
+  /// The [TextStyle] used for the name of the day.
+  final TextStyle? dayNameTextStyle;
+
+  /// The [TextStyle] used for the date.
+  final TextStyle? dateTextStyle;
+
+  /// The [Icon] used for the close button.
+  final Icon? closeIcon;
+
+  /// The padding for the header.
+  final EdgeInsets? headerPadding;
+
+  /// The padding around the events.
+  final EdgeInsets? eventsPadding;
+
+  /// The padding around each event.
+  final EdgeInsets? eventPadding;
+
+  const MultiDayOverlayStyle({
+    this.dayNameBuilder,
+    this.dayNameTextStyle,
+    this.dateTextStyle,
+    this.closeIcon,
+    this.headerPadding,
+    this.eventsPadding,
+    this.eventPadding,
+  });
 }
 
 class MultiDayOverlay<T extends Object?> extends StatelessWidget {
@@ -108,7 +136,8 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     const width = defaultWidth;
     const headerHeight = defaultHeaderHeight;
-    final (top, left) = calculatePosition(getOverlayPortalRenderBox.call(), 80.0, 300.0);
+    final (top, left) = calculatePosition(getOverlayPortalRenderBox.call(), headerHeight, width);
+    final textDirection = Directionality.of(context);
 
     return Stack(
       fit: StackFit.expand,
@@ -126,26 +155,28 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
                   height: headerHeight,
                   width: width,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: style?.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
                     child: Stack(
                       children: [
                         Align(
                           alignment: Alignment.topCenter,
-                          child: Text(date.dayNameEnglish),
+                          child: Text(
+                            style?.dayNameBuilder?.call(date) ?? date.dayNameEnglish,
+                            style: style?.dayNameTextStyle,
+                          ),
                         ),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: IconButton.filledTonal(
                             onPressed: () {},
-                            icon: Text(date.day.toString()),
+                            icon: Text(date.day.toString(), style: style?.dateTextStyle),
                           ),
                         ),
                         Align(
-                          alignment:
-                              Directionality.of(context) == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
+                          alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
                           child: IconButton.filledTonal(
                             onPressed: portalController.hide,
-                            icon: const Icon(Icons.close),
+                            icon: style?.closeIcon ?? const Icon(Icons.close),
                           ),
                         ),
                       ],
@@ -153,12 +184,12 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: style?.eventsPadding ?? const EdgeInsets.all(4.0),
                   child: ListBody(
                     children: [
                       for (final event in events)
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
                           child: SizedBox(
                             height: tileHeight,
                             child: overlayTileBuilder(event, date.dayRange, portalController.hide),
