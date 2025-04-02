@@ -19,10 +19,12 @@ abstract class ViewConfiguration<T extends Object?> {
 
   /// The [DateTimeRange] that can be displayed by the calendar.
   /// * This is the range that is adjusted by the [pageNavigationFunctions].
-  ///   Which means that it is UTC.
+  ///   Which means that it is in UTC.
   DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
 }
 
+
+// TODO: rename these to use `k` prefix
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultShowMultiDayEvents = false;
@@ -32,6 +34,8 @@ const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
+
+const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 
 @Deprecated('This will be removed in the future. Use `generateMultiDayLayoutFrame` instead.')
 const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

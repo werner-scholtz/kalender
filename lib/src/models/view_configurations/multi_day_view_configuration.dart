@@ -315,13 +315,6 @@ class MultiDayHeaderConfiguration {
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
 
-  /// The layout strategy used to layout events.
-  @Deprecated('''
-This method is deprecated and will be removed in a future release. 
-Please use the `generateFrame` method instead.
-''')
-  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
-
   /// The function that generates the layout frame for the multi-day event.
   ///
   /// * see [defaultMultiDayFrameGenerator] for default implementation.
@@ -332,7 +325,15 @@ Please use the `generateFrame` method instead.
   /// If this is null, then there is no limit.
   final int? maximumNumberOfVerticalEvents;
 
-  /// TODO: add padding for events.
+  /// The padding used around events.
+  final EdgeInsets eventPadding;
+
+  /// The layout strategy used to layout events.
+  @Deprecated('''
+This method is deprecated and will be removed in a future release. 
+Please use the `generateFrame` method instead.
+''')
+  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
@@ -341,6 +342,7 @@ Please use the `generateFrame` method instead.
     this.generateMultiDayLayoutFrame,
     this.maximumNumberOfVerticalEvents,
     this.eventLayoutStrategy,
+    this.eventPadding = kDefaultMultiDayEventPadding,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
@@ -348,17 +350,19 @@ Please use the `generateFrame` method instead.
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   MultiDayHeaderConfiguration copyWith({
     double? tileHeight,
-    CalendarInteraction? interaction,
-    CreateEventGesture? createEventTrigger,
+    bool? showTiles,
     PageTriggerConfiguration? pageTriggerConfiguration,
     GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
     int? maximumNumberOfVerticalEvents,
+    EdgeInsets? eventPadding,
   }) {
     return MultiDayHeaderConfiguration(
+      showTiles: showTiles ?? this.showTiles,
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
       maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
+      eventPadding: eventPadding ?? this.eventPadding,
     );
   }
 
@@ -368,11 +372,22 @@ Please use the `generateFrame` method instead.
 
     return other is MultiDayHeaderConfiguration &&
         other.tileHeight == tileHeight &&
-        other.pageTriggerConfiguration == pageTriggerConfiguration;
+        other.showTiles == showTiles &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
+        other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
+        other.eventPadding == eventPadding;
   }
 
   @override
   int get hashCode {
-    return Object.hash(tileHeight, pageTriggerConfiguration);
+    return Object.hash(
+      tileHeight,
+      showTiles,
+      pageTriggerConfiguration,
+      generateMultiDayLayoutFrame,
+      maximumNumberOfVerticalEvents,
+      eventPadding,
+    );
   }
 }
