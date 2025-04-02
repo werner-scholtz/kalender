@@ -24,7 +24,7 @@ void main() {
           wrapWithMaterialApp(
             MultiDayHeaderWidget(
               content: SizedBox(height: contentHeight, key: const ValueKey('content')),
-              leadingWidget: SizedBox(width: 48, height: leadingHeight, key: const ValueKey('leading')),
+              leading: SizedBox(width: 48, height: leadingHeight, key: const ValueKey('leading')),
               prototypeTimelineOverride: const SizedBox(width: 48),
             ),
           ),
@@ -61,7 +61,7 @@ void main() {
               valueListenable: contentHeightNotifier,
               builder: (context, value, child) => SizedBox(height: value, key: const ValueKey('content')),
             ),
-            leadingWidget: const SizedBox(width: 48, height: 48, key: ValueKey('leading')),
+            leading: const SizedBox(width: 48, height: 48, key: ValueKey('leading')),
             prototypeTimelineOverride: const SizedBox(width: 48),
           ),
         ),

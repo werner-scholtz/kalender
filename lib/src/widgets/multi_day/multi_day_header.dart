@@ -246,7 +246,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
     return MultiDayHeaderWidget<T>(
       content: pageView,
-      leadingWidget: dayHeaderWidget,
+      leading: dayHeaderWidget,
     );
   }
 }
@@ -390,7 +390,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     return MultiDayHeaderWidget<T>(
       content: pageView,
-      leadingWidget: weekNumberWidget,
+      leading: weekNumberWidget,
     );
   }
 }
@@ -541,7 +541,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
     return MultiDayHeaderWidget<T>(
       content: pageView,
-      leadingWidget: weekNumberWidget,
+      leading: weekNumberWidget,
     );
   }
 }

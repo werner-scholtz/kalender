@@ -5,8 +5,8 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The widget used for the MultiDayHeader.
 ///
-/// This widget uses the [TimeLine] to determine the size of the [leadingWidget].
-/// It uses the [content] and [leadingWidget] to determine the height of the [MultiDayHeaderWidget].
+/// This widget uses the [TimeLine] to determine the size of the [leading].
+/// It uses the [content] and [leading] to determine the height of the [MultiDayHeaderWidget].
 ///
 /// TODO: implement a widget test for this widget.
 class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
@@ -14,8 +14,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
   final Widget content;
 
   /// The leading widget that will be displayed in the [MultiDayHeaderWidget].
-  /// TODO: rename to leading.
-  final Widget leadingWidget;
+  final Widget leading;
 
   /// The prototype timeline widget that will be used to display the timeline.
   final Widget? prototypeTimelineOverride;
@@ -25,7 +24,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
   const MultiDayHeaderWidget({
     super.key,
     required this.content,
-    required this.leadingWidget,
+    required this.leading,
     this.prototypeTimelineOverride,
   });
 
@@ -56,36 +55,30 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     }
 
     return _MultiDayHeaderWidget(
-      timelineWidget: LayoutId(id: 1, child: timeline),
-      leadingWidget: LayoutId(id: 2, child: leadingWidget),
-      page: LayoutId(id: 3, child: content),
+      prototypeTimeLine: LayoutId(id: 1, child: timeline),
+      leading: LayoutId(id: 2, child: leading),
+      content: LayoutId(id: 3, child: content),
     );
   }
 }
 
 class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
   _MultiDayHeaderWidget({
-    required this.timelineWidget,
-    required this.leadingWidget,
-    required this.page,
+    required this.prototypeTimeLine,
+    required this.leading,
+    required this.content,
     // required this.maxHeight,
-  }) : super(children: [page, timelineWidget, leadingWidget]);
+  }) : super(children: [content, prototypeTimeLine, leading]);
 
   /// The widget that will be used to display the timeline.
-  /// TODO: rename to prototypeTimeLine.
-  final Widget timelineWidget;
+  final Widget prototypeTimeLine;
 
   /// The widget that will be used to display the leading widget.
-  /// TODO: rename to leading.
-  final Widget leadingWidget;
+  final Widget leading;
 
-  /// The widget that will be used to display the page.
-  /// TODO: rename to content.
-  final Widget page;
+  /// The widget that will be used to display the page.  
+  final Widget content;
 
-  /// TODO: this will be used when we start limiting the number of tiles that can be displayed.
-  /// The maximum height of the MultiDayHeaderWidget.
-  // final double maxHeight;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -113,16 +106,6 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     _textDirection = value;
     markNeedsLayout();
   }
-
-  // double get maxHeight => _maxHeight;
-  // double _maxHeight = 0;
-  // set maxHeight(double value) {
-  //   if (_maxHeight == value) {
-  //     return;
-  //   }
-  //   _maxHeight = value;
-  //   markNeedsLayout();
-  // }
 
   @override
   void setupParentData(RenderBox child) {
@@ -159,11 +142,18 @@ class _RenderMultiDayHeaderWidget extends RenderBox
       content.layout(BoxConstraints(maxHeight: height, maxWidth: constraints.maxWidth - timelineWidth));
     }
 
-    // Position the content.
+    // Setup the parent data for the content.
     final contentParentData = (content.parentData! as MultiChildLayoutParentData);
     contentParentData.offset = switch (textDirection!) {
       TextDirection.ltr => Offset(timelineWidth, 0),
       TextDirection.rtl => const Offset(0, 0),
+    };
+
+    // Setup the parent data for the timeline.
+    final leadingContentParentData = (leading.parentData! as MultiChildLayoutParentData);
+    leadingContentParentData.offset = switch (textDirection!) {
+      TextDirection.ltr => const Offset(0, 0),
+      TextDirection.rtl => Offset(constraints.maxWidth - timelineWidth, 0),
     };
 
     size = Size(constraints.maxWidth, height);
