@@ -2,10 +2,14 @@ import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
+import 'package:kalender/src/widgets/month/month_body.dart';
+import 'package:kalender/src/widgets/month/month_header.dart';
 
 /// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
 class MonthComponents<T extends Object?> {
+  /// The component builders used by the [MonthBody].
   final MonthBodyComponents<T>? bodyComponents;
+  /// The component builders used by the [MonthHeader].
   final MonthHeaderComponents<T>? headerComponents;
 
   MonthComponents({this.bodyComponents, this.headerComponents});
@@ -27,6 +31,7 @@ class MonthBodyComponents<T extends Object?> {
   /// A function that builds the right trigger widget.
   final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
+  /// A group of builders for the overlay widgets.
   final OverlayBuilders<T>? overlayBuilders;
 
   /// Creates overrides for the default components used by the [MonthBody].

@@ -7,7 +7,9 @@ import 'package:kalender/src/widgets/month/month_header.dart';
 
 /// A class containing styles for the [MonthBody] and [MonthHeader].
 class MonthComponentStyles {
+  /// The styles of the default components used by the [MonthHeader].
   final MonthBodyComponentStyles? bodyStyles;
+  /// The styles of the default components used by the [MonthBody].
   final MonthHeaderComponentStyles? headerStyles;
 
   MonthComponentStyles({this.bodyStyles, this.headerStyles});
