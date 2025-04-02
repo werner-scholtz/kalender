@@ -26,6 +26,9 @@ export 'package:kalender/src/widgets/components/time_line.dart';
 export 'package:kalender/src/widgets/components/week_number.dart';
 export 'package:kalender/src/widgets/components/week_day_header.dart';
 export 'package:kalender/src/widgets/components/month_grid.dart';
+export 'package:kalender/src/widgets/components/multi_day_overlay.dart';
+export 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
+export 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
 
 export 'package:kalender/src/widgets/components/resize_handle_positioner.dart';
 
@@ -53,4 +56,3 @@ export 'package:kalender/src/models/controllers/view_controller.dart';
 
 /// Layout Delegates
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-export 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';

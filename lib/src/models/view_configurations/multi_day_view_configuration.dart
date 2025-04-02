@@ -6,6 +6,7 @@ import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 enum MultiDayViewType {
   singleDay,
@@ -304,38 +305,64 @@ class MultiDayBodyConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
-class MultiDayHeaderConfiguration {
+class MultiDayHeaderConfiguration<T extends Object?> {
   /// The height of the tiles.
   final double tileHeight;
 
   /// Whether to show event tiles.
   final bool showTiles;
 
-  /// The layout strategy used to layout events.
-  final MultiDayEventLayoutStrategy eventLayoutStrategy;
-
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// The function that generates the layout frame for the multi-day event.
+  ///
+  /// * see [defaultMultiDayFrameGenerator] for default implementation.
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
+
+  /// The maximum number of events that can be displayed vertically.
+  ///
+  /// If this is null, then there is no limit.
+  final int? maximumNumberOfVerticalEvents;
+
+  /// The padding used around events.
+  final EdgeInsets eventPadding;
+
+  /// The layout strategy used to layout events.
+  @Deprecated('''
+This method is deprecated and will be removed in a future release. 
+Please use the `generateFrame` method instead.
+''')
+  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
-    this.eventLayoutStrategy = defaultMultiDayEventLayoutStrategy,
+    this.generateMultiDayLayoutFrame,
+    this.maximumNumberOfVerticalEvents,
+    this.eventLayoutStrategy,
+    this.eventPadding = kDefaultMultiDayEventPadding,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
-  MultiDayHeaderConfiguration copyWith({
+  MultiDayHeaderConfiguration<T> copyWith({
     double? tileHeight,
-    CalendarInteraction? interaction,
-    CreateEventGesture? createEventTrigger,
+    bool? showTiles,
     PageTriggerConfiguration? pageTriggerConfiguration,
+    GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame,
+    int? maximumNumberOfVerticalEvents,
+    EdgeInsets? eventPadding,
   }) {
     return MultiDayHeaderConfiguration(
+      showTiles: showTiles ?? this.showTiles,
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
+      maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
+      eventPadding: eventPadding ?? this.eventPadding,
     );
   }
 
@@ -345,11 +372,22 @@ class MultiDayHeaderConfiguration {
 
     return other is MultiDayHeaderConfiguration &&
         other.tileHeight == tileHeight &&
-        other.pageTriggerConfiguration == pageTriggerConfiguration;
+        other.showTiles == showTiles &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
+        other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
+        other.eventPadding == eventPadding;
   }
 
   @override
   int get hashCode {
-    return Object.hash(tileHeight, pageTriggerConfiguration);
+    return Object.hash(
+      tileHeight,
+      showTiles,
+      pageTriggerConfiguration,
+      generateMultiDayLayoutFrame,
+      maximumNumberOfVerticalEvents,
+      eventPadding,
+    );
   }
 }

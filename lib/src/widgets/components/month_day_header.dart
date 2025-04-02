@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 
+/// The month day header builder.
+typedef MonthDayHeaderBuilder = Widget Function(
+  DateTime date,
+  MonthDayHeaderStyle? style,
+);
+
 /// The style of the [MonthDayHeader].
 class MonthDayHeaderStyle {
   /// Creates a new [MonthDayHeaderStyle].

@@ -3,6 +3,28 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 
+/// The time line builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
+/// The [style] is used to style the time line.
+typedef TimeLineBuilder = Widget Function(
+  double heightPerMinute,
+  TimeOfDayRange timeOfDayRange,
+  TimelineStyle? style,
+);
+
+/// The prototype time line builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
+/// The [style] is used to style the time line.
+typedef PrototypeTimeLineBuilder = Widget Function(
+  double heightPerMinute,
+  TimeOfDayRange timeOfDayRange,
+  TimelineStyle? style,
+);
+
 /// The style of the [TimeLine] widget.
 class TimelineStyle {
   /// The style of the text.

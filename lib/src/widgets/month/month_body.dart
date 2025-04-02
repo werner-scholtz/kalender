@@ -18,7 +18,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   final CalendarController<T>? calendarController;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration? configuration;
+  final MultiDayHeaderConfiguration<T>? configuration;
 
   /// The callbacks used by the [MonthBody].
   final CalendarCallbacks<T>? callbacks;
@@ -72,6 +72,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
+    if (configuration is MonthBodyConfiguration<T>) {
+      debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
+    }
+
     final viewController = calendarController!.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final bodyConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
@@ -81,7 +85,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components = calendarComponents?.monthComponents?.bodyComponents;
+    final components = calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>?;
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
@@ -114,22 +118,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   end: visibleRange.start.addDays((index * 7) + 7),
                 );
 
-                final multiDayEvents = MultiDayEventWidget<T>(
-                  controller: calendarController!,
-                  eventsController: eventsController!,
-                  visibleDateTimeRange: visibleDateTimeRange,
-                  tileComponents: tileComponents,
-                  dayWidth: dayWidth,
-                  interaction: interaction,
-                  tileHeight: tileHeight,
-                  showAllEvents: true,
-                  callbacks: callbacks,
-                  layoutStrategy: bodyConfiguration.eventLayoutStrategy,
-                );
-
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  eventsController: eventsController,
-                  calendarController: calendarController,
+                  eventsController: eventsController!,
+                  calendarController: calendarController!,
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
@@ -162,27 +153,46 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 });
 
                 return Expanded(
-                  child: Column(
+                  child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: dates,
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Stack(
-                            fit: StackFit.loose,
-                            children: [
-                              Positioned.fill(child: draggable),
-                              ConstrainedBox(
-                                constraints: BoxConstraints(minHeight: weekHeight - 32),
-                                child: multiDayEvents,
+                      Positioned.fill(child: draggable),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: weekHeight,
+                        child: Column(
+                          children: [
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: dates),
+                            Expanded(
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  // Subtract 1 to account for the extra widget at the bottom.
+                                  final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
+                                  return MultiDayEventWidget<T>(
+                                    controller: calendarController!,
+                                    eventsController: eventsController!,
+                                    visibleDateTimeRange: visibleDateTimeRange,
+                                    tileComponents: tileComponents,
+                                    dayWidth: dayWidth,
+                                    interaction: interaction,
+                                    tileHeight: bodyConfiguration.tileHeight,
+                                    maxNumberOfRows: maxNumberOfVerticalEvents,
+                                    showAllEvents: true,
+                                    callbacks: callbacks,
+                                    generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
+                                    overlayBuilders: components?.overlayBuilders,
+                                    overlayStyles: styles?.overlayStyles,
+                                    eventPadding: bodyConfiguration.eventPadding,
+                                  );
+                                },
                               ),
-                              Positioned.fill(child: multiDayDragTarget),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
+                      Positioned.fill(child: multiDayDragTarget),
                     ],
                   ),
                 );

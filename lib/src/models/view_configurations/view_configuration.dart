@@ -8,7 +8,7 @@ export 'package:kalender/kalender_extensions.dart';
 /// The base class for all [ViewConfiguration]s.
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
-abstract class ViewConfiguration {
+abstract class ViewConfiguration<T extends Object?> {
   const ViewConfiguration({required this.name});
 
   /// The name of the [ViewConfiguration].
@@ -19,17 +19,23 @@ abstract class ViewConfiguration {
 
   /// The [DateTimeRange] that can be displayed by the calendar.
   /// * This is the range that is adjusted by the [pageNavigationFunctions].
-  ///   Which means that it is UTC.
+  ///   Which means that it is in UTC.
   DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
 }
 
+
+// TODO: rename these to use `k` prefix
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultShowMultiDayEvents = false;
 const defaultEventLayoutStrategy = overlapLayoutStrategy;
-const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;
 const defaultFirstDayOfWeek = DateTime.monday;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
+
+const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
+
+@Deprecated('This will be removed in the future. Use `generateMultiDayLayoutFrame` instead.')
+const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

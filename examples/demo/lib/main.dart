@@ -95,11 +95,6 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
   );
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

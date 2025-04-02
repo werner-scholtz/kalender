@@ -14,12 +14,12 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 
-## Plans
+## Roadmap
 
-### Features 
+### Features
 
-* **Views:** Add Schedule and FreeScroll, improvements to the Month view.
 * **Directionality:** Right to Left directionality.
+* **Views:** Add Schedule and FreeScroll.
 
 ### Examples
 
@@ -226,8 +226,12 @@ Examples:
       showTiles: true,
       // The height of the tiles.
       tileHeight: 24,
-      // The layout strategy used to layout events.
-      eventLayoutStrategy: defaultMultiDayLayoutStrategy,
+      // Multi day event layout.
+      generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator,
+      // Maximum number of vertical events.
+      maximumNumberOfVerticalEvents: null,
+      // The padding used around events.
+      eventPadding: EdgeInserts.zero,
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.
@@ -304,11 +308,15 @@ Examples:
   ```dart
   CalendarBody(
     // The MonthBody makes use the MultiDayHeaderConfiguration
-    monthBodyConfiguration: MultiDayHeaderConfiguration(
+    monthBodyConfiguration: MonthBodyConfiguration(
       // Whether to show event tiles, useful if you want to display the header but not the tiles.
       showTiles: true,
       // The height of the tiles.
       tileHeight: 24,
+      // Multi day frame generator.
+      generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator,
+      // The padding used around events.
+      eventPadding: EdgeInserts.zero,
       // The layout strategy used to layout events.
       eventLayoutStrategy: defaultMultiDayLayoutStrategy,
       // The configuration for triggering page navigation.
@@ -419,12 +427,19 @@ By default the calendar uses default components which can be customized with `Co
         bodyComponents: MonthBodyComponents(
           // Custom grid builder.
           monthGridBuilder: (style) => SizedBox(),
-          
+
           // Custom left trigger. (Must constrain the width)
           leftTriggerBuilder: (pageWidth) => SizedBox(),
-          
+
           // Custom right trigger. (Must constrain the width)
           rightTriggerBuilder: (pageWidth) => SizedBox(),
+
+          // Custom overlay builders.
+          overlayBuilders: OverlayBuilders(
+            // multiDayOverlayBuilder: , 
+            // multiDayOverlayPortalBuilder: , 
+            multiDayPortalOverlayButtonBuilder:(portalController, numberOfHiddenRows, style) => SizedBox(),
+          ),
         ),
       ),
     ),
@@ -453,6 +468,13 @@ By default the calendar uses default components which can be customized with `Co
 
           // Custom right trigger. (Must constrain the width)
           rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+
+          // Custom overlay builders.
+          overlayBuilders: OverlayBuilders(
+            // multiDayOverlayBuilder: , 
+            // multiDayOverlayPortalBuilder: , 
+            multiDayPortalOverlayButtonBuilder:(portalController, numberOfHiddenRows, style) => SizedBox(),
+          ),
         ),
         bodyComponents: MultiDayBodyComponents(
           // Custom Hour Line builder.

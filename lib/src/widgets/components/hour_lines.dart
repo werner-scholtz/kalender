@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 
+/// The hour lines builder.
+///
+/// The [heightPerMinute] is the height of each minute.
+/// The [timeOfDayRange] is the range of time that the hour lines will be displayed for.
+/// The [style] is used to style the hour lines.
+typedef HourLinesBuilder = Widget Function(
+  double heightPerMinute,
+  TimeOfDayRange timeOfDayRange,
+  HourLinesStyle? style,
+);
+
 /// The style of the [HourLines] widget.
 class HourLinesStyle {
   /// The [Color] of the hour lines.

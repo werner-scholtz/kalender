@@ -25,7 +25,7 @@ class _SingleCalendarViewState extends State<SingleCalendarView> {
 
   late ViewConfiguration _viewConfiguration = widget.viewConfigurations[1];
   MultiDayBodyConfiguration _bodyConfiguration = MultiDayBodyConfiguration();
-  MultiDayHeaderConfiguration _headerConfiguration = MultiDayHeaderConfiguration();
+  MultiDayHeaderConfiguration<Event> _headerConfiguration = MultiDayHeaderConfiguration();
 
   final ValueNotifier<CalendarInteraction> _interactionHeader = ValueNotifier(CalendarInteraction());
   final ValueNotifier<CalendarInteraction> _interactionBody = ValueNotifier(CalendarInteraction());

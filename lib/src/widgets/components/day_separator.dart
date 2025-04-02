@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// The day separator builder.
+///
+/// The [style] is used to style the day separator.
+typedef DaySeparatorBuilder = Widget Function(
+  DaySeparatorStyle? style,
+);
+
 /// The style for the [DaySeparator] widget.
 class DaySeparatorStyle {
   /// The [Color] of the day separator.
