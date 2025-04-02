@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
@@ -17,48 +19,57 @@ class NavigationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateButton = HeaderDateButton(controller: controller);
-    final previousButton = IconButton.filledTonal(
-      icon: const Icon(Icons.chevron_left),
-      onPressed: () => controller.animateToPreviousPage(),
-    );
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final dateButton = HeaderDateButton(controller: controller);
+        final todayButton = IconButton.filledTonal(
+          icon: const Icon(Icons.today),
+          onPressed: () => controller.animateToDate(DateTime.now()),
+        );
 
-    final nextButton = IconButton.filledTonal(
-      icon: const Icon(Icons.chevron_right),
-      onPressed: () => controller.animateToNextPage(),
-    );
+        final showNavigationButtons = constraints.maxWidth > 500;
+        late final previousButton = IconButton.filledTonal(
+          icon: const Icon(Icons.chevron_left),
+          onPressed: () => controller.animateToPreviousPage(),
+        );
 
-    final todayButton = IconButton.filledTonal(
-      icon: const Icon(Icons.today),
-      onPressed: () => controller.animateToDate(DateTime.now()),
-    );
+        late final nextButton = IconButton.filledTonal(
+          icon: const Icon(Icons.chevron_right),
+          onPressed: () => controller.animateToNextPage(),
+        );
 
-    final view = DropdownMenu(
-      dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-          borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
-        ),
-      ),
-      initialSelection: viewConfiguration,
-      onSelected: (value) {
-        if (value == null) return;
-        onSelected(value);
+        final width = min(200.0, constraints.maxWidth - 200.0);
+        final view = DropdownMenu(
+          dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+          width: width,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+              borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
+            ),
+          ),
+          initialSelection: viewConfiguration,
+          onSelected: (value) {
+            if (value == null) return;
+            onSelected(value);
+          },
+        );
+
+        return Row(
+          spacing: 4.0,
+          children: [
+            dateButton,
+            if (showNavigationButtons) ...[
+              previousButton,
+              nextButton,
+            ],
+            todayButton,
+            const Spacer(),
+            view,
+          ],
+        );
       },
-    );
-
-    return Row(
-      spacing: 4.0,
-      children: [
-        dateButton,
-        previousButton,
-        nextButton,
-        todayButton,
-        const Spacer(),
-        view,
-      ],
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/enumerations.dart';
@@ -5,7 +6,10 @@ import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/event_overlay.dart';
+import 'package:web_demo/widgets/event_overlay_portal.dart';
+import 'package:web_demo/widgets/text_direction_button.dart';
+import 'package:web_demo/widgets/theme_button.dart';
+import 'package:web_demo/widgets/view_type_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,22 +17,48 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
+
+  /// Returns the [EventsController] of the app.
+  static EventsController<Event> eventsController(BuildContext context) {
+    final state = context.findAncestorStateOfType<MyAppState>();
+    if (state == null) throw Exception('MyAppState not found in context');
+    return state.eventsController;
+  }
 
   @override
   State<MyApp> createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-  ThemeMode themeMode = ThemeMode.dark;
+  /// The theme mode of the app.
+  ThemeMode _themeMode = ThemeMode.dark;
+  ThemeMode get themeMode => _themeMode;
+
+  /// Toggles the theme mode of the app.
+  void toggleTheme() {
+    return setState(() => _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  /// The text direction of the app.
+  TextDirection _textDirection = TextDirection.ltr;
+  TextDirection get textDirection => _textDirection;
+
+  /// Toggles the text direction of the app.
+  void toggleTextDirection() {
+    return setState(() => _textDirection = _textDirection == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr);
+  }
+
+  final _eventsController = DefaultEventsController<Event>();
+  DefaultEventsController<Event> get eventsController => _eventsController;
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Web Demo',
-      themeMode: themeMode,
+      themeMode: _themeMode,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -37,172 +67,59 @@ class MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
       ),
-      home: const MyHomePage(title: 'Kalender Demo'),
+      home: Directionality(
+        textDirection: _textDirection,
+        child: isMobile ? const MobileHomePage() : const DesktopHomePage(),
+      ),
     );
   }
+}
 
-  void toggleTheme() {
-    setState(() {
-      themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    });
+class MobileHomePage extends StatelessWidget {
+  const MobileHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: EventOverlayPortal(child: SingleCalendarView()));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+class DesktopHomePage extends StatefulWidget {
+  const DesktopHomePage({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<DesktopHomePage> createState() => _DesktopHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final eventsController = DefaultEventsController<Event>();
-
-  final _viewConfigurations = [
-    MultiDayViewConfiguration.singleDay(),
-    MultiDayViewConfiguration.week(),
-    MultiDayViewConfiguration.workWeek(),
-    MultiDayViewConfiguration.custom(numberOfDays: 3),
-    MonthViewConfiguration.singleMonth(),
-    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)"),
-  ];
-
-  late final _calendarCallbacks = CalendarCallbacks<Event>(
-    onEventTapped: (event, renderBox) => _createOverlay(event, renderBox),
-    onEventCreate: (event) => event.copyWith(data: Event(title: 'New Event')),
-    onEventCreated: (event) => eventsController.addEvent(event),
-    onTapped: (date) {
-      final newEvent = CalendarEvent<Event>(
-        dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(minutes: 45))),
-      );
-      eventsController.addEvent(newEvent);
-    },
-    onMultiDayTapped: (dateRange) {
-      final newEvent = CalendarEvent<Event>(dateTimeRange: dateRange);
-      eventsController.addEvent(newEvent);
-    },
-  );
-
+class _DesktopHomePageState extends State<DesktopHomePage> {
+  /// The type of the calendar view.
   ViewType _type = ViewType.single;
-  var textDirection = TextDirection.ltr;
-
-  final _portalController = OverlayPortalController();
-  CalendarEvent<Event>? selectedEvent;
-  RenderBox? selectedRenderBox;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => eventsController.addEvents(generateEvents(context)));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _insertEvents);
   }
+
+  void _insertEvents() => MyApp.eventsController(context).addEvents(generateEvents(context));
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: textDirection,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          actions: [
-            IconButton.filledTonal(
-              onPressed: () => MyApp.of(context)!.toggleTheme(),
-              icon: Icon(
-                MyApp.of(context)!.themeMode == ThemeMode.dark
-                    ? Icons.brightness_2_rounded
-                    : Icons.brightness_7_rounded,
-              ),
-            ),
-            IconButton.filledTonal(
-              onPressed: () => setState(() {
-                textDirection == TextDirection.ltr
-                    ? textDirection = TextDirection.rtl
-                    : textDirection = TextDirection.ltr;
-              }),
-              icon: textDirection == TextDirection.ltr
-                  ? const Icon(Icons.format_textdirection_r_to_l)
-                  : const Icon(Icons.format_textdirection_l_to_r),
-            ),
-            DropdownMenu<ViewType>(
-              initialSelection: _type,
-              dropdownMenuEntries: [
-                ...ViewType.values.map((e) => DropdownMenuEntry(value: e, label: e.label)),
-              ],
-              onSelected: (value) {
-                if (value == null) return;
-                setState(() => _type = value);
-              },
-            ),
-          ],
-        ),
-        body: OverlayPortal(
-          controller: _portalController,
-          overlayChildBuilder: _buildOverlay,
-          child: _type == ViewType.single
-              ? SingleCalendarView(
-                  eventsController: eventsController,
-                  callbacks: _calendarCallbacks,
-                  viewConfigurations: _viewConfigurations,
-                )
-              : MultiCalendarView(
-                  eventsController: eventsController,
-                  callbacks: _calendarCallbacks,
-                  viewConfigurations: _viewConfigurations,
-                ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Kalender Web Demo"),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+        actions: [
+          const ThemeButton(),
+          const SizedBox(width: 4),
+          const TextDirectionButton(),
+          const SizedBox(width: 4),
+          ViewTypePicker(type: _type, onChanged: (value) => setState(() => _type = value)),
+        ],
       ),
-    );
-  }
-
-  void _createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
-    selectedEvent = event;
-    selectedRenderBox = renderBox;
-    _portalController.show();
-  }
-
-  Widget _buildOverlay(BuildContext overlayContext) {
-    var position = selectedRenderBox!.localToGlobal(Offset.zero);
-    const height = 300.0;
-    const width = 300.0;
-
-    final size = MediaQuery.sizeOf(context);
-
-    if (position.dy + height > size.height) {
-      position = position.translate(0, size.height - (position.dy + height) - 25);
-    } else if (position.dy < 0) {
-      position = position.translate(0, -position.dy);
-    }
-
-    if (position.dx + width + selectedRenderBox!.size.width > size.width) {
-      position = position.translate(-width - 16, 0);
-    } else {
-      position = position.translate(selectedRenderBox!.size.width, 0);
-    }
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _portalController.hide,
-          ),
-        ),
-        Positioned(
-          top: position.dy,
-          left: position.dx,
-          child: EventOverlayCard(
-            event: selectedEvent!,
-            position: position,
-            height: height,
-            width: width,
-            onDismiss: _portalController.hide,
-            eventsController: eventsController,
-          ),
-        ),
-      ],
+      body: EventOverlayPortal(
+        child: _type == ViewType.single ? const SingleCalendarView() : const MultiCalendarView(),
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
+import 'package:web_demo/widgets/event_overlay_portal.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/zoom.dart';
 
@@ -12,7 +13,6 @@ class CalendarWidget extends StatelessWidget {
   final ViewConfiguration viewConfiguration;
   final List<ViewConfiguration> viewConfigurations;
   final void Function(ViewConfiguration value) onSelected;
-  final CalendarCallbacks<Event> callbacks;
   final MultiDayBodyConfiguration bodyConfiguration;
   final MultiDayHeaderConfiguration<Event> headerConfiguration;
   final bool showHeader;
@@ -27,7 +27,6 @@ class CalendarWidget extends StatelessWidget {
     required this.viewConfiguration,
     required this.viewConfigurations,
     required this.onSelected,
-    required this.callbacks,
     required this.bodyConfiguration,
     required this.headerConfiguration,
     required this.showHeader,
@@ -75,7 +74,21 @@ class CalendarWidget extends StatelessWidget {
         calendarController: controller,
         eventsController: eventsController,
         viewConfiguration: viewConfiguration,
-        callbacks: callbacks,
+        callbacks: CalendarCallbacks<Event>(
+          onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
+          onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
+          onEventCreated: (event) => eventsController.addEvent(event),
+          onTapped: (date) {
+            final newEvent = CalendarEvent<Event>(
+              dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(minutes: 45))),
+            );
+            eventsController.addEvent(newEvent);
+          },
+          onMultiDayTapped: (dateRange) {
+            final newEvent = CalendarEvent<Event>(dateTimeRange: dateRange);
+            eventsController.addEvent(newEvent);
+          },
+        ),
         header: Material(
           color: Theme.of(context).colorScheme.surface,
           surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
