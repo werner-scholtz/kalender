@@ -14,12 +14,12 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 
-## Plans
+## Roadmap
 
-### Features 
+### Features
 
-* **Views:** Add Schedule and FreeScroll, improvements to the Month view.
 * **Directionality:** Right to Left directionality.
+* **Views:** Add Schedule and FreeScroll.
 
 ### Examples
 
