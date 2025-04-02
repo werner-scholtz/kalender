@@ -95,37 +95,6 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
   );
 
   @override
-  void initState() {
-    super.initState();
-    eventsController.addEvents([
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: DateTime(2025, 3, 24),
-          end: DateTime(2025, 3, 27),
-        ),
-      ),
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
-      ),
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: DateTime(2025, 3, 25),
-          end: DateTime(2025, 3, 28),
-        ),
-      ),
-      CalendarEvent(
-        dateTimeRange: DateTimeRange(
-          start: DateTime(2025, 3, 27),
-          end: DateTime(2025, 3, 30),
-        ),
-      ),
-    ]);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
