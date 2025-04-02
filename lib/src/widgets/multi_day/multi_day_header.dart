@@ -5,7 +5,6 @@ import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
-import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 
 /// The multi-day header decides which header to display the:
@@ -28,7 +27,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   final TileComponents<T> tileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderConfiguration? configuration;
+  final MultiDayHeaderConfiguration<T>? configuration;
 
   /// The [ValueNotifier] containing the [CalendarInteraction] value.
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -78,7 +77,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController!.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
+    final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration<T>();
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
@@ -140,7 +139,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
   final CalendarCallbacks<T>? callbacks;
 
-  final MultiDayHeaderConfiguration configuration;
+  final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents<T>? components;
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -203,8 +202,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame:
-                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
+              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
+              eventPadding: configuration.eventPadding,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );
@@ -258,7 +257,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarController<T> calendarController;
 
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayHeaderConfiguration configuration;
+  final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents<T>? components;
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -341,8 +340,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame:
-                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
+              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
+              eventPadding: configuration.eventPadding,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );
@@ -402,7 +401,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final CalendarController<T> calendarController;
 
   final CalendarCallbacks<T>? callbacks;
-  final MultiDayHeaderConfiguration configuration;
+  final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
   final MultiDayHeaderComponents<T>? components;
   final MultiDayHeaderComponentStyles? componentStyles;
@@ -487,8 +486,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               callbacks: callbacks,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame:
-                  configuration.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ?? defaultMultiDayFrameGenerator<T>,
+              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
+              eventPadding: configuration.eventPadding,
               overlayBuilders: components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles,
             );

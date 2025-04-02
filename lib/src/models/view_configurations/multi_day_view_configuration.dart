@@ -305,7 +305,7 @@ class MultiDayBodyConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
-class MultiDayHeaderConfiguration {
+class MultiDayHeaderConfiguration<T extends Object?> {
   /// The height of the tiles.
   final double tileHeight;
 
@@ -318,7 +318,7 @@ class MultiDayHeaderConfiguration {
   /// The function that generates the layout frame for the multi-day event.
   ///
   /// * see [defaultMultiDayFrameGenerator] for default implementation.
-  final GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame;
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
 
   /// The maximum number of events that can be displayed vertically.
   ///
@@ -348,11 +348,11 @@ Please use the `generateFrame` method instead.
   }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
-  MultiDayHeaderConfiguration copyWith({
+  MultiDayHeaderConfiguration<T> copyWith({
     double? tileHeight,
     bool? showTiles,
     PageTriggerConfiguration? pageTriggerConfiguration,
-    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
+    GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame,
     int? maximumNumberOfVerticalEvents,
     EdgeInsets? eventPadding,
   }) {

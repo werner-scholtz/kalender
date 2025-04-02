@@ -22,7 +22,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final TileComponents<T> monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration? monthBodyConfiguration;
+  final MultiDayHeaderConfiguration<T>? monthBodyConfiguration;
 
   /// The [CalendarInteraction] that will be used by the [CalendarBody].
   final ValueNotifier<CalendarInteraction>? interaction;

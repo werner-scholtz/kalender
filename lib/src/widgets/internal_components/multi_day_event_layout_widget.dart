@@ -175,8 +175,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.showAllEvents,
     required this.tileHeight,
     required this.maxNumberOfVerticalEvents,
+    required this.eventPadding,
     required this.interaction,
-    required this.generateFrame,
+    required this.generateMultiDayLayoutFrame,
     required this.textDirection,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
@@ -192,6 +193,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final bool showAllEvents;
   final double tileHeight;
   final int? maxNumberOfVerticalEvents;
+  final EdgeInsets? eventPadding;
   final ValueNotifier<CalendarInteraction> interaction;
 
   final OverlayBuilders<T>? multiDayOverlayBuilders;
@@ -204,7 +206,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final List<CalendarEvent<T>> events;
 
   /// The function that generates the layout frame for the events.
-  final GenerateMultiDayLayoutFrame<T> generateFrame;
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
 
   /// The directionality of the widget.
   final TextDirection textDirection;
@@ -222,6 +224,9 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
+
+  GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
+      widget.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
 
   MultiDayOverlayEventTile<T> overlayTileBuilder(
     CalendarEvent<T> event,
@@ -244,7 +249,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   void initState() {
     super.initState();
     _dateTimeRange = widget.visibleDateTimeRange;
-    _frame = widget.generateFrame(
+    _frame = generateMultiDayLayoutFrame(
       visibleDateTimeRange: _dateTimeRange,
       events: widget.events,
       textDirection: widget.textDirection,
@@ -256,7 +261,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
     super.didUpdateWidget(oldWidget);
     final didUpdate = !oldWidget.events.equals(widget.events) ||
         oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
-        oldWidget.generateFrame != widget.generateFrame ||
+        oldWidget.generateMultiDayLayoutFrame != widget.generateMultiDayLayoutFrame ||
         oldWidget.textDirection != widget.textDirection ||
         oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
@@ -271,7 +276,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       _dateTimeRange = widget.visibleDateTimeRange;
 
       setState(() {
-        _frame = widget.generateFrame(
+        _frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: _dateTimeRange,
           events: widget.events,
           textDirection: widget.textDirection,
@@ -302,14 +307,17 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
         return LayoutId(
           id: id,
-          child: MultiDayEventTile<T>(
-            event: event,
-            eventsController: widget.eventsController,
-            controller: widget.controller,
-            callbacks: widget.callbacks,
-            tileComponents: widget.tileComponents,
-            interaction: widget.interaction,
-            dateTimeRange: widget.visibleDateTimeRange,
+          child: Padding(
+            padding: widget.eventPadding ?? const EdgeInsets.all(0),
+            child: MultiDayEventTile<T>(
+              event: event,
+              eventsController: widget.eventsController,
+              controller: widget.controller,
+              callbacks: widget.callbacks,
+              tileComponents: widget.tileComponents,
+              interaction: widget.interaction,
+              dateTimeRange: widget.visibleDateTimeRange,
+            ),
           ),
         );
       }).toList(),
@@ -322,7 +330,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         if (event == null) return const SizedBox();
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
-        final frame = widget.generateFrame(
+        final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.visibleDateTimeRange,
           events: [event],
           textDirection: widget.textDirection,
@@ -339,7 +347,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             LayoutId(
               id: event.id,
               child: event.id == -1 || event.id == widget.controller.selectedEventId
-                  ? widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox()
+                  ? Padding(
+                      padding: widget.eventPadding ?? const EdgeInsets.all(0),
+                      child: widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
+                    )
                   : const SizedBox(),
             ),
           ],

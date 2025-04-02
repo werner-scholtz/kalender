@@ -12,7 +12,7 @@ class CalendarWidget extends StatelessWidget {
   final void Function(ViewConfiguration value) onSelected;
   final CalendarCallbacks<Event> callbacks;
   final MultiDayBodyConfiguration bodyConfiguration;
-  final MultiDayHeaderConfiguration headerConfiguration;
+  final MultiDayHeaderConfiguration<Event> headerConfiguration;
   final bool showHeader;
   final ValueNotifier<CalendarInteraction>? interactionHeader;
   final ValueNotifier<CalendarInteraction>? interactionBody;

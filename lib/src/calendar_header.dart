@@ -14,7 +14,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// MultiDay
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderConfiguration? multiDayHeaderConfiguration;
+  final MultiDayHeaderConfiguration<T>? multiDayHeaderConfiguration;
 
   /// The tile components used by the [MultiDayHeader].
   final TileComponents<T> multiDayTileComponents;

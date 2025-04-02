@@ -27,8 +27,9 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final int? maxNumberOfRows;
   final double tileHeight;
   final bool showAllEvents;
-  final GenerateMultiDayLayoutFrame<T> generateMultiDayLayoutFrame;
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
   final ValueNotifier<CalendarInteraction> interaction;
+  final EdgeInsets? eventPadding;
 
   final OverlayBuilders<T>? overlayBuilders;
   final OverlayStyles? overlayStyles;
@@ -43,6 +44,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.showAllEvents,
     required this.tileHeight,
     required this.maxNumberOfRows,
+    required this.eventPadding,
     required this.interaction,
     required this.callbacks,
     required this.generateMultiDayLayoutFrame,
@@ -79,10 +81,11 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           tileHeight: tileHeight,
           maxNumberOfVerticalEvents: maxNumberOfRows,
           interaction: interaction,
-          generateFrame: generateMultiDayLayoutFrame,
+          generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
           textDirection: Directionality.of(context),
           multiDayOverlayBuilders: overlayBuilders,
           multiDayOverlayStyles: overlayStyles,
+          eventPadding: eventPadding,
         );
       },
     );

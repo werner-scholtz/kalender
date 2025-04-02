@@ -4,7 +4,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
-import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
 
 /// This widget is used to display a month body.
 ///
@@ -19,7 +18,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   final CalendarController<T>? calendarController;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration? configuration;
+  final MultiDayHeaderConfiguration<T>? configuration;
 
   /// The callbacks used by the [MonthBody].
   final CalendarCallbacks<T>? callbacks;
@@ -182,11 +181,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,
                                     callbacks: callbacks,
-                                    generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame as GenerateMultiDayLayoutFrame<T>? ??
-                                        defaultMultiDayFrameGenerator<T>,
+                                    generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
                                     overlayBuilders: components?.overlayBuilders,
                                     overlayStyles: styles?.overlayStyles,
-                                    
+                                    eventPadding: bodyConfiguration.eventPadding,
                                   );
                                 },
                               ),

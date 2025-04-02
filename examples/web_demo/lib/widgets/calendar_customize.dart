@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/models/event.dart';
 
 class CalendarCustomize extends StatefulWidget {
   final ViewConfiguration viewConfiguration;
@@ -8,8 +9,8 @@ class CalendarCustomize extends StatefulWidget {
   final MultiDayBodyConfiguration bodyConfiguration;
   final void Function(MultiDayBodyConfiguration bodyConfiguration) onBodyChanged;
 
-  final MultiDayHeaderConfiguration headerConfiguration;
-  final void Function(MultiDayHeaderConfiguration headerConfiguration) onHeaderChanged;
+  final MultiDayHeaderConfiguration<Event> headerConfiguration;
+  final void Function(MultiDayHeaderConfiguration<Event> headerConfiguration) onHeaderChanged;
 
   final bool showHeader;
   final void Function(bool value) onShowHeaderChanged;
@@ -40,7 +41,7 @@ class CalendarCustomize extends StatefulWidget {
 class _CalendarCustomizeState extends State<CalendarCustomize> {
   ViewConfiguration get viewConfiguration => widget.viewConfiguration;
   MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
-  MultiDayHeaderConfiguration get headerConfiguration => widget.headerConfiguration;
+  MultiDayHeaderConfiguration<Event> get headerConfiguration => widget.headerConfiguration;
   SizedBox get spacer => const SizedBox(height: 12.0);
 
   EdgeInsets get childrenPadding => const EdgeInsets.only(top: 16, bottom: 16, left: 32);
@@ -299,6 +300,46 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       },
     );
 
+    final multiDayEventPaddingLeft = IntEditor(
+      title: 'Multi-Day Event Padding (left)',
+      suffix: '',
+      initialValue: headerConfiguration.eventPadding.left.toInt(),
+      items: const [0, 4, 8],
+      onChanged: (value) {
+        widget.onHeaderChanged(
+          headerConfiguration.copyWith(
+            eventPadding: headerConfiguration.eventPadding.copyWith(left: value.toDouble()),
+          ),
+        );
+      },
+    );
+
+    final multiDayEventPaddingRight = IntEditor(
+      title: 'Multi-Day Event Padding (right)',
+      suffix: '',
+      initialValue: headerConfiguration.eventPadding.right.toInt(),
+      items: const [0, 4, 8],
+      onChanged: (value) {
+        widget.onHeaderChanged(
+          headerConfiguration.copyWith(
+            eventPadding: headerConfiguration.eventPadding.copyWith(right: value.toDouble()),
+          ),
+        );
+      },
+    );
+
+    final maximumNumberOfEvents = IntEditor(
+      title: 'Maximum Number of Events',
+      suffix: '',
+      initialValue: headerConfiguration.maximumNumberOfVerticalEvents ?? 0,
+      items: const [0, 1, 2, 3, 4],
+      onChanged: (value) {
+        widget.onHeaderChanged(
+          headerConfiguration.copyWith(maximumNumberOfVerticalEvents: value == 0 ? null : value),
+        );
+      },
+    );
+
     final headerConfigurationTile = ExpansionTile(
       title: const Text('Header Configuration'),
       initiallyExpanded: true,
@@ -310,6 +351,12 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
         showHeader,
         spacer,
         headerTileHeight,
+        spacer,
+        maximumNumberOfEvents,
+        spacer,
+        multiDayEventPaddingLeft,
+        spacer,
+        multiDayEventPaddingRight,
         spacer,
         ValueListenableBuilder(
           valueListenable: widget.interactionHeader,
