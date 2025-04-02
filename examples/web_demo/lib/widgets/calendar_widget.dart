@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/widgets/components/calendar_header.dart';
+import 'package:web_demo/widgets/components/event_tiles.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/zoom.dart';
 
@@ -34,227 +36,79 @@ class CalendarWidget extends StatelessWidget {
     this.snapping,
   });
 
+  /// The drag anchor strategy for the feedback tile.
+  Offset dragAnchorStrategy(Draggable draggable, BuildContext context, Offset position) {
+    final renderObject = context.findRenderObject()! as RenderBox;
+    return Offset(20, renderObject.size.height / 2);
+  }
+
+  TileComponents<Event> get _tileComponents {
+    return TileComponents<Event>(
+      tileBuilder: EventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      dragAnchorStrategy: dragAnchorStrategy,
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+  }
+
+  TileComponents<Event> get _multiDayTileComponents {
+    return TileComponents<Event>(
+      tileBuilder: MultiDayEventTile.builder,
+      overlayTileBuilder: OverlayEventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      dragAnchorStrategy: dragAnchorStrategy,
+      verticalResizeHandle: const VerticalResizeHandle(),
+      horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tileComponents = TileComponents<Event>(
-      tileBuilder: (event, range) => _tileBuilder(
-        event,
-        range,
-        const EdgeInsets.symmetric(horizontal: 1),
-        const EdgeInsets.all(4),
-      ),
-      dropTargetTile: _dropTargetTile,
-      feedbackTileBuilder: _feedbackTileBuilder,
-      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: dragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-
-    final multiDayTileComponents = TileComponents<Event>(
-      tileBuilder: (event, range) => _tileBuilder(
-        event,
-        range,
-        const EdgeInsets.symmetric(vertical: 1, horizontal: 0.5),
-        const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
-      ),
-      dropTargetTile: _dropTargetTile,
-      feedbackTileBuilder: _feedbackTileBuilder,
-      tileWhenDraggingBuilder: _tileWhenDraggingBuilder,
-      dragAnchorStrategy: dragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-
-    final calendarDateTime = ValueListenableBuilder(
-      valueListenable: controller.visibleDateTimeRange,
-      builder: (context, value, child) {
-        final String month;
-        final int year;
-
-        if (viewConfiguration is MonthViewConfiguration) {
-          // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
-          // we need to check the second week of the visibleDateTimeRange to determine the month and year.
-          final secondWeek = value.start.addDays(7);
-          year = secondWeek.year;
-          month = secondWeek.monthNameEnglish;
-        } else {
-          year = value.start.year;
-          month = value.start.monthNameEnglish;
-        }
-
-        return FilledButton.tonal(
-          onPressed: () {},
-          style: FilledButton.styleFrom(
-            minimumSize: const Size(150, kMinInteractiveDimension),
-          ),
-          child: Text('$month $year'),
-        );
-      },
-    );
-
-    final navigationHeader = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          calendarDateTime,
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            onPressed: () async {
-              await controller.animateToPreviousPage();
-            },
-            icon: const Icon(Icons.navigate_before),
-          ),
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToNextPage();
-            },
-            icon: const Icon(Icons.navigate_next),
-          ),
-          const SizedBox(width: 4),
-          IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToDate(DateTime.now());
-            },
-            icon: const Icon(Icons.today),
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                DropdownMenu(
-                  dropdownMenuEntries: viewConfigurations.map((e) {
-                    return DropdownMenuEntry(value: e, label: e.name);
-                  }).toList(),
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-                        borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline)),
-                  ),
-                  initialSelection: viewConfiguration,
-                  onSelected: (value) {
-                    if (value == null) return;
-                    onSelected(value);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final calendarHeader = CalendarHeader<Event>(
-      multiDayTileComponents: multiDayTileComponents,
-      multiDayHeaderConfiguration: headerConfiguration,
-      interaction: interactionHeader,
-    );
-
-    final header = Material(
-      color: Theme.of(context).colorScheme.surface,
-      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-      elevation: 2,
-      child: Column(
-        children: [
-          navigationHeader,
-          if (showHeader) calendarHeader,
-        ],
-      ),
-    );
-
-    final calendarBody = CalendarBody<Event>(
-      multiDayTileComponents: tileComponents,
-      monthTileComponents: tileComponents,
-      multiDayBodyConfiguration: bodyConfiguration,
-      monthBodyConfiguration: headerConfiguration,
-      interaction: interactionBody,
-      snapping: snapping,
-    );
-
     return CalendarZoomDetector(
       controller: controller,
       child: CalendarView<Event>(
         calendarController: controller,
         eventsController: eventsController,
         viewConfiguration: viewConfiguration,
-        header: header,
-        body: calendarBody,
         callbacks: callbacks,
-      ),
-    );
-  }
-
-  Widget _tileBuilder(
-    CalendarEvent<Event> event,
-    DateTimeRange tileRange,
-    EdgeInsets margin,
-    EdgeInsets padding,
-  ) {
-    final color = (event.data?.color ?? Colors.blueGrey);
-    return Container(
-      margin: margin,
-      decoration: BoxDecoration(
-        color: color.withAlpha(150),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: padding,
-        child: Text(
-          event.data?.title ?? "New Event",
-          style: TextStyle(color: textColor(color)),
+        header: Material(
+          color: Theme.of(context).colorScheme.surface,
+          surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+          elevation: 2,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: NavigationHeader(
+                  controller: controller,
+                  viewConfigurations: viewConfigurations,
+                  viewConfiguration: viewConfiguration,
+                  onSelected: onSelected,
+                ),
+              ),
+              if (showHeader)
+                CalendarHeader<Event>(
+                  multiDayTileComponents: _multiDayTileComponents,
+                  multiDayHeaderConfiguration: headerConfiguration,
+                  interaction: interactionHeader,
+                ),
+            ],
+          ),
+        ),
+        body: CalendarBody<Event>(
+          multiDayTileComponents: _tileComponents,
+          monthTileComponents: _multiDayTileComponents,
+          multiDayBodyConfiguration: bodyConfiguration,
+          monthBodyConfiguration: headerConfiguration,
+          interaction: interactionBody,
+          snapping: snapping,
         ),
       ),
     );
-  }
-
-  Widget _feedbackTileBuilder(CalendarEvent<Event> event, Size dropTargetWidgetSize) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: dropTargetWidgetSize.width * 0.8,
-      height: dropTargetWidgetSize.height,
-      decoration: BoxDecoration(
-        color: (event.data?.color ?? Colors.blueGrey).withAlpha(150),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
-
-  Widget _tileWhenDraggingBuilder(CalendarEvent<Event> event) {
-    return Container(
-      decoration: BoxDecoration(
-        color: (event.data?.color ?? Colors.blueGrey).withAlpha(20),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
-
-  Widget _dropTargetTile(CalendarEvent<Event> event) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: (event.data?.color ?? Colors.blueGrey), width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
-
-  Offset dragAnchorStrategy(
-    Draggable draggable,
-    BuildContext context,
-    Offset position,
-  ) {
-    final renderObject = context.findRenderObject()! as RenderBox;
-    return Offset(
-      20,
-      renderObject.size.height / 2,
-    );
-  }
-
-  Color textColor(Color background) {
-    return background.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 }
