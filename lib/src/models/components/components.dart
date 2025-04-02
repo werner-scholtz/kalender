@@ -32,6 +32,7 @@ class CalendarComponents<T extends Object?> {
   });
 }
 
+/// Builders used to create the overlayPortal, overlay and overlay button widgets.
 class OverlayBuilders<T extends Object?> {
   /// The builder for the multi day overlay.
   final MultiDayOverlayBuilder<T>? multiDayOverlayBuilder;
@@ -49,6 +50,7 @@ class OverlayBuilders<T extends Object?> {
   });
 }
 
+/// Styles used by the overlay widgets.
 class OverlayStyles {
   /// The style for the multi day overlay.
   final MultiDayOverlayStyle? multiDayOverlayStyle;

@@ -224,7 +224,6 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final int? maxNumberOfVerticalEvents;
   final EdgeInsets? eventPadding;
   final ValueNotifier<CalendarInteraction> interaction;
-
   final OverlayBuilders<T>? multiDayOverlayBuilders;
   final OverlayStyles? multiDayOverlayStyles;
 
@@ -254,10 +253,12 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
 
+  /// The function that generates the layout frame for the events.
   GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
       widget.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
 
-  MultiDayOverlayEventTile<T> overlayTileBuilder(
+  /// The function that builds the overlay event tile for the event.
+  MultiDayOverlayEventTile<T> overlayEventTileBuilder(
     CalendarEvent<T> event,
     DateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
@@ -413,7 +414,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
               getMultiDayEventLayoutRenderBox: getRenderBox,
               overlayBuilders: widget.multiDayOverlayBuilders,
               overlayStyles: widget.multiDayOverlayStyles,
-              overlayTileBuilder: overlayTileBuilder,
+              overlayTileBuilder: overlayEventTileBuilder,
             );
 
         return Expanded(
