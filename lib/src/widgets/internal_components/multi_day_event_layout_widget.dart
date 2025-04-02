@@ -76,6 +76,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
 
   // A list containing the layout information for each event.
   final layoutInfo = <EventLayoutInformation>[];
+  final rowInfo = <int, List<EventLayoutInformation>>{};
 
   // The maximum number of rows needed to layout all the events.
   var maxRow = 0;
@@ -113,24 +114,51 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
     // Create a preliminary layout information for the event.
     final preliminaryLayout = EventLayoutInformation.preliminary(id: event.id, columns: columns);
 
-    // From all the existing layout info find the ones that overlap with the current event.
-    final overlaps = layoutInfo.where(preliminaryLayout.overlaps).toList();
+    // From all the existing layout info, find overlaps and determine the first available row.
 
-    // Find the first row with enough space to fit the event.
+    // List to store events that overlap with the current event.
+    final overlaps = <EventLayoutInformation>[];
+    // Tracks the highest row index occupied by overlapping events.
+    var highestRow = 0;
+    // Tracks the highest row index selected during overlap checks.
+    var selectedRow = 0;
+    // Stores the first row index that does not overlap with any other event.
     int? firstAvailableRow;
+
+    // Iterate through all rows from 0 to maxRow to find overlaps and available rows.
     for (var row = 0; row <= maxRow; row++) {
-      final hasOverlap = overlaps.any((info) => info.row == row);
+      // Flag to indicate if the current row has any overlaps.
+      var hasOverlap = false;
+
+      // Get the layout information for the current row.
+      final layoutInformationForRow = rowInfo[row] ?? <EventLayoutInformation>[];
+
+      // Check each existing layout information in the row for overlaps with the current event.
+      for (final info in layoutInformationForRow) {
+        if (preliminaryLayout.overlaps(info)) {
+          // Add the overlapping event to the overlaps list.
+          overlaps.add(info);
+          // Update the highest row index if the current event's row is greater.
+          if (info.row > highestRow) highestRow = info.row;
+
+          // Update the selected row index if the current event's row is greater.
+          if (info.row > selectedRow) selectedRow = info.row;
+
+          // If the current event overlaps with the current row, mark it as having an overlap.
+          if (info.row == row) hasOverlap = true;
+        }
+      }
+
+      // If no overlap is found for the current row and no available row has been set yet,
+      // assign the current row as the first available row and break the loop.
       if (!hasOverlap) {
         firstAvailableRow = row;
         break;
       }
     }
 
-    // Find the first row that doesn't overlap with any other event.
-    late final nextRow = overlaps.isEmpty ? 0 : overlaps.last.row + 1;
-
     // If no row with space is found, use the next open row.
-    final rowToUse = firstAvailableRow ?? nextRow;
+    final rowToUse = firstAvailableRow ?? highestRow + 1;
 
     // Create the final layout information for the event.
     final layout = preliminaryLayout.copyWith(row: rowToUse);
@@ -144,6 +172,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
     }
 
     layoutInfo.add(layout);
+    rowInfo.update(rowToUse, (value) => [...value, layout], ifAbsent: () => [layout]);
   }
 
   return MultiDayLayoutFrame(

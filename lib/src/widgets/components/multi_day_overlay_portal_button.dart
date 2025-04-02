@@ -22,6 +22,9 @@ class MultiDayPortalOverlayButtonStyle {
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {
+  /// The [ValueKey] used to identify text displayed in the button.
+  static const textKey = ValueKey('multi_day_portal_overlay_button_text');
+
   final MultiDayPortalOverlayButtonStyle? style;
   final OverlayPortalController portalController;
   final int numberOfHiddenEvents;
@@ -39,7 +42,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
       onTap: portalController.show,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Text('$numberOfHiddenEvents more'),
+        child: Text('$numberOfHiddenEvents more', key: textKey),
       ),
     );
   }

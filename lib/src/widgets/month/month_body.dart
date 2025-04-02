@@ -72,7 +72,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    if (configuration! is MonthBodyConfiguration) {
+    if (configuration is MonthBodyConfiguration<T>) {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
