@@ -16,15 +16,15 @@ void main() {
       ),
     );
 
-    final start = DateTime.utc(2025, 3, 24);
-    final end = DateTime.utc(2025, 3, 31);
-    final visibleRange = DateTimeRange(start: start, end: end);
+    final start = DateTime(2025, 3, 24);
+    final end = DateTime(2025, 3, 31);
+    final visibleRange = DateTimeRange(start: start.asUtc, end: end.asUtc);
 
     final events = [
       CalendarEvent<int>(dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)), data: 1),
       CalendarEvent<int>(dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)), data: 2),
       CalendarEvent<int>(
-        dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(seconds: 1))),
+        dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 6))),
         data: 3,
       ),
     ];
