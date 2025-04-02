@@ -18,6 +18,8 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
   /// The first day of the week.
   final int firstDayOfWeek;
 
+  /// TODO: add padding for events.
+
   MonthViewConfiguration({
     required super.name,
     required this.firstDayOfWeek,

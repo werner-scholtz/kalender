@@ -332,6 +332,8 @@ Please use the `generateFrame` method instead.
   /// If this is null, then there is no limit.
   final int? maximumNumberOfVerticalEvents;
 
+  /// TODO: add padding for events.
+
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayHeaderConfiguration({
     this.showTiles = defaultShowEventTiles,
