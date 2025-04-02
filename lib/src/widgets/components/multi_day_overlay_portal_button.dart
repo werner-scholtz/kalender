@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 /// The builder used to create the button for the [MultiDayPortalOverlayButton].
 ///
 /// [portalController] is the controller for the overlay portal.
-/// [numberOfHiddenEvents] is the number of events that are not displayed because of constraints.
+/// [numberOfHiddenRows] is the number of events that are not displayed because of constraints.
 /// [style] is the style of the button.
 typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
   OverlayPortalController portalController,
-  int numberOfHiddenEvents,
+  int numberOfHiddenRows,
   MultiDayPortalOverlayButtonStyle? style,
 );
 
@@ -27,12 +27,12 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
 
   final MultiDayPortalOverlayButtonStyle? style;
   final OverlayPortalController portalController;
-  final int numberOfHiddenEvents;
+  final int numberOfHiddenRows;
 
   const MultiDayPortalOverlayButton({
     super.key,
     required this.portalController,
-    required this.numberOfHiddenEvents,
+    required this.numberOfHiddenRows,
     required this.style,
   });
 
@@ -42,7 +42,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
       onTap: portalController.show,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Text('$numberOfHiddenEvents more', key: textKey),
+        child: Text('$numberOfHiddenRows more', key: textKey),
       ),
     );
   }

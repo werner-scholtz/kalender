@@ -92,8 +92,8 @@ void main() {
 
     testWidgets('Multiple events', (tester) async {
       ///   24   25   26   27   28   29  30
-      ///   |-----1----|   |-----2----|
-      ///   |3|  |----4----|    |--5--|
+      ///   |------1------||-----2----|
+      ///   |--3--||---4---||---5-----|
       ///                  |-----6----|
 
       final events = [
@@ -203,6 +203,91 @@ void main() {
           );
         }
       }
+    });
+
+    testWidgets('Button values', (tester) async {
+      ///   24   25   26   27   28   29  30
+      ///   |-----1-------||-----2----|
+      ///        |----3---|
+      ///                  | +1 || +1 |
+      /// _______________________________
+      ///                 |------4----|
+      final events = [
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 3, 24),
+            end: DateTime(2025, 3, 27),
+          ),
+          data: 1,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 3, 27),
+            end: DateTime(2025, 3, 30),
+          ),
+          data: 2,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 3, 25),
+            end: DateTime(2025, 3, 28),
+          ),
+          data: 3,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 3, 27),
+            end: DateTime(2025, 3, 30),
+          ),
+          data: 4,
+        ),
+      ];
+      eventsController.addEvents(events);
+
+      const tileHeight = 50.0;
+      const dayWidth = 50.0;
+      const maxNumberOfVerticalEvents = 2;
+
+      await tester.pumpWidget(
+        wrapWithMaterialApp(
+          MultiDayEventLayoutWidget<int>(
+            events: eventsController.events.toList(),
+            eventsController: eventsController,
+            controller: controller,
+            visibleDateTimeRange: visibleRange,
+            tileComponents: tileComponents,
+            callbacks: null,
+            dayWidth: dayWidth,
+            showAllEvents: true,
+            tileHeight: tileHeight,
+            maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+            interaction: interaction,
+            generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
+            eventPadding: const EdgeInsets.all(0),
+            textDirection: TextDirection.ltr,
+            multiDayOverlayBuilders: null,
+            multiDayOverlayStyles: null,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify that the events are present.
+      expect(find.byKey(getKey(1)), findsOneWidget);
+      expect(find.byKey(getKey(2)), findsOneWidget);
+      expect(find.byKey(getKey(3)), findsOneWidget);
+      expect(find.byKey(getKey(4)), findsNothing);
+
+      final buttonFinder = find.byType(MultiDayPortalOverlayButton);
+      expect(buttonFinder, findsNWidgets(3));
+
+      final buttonTextFinder = find.byKey(MultiDayPortalOverlayButton.textKey);
+      buttonTextFinder.evaluate().forEach((element) {
+        final text = (element.widget as Text).data;
+        expect(text, isNotNull, reason: 'Button text should not be null');
+        expect(text!.contains('1'), isTrue, reason: 'Button text should contain the number "1" but found: "$text"');
+      });
     });
   });
 }

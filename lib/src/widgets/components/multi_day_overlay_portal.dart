@@ -6,7 +6,7 @@ import 'package:kalender/kalender.dart';
 ///
 /// [date] is the date for which the widget is created.
 /// [events] are all the events that can be displayed for the given [date]. (They are not necessarily all displayed.)
-/// [numberOfHiddenEvents] is the number of hidden events.
+/// [numberOfHiddenRows] is the number of hidden rows.
 /// [tileHeight] is the height of the tile.
 /// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
 /// [overlayBuilders] is the builders for the overlay event tile.
@@ -14,7 +14,7 @@ import 'package:kalender/kalender.dart';
 typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
   required DateTime date,
   required List<CalendarEvent<T>> events,
-  required int numberOfHiddenEvents,
+  required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required OverlayBuilders<T>? overlayBuilders,
@@ -28,8 +28,8 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   /// All the events that should be displayed for the given [date].
   final List<CalendarEvent<T>> events;
 
-  /// The number of hidden events.
-  final int numberOfHiddenEvents;
+  /// The number of hidden rows.
+  final int numberOfHiddenRows;
 
   /// The height of the tile.
   final double tileHeight;
@@ -46,7 +46,7 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   const MultiDayOverlayPortal({
     required this.date,
     required this.events,
-    required this.numberOfHiddenEvents,
+    required this.numberOfHiddenRows,
     required this.tileHeight,
     required this.getMultiDayEventLayoutRenderBox,
     required this.overlayTileBuilder,
@@ -107,12 +107,12 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
       },
       child: widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
             _portalController,
-            widget.numberOfHiddenEvents,
+            widget.numberOfHiddenRows,
             widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
           ) ??
           MultiDayPortalOverlayButton(
             portalController: _portalController,
-            numberOfHiddenEvents: widget.numberOfHiddenEvents,
+            numberOfHiddenRows: widget.numberOfHiddenRows,
             style: widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
           ),
     );

@@ -393,13 +393,13 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         final row = entry.value;
         final date = _frame.dateFromColumn(column);
         final eventsForColumn = _frame.eventsForColumn(column);
-        late final numberOfEvents = eventsForColumn.length;
-        late final numberOfHiddenEvents = numberOfEvents - (widget.maxNumberOfVerticalEvents ?? 0);
+        late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
+
 
         late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
               date: date,
               events: eventsForColumn,
-              numberOfHiddenEvents: numberOfHiddenEvents,
+              numberOfHiddenRows: numberOfHiddenRows,
               tileHeight: widget.tileHeight,
               getMultiDayEventLayoutRenderBox: getRenderBox,
               overlayBuilders: widget.multiDayOverlayBuilders,
@@ -408,7 +408,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             MultiDayOverlayPortal<T>(
               date: date,
               events: eventsForColumn,
-              numberOfHiddenEvents: numberOfHiddenEvents,
+              numberOfHiddenRows: numberOfHiddenRows,
               tileHeight: widget.tileHeight,
               getMultiDayEventLayoutRenderBox: getRenderBox,
               overlayBuilders: widget.multiDayOverlayBuilders,
