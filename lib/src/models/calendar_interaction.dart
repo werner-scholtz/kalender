@@ -57,6 +57,10 @@ class CalendarInteraction {
   final bool allowEventCreation;
   static const defaultAllowEventCreation = true;
 
+  /// The gesture used to create an event.
+  /// 
+  /// This gesture determines how users can create new events in the calendar.
+  /// It can be either a tap or a long press gesture.
   final CreateEventGesture createEventGesture;
   static const defaultCreateEventGesture = CreateEventGesture.tap;
   static const defaultMobileCreateEventGesture = CreateEventGesture.longPress;
