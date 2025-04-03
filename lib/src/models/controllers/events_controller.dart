@@ -84,6 +84,10 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   CalendarEvent<T>? byId(int id) => dateMap.byId(id);
 
   /// Finds the [CalendarEvent]s that occur during the [dateTimeRange].
+  ///
+  /// The [dateTimeRange] is the range of dates to search for events.
+  /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
+  /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   Iterable<CalendarEvent<T>> eventsFromDateTimeRange(
     DateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,

@@ -88,6 +88,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
                   // Find the global position and size of the tile.
                   final renderObject = context.findRenderObject()! as RenderBox;
                   onEventTapped!.call(event, renderObject);
+                  onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
                 }
               : null,
           child: canReschedule ? draggableTile : tile,
