@@ -80,7 +80,7 @@ class MobileHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: EventOverlayPortal(child: SingleCalendarView()));
+    return const Scaffold(body: SafeArea(child: EventOverlayPortal(child: SingleCalendarView())));
   }
 }
 

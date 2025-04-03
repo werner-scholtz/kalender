@@ -1,5 +1,28 @@
-import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/platform.dart';
+
+/// The [EventSnapStrategy] typedef defines a function that snaps events to specific intervals.
+///
+/// This function takes a [cursorDate] and a [startOfDay] date, and returns a new date that is snapped
+/// based on the defined strategy.
+typedef EventSnapStrategy = DateTime Function(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes);
+
+/// The default snap strategy used to snap events to a the [snapIntervalMinutes].
+DateTime defaultSnapStrategy(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes) {
+  final minutes = cursorDate.difference(startOfDay).inMinutes;
+  final numberOfIntervals = (minutes / snapIntervalMinutes).round();
+  final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
+  final snappedDate = startOfDay.add(Duration(minutes: snappedMinutes));
+  return snappedDate;
+}
+
+/// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
+enum CreateEventGesture {
+  /// Creates event on tap gesture.
+  tap,
+
+  /// Creates event on tap hold gesture.
+  longPress,
+}
 
 /// The [CalendarInteraction] class defines the interaction settings for the calendar.
 ///
@@ -124,7 +147,7 @@ class CalendarSnapping {
   static const defaultSnapRange = Duration(minutes: 15);
 
   /// The strategy used to snap events to specific intervals.
-  /// 
+  ///
   /// This strategy is only used by the multi-day body.
   final EventSnapStrategy eventSnapStrategy;
 
@@ -171,19 +194,4 @@ class CalendarSnapping {
         snapToOtherEvents,
         snapRange,
       );
-}
-
-/// The [EventSnapStrategy] typedef defines a function that snaps events to specific intervals.
-///
-/// This function takes a [cursorDate] and a [startOfDay] date, and returns a new date that is snapped
-/// based on the defined strategy.
-typedef EventSnapStrategy = DateTime Function(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes);
-
-/// The default snap strategy used to snap events to a the [snapIntervalMinutes].
-DateTime defaultSnapStrategy(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes) {
-  final minutes = cursorDate.difference(startOfDay).inMinutes;
-  final numberOfIntervals = (minutes / snapIntervalMinutes).round();
-  final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
-  final snappedDate = startOfDay.add(Duration(minutes: snappedMinutes));
-  return snappedDate;
 }

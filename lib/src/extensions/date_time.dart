@@ -343,10 +343,7 @@ extension DateTimeExtensions on DateTime {
   /// final utcDate = date.asUtc;
   /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
   /// ```
-  DateTime get asUtc {
-    assert(!isUtc, 'The date is already in UTC time zone. ($this)');
-    return DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
+  DateTime get asUtc => DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// Returns a [DateTime] as a local value without converting it.
   ///
@@ -359,10 +356,7 @@ extension DateTimeExtensions on DateTime {
   /// final localDate = date.asLocal;
   /// print(localDate); // Output: 2024-01-15 10:30:00.000
   /// ```
-  DateTime get asLocal {
-    assert(isUtc, 'The date is already in local time zone. ($this)');
-    return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
-  }
+  DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// TODO: Proposal depend on the intl package so this can be removed.
   /// If we do start depending on the intl package, then we might as well

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 
+// TODO: clean up this.
 class CalendarCustomize extends StatefulWidget {
   final ViewConfiguration viewConfiguration;
   final void Function(ViewConfiguration value) onChanged;

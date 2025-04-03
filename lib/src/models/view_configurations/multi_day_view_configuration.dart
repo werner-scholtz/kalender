@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
@@ -245,7 +244,6 @@ class MultiDayBodyConfiguration {
     this.showMultiDayEvents = defaultShowMultiDayEvents,
     CalendarInteraction? calendarInteraction,
     CalendarSnapping? calendarSnapping,
-    CreateEventGesture? createEventGesture,
     this.horizontalPadding = defaultHorizontalPadding,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,

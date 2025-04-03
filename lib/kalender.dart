@@ -56,3 +56,6 @@ export 'package:kalender/src/models/controllers/view_controller.dart';
 
 /// Layout Delegates
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
+
+/// Enumerations
+export 'package:kalender/src/enumerations.dart';

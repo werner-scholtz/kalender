@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/main.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/calendar_customize.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
@@ -8,15 +8,30 @@ import 'package:web_demo/widgets/calendar_widget.dart';
 class SingleCalendarView extends StatefulWidget {
   const SingleCalendarView({super.key});
 
+  static SingleCalendarViewState? _of(BuildContext context) {
+    return context.findAncestorStateOfType<SingleCalendarViewState>();
+  }
+
+  static void setViewConfiguration(BuildContext context, ViewConfiguration value) {
+    final state = _of(context);
+    if (state == null) throw Exception('SingleCalendarViewState not found in context');
+    state.setViewConfiguration(value);
+  }
+
   @override
-  State<SingleCalendarView> createState() => _SingleCalendarViewState();
+  State<SingleCalendarView> createState() => SingleCalendarViewState();
 }
 
-class _SingleCalendarViewState extends State<SingleCalendarView> {
-  final _controller = CalendarController<Event>();
+class SingleCalendarViewState extends State<SingleCalendarView> {
+  final controller = CalendarController<Event>();
 
-  late ViewConfiguration _viewConfiguration = _viewConfigurations[1];
-  final _viewConfigurations = [
+  late ViewConfiguration viewConfiguration = viewConfigurations[1];
+  void setViewConfiguration(ViewConfiguration value) {
+    if (viewConfiguration == value) return;
+    setState(() => viewConfiguration = value);
+  }
+
+  final viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
@@ -25,53 +40,61 @@ class _SingleCalendarViewState extends State<SingleCalendarView> {
     MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)"),
   ];
 
-  MultiDayBodyConfiguration _bodyConfiguration = MultiDayBodyConfiguration();
-  MultiDayHeaderConfiguration<Event> _headerConfiguration = MultiDayHeaderConfiguration();
+  MultiDayBodyConfiguration multiDayBodyConfiguration = MultiDayBodyConfiguration();
+  MultiDayHeaderConfiguration<Event> multiDayHeaderConfiguration = MultiDayHeaderConfiguration();
+  MonthBodyConfiguration<Event> monthBodyConfiguration = MonthBodyConfiguration();
 
-  final ValueNotifier<CalendarInteraction> _interactionHeader = ValueNotifier(CalendarInteraction());
-  final ValueNotifier<CalendarInteraction> _interactionBody = ValueNotifier(CalendarInteraction());
-  final ValueNotifier<CalendarSnapping> _snapping = ValueNotifier(const CalendarSnapping());
+  late final ValueNotifier<CalendarInteraction> interactionHeader = ValueNotifier(CalendarInteraction(
+    createEventGesture: isMobile ? CreateEventGesture.longPress : CreateEventGesture.tap,
+  ));
+  late final ValueNotifier<CalendarInteraction> interactionBody = ValueNotifier(CalendarInteraction(
+    createEventGesture: isMobile ? CreateEventGesture.longPress : CreateEventGesture.tap,
+  ));
+  final ValueNotifier<CalendarSnapping> snapping = ValueNotifier(const CalendarSnapping());
 
   bool showHeader = true;
+  bool get isMobile => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final calendar = CalendarWidget(
-          controller: _controller,
-          eventsController: MyApp.eventsController(context),
-          viewConfiguration: _viewConfiguration,
-          viewConfigurations: _viewConfigurations,
-          onSelected: (value) => setState(() => _viewConfiguration = value),
-          bodyConfiguration: _bodyConfiguration,
-          headerConfiguration: _headerConfiguration,
-          showHeader: showHeader,
-          interactionHeader: _interactionHeader,
-          interactionBody: _interactionBody,
-          snapping: _snapping,
-        );
-
         final canShowCustomize = constraints.maxWidth > 800;
-        late final customize = CalendarCustomize(
-          viewConfiguration: _viewConfiguration,
-          onChanged: (value) => setState(() => _viewConfiguration = value),
-          bodyConfiguration: _bodyConfiguration,
-          onBodyChanged: (value) => setState(() => _bodyConfiguration = value),
-          headerConfiguration: _headerConfiguration,
-          onHeaderChanged: (value) => setState(() => _headerConfiguration = value),
-          showHeader: showHeader,
-          onShowHeaderChanged: (value) => setState(() => showHeader = value),
-          interaction: _interactionBody,
-          interactionHeader: _interactionHeader,
-          snapping: _snapping,
-        );
-
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(flex: 3, child: calendar),
-            if (canShowCustomize) Flexible(flex: 1, child: customize),
+            Flexible(
+              flex: 3,
+              child: CalendarWidget(
+                controller: controller,
+                viewConfiguration: viewConfiguration,
+                viewConfigurations: viewConfigurations,
+                multiDayBodyConfiguration: multiDayBodyConfiguration,
+                multiDayHeaderConfiguration: multiDayHeaderConfiguration,
+                monthBodyConfiguration: monthBodyConfiguration,
+                interactionHeader: interactionHeader,
+                interactionBody: interactionBody,
+                snapping: snapping,
+                showHeader: showHeader,
+              ),
+            ),
+            if (canShowCustomize)
+              Flexible(
+                flex: 1,
+                child: CalendarCustomize(
+                  viewConfiguration: viewConfiguration,
+                  onChanged: (value) => setState(() => viewConfiguration = value),
+                  bodyConfiguration: multiDayBodyConfiguration,
+                  onBodyChanged: (value) => setState(() => multiDayBodyConfiguration = value),
+                  headerConfiguration: multiDayHeaderConfiguration,
+                  onHeaderChanged: (value) => setState(() => multiDayHeaderConfiguration = value),
+                  showHeader: showHeader,
+                  onShowHeaderChanged: (value) => setState(() => showHeader = value),
+                  interaction: interactionBody,
+                  interactionHeader: interactionHeader,
+                  snapping: snapping,
+                ),
+              ),
           ],
         );
       },

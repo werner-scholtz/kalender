@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/main.dart' show MyApp;
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
@@ -9,30 +10,28 @@ import 'package:web_demo/widgets/zoom.dart';
 
 class CalendarWidget extends StatelessWidget {
   final CalendarController<Event> controller;
-  final EventsController<Event> eventsController;
   final ViewConfiguration viewConfiguration;
   final List<ViewConfiguration> viewConfigurations;
-  final void Function(ViewConfiguration value) onSelected;
-  final MultiDayBodyConfiguration bodyConfiguration;
-  final MultiDayHeaderConfiguration<Event> headerConfiguration;
+  final MultiDayBodyConfiguration multiDayBodyConfiguration;
+  final MultiDayHeaderConfiguration<Event> multiDayHeaderConfiguration;
+  final MonthBodyConfiguration<Event> monthBodyConfiguration;
+  final ValueNotifier<CalendarInteraction> interactionHeader;
+  final ValueNotifier<CalendarInteraction> interactionBody;
+  final ValueNotifier<CalendarSnapping> snapping;
   final bool showHeader;
-  final ValueNotifier<CalendarInteraction>? interactionHeader;
-  final ValueNotifier<CalendarInteraction>? interactionBody;
-  final ValueNotifier<CalendarSnapping>? snapping;
 
   const CalendarWidget({
     super.key,
     required this.controller,
-    required this.eventsController,
     required this.viewConfiguration,
     required this.viewConfigurations,
-    required this.onSelected,
-    required this.bodyConfiguration,
-    required this.headerConfiguration,
+    required this.multiDayBodyConfiguration,
+    required this.multiDayHeaderConfiguration,
+    required this.monthBodyConfiguration,
+    required this.interactionHeader,
+    required this.interactionBody,
+    required this.snapping,
     required this.showHeader,
-    this.interactionHeader,
-    this.interactionBody,
-    this.snapping,
   });
 
   /// The drag anchor strategy for the feedback tile.
@@ -68,6 +67,7 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final eventsController = MyApp.eventsController(context);
     return CalendarZoomDetector(
       controller: controller,
       child: CalendarView<Event>(
@@ -101,13 +101,13 @@ class CalendarWidget extends StatelessWidget {
                   controller: controller,
                   viewConfigurations: viewConfigurations,
                   viewConfiguration: viewConfiguration,
-                  onSelected: onSelected,
+                  
                 ),
               ),
               if (showHeader)
                 CalendarHeader<Event>(
                   multiDayTileComponents: _multiDayTileComponents,
-                  multiDayHeaderConfiguration: headerConfiguration,
+                  multiDayHeaderConfiguration: multiDayHeaderConfiguration,
                   interaction: interactionHeader,
                 ),
             ],
@@ -116,8 +116,8 @@ class CalendarWidget extends StatelessWidget {
         body: CalendarBody<Event>(
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
-          multiDayBodyConfiguration: bodyConfiguration,
-          monthBodyConfiguration: headerConfiguration,
+          multiDayBodyConfiguration: multiDayBodyConfiguration,
+          monthBodyConfiguration: monthBodyConfiguration,
           interaction: interactionBody,
           snapping: snapping,
         ),
