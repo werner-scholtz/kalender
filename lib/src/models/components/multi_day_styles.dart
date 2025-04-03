@@ -5,8 +5,8 @@ import 'package:kalender/src/widgets/components/hour_lines.dart';
 import 'package:kalender/src/widgets/components/time_indicator.dart';
 import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/components/week_number.dart';
-import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
+import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
 /// A class containing styles for the [MultiDayBody] and [MultiDayHeader].
 class MultiDayComponentStyles {

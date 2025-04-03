@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
-import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
 
 /// The [CalendarController] is used to controller a single [CalendarView].

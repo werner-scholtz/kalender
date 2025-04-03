@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
-import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
+import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';

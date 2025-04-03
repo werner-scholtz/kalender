@@ -26,6 +26,8 @@ linter:
     prefer_final_locals: true
     dangling_library_doc_comments: true
     type_literal_in_constant_pattern: true
+    directives_ordering: true
+    prefer_const_constructors: true
 
 formatter:
   page_width: 120

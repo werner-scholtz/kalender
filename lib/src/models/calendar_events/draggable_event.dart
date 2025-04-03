@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being rescheduled.

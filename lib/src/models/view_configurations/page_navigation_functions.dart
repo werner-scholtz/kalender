@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// A class that contains functions to navigate between pages in a view.
 ///

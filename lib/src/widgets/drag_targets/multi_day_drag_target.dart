@@ -2,11 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/enumerations.dart';
+import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
-
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
 ///
