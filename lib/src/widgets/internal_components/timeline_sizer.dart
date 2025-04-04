@@ -25,7 +25,7 @@ class TimelineSizer<T extends Object?> extends StatelessWidget {
     final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
     final timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
-        TimeLine(
+        PrototypeTimeline(
           timeOfDayRange: timeOfDayRange,
           heightPerMinute: heightPerMinute,
           style: timelineStyle,

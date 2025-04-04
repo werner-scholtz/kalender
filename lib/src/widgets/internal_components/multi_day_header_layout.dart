@@ -44,8 +44,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
       final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
 
       timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
-          // TODO: implement a default prototypeTimeLine.
-          TimeLine(
+          PrototypeTimeline(
             timeOfDayRange: timeOfDayRange,
             heightPerMinute: heightPerMinute,
             style: timelineStyle,
