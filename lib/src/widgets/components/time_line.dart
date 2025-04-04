@@ -253,7 +253,7 @@ class TimeLine extends StatelessWidget {
     );
 
     return SizedBox(
-      width: textWidth + textPadding.horizontal,
+      width: textWidth,
       child: Stack(
         children: [
           ...positionedTimes.nonNulls.toList(),
