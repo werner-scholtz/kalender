@@ -81,27 +81,54 @@ class TimeLine<T extends Object?> extends StatelessWidget {
     required this.heightPerMinute,
     required this.eventBeingDragged,
     required this.visibleDateTimeRange,
-    this.style,
+    required this.style,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = style?.textStyle ?? Theme.of(context).textTheme.labelMedium;
-    final textDirection = style?.textDirection ?? TextDirection.ltr;
+  /// The [TextStyle] that will be used for the text.
+  TextStyle textStyle(BuildContext context) => style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
 
+  /// The [TextDirection] that will be used for the text.
+  TextDirection textDirection(BuildContext context) => style?.textDirection ?? TextDirection.ltr;
+
+  /// The [EdgeInsets] that will be used for the text.
+  EdgeInsets textPadding(BuildContext context) => style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
+
+  /// The [Size] of the largest text.
+  Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = TimeOfDay(hour: 12, minute: 0);
     final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
     final textSize = _textSize(text, textStyle);
+    final paddingSize = Size(padding.horizontal, padding.vertical);
+    return Size(
+      textSize.width + paddingSize.width,
+      textSize.height + paddingSize.height,
+    );
+  }
+
+  /// Returns the [Size] of the text.
+  Size _textSize(String text, TextStyle? style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: this.style?.textDirection ?? TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+
+    return textPainter.size;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = this.textStyle(context);
+    final textDirection = this.textDirection(context);
+    final textPadding = this.textPadding(context);
+    final textSize = largestTextSize(context, textStyle, textPadding);
     final textHeight = textSize.height;
     final textWidth = textSize.width;
-
     final textXOffset = textHeight / 2;
 
     // This includes the last hour for which we do not want to display the time.
     final hourRanges = timeOfDayRange.hourRanges;
     var previousXPosition = 0.0;
-
-    final textPadding = style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
 
     final positionedTimes = hourRanges.indexed.map(
       (e) {
@@ -217,15 +244,24 @@ class TimeLine<T extends Object?> extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Returns the size of the text.
-  Size _textSize(String text, TextStyle? style) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: this.style?.textDirection ?? TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
+/// A widget that displays a prototype time line.
+class PrototypeTimeline<T extends Object?> extends TimeLine<T> {
+  const PrototypeTimeline({
+    super.key,
+    required super.timeOfDayRange,
+    required super.heightPerMinute,
+    required super.eventBeingDragged,
+    required super.visibleDateTimeRange,
+    required super.style,
+  });
 
-    return textPainter.size;
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = this.textStyle(context);
+    final textPadding = this.textPadding(context);
+    final largestTextSize = this.largestTextSize(context, textStyle, textPadding);
+    return SizedBox(width: largestTextSize.width);
   }
 }
