@@ -39,6 +39,11 @@ abstract class PageNavigationFunctions {
     return FreeScrollFunctions(dateTimeRange: dateTimeRange);
   }
 
+  /// Creates a [PageNavigationFunctions] for a schedule [PageNavigationFunctions.schedule].
+  factory PageNavigationFunctions.schedule(DateTimeRange dateTimeRange) {
+    return SchedulePageFunctions(dateTimeRange: dateTimeRange);
+  }
+
   /// Calculates the VisibleDateRange from the [index].
   ///
   /// [index] is the page index.
@@ -268,6 +273,34 @@ class MonthPageFunctions extends PageNavigationFunctions {
   /// Returns the number of rows that need to be displayed for the given [range].
   int numberOfRowsForRange(DateTimeRange range) {
     return range.dates().length ~/ DateTime.daysPerWeek;
+  }
+
+  @override
+  late final int numberOfPages = adjustedRange.monthDifference;
+
+  @override
+  late final DateTimeRange adjustedRange;
+}
+
+class SchedulePageFunctions extends PageNavigationFunctions {
+  SchedulePageFunctions({
+    required DateTimeRange dateTimeRange,
+  }) : adjustedRange = DateTimeRange(
+          start: dateTimeRange.start.asUtc.startOfMonth,
+          end: dateTimeRange.end.asUtc.endOfMonth,
+        );
+
+  @override
+  DateTimeRange dateTimeRangeFromIndex(int index) {
+    final startOfMonth = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1);
+    final endOfMonth = startOfMonth.endOfMonth;
+    return DateTimeRange(start: startOfMonth, end: endOfMonth);
+  }
+
+  @override
+  int indexFromDate(DateTime date) {
+    final dateTimeRange = DateTimeRange(start: adjustedRange.start, end: date.asUtc);
+    return dateTimeRange.monthDifference;
   }
 
   @override

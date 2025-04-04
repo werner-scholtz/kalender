@@ -155,6 +155,7 @@ abstract class DateMap<T> {
   /// Remove the [event].
   void removeEvent(CalendarEvent<T> event);
 
+  /// Remove a list of [CalendarEvent]s from the map.
   void removeEvents(List<CalendarEvent<T>> event);
 
   /// Remove an event by its id.

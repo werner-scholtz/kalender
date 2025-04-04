@@ -37,6 +37,26 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<CalendarProvider<T>>();
   }
 
+  static EventsController<T> eventsControllerOf<T>(BuildContext context) {
+    final result = maybeOf<T>(context);
+    assert(result != null, 'No CalendarProvider of <$T> found.');
+    return result!.eventsController;
+  }
+
+  static CalendarController<T> calendarControllerOf<T>(BuildContext context) {
+    final result = maybeOf<T>(context);
+    assert(result != null, 'No CalendarProvider of <$T> found.');
+    final controller = result!.calendarController;
+    assert(controller.isAttached, 'The CalendarController needs to be attached to a $ViewController<$T>.');
+    return controller;
+  }
+
+  static CalendarCallbacks<T>? callbacksOf<T>(BuildContext context) {
+    final result = maybeOf<T>(context);
+    assert(result != null, 'No CalendarProvider of <$T> found.');
+    return result!.callbacks;
+  }
+
   static CalendarProvider<T> of<T>(BuildContext context) {
     final result = maybeOf<T>(context);
     assert(result != null, 'No CalendarProvider of <$T> found.');

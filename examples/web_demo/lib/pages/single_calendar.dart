@@ -33,6 +33,7 @@ class SingleCalendarViewState extends State<SingleCalendarView> {
 
   final viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
+    ScheduleViewConfiguration.continuous(),
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
     MultiDayViewConfiguration.custom(numberOfDays: 3),
