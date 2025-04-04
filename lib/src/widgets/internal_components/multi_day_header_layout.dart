@@ -76,9 +76,8 @@ class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
   /// The widget that will be used to display the leading widget.
   final Widget leading;
 
-  /// The widget that will be used to display the page.  
+  /// The widget that will be used to display the page.
   final Widget content;
-
 
   @override
   RenderObject createRenderObject(BuildContext context) {

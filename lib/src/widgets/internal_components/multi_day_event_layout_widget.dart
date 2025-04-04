@@ -396,7 +396,6 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         final eventsForColumn = _frame.eventsForColumn(column);
         late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
-
         late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
               date: date,
               events: eventsForColumn,

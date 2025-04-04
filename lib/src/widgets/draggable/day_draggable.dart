@@ -98,7 +98,11 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
     final startOfEvent = startOfDay.add(durationFromTop);
 
     // Snap the datetime based on the snap strategy.
-    final snappedDateTime = snapping.value.eventSnapStrategy(startOfEvent, startOfDay, snapping.value.snapIntervalMinutes);
+    final snappedDateTime = snapping.value.eventSnapStrategy(
+      startOfEvent,
+      startOfDay,
+      snapping.value.snapIntervalMinutes,
+    );
 
     return snappedDateTime;
   }

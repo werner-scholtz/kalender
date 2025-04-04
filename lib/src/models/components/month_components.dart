@@ -9,6 +9,7 @@ import 'package:kalender/src/widgets/month/month_header.dart';
 class MonthComponents<T extends Object?> {
   /// The component builders used by the [MonthBody].
   final MonthBodyComponents<T>? bodyComponents;
+
   /// The component builders used by the [MonthHeader].
   final MonthHeaderComponents<T>? headerComponents;
 

@@ -101,9 +101,8 @@ typedef OnTapped = void Function(DateTime date);
 /// [dateRange] is the range of dates that was tapped.
 typedef OnMultiDayTapped = void Function(DateTimeRange dateRange);
 
-
 /// The callback for when a user taps on a expandable multi-day calendar widget.
-/// 
+///
 /// [date] is the date for which the expand widget is displayed for.
 /// [renderBox] is the [RenderBox] of the expand widget.
 typedef OnMultiDayExpand = void Function(
