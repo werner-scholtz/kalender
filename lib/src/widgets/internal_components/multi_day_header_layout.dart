@@ -39,7 +39,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
       final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents ?? const MultiDayBodyComponents();
       final timelineStyle = bodyStyles?.timelineStyle;
       const heightPerMinute = 1.0;
-      final timeOfDayRange = TimeOfDayRange.allDay();    
+      final timeOfDayRange = TimeOfDayRange.allDay();
       timeline = bodyComponents.prototypeTimeLine.call(heightPerMinute, timeOfDayRange, timelineStyle);
     }
 
