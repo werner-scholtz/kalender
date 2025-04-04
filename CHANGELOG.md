@@ -1,13 +1,14 @@
 ## 0.7.0
 
 ### Features
-- Ability to limit the number of events in MultiDayHeader.  [#141](https://github.com/werner-scholtz/kalender/pull/141)
+- Ability to limit the number of events in MultiDayHeader.  [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#147](https://github.com/werner-scholtz/kalender/issues/147)
     - `MultiDayHeaderConfiguration` Changes:
         - Added `maximumNumberOfVerticalEvents`
         - Added `generateMultiDayLayoutFrame`
     - Added `overlayBuilders` to `MultiDayHeaderComponents` for customizing the overlay.
-- MonthBody limits the number of events displayed based on size constraints. [#141](https://github.com/werner-scholtz/kalender/pull/141)
+- MonthBody limits the number of events displayed based on size constraints. [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#147](https://github.com/werner-scholtz/kalender/issues/147)
     - Added `overlayBuilders` to `MonthBodyComponents` for customizing the overlay.
+- Added a new callback `OnEventTappedWithDetail`. [#141](https://github.com/werner-scholtz/kalender/pull/141) / [#148](https://github.com/werner-scholtz/kalender/issues/148)
 
 ### Migrations
 - Deprecated [MultiDayEventLayoutStrategy](https://github.com/werner-scholtz/kalender/blob/dc009aa40b80d1ee04a1b950f449389b3130f644/lib/src/layout_delegates/multi_day_event_layout_delegate.dart#L8) this should be migrated to use the new `GenerateMultiDayLayoutFrame`

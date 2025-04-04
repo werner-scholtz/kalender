@@ -42,6 +42,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   ValueNotifier<CalendarEvent<T>?> get selectedEvent => controller.selectedEvent;
 
   OnEventTapped<T>? get onEventTapped => callbacks?.onEventTapped;
+  OnEventTappedWithDetail<T>? get onEventTappedWithDetail => callbacks?.onEventTappedWithDetail;
 
   TileBuilder<T> get tileBuilder => tileComponents.tileBuilder;
   TileBuilder<T> get overlayTileBuilder => tileComponents.overlayTileBuilder ?? tileBuilder;

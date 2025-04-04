@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
@@ -66,6 +67,7 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
                   // Find the global position and size of the tile.
                   final renderObject = context.findRenderObject()! as RenderBox;
                   onEventTapped!.call(event, renderObject);
+                  onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
                 }
               : null,
           child: canReschedule ? draggableTile : tile,
