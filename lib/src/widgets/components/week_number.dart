@@ -35,15 +35,16 @@ class WeekNumberStyle {
 
 /// A widget that displays the week number.
 class WeekNumber extends StatelessWidget {
+  /// The range of dates that the week number will be displayed for.
   final DateTimeRange visibleDateTimeRange;
 
+  /// The style used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;
 
-  const WeekNumber({
-    super.key,
-    required this.visibleDateTimeRange,
-    this.weekNumberStyle,
-  });
+  const WeekNumber({super.key, required this.visibleDateTimeRange, this.weekNumberStyle});
+  static WeekNumber builder(DateTimeRange visibleDateTimeRange, WeekNumberStyle? weekNumberStyle) {
+    return WeekNumber(visibleDateTimeRange: visibleDateTimeRange, weekNumberStyle: weekNumberStyle);
+  }
 
   @override
   Widget build(BuildContext context) {

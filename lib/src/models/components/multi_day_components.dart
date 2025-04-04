@@ -24,10 +24,10 @@ class MultiDayComponents<T extends Object?> {
 /// - Using these will override the respective default components.
 class MultiDayHeaderComponents<T> {
   /// A function that builds the day header widget.
-  final DayHeaderBuilder? dayHeaderBuilder;
+  final DayHeaderBuilder dayHeaderBuilder;
 
   /// A function that builds the week number widget.
-  final WeekNumberBuilder? weekNumberBuilder;
+  final WeekNumberBuilder weekNumberBuilder;
 
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
@@ -40,8 +40,8 @@ class MultiDayHeaderComponents<T> {
 
   /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
-    this.dayHeaderBuilder,
-    this.weekNumberBuilder,
+    this.dayHeaderBuilder = DayHeader.builder,
+    this.weekNumberBuilder = WeekNumber.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.overlayBuilders,
@@ -53,19 +53,19 @@ class MultiDayHeaderComponents<T> {
 /// - Using these will override the respective default components.
 class MultiDayBodyComponents<T> {
   /// A function that builds the hour lines widget.
-  final HourLinesBuilder? hourLines;
+  final HourLinesBuilder hourLines;
 
   /// A function that builds the timeline widget.
-  final TimeLineBuilder? timeline;
+  final TimeLineBuilder timeline;
 
   /// A function that builds the prototype timeline widget.
-  final PrototypeTimeLineBuilder? prototypeTimeLine;
+  final PrototypeTimeLineBuilder prototypeTimeLine;
 
   /// A function that builds the day separator widget.
-  final DaySeparatorBuilder? daySeparator;
+  final DaySeparatorBuilder daySeparator;
 
   /// A function that builds the time indicator widget.
-  final TimeIndicatorBuilder? timeIndicator;
+  final TimeIndicatorBuilder timeIndicator;
 
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
@@ -81,11 +81,11 @@ class MultiDayBodyComponents<T> {
 
   /// Creates overrides for the default components used by the [MultiDayBody].
   const MultiDayBodyComponents({
-    this.hourLines,
-    this.timeline,
-    this.prototypeTimeLine,
-    this.daySeparator,
-    this.timeIndicator,
+    this.hourLines = HourLines.builder,
+    this.timeline = TimeLine.builder,
+    this.prototypeTimeLine = PrototypeTimeline.prototypeBuilder,
+    this.daySeparator = DaySeparator.builder,
+    this.timeIndicator = TimeIndicator.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.topTriggerBuilder,

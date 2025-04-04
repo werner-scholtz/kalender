@@ -63,6 +63,20 @@ class TimeIndicator extends StatefulWidget {
     this.style,
   });
 
+  static TimeIndicator builder(
+    TimeOfDayRange timeOfDayRange,
+    double heightPerMinute,
+    double timelineWidth,
+    TimeIndicatorStyle? style,
+  ) {
+    return TimeIndicator(
+      timeOfDayRange: timeOfDayRange,
+      heightPerMinute: heightPerMinute,
+      timelineWidth: timelineWidth,
+      style: style,
+    );
+  }
+
   @override
   State<TimeIndicator> createState() => _TimeIndicatorState();
 }

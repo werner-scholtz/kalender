@@ -17,21 +17,11 @@ class TimelineSizer<T extends Object?> extends StatelessWidget {
     final provider = CalendarProvider.of<T>(context);
     final calendarComponents = provider.components;
     final bodyStyles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents;
+    final bodyComponents = calendarComponents?.multiDayComponents?.bodyComponents ?? const MultiDayBodyComponents();
     final timelineStyle = bodyStyles?.timelineStyle;
     const heightPerMinute = 1.0;
     final timeOfDayRange = TimeOfDayRange.allDay();
-    final dateTimeRange = DateTimeRange(start: DateTime(2024), end: DateTime(2024, 1, 2));
-    final selectedEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange);
-
-    final timeline = bodyComponents?.prototypeTimeLine?.call(heightPerMinute, timeOfDayRange, timelineStyle) ??
-        PrototypeTimeline(
-          timeOfDayRange: timeOfDayRange,
-          heightPerMinute: heightPerMinute,
-          style: timelineStyle,
-          eventBeingDragged: ValueNotifier(selectedEvent),
-          visibleDateTimeRange: ValueNotifier(dateTimeRange),
-        );
+    final timeline = bodyComponents.prototypeTimeLine.call(heightPerMinute, timeOfDayRange, timelineStyle);
 
     return _TimelineSizer(
       timelineWidget: LayoutId(id: 1, child: timeline),
