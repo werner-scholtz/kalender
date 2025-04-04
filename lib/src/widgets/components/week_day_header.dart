@@ -30,17 +30,16 @@ class WeekDayHeaderStyle {
 
 /// A widget that displays the name of the day of the week.
 class WeekDayHeader extends StatelessWidget {
-  const WeekDayHeader({
-    super.key,
-    required this.date,
-    this.style,
-  });
-
   /// The date to display.
   final DateTime date;
 
   /// The style used by the [WeekDayHeader].
   final WeekDayHeaderStyle? style;
+
+  const WeekDayHeader({super.key, required this.date, this.style});
+  static WeekDayHeader builder(DateTime date, WeekDayHeaderStyle? style) {
+    return WeekDayHeader(date: date, style: style);
+  }
 
   @override
   Widget build(BuildContext context) {

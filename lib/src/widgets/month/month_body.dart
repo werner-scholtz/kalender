@@ -65,7 +65,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components = calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>?;
+    final components =
+        calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>? ?? MonthBodyComponents<T>();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
@@ -109,8 +110,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   pageWidth: pageWidth,
                   tileHeight: tileHeight,
                   allowSingleDayEvents: true,
-                  leftPageTrigger: components?.leftTriggerBuilder,
-                  rightPageTrigger: components?.rightTriggerBuilder,
+                  leftPageTrigger: components.leftTriggerBuilder,
+                  rightPageTrigger: components.rightTriggerBuilder,
                 );
 
                 final draggable = MultiDayEventDraggableWidgets<T>(
@@ -124,11 +125,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
                 final dates = List.generate(7, (index) {
                   final date = visibleDateTimeRange.start.addDays(index);
-
                   final monthDayHeaderStyle = styles?.monthDayHeaderStyle;
-                  final monthDayHeder = components?.monthDayHeaderBuilder?.call(date, monthDayHeaderStyle) ??
-                      MonthDayHeader(date: date, style: monthDayHeaderStyle);
-
+                  final monthDayHeder = components.monthDayHeaderBuilder.call(date, monthDayHeaderStyle);
                   return monthDayHeder;
                 });
 
@@ -162,7 +160,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     showAllEvents: true,
                                     callbacks: callbacks,
                                     generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
-                                    overlayBuilders: components?.overlayBuilders,
+                                    overlayBuilders: components.overlayBuilders,
                                     overlayStyles: styles?.overlayStyles,
                                     eventPadding: bodyConfiguration.eventPadding,
                                   );
@@ -180,8 +178,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
             );
 
             final monthGridStyle = styles?.monthGridStyle;
-            final monthGrid = components?.monthGridBuilder?.call(monthGridStyle, numberOfRows) ??
-                MonthGrid(style: monthGridStyle, numberOfRows: numberOfRows);
+            final monthGrid = components.monthGridBuilder.call(monthGridStyle, numberOfRows);
 
             return SizedBox(
               width: pageWidth,

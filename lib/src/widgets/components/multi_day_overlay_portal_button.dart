@@ -35,6 +35,17 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
     required this.numberOfHiddenRows,
     required this.style,
   });
+  static MultiDayPortalOverlayButton multiDayPortalOverlayButtonBuilder(
+    OverlayPortalController portalController,
+    int numberOfHiddenRows,
+    MultiDayPortalOverlayButtonStyle? style,
+  ) {
+    return MultiDayPortalOverlayButton(
+      portalController: portalController,
+      numberOfHiddenRows: numberOfHiddenRows,
+      style: style,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -24,7 +24,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.monthComponentStyles?.headerStyles;
-    final components = calendarComponents?.monthComponents?.headerComponents;
+    final components = calendarComponents?.monthComponents?.headerComponents ?? const MonthHeaderComponents();
 
     return ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
@@ -37,7 +37,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
             7,
             (index) {
               final date = visibleDateTimeRange.start.addDays(index);
-              return components?.weekDayHeaderBuilder?.call(date, style) ?? WeekDayHeader(date: date, style: style);
+              return components.weekDayHeaderBuilder.call(date, style);
             },
           ),
         );

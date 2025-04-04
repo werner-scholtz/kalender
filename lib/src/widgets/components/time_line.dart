@@ -12,6 +12,8 @@ typedef TimeLineBuilder = Widget Function(
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
   TimelineStyle? style,
+  ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
+  ValueNotifier<DateTimeRange> visibleDateTimeRange,
 );
 
 /// The prototype time line builder.
@@ -58,7 +60,7 @@ class TimelineStyle {
 }
 
 /// A widget that displays a list of times based on the [timeOfDayRange] and [heightPerMinute].
-class TimeLine<T extends Object?> extends StatelessWidget {
+class TimeLine extends StatelessWidget {
   /// The [TimeOfDayRange] that will be used to display the timeline.
   final TimeOfDayRange timeOfDayRange;
 
@@ -69,7 +71,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
   final TimelineStyle? style;
 
   /// The [ValueNotifier] that contains the event being dragged.
-  final ValueNotifier<CalendarEvent<T>?> eventBeingDragged;
+  final ValueNotifier<CalendarEvent<dynamic>?> eventBeingDragged;
 
   /// The visibleDataTimeRange.
   final ValueNotifier<DateTimeRange> visibleDateTimeRange;
@@ -83,6 +85,22 @@ class TimeLine<T extends Object?> extends StatelessWidget {
     required this.visibleDateTimeRange,
     required this.style,
   });
+
+  static TimeLine builder(
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+    TimelineStyle? style,
+    ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
+    ValueNotifier<DateTimeRange> visibleDateTimeRange,
+  ) {
+    return TimeLine(
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      style: style,
+      eventBeingDragged: eventBeingDragged,
+      visibleDateTimeRange: visibleDateTimeRange,
+    );
+  }
 
   /// The [TextStyle] that will be used for the text.
   TextStyle textStyle(BuildContext context) => style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
@@ -247,7 +265,7 @@ class TimeLine<T extends Object?> extends StatelessWidget {
 }
 
 /// A widget that displays a prototype time line.
-class PrototypeTimeline<T extends Object?> extends TimeLine<T> {
+class PrototypeTimeline extends TimeLine {
   const PrototypeTimeline({
     super.key,
     required super.timeOfDayRange,
@@ -256,6 +274,20 @@ class PrototypeTimeline<T extends Object?> extends TimeLine<T> {
     required super.visibleDateTimeRange,
     required super.style,
   });
+
+  static PrototypeTimeline prototypeBuilder(
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+    TimelineStyle? style,
+  ) {
+    return PrototypeTimeline(
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      style: style,
+      eventBeingDragged: ValueNotifier(null),
+      visibleDateTimeRange: ValueNotifier(DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_callbacks.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
-import 'package:kalender/src/models/components/tile_components.dart';
-import 'package:kalender/src/models/controllers/calendar_controller.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/controllers/view_controller.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
-import 'package:kalender/src/widgets/components/day_separator.dart';
-import 'package:kalender/src/widgets/components/hour_lines.dart';
-import 'package:kalender/src/widgets/components/time_indicator.dart';
-import 'package:kalender/src/widgets/components/time_line.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
@@ -95,7 +84,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final components = calendarComponents?.multiDayComponents?.bodyComponents;
+    final components = calendarComponents?.multiDayComponents?.bodyComponents ?? const MultiDayBodyComponents();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
     final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
@@ -113,44 +102,24 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         final pageHeight = heightPerMinute * dayDuration.inMinutes;
 
         final hourLinesStyle = styles?.hourLinesStyle;
-        final hourLines = components?.hourLines?.call(
-              heightPerMinute,
-              timeOfDayRange,
-              hourLinesStyle,
-            ) ??
-            HourLines(
-              timeOfDayRange: timeOfDayRange,
-              heightPerMinute: heightPerMinute,
-              style: hourLinesStyle,
-            );
+        final hourLines = components.hourLines.call(heightPerMinute, timeOfDayRange, hourLinesStyle);
 
         final timelineStyle = styles?.timelineStyle;
-        final timeline = components?.timeline?.call(
-              heightPerMinute,
-              timeOfDayRange,
-              timelineStyle,
-            ) ??
-            TimeLine(
-              timeOfDayRange: timeOfDayRange,
-              heightPerMinute: heightPerMinute,
-              style: timelineStyle,
-              eventBeingDragged: selectedEvent,
-              visibleDateTimeRange: viewController.visibleDateTimeRange,
-            );
+        final timeline = components.timeline.call(
+          heightPerMinute,
+          timeOfDayRange,
+          timelineStyle,
+          selectedEvent,
+          viewController.visibleDateTimeRange,
+        );
 
         final timeIndicatorStyle = styles?.timeIndicatorStyle;
-        late final timeIndicator = components?.timeIndicator?.call(
-              timeOfDayRange,
-              heightPerMinute,
-              0,
-              timeIndicatorStyle,
-            ) ??
-            TimeIndicator(
-              timeOfDayRange: timeOfDayRange,
-              heightPerMinute: heightPerMinute,
-              timelineWidth: 0,
-              style: timeIndicatorStyle,
-            );
+        late final timeIndicator = components.timeIndicator.call(
+          timeOfDayRange,
+          heightPerMinute,
+          0, // TODO: remove this
+          timeIndicatorStyle,
+        );
 
         final content = LayoutBuilder(
           key: contentKey,
@@ -186,19 +155,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   final visibleDates = visibleRange.dates();
 
                   final daySeparatorStyle = styles?.daySeparatorStyle;
-                  final daySeparator =
-                      components?.daySeparator?.call(daySeparatorStyle) ?? DaySeparator(style: daySeparatorStyle);
+                  final daySeparator = components.daySeparator.call(daySeparatorStyle);
                   final daySeparators = List.generate(
                     numberOfDays + 1,
                     (index) {
                       final left = dayWidth * index;
-                      // TODO check that this is correct ?
-                      return PositionedDirectional(
-                        top: 0,
-                        bottom: 0,
-                        start: left,
-                        child: daySeparator,
-                      );
+                      return PositionedDirectional(top: 0, bottom: 0, start: left, child: daySeparator);
                     },
                   );
 
@@ -269,10 +231,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 dayWidth: dayWidth,
                 viewPortHeight: pageHeight,
                 heightPerMinute: heightPerMinute,
-                leftPageTrigger: components?.leftTriggerBuilder,
-                rightPageTrigger: components?.rightTriggerBuilder,
-                topScrollTrigger: components?.topTriggerBuilder,
-                bottomScrollTrigger: components?.bottomTriggerBuilder,
+                leftPageTrigger: components.leftTriggerBuilder,
+                rightPageTrigger: components.rightTriggerBuilder,
+                topScrollTrigger: components.topTriggerBuilder,
+                bottomScrollTrigger: components.bottomTriggerBuilder,
                 snapping: snapping,
               ),
             );
