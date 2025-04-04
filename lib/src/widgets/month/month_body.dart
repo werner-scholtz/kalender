@@ -42,33 +42,13 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var eventsController = this.eventsController;
-    var calendarController = this.calendarController;
-    var callbacks = this.callbacks;
-
     final provider = CalendarProvider.maybeOf<T>(context);
-    if (provider == null) {
-      assert(
-        eventsController != null,
-        'The eventsController needs to be provided when the $MonthBody<$T> is not wrapped in a $CalendarProvider<$T>.',
-      );
-      assert(
-        calendarController != null,
-        'The calendarController needs to be provided when the $MonthBody<$T> is not wrapped in a $CalendarProvider<$T>.',
-      );
-    } else {
-      eventsController ??= provider.eventsController;
-      calendarController ??= provider.calendarController;
-      callbacks ??= provider.callbacks;
-    }
+    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf<T>(context);
+    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf<T>(context);
+    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf<T>(context);
 
     assert(
-      calendarController!.isAttached,
-      'The CalendarController needs to be attached to a $ViewController<$T>.',
-    );
-
-    assert(
-      calendarController!.viewController is MonthViewController<T>,
+      calendarController.viewController is MonthViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
@@ -76,7 +56,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
-    final viewController = calendarController!.viewController as MonthViewController<T>;
+    final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final bodyConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
@@ -119,8 +99,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  eventsController: eventsController!,
-                  calendarController: calendarController!,
+                  eventsController: eventsController,
+                  calendarController: calendarController,
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
@@ -171,8 +151,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                   // Subtract 1 to account for the extra widget at the bottom.
                                   final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
                                   return MultiDayEventWidget<T>(
-                                    controller: calendarController!,
-                                    eventsController: eventsController!,
+                                    controller: calendarController,
+                                    eventsController: eventsController,
                                     visibleDateTimeRange: visibleDateTimeRange,
                                     tileComponents: tileComponents,
                                     dayWidth: dayWidth,

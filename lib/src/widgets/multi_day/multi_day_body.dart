@@ -75,37 +75,17 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var eventsController = this.eventsController;
-    var calendarController = this.calendarController;
-    var callbacks = this.callbacks;
-
     final provider = CalendarProvider.maybeOf<T>(context);
-    if (provider == null) {
-      assert(
-        eventsController != null,
-        'The eventsController needs to be provided when the $MultiDayBody<$T> is not wrapped in a $CalendarProvider<$T>.',
-      );
-      assert(
-        calendarController != null,
-        'The calendarController needs to be provided when the $MultiDayBody<$T> is not wrapped in a $CalendarProvider<$T>.',
-      );
-    } else {
-      eventsController ??= provider.eventsController;
-      calendarController ??= provider.calendarController;
-      callbacks ??= provider.callbacks;
-    }
+    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf(context);
+    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf(context);
+    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf(context);
 
     assert(
-      calendarController!.isAttached,
-      'The CalendarController needs to be attached to a $ViewController<$T>.',
-    );
-
-    assert(
-      calendarController!.viewController is MultiDayViewController<T>,
+      calendarController.viewController is MultiDayViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
     );
 
-    final viewController = calendarController!.viewController as MultiDayViewController<T>;
+    final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
@@ -223,8 +203,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                   );
 
                   final events = DayEventsWidget<T>(
-                    eventsController: eventsController!,
-                    controller: calendarController!,
+                    eventsController: eventsController,
+                    controller: calendarController,
                     callbacks: callbacks,
                     tileComponents: tileComponents,
                     configuration: bodyConfiguration,
@@ -277,8 +257,8 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             return SizedBox(
               height: pageHeight,
               child: DayDragTarget<T>(
-                eventsController: eventsController!,
-                calendarController: calendarController!,
+                eventsController: eventsController,
+                calendarController: calendarController,
                 viewController: viewController,
                 scrollController: viewController.scrollController,
                 callbacks: callbacks,
