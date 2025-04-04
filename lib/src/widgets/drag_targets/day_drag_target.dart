@@ -248,7 +248,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     // Calculate only the date of the cursor from the local cursor position.
     final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
     if (cursorDateIndex < 0) return null;
-    
+
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
         : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);

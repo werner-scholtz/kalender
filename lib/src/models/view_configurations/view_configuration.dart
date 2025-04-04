@@ -23,7 +23,6 @@ abstract class ViewConfiguration<T extends Object?> {
   DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
 }
 
-
 // TODO: rename these to use `k` prefix
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
