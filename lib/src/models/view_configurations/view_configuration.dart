@@ -21,8 +21,10 @@ abstract class ViewConfiguration<T extends Object?> {
   /// * This is the range that is adjusted by the [pageNavigationFunctions].
   ///   Which means that it is in UTC.
   DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
-}
 
+  /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
+  DateTimeRange get originalDisplayRange => pageNavigationFunctions.originalRange;
+}
 
 // TODO: rename these to use `k` prefix
 const defaultTileHeight = 24.0;

@@ -50,9 +50,9 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.initialTimeOfDay,
     required this.initialHeightPerMinute,
   }) : assert(
-          firstDayOfWeek == 1 || firstDayOfWeek == 6 || firstDayOfWeek == 7,
-          'First day of week must be Monday, Saturday or Sunday\n'
-          'Use DateTime.monday, DateTime.saturday or DateTime.sunday if unsure.',
+          firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
+          'First day of week must be a valid week day number\n'
+          'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
         );
 
   /// Creates a [MultiDayViewConfiguration] for a single day.
@@ -66,7 +66,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
-        pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+        pageNavigationFunctions =
+            PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
@@ -93,9 +94,11 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        firstDayOfWeek = DateTime.monday,
+        firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
-        pageNavigationFunctions = PageNavigationFunctions.workWeek(displayRange ?? DateTime.now().yearRange);
+        pageNavigationFunctions = PageNavigationFunctions.workWeek(
+          displayRange ?? DateTime.now().yearRange,
+        );
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -103,7 +106,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
-    this.firstDayOfWeek = DateTime.monday,
+    this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
@@ -120,9 +123,10 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
-        firstDayOfWeek = DateTime.monday,
+        firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
-        pageNavigationFunctions = PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
+        pageNavigationFunctions =
+            PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
 
   MultiDayViewConfiguration copyWith({
     String? name,
@@ -359,7 +363,8 @@ Please use the `generateFrame` method instead.
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
-      maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
+      maximumNumberOfVerticalEvents:
+          maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
       eventPadding: eventPadding ?? this.eventPadding,
     );
   }
