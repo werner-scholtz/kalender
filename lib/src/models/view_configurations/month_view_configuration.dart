@@ -29,8 +29,8 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     this.eventPadding = kDefaultMultiDayEventPadding,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
-          'First day of week must be between 1 and 7 (inclusive)\n'
-          'Use DateTime.monday ~ DateTime.sunday if unsure.',
+          'First day of week must be a valid week day number\n'
+          'Use DateTime.monday, DateTime.tuesday, etc. to set the first day of the week',
         );
 
   MonthViewConfiguration.singleMonth({
@@ -40,22 +40,21 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     this.eventLayoutStrategy,
     this.eventPadding = kDefaultMultiDayEventPadding,
   }) : pageNavigationFunctions = MonthPageFunctions(
-          dateTimeRange: displayRange ?? DateTime.now().yearRange,
-          shift: firstDayOfWeek,
+          originalRange: displayRange ?? DateTime.now().yearRange,
+          firstDayOfWeek: firstDayOfWeek,
         );
 
   MonthViewConfiguration copyWith({
     String? name,
-    MonthPageFunctions? pageNavigationFunctions,
     int? firstDayOfWeek,
     EdgeInsets? eventPadding,
   }) {
-    return MonthViewConfiguration(
+    return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
-      pageNavigationFunctions: pageNavigationFunctions ?? this.pageNavigationFunctions,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       eventPadding: eventPadding ?? this.eventPadding,
       eventLayoutStrategy: null,
+      displayRange: pageNavigationFunctions.originalRange,
     );
   }
 

@@ -16,27 +16,29 @@ abstract class PageNavigationFunctions {
 
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.singleDay].
   factory PageNavigationFunctions.singleDay(DateTimeRange dateTimeRange) {
-    return DayPageFunctions(dateTimeRange: dateTimeRange);
+    return DayPageFunctions(originalRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a week [MultiDayViewConfiguration.week].
   factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return WeekPageFunctions(dateTimeRange: dateTimeRange, shift: firstDayOfWeek - 1);
+    return WeekPageFunctions(originalRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
   /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
-  factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
-    return WorkWeekPageFunctions(dateTimeRange: dateTimeRange);
+  factory PageNavigationFunctions.workWeek(
+    DateTimeRange dateTimeRange,
+  ) {
+    return WorkWeekPageFunctions(originalRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a custom [MultiDayViewConfiguration.custom].
   factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
-    return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
+    return CustomPageFunctions(originalRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
   factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
-    return FreeScrollFunctions(dateTimeRange: dateTimeRange);
+    return FreeScrollFunctions(originalRange: dateTimeRange);
   }
 
   /// Calculates the VisibleDateRange from the [index].
@@ -61,6 +63,9 @@ abstract class PageNavigationFunctions {
   /// the range to be split into an even number of pages.
   DateTimeRange get adjustedRange;
 
+  /// The original range that was passed to the [PageNavigationFunctions].
+  DateTimeRange get originalRange;
+
   /// Returns the [DateTimeRange] that is displayed for the given [date].
   DateTimeRange dateTimeRangeFromDate(DateTime date) {
     final index = indexFromDate(date);
@@ -70,10 +75,10 @@ abstract class PageNavigationFunctions {
 
 class DayPageFunctions extends PageNavigationFunctions {
   DayPageFunctions({
-    required DateTimeRange dateTimeRange,
+    required this.originalRange,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfDay,
-          end: dateTimeRange.end.asUtc.startOfDay,
+          start: originalRange.start.asUtc.startOfDay,
+          end: originalRange.end.asUtc.startOfDay,
         );
 
   @override
@@ -96,18 +101,21 @@ class DayPageFunctions extends PageNavigationFunctions {
 
   @override
   final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }
 
 class WeekPageFunctions extends PageNavigationFunctions {
   /// The value to shift the start of week by to get the first day of the week.
-  final int shift;
+  final int firstDayOfWeek;
 
   WeekPageFunctions({
-    required DateTimeRange dateTimeRange,
-    required this.shift,
+    required this.originalRange,
+    required this.firstDayOfWeek,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfWeek.addDays(shift),
-          end: dateTimeRange.end.asUtc.endOfWeek.addDays(shift),
+          start: originalRange.start.asUtc.startOfWeek(firstDayOfWeek),
+          end: originalRange.end.asUtc.endOfWeek(firstDayOfWeek),
         );
 
   @override
@@ -116,12 +124,12 @@ class WeekPageFunctions extends PageNavigationFunctions {
       adjustedRange.start.year,
       adjustedRange.start.month,
       adjustedRange.start.day + (index * DateTime.daysPerWeek),
-    ).weekRange.shiftByDays(shift);
+    ).weekRange(firstDayOfWeek);
   }
 
   @override
   int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek.addDays(shift);
+    final startOfWeek = date.asUtc.startOfWeek(firstDayOfWeek);
     if (startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
@@ -132,18 +140,22 @@ class WeekPageFunctions extends PageNavigationFunctions {
   }
 
   @override
-  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
+  late final int numberOfPages =
+      ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
 
   @override
   final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }
 
 class WorkWeekPageFunctions extends PageNavigationFunctions {
   WorkWeekPageFunctions({
-    required DateTimeRange dateTimeRange,
+    required this.originalRange,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfWeek,
-          end: dateTimeRange.end.asUtc.endOfWeek,
+          start: originalRange.start.asUtc.startOfWeek(DateTime.monday),
+          end: originalRange.end.asUtc.endOfWeek(DateTime.monday),
         );
 
   @override
@@ -154,12 +166,12 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
       adjustedRange.start.day + (index * DateTime.daysPerWeek),
     );
 
-    return date.workWeekRange;
+    return date.workWeekRange();
   }
 
   @override
   int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek;
+    final startOfWeek = date.asUtc.startOfWeek(DateTime.monday);
     if (startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
@@ -170,10 +182,14 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   }
 
   @override
-  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
+  late final int numberOfPages =
+      ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
 
   @override
   late final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }
 
 class CustomPageFunctions extends PageNavigationFunctions {
@@ -181,11 +197,11 @@ class CustomPageFunctions extends PageNavigationFunctions {
   late final int numberOfDays;
 
   CustomPageFunctions({
-    required DateTimeRange dateTimeRange,
+    required this.originalRange,
     required this.numberOfDays,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfDay,
-          end: dateTimeRange.end.asUtc.startOfDay,
+          start: originalRange.start.asUtc.startOfDay,
+          end: originalRange.end.asUtc.startOfDay,
         );
 
   @override
@@ -209,14 +225,17 @@ class CustomPageFunctions extends PageNavigationFunctions {
 
   @override
   late final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }
 
 class FreeScrollFunctions extends PageNavigationFunctions {
   FreeScrollFunctions({
-    required DateTimeRange dateTimeRange,
+    required this.originalRange,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfDay,
-          end: dateTimeRange.end.asUtc.startOfDay,
+          start: originalRange.start.asUtc.startOfDay,
+          end: originalRange.end.asUtc.startOfDay,
         );
 
   @override
@@ -233,28 +252,34 @@ class FreeScrollFunctions extends PageNavigationFunctions {
 
   @override
   late final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }
 
 class MonthPageFunctions extends PageNavigationFunctions {
   static const numberOfRows = 5;
-  final int shift;
+  final int firstDayOfWeek;
 
   MonthPageFunctions({
-    required DateTimeRange dateTimeRange,
-    required this.shift,
+    required this.originalRange,
+    required this.firstDayOfWeek,
   }) : adjustedRange = DateTimeRange(
-          start: dateTimeRange.start.asUtc.startOfDay,
-          end: dateTimeRange.end.asUtc.startOfDay,
+          start: originalRange.start.asUtc.startOfDay,
+          end: originalRange.end.asUtc.startOfDay,
         );
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
-    final range = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
-    var rangeStart = range.start.startOfWeek.addDays(shift - 1);
+    final range =
+        DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
+    var rangeStart = range.start.startOfWeek(firstDayOfWeek);
     if (rangeStart.isAfter(range.start)) rangeStart = rangeStart.subtractDays(7);
 
     var rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * numberOfRows);
-    if (rangeEnd.isBefore(range.end)) rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
+    if (rangeEnd.isBefore(range.end)) {
+      rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
+    }
 
     return DateTimeRange(start: rangeStart, end: rangeEnd);
   }
@@ -275,4 +300,7 @@ class MonthPageFunctions extends PageNavigationFunctions {
 
   @override
   late final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
 }

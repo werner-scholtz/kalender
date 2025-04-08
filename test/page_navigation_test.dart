@@ -89,7 +89,8 @@ void main() {
               });
 
               test('dateTimeRangeFromIndex - ', () {
-                final range = navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
+                final range =
+                    navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
                 expect(range, testDate.$2.asUtc.dayRange);
               });
             }
@@ -99,7 +100,7 @@ void main() {
           final startOfWeeks = [1, 2, 3, 4, 5, 6, 7];
           for (final firstDayOfWeek in startOfWeeks) {
             final navigation = PageNavigationFunctions.week(testRange, firstDayOfWeek);
-            const numberOfPages = 313;
+            final numberOfPages = firstDayOfWeek == 4 ? 314 : 313;
 
             test('numberOfPages', () {
               expect(navigation.numberOfPages, numberOfPages);
@@ -108,17 +109,17 @@ void main() {
             test('dateTimeRangeFromIndex', () {
               expect(
                 navigation.dateTimeRangeFromIndex(0),
-                testRange.start.asUtc.weekRange.shiftByDays(firstDayOfWeek - 1),
+                testRange.start.asUtc.weekRange(firstDayOfWeek),
               );
               expect(
                 navigation.dateTimeRangeFromIndex(numberOfPages),
-                testRange.end.asUtc.weekRange.shiftByDays(firstDayOfWeek - 1),
+                testRange.end.asUtc.weekRange(firstDayOfWeek),
               );
             });
 
             test('indexFromDate', () {
               expect(navigation.indexFromDate(DateTime(2020, 1, 1)), 0);
-              expect(navigation.indexFromDate(DateTime(2020, 1, 7)), 1);
+              expect(navigation.indexFromDate(DateTime(2020, 1, 8)), 1);
               expect(navigation.indexFromDate(DateTime(2026, 1, 1)), numberOfPages);
             });
 
@@ -131,7 +132,7 @@ void main() {
 
                 test('dateTimeRangeFromIndex ', () {
                   final range = navigation.dateTimeRangeFromIndex(weekDatePageIndex[testDate.$1]);
-                  expect(range, testDate.$2.asUtc.weekRange.shiftByDays(firstDayOfWeek - 1));
+                  expect(range, testDate.$2.asUtc.weekRange(firstDayOfWeek));
                 });
               }
             });
@@ -246,14 +247,15 @@ void main() {
               });
 
               test('dateTimeRangeFromIndex - ', () {
-                final range = navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
+                final range =
+                    navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
                 expect(range, testDate.$2.asUtc.dayRange);
               });
             }
           });
         });
         group('month', () {
-          final navigation = MonthPageFunctions(dateTimeRange: testRange, shift: 1);
+          final navigation = MonthPageFunctions(originalRange: testRange, firstDayOfWeek: 1);
           const numberOfPages = 72;
 
           test('numberOfPages', () {
