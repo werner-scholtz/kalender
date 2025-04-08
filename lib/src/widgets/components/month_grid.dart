@@ -27,11 +27,10 @@ class MonthGrid extends StatelessWidget {
   final MonthGridStyle? style;
   final int numberOfRows;
 
-  const MonthGrid({
-    super.key,
-    this.style,
-    required this.numberOfRows,
-  });
+  const MonthGrid({super.key, this.style, required this.numberOfRows});
+  static MonthGrid builder(MonthGridStyle? style, int numberOfRows) {
+    return MonthGrid(style: style, numberOfRows: numberOfRows);
+  }
 
   @override
   Widget build(BuildContext context) {

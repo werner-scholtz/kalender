@@ -46,12 +46,10 @@ class HourLines extends StatelessWidget {
   final HourLinesStyle? style;
 
   /// Creates a new [HourLines] widget.
-  const HourLines({
-    super.key,
-    required this.timeOfDayRange,
-    required this.heightPerMinute,
-    this.style,
-  });
+  const HourLines({super.key, required this.timeOfDayRange, required this.heightPerMinute, this.style});
+  static HourLines builder(double heightPerMinute, TimeOfDayRange timeOfDayRange, HourLinesStyle? style) {
+    return HourLines(heightPerMinute: heightPerMinute, timeOfDayRange: timeOfDayRange, style: style);
+  }
 
   @override
   Widget build(BuildContext context) {

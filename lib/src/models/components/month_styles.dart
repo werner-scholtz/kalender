@@ -9,6 +9,7 @@ import 'package:kalender/src/widgets/month/month_header.dart';
 class MonthComponentStyles {
   /// The styles of the default components used by the [MonthHeader].
   final MonthBodyComponentStyles? bodyStyles;
+
   /// The styles of the default components used by the [MonthBody].
   final MonthHeaderComponentStyles? headerStyles;
 
@@ -24,7 +25,7 @@ class MonthBodyComponentStyles {
   final MonthDayHeaderStyle? monthDayHeaderStyle;
 
   /// The styles of the overlay components.
-  final OverlayStyles? overlayStyles; 
+  final OverlayStyles? overlayStyles;
 
   /// Creates a override(s) for the default styles used by the [MonthBody].
   const MonthBodyComponentStyles({

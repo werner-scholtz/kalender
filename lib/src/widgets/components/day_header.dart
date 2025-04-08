@@ -38,11 +38,10 @@ class DayHeader extends StatelessWidget {
   ///
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [DayHeader].
-  const DayHeader({
-    super.key,
-    required this.date,
-    this.style,
-  });
+  const DayHeader({super.key, required this.date, this.style});
+  static DayHeader builder(DateTime date, DayHeaderStyle? style) {
+    return DayHeader(date: date, style: style);
+  }
 
   @override
   Widget build(BuildContext context) {

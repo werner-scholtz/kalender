@@ -101,7 +101,6 @@ class CalendarWidget extends StatelessWidget {
                   controller: controller,
                   viewConfigurations: viewConfigurations,
                   viewConfiguration: viewConfiguration,
-                  
                 ),
               ),
               if (showHeader)

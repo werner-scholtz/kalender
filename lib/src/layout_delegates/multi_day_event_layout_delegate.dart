@@ -65,7 +65,6 @@ abstract class MultiDayEventLayoutDelegate<T extends Object?> extends MultiChild
   Size getSize(BoxConstraints constraints);
 }
 
-
 @Deprecated('''
 This class is deprecated and will be removed in a future release.
 ''')

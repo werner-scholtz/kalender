@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/main.dart';
@@ -19,7 +21,6 @@ class EventOverlayPortal extends StatefulWidget {
 }
 
 class EventOverlayPortalState extends State<EventOverlayPortal> {
-
   /// The controller for the overlay portal.
   final controller = OverlayPortalController();
 
@@ -40,46 +41,62 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
     return OverlayPortal(
       controller: controller,
       overlayChildBuilder: (overlayContext) {
-        var position = selectedRenderBox!.localToGlobal(Offset.zero);
-        const height = 300.0;
-        const width = 300.0;
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            var width = min(300.0, constraints.maxWidth);
+            var height = 300.0;
 
-        final size = MediaQuery.sizeOf(context);
+            var position = selectedRenderBox!.localToGlobal(Offset.zero);
+            final size = constraints.biggest;
 
-        if (position.dy + height > size.height) {
-          position = position.translate(0, size.height - (position.dy + height) - 25);
-        } else if (position.dy < 0) {
-          position = position.translate(0, -position.dy);
-        }
+            if (position.dy + height > size.height) {
+              // if the overlay goes out of bounds, move it up
+              position = position.translate(0, size.height - (position.dy + height) - 25);
+            } else if (position.dy < 0) {
+              // if the overlay goes out of bounds, move it down
+              position = position.translate(0, -position.dy);
+            }
 
-        if (position.dx + width + selectedRenderBox!.size.width > size.width) {
-          position = position.translate(-width - 16, 0);
-        } else {
-          position = position.translate(selectedRenderBox!.size.width, 0);
-        }
+            var overlapsHorizontally = false;
+            if (position.dx + width + selectedRenderBox!.size.width > size.width) {
+              // if the overlay goes out of bounds, move it left
+              position = position.translate(-width - 16, 0);
+              overlapsHorizontally = position.dx.isNegative;
+            } else {
+              // if the overlay goes out of bounds, move it right
+              position = position.translate(selectedRenderBox!.size.width, 0);
+              overlapsHorizontally = position.dx + width > size.width;
+            }
 
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: controller.hide,
-              ),
-            ),
-            Positioned(
-              top: position.dy,
-              left: position.dx,
-              child: EventOverlayCard(
-                event: selectedEvent!,
-                position: position,
-                height: height,
-                width: width,
-                onDismiss: controller.hide,
-                eventsController: eventsController,
-              ),
-            ),
-          ],
+            if (overlapsHorizontally) {
+              final centerDx = (size.width / 2) - (width / 2);
+              position = Offset(centerDx, constraints.maxHeight - height - 16);
+            }
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: controller.hide,
+                  ),
+                ),
+                Positioned(
+                  top: position.dy,
+                  left: position.dx,
+                  child: EventOverlayCard(
+                    event: selectedEvent!,
+                    position: position,
+                    height: height,
+                    width: width,
+                    onDismiss: controller.hide,
+                    eventsController: eventsController,
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
       child: widget.child,

@@ -67,13 +67,9 @@ class OverlayStyles {
 /// The trigger widget builder, should be constrained in width.
 ///
 /// The [pageWidth] is the width of the page.
-typedef HorizontalTriggerWidgetBuilder = Widget Function(
-  double pageWidth,
-);
+typedef HorizontalTriggerWidgetBuilder = Widget Function(double pageWidth);
 
 /// The trigger widget builder, should be constrained in height.
 ///
 /// The [viewPortHeight] is the height of the page.
-typedef VerticalTriggerWidgetBuilder = Widget Function(
-  double viewPortHeight,
-);
+typedef VerticalTriggerWidgetBuilder = Widget Function(double viewPortHeight);

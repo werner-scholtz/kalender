@@ -208,29 +208,10 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
 
         return Stack(
           children: [
-            PositionedDirectional(
-              start: 0,
-              end: 0,
-              child: topScrollTrigger,
-            ),
-            PositionedDirectional(
-              start: 0,
-              end: 0,
-              bottom: 0,
-              child: bottomScrollTrigger,
-            ),
-            PositionedDirectional(
-              start: 0,
-              top: 0,
-              bottom: 0,
-              child: leftTrigger,
-            ),
-            PositionedDirectional(
-              end: 0,
-              top: 0,
-              bottom: 0,
-              child: rightTrigger,
-            ),
+            PositionedDirectional(start: 0, end: 0, child: topScrollTrigger),
+            PositionedDirectional(start: 0, end: 0, bottom: 0, child: bottomScrollTrigger),
+            PositionedDirectional(start: 0, top: 0, bottom: 0, child: leftTrigger),
+            PositionedDirectional(end: 0, top: 0, bottom: 0, child: rightTrigger),
           ],
         );
       },
@@ -248,7 +229,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     // Calculate only the date of the cursor from the local cursor position.
     final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
     if (cursorDateIndex < 0) return null;
-    
+
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
         : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);

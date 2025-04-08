@@ -36,6 +36,20 @@ class VerticalTileResizeHandlePositioner extends ResizeHandlePositionerWidget {
     required super.showEnd,
   });
 
+  static VerticalTileResizeHandlePositioner verticalTileResizeHandlePositionerBuilder(
+    Widget startResizeDetector,
+    Widget endResizeDetector,
+    bool showStart,
+    bool showEnd,
+  ) {
+    return VerticalTileResizeHandlePositioner(
+      startResizeDetector: startResizeDetector,
+      endResizeDetector: endResizeDetector,
+      showStart: showStart,
+      showEnd: showEnd,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -85,6 +99,20 @@ class HorizontalTileResizeHandlePositioner extends ResizeHandlePositionerWidget 
     required super.showStart,
     required super.showEnd,
   });
+
+  static HorizontalTileResizeHandlePositioner horizontalTileResizeHandlePositionerBuilder(
+    Widget startResizeDetector,
+    Widget endResizeDetector,
+    bool showStart,
+    bool showEnd,
+  ) {
+    return HorizontalTileResizeHandlePositioner(
+      startResizeDetector: startResizeDetector,
+      endResizeDetector: endResizeDetector,
+      showStart: showStart,
+      showEnd: showEnd,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -31,11 +31,10 @@ class MonthDayHeader extends StatelessWidget {
   final DateTime date;
   final MonthDayHeaderStyle? style;
 
-  const MonthDayHeader({
-    super.key,
-    required this.date,
-    this.style,
-  });
+  const MonthDayHeader({super.key, required this.date, this.style});
+  static MonthDayHeader builder(DateTime date, MonthDayHeaderStyle? style) {
+    return MonthDayHeader(date: date, style: style);
+  }
 
   @override
   Widget build(BuildContext context) {

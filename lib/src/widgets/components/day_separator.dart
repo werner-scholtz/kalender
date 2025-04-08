@@ -33,6 +33,9 @@ class DaySeparatorStyle {
 class DaySeparator extends StatelessWidget {
   final DaySeparatorStyle? style;
   const DaySeparator({super.key, this.style});
+  static DaySeparator builder(DaySeparatorStyle? style) {
+    return DaySeparator(style: style);
+  }
 
   @override
   Widget build(BuildContext context) {
