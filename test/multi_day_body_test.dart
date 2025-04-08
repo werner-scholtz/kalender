@@ -80,7 +80,8 @@ void main() {
           );
 
           await tester.pump();
-          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+          expect(find.byType(MultiDayBody), findsOneWidget,
+              reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
@@ -96,7 +97,8 @@ void main() {
             of: dayEventTile,
             matching: find.byKey(DayEventTile.bottomResizeDraggable),
           );
-          expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should be rendered');
+          expect(bottomResizeHandle, findsOneWidget,
+              reason: 'Bottom resize handle should be rendered');
 
           final initialSize = tester.getSize(dayEventTile);
           final initialTopLeft = tester.getTopLeft(dayEventTile);
@@ -114,7 +116,8 @@ void main() {
           // Check that the size of the tile has changed.
           expect(initialSize.height < size.height, isTrue, reason: 'Height should increase');
           expect(initialTopLeft == topLeft, isTrue, reason: 'Top left should not change');
-          expect(initialBottomRight.dy < bottomRight.dy, isTrue, reason: 'Bottom right dy should increase');
+          expect(initialBottomRight.dy < bottomRight.dy, isTrue,
+              reason: 'Bottom right dy should increase');
         });
 
         testWidgets('Event reschedule', (tester) async {
@@ -134,7 +137,8 @@ void main() {
           );
 
           await tester.pumpAndSettle();
-          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+          expect(find.byType(MultiDayBody), findsOneWidget,
+              reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
@@ -146,7 +150,8 @@ void main() {
           );
 
           // Check that the draggable(s) widget is rendered.
-          expect(rescheduleDraggable, findsOneWidget, reason: 'Reschedule draggable should be rendered');
+          expect(rescheduleDraggable, findsOneWidget,
+              reason: 'Reschedule draggable should be rendered');
 
           final initialPosition = tester.getCenter(dayEventTile);
 
@@ -176,7 +181,8 @@ void main() {
             ),
           );
           await tester.pumpAndSettle();
-          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+          expect(find.byType(MultiDayBody), findsOneWidget,
+              reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
@@ -195,8 +201,8 @@ void main() {
 
     group('PositionedTimeIndicator Tests', () {
       final now = DateTime.now();
-      final start = now.startOfWeek;
-      final end = now.endOfWeek;
+      final start = now.startOfWeek(DateTime.monday);
+      final end = now.endOfWeek(DateTime.monday);
       final range = DateTimeRange(start: start, end: end);
       final visibleDates = range.asUtc.dates();
 
@@ -204,7 +210,8 @@ void main() {
         final day = visibleDates[weekday];
 
         for (var i = 0; i < 24; i++) {
-          final nowOverride = start.copyWith(year: day.year, month: day.month, day: day.day, hour: i);
+          final nowOverride =
+              start.copyWith(year: day.year, month: day.month, day: day.day, hour: i);
           testWidgets('$nowOverride', (tester) async {
             const dayWidth = 50.0;
             await tester.pumpWidget(
