@@ -109,11 +109,11 @@ void main() {
             test('dateTimeRangeFromIndex', () {
               expect(
                 navigation.dateTimeRangeFromIndex(0),
-                testRange.start.asUtc.weekRange(firstDayOfWeek),
+                testRange.start.asUtc.weekRange(firstDayOfWeek: firstDayOfWeek),
               );
               expect(
                 navigation.dateTimeRangeFromIndex(numberOfPages),
-                testRange.end.asUtc.weekRange(firstDayOfWeek),
+                testRange.end.asUtc.weekRange(firstDayOfWeek: firstDayOfWeek),
               );
             });
 
@@ -132,7 +132,7 @@ void main() {
 
                 test('dateTimeRangeFromIndex ', () {
                   final range = navigation.dateTimeRangeFromIndex(weekDatePageIndex[testDate.$1]);
-                  expect(range, testDate.$2.asUtc.weekRange(firstDayOfWeek));
+                  expect(range, testDate.$2.asUtc.weekRange(firstDayOfWeek: firstDayOfWeek));
                 });
               }
             });

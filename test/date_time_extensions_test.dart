@@ -260,67 +260,334 @@ Future<void> main() async {
       });
 
       group('startOfWeek', () {
-        test('Every day of the week', () {
-          final monday = DateTime(2025, 2, 24);
-          final tuesday = monday.addDays(1);
-          final wednesday = monday.addDays(2);
-          final thursday = monday.addDays(3);
-          final friday = monday.addDays(4);
-          final saturday = monday.addDays(5);
-          final sunday = monday.addDays(6);
+        final baseMonday = DateTime(2025, 2, 24);
 
-          expect(monday.startOfWeek, monday);
-          expect(tuesday.startOfWeek, monday);
-          expect(wednesday.startOfWeek, monday);
-          expect(thursday.startOfWeek, monday);
-          expect(friday.startOfWeek, monday);
-          expect(saturday.startOfWeek, monday);
-          expect(sunday.startOfWeek, monday);
+        final tuesday = baseMonday.addDays(1);
+        final wednesday = baseMonday.addDays(2);
+        final thursday = baseMonday.addDays(3);
+        final friday = baseMonday.addDays(4);
+        final saturday = baseMonday.addDays(5);
+        final sunday = baseMonday.addDays(6);
+
+        final previousTuesday = baseMonday.subtractDays(6);
+        final previousWednesday = baseMonday.subtractDays(5);
+        final previousThursday = baseMonday.subtractDays(4);
+        final previousFriday = baseMonday.subtractDays(3);
+        final previousSaturday = baseMonday.subtractDays(2);
+        final previousSunday = baseMonday.subtractDays(1);
+
+        test('defaults to Monday as first day of the week', () {
+          expect(baseMonday.startOfWeek(), baseMonday);
+          expect(tuesday.startOfWeek(), baseMonday);
+          expect(wednesday.startOfWeek(), baseMonday);
+          expect(thursday.startOfWeek(), baseMonday);
+          expect(friday.startOfWeek(), baseMonday);
+          expect(saturday.startOfWeek(), baseMonday);
+          expect(sunday.startOfWeek(), baseMonday);
+        });
+
+        test('uses Tuesday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.tuesday), previousTuesday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+        });
+
+        test('uses Wednesday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.wednesday), previousWednesday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.wednesday), previousWednesday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+        });
+
+        test('uses Thursday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.thursday), previousThursday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.thursday), previousThursday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.thursday), previousThursday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+        });
+
+        test('uses Friday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.friday), previousFriday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.friday), previousFriday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.friday), previousFriday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.friday), previousFriday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.friday), friday);
+        });
+
+        test('uses Saturday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.saturday), previousSaturday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.saturday), previousSaturday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.saturday), previousSaturday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.saturday), previousSaturday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.saturday), previousSaturday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+        });
+
+        test('uses Sunday as first day of the week', () {
+          expect(baseMonday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(tuesday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(wednesday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(thursday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(friday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(saturday.startOfWeek(firstDayOfWeek: DateTime.sunday), previousSunday);
+          expect(sunday.startOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
         });
       });
 
-      group('endOfWeek', () {
-        test('Every day of the week', () {
-          final monday = DateTime(2025, 2, 24);
-          final tuesday = monday.addDays(1);
-          final wednesday = monday.addDays(2);
-          final thursday = monday.addDays(3);
-          final friday = monday.addDays(4);
-          final saturday = monday.addDays(5);
-          final sunday = monday.addDays(6);
+      group('endOfWeek()', () {
+        final baseMonday = DateTime(2025, 2, 24);
 
-          final endOfWeek = DateTime(2025, 3, 3);
+        final tuesday = baseMonday.addDays(1);
+        final wednesday = baseMonday.addDays(2);
+        final thursday = baseMonday.addDays(3);
+        final friday = baseMonday.addDays(4);
+        final saturday = baseMonday.addDays(5);
+        final sunday = baseMonday.addDays(6);
 
-          expect(monday.endOfWeek, endOfWeek);
-          expect(tuesday.endOfWeek, endOfWeek);
-          expect(wednesday.endOfWeek, endOfWeek);
-          expect(thursday.endOfWeek, endOfWeek);
-          expect(friday.endOfWeek, endOfWeek);
-          expect(saturday.endOfWeek, endOfWeek);
-          expect(sunday.endOfWeek, endOfWeek);
+        final defaultEndOfWeek = DateTime(2025, 3, 3);
+        final nextTuesday = DateTime(2025, 3, 4);
+        final nextWednesday = DateTime(2025, 3, 5);
+        final nextThursday = DateTime(2025, 3, 6);
+        final nextFriday = DateTime(2025, 3, 7);
+        final nextSaturday = DateTime(2025, 3, 8);
+        final nextSunday = DateTime(2025, 3, 9);
+
+        test('defaults to Monday-Sunday week', () {
+          expect(baseMonday.endOfWeek(), defaultEndOfWeek);
+          expect(tuesday.endOfWeek(), defaultEndOfWeek);
+          expect(wednesday.endOfWeek(), defaultEndOfWeek);
+          expect(thursday.endOfWeek(), defaultEndOfWeek);
+          expect(friday.endOfWeek(), defaultEndOfWeek);
+          expect(saturday.endOfWeek(), defaultEndOfWeek);
+          expect(sunday.endOfWeek(), defaultEndOfWeek);
+        });
+
+        test('uses Tuesday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.tuesday), tuesday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.tuesday), nextTuesday);
+        });
+
+        test('uses Wednesday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.wednesday), wednesday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.wednesday), nextWednesday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.wednesday), nextWednesday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.wednesday), nextWednesday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.wednesday), nextWednesday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.wednesday), nextWednesday);
+        });
+
+        test('uses Thursday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.thursday), thursday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.thursday), nextThursday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.thursday), nextThursday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.thursday), nextThursday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.thursday), nextThursday);
+        });
+
+        test('uses Friday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.friday), friday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.friday), nextFriday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.friday), nextFriday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.friday), nextFriday);
+        });
+
+        test('uses Saturday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.saturday), saturday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.saturday), nextSaturday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.saturday), nextSaturday);
+        });
+
+        test('uses Sunday as first day of week', () {
+          expect(baseMonday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(tuesday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(wednesday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(thursday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(friday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(saturday.endOfWeek(firstDayOfWeek: DateTime.sunday), sunday);
+          expect(sunday.endOfWeek(firstDayOfWeek: DateTime.sunday), nextSunday);
         });
       });
 
-      group('weekRange', () {
-        test('Every day of the week', () {
-          final monday = DateTime(2025, 2, 24);
-          final tuesday = monday.addDays(1);
-          final wednesday = monday.addDays(2);
-          final thursday = monday.addDays(3);
-          final friday = monday.addDays(4);
-          final saturday = monday.addDays(5);
-          final sunday = monday.addDays(6);
-          final endOfWeek = DateTime(2025, 3, 3);
+      group('weekRange()', () {
+        final baseMonday = DateTime(2025, 2, 24);
 
-          final weekRange = DateTimeRange(start: monday, end: endOfWeek);
+        // Week days after baseMonday
+        final tuesday = baseMonday.addDays(1);
+        final wednesday = baseMonday.addDays(2);
+        final thursday = baseMonday.addDays(3);
+        final friday = baseMonday.addDays(4);
+        final saturday = baseMonday.addDays(5);
+        final sunday = baseMonday.addDays(6);
 
-          expect(monday.weekRange, weekRange);
-          expect(tuesday.weekRange, weekRange);
-          expect(wednesday.weekRange, weekRange);
-          expect(thursday.weekRange, weekRange);
-          expect(friday.weekRange, weekRange);
-          expect(saturday.weekRange, weekRange);
-          expect(sunday.weekRange, weekRange);
+        // Previous week days
+        final previousTuesday = baseMonday.subtractDays(6);
+        final previousWednesday = baseMonday.subtractDays(5);
+        final previousThursday = baseMonday.subtractDays(4);
+        final previousFriday = baseMonday.subtractDays(3);
+        final previousSaturday = baseMonday.subtractDays(2);
+        final previousSunday = baseMonday.subtractDays(1);
+
+        final mondayToSundayRange = DateTimeRange(
+          start: baseMonday,
+          end: DateTime(2025, 3, 3),
+        );
+
+        test('defaults to Monday as first day of week', () {
+          expect(baseMonday.weekRange(), mondayToSundayRange);
+          expect(tuesday.weekRange(), mondayToSundayRange);
+          expect(wednesday.weekRange(), mondayToSundayRange);
+          expect(thursday.weekRange(), mondayToSundayRange);
+          expect(friday.weekRange(), mondayToSundayRange);
+          expect(saturday.weekRange(), mondayToSundayRange);
+          expect(sunday.weekRange(), mondayToSundayRange);
+        });
+
+        test('uses Tuesday as first day of week', () {
+          final range = DateTimeRange(
+            start: tuesday,
+            end: DateTime(2025, 3, 4),
+          );
+
+          final rangePreviousTuesday = DateTimeRange(
+            start: previousTuesday,
+            end: tuesday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.tuesday), rangePreviousTuesday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.tuesday), range);
+        });
+
+        test('uses Wednesday as first day of week', () {
+          final range = DateTimeRange(
+            start: wednesday,
+            end: DateTime(2025, 3, 5),
+          );
+
+          final rangePreviousWednesday = DateTimeRange(
+            start: previousWednesday,
+            end: wednesday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.wednesday), rangePreviousWednesday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.wednesday), rangePreviousWednesday);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.wednesday), range);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.wednesday), range);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.wednesday), range);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.wednesday), range);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.wednesday), range);
+        });
+
+        test('uses Thursday as first day of week', () {
+          final range = DateTimeRange(
+            start: thursday,
+            end: DateTime(2025, 3, 6),
+          );
+
+          final rangePreviousThursday = DateTimeRange(
+            start: previousThursday,
+            end: thursday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.thursday), rangePreviousThursday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.thursday), rangePreviousThursday);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.thursday), rangePreviousThursday);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.thursday), range);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.thursday), range);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.thursday), range);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.thursday), range);
+        });
+
+        test('uses Friday as first day of week', () {
+          final range = DateTimeRange(
+            start: friday,
+            end: DateTime(2025, 3, 7),
+          );
+
+          final rangePreviousFriday = DateTimeRange(
+            start: previousFriday,
+            end: friday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.friday), rangePreviousFriday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.friday), rangePreviousFriday);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.friday), rangePreviousFriday);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.friday), rangePreviousFriday);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.friday), range);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.friday), range);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.friday), range);
+        });
+
+        test('uses Saturday as first day of week', () {
+          final range = DateTimeRange(
+            start: saturday,
+            end: DateTime(2025, 3, 8),
+          );
+
+          final rangePreviousSaturday = DateTimeRange(
+            start: previousSaturday,
+            end: saturday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.saturday), rangePreviousSaturday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.saturday), rangePreviousSaturday);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.saturday), rangePreviousSaturday);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.saturday), rangePreviousSaturday);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.saturday), rangePreviousSaturday);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.saturday), range);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.saturday), range);
+        });
+
+        test('uses Sunday as first day of week', () {
+          final range = DateTimeRange(
+            start: sunday,
+            end: DateTime(2025, 3, 9),
+          );
+
+          final rangePreviousSunday = DateTimeRange(
+            start: previousSunday,
+            end: sunday,
+          );
+
+          expect(baseMonday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(tuesday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(wednesday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(thursday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(friday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(saturday.weekRange(firstDayOfWeek: DateTime.sunday), rangePreviousSunday);
+          expect(sunday.weekRange(firstDayOfWeek: DateTime.sunday), range);
         });
       });
 

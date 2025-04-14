@@ -114,8 +114,8 @@ class WeekPageFunctions extends PageNavigationFunctions {
     required this.originalRange,
     required this.firstDayOfWeek,
   }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfWeek(firstDayOfWeek),
-          end: originalRange.end.asUtc.endOfWeek(firstDayOfWeek),
+          start: originalRange.start.asUtc.startOfWeek(firstDayOfWeek: firstDayOfWeek),
+          end: originalRange.end.asUtc.endOfWeek(firstDayOfWeek: firstDayOfWeek),
         );
 
   @override
@@ -124,12 +124,12 @@ class WeekPageFunctions extends PageNavigationFunctions {
       adjustedRange.start.year,
       adjustedRange.start.month,
       adjustedRange.start.day + (index * DateTime.daysPerWeek),
-    ).weekRange(firstDayOfWeek);
+    ).weekRange(firstDayOfWeek: firstDayOfWeek);
   }
 
   @override
   int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek(firstDayOfWeek);
+    final startOfWeek = date.asUtc.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     if (startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
@@ -154,8 +154,8 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   WorkWeekPageFunctions({
     required this.originalRange,
   }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfWeek(DateTime.monday),
-          end: originalRange.end.asUtc.endOfWeek(DateTime.monday),
+          start: originalRange.start.asUtc.startOfWeek(),
+          end: originalRange.end.asUtc.endOfWeek(),
         );
 
   @override
@@ -166,12 +166,12 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
       adjustedRange.start.day + (index * DateTime.daysPerWeek),
     );
 
-    return date.workWeekRange();
+    return date.workWeekRange;
   }
 
   @override
   int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek(DateTime.monday);
+    final startOfWeek = date.asUtc.startOfWeek();
     if (startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
@@ -273,7 +273,7 @@ class MonthPageFunctions extends PageNavigationFunctions {
   DateTimeRange dateTimeRangeFromIndex(int index) {
     final range =
         DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
-    var rangeStart = range.start.startOfWeek(firstDayOfWeek);
+    var rangeStart = range.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     if (rangeStart.isAfter(range.start)) rangeStart = rangeStart.subtractDays(7);
 
     var rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * numberOfRows);

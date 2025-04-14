@@ -40,7 +40,7 @@ void main() {
     final configuration = MultiDayBodyConfiguration();
     final interaction = ValueNotifier(CalendarInteraction());
     // The range to display in the DayEventsWidget.
-    final displayRange = start.asUtc.startOfDay.weekRange(DateTime.monday);
+    final displayRange = start.asUtc.startOfDay.weekRange();
 
     /// The time of day range to display in the DayEventsWidget.
     final timeOfDayRange = TimeOfDayRange.allDay();

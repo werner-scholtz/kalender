@@ -232,16 +232,19 @@ extension DateTimeExtensions on DateTime {
 
   /// Gets the start of the week.
   ///
-  /// The start of the week is determined by the [DateTime.monday] constant.
-  /// This means that the start of the week is always Monday.
+  /// The start of the week is determined by [firstDayOfWeek] parameter, it defaults to [DateTime.monday].
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final start = date.startOfWeek;
+  /// final start = date.startOfWeek();
   /// print(start); // Output: 2024-01-15 00:00:00.000
+  ///
+  /// final date2 = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
+  /// final start2 = date2.startOfWeek(firstDayOfWeek: DateTime.sunday);
+  /// print(start2); // Output: 2024-01-14 00:00:00.000
   /// ```
-  DateTime startOfWeek(int firstDayOfWeek) {
+  DateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final firstDayOfWeekValue = firstDayOfWeek;
 
     final daysToSubtract = (weekday < firstDayOfWeekValue ? 7 : 0) + weekday - firstDayOfWeekValue;
@@ -250,33 +253,47 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Gets the end of the week.
+  /// The end of the week is calculated as the start of the next week,
+  /// which is midnight of the next corresponding [firstDayOfWeek].
   ///
-  /// The end of the week is the start of the next week, monday at midnight.
+  /// The [firstDayOfWeek] parameter determines the starting day of the week
+  /// (e.g., Monday, Sunday, etc.) and defaults to [DateTime.monday].
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final end = date.endOfWeek;
+  /// final end = date.endOfWeek();
   /// print(end); // Output: 2024-01-22 00:00:00.000
+  ///
+  /// final endWithSunday = date.endOfWeek(firstDayOfWeek: DateTime.sunday);
+  /// print(endWithSunday); // Output: 2024-01-21 00:00:00.000
   /// ```
-  DateTime endOfWeek(int firstDayOfWeek) {
-    return startOfWeek(firstDayOfWeek).addDays(7);
+  DateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
+    return startOfWeek(firstDayOfWeek: firstDayOfWeek).addDays(7);
   }
 
   /// Get the week range.
   ///
   /// The week range is a [DateTimeRange] that starts at the beginning of the week
-  /// (Monday) and ends at the beginning of the next week (Monday).
+  /// (determined by [firstDayOfWeek], which defaults to [DateTime.monday])
+  /// and ends at the beginning of the next week.
   ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final range = date.weekRange;
+  /// final range = date.weekRange();
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-22 00:00:00.000
+  ///
+  /// final rangeWithSunday = date.weekRange(firstDayOfWeek: DateTime.sunday);
+  /// print(rangeWithSunday.start); // Output: 2024-01-14 00:00:00.000
+  /// print(rangeWithSunday.end);   // Output: 2024-01-21 00:00:00.000
   /// ```
-  DateTimeRange weekRange(int firstDayOfWeek) {
-    return DateTimeRange(start: startOfWeek(firstDayOfWeek), end: endOfWeek(firstDayOfWeek));
+  DateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
+    return DateTimeRange(
+      start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
+      end: endOfWeek(firstDayOfWeek: firstDayOfWeek),
+    );
   }
 
   /// Get the work week range.
@@ -291,11 +308,8 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-20 00:00:00.000
   /// ```
-  DateTimeRange workWeekRange() {
-    final startDayOfWeek = startOfWeek(DateTime.monday);
-    final endDayOfWeek = endOfWeek(DateTime.monday);
-
-    return DateTimeRange(start: startDayOfWeek, end: endDayOfWeek);
+  DateTimeRange get workWeekRange {
+    return DateTimeRange(start: startOfWeek(), end: endOfWeek().subtractDays(2));
   }
 
   /// Add specific amount of [days] (ignoring DST)
@@ -309,7 +323,16 @@ extension DateTimeExtensions on DateTime {
   /// print(newDate); // Output: 2024-01-20 10:30:00.000
   /// ```
   DateTime addDays(int days) {
-    return add(Duration(days: days));
+    return copyWith(
+      year: year,
+      month: month,
+      day: day + days,
+      hour: hour,
+      minute: minute,
+      second: second,
+      millisecond: millisecond,
+      microsecond: microsecond,
+    );
   }
 
   /// Subtract specific amount of [days] (ignoring DST)
