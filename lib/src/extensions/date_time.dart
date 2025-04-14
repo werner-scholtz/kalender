@@ -63,15 +63,7 @@ extension DateTimeExtensions on DateTime {
   /// print(start); // Output: 2024-01-15 00:00:00.000Z
   /// ```
   DateTime get startOfDay {
-    return copyWith(
-        year: year,
-        month: month,
-        day: day,
-        hour: 0,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-        microsecond: 0);
+    return copyWith(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
   }
 
   /// Gets the end of the date. (aka the start of the next day).
@@ -308,9 +300,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-20 00:00:00.000
   /// ```
-  DateTimeRange get workWeekRange {
-    return DateTimeRange(start: startOfWeek(), end: endOfWeek().subtractDays(2));
-  }
+  DateTimeRange get workWeekRange => DateTimeRange(start: startOfWeek(), end: endOfWeek().subtractDays(2));
 
   /// Add specific amount of [days] (ignoring DST)
   ///
@@ -380,8 +370,7 @@ extension DateTimeExtensions on DateTime {
   /// final utcDate = date.asUtc;
   /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
   /// ```
-  DateTime get asUtc =>
-      DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  DateTime get asUtc => DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// Returns a [DateTime] as a local value without converting it.
   ///
@@ -394,8 +383,7 @@ extension DateTimeExtensions on DateTime {
   /// final localDate = date.asLocal;
   /// print(localDate); // Output: 2024-01-15 10:30:00.000
   /// ```
-  DateTime get asLocal =>
-      DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+  DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// TODO: Proposal depend on the intl package so this can be removed.
   /// If we do start depending on the intl package, then we might as well

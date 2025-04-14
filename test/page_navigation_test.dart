@@ -89,8 +89,7 @@ void main() {
               });
 
               test('dateTimeRangeFromIndex - ', () {
-                final range =
-                    navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
+                final range = navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
                 expect(range, testDate.$2.asUtc.dayRange);
               });
             }
@@ -247,8 +246,7 @@ void main() {
               });
 
               test('dateTimeRangeFromIndex - ', () {
-                final range =
-                    navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
+                final range = navigation.dateTimeRangeFromIndex(singleDayDatePageIndexes[testDate.$1]);
                 expect(range, testDate.$2.asUtc.dayRange);
               });
             }

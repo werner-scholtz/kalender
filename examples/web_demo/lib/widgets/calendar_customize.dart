@@ -411,19 +411,10 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
     BuildContext context,
     MonthViewConfiguration configuration,
   ) {
-    return Card(
+    return const Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
-        children: [
-          FirstDayOfWeekEditor(
-            initialFirstDayOfWeek: configuration.firstDayOfWeek,
-            onChanged: (value) {
-              widget.onChanged(
-                configuration.copyWith(firstDayOfWeek: value),
-              );
-            },
-          )
-        ],
+        children: [],
       ),
     );
   }

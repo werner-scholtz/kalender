@@ -66,8 +66,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
-        pageNavigationFunctions =
-            PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+        pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
@@ -96,9 +95,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
-        pageNavigationFunctions = PageNavigationFunctions.workWeek(
-          displayRange ?? DateTime.now().yearRange,
-        );
+        pageNavigationFunctions = PageNavigationFunctions.workWeek(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -125,8 +122,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
-        pageNavigationFunctions =
-            PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
+        pageNavigationFunctions = PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
 
   MultiDayViewConfiguration copyWith({
     String? name,
@@ -363,8 +359,7 @@ Please use the `generateFrame` method instead.
       tileHeight: tileHeight ?? this.tileHeight,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
-      maximumNumberOfVerticalEvents:
-          maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
+      maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
       eventPadding: eventPadding ?? this.eventPadding,
     );
   }

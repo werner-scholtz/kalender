@@ -25,9 +25,7 @@ abstract class PageNavigationFunctions {
   }
 
   /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
-  factory PageNavigationFunctions.workWeek(
-    DateTimeRange dateTimeRange,
-  ) {
+  factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
     return WorkWeekPageFunctions(originalRange: dateTimeRange);
   }
 
@@ -140,8 +138,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
   }
 
   @override
-  late final int numberOfPages =
-      ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
+  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
 
   @override
   final DateTimeRange adjustedRange;
@@ -182,8 +179,7 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   }
 
   @override
-  late final int numberOfPages =
-      ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
+  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
 
   @override
   late final DateTimeRange adjustedRange;
@@ -271,8 +267,7 @@ class MonthPageFunctions extends PageNavigationFunctions {
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
-    final range =
-        DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
+    final range = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
     var rangeStart = range.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     if (rangeStart.isAfter(range.start)) rangeStart = rangeStart.subtractDays(7);
 
