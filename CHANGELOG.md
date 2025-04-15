@@ -18,7 +18,7 @@
 
 ### Fixes
 - Week view not showing correct range when first day of week is something other than monday. [#150](https://github.com/werner-scholtz/kalender/issues/150)
-- Events not snapping to closest. [#155](https://github.com/werner-scholtz/kalender/pull/156)
+- Events not snapping to closest. [#155](https://github.com/werner-scholtz/kalender/issues/155)
 
 ## 0.6.7
 
