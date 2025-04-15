@@ -4,17 +4,23 @@ import 'package:kalender/kalender.dart';
 mixin SnapPoints {
   /// A list of possible [DateTime] snap points that the event can snap to.
   final List<DateTime> _snapPoints = [];
+  List<DateTime> get snapPoints => _snapPoints.toList();
 
   /// Get the closest snap point to the [dateTime] within a [snapRange].
   DateTime? findSnapPoint(DateTime dateTime, Duration snapRange) {
-    // Find the index of the snap point that is within a duration of snapRange of the start.
-    final index = _snapPoints.indexWhere(
-      (point) => point.difference(dateTime).abs() <= snapRange,
+    assert(dateTime.isUtc, 'The DateTime must be in UTC.');
+    
+    // Check that the snap points are not empty.
+    if (_snapPoints.isEmpty) return null;
+
+    // Find the index of the closest snap point to the dateTime.
+    final closest = _snapPoints.reduce(
+      (a, b) => (a.difference(dateTime).abs() < b.difference(dateTime).abs()) ? a : b,
     );
 
-    // If the index is not -1 and the snap point is before the end, snap to the snap point.
-    if (index != -1) return _snapPoints[index];
-    return null;
+    // If the closest snap point is not within the snap range, return null.
+    if (closest.difference(dateTime).abs() > snapRange) return null;
+    return closest;
   }
 
   /// Update the snap points from the [events].
