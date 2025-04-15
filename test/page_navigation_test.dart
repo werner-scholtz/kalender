@@ -100,6 +100,7 @@ void main() {
           for (final firstDayOfWeek in startOfWeeks) {
             final navigation = PageNavigationFunctions.week(testRange, firstDayOfWeek);
             final numberOfPages = firstDayOfWeek == 4 ? 314 : 313;
+            final pageIndex = firstDayOfWeek >= 4 ? weekAfterThursdayIndexes : workWeekDatePageIndexes;
 
             test('numberOfPages', () {
               expect(navigation.numberOfPages, numberOfPages);
@@ -126,11 +127,11 @@ void main() {
               for (final testDate in testDates.indexed) {
                 test('indexFromDate $testDate', () {
                   final index = navigation.indexFromDate(testDate.$2);
-                  expect(index, weekDatePageIndex[testDate.$1]);
+                  expect(index, pageIndex[testDate.$1]);
                 });
 
                 test('dateTimeRangeFromIndex ', () {
-                  final range = navigation.dateTimeRangeFromIndex(weekDatePageIndex[testDate.$1]);
+                  final range = navigation.dateTimeRangeFromIndex(pageIndex[testDate.$1]);
                   expect(range, testDate.$2.asUtc.weekRange(firstDayOfWeek: firstDayOfWeek));
                 });
               }
@@ -166,11 +167,11 @@ void main() {
             for (final testDate in testDates.indexed) {
               test('indexFromDate $testDate', () {
                 final index = navigation.indexFromDate(testDate.$2);
-                expect(index, weekDatePageIndex[testDate.$1]);
+                expect(index, workWeekDatePageIndexes[testDate.$1]);
               });
 
               test('dateTimeRangeFromIndex ', () {
-                final range = navigation.dateTimeRangeFromIndex(weekDatePageIndex[testDate.$1]);
+                final range = navigation.dateTimeRangeFromIndex(workWeekDatePageIndexes[testDate.$1]);
                 expect(range, testDate.$2.asUtc.workWeekRange);
               });
             }
@@ -337,7 +338,7 @@ void main() {
   );
 }
 
-final singleDayDatePageIndexes = [
+const singleDayDatePageIndexes = [
   67,
   305,
   438,
@@ -376,7 +377,46 @@ final singleDayDatePageIndexes = [
   2104,
 ];
 
-final weekDatePageIndex = [
+const weekAfterThursdayIndexes = [
+  10,
+  44,
+  63,
+  97,
+  115,
+  149,
+  167,
+  201,
+  219,
+  253,
+  271,
+  305,
+  13,
+  43,
+  65,
+  96,
+  117,
+  148,
+  169,
+  200,
+  222,
+  252,
+  274,
+  304,
+  14,
+  40,
+  66,
+  92,
+  118,
+  144,
+  170,
+  196,
+  223,
+  249,
+  275,
+  301,
+];
+
+const workWeekDatePageIndexes = [
   9,
   43,
   62,
@@ -415,7 +455,7 @@ final weekDatePageIndex = [
   300,
 ];
 
-final customDatePageIndex = [
+const customDatePageIndex = [
   22,
   101,
   146,
@@ -454,7 +494,7 @@ final customDatePageIndex = [
   701,
 ];
 
-final monthDatePageIndex = [
+const monthDatePageIndex = [
   2,
   10,
   14,

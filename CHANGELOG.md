@@ -16,6 +16,9 @@
 ### Improvements
 - The `defaultMultiDayGenerateFrame` improves on the `defaultMultiDayLayoutStrategy` by allowing events to fill empty spaces.
 
+### Fixes
+- Week view not showing correct range when first day of week is something other than monday. [#150](https://github.com/werner-scholtz/kalender/issues/150)
+
 ## 0.6.7
 
 - fix: Rescheduling event triggering an assert. [#144](https://github.com/werner-scholtz/kalender/issues/144)

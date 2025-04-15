@@ -226,6 +226,11 @@ extension DateTimeExtensions on DateTime {
   ///
   /// The start of the week is determined by [firstDayOfWeek] parameter, it defaults to [DateTime.monday].
   ///
+  /// The calculation of the start of the week involves determining how many days to subtract
+  /// from the current date to reach the desired [firstDayOfWeek]. If the current day of the week
+  /// [weekday] is earlier in the week than the [firstDayOfWeek], 7 days are added to ensure
+  /// the subtraction wraps around to the previous week.
+  ///
   /// Example:
   /// ```dart
   /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
@@ -237,10 +242,9 @@ extension DateTimeExtensions on DateTime {
   /// print(start2); // Output: 2024-01-14 00:00:00.000
   /// ```
   DateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
-    final firstDayOfWeekValue = firstDayOfWeek;
-
-    final daysToSubtract = (weekday < firstDayOfWeekValue ? 7 : 0) + weekday - firstDayOfWeekValue;
-
+    // Calculate the number of days to subtract to reach the start of the week.
+    // If the current weekday is less than the first day of the week, add 7 to wrap around to the previous week.
+    final daysToSubtract = (weekday < firstDayOfWeek ? 7 : 0) + weekday - firstDayOfWeek;
     return subtractDays(daysToSubtract).startOfDay;
   }
 
