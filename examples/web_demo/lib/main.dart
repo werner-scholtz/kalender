@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/enumerations.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
-import 'package:web_demo/pages/single_calendar.dart';
+import 'package:web_demo/widgets/calendar_widget.dart';
 
 class NavigationHeader extends StatelessWidget {
   final CalendarController<Event> controller;
@@ -51,7 +51,7 @@ class NavigationHeader extends StatelessWidget {
           initialSelection: viewConfiguration,
           onSelected: (value) {
             if (value == null) return;
-            SingleCalendarView.setViewConfiguration(context, value);
+            CalendarWidget.setViewConfiguration(context, value);
           },
         );
 
