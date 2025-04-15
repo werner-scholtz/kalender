@@ -195,8 +195,8 @@ void main() {
 
     group('PositionedTimeIndicator Tests', () {
       final now = DateTime.now();
-      final start = now.startOfWeek;
-      final end = now.endOfWeek;
+      final start = now.startOfWeek();
+      final end = now.endOfWeek();
       final range = DateTimeRange(start: start, end: end);
       final visibleDates = range.asUtc.dates();
 

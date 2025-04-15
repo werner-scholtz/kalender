@@ -169,7 +169,8 @@ class _CalendarCustomizeState extends State<CalendarCustomize> {
       onChanged: (value) {
         widget.onBodyChanged(
           bodyConfiguration.copyWith(
-            horizontalPadding: bodyConfiguration.horizontalPadding.copyWith(right: value.toDouble()),
+            horizontalPadding:
+                bodyConfiguration.horizontalPadding.copyWith(right: value.toDouble()),
           ),
         );
       },
@@ -509,15 +510,31 @@ class FirstDayOfWeekEditor extends StatelessWidget {
       expandedInsets: const EdgeInsets.only(left: 16, right: 32),
       dropdownMenuEntries: [
         DropdownMenuEntry(
-          value: 1,
+          value: DateTime.monday,
           label: DateTime(2024, 1, 1).dayNameEnglish,
         ),
         DropdownMenuEntry(
-          value: 6,
+          value: DateTime.tuesday,
+          label: DateTime(2024, 1, 2).dayNameEnglish,
+        ),
+        DropdownMenuEntry(
+          value: DateTime.wednesday,
+          label: DateTime(2024, 1, 3).dayNameEnglish,
+        ),
+        DropdownMenuEntry(
+          value: DateTime.thursday,
+          label: DateTime(2024, 1, 4).dayNameEnglish,
+        ),
+        DropdownMenuEntry(
+          value: DateTime.friday,
+          label: DateTime(2024, 1, 5).dayNameEnglish,
+        ),
+        DropdownMenuEntry(
+          value: DateTime.saturday,
           label: DateTime(2024, 1, 6).dayNameEnglish,
         ),
         DropdownMenuEntry(
-          value: 7,
+          value: DateTime.sunday,
           label: DateTime(2024, 1, 7).dayNameEnglish,
         ),
       ],
