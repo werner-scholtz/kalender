@@ -11,9 +11,6 @@ class MonthViewConfiguration<T extends Object?> extends ViewConfiguration {
   /// The first day of the week.
   final int firstDayOfWeek;
 
-  /// The padding used around events.
-  final EdgeInsets eventPadding;
-
   /// The layout strategy used by the [MultiDayHeader] to layout events.
   @Deprecated('''
 This method is deprecated and will be removed in a future release. 
@@ -26,7 +23,6 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
     required this.eventLayoutStrategy,
-    this.eventPadding = kDefaultMultiDayEventPadding,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be a valid week day number\n'
@@ -38,7 +34,6 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy,
-    this.eventPadding = kDefaultMultiDayEventPadding,
   }) : pageNavigationFunctions = MonthPageFunctions(
           originalRange: displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek: firstDayOfWeek,
@@ -52,7 +47,6 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      eventPadding: eventPadding ?? this.eventPadding,
       eventLayoutStrategy: null,
       displayRange: pageNavigationFunctions.originalRange,
     );
@@ -64,13 +58,12 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
     return other is MonthViewConfiguration &&
         other.pageNavigationFunctions == pageNavigationFunctions &&
-        other.firstDayOfWeek == firstDayOfWeek &&
-        other.eventPadding == eventPadding;
+        other.firstDayOfWeek == firstDayOfWeek;
   }
 
   @override
   int get hashCode {
-    return Object.hash(pageNavigationFunctions, firstDayOfWeek, eventPadding);
+    return Object.hash(pageNavigationFunctions, firstDayOfWeek);
   }
 }
 
@@ -79,7 +72,6 @@ class MonthBodyConfiguration<T extends Object?> extends MultiDayHeaderConfigurat
     super.generateMultiDayLayoutFrame,
     super.pageTriggerConfiguration,
     super.scrollTriggerConfiguration,
-    super.showTiles,
     super.tileHeight,
-  });
+  }) : super(showTiles: true, maximumNumberOfVerticalEvents: null);
 }
