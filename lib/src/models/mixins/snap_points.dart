@@ -9,7 +9,7 @@ mixin SnapPoints {
   /// Get the closest snap point to the [dateTime] within a [snapRange].
   DateTime? findSnapPoint(DateTime dateTime, Duration snapRange) {
     assert(dateTime.isUtc, 'The DateTime must be in UTC.');
-    
+
     // Check that the snap points are not empty.
     if (_snapPoints.isEmpty) return null;
 

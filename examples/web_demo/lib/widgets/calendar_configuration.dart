@@ -56,4 +56,3 @@ class CalendarConfigurationWidget extends StatelessWidget {
     );
   }
 }
-
