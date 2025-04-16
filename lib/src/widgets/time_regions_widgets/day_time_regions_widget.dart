@@ -106,7 +106,7 @@ class _DayTimeRegionsWidgetState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
-    final layoutStrategy = widget.configuration.eventLayoutStrategy;
+    final layoutStrategy = widget.configuration.timeRegionsLayoutStrategy;
 
     return Row(
       children: eventsMap.entries.map((entry) {
