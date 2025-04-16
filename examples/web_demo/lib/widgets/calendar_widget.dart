@@ -45,7 +45,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: ListenableBuilder(
                 listenable: _configuration,
                 builder: (context, child) {
-                  return CalendarZoomDetector(
+                  return ZoomDetector(
                     controller: _controller,
                     child: CalendarView<Event>(
                       calendarController: _controller,
