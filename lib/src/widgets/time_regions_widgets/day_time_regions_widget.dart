@@ -106,17 +106,19 @@ class _DayTimeRegionsWidgetState<T extends Object?>
 
   @override
   Widget build(BuildContext context) {
+    final layoutStrategy = widget.configuration.eventLayoutStrategy;
+
     return Row(
       children: eventsMap.entries.map((entry) {
         final date = entry.key;
         final visibleEvents = entry.value.toList();
 
         final timeRegions = CustomMultiChildLayout(
-          delegate: OverlapLayoutDelegate(
-            events: visibleEvents,
-            heightPerMinute: widget.heightPerMinute,
-            date: date,
-            timeOfDayRange: widget.timeOfDayRange,
+          delegate: layoutStrategy.call(
+            visibleEvents,
+            date,
+            widget.timeOfDayRange,
+            widget.heightPerMinute,
           ),
           children: visibleEvents.indexed
               .map(
