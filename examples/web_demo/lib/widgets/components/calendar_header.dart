@@ -37,7 +37,7 @@ class NavigationHeader extends StatelessWidget {
           onPressed: () => controller.animateToNextPage(),
         );
 
-        final width = min(200.0, constraints.maxWidth - 200.0);
+        final width = min(150.0, constraints.maxWidth - 150.0);
         final view = DropdownMenu(
           dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
           width: width,

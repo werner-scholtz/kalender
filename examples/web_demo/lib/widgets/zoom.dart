@@ -53,7 +53,7 @@ mixin ZoomUtils {
   /// The [ValueNotifier] that holds the state of the control key.
   ValueNotifier<bool> lock = ValueNotifier(false);
 
-  /// 
+  ///
   double yOffset = 0;
 
   double scaleTrackpad(PointerPanZoomUpdateEvent event, double height) {
@@ -183,9 +183,7 @@ class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils 
               yOffset = details.localFocalPoint.dy;
               _previousScale = 0;
               if (details.pointerCount <= 1) return;
-              // lock.value = true;
             };
-            // instance.onEnd = (_) => lock.value = false;
             instance.onUpdate = (details) {
               if (details.pointerCount <= 1) return;
               final height = heightPerMinute?.value;
@@ -199,13 +197,6 @@ class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils 
         ),
       },
       child: widget.child,
-      // child: ValueListenableBuilder(
-      //   valueListenable: lock,
-      //   builder: (context, value, _) => ScrollConfiguration(
-      //     behavior: value ? const ScrollBehaviorNever() : const MaterialScrollBehavior(),
-      //     child: widget.child,
-      //   ),
-      // ),
     );
   }
 }
