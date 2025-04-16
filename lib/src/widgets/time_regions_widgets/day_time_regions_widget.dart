@@ -75,6 +75,7 @@ class _DayTimeRegionsWidgetState<T extends Object?>
   void _populateEventsMap() {
     final visibleDates = widget.visibleDateTimeRange.days;
     final showMultiDayEvents = widget.configuration.showMultiDayEvents;
+    final layoutStrategy = widget.configuration.eventLayoutStrategy;
 
     // Clear the visible events.
     final allEvents = <TimeRegionEvent<T>>{};
@@ -88,11 +89,11 @@ class _DayTimeRegionsWidgetState<T extends Object?>
 
       allEvents.addAll(events);
 
-      final sortedEvents = OverlapLayoutDelegate(
-        events: [],
-        date: date,
-        timeOfDayRange: TimeOfDayRange.allDay(),
-        heightPerMinute: 0,
+      final sortedEvents = layoutStrategy(
+        [],
+        date,
+        TimeOfDayRange.allDay(),
+        0,
       ).sortEvents(events) as List<TimeRegionEvent<T>>;
       return MapEntry(date, sortedEvents);
     });
