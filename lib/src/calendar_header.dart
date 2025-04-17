@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/schedule/schedule_header.dart';
 
 class CalendarHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T>? eventsController;
@@ -29,6 +30,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// This creates the correct header based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayHeader]
   /// - [MonthHeader]
+  /// - [ScheduleHeader]
   ///
   const CalendarHeader({
     super.key,
@@ -64,6 +66,8 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
       return MonthHeader<T>(
         calendarController: calendarController,
       );
+    } else if (viewController is ContinuousScheduleViewController<T>) {
+      return ScheduleHeader<T>();
     } else {
       throw UnimplementedError();
     }

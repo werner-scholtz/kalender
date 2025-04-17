@@ -58,6 +58,27 @@ class TileComponents<T extends Object?> {
   });
 }
 
+/// The components used by the [ScheduleBody] to render the event tiles.
+class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
+  @override
+  ResizeHandlePositioner? get verticalHandlePositioner => null;
+  @override
+  Widget? get verticalResizeHandle => null;
+  @override
+  ResizeHandlePositioner? get horizontalHandlePositioner => null;
+  @override
+  Widget? get horizontalResizeHandle => null;
+
+  const ScheduleTileComponents({
+    required super.tileBuilder,
+    super.dropTargetTile,
+    super.tileWhenDraggingBuilder,
+    super.feedbackTileBuilder,
+    super.overlayTileBuilder,
+    super.dragAnchorStrategy,
+  });
+}
+
 /// The default builder for the event tiles.
 ///
 /// [event] is the event that the tile will be built for.

@@ -69,6 +69,9 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       setState(() {
         final initialDate = _viewController.visibleDateTimeRange.value.start;
         _viewController = _createViewController(initialDate: initialDate);
+        // Dispose the old view controller if it exists.
+        widget.calendarController.viewController?.dispose();
+
         widget.calendarController.attach(_viewController);
       });
     }
@@ -105,6 +108,15 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: widget.calendarController.initialDate,
         ),
+      const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
+          ScheduleViewType.continuous => ContinuousScheduleViewController<T>(
+              viewConfiguration: viewConfiguration,
+              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleEvents: widget.calendarController.visibleEvents,
+              initialDate: widget.calendarController.initialDate,
+            ),
+          ScheduleViewType.paginated => throw UnimplementedError(),
+        },
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
     };
   }

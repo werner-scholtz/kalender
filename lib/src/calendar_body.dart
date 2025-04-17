@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/schedule/schedule_body.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {
@@ -35,7 +36,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// This creates the correct body based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayBody]
   /// - [MonthBody]
-  /// - TODO: add schedule view.
+  /// - [ScheduleBody]
   ///
   const CalendarBody({
     super.key,
@@ -79,6 +80,13 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         tileComponents: monthTileComponents,
         configuration: monthBodyConfiguration,
         interaction: interaction,
+      );
+    } else if (viewController is ContinuousScheduleViewController<T>) {
+      return ScheduleBody<T>(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        callbacks: callbacks,
+        tileComponents: monthTileComponents,
       );
     } else {
       throw UnimplementedError();
