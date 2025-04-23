@@ -75,7 +75,7 @@ class _DayEventsWidgetState<T extends Object?>
   void _populateEventsMap() {
     final visibleDates = widget.visibleDateTimeRange.days;
     final showMultiDayEvents = widget.configuration.showMultiDayEvents;
-    final layoutStrategy = widget.configuration.timeRegionsLayoutStrategy;
+    final layoutStrategy = widget.configuration.eventLayoutStrategy;
 
     // Clear the visible events.
     final allEvents = <CalendarEvent<T>>{};
