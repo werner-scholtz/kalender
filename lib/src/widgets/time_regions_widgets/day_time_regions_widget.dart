@@ -75,7 +75,7 @@ class _DayTimeRegionsWidgetState<T extends Object?>
   void _populateEventsMap() {
     final visibleDates = widget.visibleDateTimeRange.days;
     final showMultiDayEvents = widget.configuration.showMultiDayEvents;
-    final layoutStrategy = widget.configuration.eventLayoutStrategy;
+    final layoutStrategy = widget.configuration.timeRegionsLayoutStrategy;
 
     // Clear the visible events.
     final allEvents = <TimeRegionEvent<T>>{};
