@@ -90,7 +90,7 @@ class _DayEventsWidgetState<T extends Object?>
       allEvents.addAll(events);
 
       final sortedEvents = layoutStrategy(
-        [],
+        allEvents,
         date,
         TimeOfDayRange.allDay(),
         0,
