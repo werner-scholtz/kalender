@@ -241,7 +241,11 @@ class MultiDayBodyConfiguration {
 
   /// The minimum height of the tile.
   ///
-  /// TODO: add proper documentation for this.
+  /// Setting this value will force all tiles to have a minimum height of this value.
+  /// This is useful for displaying short events in a consistent way.
+  ///
+  /// * Note tiles will be expanded downwards except when the tile is at the bottom of the screen 
+  ///   then they will be expanded upwards.
   final double? minimumTileHeight;
 
   /// Creates a new [MultiDayHeaderConfiguration].
