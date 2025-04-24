@@ -20,6 +20,7 @@ typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
@@ -28,12 +29,14 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 ) {
   return OverlapLayoutDelegate<T>(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
+    minimumTileHeight: minimumTileHeight,
   );
 }
 
@@ -43,12 +46,14 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 ) {
   return SideBySideLayoutDelegate<T>(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
+    minimumTileHeight: minimumTileHeight,
   );
 }
 
@@ -69,6 +74,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.heightPerMinute,
     required this.date,
     required this.timeOfDayRange,
+    required this.minimumTileHeight,
   });
 
   /// The list of events that will be laid out. (The order of these events are the same as the widget's)
@@ -76,6 +82,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   final DateTime date;
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
+  final double? minimumTileHeight;
 
   /// Sorts the [CalendarEvent]s.
   ///
@@ -90,6 +97,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   double calculateHeight(CalendarEvent<T> event) {
     final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
     final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    if (minimumTileHeight != null && height < minimumTileHeight!) {
+      return minimumTileHeight!;
+    }
     return height;
   }
 
@@ -109,8 +119,10 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 
   /// Vertical layout of the events.
   ///
-  /// Calculates the top and bottom of each event.
-  List<VerticalLayoutData> calculateVerticalLayoutData() {
+  /// Calculates the top and bottom of each event, and ensues that they are within the bounds of the widget.
+  ///
+  /// [size] - The size of the widget.
+  List<VerticalLayoutData> calculateVerticalLayoutData(Size size) {
     final numberOfChildren = events.length;
     final layoutEvents = <VerticalLayoutData>[];
     // Calculate the top and bottom of each event.
@@ -118,9 +130,17 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
       final id = i;
       final event = events.elementAt(i);
 
-      final top = calculateDistanceFromStart(event);
+      var top = calculateDistanceFromStart(event);
       final height = calculateHeight(event);
-      final bottom = top + height;
+      var bottom = top + height;
+
+      final overlap = size.height - bottom;
+      // Check if the event is outside the bounds of the widget.
+      if (overlap.isNegative) {
+        // Update the top and bottom to fit within the bounds.
+        top += overlap;
+        bottom += overlap;
+      }
 
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
     }
@@ -161,7 +181,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
     return oldDelegate.events != events ||
         oldDelegate.heightPerMinute != heightPerMinute ||
-        oldDelegate.timeOfDayRange != timeOfDayRange;
+        oldDelegate.timeOfDayRange != timeOfDayRange ||
+        oldDelegate.date != date ||
+        oldDelegate.minimumTileHeight != minimumTileHeight;
   }
 }
 
@@ -172,6 +194,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.heightPerMinute,
     required super.date,
     required super.timeOfDayRange,
+    required super.minimumTileHeight,
   });
 
   @override
@@ -184,7 +207,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   @override
   void performLayout(Size size) {
     // Calculate the vertical layout data.
-    final verticalLayoutData = calculateVerticalLayoutData();
+    final verticalLayoutData = calculateVerticalLayoutData(size);
 
     // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
@@ -236,6 +259,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     required super.heightPerMinute,
     required super.date,
     required super.timeOfDayRange,
+    required super.minimumTileHeight,
   });
 
   @override
@@ -253,7 +277,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
   @override
   void performLayout(Size size) {
     // Calculate the vertical layout data.
-    final verticalLayoutData = calculateVerticalLayoutData();
+    final verticalLayoutData = calculateVerticalLayoutData(size);
 
     // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);

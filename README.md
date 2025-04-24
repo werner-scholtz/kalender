@@ -262,6 +262,8 @@ Examples:
       showMultiDayEvents: true,
       // The padding between events and the edge of the day.
       horizontalPadding: EdgeInsets.only(left: 0, right: 4),
+      // The minimum height of a tile.
+      minimumTileHeight: 24.0,
       // The configuration for triggering page navigation.
       pageTriggerConfiguration: PageTriggerConfiguration(),
       // The configuration for triggering scroll navigation.

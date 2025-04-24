@@ -41,6 +41,17 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
           ),
           itemToString: (value) => "L: ${value.left.toInt()}, R: ${value.right.toInt()}",
         ),
+        DropDownEditor<double?>(
+          label: "Minimum tile height",
+          value: configuration.minimumTileHeight,
+          items: const [-1, 24.0, 32.0, 40.0, 48.0],
+          onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = MultiDayBodyConfiguration(
+            minimumTileHeight: value == -1 ? null : value,
+            showMultiDayEvents: configuration.showMultiDayEvents,
+            horizontalPadding: configuration.horizontalPadding,
+          ),
+          itemToString: (value) => value == -1 ? "None" : value.toString(),
+        ),
         SnappingEditorWidget(snapping: snapping),
         InteractionEditorWidget(interaction: interaction),
       ],
