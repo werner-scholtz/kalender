@@ -181,7 +181,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
     return oldDelegate.events != events ||
         oldDelegate.heightPerMinute != heightPerMinute ||
-        oldDelegate.timeOfDayRange != timeOfDayRange;
+        oldDelegate.timeOfDayRange != timeOfDayRange ||
+        oldDelegate.date != date ||
+        oldDelegate.minimumTileHeight != minimumTileHeight;
   }
 }
 
