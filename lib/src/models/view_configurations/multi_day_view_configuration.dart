@@ -282,6 +282,7 @@ class MultiDayBodyConfiguration {
       eventLayoutStrategy: eventLayoutStrategy ?? this.eventLayoutStrategy,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
+      minimumTileHeight: minimumTileHeight ?? this.minimumTileHeight,
     );
   }
 
