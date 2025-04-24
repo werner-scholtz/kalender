@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -32,6 +33,9 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   /// The indices of all items to calendar event IDs.
   final itemIndexEventId = <int, int>{};
 
+  /// The indices of all items to DateTime.
+  final eventIdDateIndex = <int, DateTime>{};
+
   /// The first item index of each event ID.
   final firstItemIndex = <int, int>{};
 
@@ -44,25 +48,23 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   /// The indices of all the date items to DateTime.
   final indicesDateItem = <int, DateTime>{};
 
+  int _closestIndex(DateTime date) {
+    final lastDate = indicesDateItem.values.last;
+    final firstDate = indicesDateItem.values.first;
+    if (date.isAfter(lastDate)) {
+      return indicesDateItem.keys.last;
+    } else if (date.isBefore(firstDate)) {
+      return indicesDateItem.keys.first;
+    } else {
+      // If the date is in between, we need to find the closest index.
+      return indicesDateItem.entries.reduce((a, b) => (a.value.isBefore(b.value) ? a : b)).key;
+    }
+  }
+
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
     var index = dateItemIndices[date.asUtc.startOfDay];
-
-    if (index == null) {
-      // If the index is not found, and the date is after the last date or before the first date,
-      // we need to find the closest index.
-
-      final lastDate = indicesDateItem.values.last;
-      final firstDate = indicesDateItem.values.first;
-      if (date.isAfter(lastDate)) {
-        index = indicesDateItem.keys.last;
-      } else if (date.isBefore(firstDate)) {
-        index = indicesDateItem.keys.first;
-      } else {
-        // If the date is in between, we need to find the closest index.
-        index = indicesDateItem.entries.reduce((a, b) => (a.value.isBefore(b.value) ? a : b)).key;
-      }
-    }
+    index ??= _closestIndex(date);
 
     return itemScrollController.scrollTo(
       index: index,
@@ -105,26 +107,56 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    // TODO: implement animateToNextPage
+    final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
+    if (currentIndex == null) return;
+
+    // find the index of the next month.
+    final nextMonth = monthItemIndices.entries
+        .firstWhereOrNull((element) => element.value.isAfter(indicesDateItem[currentIndex]!))
+        ?.key;
+
+    // If there is no next month, return.
+    if (nextMonth == null) return;
+
+    return animateToDate(
+      indicesDateItem[nextMonth]!.asUtc.startOfDay,
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
+    );
   }
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    // TODO: implement animateToPreviousPage
+    final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
+    if (currentIndex == null) return;
+
+    // Find the index of the previous month.
+    final previousMonth = monthItemIndices.entries
+        .firstWhereOrNull((element) => element.value.isBefore(indicesDateItem[currentIndex]!))
+        ?.key;
+
+    // If there is no previous month, return.
+    if (previousMonth == null) return;
+
+    return animateToDate(
+      indicesDateItem[previousMonth]!.asUtc.startOfDay,
+      duration: duration ?? const Duration(milliseconds: 300),
+      curve: curve ?? Curves.easeInOut,
+    );
   }
 
   @override
   void jumpToDate(DateTime date) {
-    // TODO: implement jumpToDate
+    var index = dateItemIndices[date.asUtc.startOfDay];
+    index ??= _closestIndex(date);
+    itemScrollController.jumpTo(index: index);
   }
 
   @override
   void jumpToPage(int page) {
-    // TODO: implement jumpToPage
+    throw UnimplementedError('jumpToPage is not implemented');
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-  }
+  void dispose() {}
 }

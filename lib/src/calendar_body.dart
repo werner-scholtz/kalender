@@ -20,10 +20,17 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
+  /// TODO: convert to MonthTileCompoenents.
   final TileComponents<T> monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? monthBodyConfiguration;
+
+  /// The tile components used by the [ScheduleBody].
+  final ScheduleTileComponents<T> scheduleTileComponents;
+
+  // TODO: add config.
+  // final ScheduleBodyConfiguration<T>? scheduleBodyConfiguration;
 
   /// The [CalendarInteraction] that will be used by the [CalendarBody].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -49,6 +56,8 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.multiDayBodyConfiguration,
     required this.monthTileComponents,
     this.monthBodyConfiguration,
+    required this.scheduleTileComponents,
+    // this.scheduleBodyConfiguration,
   });
 
   @override
@@ -86,7 +95,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         eventsController: eventsController,
         calendarController: calendarController,
         callbacks: callbacks,
-        tileComponents: monthTileComponents,
+        tileComponents: scheduleTileComponents,
       );
     } else {
       throw UnimplementedError();

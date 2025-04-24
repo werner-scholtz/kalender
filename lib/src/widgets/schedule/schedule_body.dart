@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
+import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScheduleBody<T extends Object?> extends StatelessWidget {
@@ -17,11 +19,15 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   /// The tile components used by the [ScheduleBody].
   final TileComponents<T> tileComponents;
 
+  /// The [CalendarInteraction] that will be used by the [ScheduleBody].
+  final ValueNotifier<CalendarInteraction>? interaction;
+
   const ScheduleBody({
     super.key,
     this.eventsController,
     this.calendarController,
     this.callbacks,
+    this.interaction,
     required this.tileComponents,
   });
 
@@ -35,6 +41,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     eventsController ??= CalendarProvider.eventsControllerOf<T>(context);
     calendarController ??= CalendarProvider.calendarControllerOf<T>(context);
     callbacks ??= CalendarProvider.callbacksOf<T>(context);
+    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
     assert(
       calendarController.viewController is ScheduleViewController<T>,
@@ -43,6 +50,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController.viewController as ContinuousScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
+    final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
 
     return ListenableBuilder(
       listenable: eventsController,
@@ -50,6 +58,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         // TODO: I have some concerns about the performance of this when a lot of events are present.
         // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
+        // TODO: Always add today ...?
         // Get the range of dates from the view configuration.
         final dates = viewController.viewConfiguration.pageNavigationFunctions.adjustedRange.dates();
         viewController.itemIndexEventId.clear();
@@ -60,7 +69,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         // Iterate through the dates and get the events for each date.
         for (final date in dates) {
           final events = eventsController!.eventsFromDateTimeRange(date.dayRange);
-          if (events.isEmpty) continue;
+          if (events.isEmpty && !date.isToday) continue;
 
           // Check if the date is the first date of the month.
           // If it is, set the start index of the month.
@@ -77,6 +86,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
             final index = viewController.itemIndexEventId.length;
             viewController.itemIndexEventId[index] = event.id;
             viewController.firstItemIndex.putIfAbsent(event.id, () => index);
+            viewController.eventIdDateIndex[event.id] = date;
           }
         }
 
@@ -88,10 +98,24 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
             final date = viewController.indicesDateItem[index];
             final showDate = date != null;
             final isFirstDateOfMonth = viewController.monthItemIndices[index] != null;
+            final event = eventsController!.byId(viewController.itemIndexEventId[index]!)!;
+            final indexDate = viewController.eventIdDateIndex[event.id]!;
 
             final tile = ListTile(
-              leading: showDate ? components.dayHeaderBuilder?.call(date.asLocal, const DayHeaderStyle()) : null,
-              onTap: () {},
+              leading: showDate
+                  ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
+                  // TODO: this should be adjustable.
+                  : SizedBox(width: 32),
+              title: ScheduleEventTile(
+                controller: calendarController!,
+                eventsController: eventsController,
+                callbacks: callbacks,
+                tileComponents: tileComponents,
+                event: event,
+                dateTimeRange: indexDate.dayRange,
+                interaction: interaction,
+              ),
+              subtitle: Text(event.id.toString()),
             );
 
             late final monthTile = ListBody(
