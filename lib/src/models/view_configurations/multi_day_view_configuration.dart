@@ -239,6 +239,11 @@ class MultiDayBodyConfiguration {
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
 
+  /// The minimum height of the tile.
+  ///
+  /// TODO: add proper documentation for this.
+  final double? minimumTileHeight;
+
   /// Creates a new [MultiDayHeaderConfiguration].
   MultiDayBodyConfiguration({
     this.showMultiDayEvents = defaultShowMultiDayEvents,
@@ -250,6 +255,7 @@ class MultiDayBodyConfiguration {
     this.eventLayoutStrategy = defaultEventLayoutStrategy,
     this.scrollPhysics,
     this.pageScrollPhysics,
+    this.minimumTileHeight,
   })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
         scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
 
@@ -262,6 +268,7 @@ class MultiDayBodyConfiguration {
     EventLayoutStrategy? eventLayoutStrategy,
     ScrollPhysics? scrollPhysics,
     ScrollPhysics? pageScrollPhysics,
+    double? minimumTileHeight,
   }) {
     return MultiDayBodyConfiguration(
       showMultiDayEvents: showMultiDayEvents ?? this.showMultiDayEvents,
@@ -285,7 +292,8 @@ class MultiDayBodyConfiguration {
         other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
         other.eventLayoutStrategy == eventLayoutStrategy &&
         other.scrollPhysics == scrollPhysics &&
-        other.pageScrollPhysics == pageScrollPhysics;
+        other.pageScrollPhysics == pageScrollPhysics &&
+        other.minimumTileHeight == minimumTileHeight;
   }
 
   @override
@@ -298,6 +306,7 @@ class MultiDayBodyConfiguration {
       eventLayoutStrategy,
       scrollPhysics,
       pageScrollPhysics,
+      minimumTileHeight,
     );
   }
 }

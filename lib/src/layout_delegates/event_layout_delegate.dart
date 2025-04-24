@@ -20,6 +20,7 @@ typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
@@ -28,12 +29,14 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 ) {
   return OverlapLayoutDelegate<T>(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
+    minimumTileHeight: minimumTileHeight,
   );
 }
 
@@ -43,12 +46,14 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   DateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
+  double? minimumTileHeight,
 ) {
   return SideBySideLayoutDelegate<T>(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
+    minimumTileHeight: minimumTileHeight,
   );
 }
 
@@ -69,6 +74,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.heightPerMinute,
     required this.date,
     required this.timeOfDayRange,
+    required this.minimumTileHeight,
   });
 
   /// The list of events that will be laid out. (The order of these events are the same as the widget's)
@@ -76,6 +82,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   final DateTime date;
   final TimeOfDayRange timeOfDayRange;
   final double heightPerMinute;
+  final double? minimumTileHeight;
 
   /// Sorts the [CalendarEvent]s.
   ///
@@ -90,6 +97,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   double calculateHeight(CalendarEvent<T> event) {
     final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
     final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    if (minimumTileHeight != null && height < minimumTileHeight!) {
+      return minimumTileHeight!;
+    }
     return height;
   }
 
@@ -172,6 +182,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.heightPerMinute,
     required super.date,
     required super.timeOfDayRange,
+    required super.minimumTileHeight,
   });
 
   @override
@@ -236,6 +247,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     required super.heightPerMinute,
     required super.date,
     required super.timeOfDayRange,
+    required super.minimumTileHeight,
   });
 
   @override

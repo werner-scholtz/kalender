@@ -93,6 +93,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
         date,
         TimeOfDayRange.allDay(),
         0,
+        widget.configuration.minimumTileHeight,
       ).sortEvents(events) as List<CalendarEvent<T>>;
       entries.add(MapEntry(date, sortedEvents));
     }
@@ -185,6 +186,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
         date,
         widget.timeOfDayRange,
         widget.heightPerMinute,
+        widget.configuration.minimumTileHeight,
       ),
       children: events.indexed
           .map(
@@ -230,7 +232,13 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
         final dropTarget = widget.tileComponents.dropTargetTile;
 
         return CustomMultiChildLayout(
-          delegate: layoutStrategy.call(eventList, date, widget.timeOfDayRange, widget.heightPerMinute),
+          delegate: layoutStrategy.call(
+            eventList,
+            date,
+            widget.timeOfDayRange,
+            widget.heightPerMinute,
+            widget.configuration.minimumTileHeight,
+          ),
           children: eventList.indexed.map(
             (item) {
               final event = item.$2;
