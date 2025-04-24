@@ -1,6 +1,7 @@
 ## 0.7.1
 
 - fix: Calendar event at 00:00 not visible [#159](https://github.com/werner-scholtz/kalender/issues/158)
+  * Note: This makes minor changes to the abstract class EventLayoutDelegate.
 
 ## 0.7.0
 
