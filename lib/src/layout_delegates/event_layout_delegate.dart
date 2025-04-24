@@ -119,8 +119,10 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 
   /// Vertical layout of the events.
   ///
-  /// Calculates the top and bottom of each event.
-  List<VerticalLayoutData> calculateVerticalLayoutData() {
+  /// Calculates the top and bottom of each event, and ensues that they are within the bounds of the widget.
+  ///
+  /// [size] - The size of the widget.
+  List<VerticalLayoutData> calculateVerticalLayoutData(Size size) {
     final numberOfChildren = events.length;
     final layoutEvents = <VerticalLayoutData>[];
     // Calculate the top and bottom of each event.
@@ -128,9 +130,17 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
       final id = i;
       final event = events.elementAt(i);
 
-      final top = calculateDistanceFromStart(event);
+      var top = calculateDistanceFromStart(event);
       final height = calculateHeight(event);
-      final bottom = top + height;
+      var bottom = top + height;
+
+      final overlap = size.height - bottom;
+      // Check if the event is outside the bounds of the widget.
+      if (overlap.isNegative) {
+        // Update the top and bottom to fit within the bounds.
+        top += overlap;
+        bottom += overlap;
+      }
 
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
     }
@@ -195,7 +205,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   @override
   void performLayout(Size size) {
     // Calculate the vertical layout data.
-    final verticalLayoutData = calculateVerticalLayoutData();
+    final verticalLayoutData = calculateVerticalLayoutData(size);
 
     // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
@@ -265,7 +275,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
   @override
   void performLayout(Size size) {
     // Calculate the vertical layout data.
-    final verticalLayoutData = calculateVerticalLayoutData();
+    final verticalLayoutData = calculateVerticalLayoutData(size);
 
     // Group the vertical layout data into horizontal groups.
     final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
