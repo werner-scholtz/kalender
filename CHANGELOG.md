@@ -2,6 +2,7 @@
 
 - fix: Calendar event at 00:00 not visible [#159](https://github.com/werner-scholtz/kalender/issues/158)
   * Note: This makes minor changes to the abstract class EventLayoutDelegate.
+- fix: Long event causes all following events to intend. [#142](https://github.com/werner-scholtz/kalender/issues/142)
 
 ## 0.7.0
 
