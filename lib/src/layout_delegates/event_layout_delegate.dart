@@ -215,35 +215,34 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     for (var i = 0; i < horizontalGroups.length; i++) {
       final group = horizontalGroups.elementAt(i);
 
-      // Sort the vertical layout data by height and top.
-      final verticalLayoutData = group.verticalLayoutData;
-      final numberOfEvents = verticalLayoutData.length;
+      final layoutData = <EventLayoutData>[];
+      for (final data in group.verticalLayoutData) {
+        // Check with how many already laid out events this event overlaps.
+        final overlaps = layoutData.where((e) => e.overlaps(data));
+        final numberOfOverlaps = overlaps.length + 1;
 
-      final childWidth = size.width / numberOfEvents;
+        double? lastWidth;
+        if (overlaps.isNotEmpty) lastWidth = overlaps.reduce((e, f) => e.width <= f.width ? e : f).width;
 
-      for (var i = 0; i < numberOfEvents; i++) {
-        final data = verticalLayoutData.elementAt(i);
-        final id = data.id;
-
-        // Calculate the x offset of the tile.
-        final tileXOffset = childWidth * i;
-
-        // Calculate the width of the tile.
-        final tileWidth = childWidth * (numberOfEvents - i);
+        double width;
+        double xOffset;
+        if (lastWidth == null) {
+          width = size.width / numberOfOverlaps;
+          xOffset = width * (numberOfOverlaps - 1);
+        } else {
+          // TODO: make this adjustable ?
+          width = lastWidth / 1.8;
+          xOffset = size.width - width;
+        }
 
         // Layout the tile.
-        layoutChild(
-          id,
-          BoxConstraints.tightFor(
-            width: tileWidth,
-            height: data.height,
-          ),
-        );
+        layoutChild(data.id, BoxConstraints.tightFor(width: width, height: data.height));
 
-        positionChild(
-          id,
-          Offset(tileXOffset, data.top),
-        );
+        // Position the tile.
+        positionChild(data.id, Offset(xOffset, data.top));
+
+        // Add the layout data to the list.
+        layoutData.add(EventLayoutData(left: xOffset, right: size.width, verticalLayoutData: data));
       }
     }
   }
@@ -409,6 +408,33 @@ class VerticalLayoutData {
 
   @override
   String toString() => 'id: $id, top: $top, bottom: $bottom';
+}
+
+/// This stores the final layout data of a single [CalendarEvent].
+class EventLayoutData {
+  /// The top of the event.
+  final double left;
+
+  /// The bottom of the event.
+  final double right;
+
+  /// The vertical layout data of the event.
+  final VerticalLayoutData verticalLayoutData;
+
+  EventLayoutData({
+    required this.left,
+    required this.right,
+    required this.verticalLayoutData,
+  });
+
+  /// The width of the event.
+  double get width => right - left;
+
+  /// The id of the event.
+  int get id => verticalLayoutData.id;
+
+  /// Checks if this [EventLayoutData] overlaps with [other].
+  bool overlaps(VerticalLayoutData other) => verticalLayoutData.overlaps(other);
 }
 
 /// This stores horizontal data [top] and [bottom] for a group of [VerticalLayoutData].
