@@ -65,7 +65,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 
         // Iterate through the dates and get the events for each date.
         for (final date in dates) {
-          final events = eventsController!.eventsFromDateTimeRange(date.dayRange);
+          final events = eventsController.eventsFromDateTimeRange(date.dayRange);
           if (events.isEmpty && !date.isToday) continue;
 
           // Check if the date is the first date of the month.
@@ -97,18 +97,18 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
             final date = viewController.indicesDateItem[index];
             final showDate = date != null;
             final isFirstDateOfMonth = viewController.monthItemIndices[index] != null;
-            final event = eventsController!.byId(viewController.itemIndexEventId[index]!)!;
+            final event = eventsController.byId(viewController.itemIndexEventId[index]!)!;
             final indexDate = viewController.eventIdDateIndex[event.id]!;
 
             final tile = ListTile(
               leading: showDate
                   ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
                   // TODO: this should be adjustable.
-                  : SizedBox(width: 32),
+                  : const SizedBox(width: 32),
               title: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 24),
                 child: ScheduleEventTile(
-                  controller: calendarController!,
+                  controller: calendarController,
                   eventsController: eventsController,
                   callbacks: callbacks,
                   tileComponents: tileComponents,
@@ -117,7 +117,6 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
                   interaction: interaction,
                 ),
               ),
-              subtitle: Text(event.id.toString()),
             );
 
             late final monthTile = ListBody(

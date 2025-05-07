@@ -30,3 +30,14 @@ TileComponents<Event> get multiDayHeaderTileComponents {
     verticalResizeHandle: const VerticalResizeHandle(),
   );
 }
+
+ScheduleTileComponents<Event> get scheduleTileComponents {
+  const margin = EdgeInsets.symmetric(vertical: 1);
+  const titlePadding = EdgeInsets.all(8);
+  return ScheduleTileComponents(
+    tileBuilder: (event, tileRange) => EventTile(event: event, margin: margin, titlePadding: titlePadding),
+    dropTargetTile: (event) => DropTargetTile(event: event, margin: margin),
+    tileWhenDraggingBuilder: (event) => TileWhenDragging(event: event, margin: margin),
+    feedbackTileBuilder: (event, size) => FeedbackTile(event: event, margin: margin, size: size),
+  );
+}

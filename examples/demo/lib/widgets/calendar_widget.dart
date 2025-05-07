@@ -44,6 +44,7 @@ class CalendarWidget extends StatelessWidget {
             child: CalendarBody(
               multiDayTileComponents: multiDayBodyComponents,
               monthTileComponents: multiDayHeaderTileComponents,
+              scheduleTileComponents: scheduleTileComponents,
             ),
           ),
         );

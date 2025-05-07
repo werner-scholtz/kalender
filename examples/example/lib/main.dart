@@ -126,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: CalendarBody<Event>(
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
+          scheduleTileComponents: scheduleTileComponents(context),
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),
@@ -161,6 +162,24 @@ class _MyHomePageState extends State<MyHomePage> {
         decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
       ),
       dragAnchorStrategy: pointerDragAnchorStrategy,
+    );
+  }
+
+  ScheduleTileComponents<Event> scheduleTileComponents(BuildContext context) {
+    return ScheduleTileComponents<Event>(
+      tileBuilder: (event, tileRange) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 1),
+          color: color,
+          child: Text(event.data?.title ?? ""),
+        );
+      },
+      dropTargetTile: (event) => DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+          borderRadius: radius,
+        ),
+      ),
     );
   }
 
