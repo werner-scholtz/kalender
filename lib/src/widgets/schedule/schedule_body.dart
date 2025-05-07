@@ -88,11 +88,11 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         }
 
         /// TODO: how are we going to handle rescheduling ???
-
         return ScrollablePositionedList.builder(
           itemScrollController: viewController.itemScrollController,
           itemPositionsListener: viewController.itemPositionsListener,
           itemCount: viewController.itemIndexEventId.length,
+          // initialScrollIndex: , TODO: add initial scroll index.
           itemBuilder: (context, index) {
             final date = viewController.indicesDateItem[index];
             final showDate = date != null;
@@ -117,6 +117,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
                   interaction: interaction,
                 ),
               ),
+              trailing: Text(event.id.toString()),
             );
 
             late final monthTile = ListBody(
@@ -132,15 +133,23 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return Stack(
-      children: [
-        positionedList,
-        ScheduleDayDragTarget(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          callbacks: callbacks,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            positionedList,
+            Positioned.fill(
+              child: ScheduleDragTarget(
+                eventsController: eventsController,
+                calendarController: calendarController,
+                callbacks: callbacks,
+                scheduleViewController: viewController,
+                constraints: constraints,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

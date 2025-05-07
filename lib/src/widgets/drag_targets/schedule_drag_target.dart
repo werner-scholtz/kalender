@@ -5,26 +5,29 @@ import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
-/// The [ScheduleDayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
-class ScheduleDayDragTarget<T extends Object?> extends StatefulWidget {
+/// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
+class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
   final CalendarCallbacks<T>? callbacks;
+  final ContinuousScheduleViewController<T> scheduleViewController;
+  final BoxConstraints constraints;
 
-  /// Creates a [ScheduleDayDragTarget].
-  const ScheduleDayDragTarget({
+  /// Creates a [ScheduleDragTarget].
+  const ScheduleDragTarget({
     super.key,
     required this.eventsController,
     required this.calendarController,
     required this.callbacks,
+    required this.scheduleViewController,
+    required this.constraints,
   });
 
   @override
-  State<ScheduleDayDragTarget<T>> createState() => _ScheduleDayDragTargetState<T>();
+  State<ScheduleDragTarget<T>> createState() => _ScheduleDragTargetState<T>();
 }
 
-class _ScheduleDayDragTargetState<T extends Object?> extends State<ScheduleDayDragTarget<T>>
-    with DragTargetUtilities<T> {
+class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarget<T>> with DragTargetUtilities<T> {
   @override
   // TODO: implement dayWidth
   double get dayWidth => throw UnimplementedError();
@@ -53,7 +56,7 @@ class _ScheduleDayDragTargetState<T extends Object?> extends State<ScheduleDayDr
       onWillAcceptWithDetails: (details) {
         return onWillAcceptWithDetails(
           details,
-          onResize: (event, direction) => direction.vertical,
+          onResize: (event, direction) => false,
           onReschedule: (event) {
             // Set the size of the feedback widget.
             // TODO: make this dynamic.
@@ -76,22 +79,46 @@ class _ScheduleDayDragTargetState<T extends Object?> extends State<ScheduleDayDr
 
   @override
   DateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
-    // TODO: implement calculateCursorDateTime
-    debugPrint('calculateCursorDateTime not implemented');
-    return null;
+    // Calculate the relative cursor position.
+    final localCursorPosition = calculateLocalCursorPosition(offset);
+    if (localCursorPosition == null) return null;
+
+    // Find the item index based on the cursor position.
+    final viewController = widget.scheduleViewController;
+    final itemPositions = viewController.itemPositionsListener.itemPositions.value;
+    final proportionalOffset = localCursorPosition.dy / widget.constraints.maxHeight;
+    final itemIndex = itemPositions
+        .where((item) => item.itemLeadingEdge <= proportionalOffset && item.itemTrailingEdge >= proportionalOffset)
+        .map((item) => item.index)
+        .firstOrNull;
+
+    // If no item index is found, return null.
+    if (itemIndex == null) return null;
+
+    // Get the date for the item index.
+    final eventId = viewController.itemIndexEventId[itemIndex];
+    final date = viewController.eventIdDateIndex[eventId];
+    return date;
   }
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
-    // TODO: implement rescheduleEvent
-    debugPrint('rescheduleEvent not implemented');
-    return null;
+    // TODO: Cleanup.
+    if (event.isMultiDayEvent) {
+      final newStartTime = cursorDateTime;
+      final duration = event.dateTimeRangeAsUtc.duration;
+      final endTime = newStartTime.add(duration);
+      final newRange = DateTimeRange(start: newStartTime, end: endTime);
+      return event.copyWith(dateTimeRange: newRange);
+    } else {
+      final newDate = cursorDateTime;
+      final rangeAsUtc = event.dateTimeRangeAsUtc;
+      final newStartTime = rangeAsUtc.start.copyWith(year: newDate.year, month: newDate.month, day: newDate.day);
+      final newEndTime = rangeAsUtc.end.copyWith(year: newDate.year, month: newDate.month, day: newDate.day);
+      return event.copyWith(dateTimeRange: DateTimeRange(start: newStartTime, end: newEndTime).asLocal);
+    }
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
-    // TODO: implement resizeEvent
-    debugPrint('resizeEvent not implemented');
-    return null;
-  }
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) => null;
 }
