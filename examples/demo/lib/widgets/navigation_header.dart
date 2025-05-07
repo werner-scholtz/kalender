@@ -14,6 +14,10 @@ class NavigationHeader extends StatelessWidget {
     super.key,
   });
 
+  static const todayKey = Key('today');
+  static const nextPageKey = Key('nextPage');
+  static const previousPageKey = Key('previousPage');
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,26 +54,23 @@ class NavigationHeader extends StatelessWidget {
           if (!Platform.isAndroid && !Platform.isIOS) ...[
             const SizedBox(width: 4),
             IconButton.filledTonal(
-              onPressed: () async {
-                await controller.animateToPreviousPage();
-              },
+              key: previousPageKey,
+              onPressed: () async => await controller.animateToPreviousPage(),
               icon: const Icon(Icons.navigate_before),
             ),
           ],
           if (!Platform.isAndroid && !Platform.isIOS) ...[
             const SizedBox(width: 4),
             IconButton.filledTonal(
-              onPressed: () {
-                controller.animateToNextPage();
-              },
+              key: nextPageKey,
+              onPressed: () async => await controller.animateToNextPage(),
               icon: const Icon(Icons.navigate_next),
             ),
           ],
           const SizedBox(width: 4),
           IconButton.filledTonal(
-            onPressed: () {
-              controller.animateToDate(DateTime.now());
-            },
+            key: todayKey,
+            onPressed: () async => await controller.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
           Expanded(

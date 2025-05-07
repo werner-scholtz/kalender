@@ -26,6 +26,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   late int _currentPage;
 
   /// The current height of the page view.
+  /// 
+  /// TODO: What happens if the current page is not found ?
   double get _currentHeight => _heights[_currentPage];
 
   @override

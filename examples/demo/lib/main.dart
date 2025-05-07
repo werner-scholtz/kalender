@@ -11,17 +11,15 @@ void main() {
 }
 
 class App extends StatefulWidget {
-  const App({super.key});
+  /// The range of dates to display in the calendar.
+  final DateTimeRange? calendarDisplayRange;
+  const App({super.key, this.calendarDisplayRange});
+
   static AppState? of(BuildContext context) => context.findAncestorStateOfType<AppState>();
   static EventsController<Event> eventsController(BuildContext context) => of(context)!.eventsController;
-
   static List<ViewConfiguration> views(BuildContext context) => of(context)!.viewConfigurations;
-
-  static CalendarController<Event> controller1(BuildContext context) => of(context)!.controller1;
-  static ValueNotifier<ViewConfiguration> view1(BuildContext context) => of(context)!.viewConfiguration1;
-
-  static CalendarController<Event> controller2(BuildContext context) => of(context)!.controller2;
-  static ValueNotifier<ViewConfiguration> view2(BuildContext context) => of(context)!.viewConfiguration2;
+  static CalendarController<Event> controller(BuildContext context) => of(context)!.controller;
+  static ValueNotifier<ViewConfiguration> viewConfiguration(BuildContext context) => of(context)!.viewConfiguration;
 
   @override
   State<App> createState() => AppState();
@@ -37,20 +35,15 @@ class AppState extends State<App> {
   }
 
   void toggleTheme() => themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-
   final eventsController = DefaultEventsController<Event>();
+  final controller = CalendarController<Event>();
+  late final viewConfiguration = ValueNotifier(viewConfigurations[1]);
 
-  final controller1 = CalendarController<Event>();
-  late final viewConfiguration1 = ValueNotifier(viewConfigurations[1]);
-
-  final controller2 = CalendarController<Event>();
-  late final viewConfiguration2 = ValueNotifier(viewConfigurations[1]);
-
-  final viewConfigurations = [
-    MultiDayViewConfiguration.singleDay(),
-    MultiDayViewConfiguration.week(),
-    MultiDayViewConfiguration.custom(numberOfDays: 3),
-    MonthViewConfiguration.singleMonth(),
+  late final viewConfigurations = [
+    MultiDayViewConfiguration.singleDay(displayRange: widget.calendarDisplayRange),
+    MultiDayViewConfiguration.week(displayRange: widget.calendarDisplayRange),
+    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: widget.calendarDisplayRange),
+    MonthViewConfiguration.singleMonth(displayRange: widget.calendarDisplayRange),
   ];
 
   @override
@@ -115,8 +108,8 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
         controller: portalController,
         overlayChildBuilder: buildOverlay,
         child: CalendarWidget(
-          controller: App.controller1(context),
-          view: App.view1(context),
+          controller: App.controller(context),
+          view: App.viewConfiguration(context),
           callbacks: callbacks,
         ),
       ),
