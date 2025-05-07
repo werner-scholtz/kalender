@@ -52,6 +52,12 @@ class MyAppState extends State<MyApp> {
   DefaultEventsController<Event> get eventsController => _eventsController;
 
   @override
+  void initState() {
+    super.initState();
+    _eventsController.addEvents(generateEvents(context));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isMobile = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
     return MaterialApp(
@@ -92,14 +98,6 @@ class DesktopHomePage extends StatefulWidget {
 class _DesktopHomePageState extends State<DesktopHomePage> {
   /// The type of the calendar view.
   ViewType _type = ViewType.single;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _insertEvents);
-  }
-
-  void _insertEvents() => MyApp.eventsController(context).addEvents(generateEvents(context));
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
 import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -33,14 +34,10 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var eventsController = this.eventsController;
-    var calendarController = this.calendarController;
-    var callbacks = this.callbacks;
-
     final provider = CalendarProvider.maybeOf<T>(context);
-    eventsController ??= CalendarProvider.eventsControllerOf<T>(context);
-    calendarController ??= CalendarProvider.calendarControllerOf<T>(context);
-    callbacks ??= CalendarProvider.callbacksOf<T>(context);
+    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf<T>(context);
+    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf<T>(context);
+    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf<T>(context);
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
     assert(
@@ -52,7 +49,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
 
-    return ListenableBuilder(
+    final positionedList = ListenableBuilder(
       listenable: eventsController,
       builder: (context, child) {
         // TODO: I have some concerns about the performance of this when a lot of events are present.
@@ -90,6 +87,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
           }
         }
 
+        /// TODO: how are we going to handle rescheduling ???
+
         return ScrollablePositionedList.builder(
           itemScrollController: viewController.itemScrollController,
           itemPositionsListener: viewController.itemPositionsListener,
@@ -106,14 +105,17 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
                   ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
                   // TODO: this should be adjustable.
                   : SizedBox(width: 32),
-              title: ScheduleEventTile(
-                controller: calendarController!,
-                eventsController: eventsController,
-                callbacks: callbacks,
-                tileComponents: tileComponents,
-                event: event,
-                dateTimeRange: indexDate.dayRange,
-                interaction: interaction,
+              title: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 24),
+                child: ScheduleEventTile(
+                  controller: calendarController!,
+                  eventsController: eventsController,
+                  callbacks: callbacks,
+                  tileComponents: tileComponents,
+                  event: event,
+                  dateTimeRange: indexDate.dayRange,
+                  interaction: interaction,
+                ),
               ),
               subtitle: Text(event.id.toString()),
             );
@@ -129,6 +131,17 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
           },
         );
       },
+    );
+
+    return Stack(
+      children: [
+        positionedList,
+        ScheduleDayDragTarget(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          callbacks: callbacks,
+        ),
+      ],
     );
   }
 }
