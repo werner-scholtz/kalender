@@ -29,11 +29,9 @@ class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
 
 class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarget<T>> with DragTargetUtilities<T> {
   @override
-  // TODO: implement dayWidth
-  double get dayWidth => throw UnimplementedError();
+  double get dayWidth => widget.constraints.maxWidth;
 
   @override
-  // TODO: implement visibleDates
   List<DateTime> get visibleDates => throw UnimplementedError();
 
   @override
@@ -59,10 +57,8 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
           onResize: (event, direction) => false,
           onReschedule: (event) {
             // Set the size of the feedback widget.
-            // TODO: make this dynamic.
             const height = 24.0;
-            const width = 100.0;
-            feedbackWidgetSize.value = Size(width, height);
+            feedbackWidgetSize.value = Size(dayWidth, height);
             controller.selectEvent(event, internal: true);
             return true;
           },
@@ -103,19 +99,24 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
-    // TODO: Cleanup.
+    final rangeAsUtc = event.dateTimeRangeAsUtc;
     if (event.isMultiDayEvent) {
-      final newStartTime = cursorDateTime;
-      final duration = event.dateTimeRangeAsUtc.duration;
-      final endTime = newStartTime.add(duration);
-      final newRange = DateTimeRange(start: newStartTime, end: endTime);
+      final duration = rangeAsUtc.duration;
+      final endTime = cursorDateTime.add(duration);
+      final newRange = DateTimeRange(start: cursorDateTime, end: endTime);
       return event.copyWith(dateTimeRange: newRange);
     } else {
-      final newDate = cursorDateTime;
-      final rangeAsUtc = event.dateTimeRangeAsUtc;
-      final newStartTime = rangeAsUtc.start.copyWith(year: newDate.year, month: newDate.month, day: newDate.day);
-      final newEndTime = rangeAsUtc.end.copyWith(year: newDate.year, month: newDate.month, day: newDate.day);
-      return event.copyWith(dateTimeRange: DateTimeRange(start: newStartTime, end: newEndTime).asLocal);
+      final newStart = rangeAsUtc.start.copyWith(
+        year: cursorDateTime.year,
+        month: cursorDateTime.month,
+        day: cursorDateTime.day,
+      );
+      final newEnd = rangeAsUtc.end.copyWith(
+        year: cursorDateTime.year,
+        month: cursorDateTime.month,
+        day: cursorDateTime.day,
+      );
+      return event.copyWith(dateTimeRange: DateTimeRange(start: newStart, end: newEnd).asLocal);
     }
   }
 
