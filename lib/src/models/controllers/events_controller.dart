@@ -127,7 +127,10 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;
-      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange);
+
+      // If the event is a zero duration event, we should check for touching.
+      final touching = event.start == event.end ? true : false;
+      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange, touching: touching);
     });
   }
 }
