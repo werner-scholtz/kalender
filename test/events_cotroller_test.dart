@@ -64,8 +64,9 @@ void main() {
         group('eventsFromDateTimeRange', () {
           test('only includeMultiDayEvents', () {
             for (final date in testDates) {
+              final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
-                DateTimeRange(start: date.startOfDay, end: date.endOfDay),
+                range,
                 includeMultiDayEvents: true,
                 includeDayEvents: false,
               );
@@ -75,8 +76,9 @@ void main() {
           });
           test('only includeDayEvents', () {
             for (final date in testDates) {
+              final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
-                DateTimeRange(start: date.startOfDay, end: date.endOfDay),
+                range,
                 includeMultiDayEvents: false,
                 includeDayEvents: true,
               );
@@ -86,8 +88,9 @@ void main() {
           });
           test('includeDayEvents & includeMultiDayEvents', () {
             for (final date in testDates) {
+              final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
-                DateTimeRange(start: date.startOfDay, end: date.endOfDay),
+                range,
                 includeMultiDayEvents: true,
                 includeDayEvents: true,
               );
