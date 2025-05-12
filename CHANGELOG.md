@@ -1,3 +1,7 @@
+## 0.7.2
+
+- fix: Calendar event at 00:00 not visible (zero duration) [#159](https://github.com/werner-scholtz/kalender/issues/158)
+
 ## 0.7.1
 
 - fix: Calendar event at 00:00 not visible [#159](https://github.com/werner-scholtz/kalender/issues/158)
