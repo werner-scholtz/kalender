@@ -31,6 +31,13 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
+
+  /// The indices of all items.
+  /// The index and container either an:
+  /// [int] which represents a Event ID.
+  /// [DateTime] which represents the start of the month.
+  final indicesItems = <int, dynamic>{};
+
   /// The indices of all items to calendar event IDs.
   final itemIndexEventId = <int, int>{};
 

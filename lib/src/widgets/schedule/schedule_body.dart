@@ -49,109 +49,170 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
 
-    final positionedList = ListenableBuilder(
-      listenable: eventsController,
-      builder: (context, child) {
-        // TODO: I have some concerns about the performance of this when a lot of events are present.
-        // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
-
-        // TODO: Always add today ...?
-        // Get the range of dates from the view configuration.
-        final dates = viewController.viewConfiguration.pageNavigationFunctions.adjustedRange.dates();
-        viewController.itemIndexEventId.clear();
-        viewController.dateItemIndices.clear();
-        viewController.indicesDateItem.clear();
-        viewController.monthItemIndices.clear();
-
-        // Iterate through the dates and get the events for each date.
-        for (final date in dates) {
-          final events = eventsController.eventsFromDateTimeRange(date.dayRange);
-          if (events.isEmpty && !date.isToday) continue;
-
-          // Check if the date is the first date of the month.
-          // If it is, set the start index of the month.
-          final previousDateItemIndex = viewController.indicesDateItem.entries.lastOrNull?.value;
-          if (previousDateItemIndex == null || previousDateItemIndex.startOfMonth != date.startOfMonth) {
-            viewController.monthItemIndices[viewController.itemIndexEventId.length] = date;
-          }
-
-          // Set the start index of the date and the date item index.
-          viewController.dateItemIndices[date] = viewController.itemIndexEventId.length;
-          viewController.indicesDateItem[viewController.itemIndexEventId.length] = date;
-
-          for (final event in events) {
-            final index = viewController.itemIndexEventId.length;
-            viewController.itemIndexEventId[index] = event.id;
-            viewController.firstItemIndex.putIfAbsent(event.id, () => index);
-            viewController.eventIdDateIndex[event.id] = date;
-          }
-        }
-
-        /// TODO: how are we going to handle rescheduling ???
-        return ScrollablePositionedList.builder(
-          itemScrollController: viewController.itemScrollController,
-          itemPositionsListener: viewController.itemPositionsListener,
-          itemCount: viewController.itemIndexEventId.length,
-          // initialScrollIndex: , TODO: add initial scroll index.
-          itemBuilder: (context, index) {
-            final date = viewController.indicesDateItem[index];
-            final showDate = date != null;
-            final isFirstDateOfMonth = viewController.monthItemIndices[index] != null;
-            final event = eventsController.byId(viewController.itemIndexEventId[index]!)!;
-            final indexDate = viewController.eventIdDateIndex[event.id]!;
-
-            final tile = ListTile(
-              leading: showDate
-                  ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
-                  // TODO: this should be adjustable.
-                  : const SizedBox(width: 32),
-              title: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 24),
-                child: ScheduleEventTile(
-                  controller: calendarController,
-                  eventsController: eventsController,
-                  callbacks: callbacks,
-                  tileComponents: tileComponents,
-                  event: event,
-                  dateTimeRange: indexDate.dayRange,
-                  interaction: interaction,
-                ),
-              ),
-              trailing: Text(event.id.toString()),
-            );
-
-            late final monthTile = ListBody(
-              children: [
-                ListTile(title: Text(date?.monthNameEnglish ?? 'ERROR')),
-                tile,
-              ],
-            );
-
-            final test = ValueListenableBuilder(
-              valueListenable: viewController.highlightedDate,
-              builder: (context, value, child) {
-                if (value == null) return const SizedBox.shrink();
-                if (value != date) return const SizedBox.shrink();
-                return DecoratedBox(decoration: BoxDecoration(color: Theme.of(context).colorScheme.onSurface.withAlpha(50)));
-              },
-            );
-
-            return Stack(
-              children: [
-                Positioned.fill(child: test),
-                isFirstDateOfMonth ? monthTile : tile,
-              ],
-            );
-          },
-        );
-      },
+    return ContinuousSchedulePositionedList(
+      eventsController: eventsController,
+      calendarController: calendarController,
+      viewController: viewController,
+      callbacks: callbacks,
+      tileComponents: tileComponents,
+      styles: styles,
+      interaction: interaction,
+      components: components,
     );
+  }
+}
 
+/// TODO: Move logic here to the [ScheduleBody].
+class ContinuousSchedulePositionedList<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final CalendarController<T> calendarController;
+  final ContinuousScheduleViewController<T> viewController;
+  final CalendarCallbacks<T>? callbacks;
+  final TileComponents<T> tileComponents;
+  final ValueNotifier<CalendarInteraction> interaction;
+  final ScheduleComponentStyles styles;
+  final ScheduleComponents components;
+
+  const ContinuousSchedulePositionedList({
+    required this.eventsController,
+    required this.calendarController,
+    required this.viewController,
+    required this.callbacks,
+    required this.tileComponents,
+    required this.styles,
+    required this.interaction,
+    required this.components,
+    super.key,
+  });
+
+  @override
+  State<ContinuousSchedulePositionedList<T>> createState() => _ContinuousSchedulePositionedListState<T>();
+}
+
+class _ContinuousSchedulePositionedListState<T extends Object?> extends State<ContinuousSchedulePositionedList<T>> {
+  ContinuousScheduleViewController<T> get viewController => widget.viewController;
+  EventsController<T> get eventsController => widget.eventsController;
+  CalendarController<T> get calendarController => widget.calendarController;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  TileComponents<T> get tileComponents => widget.tileComponents;
+  ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
+  ScheduleComponentStyles get styles => widget.styles;
+  ScheduleComponents get components => widget.components;
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateIndices();
+    eventsController.addListener(_updateIndices);
+  }
+
+  @override
+  void dispose() {
+    eventsController.removeListener(_updateIndices);
+    super.dispose();
+  }
+
+  void _updateIndices() => setState(_calculateIndices);
+
+  void _calculateIndices() {
+    // TODO: I have some concerns about the performance of this when a lot of events are present.
+    // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
+
+    // TODO: Always add today ...(Setting in config.)?
+    // Get the range of dates from the view configuration.
+    final dates = viewController.viewConfiguration.pageNavigationFunctions.adjustedRange.dates();
+    viewController.indicesItems.clear();
+    viewController.itemIndexEventId.clear();
+    viewController.dateItemIndices.clear();
+    viewController.indicesDateItem.clear();
+
+    for (final date in dates) {
+      final events = eventsController.eventsFromDateTimeRange(date.dayRange);
+      if (events.isEmpty && !date.isToday) continue;
+      if (events.isEmpty && date.isToday) {
+        // Add the today date item.
+        viewController.indicesItems[viewController.itemIndexEventId.length] = date;
+      }
+
+      // Check if the date is the first date of the month.
+      final previousDateItemIndex = viewController.indicesDateItem.entries.lastOrNull?.value;
+      if (previousDateItemIndex == null || previousDateItemIndex.startOfMonth != date.startOfMonth) {
+        viewController.indicesItems[viewController.itemIndexEventId.length] = date;
+        viewController.monthItemIndices[viewController.itemIndexEventId.length] = date;
+      }
+
+      // Set the start index of the date and the date item index.
+      viewController.dateItemIndices[date] = viewController.itemIndexEventId.length;
+      viewController.indicesDateItem[viewController.itemIndexEventId.length] = date;
+
+      for (final event in events) {
+        final index = viewController.itemIndexEventId.length;
+        viewController.itemIndexEventId[index] = event.id;
+        viewController.firstItemIndex.putIfAbsent(event.id, () => index);
+        viewController.eventIdDateIndex[event.id] = date;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Stack(
           children: [
-            positionedList,
+            ScrollablePositionedList.builder(
+              itemScrollController: viewController.itemScrollController,
+              itemPositionsListener: viewController.itemPositionsListener,
+              itemCount: viewController.itemIndexEventId.length,
+              // initialScrollIndex: , TODO: add initial scroll index.
+              itemBuilder: (context, index) {
+                final item = viewController.indicesItems[index];
+                if (item is DateTime) {
+                  return ListTile(title: Text(item.monthNameEnglish));
+                } else {
+                  final date = viewController.indicesDateItem[index];
+                  final showDate = date != null;
+                  final event = eventsController.byId(viewController.itemIndexEventId[index]!)!;
+                  final indexDate = viewController.eventIdDateIndex[event.id]!;
+
+                  return ValueListenableBuilder(
+                    valueListenable: viewController.highlightedDate,
+                    builder: (context, value, child) {
+                      if (value != null && value == date) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withAlpha(50),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: child,
+                        );
+                      } else {
+                        return child!;
+                      }
+                    },
+                    child: ListTile(
+                      leading: showDate
+                          ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
+                          // TODO: this should be adjustable.
+                          : const SizedBox(width: 32),
+                      title: ConstrainedBox(
+                        constraints: const BoxConstraints(minHeight: 24),
+                        child: ScheduleEventTile(
+                          controller: calendarController,
+                          eventsController: eventsController,
+                          callbacks: callbacks,
+                          tileComponents: tileComponents,
+                          event: event,
+                          dateTimeRange: indexDate.dayRange,
+                          interaction: interaction,
+                        ),
+                      ),
+                      trailing: Text(event.id.toString()),
+                    ),
+                  );
+                }
+              },
+            ),
             Positioned.fill(
               child: ScheduleDragTarget(
                 eventsController: eventsController,
@@ -165,21 +226,6 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-/// TODO: Move logic here to the [ScheduleBody].
-class ContinuousSchedulePositionedList<T extends Object?> extends StatefulWidget {
-  const ContinuousSchedulePositionedList({super.key});
-
-  @override
-  State<ContinuousSchedulePositionedList<T>> createState() => _ContinuousSchedulePositionedListState<T>();
-}
-
-class _ContinuousSchedulePositionedListState<T extends Object?> extends State<ContinuousSchedulePositionedList<T>> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 
