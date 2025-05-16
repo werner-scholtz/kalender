@@ -114,7 +114,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
       final month = cursorDateTime.month;
       final day = cursorDateTime.day;
       final newStart = rangeAsUtc.start.copyWith(year: year, month: month, day: day);
-      final newEnd = rangeAsUtc.end.copyWith(year: year, month: month, day: day);
+      final newEnd = rangeAsUtc.end.copyWith(year: year, month: month, day: day + rangeAsUtc.dates().length - 1);
       return event.copyWith(dateTimeRange: DateTimeRange(start: newStart, end: newEnd).asLocal);
     }
   }
