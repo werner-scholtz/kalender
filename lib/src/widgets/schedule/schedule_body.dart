@@ -101,6 +101,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
             final indexDate = viewController.eventIdDateIndex[event.id]!;
 
             final tile = ListTile(
+              onTap: () {},
               leading: showDate
                   ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
                   // TODO: this should be adjustable.
@@ -151,5 +152,37 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+
+/// TODO: Move logic here to the [ScheduleBody].
+class ContinuousSchedulePositionedList<T extends Object?> extends StatefulWidget {
+  const ContinuousSchedulePositionedList({super.key});
+
+  @override
+  State<ContinuousSchedulePositionedList<T>> createState() => _ContinuousSchedulePositionedListState<T>();
+}
+
+class _ContinuousSchedulePositionedListState<T extends Object?> extends State<ContinuousSchedulePositionedList<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+
+/// TODO: implement this.
+class PaginatedSchedulePositionList<T extends Object?> extends StatefulWidget {
+  const PaginatedSchedulePositionList({super.key});
+
+  @override
+  State<PaginatedSchedulePositionList<T>> createState() => _PaginatedSchedulePositionListState<T>();
+}
+
+class _PaginatedSchedulePositionListState<T extends Object?> extends State<PaginatedSchedulePositionList<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
