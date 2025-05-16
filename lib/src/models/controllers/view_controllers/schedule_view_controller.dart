@@ -6,6 +6,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 abstract class ScheduleViewController<T extends Object?> extends ViewController<T> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final highlightedDate = ValueNotifier<DateTime?>(null);
 }
 
 class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {

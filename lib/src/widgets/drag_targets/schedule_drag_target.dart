@@ -94,6 +94,10 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     // Get the date for the item index.
     final eventId = viewController.itemIndexEventId[itemIndex];
     final date = viewController.eventIdDateIndex[eventId];
+
+    // Set the highlighted date in the schedule view controller.
+    widget.scheduleViewController.highlightedDate.value = date;
+
     return date;
   }
 
@@ -113,6 +117,18 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
       final newEnd = rangeAsUtc.end.copyWith(year: year, month: month, day: day);
       return event.copyWith(dateTimeRange: DateTimeRange(start: newStart, end: newEnd).asLocal);
     }
+  }
+
+  @override
+  void onAcceptWithDetails(DragTargetDetails<Object?> details) {
+    super.onAcceptWithDetails(details);
+    widget.scheduleViewController.highlightedDate.value = null;
+  }
+
+  @override
+  void onLeave(Object? details) {
+    super.onLeave(details);
+    widget.scheduleViewController.highlightedDate.value = null;
   }
 
   @override
