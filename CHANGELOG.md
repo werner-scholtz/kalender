@@ -1,6 +1,7 @@
 ## 0.7.2
 
 - fix: Calendar event at 00:00 not visible (zero duration) [#159](https://github.com/werner-scholtz/kalender/issues/158)
+- fix: Export the necessary classes to allow for custom a `GenerateMultiDayLayoutFrame`. [#162](https://github.com/werner-scholtz/kalender/issues/162)
 
 ## 0.7.1
 
