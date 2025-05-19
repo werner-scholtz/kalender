@@ -92,8 +92,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     if (itemIndex == null) return null;
 
     // Get the date for the item index.
-    final eventId = viewController.itemIndexEventId[itemIndex];
-    final date = viewController.eventIdDateIndex[eventId];
+    final date = viewController.itemIndexDateTime[itemIndex];
 
     // Set the highlighted date in the schedule view controller.
     widget.scheduleViewController.highlightedDate.value = date;
@@ -110,12 +109,15 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
       final newRange = DateTimeRange(start: cursorDateTime, end: endTime);
       return event.copyWith(dateTimeRange: newRange);
     } else {
-      final year = cursorDateTime.year;
-      final month = cursorDateTime.month;
-      final day = cursorDateTime.day;
-      final newStart = rangeAsUtc.start.copyWith(year: year, month: month, day: day);
-      final newEnd = rangeAsUtc.end.copyWith(year: year, month: month, day: day + rangeAsUtc.dates().length - 1);
-      return event.copyWith(dateTimeRange: DateTimeRange(start: newStart, end: newEnd).asLocal);
+      // Calculate the new dateTimeRange for the event.
+      final newStartTime = cursorDateTime;
+      final duration = event.dateTimeRangeAsUtc.duration;
+      final endTime = newStartTime.add(duration);
+      final newRange = DateTimeRange(start: newStartTime, end: endTime);
+
+      // Update the event with the new start time.
+      final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+      return updatedEvent;
     }
   }
 

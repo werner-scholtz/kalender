@@ -102,55 +102,75 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
   @override
   void initState() {
     super.initState();
-    _calculateIndices();
-    eventsController.addListener(_updateIndices);
+    _generateMap();
+    eventsController.addListener(_updateMap);
+    viewController.itemPositionsListener.itemPositions.addListener(_positionListener);
   }
 
   @override
   void dispose() {
-    eventsController.removeListener(_updateIndices);
+    eventsController.removeListener(_updateMap);
+    viewController.itemPositionsListener.itemPositions.removeListener(_positionListener);
     super.dispose();
   }
 
-  void _updateIndices() => setState(_calculateIndices);
+  void _updateMap() => setState(_generateMap);
 
-  void _calculateIndices() {
+  void _generateMap() {
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
     // TODO: Always add today ...(Setting in config.)?
     // Get the range of dates from the view configuration.
     final dates = viewController.viewConfiguration.pageNavigationFunctions.adjustedRange.dates();
-    viewController.indicesItems.clear();
-    viewController.itemIndexEventId.clear();
-    viewController.dateItemIndices.clear();
-    viewController.indicesDateItem.clear();
+    viewController.clear();
 
     for (final date in dates) {
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
       if (events.isEmpty && !date.isToday) continue;
-      if (events.isEmpty && date.isToday) {
-        // Add the today date item.
-        viewController.indicesItems[viewController.itemIndexEventId.length] = date;
-      }
+
+      // Get the datetime for the previous item.
+      final previousDateItem = viewController.dateTimeFirstItemIndex.entries.lastOrNull?.key;
 
       // Check if the date is the first date of the month.
-      final previousDateItemIndex = viewController.indicesDateItem.entries.lastOrNull?.value;
-      if (previousDateItemIndex == null || previousDateItemIndex.startOfMonth != date.startOfMonth) {
-        viewController.indicesItems[viewController.itemIndexEventId.length] = date;
-        viewController.monthItemIndices[viewController.itemIndexEventId.length] = date;
+      if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
+        viewController.addItem(MonthItem(), date);
       }
 
-      // Set the start index of the date and the date item index.
-      viewController.dateItemIndices[date] = viewController.itemIndexEventId.length;
-      viewController.indicesDateItem[viewController.itemIndexEventId.length] = date;
-
-      for (final event in events) {
-        final index = viewController.itemIndexEventId.length;
-        viewController.itemIndexEventId[index] = event.id;
-        viewController.firstItemIndex.putIfAbsent(event.id, () => index);
-        viewController.eventIdDateIndex[event.id] = date;
+      // Add all the events for the date.
+      for (final (index, event) in events.indexed) {
+        final isFirst = index == 0;
+        viewController.addItem(EventItem(event.id, isFirst), date, isFirst: isFirst);
       }
+    }
+  }
+
+  void _positionListener() {
+    final itemPositions = viewController.itemPositionsListener.itemPositions.value;
+    if (itemPositions.isNotEmpty) {
+      var first = 0;
+      var last = 0;
+      for (final position in itemPositions) {
+        if (position.index < first) first = position.index;
+        if (position.index > last) last = position.index;
+      }
+
+      // Update the visible date time range based on the first and last items.
+      final start = viewController.itemIndexDateTime[first];
+      final end = viewController.itemIndexDateTime[last];
+      if (start != null && end != null) {
+        viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
+      }
+
+      // Update the visible events based on the current item positions.
+      final events = itemPositions.map((position) {
+        final item = viewController.indexItem[position.index];
+        if (item is! EventItem) return null;
+        final eventId = item.eventId;
+        return eventsController.byId(eventId);
+      });
+
+      viewController.visibleEvents.value = events.nonNulls.toSet();
     }
   }
 
@@ -163,17 +183,19 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
             ScrollablePositionedList.builder(
               itemScrollController: viewController.itemScrollController,
               itemPositionsListener: viewController.itemPositionsListener,
-              itemCount: viewController.itemIndexEventId.length,
-              // initialScrollIndex: , TODO: add initial scroll index.
+              itemCount: viewController.indexItem.length,
+              // TODO: this should be adjustable.
+              initialScrollIndex: viewController.initialScrollIndex(DateTime.now()),
               itemBuilder: (context, index) {
-                final item = viewController.indicesItems[index];
-                if (item is DateTime) {
-                  return ListTile(title: Text(item.monthNameEnglish));
-                } else {
-                  final date = viewController.indicesDateItem[index];
-                  final showDate = date != null;
-                  final event = eventsController.byId(viewController.itemIndexEventId[index]!)!;
-                  final indexDate = viewController.eventIdDateIndex[event.id]!;
+                final item = viewController.indexItem[index]!;
+                final date = viewController.itemIndexDateTime[index]!;
+
+                if (item is MonthItem) {
+                  return ListTile(title: Text(date.monthNameEnglish));
+                } else if (item is EmptyItem) {
+                  return const ListTile(title: Text('Empty'));
+                } else if (item is EventItem) {
+                  final event = eventsController.byId(item.eventId)!;
 
                   return ValueListenableBuilder(
                     valueListenable: viewController.highlightedDate,
@@ -181,8 +203,8 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
                       if (value != null && value == date) {
                         return DecoratedBox(
                           decoration: BoxDecoration(
+                            // TODO: this should be adjustable.
                             color: Theme.of(context).colorScheme.primary.withAlpha(50),
-                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: child,
                         );
@@ -191,7 +213,7 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
                       }
                     },
                     child: ListTile(
-                      leading: showDate
+                      leading: item.isFirst
                           ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
                           // TODO: this should be adjustable.
                           : const SizedBox(width: 32),
@@ -203,13 +225,15 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
                           callbacks: callbacks,
                           tileComponents: tileComponents,
                           event: event,
-                          dateTimeRange: indexDate.dayRange,
+                          dateTimeRange: date.dayRange,
                           interaction: interaction,
                         ),
                       ),
                       trailing: Text(event.id.toString()),
                     ),
                   );
+                } else {
+                  throw Exception('Unknown item type: ${item.runtimeType}');
                 }
               },
             ),

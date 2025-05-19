@@ -9,6 +9,24 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   final highlightedDate = ValueNotifier<DateTime?>(null);
 }
 
+abstract class ListItem {
+  const ListItem();
+}
+
+class EventItem extends ListItem {
+  final int eventId;
+  final bool isFirst;
+  EventItem(this.eventId, this.isFirst);
+}
+
+class MonthItem extends ListItem {
+  MonthItem();
+}
+
+class EmptyItem extends ListItem {
+  EmptyItem();
+}
+
 class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
   ContinuousScheduleViewController({
     required this.viewConfiguration,
@@ -32,53 +50,75 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
 
-  /// The indices of all items.
-  /// The index and container either an:
-  /// [int] which represents a Event ID.
-  /// [DateTime] which represents the start of the month.
-  final indicesItems = <int, dynamic>{};
 
-  /// The indices of all items to calendar event IDs.
-  final itemIndexEventId = <int, int>{};
+  /// A map of all the items in the list.
+  /// [ListItem] is the type of the item.
+  ///   * [EventItem] is the type of the event item.
+  ///   * [MonthItem] is the type of the month item.
+  ///   * [EmptyItem] is the type of the empty item.
+  final indexItem = <int, ListItem>{};
+  int addItem(ListItem item, DateTime date, {bool isFirst = false}) {
+    final index = indexItem.length;
+    indexItem[index] = item;
+    itemIndexDateTime[index] = date;
+    if (isFirst) dateTimeFirstItemIndex[date] = index;
+    if (item is MonthItem) monthIndices[date.startOfMonth] = index;
+    return index;
+  }
 
-  /// The indices of all items to DateTime.
-  final eventIdDateIndex = <int, DateTime>{};
+  /// The item index to DateTime.
+  final itemIndexDateTime = <int, DateTime>{};
 
-  /// The first item index of each event ID.
-  final firstItemIndex = <int, int>{};
+  /// The DateTime of the first event on a day to item index.
+  final dateTimeFirstItemIndex = <DateTime, int>{};
 
-  /// The indices of all the month items.
-  final monthItemIndices = <int, DateTime>{};
+  /// The dateTime for each month to the item index.
+  final monthIndices = <DateTime, int>{};
 
-  /// The indices of all the date items.
-  final dateItemIndices = <DateTime, int>{};
+  /// Clear all the items in the list.
+  void clear() {
+    indexItem.clear();
+    itemIndexDateTime.clear();
+    dateTimeFirstItemIndex.clear();
+    monthIndices.clear();
+  }
 
-  /// The indices of all the date items to DateTime.
-  final indicesDateItem = <int, DateTime>{};
-
+  /// Find the closest index to the given date.
   int _closestIndex(DateTime date) {
-    final lastDate = indicesDateItem.values.last;
-    final firstDate = indicesDateItem.values.first;
+    final lastDate = dateTimeFirstItemIndex.keys.last;
+    final firstDate = dateTimeFirstItemIndex.keys.first;
     if (date.isAfter(lastDate)) {
-      return indicesDateItem.keys.last;
+      return itemIndexDateTime.keys.last;
     } else if (date.isBefore(firstDate)) {
-      return indicesDateItem.keys.first;
+      return itemIndexDateTime.keys.first;
     } else {
       // If the date is in between, we need to find the closest index.
-      return indicesDateItem.entries.reduce((a, b) => (a.value.isBefore(b.value) ? a : b)).key;
+      return itemIndexDateTime.entries.reduce((a, b) => (a.value.isBefore(b.value) ? a : b)).key;
     }
   }
 
-  @override
-  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    var index = dateItemIndices[date.asUtc.startOfDay];
-    index ??= _closestIndex(date);
+  /// Find the initial scroll index for the given date.
+  int initialScrollIndex(DateTime date) {
+    final asUtc = date.asUtc.startOfDay;
+    return dateTimeFirstItemIndex[asUtc] ?? _closestIndex(asUtc);
+  }
 
+  /// Animate to the given index.
+  ///
+  /// [duration] is the duration of the animation.
+  /// [curve] is the curve of the animation.
+  Future<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) async {
     return itemScrollController.scrollTo(
       index: index,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
     );
+  }
+
+  @override
+  Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
+    final index = dateTimeFirstItemIndex[date.asUtc.startOfDay] ?? _closestIndex(date);
+    return _animateToIndex(index);
   }
 
   @override
@@ -101,36 +141,23 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final index = firstItemIndex[event.id];
+    final index = dateTimeFirstItemIndex[event.startAsUtc.startOfDay];
     if (index == null) {
       debugPrint('Event not found in items: $event');
       return;
     }
-    return itemScrollController.scrollTo(
-      index: index,
-      duration: scrollDuration ?? const Duration(milliseconds: 300),
-      curve: scrollCurve ?? Curves.easeInOut,
-    );
+    return _animateToIndex(index);
   }
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
     final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
     if (currentIndex == null) return;
-
-    // find the index of the next month.
-    final nextMonth = monthItemIndices.entries
-        .firstWhereOrNull((element) => element.value.isAfter(indicesDateItem[currentIndex]!))
-        ?.key;
-
-    // If there is no next month, return.
-    if (nextMonth == null) return;
-
-    return animateToDate(
-      indicesDateItem[nextMonth]!.asUtc.startOfDay,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
-    );
+    final date = itemIndexDateTime[currentIndex]?.endOfMonth;
+    if (date == null) return;
+    // TODO: need some better way to deal with months that are not in the list.
+    final index = monthIndices[date] ?? _closestIndex(date);
+    return _animateToIndex(index);
   }
 
   @override
@@ -138,25 +165,18 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
     if (currentIndex == null) return;
 
-    // Find the index of the previous month.
-    final previousMonth = monthItemIndices.entries
-        .firstWhereOrNull((element) => element.value.isBefore(indicesDateItem[currentIndex]!))
-        ?.key;
+    final currentDate = itemIndexDateTime[currentIndex];
+    if (currentDate == null) return;
+    final previousDate = currentDate.copyWith(month: currentDate.month - 1).startOfMonth;
 
-    // If there is no previous month, return.
-    if (previousMonth == null) return;
-
-    return animateToDate(
-      indicesDateItem[previousMonth]!.asUtc.startOfDay,
-      duration: duration ?? const Duration(milliseconds: 300),
-      curve: curve ?? Curves.easeInOut,
-    );
+    // TODO: need some better way to deal with months that are not in the list.
+    final index = monthIndices[previousDate] ?? _closestIndex(previousDate);
+    return _animateToIndex(index);
   }
 
   @override
   void jumpToDate(DateTime date) {
-    var index = dateItemIndices[date.asUtc.startOfDay];
-    index ??= _closestIndex(date);
+    final index = dateTimeFirstItemIndex[date.asUtc.startOfDay] ?? _closestIndex(date);
     itemScrollController.jumpTo(index: index);
   }
 
@@ -166,5 +186,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    highlightedDate.dispose();
+  }
 }
