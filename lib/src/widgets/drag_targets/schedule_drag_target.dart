@@ -93,16 +93,17 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
     // Get the date for the item index.
     final date = viewController.itemIndexDateTime[itemIndex];
-
-    // Set the highlighted date in the schedule view controller.
-    widget.scheduleViewController.highlightedDate.value = date;
-
     return date;
   }
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     final rangeAsUtc = event.dateTimeRangeAsUtc;
+    // Set the highlighted date in the schedule view controller.
+    widget.scheduleViewController.highlightedDateTimeRange.value = DateTimeRange(
+      start: cursorDateTime,
+      end: cursorDateTime.add(rangeAsUtc.duration),
+    );
     if (event.isMultiDayEvent) {
       final duration = rangeAsUtc.duration;
       final endTime = cursorDateTime.add(duration);
@@ -124,13 +125,13 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   @override
   void onAcceptWithDetails(DragTargetDetails<Object?> details) {
     super.onAcceptWithDetails(details);
-    widget.scheduleViewController.highlightedDate.value = null;
+    widget.scheduleViewController.highlightedDateTimeRange.value = null;
   }
 
   @override
   void onLeave(Object? details) {
     super.onLeave(details);
-    widget.scheduleViewController.highlightedDate.value = null;
+    widget.scheduleViewController.highlightedDateTimeRange.value = null;
   }
 
   @override

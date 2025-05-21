@@ -198,9 +198,9 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
                   final event = eventsController.byId(item.eventId)!;
 
                   return ValueListenableBuilder(
-                    valueListenable: viewController.highlightedDate,
+                    valueListenable: viewController.highlightedDateTimeRange,
                     builder: (context, value, child) {
-                      if (value != null && value == date) {
+                      if (value != null && date.isWithin(value)) {
                         return DecoratedBox(
                           decoration: BoxDecoration(
                             // TODO: this should be adjustable.
