@@ -252,8 +252,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     final nextMonth = date.copyWith(month: date.month + 1).startOfMonth;
 
     // TODO: need some better way to deal with months that are not in the list.
-    final index =
-        scheduleMap.monthIndexFromDateTime(currentPage, nextMonth) ?? scheduleMap.closestIndex(currentPage, date);
+    final index = scheduleMap.monthIndexFromDateTime(currentPage, nextMonth) ?? closestIndex(date);
     return _animateToIndex(index);
   }
 
@@ -268,19 +267,19 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     final previousDate = currentDate.copyWith(month: currentDate.month - 1).startOfMonth;
 
     // TODO: need some better way to deal with months that are not in the list.
-    final index = scheduleMap.monthIndexFromDateTime(currentPage, previousDate) ??
-        scheduleMap.closestIndex(currentPage, currentDate);
+    final index = scheduleMap.monthIndexFromDateTime(currentPage, previousDate) ?? closestIndex(currentDate);
     return _animateToIndex(index);
   }
 
   @override
   void jumpToDate(DateTime date) {
-    // final index = dateTimeFirstItemIndex[date.asUtc.startOfDay] ?? _closestIndex(date);
-    // itemScrollController.jumpTo(index: index);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
+    itemScrollController.jumpTo(index: index);
   }
 
   @override
   void jumpToPage(int page) {
+    /// TODO: what to do here?
     throw UnimplementedError('jumpToPage is not implemented');
   }
 }
@@ -298,6 +297,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     pageController = PageController(initialPage: currentPage);
   }
 
+  /// The [PageController] used to control the page view.
   late final PageController pageController;
 
   /// Animate to the page index.
@@ -376,8 +376,5 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
   }
 
   @override
-  void jumpToPage(int page) {
-    // Jump to the page.
-    pageController.jumpToPage(page);
-  }
+  void jumpToPage(int page) => pageController.jumpToPage(page);
 }
