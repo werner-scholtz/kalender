@@ -27,6 +27,14 @@ void main() {
           // TODO: Implement tests
         });
       });
+      group('ScheduleViewController', () {
+        group('continuous', () {
+          // TODO: Implement tests
+        });
+        group('paginated', () {
+          // TODO: Implement tests
+        });
+      });
     },
   );
 }
