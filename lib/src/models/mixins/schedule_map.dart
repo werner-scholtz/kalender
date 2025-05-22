@@ -17,26 +17,48 @@ typedef IndexItemDateTime = Map<int, DateTime>;
 /// [int] is the index of the item.
 typedef DateTimeItemIndex = Map<DateTime, int>;
 
-abstract class ListItem {
-  const ListItem();
-}
+/// A abstract class that represents a list item.
+abstract class ListItem {}
 
+/// A class that represents an event item.
 class EventItem extends ListItem {
   final int eventId;
   final bool isFirst;
   EventItem(this.eventId, this.isFirst);
 }
 
+/// A class that represents a month item.
 class MonthItem extends ListItem {}
 
+/// A class that represents an empty item.
 class EmptyItem extends ListItem {}
 
+/// A mixin that manages mappings between page indices, list items, and their associated dates
+/// for paginated or scrollable calendar views.
+///
+/// This mixin provides utility methods and data structures to efficiently map between:
+/// - Page indices and their items
+/// - Item indices and their associated dates
+/// - Dates and their corresponding item indices
+/// - Month boundaries within pages
+///
+/// It is intended for use in calendar or schedule views that need to quickly look up
+/// items or dates for a given page, index, or month.
+///
+/// Example usage:
+///   - Always populate the maps for a given number of pages with [populateMaps] before using them.
+///   - Add items to a page with [addItemForPage].
+///   - Query for item indices, dates, or month boundaries as needed.
 mixin ScheduleMap {
   /// A map of all the pageIndexes to the IndexItems.
-  final indexedIndexItems = <int, IndexItem>{};
+  final _indexedIndexItems = <int, IndexItem>{};
 
   /// Get the [IndexItem] for the given pageIndex.
-  IndexItem indexItem(int pageIndex) => indexedIndexItems[pageIndex]!;
+  IndexItem indexItem(int pageIndex) {
+    final indexItem = _indexedIndexItems[pageIndex];
+    if (indexItem == null) throw Exception('Index item for page $pageIndex not found.');
+    return indexItem;
+  }
 
   /// Get the number of items for the given pageIndex.
   int itemCountForPage(int pageIndex) => indexItem(pageIndex).length;
@@ -60,10 +82,14 @@ mixin ScheduleMap {
   }
 
   /// A map of all the pageIndexes to IndexItemDateTimes.
-  final indexedItemIndexDateTime = <int, IndexItemDateTime>{};
+  final _indexedItemIndexDateTime = <int, IndexItemDateTime>{};
 
   /// Get the [IndexItemDateTime] for the given pageIndex.
-  IndexItemDateTime itemIndexDateTime(int pageIndex) => indexedItemIndexDateTime[pageIndex]!;
+  IndexItemDateTime itemIndexDateTime(int pageIndex) {
+    final itemIndexDateTime = _indexedItemIndexDateTime[pageIndex];
+    if (itemIndexDateTime == null) throw Exception('Item index date time for page $pageIndex not found.');
+    return itemIndexDateTime;
+  }
 
   /// Get the [DateTime] for the given pageIndex and itemIndex.
   ///
@@ -72,10 +98,14 @@ mixin ScheduleMap {
   DateTime? dateTimeFromIndexForPage(int pageIndex, int itemIndex) => itemIndexDateTime(pageIndex)[itemIndex];
 
   /// A map of all the pageIndexes to DateTimeItemIndices.
-  final indexedDateTimeItemIndex = <int, DateTimeItemIndex>{};
+  final _indexedDateTimeItemIndex = <int, DateTimeItemIndex>{};
 
   /// Get the [DateTimeItemIndex] for the given pageIndex.
-  DateTimeItemIndex dateTimeItemIndex(int pageIndex) => indexedDateTimeItemIndex[pageIndex]!;
+  DateTimeItemIndex dateTimeItemIndex(int pageIndex) {
+    final dateTimeItemIndex = _indexedDateTimeItemIndex[pageIndex];
+    if (dateTimeItemIndex == null) throw Exception('Date time item index for page $pageIndex not found.');
+    return dateTimeItemIndex;
+  }
 
   int? indexFromDateTimeForPage(int pageIndex, DateTime date) {
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
@@ -101,10 +131,14 @@ mixin ScheduleMap {
   }
 
   /// A map of all the pageIndexes to MonthIndices.
-  final indexedMonthIndices = <int, DateTimeItemIndex>{};
+  final _indexedMonthIndices = <int, DateTimeItemIndex>{};
 
   /// Get the [DateTimeItemIndex] for the given pageIndex.
-  DateTimeItemIndex monthIndices(int pageIndex) => indexedMonthIndices[pageIndex]!;
+  DateTimeItemIndex monthIndices(int pageIndex) {
+    final monthIndices = _indexedMonthIndices[pageIndex];
+    if (monthIndices == null) throw Exception('Month indices for page $pageIndex not found.');
+    return monthIndices;
+  }
 
   /// Get the month index for the given pageIndex and date.
   int? monthIndexFromDateTime(int pageIndex, DateTime date) {
@@ -131,16 +165,16 @@ mixin ScheduleMap {
 
   /// Populate the maps with the given number of pages.
   void populateMaps(int numberOfPages) {
-    indexedIndexItems.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
-    indexedItemIndexDateTime.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
-    indexedDateTimeItemIndex.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
-    indexedMonthIndices.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
+    _indexedIndexItems.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
+    _indexedItemIndexDateTime.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
+    _indexedDateTimeItemIndex.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
+    _indexedMonthIndices.addEntries(List.generate(numberOfPages, (index) => MapEntry(index, {})));
   }
 
   void clearPage(int pageIndex) {
-    indexedIndexItems[pageIndex]?.clear();
-    indexedItemIndexDateTime[pageIndex]?.clear();
-    indexedDateTimeItemIndex[pageIndex]?.clear();
-    indexedMonthIndices[pageIndex]?.clear();
+    _indexedIndexItems[pageIndex]?.clear();
+    _indexedItemIndexDateTime[pageIndex]?.clear();
+    _indexedDateTimeItemIndex[pageIndex]?.clear();
+    _indexedMonthIndices[pageIndex]?.clear();
   }
 }
