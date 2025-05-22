@@ -92,7 +92,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     if (itemIndex == null) return null;
 
     // Get the date for the item index.
-    final date = viewController.dateTimeForIndex(itemIndex);
+    final date = viewController.dateTimeFromIndex(itemIndex);
     return date;
   }
 

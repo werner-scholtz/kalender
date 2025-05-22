@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
 import 'package:kalender/src/models/components/schedule_styles.dart';
+import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
@@ -210,6 +211,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
     // TODO: Always add today ...(Setting in config.)?
+    // TODO: Add the current month on paginated view. (This is so item can be moved to the current month.)
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
     viewController.clear();
@@ -219,7 +221,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       if (events.isEmpty && !date.isToday) continue;
 
       // Get the datetime for the previous item.
-      final previousDateItem = viewController.scheduleMap.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
+      final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
 
       /// HOW TO DO THIS?????
 
@@ -246,6 +248,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   void _positionListener() {
     final itemPositions = viewController.itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
+      // Get the first and last visible item positions.
       var first = viewController.itemCount;
       var last = 0;
       for (final position in itemPositions) {
@@ -254,9 +257,12 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       }
 
       // Update the visible date time range based on the first and last items.
-      final start = viewController.dateTimeForIndex(first);
-      final end = viewController.dateTimeForIndex(last);
-      viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
+      final start = viewController.dateTimeFromIndex(first);
+      final end = viewController.dateTimeFromIndex(last);
+      if (start != null && end != null) {
+        viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
+      }
+      
 
       // Update the visible events based on the current item positions.
       final events = itemPositions.map((position) {
@@ -285,7 +291,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
               initialScrollIndex: viewController.initialScrollIndex(DateTime.now()),
               itemBuilder: (context, index) {
                 final item = viewController.item(index);
-                final date = viewController.dateTimeForIndex(index);
+                final date = viewController.dateTimeFromIndex(index)!;
 
                 if (item is MonthItem) {
                   return ListTile(title: Text(date.monthNameEnglish));
