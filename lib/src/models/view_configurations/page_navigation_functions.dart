@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
+import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
-/// A class that contains functions to navigate between pages in a view.
+/// A class that contains functions to navigate between pages in a view, where applicable.
 ///
 /// **Note:** Any functions that return a [DateTime] will return a date in UTC timezone.
 ///           To convert this to the local timezone, use the [DateTimeExtensions.asLocal] getter.
@@ -39,9 +40,14 @@ abstract class PageNavigationFunctions {
     return FreeScrollFunctions(originalRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a schedule [PageNavigationFunctions.schedule].
-  factory PageNavigationFunctions.schedule(DateTimeRange dateTimeRange) {
-    return SchedulePageFunctions(originalRange: dateTimeRange);
+  /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.continuous].
+  factory PageNavigationFunctions.scheduleContinuous(DateTimeRange dateTimeRange) {
+    return ContinuousSchedulePageFunctions(originalRange: dateTimeRange);
+  }
+
+  /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.paginated].
+  factory PageNavigationFunctions.schedulePaginated(DateTimeRange dateTimeRange) {
+    return PaginatedSchedulePageFunctions(originalRange: dateTimeRange);
   }
 
   /// Calculates the VisibleDateRange from the [index].
@@ -305,8 +311,32 @@ class MonthPageFunctions extends PageNavigationFunctions {
   final DateTimeRange originalRange;
 }
 
-class SchedulePageFunctions extends PageNavigationFunctions {
-  SchedulePageFunctions({
+class ContinuousSchedulePageFunctions extends PageNavigationFunctions {
+  ContinuousSchedulePageFunctions({
+    required this.originalRange,
+  }) : adjustedRange = DateTimeRange(
+          start: originalRange.start.asUtc.startOfDay,
+          end: originalRange.end.asUtc.endOfDay,
+        );
+
+  @override
+  DateTimeRange dateTimeRangeFromIndex(int index) => adjustedRange;
+
+  @override
+  int indexFromDate(DateTime date) => 0;
+
+  @override
+  late final int numberOfPages = 1;
+
+  @override
+  late final DateTimeRange adjustedRange;
+
+  @override
+  final DateTimeRange originalRange;
+}
+
+class PaginatedSchedulePageFunctions extends PageNavigationFunctions {
+  PaginatedSchedulePageFunctions({
     required this.originalRange,
   }) : adjustedRange = DateTimeRange(
           start: originalRange.start.asUtc.startOfMonth,
@@ -315,9 +345,7 @@ class SchedulePageFunctions extends PageNavigationFunctions {
 
   @override
   DateTimeRange dateTimeRangeFromIndex(int index) {
-    final startOfMonth = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1);
-    final endOfMonth = startOfMonth.endOfMonth;
-    return DateTimeRange(start: startOfMonth, end: endOfMonth);
+    return DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
   }
 
   @override

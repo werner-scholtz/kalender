@@ -115,7 +115,12 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
               visibleEvents: widget.calendarController.visibleEvents,
               initialDate: widget.calendarController.initialDate,
             ),
-          ScheduleViewType.paginated => throw UnimplementedError(),
+          ScheduleViewType.paginated => PaginatedScheduleViewController(
+              viewConfiguration: viewConfiguration,
+              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleEvents: widget.calendarController.visibleEvents,
+              initialDate: widget.calendarController.initialDate,
+            ),
         },
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
     };

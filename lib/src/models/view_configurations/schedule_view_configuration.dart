@@ -28,12 +28,12 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
     super.name = 'Schedule (continuous)',
     DateTimeRange? displayRange,
     this.viewType = ScheduleViewType.continuous,
-  }) : pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+  }) : pageNavigationFunctions = PageNavigationFunctions.scheduleContinuous(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a paginated [ScheduleViewConfiguration].
   ScheduleViewConfiguration.paginated({
     super.name = 'Schedule (paginated)',
     DateTimeRange? displayRange,
     this.viewType = ScheduleViewType.paginated,
-  }) : pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+  }) : pageNavigationFunctions = PageNavigationFunctions.schedulePaginated(displayRange ?? DateTime.now().yearRange);
 }

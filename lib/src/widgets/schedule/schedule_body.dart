@@ -45,35 +45,54 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    final viewController = calendarController.viewController as ContinuousScheduleViewController<T>;
+    final viewController = calendarController.viewController as ScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
 
-    return ContinuousSchedulePositionedList(
-      eventsController: eventsController,
-      calendarController: calendarController,
-      viewController: viewController,
-      callbacks: callbacks,
-      tileComponents: tileComponents,
-      styles: styles,
-      interaction: interaction,
-      components: components,
-    );
+    if (viewController is ContinuousScheduleViewController<T>) {
+      return SchedulePositionList(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewController: viewController,
+        callbacks: callbacks,
+        tileComponents: tileComponents,
+        styles: styles,
+        interaction: interaction,
+        components: components,
+        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
+        currentPage: 0,
+      );
+    } else if (viewController is PaginatedScheduleViewController<T>) {
+      return PaginatedSchedule(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewController: viewController,
+        callbacks: callbacks,
+        tileComponents: tileComponents,
+        styles: styles,
+        interaction: interaction,
+        components: components,
+      );
+    } else {
+      throw Exception(
+        'The view controller is not a $PaginatedScheduleViewController or $ContinuousScheduleViewController',
+      );
+    }
   }
 }
 
-/// TODO: Move logic here to the [ScheduleBody].
-class ContinuousSchedulePositionedList<T extends Object?> extends StatefulWidget {
+class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
-  final ContinuousScheduleViewController<T> viewController;
+  final PaginatedScheduleViewController<T> viewController;
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
 
-  const ContinuousSchedulePositionedList({
+  const PaginatedSchedule({
+    super.key,
     required this.eventsController,
     required this.calendarController,
     required this.viewController,
@@ -82,15 +101,14 @@ class ContinuousSchedulePositionedList<T extends Object?> extends StatefulWidget
     required this.styles,
     required this.interaction,
     required this.components,
-    super.key,
   });
 
   @override
-  State<ContinuousSchedulePositionedList<T>> createState() => _ContinuousSchedulePositionedListState<T>();
+  State<PaginatedSchedule<T>> createState() => _PaginatedScheduleState<T>();
 }
 
-class _ContinuousSchedulePositionedListState<T extends Object?> extends State<ContinuousSchedulePositionedList<T>> {
-  ContinuousScheduleViewController<T> get viewController => widget.viewController;
+class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule<T>> {
+  PaginatedScheduleViewController<T> get viewController => widget.viewController;
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => widget.calendarController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
@@ -100,8 +118,78 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
   ScheduleComponents get components => widget.components;
 
   @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: viewController.pageController,
+      itemCount: viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      itemBuilder: (context, index) {
+        return SchedulePositionList(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewController: viewController,
+          callbacks: callbacks,
+          tileComponents: tileComponents,
+          styles: styles,
+          interaction: interaction,
+          components: components,
+          dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
+          currentPage: index,
+        );
+      },
+    );
+  }
+}
+
+class SchedulePositionList<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final CalendarController<T> calendarController;
+  final ScheduleViewController<T> viewController;
+  final CalendarCallbacks<T>? callbacks;
+  final TileComponents<T> tileComponents;
+  final ValueNotifier<CalendarInteraction> interaction;
+  final ScheduleComponentStyles styles;
+  final ScheduleComponents components;
+  final DateTimeRange dateTimeRange;
+  final int currentPage;
+
+  const SchedulePositionList({
+    super.key,
+    required this.eventsController,
+    required this.calendarController,
+    required this.viewController,
+    required this.callbacks,
+    required this.tileComponents,
+    required this.styles,
+    required this.interaction,
+    required this.components,
+    required this.dateTimeRange,
+    required this.currentPage,
+  });
+
+  @override
+  State<SchedulePositionList<T>> createState() => _SchedulePositionListState<T>();
+}
+
+class _SchedulePositionListState<T extends Object?> extends State<SchedulePositionList<T>> {
+  ScheduleViewController<T> get viewController => widget.viewController;
+  EventsController<T> get eventsController => widget.eventsController;
+  CalendarController<T> get calendarController => widget.calendarController;
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  TileComponents<T> get tileComponents => widget.tileComponents;
+  ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
+  ScheduleComponentStyles get styles => widget.styles;
+  ScheduleComponents get components => widget.components;
+
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+
+  @override
   void initState() {
     super.initState();
+    viewController.itemScrollController = itemScrollController;
+    viewController.itemPositionsListener = itemPositionsListener;
+    viewController.currentPage = widget.currentPage;
+
     _generateMap();
     eventsController.addListener(_updateMap);
     viewController.itemPositionsListener.itemPositions.addListener(_positionListener);
@@ -116,13 +204,14 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
 
   void _updateMap() => setState(_generateMap);
 
+  /// Would make sense to extract this somehow and just pass it a date, this way it is useful for paginated and continuous.
   void _generateMap() {
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
     // TODO: Always add today ...(Setting in config.)?
     // Get the range of dates from the view configuration.
-    final dates = viewController.viewConfiguration.pageNavigationFunctions.adjustedRange.dates();
+    final dates = widget.dateTimeRange.dates();
     viewController.clear();
 
     for (final date in dates) {
@@ -130,17 +219,26 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
       if (events.isEmpty && !date.isToday) continue;
 
       // Get the datetime for the previous item.
-      final previousDateItem = viewController.dateTimeFirstItemIndex.entries.lastOrNull?.key;
+      final previousDateItem = viewController.scheduleMap.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
+
+      /// HOW TO DO THIS?????
 
       // Check if the date is the first date of the month.
       if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
-        viewController.addItem(MonthItem(), date);
+        viewController.addItem(
+          item: MonthItem(),
+          date: date,
+        );
       }
 
       // Add all the events for the date.
       for (final (index, event) in events.indexed) {
         final isFirst = index == 0;
-        viewController.addItem(EventItem(event.id, isFirst), date, isFirst: isFirst);
+        viewController.addItem(
+          item: EventItem(event.id, isFirst),
+          date: date,
+          isFirst: isFirst,
+        );
       }
     }
   }
@@ -148,7 +246,7 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
   void _positionListener() {
     final itemPositions = viewController.itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
-      var first = 0;
+      var first = viewController.itemCount;
       var last = 0;
       for (final position in itemPositions) {
         if (position.index < first) first = position.index;
@@ -156,15 +254,13 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
       }
 
       // Update the visible date time range based on the first and last items.
-      final start = viewController.itemIndexDateTime[first];
-      final end = viewController.itemIndexDateTime[last];
-      if (start != null && end != null) {
-        viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
-      }
+      final start = viewController.dateTimeForIndex(first);
+      final end = viewController.dateTimeForIndex(last);
+      viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
 
       // Update the visible events based on the current item positions.
       final events = itemPositions.map((position) {
-        final item = viewController.indexItem[position.index];
+        final item = viewController.item(position.index);
         if (item is! EventItem) return null;
         final eventId = item.eventId;
         return eventsController.byId(eventId);
@@ -183,12 +279,13 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
             ScrollablePositionedList.builder(
               itemScrollController: viewController.itemScrollController,
               itemPositionsListener: viewController.itemPositionsListener,
-              itemCount: viewController.indexItem.length,
+              itemCount: viewController.itemCount,
               // TODO: this should be adjustable.
+              // TODO: this might have to be different for paginated and continuous.
               initialScrollIndex: viewController.initialScrollIndex(DateTime.now()),
               itemBuilder: (context, index) {
-                final item = viewController.indexItem[index]!;
-                final date = viewController.itemIndexDateTime[index]!;
+                final item = viewController.item(index);
+                final date = viewController.dateTimeForIndex(index);
 
                 if (item is MonthItem) {
                   return ListTile(title: Text(date.monthNameEnglish));
@@ -238,6 +335,7 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
               },
             ),
             Positioned.fill(
+              // TODO: Implement cursor navigation.
               child: ScheduleDragTarget(
                 eventsController: eventsController,
                 calendarController: calendarController,
@@ -250,20 +348,5 @@ class _ContinuousSchedulePositionedListState<T extends Object?> extends State<Co
         );
       },
     );
-  }
-}
-
-/// TODO: implement this.
-class PaginatedSchedulePositionList<T extends Object?> extends StatefulWidget {
-  const PaginatedSchedulePositionList({super.key});
-
-  @override
-  State<PaginatedSchedulePositionList<T>> createState() => _PaginatedSchedulePositionListState<T>();
-}
-
-class _PaginatedSchedulePositionListState<T extends Object?> extends State<PaginatedSchedulePositionList<T>> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

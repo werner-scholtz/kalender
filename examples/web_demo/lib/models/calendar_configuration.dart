@@ -16,6 +16,7 @@ class CalendarConfiguration extends ChangeNotifier {
   final viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
     ScheduleViewConfiguration.continuous(),
+    ScheduleViewConfiguration.paginated(),
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
     MultiDayViewConfiguration.custom(numberOfDays: 3),

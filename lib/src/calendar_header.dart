@@ -66,7 +66,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
       return MonthHeader<T>(
         calendarController: calendarController,
       );
-    } else if (viewController is ContinuousScheduleViewController<T>) {
+    } else if (viewController is ScheduleViewController<T>) {
       return ScheduleHeader<T>();
     } else {
       throw UnimplementedError();

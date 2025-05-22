@@ -10,7 +10,7 @@ class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
   final CalendarCallbacks<T>? callbacks;
-  final ContinuousScheduleViewController<T> scheduleViewController;
+  final ScheduleViewController<T> scheduleViewController;
   final BoxConstraints constraints;
 
   /// Creates a [ScheduleDragTarget].
@@ -92,7 +92,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     if (itemIndex == null) return null;
 
     // Get the date for the item index.
-    final date = viewController.itemIndexDateTime[itemIndex];
+    final date = viewController.dateTimeForIndex(itemIndex);
     return date;
   }
 

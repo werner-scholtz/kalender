@@ -90,7 +90,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         configuration: monthBodyConfiguration,
         interaction: interaction,
       );
-    } else if (viewController is ContinuousScheduleViewController<T>) {
+    } else if (viewController is ScheduleViewController<T>) {
       return ScheduleBody<T>(
         eventsController: eventsController,
         calendarController: calendarController,
