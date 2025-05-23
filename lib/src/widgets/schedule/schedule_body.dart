@@ -181,6 +181,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
+  ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
@@ -211,7 +212,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
-    // TODO: Always add today ...(Setting in config.)?
     // TODO: Add the current month on paginated view. (This is so item can be moved to the current month.)
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
@@ -220,13 +220,12 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     for (final date in dates) {
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
 
-      // TODO: Decide if we should allow developers to show all empty dates, or if we just want to show speicific empty dates.
-
-      if (events.isEmpty && date.isToday) {
-        viewController.addItem(item: EmptyItem(), date: date);
-      } else if (events.isEmpty) {
-        // Skip empty dates.
+      if (events.isEmpty && viewConfiguration.emptyDays == EmptyDaysBehavior.hide) {
         continue;
+      } else if (events.isEmpty && viewConfiguration.emptyDays == EmptyDaysBehavior.show) {
+        viewController.addItem(item: EmptyItem(), date: date);
+      } else if (events.isEmpty && date.isToday && viewConfiguration.emptyDays == EmptyDaysBehavior.showToday) {
+        viewController.addItem(item: EmptyItem(), date: date);
       }
 
       // Get the datetime for the previous item.
