@@ -220,12 +220,21 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     for (final date in dates) {
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
 
-      if (events.isEmpty && viewConfiguration.emptyDays == EmptyDaysBehavior.hide) {
-        continue;
-      } else if (events.isEmpty && viewConfiguration.emptyDays == EmptyDaysBehavior.show) {
-        viewController.addItem(item: EmptyItem(), date: date);
-      } else if (events.isEmpty && date.isToday && viewConfiguration.emptyDays == EmptyDaysBehavior.showToday) {
-        viewController.addItem(item: EmptyItem(), date: date);
+      if (events.isEmpty) {
+        switch (viewConfiguration.emptyDays) {
+          case EmptyDaysBehavior.show:
+            viewController.addItem(item: EmptyItem(), date: date);
+            continue;
+
+          case EmptyDaysBehavior.showToday:
+            if (date.isToday) {
+              viewController.addItem(item: EmptyItem(), date: date);
+            }
+            continue;
+
+          case EmptyDaysBehavior.hide:
+            continue;
+        }
       }
 
       // Get the datetime for the previous item.
