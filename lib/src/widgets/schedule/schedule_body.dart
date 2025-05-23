@@ -49,6 +49,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as ScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
+    final scheduleComponents = tileComponents as ScheduleTileComponents<T>;
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList(
@@ -56,7 +57,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         viewController: viewController,
         callbacks: callbacks,
-        tileComponents: tileComponents,
+        tileComponents: scheduleComponents,
         styles: styles,
         interaction: interaction,
         components: components,
@@ -69,7 +70,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         viewController: viewController,
         callbacks: callbacks,
-        tileComponents: tileComponents,
+        tileComponents: scheduleComponents,
         styles: styles,
         interaction: interaction,
         components: components,
@@ -87,7 +88,7 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   final CalendarController<T> calendarController;
   final PaginatedScheduleViewController<T> viewController;
   final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
+  final ScheduleTileComponents<T> tileComponents;
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
@@ -113,7 +114,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => widget.calendarController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  TileComponents<T> get tileComponents => widget.tileComponents;
+  ScheduleTileComponents<T> get tileComponents => widget.tileComponents;
   ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
@@ -146,7 +147,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final CalendarController<T> calendarController;
   final ScheduleViewController<T> viewController;
   final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
+  final ScheduleTileComponents<T> tileComponents;
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
@@ -176,7 +177,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => widget.calendarController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  TileComponents<T> get tileComponents => widget.tileComponents;
+  ScheduleTileComponents<T> get tileComponents => widget.tileComponents;
   ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
@@ -218,29 +219,28 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
     for (final date in dates) {
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
-      if (events.isEmpty && !date.isToday) continue;
+
+      // TODO: Decide if we should allow developers to show all empty dates, or if we just want to show speicific empty dates.
+
+      if (events.isEmpty && date.isToday) {
+        viewController.addItem(item: EmptyItem(), date: date);
+      } else if (events.isEmpty) {
+        // Skip empty dates.
+        continue;
+      }
 
       // Get the datetime for the previous item.
       final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
 
-      /// HOW TO DO THIS?????
-
       // Check if the date is the first date of the month.
       if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
-        viewController.addItem(
-          item: MonthItem(),
-          date: date,
-        );
+        viewController.addItem(item: MonthItem(), date: date);
       }
 
       // Add all the events for the date.
       for (final (index, event) in events.indexed) {
         final isFirst = index == 0;
-        viewController.addItem(
-          item: EventItem(event.id, isFirst),
-          date: date,
-          isFirst: isFirst,
-        );
+        viewController.addItem(item: EventItem(event.id, isFirst), date: date, isFirst: isFirst);
       }
     }
   }
@@ -262,7 +262,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       if (start != null && end != null) {
         viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
       }
-      
 
       // Update the visible events based on the current item positions.
       final events = itemPositions.map((position) {
@@ -292,47 +291,37 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
               itemBuilder: (context, index) {
                 final item = viewController.item(index);
                 final date = viewController.dateTimeFromIndex(index)!;
+                late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
 
                 if (item is MonthItem) {
                   return ListTile(title: Text(date.monthNameEnglish));
                 } else if (item is EmptyItem) {
-                  return const ListTile(title: Text('Empty'));
+                  return ScheduleListItemHighlight(
+                    date: date,
+                    dateTimeRange: viewController.highlightedDateTimeRange,
+                    child: ListTile(
+                      leading: leading,
+                      title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
+                    ),
+                  );
                 } else if (item is EventItem) {
+                  final showDate = item.isFirst;
                   final event = eventsController.byId(item.eventId)!;
 
-                  return ValueListenableBuilder(
-                    valueListenable: viewController.highlightedDateTimeRange,
-                    builder: (context, value, child) {
-                      if (value != null && date.isWithin(value)) {
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            // TODO: this should be adjustable.
-                            color: Theme.of(context).colorScheme.primary.withAlpha(50),
-                          ),
-                          child: child,
-                        );
-                      } else {
-                        return child!;
-                      }
-                    },
+                  return ScheduleListItemHighlight(
+                    date: date,
+                    dateTimeRange: viewController.highlightedDateTimeRange,
                     child: ListTile(
-                      leading: item.isFirst
-                          ? components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle)
-                          // TODO: this should be adjustable.
-                          : const SizedBox(width: 32),
-                      title: ConstrainedBox(
-                        constraints: const BoxConstraints(minHeight: 24),
-                        child: ScheduleEventTile(
-                          controller: calendarController,
-                          eventsController: eventsController,
-                          callbacks: callbacks,
-                          tileComponents: tileComponents,
-                          event: event,
-                          dateTimeRange: date.dayRange,
-                          interaction: interaction,
-                        ),
+                      leading: showDate ? leading : const SizedBox(width: 32),
+                      title: ScheduleEventTile(
+                        controller: calendarController,
+                        eventsController: eventsController,
+                        callbacks: callbacks,
+                        tileComponents: tileComponents,
+                        event: event,
+                        dateTimeRange: date.dayRange,
+                        interaction: interaction,
                       ),
-                      trailing: Text(event.id.toString()),
                     ),
                   );
                 } else {
@@ -353,6 +342,38 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
           ],
         );
       },
+    );
+  }
+}
+
+class ScheduleListItemHighlight extends StatelessWidget {
+  final DateTime date;
+  final ValueNotifier<DateTimeRange?> dateTimeRange;
+  final Widget child;
+  const ScheduleListItemHighlight({
+    super.key,
+    required this.date,
+    required this.dateTimeRange,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: dateTimeRange,
+      builder: (context, value, child) {
+        if (value != null && date.isWithin(value)) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withAlpha(50),
+            ),
+            child: child!,
+          );
+        } else {
+          return child!;
+        }
+      },
+      child: child,
     );
   }
 }
