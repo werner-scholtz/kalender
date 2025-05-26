@@ -63,6 +63,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         components: components,
         dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
         currentPage: 0,
+        isPaginated: false,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
       return PaginatedSchedule(
@@ -136,6 +137,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           components: components,
           dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
+          isPaginated: true,
         );
       },
     );
@@ -153,6 +155,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final ScheduleComponents components;
   final DateTimeRange dateTimeRange;
   final int currentPage;
+  final bool isPaginated;
 
   const SchedulePositionList({
     super.key,
@@ -166,6 +169,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.components,
     required this.dateTimeRange,
     required this.currentPage,
+    required this.isPaginated,
   });
 
   @override
@@ -212,15 +216,22 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
-    // TODO: Add the current month on paginated view. (This is so item can be moved to the current month.)
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
     viewController.clear();
 
+    var hasAddedMonth = false;
+
     for (final date in dates) {
+      // TODO: Add the current month on paginated view. (This is so item can be moved to the current month.)
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
 
       if (events.isEmpty) {
+        if (widget.isPaginated && !hasAddedMonth) {
+          _addMonthItem(date);
+          hasAddedMonth = true;
+        }
+
         switch (viewConfiguration.emptyDays) {
           case EmptyDaysBehavior.show:
             viewController.addItem(item: EmptyItem(), date: date);
@@ -237,19 +248,21 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
         }
       }
 
-      // Get the datetime for the previous item.
-      final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
-
-      // Check if the date is the first date of the month.
-      if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
-        viewController.addItem(item: MonthItem(), date: date);
-      }
+      if (!widget.isPaginated || widget.isPaginated && !hasAddedMonth) _addMonthItem(date);
 
       // Add all the events for the date.
       for (final (index, event) in events.indexed) {
         final isFirst = index == 0;
         viewController.addItem(item: EventItem(event.id, isFirst), date: date, isFirst: isFirst);
       }
+    }
+  }
+
+  void _addMonthItem(DateTime date) {
+    // Check if the date is the first date of the month.
+    final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
+    if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
+      viewController.addItem(item: MonthItem(), date: date);
     }
   }
 
@@ -354,10 +367,17 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   }
 }
 
+/// A widget that highlights the list item if the date is within the given dateTimeRange.
 class ScheduleListItemHighlight extends StatelessWidget {
+  /// The date to check against the dateTimeRange.
   final DateTime date;
+
+  /// The dateTimeRange to check against the date.
   final ValueNotifier<DateTimeRange?> dateTimeRange;
+
+  /// The child widget to display.
   final Widget child;
+
   const ScheduleListItemHighlight({
     super.key,
     required this.date,
@@ -373,6 +393,7 @@ class ScheduleListItemHighlight extends StatelessWidget {
         if (value != null && date.isWithin(value)) {
           return DecoratedBox(
             decoration: BoxDecoration(
+              // TODO: Make this adjustable.
               color: Theme.of(context).colorScheme.primary.withAlpha(50),
             ),
             child: child!,
