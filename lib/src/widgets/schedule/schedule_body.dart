@@ -4,7 +4,6 @@ import 'package:kalender/src/models/components/schedule_components.dart';
 import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -218,7 +217,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   }
 
   void _updateMap() => setState(_generateMap);
-  
+
   void _generateMap() {
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
@@ -316,41 +315,47 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
               itemBuilder: (context, index) {
                 final item = viewController.item(index);
                 final date = viewController.dateTimeFromIndex(index)!;
+
                 late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
                 late final highlightStyle = styles.scheduleTileHighlightStyle;
+                late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
                 if (item is MonthItem) {
                   return ListTile(title: Text(date.monthNameEnglish));
                 } else if (item is EmptyItem) {
-                  return ScheduleTileHighlight(
-                    date: date,
-                    dateTimeRange: viewController.highlightedDateTimeRange,
-                    style: highlightStyle,
-                    child: ListTile(
-                      leading: leading,
-                      title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
-                    ),
+                  final child = ListTile(
+                    leading: leading,
+                    title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
+                  );
+
+                  return highlightBuilder(
+                    date,
+                    viewController.highlightedDateTimeRange,
+                    highlightStyle,
+                    child,
                   );
                 } else if (item is EventItem) {
                   final showDate = item.isFirst;
                   final event = eventsController.byId(item.eventId)!;
 
-                  return ScheduleTileHighlight(
-                    date: date,
-                    dateTimeRange: viewController.highlightedDateTimeRange,
-                    style: highlightStyle,
-                    child: ListTile(
-                      leading: showDate ? leading : const SizedBox(width: 32),
-                      title: ScheduleEventTile(
-                        controller: calendarController,
-                        eventsController: eventsController,
-                        callbacks: callbacks,
-                        tileComponents: tileComponents,
-                        event: event,
-                        dateTimeRange: date.dayRange,
-                        interaction: interaction,
-                      ),
+                  final child = ListTile(
+                    leading: showDate ? leading : const SizedBox(width: 32),
+                    title: ScheduleEventTile(
+                      controller: calendarController,
+                      eventsController: eventsController,
+                      callbacks: callbacks,
+                      tileComponents: tileComponents,
+                      event: event,
+                      dateTimeRange: date.dayRange,
+                      interaction: interaction,
                     ),
+                  );
+
+                  return highlightBuilder(
+                    date,
+                    viewController.highlightedDateTimeRange,
+                    highlightStyle,
+                    child,
                   );
                 } else {
                   throw Exception('Unknown item type: ${item.runtimeType}');
