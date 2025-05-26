@@ -4,6 +4,7 @@ import 'package:kalender/src/models/components/schedule_components.dart';
 import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -316,13 +317,15 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                 final item = viewController.item(index);
                 final date = viewController.dateTimeFromIndex(index)!;
                 late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
+                late final highlightStyle = styles.scheduleTileHighlightStyle;
 
                 if (item is MonthItem) {
                   return ListTile(title: Text(date.monthNameEnglish));
                 } else if (item is EmptyItem) {
-                  return ScheduleListItemHighlight(
+                  return ScheduleTileHighlight(
                     date: date,
                     dateTimeRange: viewController.highlightedDateTimeRange,
+                    style: highlightStyle,
                     child: ListTile(
                       leading: leading,
                       title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
@@ -332,9 +335,10 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   final showDate = item.isFirst;
                   final event = eventsController.byId(item.eventId)!;
 
-                  return ScheduleListItemHighlight(
+                  return ScheduleTileHighlight(
                     date: date,
                     dateTimeRange: viewController.highlightedDateTimeRange,
+                    style: highlightStyle,
                     child: ListTile(
                       leading: showDate ? leading : const SizedBox(width: 32),
                       title: ScheduleEventTile(
@@ -366,46 +370,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
           ],
         );
       },
-    );
-  }
-}
-
-/// A widget that highlights the list item if the date is within the given dateTimeRange.
-class ScheduleListItemHighlight extends StatelessWidget {
-  /// The date to check against the dateTimeRange.
-  final DateTime date;
-
-  /// The dateTimeRange to check against the date.
-  final ValueNotifier<DateTimeRange?> dateTimeRange;
-
-  /// The child widget to display.
-  final Widget child;
-
-  const ScheduleListItemHighlight({
-    super.key,
-    required this.date,
-    required this.dateTimeRange,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: dateTimeRange,
-      builder: (context, value, child) {
-        if (value != null && date.isWithin(value)) {
-          return DecoratedBox(
-            decoration: BoxDecoration(
-              // TODO: Make this adjustable.
-              color: Theme.of(context).colorScheme.primary.withAlpha(50),
-            ),
-            child: child!,
-          );
-        } else {
-          return child!;
-        }
-      },
-      child: child,
     );
   }
 }
