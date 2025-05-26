@@ -19,7 +19,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [ScheduleBody].
-  final TileComponents<T> tileComponents;
+  final ScheduleTileComponents<T> tileComponents;
 
   /// The [CalendarInteraction] that will be used by the [ScheduleBody].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -49,7 +49,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as ScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
-    final scheduleComponents = tileComponents as ScheduleTileComponents<T>;
+    final configuration = viewController.viewConfiguration;
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList(
@@ -57,7 +57,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         viewController: viewController,
         callbacks: callbacks,
-        tileComponents: scheduleComponents,
+        tileComponents: tileComponents,
+        configuration: configuration,
         styles: styles,
         interaction: interaction,
         components: components,
@@ -71,10 +72,11 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         calendarController: calendarController,
         viewController: viewController,
         callbacks: callbacks,
-        tileComponents: scheduleComponents,
+        tileComponents: tileComponents,
         styles: styles,
         interaction: interaction,
         components: components,
+        configuration: configuration,
       );
     } else {
       throw Exception(
@@ -93,6 +95,7 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
+  final ScheduleViewConfiguration<T> configuration;
 
   const PaginatedSchedule({
     super.key,
@@ -101,6 +104,7 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.callbacks,
     required this.tileComponents,
+    required this.configuration,
     required this.styles,
     required this.interaction,
     required this.components,
@@ -111,31 +115,26 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
 }
 
 class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule<T>> {
-  PaginatedScheduleViewController<T> get viewController => widget.viewController;
-  EventsController<T> get eventsController => widget.eventsController;
-  CalendarController<T> get calendarController => widget.calendarController;
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  ScheduleTileComponents<T> get tileComponents => widget.tileComponents;
-  ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
-  ScheduleComponentStyles get styles => widget.styles;
-  ScheduleComponents get components => widget.components;
-
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
-      controller: viewController.pageController,
-      itemCount: viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      controller: widget.viewController.pageController,
+      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      onPageChanged: (value) {
+        /// TODO: Implement page change callbacks etc.
+      },
       itemBuilder: (context, index) {
         return SchedulePositionList(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewController: viewController,
-          callbacks: callbacks,
-          tileComponents: tileComponents,
-          styles: styles,
-          interaction: interaction,
-          components: components,
-          dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
+          eventsController: widget.eventsController,
+          calendarController: widget.calendarController,
+          viewController: widget.viewController,
+          callbacks: widget.callbacks,
+          tileComponents: widget.tileComponents,
+          configuration: widget.configuration,
+          styles: widget.styles,
+          interaction: widget.interaction,
+          components: widget.components,
+          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
           isPaginated: true,
         );
@@ -150,6 +149,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final ScheduleViewController<T> viewController;
   final CalendarCallbacks<T>? callbacks;
   final ScheduleTileComponents<T> tileComponents;
+  final ScheduleViewConfiguration<T> configuration;
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
@@ -164,6 +164,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.callbacks,
     required this.tileComponents,
+    required this.configuration,
     required this.styles,
     required this.interaction,
     required this.components,
@@ -185,7 +186,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
-  ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
+  ScheduleViewConfiguration get viewConfiguration => widget.configuration;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();

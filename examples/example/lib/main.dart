@@ -129,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           scheduleTileComponents: scheduleTileComponents(context),
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
+          
         ),
       ),
     );
