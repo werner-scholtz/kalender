@@ -125,7 +125,8 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
       onPageChanged: (value) {
-        /// TODO: Implement page change callbacks etc.
+        final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
+        widget.callbacks?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
@@ -216,8 +217,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   }
 
   void _updateMap() => setState(_generateMap);
-
-  /// Would make sense to extract this somehow and just pass it a date, this way it is useful for paginated and continuous.
+  
   void _generateMap() {
     // TODO: I have some concerns about the performance of this when a lot of events are present.
     // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
