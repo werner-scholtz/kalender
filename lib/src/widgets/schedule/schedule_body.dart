@@ -24,6 +24,9 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   /// The [CalendarInteraction] that will be used by the [ScheduleBody].
   final ValueNotifier<CalendarInteraction>? interaction;
 
+  /// The configuration for the schedule body.
+  final ScheduleBodyConfiguration? configuration;
+
   const ScheduleBody({
     super.key,
     this.eventsController,
@@ -31,6 +34,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     this.interaction,
     required this.tileComponents,
+    this.configuration,
   });
 
   @override
@@ -49,25 +53,25 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as ScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
-    final configuration = viewController.viewConfiguration;
+    final configuration = this.configuration ?? const ScheduleBodyConfiguration();
 
     if (viewController is ContinuousScheduleViewController<T>) {
-      return SchedulePositionList(
+      return SchedulePositionList<T>(
         eventsController: eventsController,
         calendarController: calendarController,
         viewController: viewController,
         callbacks: callbacks,
         tileComponents: tileComponents,
-        configuration: configuration,
         styles: styles,
         interaction: interaction,
         components: components,
         dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
         currentPage: 0,
         isPaginated: false,
+        configuration: configuration,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
-      return PaginatedSchedule(
+      return PaginatedSchedule<T>(
         eventsController: eventsController,
         calendarController: calendarController,
         viewController: viewController,
@@ -95,7 +99,7 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
-  final ScheduleViewConfiguration<T> configuration;
+  final ScheduleBodyConfiguration configuration;
 
   const PaginatedSchedule({
     super.key,
@@ -104,10 +108,10 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.callbacks,
     required this.tileComponents,
-    required this.configuration,
     required this.styles,
     required this.interaction,
     required this.components,
+    required this.configuration,
   });
 
   @override
@@ -124,19 +128,19 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
         /// TODO: Implement page change callbacks etc.
       },
       itemBuilder: (context, index) {
-        return SchedulePositionList(
+        return SchedulePositionList<T>(
           eventsController: widget.eventsController,
           calendarController: widget.calendarController,
           viewController: widget.viewController,
           callbacks: widget.callbacks,
           tileComponents: widget.tileComponents,
-          configuration: widget.configuration,
           styles: widget.styles,
           interaction: widget.interaction,
           components: widget.components,
           dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
           isPaginated: true,
+          configuration: widget.configuration,
         );
       },
     );
@@ -149,13 +153,14 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final ScheduleViewController<T> viewController;
   final CalendarCallbacks<T>? callbacks;
   final ScheduleTileComponents<T> tileComponents;
-  final ScheduleViewConfiguration<T> configuration;
+
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
   final DateTimeRange dateTimeRange;
   final int currentPage;
   final bool isPaginated;
+  final ScheduleBodyConfiguration configuration;
 
   const SchedulePositionList({
     super.key,
@@ -164,13 +169,13 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.callbacks,
     required this.tileComponents,
-    required this.configuration,
     required this.styles,
     required this.interaction,
     required this.components,
     required this.dateTimeRange,
     required this.currentPage,
     required this.isPaginated,
+    required this.configuration,
   });
 
   @override
@@ -186,7 +191,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
-  ScheduleViewConfiguration get viewConfiguration => widget.configuration;
+  ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
@@ -232,18 +237,18 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
           hasAddedMonth = true;
         }
 
-        switch (viewConfiguration.emptyDays) {
-          case EmptyDaysBehavior.show:
+        switch (widget.configuration.emptyDay) {
+          case EmptyDayBehavior.show:
             viewController.addItem(item: EmptyItem(), date: date);
             continue;
 
-          case EmptyDaysBehavior.showToday:
+          case EmptyDayBehavior.showToday:
             if (date.isToday) {
               viewController.addItem(item: EmptyItem(), date: date);
             }
             continue;
 
-          case EmptyDaysBehavior.hide:
+          case EmptyDayBehavior.hide:
             continue;
         }
       }

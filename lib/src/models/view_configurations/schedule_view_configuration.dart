@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
+/// The type of the schedule view.
 enum ScheduleViewType {
   /// A continuous schedule view.
   continuous,
@@ -10,7 +11,8 @@ enum ScheduleViewType {
   paginated,
 }
 
-enum EmptyDaysBehavior {
+/// The default behavior for empty days in the schedule view.
+enum EmptyDayBehavior {
   /// Show empty days in the schedule view.
   show,
 
@@ -28,24 +30,16 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
   /// The type of the schedule view.
   final ScheduleViewType viewType;
 
-  /// The behavior of empty days in the schedule view.
-  /// - [EmptyDaysBehavior.show]: Show empty days in the schedule view.
-  /// - [EmptyDaysBehavior.showToday]: Show today in the schedule view.
-  /// - [EmptyDaysBehavior.hide]: Hide empty days in the schedule view.
-  final EmptyDaysBehavior emptyDays;
-
   ScheduleViewConfiguration({
     required super.name,
     required this.viewType,
     required this.pageNavigationFunctions,
-    this.emptyDays = EmptyDaysBehavior.showToday,
   });
 
   /// Creates a continuous [ScheduleViewConfiguration].
   ScheduleViewConfiguration.continuous({
     super.name = 'Schedule (continuous)',
     DateTimeRange? displayRange,
-    this.emptyDays = kDefaultEmptyDayBehavior,
   })  : pageNavigationFunctions = PageNavigationFunctions.scheduleContinuous(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.continuous;
 
@@ -53,7 +47,33 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
   ScheduleViewConfiguration.paginated({
     super.name = 'Schedule (paginated)',
     DateTimeRange? displayRange,
-    this.emptyDays = kDefaultEmptyDayBehavior,
   })  : pageNavigationFunctions = PageNavigationFunctions.schedulePaginated(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.paginated;
+}
+
+class ScheduleBodyConfiguration {
+  /// Creates a new [ScheduleBodyConfiguration].
+  const ScheduleBodyConfiguration({
+    this.emptyDay = kDefaultEmptyDayBehavior,
+  });
+
+  /// The behavior of empty days in the schedule view.
+  /// - [EmptyDayBehavior.show]: Show empty days in the schedule view.
+  /// - [EmptyDayBehavior.showToday]: Show today in the schedule view.
+  /// - [EmptyDayBehavior.hide]: Hide empty days in the schedule view.
+  final EmptyDayBehavior emptyDay;
+
+  /// TODO: add support for page triggers and scroll triggers.
+  /// The configuration for the page navigation triggers.
+  // late final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// The configuration for the scroll navigation triggers.
+  // late final ScrollTriggerConfiguration scrollTriggerConfiguration;
+
+  /// TODO: add support for scroll physics and page physics.
+  /// The [ScrollPhysics] used by the scrollable body.
+  // final ScrollPhysics? scrollPhysics;
+
+  /// The [ScrollPhysics] used by the page view.
+  // final ScrollPhysics? pageScrollPhysics;
 }
