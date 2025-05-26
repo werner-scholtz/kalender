@@ -305,7 +305,7 @@ Examples:
 </details>
 
 <details>
-  <summary>MultiDayHeaderConfiguration</summary>
+  <summary>MonthBodyConfiguration</summary>
 
   ```dart
   CalendarBody(
@@ -326,6 +326,28 @@ Examples:
       // The configuration for triggering scroll navigation.
       scrollTriggerConfiguration: ScrollTriggerConfiguration(),
     ),
+    interaction: ValueNotifier(
+      CalendarInteraction(
+        // Allow events to be resized.
+        allowResizing: true,
+        // Allow events to be rescheduled.
+        allowRescheduling: true,
+        // Allow events to be created.
+        allowEventCreation: true,
+      ),
+    ),
+  );
+  ```
+  </summary>
+</details>
+
+<details>
+  <summary>ScheduleViewConfiguration</summary>
+
+  ```dart
+  CalendarBody(
+    // TODO: Add configuration options.
+    
     interaction: ValueNotifier(
       CalendarInteraction(
         // Allow events to be resized.
@@ -398,6 +420,8 @@ The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can 
   ```
   </summary>
 </details>
+
+/// TODO: Add schedule components.
 
 
 
