@@ -305,9 +305,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
               itemScrollController: viewController.itemScrollController,
               itemPositionsListener: viewController.itemPositionsListener,
               itemCount: viewController.itemCount,
-              // TODO: this should be adjustable.
-              // TODO: this might have to be different for paginated and continuous.
-              initialScrollIndex: viewController.initialScrollIndex(DateTime.now()),
+              initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
               itemBuilder: (context, index) {
                 final item = viewController.item(index);
                 final date = viewController.dateTimeFromIndex(index)!;

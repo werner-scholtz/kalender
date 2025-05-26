@@ -13,13 +13,16 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
+  /// The initial date to display in the schedule view.
+  final DateTime initialDate;
+
   ScheduleViewController({
     required this.viewConfiguration,
     required this.visibleDateTimeRange,
     required this.visibleEvents,
-    DateTime? initialDate,
+    required this.initialDate,
   }) {
-    currentPage = viewConfiguration.pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
+    currentPage = viewConfiguration.pageNavigationFunctions.indexFromDate(initialDate);
     final numberOfPages = viewConfiguration.pageNavigationFunctions.numberOfPages;
     populateMaps(numberOfPages);
   }
@@ -83,7 +86,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
-    super.initialDate,
+    required super.initialDate,
   }) {
     visibleEvents.value = {};
   }
@@ -154,8 +157,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   void jumpToPage(int page) {
-    /// TODO: what to do here?
-    throw UnimplementedError('jumpToPage is not implemented');
+    debugPrint('jumpToPage is not applicable for ContinuousScheduleViewController.');
   }
 }
 
@@ -164,7 +166,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
-    super.initialDate,
+    required super.initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
     visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(currentPage);
