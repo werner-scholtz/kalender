@@ -223,7 +223,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      // TODO: Add the current month on paginated view. (This is so item can be moved to the current month.)
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
 
       if (events.isEmpty) {
