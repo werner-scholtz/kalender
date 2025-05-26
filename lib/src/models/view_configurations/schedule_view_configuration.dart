@@ -53,9 +53,14 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
 
 class ScheduleBodyConfiguration {
   /// Creates a new [ScheduleBodyConfiguration].
-  const ScheduleBodyConfiguration({
+  ScheduleBodyConfiguration({
     this.emptyDay = kDefaultEmptyDayBehavior,
-  });
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    this.scrollPhysics,
+    this.pageScrollPhysics,
+  })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
+        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
 
   /// The behavior of empty days in the schedule view.
   /// - [EmptyDayBehavior.show]: Show empty days in the schedule view.
@@ -63,17 +68,16 @@ class ScheduleBodyConfiguration {
   /// - [EmptyDayBehavior.hide]: Hide empty days in the schedule view.
   final EmptyDayBehavior emptyDay;
 
-  /// TODO: add support for page triggers and scroll triggers.
   /// The configuration for the page navigation triggers.
-  // late final PageTriggerConfiguration pageTriggerConfiguration;
+  final PageTriggerConfiguration pageTriggerConfiguration;
 
   /// The configuration for the scroll navigation triggers.
-  // late final ScrollTriggerConfiguration scrollTriggerConfiguration;
+  final ScrollTriggerConfiguration scrollTriggerConfiguration;
 
-  /// TODO: add support for scroll physics and page physics.
+  
   /// The [ScrollPhysics] used by the scrollable body.
-  // final ScrollPhysics? scrollPhysics;
+  final ScrollPhysics? scrollPhysics;
 
   /// The [ScrollPhysics] used by the page view.
-  // final ScrollPhysics? pageScrollPhysics;
+  final ScrollPhysics? pageScrollPhysics;
 }

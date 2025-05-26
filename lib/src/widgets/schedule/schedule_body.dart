@@ -53,7 +53,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as ScheduleViewController<T>;
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
-    final configuration = this.configuration ?? const ScheduleBodyConfiguration();
+    final configuration = this.configuration ?? ScheduleBodyConfiguration();
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
@@ -67,7 +67,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         components: components,
         dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
         currentPage: 0,
-        isPaginated: false,
+        paginated: false,
         configuration: configuration,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
@@ -124,6 +124,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
     return PageView.builder(
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
         final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
         widget.callbacks?.onPageChanged?.call(range);
@@ -140,7 +141,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           components: widget.components,
           dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
-          isPaginated: true,
+          paginated: true,
           configuration: widget.configuration,
         );
       },
@@ -152,16 +153,15 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
   final ScheduleViewController<T> viewController;
+  final ScheduleBodyConfiguration configuration;
   final CalendarCallbacks<T>? callbacks;
   final ScheduleTileComponents<T> tileComponents;
-
   final ValueNotifier<CalendarInteraction> interaction;
   final ScheduleComponentStyles styles;
   final ScheduleComponents components;
   final DateTimeRange dateTimeRange;
   final int currentPage;
-  final bool isPaginated;
-  final ScheduleBodyConfiguration configuration;
+  final bool paginated;
 
   const SchedulePositionList({
     super.key,
@@ -175,7 +175,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.components,
     required this.dateTimeRange,
     required this.currentPage,
-    required this.isPaginated,
+    required this.paginated,
     required this.configuration,
   });
 
@@ -194,14 +194,14 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ScheduleComponents get components => widget.components;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   @override
   void initState() {
     super.initState();
-    viewController.itemScrollController = itemScrollController;
-    viewController.itemPositionsListener = itemPositionsListener;
+    viewController.itemScrollController = _itemScrollController;
+    viewController.itemPositionsListener = _itemPositionsListener;
     viewController.currentPage = widget.currentPage;
 
     _generateMap();
@@ -220,7 +220,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
   void _generateMap() {
     // TODO: I have some concerns about the performance of this when a lot of events are present.
-    // Maybe we need to update the DateMap to do this once and keep it updated based on what added/removed events.
 
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
@@ -232,7 +231,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       final events = eventsController.eventsFromDateTimeRange(date.dayRange);
 
       if (events.isEmpty) {
-        if (widget.isPaginated && !hasAddedMonth) {
+        if (widget.paginated && !hasAddedMonth) {
           _addMonthItem(date);
           hasAddedMonth = true;
         }
@@ -253,7 +252,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
         }
       }
 
-      if (!widget.isPaginated || widget.isPaginated && !hasAddedMonth) _addMonthItem(date);
+      if (!widget.paginated || widget.paginated && !hasAddedMonth) _addMonthItem(date);
 
       // Add all the events for the date.
       for (final (index, event) in events.indexed) {
@@ -303,78 +302,81 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            ScrollablePositionedList.builder(
-              itemScrollController: viewController.itemScrollController,
-              itemPositionsListener: viewController.itemPositionsListener,
-              itemCount: viewController.itemCount,
-              initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
-              itemBuilder: (context, index) {
-                final item = viewController.item(index);
-                final date = viewController.dateTimeFromIndex(index)!;
+    return Stack(
+      children: [
+        ScrollablePositionedList.builder(
+          itemScrollController: _itemScrollController,
+          itemPositionsListener: _itemPositionsListener,
+          itemCount: viewController.itemCount,
+          initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
+          physics: widget.configuration.scrollPhysics,
+          itemBuilder: (context, index) {
+            final item = viewController.item(index);
+            final date = viewController.dateTimeFromIndex(index)!;
 
-                late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
-                late final highlightStyle = styles.scheduleTileHighlightStyle;
-                late final highlightBuilder = components.scheduleTileHighlightBuilder;
+            late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
+            late final highlightStyle = styles.scheduleTileHighlightStyle;
+            late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
-                if (item is MonthItem) {
-                  return ListTile(title: Text(date.monthNameEnglish));
-                } else if (item is EmptyItem) {
-                  final child = ListTile(
-                    leading: leading,
-                    title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
-                  );
+            if (item is MonthItem) {
+              return ListTile(title: Text(date.monthNameEnglish));
+            } else if (item is EmptyItem) {
+              final child = ListTile(
+                leading: leading,
+                title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
+              );
 
-                  return highlightBuilder(
-                    date,
-                    viewController.highlightedDateTimeRange,
-                    highlightStyle,
-                    child,
-                  );
-                } else if (item is EventItem) {
-                  final showDate = item.isFirst;
-                  final event = eventsController.byId(item.eventId)!;
+              return highlightBuilder(
+                date,
+                viewController.highlightedDateTimeRange,
+                highlightStyle,
+                child,
+              );
+            } else if (item is EventItem) {
+              final showDate = item.isFirst;
+              final event = eventsController.byId(item.eventId)!;
 
-                  final child = ListTile(
-                    leading: showDate ? leading : const SizedBox(width: 32),
-                    title: ScheduleEventTile(
-                      controller: calendarController,
-                      eventsController: eventsController,
-                      callbacks: callbacks,
-                      tileComponents: tileComponents,
-                      event: event,
-                      dateTimeRange: date.dayRange,
-                      interaction: interaction,
-                    ),
-                  );
+              final child = ListTile(
+                leading: showDate ? leading : const SizedBox(width: 32),
+                title: ScheduleEventTile(
+                  controller: calendarController,
+                  eventsController: eventsController,
+                  callbacks: callbacks,
+                  tileComponents: tileComponents,
+                  event: event,
+                  dateTimeRange: date.dayRange,
+                  interaction: interaction,
+                ),
+              );
 
-                  return highlightBuilder(
-                    date,
-                    viewController.highlightedDateTimeRange,
-                    highlightStyle,
-                    child,
-                  );
-                } else {
-                  throw Exception('Unknown item type: ${item.runtimeType}');
-                }
-              },
-            ),
-            Positioned.fill(
-              // TODO: Implement cursor navigation.
-              child: ScheduleDragTarget(
+              return highlightBuilder(
+                date,
+                viewController.highlightedDateTimeRange,
+                highlightStyle,
+                child,
+              );
+            } else {
+              throw Exception('Unknown item type: ${item.runtimeType}');
+            }
+          },
+        ),
+        Positioned.fill(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ScheduleDragTarget(
                 eventsController: eventsController,
                 calendarController: calendarController,
                 callbacks: callbacks,
-                scheduleViewController: viewController,
+                viewController: viewController,
                 constraints: constraints,
-              ),
-            ),
-          ],
-        );
-      },
+                paginated: widget.paginated,
+                pageTriggerConfiguration: widget.configuration.pageTriggerConfiguration,
+                scrollTriggerConfiguration: widget.configuration.scrollTriggerConfiguration,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

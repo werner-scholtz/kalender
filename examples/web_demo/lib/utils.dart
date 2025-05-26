@@ -7,8 +7,9 @@ import 'package:web_demo/models/event.dart';
 /// Generate a list of events for the demo.
 List<CalendarEvent<Event>> generateEvents(BuildContext context) {
   final now = DateTime.now();
-  return List.generate(14, (index) {
-    final start = now.add(Duration(days: index - 7));
+  const numOfEvents = 1000;
+  return List.generate(numOfEvents, (index) {
+    final start = now.add(Duration(days: index - (numOfEvents ~/ 2)));
     final end = start.add(Duration(hours: Random().nextInt(3) + 1));
     return CalendarEvent(
       data: Event(

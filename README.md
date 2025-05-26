@@ -309,7 +309,6 @@ Examples:
 
   ```dart
   CalendarBody(
-    // The MonthBody makes use the MultiDayHeaderConfiguration
     monthBodyConfiguration: MonthBodyConfiguration(
       // Whether to show event tiles, useful if you want to display the header but not the tiles.
       showTiles: true,
@@ -346,8 +345,18 @@ Examples:
 
   ```dart
   CalendarBody(
-    // TODO: Add configuration options.
-    
+    scheduleBodyConfiguration: ScheduleBodyConfiguration(
+      // Behavior of empty days in the schedule body.
+      emptyDay: EmptyDayBehavior.hide,
+      // The configuration for triggering page navigation.
+      pageTriggerConfiguration: PageTriggerConfiguration(),
+      // The configuration for triggering scroll navigation.
+      scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+      // The physics used by the scrollable body.
+      scrollPhysics: BouncingScrollPhysics(),
+      // The physics used by the page view. (for paginated views)
+      pageScrollPhysics: BouncingScrollPhysics(),
+    ),
     interaction: ValueNotifier(
       CalendarInteraction(
         // Allow events to be resized.
