@@ -9,11 +9,12 @@ export 'package:kalender/src/calendar_view.dart';
 /// Enumerations
 export 'package:kalender/src/enumerations.dart';
 
-/// Layout Delegates
+/// Layout
 export 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
-export 'package:kalender/src/models/calendar_callbacks.dart';
+export 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 
 /// Models
+export 'package:kalender/src/models/calendar_callbacks.dart';
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
 export 'package:kalender/src/models/calendar_interaction.dart';
 

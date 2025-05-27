@@ -93,7 +93,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                     final time = await _showTimePicker(event.start);
                     if (time == null) return;
                     final start = event.start.copyWith(hour: time.hour, minute: time.minute);
-                    if (start.isAfter(event.end) || start == event.end) return;
+                    if (start.isAfter(event.end)) return;
 
                     final newRange = DateTimeRange(start: start, end: event.end);
                     final updatedEvent = event.copyWith(dateTimeRange: newRange);
@@ -126,7 +126,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                     final time = await _showTimePicker(event.end);
                     if (time == null) return;
                     final end = event.end.copyWith(hour: time.hour, minute: time.minute);
-                    if (end.isBefore(event.start) || end == event.start) return;
+                    if (end.isBefore(event.start)) return;
 
                     final newRange = DateTimeRange(start: event.start, end: end);
                     final updatedEvent = event.copyWith(dateTimeRange: newRange);

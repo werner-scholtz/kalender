@@ -1,6 +1,11 @@
+import 'dart:math';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/internal_components/multi_day_event_layout_widget.dart';
+import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
+import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// This widget is used to display multi-day events.
 ///
@@ -84,6 +89,259 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           eventPadding: eventPadding,
         );
       },
+    );
+  }
+}
+
+/// A widget that lays out events spanning multiple days in a calendar view.
+///
+/// The [MultiDayEventLayoutWidget] is responsible for arranging and displaying
+/// events that occur over multiple days in a visually organized manner. It ensures
+/// that overlapping or adjacent events are properly aligned and do not overlap
+/// visually.
+///
+/// This widget is used by month views and in day view headers, for  displaying multi-day activities.
+class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
+  const MultiDayEventLayoutWidget({
+    required this.events,
+    required this.eventsController,
+    required this.controller,
+    required this.visibleDateTimeRange,
+    required this.tileComponents,
+    required this.callbacks,
+    required this.dayWidth,
+    required this.showAllEvents,
+    required this.tileHeight,
+    required this.maxNumberOfVerticalEvents,
+    required this.eventPadding,
+    required this.interaction,
+    required this.generateMultiDayLayoutFrame,
+    required this.textDirection,
+    required this.multiDayOverlayBuilders,
+    required this.multiDayOverlayStyles,
+    super.key,
+  });
+
+  final EventsController<T> eventsController;
+  final CalendarController<T> controller;
+  final DateTimeRange visibleDateTimeRange;
+  final TileComponents<T> tileComponents;
+  final CalendarCallbacks<T>? callbacks;
+  final double dayWidth;
+  final bool showAllEvents;
+  final double tileHeight;
+  final int? maxNumberOfVerticalEvents;
+  final EdgeInsets? eventPadding;
+  final ValueNotifier<CalendarInteraction> interaction;
+  final OverlayBuilders<T>? multiDayOverlayBuilders;
+  final OverlayStyles? multiDayOverlayStyles;
+
+  /// The list of events that will be laid out.
+  ///
+  /// * Note: not all of these events will necessarily be visible,
+  ///         it depends on [maxNumberOfVerticalEvents].
+  final List<CalendarEvent<T>> events;
+
+  /// The function that generates the layout frame for the events.
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
+
+  /// The directionality of the widget.
+  final TextDirection textDirection;
+
+  @override
+  State<MultiDayEventLayoutWidget<T>> createState() => _MultiDayEventLayoutWidgetState<T>();
+}
+
+class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayEventLayoutWidget<T>> {
+  /// The range of dates that the events will be laid out on.
+  late DateTimeRange _dateTimeRange;
+
+  /// The layout frame that contains all the data needed to display the events.
+  late MultiDayLayoutFrame<T> _frame;
+
+  /// Get the render box of the widget.
+  RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
+
+  /// The function that generates the layout frame for the events.
+  GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
+      widget.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
+
+  /// The function that builds the overlay event tile for the event.
+  MultiDayOverlayEventTile<T> overlayEventTileBuilder(
+    CalendarEvent<T> event,
+    DateTimeRange dateTimeRange,
+    VoidCallback dismissOverlay,
+  ) {
+    return MultiDayOverlayEventTile<T>(
+      event: event,
+      dateTimeRange: dateTimeRange,
+      eventsController: widget.eventsController,
+      controller: widget.controller,
+      callbacks: widget.callbacks,
+      tileComponents: widget.tileComponents,
+      interaction: widget.interaction,
+      dismissOverlay: dismissOverlay,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _dateTimeRange = widget.visibleDateTimeRange;
+    _frame = generateMultiDayLayoutFrame(
+      visibleDateTimeRange: _dateTimeRange,
+      events: widget.events,
+      textDirection: widget.textDirection,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant MultiDayEventLayoutWidget<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final didUpdate = !oldWidget.events.equals(widget.events) ||
+        oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
+        oldWidget.generateMultiDayLayoutFrame != widget.generateMultiDayLayoutFrame ||
+        oldWidget.textDirection != widget.textDirection ||
+        oldWidget.tileHeight != widget.tileHeight ||
+        oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
+        oldWidget.showAllEvents != widget.showAllEvents ||
+        oldWidget.dayWidth != widget.dayWidth ||
+        oldWidget.interaction != widget.interaction ||
+        oldWidget.tileComponents != widget.tileComponents ||
+        oldWidget.callbacks != widget.callbacks ||
+        oldWidget.controller != widget.controller;
+
+    if (didUpdate) {
+      _dateTimeRange = widget.visibleDateTimeRange;
+
+      setState(() {
+        _frame = generateMultiDayLayoutFrame(
+          visibleDateTimeRange: _dateTimeRange,
+          events: widget.events,
+          textDirection: widget.textDirection,
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final (events, layoutInfo) = _frame.visibleEvents(widget.maxNumberOfVerticalEvents);
+
+    final maxNumberOfRows = widget.maxNumberOfVerticalEvents == null
+        ? _frame.totalNumberOfRows
+        : min(_frame.totalNumberOfRows, widget.maxNumberOfVerticalEvents!);
+
+    // The multi-day events widget is used to display the events that span multiple days.
+    final multiDayEventsWidget = CustomMultiChildLayout(
+      delegate: MultiDayLayout(
+        dateTimeRange: widget.visibleDateTimeRange,
+        layoutInfo: layoutInfo,
+        numberOfRows: maxNumberOfRows,
+        tileHeight: widget.tileHeight,
+      ),
+      children: events.map((item) {
+        final event = item;
+        final id = event.id;
+
+        return LayoutId(
+          id: id,
+          child: Padding(
+            padding: widget.eventPadding ?? const EdgeInsets.all(0),
+            child: MultiDayEventTile<T>(
+              event: event,
+              eventsController: widget.eventsController,
+              controller: widget.controller,
+              callbacks: widget.callbacks,
+              tileComponents: widget.tileComponents,
+              interaction: widget.interaction,
+              dateTimeRange: widget.visibleDateTimeRange,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+
+    // The drop target widget is used to show the drop target for the event that is being dragged.
+    final dropTargetWidget = ValueListenableBuilder(
+      valueListenable: widget.controller.selectedEvent,
+      builder: (context, event, child) {
+        if (event == null) return const SizedBox();
+        if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
+        if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
+        final frame = generateMultiDayLayoutFrame(
+          visibleDateTimeRange: widget.visibleDateTimeRange,
+          events: [event],
+          textDirection: widget.textDirection,
+        );
+
+        return CustomMultiChildLayout(
+          delegate: MultiDayLayout(
+            dateTimeRange: widget.visibleDateTimeRange,
+            layoutInfo: frame.layoutInfo,
+            numberOfRows: frame.totalNumberOfRows,
+            tileHeight: widget.tileHeight,
+          ),
+          children: [
+            LayoutId(
+              id: event.id,
+              child: event.id == -1 || event.id == widget.controller.selectedEventId
+                  ? Padding(
+                      padding: widget.eventPadding ?? const EdgeInsets.all(0),
+                      child: widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
+                    )
+                  : const SizedBox(),
+            ),
+          ],
+        );
+      },
+    );
+
+    late final expandWidgets = Row(
+      children: _frame.columnRowMap.entries.map((entry) {
+        final column = entry.key;
+        final row = entry.value;
+        final date = _frame.dateFromColumn(column);
+        final eventsForColumn = _frame.eventsForColumn(column);
+        late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
+
+        late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
+              date: date,
+              events: eventsForColumn,
+              numberOfHiddenRows: numberOfHiddenRows,
+              tileHeight: widget.tileHeight,
+              getMultiDayEventLayoutRenderBox: getRenderBox,
+              overlayBuilders: widget.multiDayOverlayBuilders,
+              overlayStyles: widget.multiDayOverlayStyles,
+            ) ??
+            MultiDayOverlayPortal<T>(
+              date: date,
+              events: eventsForColumn,
+              numberOfHiddenRows: numberOfHiddenRows,
+              tileHeight: widget.tileHeight,
+              getMultiDayEventLayoutRenderBox: getRenderBox,
+              overlayBuilders: widget.multiDayOverlayBuilders,
+              overlayStyles: widget.multiDayOverlayStyles,
+              overlayTileBuilder: overlayEventTileBuilder,
+            );
+
+        return Expanded(
+          child: row >= maxNumberOfRows ? overlayPortal : SizedBox(width: widget.dayWidth),
+        );
+      }).toList(),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
+          children: [
+            multiDayEventsWidget,
+            PassThroughPointer(child: dropTargetWidget),
+          ],
+        ),
+        if (_frame.totalNumberOfRows > maxNumberOfRows) expandWidgets,
+      ],
     );
   }
 }

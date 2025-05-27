@@ -97,7 +97,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     final events = eventIds.map((id) => dateMap.byId(id)).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
-      return events.where((event) => event.dateTimeRangeAsUtc.overlaps(dateTimeRange));
+      return _allEventsFromDateTimeRange(events, dateTimeRange);
     } else if (includeMultiDayEvents) {
       return _multiDayEventsFromDateTimeRange(events, dateTimeRange);
     } else if (includeDayEvents) {
@@ -105,6 +105,20 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     } else {
       return [];
     }
+  }
+
+  /// Finds all the [CalendarEvent]s that occur during the [dateTimeRange].
+  Iterable<CalendarEvent<T>> _allEventsFromDateTimeRange(
+    Iterable<CalendarEvent<T>> events,
+    DateTimeRange dateTimeRange,
+  ) {
+    return events.where(
+      (event) {
+        // If the event is a zero duration event at the start of the day, we should check for touching.
+        final touching = _checkTouching(event);
+        return event.dateTimeRangeAsUtc.overlaps(dateTimeRange, touching: touching);
+      },
+    );
   }
 
   /// Finds the [CalendarEvent]s longer than 1 day that occur during the [dateTimeRange].
@@ -127,9 +141,16 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;
-      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange);
+
+      // If the event is a zero duration event at the start of the day, we should check for touching.
+      final touching = _checkTouching(event);
+
+      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange, touching: touching);
     });
   }
+
+  /// Check if the event is touching the start of the day, and that is a zero duration event.
+  bool _checkTouching(CalendarEvent event) => event.start == event.end && event.start == event.start.startOfDay;
 }
 
 /// The default [EventsController] for managing [CalendarEvent]s.
