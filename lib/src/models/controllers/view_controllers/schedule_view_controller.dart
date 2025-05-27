@@ -69,7 +69,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   }
 
   /// Animate to the given index.
-  Future<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) async {
+  Future<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
     return itemScrollController.scrollTo(
       index: index,
       duration: duration ?? const Duration(milliseconds: 300),
@@ -93,7 +93,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final index = indexFromDateTime(date) ?? closestIndex(date);
+    final dateAsUtc = date.asUtc.startOfDay;
+    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
 
@@ -117,9 +118,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.startAsUtc.startOfDay;
-    final index = indexFromDateTime(date) ?? closestIndex(date);
-    return _animateToIndex(index);
+    final dateAsUtc = event.startAsUtc.startOfDay;
+    return animateToDate(dateAsUtc, duration: scrollDuration, curve: scrollCurve);
   }
 
   @override
@@ -151,7 +151,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   void jumpToDate(DateTime date) {
-    final index = indexFromDateTime(date) ?? closestIndex(date);
+    final dateAsUtc = date.asUtc.startOfDay;
+    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
     itemScrollController.jumpTo(index: index);
   }
 

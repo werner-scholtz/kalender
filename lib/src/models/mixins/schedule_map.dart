@@ -108,6 +108,7 @@ mixin ScheduleMap {
   }
 
   int? indexFromDateTimeForPage(int pageIndex, DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC.');
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     return dateTimeFirstItemIndex[date];
   }

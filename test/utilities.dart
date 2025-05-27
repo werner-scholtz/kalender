@@ -69,3 +69,16 @@ MaterialApp wrapWithMaterialApp(Widget child) {
     ),
   );
 }
+
+Future<void> pumpAndSettleWithMaterialApp(
+  WidgetTester tester,
+  Widget child, {
+  Duration? duration,
+}) async {
+  await tester.pumpWidget(wrapWithMaterialApp(child));
+  if (duration != null) {
+    await tester.pumpAndSettle(duration);
+  } else {
+    await tester.pumpAndSettle();
+  }
+}
