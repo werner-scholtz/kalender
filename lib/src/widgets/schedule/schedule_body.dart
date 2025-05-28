@@ -323,7 +323,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             } else if (item is EmptyItem) {
               final child = ListTile(
                 leading: leading,
-                title: tileComponents.emptyTileBuilder?.call(date.asLocal.dayRange),
+                title: tileComponents.emptyDayBuilder?.call(date.asLocal.dayRange),
               );
 
               return highlightBuilder(

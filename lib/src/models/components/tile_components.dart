@@ -61,8 +61,8 @@ class TileComponents<T extends Object?> {
 /// The components used by the [ScheduleBody] to render the event tiles.
 class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
 
-  /// The builder for the empty tile.
-  final EmptyTileBuilder<T>? emptyTileBuilder;
+  /// The builder for the empty day.
+  final EmptyDayBuilder<T>? emptyDayBuilder;
   
   @override
   ResizeHandlePositioner? get verticalHandlePositioner => null;
@@ -80,7 +80,7 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
     super.feedbackTileBuilder,
     super.overlayTileBuilder,
     super.dragAnchorStrategy,
-    this.emptyTileBuilder,
+    this.emptyDayBuilder,
   });
 }
 
@@ -135,6 +135,6 @@ typedef ResizeHandlePositioner = ResizeHandlePositionerWidget Function(
 /// The builder for the empty tile.
 /// 
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
-typedef EmptyTileBuilder<T extends Object?> = Widget Function(
+typedef EmptyDayBuilder<T extends Object?> = Widget Function(
   DateTimeRange tileRange,
 );
