@@ -85,7 +85,20 @@ class MobileHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SafeArea(child: EventOverlayPortal(child: SingleCalendarView())));
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Kalender Web Demo"),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+        actions: const [
+          ThemeButton(),
+          SizedBox(width: 4),
+          TextDirectionButton(),
+          SizedBox(width: 4),
+        ],
+      ),
+      body: const EventOverlayPortal(child: SingleCalendarView()),
+    );
   }
 }
 

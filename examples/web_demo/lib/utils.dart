@@ -14,7 +14,7 @@ List<CalendarEvent<Event>> generateEvents(BuildContext context) {
     return CalendarEvent(
       data: Event(
         title: 'Event $index',
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: Colors.blue,
       ),
       dateTimeRange: DateTimeRange(start: start, end: end),
     );
