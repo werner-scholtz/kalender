@@ -7,12 +7,20 @@ import 'utilities.dart';
 
 /// The goal of these test is to ensure that navigation for different view controllers/viewconfigurations works as expected.
 ///
-/// This includes:
+/// This test should be done for all the implementations of [ViewController]s:
 /// - [MultiDayViewConfiguration]
+///   - [MultiDayViewConfiguration.singleDay]
+///   - [MultiDayViewConfiguration.week]
+///   - [MultiDayViewConfiguration.workWeek]
+///   - [MultiDayViewConfiguration.custom]
+///   - [MultiDayViewConfiguration.freeScroll]
 /// - [MonthViewConfiguration]
+///   - [MonthViewConfiguration.singleMonth]
 /// - [ScheduleViewConfiguration]
+///   -[ScheduleViewConfiguration.continuous]
+///   -[ScheduleViewConfiguration.paginated]
 ///
-/// We need to test the following functionality of the [ViewController]:
+/// We will be testing the following functionality of the [ViewController]:
 ///
 /// - [ViewController.jumpToPage]
 /// - [ViewController.jumpToDate]
@@ -197,8 +205,120 @@ void main() {
       }
     });
 
-    group('paginated', () {
-      // TODO: Implement tests
+    testWidgets('paginated', (tester) async {
+      final viewConfiguration = ScheduleViewConfiguration.paginated(displayRange: displayRange);
+      final controller = CalendarController(initialDate: initialDate);
+
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: controller,
+          viewConfiguration: viewConfiguration,
+          callbacks: callbacks,
+          body: CalendarBody(
+            multiDayTileComponents: components,
+            monthTileComponents: components,
+            scheduleTileComponents: scheduleComponents,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.byType(ScheduleBody), findsOneWidget);
+
+      final jumpToDate = controller.jumpToDate;
+      final animateToDate = controller.animateToDate;
+      final animateToDateTime = controller.animateToDateTime;
+
+      final repeatableFunctions = [
+        jumpToDate,
+        animateToDate,
+        animateToDateTime,
+      ];
+
+      for (final function in repeatableFunctions) {
+        // Test the start date.
+        function.call(start);
+        await tester.pumpAndSettle();
+        expect(
+          controller.visibleDateTimeRange.value.start,
+          start,
+          reason: '$function should set the visible range start to the start date',
+        );
+        expect(
+          find.byKey(Key(eventsMap[start]!.toString())),
+          findsOneWidget,
+          reason: 'Event on start date should be visible ($function)',
+        );
+        var event = eventsController.byId(eventsMap[start]!);
+        expect(
+          controller.visibleEvents.value.contains(event),
+          isTrue,
+          reason: 'Event on start date should be in the visible events ($function)',
+        );
+
+        // Test the end date.
+        function.call(end);
+        await tester.pumpAndSettle();
+        expect(
+          end.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+          isTrue,
+          reason: '$function should include the end date in the visible range',
+        );
+        expect(
+          find.byKey(Key(eventsMap[end]!.toString())),
+          findsOneWidget,
+          reason: 'Event on end date should be visible ($function)',
+        );
+        event = eventsController.byId(eventsMap[end]!);
+        expect(
+          controller.visibleEvents.value.contains(event),
+          isTrue,
+          reason: 'Event on end date should be in the visible events ($function)',
+        );
+
+        // Test the initial date.
+        function.call(initialDate);
+        await tester.pumpAndSettle();
+        expect(
+          controller.visibleDateTimeRange.value.start,
+          initialDate,
+          reason: '$function should set the visible range start to the initial date',
+        );
+        expect(
+          find.byKey(Key(eventsMap[initialDate]!.toString())),
+          findsOneWidget,
+          reason: 'Event on initial date should be visible ($function)',
+        );
+        event = eventsController.byId(eventsMap[initialDate]!);
+        expect(
+          controller.visibleEvents.value.contains(event),
+          isTrue,
+          reason: 'Event on initial date should be in the visible events ($function)',
+        );
+      }
+
+      // Test animating to specific events.
+      final firstEvent = eventsController.byId(eventsMap[start]!)!;
+      final lastEvent = eventsController.byId(eventsMap[end]!)!;
+      final middleEvent = eventsController.byId(eventsMap[initialDate]!)!;
+      final eventsToTest = [firstEvent, lastEvent, middleEvent];
+
+      for (final event in eventsToTest) {
+        controller.animateToEvent(event);
+        await tester.pumpAndSettle();
+        expect(
+          controller.visibleEvents.value.contains(event),
+          isTrue,
+          reason: 'Event ${event.id} should be in the visible events after animating to it',
+        );
+        expect(
+          event.start.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+          isTrue,
+          reason: 'Event start ${event.start} should be within the visible range after animating to it',
+        );
+      }
     });
   });
 }

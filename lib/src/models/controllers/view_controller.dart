@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
@@ -25,7 +27,7 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
 
   /// Jump to the given [DateTime].
   @override
-  void jumpToDate(DateTime date);
+  FutureOr<void> jumpToDate(DateTime date);
 
   @override
   Future<void> animateToNextPage({
