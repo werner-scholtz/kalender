@@ -6,7 +6,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-* **Views:** Day, Multi-day and Month.
+* **Views:** Day, Multi-day, Month and Schedule. [find out more](#views)
 * **Reschedule:** Drag and Drop events. 
 * **Resize:** Resize events on desktop and mobile.
 * **Controllers:** Manage your calendar with these controllers. [find out more](#controllers)
@@ -25,6 +25,55 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 * **Event layout:** Examples of how to leverage this to achieve specific layouts.
 * **Repeating Events:** Repeating events that only have to be added once.
+
+## Preview
+
+### MultiDayView
+Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
+
+<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_day_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_day_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_day_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_day_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_week_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_week_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_week_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_week_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+
+### MonthView
+Shows an entire month at a glance, with days arranged horizontally.
+
+<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_month_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_month_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_month_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_month_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+
+### ScheduleView
+Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
+
+<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_schedule_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_schedule_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_schedule_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_schedule_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+<!-- <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/>
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/>   -->
 
 ## Basic Usage
 
@@ -68,50 +117,31 @@ Widget build(BuildContext context) {
 
 ## Views
 
-The calendar widget supports three main views:
+The calendar widget supports three main views types, MultiDay, Month and Schedule.
 
-- **MultiDayView:** Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
-- **MonthView:** Shows an entire month at a glance, with days arranged horizontally.
-- **ScheduleView:** Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
-
-> **Note:** The ScheduleView can be configured to be either continuous (infinite scroll) or paginated, depending on your application's requirements.
-
-Each view is designed for different use cases and can be configured to match your application's needs.
-
-These views can be configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
+These views are configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
 - The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
 - The MonthView is configured with the [MonthViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L6).
 - The Schedule view is configured with the [ScheduleViewConfiguration](TODO add link)
 
-### MultiDayViewConfiguration
+<!-- TODO: Add some details for each constructor provided. -->
+
+#### MultiDayViewConfiguration
 The `MultiDayViewConfiguration` has constructors for generic use cases such as:
 
 - [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36)
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
-
 - [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53)
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
-
 - [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87)
 
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/> 
-
-### MonthViewConfiguration
-The `MonthViewConfiguration` currently only has one constructor.
+#### MonthViewConfiguration
+The `MonthViewConfiguration` currently only has the one constructor.
 
 - [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
 
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/> 
-
-### ScheduleViewConfiguration
+#### ScheduleViewConfiguration
 The `ScheduleViewConfiguration` has two constructors:
 - [ScheduleViewConfiguration.continuous](TODO: add link)
-TODO: add image
-
 - [ScheduleViewConfiguration.paginated](TODO: add link)
-TODO: add image
 
 ## Controllers
 
