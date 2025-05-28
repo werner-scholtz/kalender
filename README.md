@@ -1,4 +1,4 @@
-This Flutter package offers a Calendar Widget featuring a Day, MultiDay and Month views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
+This Flutter package offers a Calendar Widget featuring a Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
 
 ## Web Demo
 
@@ -18,7 +18,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ### Features
 
-* **Directionality:** Right to Left directionality.
+* **Directionality:** Right to Left directionality for default widgets.
 * **Views:** FreeScroll calender view.
 
 ### Examples
@@ -31,14 +31,14 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 ### MultiDayView
 Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
 
-<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+<div style="padding:8px; display:inline-block; text-align:center;">
   <img src="assets/desktop_day_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/desktop_day_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/mobile_day_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/mobile_day_dark.png" width="9%" style="border-radius:6px;" />
 </div>
 
-<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+<div style="padding:8px; display:inline-block; text-align:center;">
   <img src="assets/desktop_week_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/desktop_week_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/mobile_week_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
@@ -49,7 +49,7 @@ Displays one or more days with time on the vertical axis, ideal for detailed sch
 ### MonthView
 Shows an entire month at a glance, with days arranged horizontally.
 
-<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+<div style="border-radius:8px; padding:8px; display:inline-block; text-align:center;">
   <img src="assets/desktop_month_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/desktop_month_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/mobile_month_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
@@ -60,7 +60,7 @@ Shows an entire month at a glance, with days arranged horizontally.
 ### ScheduleView
 Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
 
-<div style="border:2px solid #ccc; border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+<div style="padding:8px; display:inline-block; text-align:center;">
   <img src="assets/desktop_schedule_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/desktop_schedule_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
   <img src="assets/mobile_schedule_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
@@ -432,7 +432,7 @@ The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo)
 
 There are a few ways to customize the look of the calendar:
 - [Tile Components](#tile-components) allows you change the look of events rendered in the calendar.
-// TODO: mention schedule tile components.
+- [Schedule Tile Components]() 
 
 General Components:
 - [Multi-day Components](#month-components) allows you to change the look of the day and multi-day views.
@@ -481,8 +481,32 @@ The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can 
   </summary>
 </details>
 
-/// TODO: Add schedule components.
+<details>
+  <summary>ScheduleTileComponents details</summary>
 
+  ```dart
+  ScheduleTileComponents(
+    // The default builder for stationary event tiles.
+    tileBuilder: (event) => Container(),
+
+    // The builder for the stationary event tile. (When it is being dragged)
+    tileWhenDraggingBuilder: (event) => Container(),
+
+    // The builder for the feedback tile, follows the cursor/finger. (When it is being dragged)
+    feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+
+    // The builder for the drop target event tile.
+    dropTargetTile: (event) => Container(),
+
+    // The dragAnchorStrategy used by the [feedbackTileBuilder].
+    dragAnchorStrategy: childDragAnchorStrategy,
+
+    // The builder for empty days.
+    emptyDayBuilder: (dateTimeRange) => Container(),
+  )
+  ```
+  </summary>
+</details>
 
 
 ### General Components
@@ -606,4 +630,4 @@ You can create your own layoutStrategy, using the two provided strategies as a r
 
 #### Horizontal layout
 
-TODO: add docs about layout frames etc.
+<!-- TODO: add docs about layout frames etc. -->
