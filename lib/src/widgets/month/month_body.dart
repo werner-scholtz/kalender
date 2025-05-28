@@ -24,7 +24,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [MonthBody].
-  final TileComponents<T> tileComponents;
+  final TileComponents<T>? tileComponents;
 
   /// The [CalendarInteraction] that will be used by the [MonthBody].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -67,6 +67,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
     final components =
         calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>? ?? MonthBodyComponents<T>();
+    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 

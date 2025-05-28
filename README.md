@@ -82,9 +82,6 @@ A minimal example to get you started:
 ```dart
 final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
-final tileComponents = TileComponents(
-  tileBuilder: (event) => Container(color: Colors.green),
-);
 
 /// Add a [CalendarEvent] to the [EventsController].
 void addEvents() {
@@ -104,13 +101,8 @@ Widget build(BuildContext context) {
       onEventCreate: (event) => event.copyWith(data: "Some data"),
       onEventCreated: (event) => eventsController.addEvent(event),
     ),
-    header: CalendarHeader(
-      multiDayTileComponents: tileComponents,
-    ),
-    body: CalendarBody(
-      multiDayTileComponents: tileComponents,
-      monthTileComponents: tileComponents,
-    ),
+    header: CalendarHeader(),
+    body: CalendarBody(),
   );
 }
 ```

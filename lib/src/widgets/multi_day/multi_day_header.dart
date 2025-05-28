@@ -24,7 +24,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The [TileComponents] that will be used by the [MultiDayHeader].
-  final TileComponents<T> tileComponents;
+  final TileComponents<T>? tileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration<T>? configuration;
@@ -63,6 +63,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
     final components = calendarComponents?.multiDayComponents?.headerComponents as MultiDayHeaderComponents<T>? ??
         MultiDayHeaderComponents<T>();
+    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 

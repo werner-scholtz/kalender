@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/schedule/schedule_body.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {
@@ -14,20 +13,20 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [MultiDayBody].
-  final TileComponents<T> multiDayTileComponents;
+  final TileComponents<T>? multiDayTileComponents;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
   /// TODO: convert to MonthTileCompoenents.
-  final TileComponents<T> monthTileComponents;
+  final TileComponents<T>? monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? monthBodyConfiguration;
 
   /// The tile components used by the [ScheduleBody].
-  final ScheduleTileComponents<T> scheduleTileComponents;
+  final ScheduleTileComponents<T>? scheduleTileComponents;
 
   /// The configuration used by the schedule body.
   final ScheduleBodyConfiguration? scheduleBodyConfiguration;
@@ -52,11 +51,11 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     this.interaction,
     this.snapping,
-    required this.multiDayTileComponents,
+    this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
-    required this.monthTileComponents,
+    this.monthTileComponents,
     this.monthBodyConfiguration,
-    required this.scheduleTileComponents,
+    this.scheduleTileComponents,
     this.scheduleBodyConfiguration,
   });
 

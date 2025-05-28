@@ -19,7 +19,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [ScheduleBody].
-  final ScheduleTileComponents<T> tileComponents;
+  final ScheduleTileComponents<T>? tileComponents;
 
   /// The [CalendarInteraction] that will be used by the [ScheduleBody].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -54,6 +54,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
+    final tileComponents = this.tileComponents ?? ScheduleTileComponents.defaultComponents<T>();
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(

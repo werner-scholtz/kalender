@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart' show CalendarEvent, ResizeHandlePositionerWidget;
+import 'package:kalender/kalender.dart'
+    show CalendarEvent, ResizeHandlePositionerWidget, MultiDayBody, MonthBody, ScheduleBody;
+import 'package:kalender/src/widgets/components/default_tile_components.dart';
 
-/// The components used by the [MultiDayBody] to render the event tiles.
+/// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
 ///
 /// See [Draggable] for more information on how the components are used.
 /// - [tileBuilder]
@@ -56,14 +58,22 @@ class TileComponents<T extends Object?> {
     this.horizontalHandlePositioner,
     this.horizontalResizeHandle,
   });
+
+  static TileComponents<T> defaultComponents<T extends Object?>() {
+    return TileComponents<T>(
+      tileBuilder: defaultTileBuilder,
+      tileWhenDraggingBuilder: defaultTileWhenDraggingBuilder,
+      feedbackTileBuilder: defaultFeedbackTileBuilder,
+      dropTargetTile: defaultDropTargetBuilder,
+    );
+  }
 }
 
 /// The components used by the [ScheduleBody] to render the event tiles.
 class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
-
   /// The builder for the empty day.
   final EmptyDayBuilder<T>? emptyDayBuilder;
-  
+
   @override
   ResizeHandlePositioner? get verticalHandlePositioner => null;
   @override
@@ -82,6 +92,12 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
     super.dragAnchorStrategy,
     this.emptyDayBuilder,
   });
+
+  static ScheduleTileComponents<T> defaultComponents<T extends Object?>() {
+    return ScheduleTileComponents<T>(
+      tileBuilder: defaultTileBuilder,
+    );
+  }
 }
 
 /// The default builder for the event tiles.
@@ -131,10 +147,9 @@ typedef ResizeHandlePositioner = ResizeHandlePositionerWidget Function(
   bool showEnd,
 );
 
-
 /// The builder for the empty tile.
-/// 
-/// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
+///
+/// [tileRange] is the [DateTimeRange] of the ListTile where this widget will be displayed.
 typedef EmptyDayBuilder<T extends Object?> = Widget Function(
   DateTimeRange tileRange,
 );

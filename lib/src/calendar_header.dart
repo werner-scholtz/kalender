@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/schedule/schedule_header.dart';
 
 class CalendarHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T>? eventsController;
@@ -18,7 +17,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   final MultiDayHeaderConfiguration<T>? multiDayHeaderConfiguration;
 
   /// The tile components used by the [MultiDayHeader].
-  final TileComponents<T> multiDayTileComponents;
+  final TileComponents<T>? multiDayTileComponents;
 
   /// The interaction notifier used by the [MultiDayHeader].
   final ValueNotifier<CalendarInteraction>? interaction;
