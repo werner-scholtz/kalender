@@ -15,12 +15,12 @@ class CalendarConfiguration extends ChangeNotifier {
   /// The available view configurations of the calendar.
   final viewConfigurations = [
     MultiDayViewConfiguration.singleDay(),
-    ScheduleViewConfiguration.continuous(),
-    ScheduleViewConfiguration.paginated(),
     MultiDayViewConfiguration.week(),
     MultiDayViewConfiguration.workWeek(),
-    MultiDayViewConfiguration.custom(numberOfDays: 3),
+    MultiDayViewConfiguration.custom(numberOfDays: 3, name: "Custom 3 Days"),
     MonthViewConfiguration.singleMonth(),
+    ScheduleViewConfiguration.continuous(name: "Schedule"),
+    ScheduleViewConfiguration.paginated(name: "Paginated Schedule"),
     MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)"),
   ];
 
