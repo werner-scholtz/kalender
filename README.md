@@ -32,27 +32,27 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_day_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_day_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_day_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_day_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_day_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_day_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_day_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_day_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_week_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_week_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_week_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_week_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_week_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_week_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_week_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_week_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 ### MonthView
 Shows an entire month at a glance, with days arranged horizontally.
 
 <div style="border-radius:8px; padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_month_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_month_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_month_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_month_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_month_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_month_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_month_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_month_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 
@@ -60,10 +60,10 @@ Shows an entire month at a glance, with days arranged horizontally.
 Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_schedule_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_schedule_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_schedule_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_schedule_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_schedule_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_schedule_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_schedule_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_schedule_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 ## Basic Usage
