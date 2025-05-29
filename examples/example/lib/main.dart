@@ -108,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
           multiDayComponentStyles: MultiDayComponentStyles(),
           monthComponents: MonthComponents(),
           monthComponentStyles: MonthComponentStyles(),
+          scheduleComponents: ScheduleComponents(),
+          scheduleComponentStyles: const ScheduleComponentStyles(),
         ),
         // Style the header with a martial widget.
         header: Material(

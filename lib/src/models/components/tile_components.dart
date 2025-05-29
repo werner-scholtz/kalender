@@ -72,7 +72,10 @@ class TileComponents<T extends Object?> {
 /// The components used by the [ScheduleBody] to render the event tiles.
 class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
   /// The builder for the empty day.
-  final EmptyDayBuilder<T>? emptyDayBuilder;
+  final EmptyItemBuilder? emptyItemBuilder;
+
+  /// The builder for the month tile.
+  final MonthItemBuilder? monthItemBuilder;
 
   @override
   ResizeHandlePositioner? get verticalHandlePositioner => null;
@@ -90,7 +93,8 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
     super.feedbackTileBuilder,
     super.overlayTileBuilder,
     super.dragAnchorStrategy,
-    this.emptyDayBuilder,
+    this.emptyItemBuilder,
+    this.monthItemBuilder,
   });
 
   static ScheduleTileComponents<T> defaultComponents<T extends Object?>() {
@@ -147,9 +151,12 @@ typedef ResizeHandlePositioner = ResizeHandlePositionerWidget Function(
   bool showEnd,
 );
 
-/// The builder for the empty tile.
+/// The builder for the empty item.
 ///
 /// [tileRange] is the [DateTimeRange] of the ListTile where this widget will be displayed.
-typedef EmptyDayBuilder<T extends Object?> = Widget Function(
-  DateTimeRange tileRange,
-);
+typedef EmptyItemBuilder = Widget Function(DateTimeRange tileRange);
+
+/// The builder for the month item.
+///
+/// [monthRange] is the [DateTimeRange] of the month.
+typedef MonthItemBuilder = Widget Function(DateTimeRange monthRange);

@@ -95,6 +95,7 @@ Widget build(BuildContext context) {
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
+    // The calender widget will automatically display the correct header & body widgets based on the viewConfiguration.
     viewConfiguration: MultiDayViewConfiguration.singleDay(),
     callbacks: CalendarCallbacks(
       onEventTapped: (event, renderBox) => controller.selectEvent(event),
@@ -109,7 +110,7 @@ Widget build(BuildContext context) {
 
 ## Views
 
-The calendar widget supports three main views types, MultiDay, Month and Schedule.
+The calendar widget supports three main views types, MultiDay, Month and Schedule. 
 
 These views are configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
 - The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
@@ -119,29 +120,30 @@ These views are configured with [ViewConfiguration](https://github.com/werner-sc
 <!-- TODO: Add some details for each constructor provided. -->
 
 #### MultiDayViewConfiguration
-The `MultiDayViewConfiguration` has constructors for generic use cases such as:
+The `MultiDayViewConfiguration` has the following constructors.
 
-- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36)
-- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53)
-- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87)
+- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36) displays a single day.
+- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53) displays a whole week.
+- [MultiDayViewConfiguration.workWeek()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays monday to friday.
+- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays a custom amount of days.
 
 #### MonthViewConfiguration
 The `MonthViewConfiguration` currently only has the one constructor.
 
-- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
+- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37) displays one whole month.
 
 #### ScheduleViewConfiguration
 The `ScheduleViewConfiguration` has two constructors:
-- [ScheduleViewConfiguration.continuous](TODO: add link)
-- [ScheduleViewConfiguration.paginated](TODO: add link)
+- [ScheduleViewConfiguration.continuous](TODO: add link) displays a single list of all events.
+- [ScheduleViewConfiguration.paginated](TODO: add link) displays a single list of events for each month in a pageview.
 
 ## Controllers
 
-The two controllers EventsController and CalendarController do what their names imply:
+The two controllers EventsController and CalendarController do what their names imply.
 
 ### EventsController
 
-The [EventsController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to calendar widgets.
+The [EventsController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to calendar widgets. Usually there will only be one of these per app.
 It has a few functions to manipulate events:
 - `addEvent` Add a new event.
 - `addEvents` Add multiple new events.
@@ -291,6 +293,7 @@ Examples:
     ),
   );
   ```
+
   </summary>
 </details>
 
@@ -343,6 +346,7 @@ Examples:
     ),
   );
   ```
+
   </summary>
 </details>
 
@@ -427,8 +431,9 @@ There are a few ways to customize the look of the calendar:
 - [Schedule Tile Components]() 
 
 General Components:
-- [Multi-day Components](#month-components) allows you to change the look of the day and multi-day views.
-- [Month Components](#tile-components) allows you to change the look of the month view.
+- [Multi-day Components](#custom-components) allows you to change the look of the day and multi-day views.
+- [Month Components](#custom-components) allows you to change the look of the month view.
+- [Schedule Components](#custom-components)
 
 ### Tile Components
 
@@ -493,8 +498,11 @@ The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can 
     // The dragAnchorStrategy used by the [feedbackTileBuilder].
     dragAnchorStrategy: childDragAnchorStrategy,
 
-    // The builder for empty days.
-    emptyDayBuilder: (dateTimeRange) => Container(),
+    // The builder for empty items.
+    emptyItemBuilder: (tileRange) => Container(),
+
+    // The builder for month items.
+    monthItemBuilder: (monthRange) => Container(),
   )
   ```
   </summary>
@@ -511,8 +519,8 @@ By default the calendar uses default components which can be customized with `Co
 
 #### Default Component Styles
 
-> You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart).
-
+> You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart) and/or
+[`ScheduleComponents`](TODO: add link)
 #### Custom Components
 
 <details>
@@ -547,6 +555,7 @@ By default the calendar uses default components which can be customized with `Co
     ),
   );
   ```
+
   </summary>
 </details>
 
@@ -610,6 +619,24 @@ By default the calendar uses default components which can be customized with `Co
   </summary>
 </details>
 
+<details>
+  <summary>ScheduleComponents</summary>
+
+  ```dart
+  CalendarView(
+    components: CalendarComponents(
+      scheduleComponents: ScheduleComponents(
+        // Custom leading date builder.
+        dayHeaderBuilder: (date, style) => Container(),
+        // Custom tile highlight builder.
+        scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) => Container(child: child),
+      ),
+    ),
+  );
+  ```
+
+  </summary>
+</details>
 
 ### Event layout
 
