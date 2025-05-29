@@ -1,3 +1,11 @@
+# 0.8.0
+
+### Features
+
+- Reimplemented schedule view. [discussion 122](https://github.com/werner-scholtz/kalender/discussions/122), [#130
+](https://github.com/werner-scholtz/kalender/issues/130)
+- The tile builder is no longer a required parameter, default tiles are now provided. (Highly recommended to override these.)
+
 ## 0.7.2
 
 - fix: Calendar event at 00:00 not visible (zero duration) [#159](https://github.com/werner-scholtz/kalender/issues/158)
