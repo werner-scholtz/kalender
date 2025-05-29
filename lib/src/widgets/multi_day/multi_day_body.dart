@@ -32,7 +32,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [MultiDayBody].
-  final TileComponents<T> tileComponents;
+  final TileComponents<T>? tileComponents;
 
   /// The [ValueNotifier] containing the [heightPerMinute] value.
   final ValueNotifier<double>? heightPerMinute;
@@ -85,6 +85,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final calendarComponents = provider?.components;
     final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
     final components = calendarComponents?.multiDayComponents?.bodyComponents ?? const MultiDayBodyComponents();
+    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
     final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());

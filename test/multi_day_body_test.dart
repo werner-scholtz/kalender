@@ -15,6 +15,12 @@ void main() {
       color: Colors.red,
     ),
   );
+  final scheduleComponents = ScheduleTileComponents(
+    tileBuilder: (event, tileRange) => Container(
+      key: ValueKey(event.data as int?),
+      color: Colors.blue,
+    ),
+  );
 
   group('MultiDayBody', () {
     group('Gesture Tests', () {
@@ -74,6 +80,7 @@ void main() {
                 body: CalendarBody(
                   multiDayTileComponents: components,
                   monthTileComponents: components,
+                  scheduleTileComponents: scheduleComponents,
                 ),
               ),
             ),
@@ -128,6 +135,7 @@ void main() {
                 body: CalendarBody(
                   multiDayTileComponents: components,
                   monthTileComponents: components,
+                  scheduleTileComponents: scheduleComponents,
                 ),
               ),
             ),
@@ -171,6 +179,7 @@ void main() {
                 body: CalendarBody(
                   multiDayTileComponents: components,
                   monthTileComponents: components,
+                  scheduleTileComponents: scheduleComponents,
                 ),
               ),
             ),

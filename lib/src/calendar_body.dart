@@ -13,16 +13,23 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
 
   /// The tile components used by the [MultiDayBody].
-  final TileComponents<T> multiDayTileComponents;
+  final TileComponents<T>? multiDayTileComponents;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
-  final TileComponents<T> monthTileComponents;
+  /// TODO: convert to MonthTileCompoenents.
+  final TileComponents<T>? monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? monthBodyConfiguration;
+
+  /// The tile components used by the [ScheduleBody].
+  final ScheduleTileComponents<T>? scheduleTileComponents;
+
+  /// The configuration used by the schedule body.
+  final ScheduleBodyConfiguration? scheduleBodyConfiguration;
 
   /// The [CalendarInteraction] that will be used by the [CalendarBody].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -35,7 +42,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// This creates the correct body based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayBody]
   /// - [MonthBody]
-  /// - TODO: add schedule view.
+  /// - [ScheduleBody]
   ///
   const CalendarBody({
     super.key,
@@ -44,10 +51,12 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     this.interaction,
     this.snapping,
-    required this.multiDayTileComponents,
+    this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
-    required this.monthTileComponents,
+    this.monthTileComponents,
     this.monthBodyConfiguration,
+    this.scheduleTileComponents,
+    this.scheduleBodyConfiguration,
   });
 
   @override
@@ -79,6 +88,14 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         tileComponents: monthTileComponents,
         configuration: monthBodyConfiguration,
         interaction: interaction,
+      );
+    } else if (viewController is ScheduleViewController<T>) {
+      return ScheduleBody<T>(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        callbacks: callbacks,
+        tileComponents: scheduleTileComponents,
+        configuration: scheduleBodyConfiguration,
       );
     } else {
       throw UnimplementedError();

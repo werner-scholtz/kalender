@@ -24,6 +24,8 @@ export 'package:kalender/src/models/components/month_components.dart';
 export 'package:kalender/src/models/components/month_styles.dart';
 export 'package:kalender/src/models/components/multi_day_components.dart';
 export 'package:kalender/src/models/components/multi_day_styles.dart';
+export 'package:kalender/src/models/components/schedule_components.dart';
+export 'package:kalender/src/models/components/schedule_styles.dart';
 export 'package:kalender/src/models/components/tile_components.dart';
 
 /// Controllers
@@ -36,6 +38,7 @@ export 'package:kalender/src/models/navigation_triggers.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/models/view_configurations/month_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
+export 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
 /// View Configurations
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -56,3 +59,5 @@ export 'package:kalender/src/widgets/month/month_body.dart';
 export 'package:kalender/src/widgets/month/month_header.dart';
 export 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 export 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
+export 'package:kalender/src/widgets/schedule/schedule_body.dart';
+export 'package:kalender/src/widgets/schedule/schedule_header.dart';

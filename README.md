@@ -1,4 +1,4 @@
-This Flutter package offers a Calendar Widget featuring a Day, MultiDay and Month views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
+This Flutter package offers a Calendar Widget featuring a Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
 
 ## Web Demo
 
@@ -6,7 +6,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
-* **Views:** Day, Multi-day and Month.
+* **Views:** Day, Multi-day, Month and Schedule. [find out more](#views)
 * **Reschedule:** Drag and Drop events. 
 * **Resize:** Resize events on desktop and mobile.
 * **Controllers:** Manage your calendar with these controllers. [find out more](#controllers)
@@ -18,13 +18,62 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 
 ### Features
 
-* **Directionality:** Right to Left directionality.
-* **Views:** Add Schedule and FreeScroll.
+* **Directionality:** Right to Left directionality for default widgets.
+* **Views:** FreeScroll calender view.
 
 ### Examples
 
 * **Event layout:** Examples of how to leverage this to achieve specific layouts.
 * **Repeating Events:** Repeating events that only have to be added once.
+
+## Preview
+
+### MultiDayView
+Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
+
+<div style="padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_day_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_day_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_day_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_day_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+<div style="padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_week_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_week_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_week_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_week_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+
+### MonthView
+Shows an entire month at a glance, with days arranged horizontally.
+
+<div style="border-radius:8px; padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_month_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_month_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_month_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_month_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+
+### ScheduleView
+Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
+
+<div style="padding:8px; display:inline-block; text-align:center;">
+  <img src="assets/desktop_schedule_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/desktop_schedule_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_schedule_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="assets/mobile_schedule_dark.png" width="9%" style="border-radius:6px;" />
+</div>
+
+<!-- <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/>
+
+<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/>   -->
 
 ## Basic Usage
 
@@ -33,9 +82,6 @@ A minimal example to get you started:
 ```dart
 final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
-final tileComponents = TileComponents(
-  tileBuilder: (event) => Container(color: Colors.green),
-);
 
 /// Add a [CalendarEvent] to the [EventsController].
 void addEvents() {
@@ -49,62 +95,55 @@ Widget build(BuildContext context) {
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
+    // The calender widget will automatically display the correct header & body widgets based on the viewConfiguration.
     viewConfiguration: MultiDayViewConfiguration.singleDay(),
     callbacks: CalendarCallbacks(
       onEventTapped: (event, renderBox) => controller.selectEvent(event),
       onEventCreate: (event) => event.copyWith(data: "Some data"),
       onEventCreated: (event) => eventsController.addEvent(event),
     ),
-    header: CalendarHeader(
-      multiDayTileComponents: tileComponents,
-    ),
-    body: CalendarBody(
-      multiDayTileComponents: tileComponents,
-      monthTileComponents: tileComponents,
-    ),
+    header: CalendarHeader(),
+    body: CalendarBody(),
   );
 }
 ```
 
 ## Views
 
-Currently there are two views the MultiDayView and MonthView.
-- The MultiDayView displays time on the vertical axis. (This view is special in that the header can display time on the horizontal axis as well)
-- The MonthView displays time on a horizontal axis.
+The calendar widget supports three main views types, MultiDay, Month and Schedule. 
 
-These two views can be configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
+These views are configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
 - The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
 - The MonthView is configured with the [MonthViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L6).
+- The Schedule view is configured with the [ScheduleViewConfiguration](TODO add link)
 
-### MultiDayViewConfiguration
-The `MultiDayViewConfiguration` has constructors for generic use cases such as:
+<!-- TODO: Add some details for each constructor provided. -->
 
-- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36)
+#### MultiDayViewConfiguration
+The `MultiDayViewConfiguration` has the following constructors.
 
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
+- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36) displays a single day.
+- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53) displays a whole week.
+- [MultiDayViewConfiguration.workWeek()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays monday to friday.
+- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays a custom amount of days.
 
-- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53)
+#### MonthViewConfiguration
+The `MonthViewConfiguration` currently only has the one constructor.
 
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
+- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37) displays one whole month.
 
-- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87)
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/> 
-
-### MonthViewConfiguration
-The `MonthViewConfiguration` currently only has one constructor.
-
-- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37)
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/> 
+#### ScheduleViewConfiguration
+The `ScheduleViewConfiguration` has two constructors:
+- [ScheduleViewConfiguration.continuous](TODO: add link) displays a single list of all events.
+- [ScheduleViewConfiguration.paginated](TODO: add link) displays a single list of events for each month in a pageview.
 
 ## Controllers
 
-The two controllers EventsController and CalendarController do what their names imply:
+The two controllers EventsController and CalendarController do what their names imply.
 
 ### EventsController
 
-The [EventsController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to calendar widgets.
+The [EventsController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to calendar widgets. Usually there will only be one of these per app.
 It has a few functions to manipulate events:
 - `addEvent` Add a new event.
 - `addEvents` Add multiple new events.
@@ -138,9 +177,14 @@ This controller has a few functions for navigating the calendar widget:
 - `animateToDateTime`: Animate to the given date time.
 - `animateToEvent` Animate to the given event.
 
-> The CalendarController makes use of a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) which implements these functions for a specific view type (MultiDay, Month).
-  These specific implementations of the ViewController ([MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70), [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)) uses the [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11),
-  which has specific implementations these functions.
+> The `CalendarController` uses a [ViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) internally, which provides navigation and state management for a specific calendar view type (MultiDay, Month, or Schedule).  
+>
+> There are specialized implementations of `ViewController` for each view:
+> - [MultiDayViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L70)
+> - [MonthViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L243)
+> - [ScheduleViewController](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L349)
+>
+> Each of these controllers works with a corresponding [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/view_configurations/view_configuration.dart#L11) (such as `MultiDayViewConfiguration`, `MonthViewConfiguration`, or `ScheduleViewConfiguration`) to handle view-specific logic and behaviors.
 
 
 ## Behavior
@@ -208,7 +252,7 @@ The `CalendarHeader` and `CalendarBody` also take a `CalendarInteraction` ValueN
 - allowEventCreation
 - createEventGesture
 
-The `CalendarBody` takes a `CalendarSnapping` ValueNotifier that allows you to customize how snapping works.
+The `CalendarBody` takes a `CalendarSnapping` ValueNotifier that allows you to customize how snapping works for Day/Multiday views.
 - snapIntervalMinutes
 - snapToTimeIndicator
 - snapToOtherEvents
@@ -249,6 +293,7 @@ Examples:
     ),
   );
   ```
+
   </summary>
 </details>
 
@@ -301,15 +346,15 @@ Examples:
     ),
   );
   ```
+
   </summary>
 </details>
 
 <details>
-  <summary>MultiDayHeaderConfiguration</summary>
+  <summary>MonthBodyConfiguration</summary>
 
   ```dart
   CalendarBody(
-    // The MonthBody makes use the MultiDayHeaderConfiguration
     monthBodyConfiguration: MonthBodyConfiguration(
       // Whether to show event tiles, useful if you want to display the header but not the tiles.
       showTiles: true,
@@ -341,6 +386,38 @@ Examples:
   </summary>
 </details>
 
+<details>
+  <summary>ScheduleViewConfiguration</summary>
+
+  ```dart
+  CalendarBody(
+    scheduleBodyConfiguration: ScheduleBodyConfiguration(
+      // Behavior of empty days in the schedule body.
+      emptyDay: EmptyDayBehavior.hide,
+      // The configuration for triggering page navigation.
+      pageTriggerConfiguration: PageTriggerConfiguration(),
+      // The configuration for triggering scroll navigation.
+      scrollTriggerConfiguration: ScrollTriggerConfiguration(),
+      // The physics used by the scrollable body.
+      scrollPhysics: BouncingScrollPhysics(),
+      // The physics used by the page view. (for paginated views)
+      pageScrollPhysics: BouncingScrollPhysics(),
+    ),
+    interaction: ValueNotifier(
+      CalendarInteraction(
+        // Allow events to be resized.
+        allowResizing: true,
+        // Allow events to be rescheduled.
+        allowRescheduling: true,
+        // Allow events to be created.
+        allowEventCreation: true,
+      ),
+    ),
+  );
+  ```
+  </summary>
+</details>
+
 ### Zoom Example
 
 It is possible to zoom the calendar in/out.
@@ -351,10 +428,12 @@ The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo)
 
 There are a few ways to customize the look of the calendar:
 - [Tile Components](#tile-components) allows you change the look of events rendered in the calendar.
+- [Schedule Tile Components]() 
 
 General Components:
-- [Multi-day Components](#month-components) allows you to change the look of the day and multi-day views.
-- [Month Components](#tile-components) allows you to change the look of the month view.
+- [Multi-day Components](#custom-components) allows you to change the look of the day and multi-day views.
+- [Month Components](#custom-components) allows you to change the look of the month view.
+- [Schedule Components](#custom-components)
 
 ### Tile Components
 
@@ -399,6 +478,35 @@ The `CalendarBody` and `CalendarHeader` have a `TileComponents` object that can 
   </summary>
 </details>
 
+<details>
+  <summary>ScheduleTileComponents details</summary>
+
+  ```dart
+  ScheduleTileComponents(
+    // The default builder for stationary event tiles.
+    tileBuilder: (event) => Container(),
+
+    // The builder for the stationary event tile. (When it is being dragged)
+    tileWhenDraggingBuilder: (event) => Container(),
+
+    // The builder for the feedback tile, follows the cursor/finger. (When it is being dragged)
+    feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
+
+    // The builder for the drop target event tile.
+    dropTargetTile: (event) => Container(),
+
+    // The dragAnchorStrategy used by the [feedbackTileBuilder].
+    dragAnchorStrategy: childDragAnchorStrategy,
+
+    // The builder for empty items.
+    emptyItemBuilder: (tileRange) => Container(),
+
+    // The builder for month items.
+    monthItemBuilder: (monthRange) => Container(),
+  )
+  ```
+  </summary>
+</details>
 
 
 ### General Components
@@ -411,8 +519,8 @@ By default the calendar uses default components which can be customized with `Co
 
 #### Default Component Styles
 
-> You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart).
-
+> You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart) and/or
+[`ScheduleComponents`](TODO: add link)
 #### Custom Components
 
 <details>
@@ -447,6 +555,7 @@ By default the calendar uses default components which can be customized with `Co
     ),
   );
   ```
+
   </summary>
 </details>
 
@@ -510,11 +619,50 @@ By default the calendar uses default components which can be customized with `Co
   </summary>
 </details>
 
+<details>
+  <summary>ScheduleComponents</summary>
+
+  ```dart
+  CalendarView(
+    components: CalendarComponents(
+      scheduleComponents: ScheduleComponents(
+        // Custom leading date builder.
+        dayHeaderBuilder: (date, style) => Container(),
+        // Custom tile highlight builder.
+        scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) => Container(child: child),
+      ),
+    ),
+  );
+  ```
+
+  </summary>
+</details>
 
 ### Event layout
 
+#### Vertical layout
 The packages makes use of [CustomMultiChildLayout](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) to layout event tiles.
 The `CustomMultiChildLayout` uses a [MultiChildLayoutDelegate](https://api.flutter.dev/flutter/rendering/MultiChildLayoutDelegate-class.html) to determine the positions of tiles.
 
 The package provides some default layoutStrategies, [overlapLayoutStrategy](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/layout_delegates/event_layout_delegate.dart#L26) and [sideBySideLayoutStrategy](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/layout_delegates/event_layout_delegate.dart#L41) for day/multi-day views.
 You can create your own layoutStrategy, using the two provided strategies as a reference might be useful.
+
+#### Horizontal layout
+
+For horizontal event layouts (such as in the month view or multiday header), the package arranges event tiles in rows, where each row represents events and each column represents a day. Events that span multiple days are displayed as a single tile stretching across the relevant columns.
+
+The layout is managed using a custom [MultiChildLayoutDelegate](https://api.flutter.dev/flutter/rendering/MultiChildLayoutDelegate-class.html), which relies on a **layout frame** (`MultiDayLayoutFrame`) to determine the position and size of each event tile. The layout frame is generated by a strategy function (such as `defaultMultiDayFrameGenerator`) and contains all the metadata needed for rendering:  
+- The row and column assignments for each event  
+- The total number of rows required  
+- A mapping of columns (dates) to the number of rows  
+- The list of events to display
+
+The layout frame ensures that:
+- Overlapping events are placed on separate rows.
+- Multi-day events are visually continuous across the days they span.
+- The number of rows adapts to the number of overlapping or multi-day events.
+
+By default, the package provides a layout strategy that:
+- Assigns each event to the first available row where it does not overlap with other events.
+- Calculates the width of each event tile based on the number of days it spans.
+- Updates the layout frame to reflect the current visible date range and event set.

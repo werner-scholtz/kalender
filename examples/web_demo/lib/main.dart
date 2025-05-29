@@ -52,6 +52,12 @@ class MyAppState extends State<MyApp> {
   DefaultEventsController<Event> get eventsController => _eventsController;
 
   @override
+  void initState() {
+    super.initState();
+    _eventsController.addEvents(generateEvents(context));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isMobile = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
     return MaterialApp(
@@ -79,7 +85,20 @@ class MobileHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SafeArea(child: EventOverlayPortal(child: SingleCalendarView())));
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Kalender Web Demo"),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+        actions: const [
+          ThemeButton(),
+          SizedBox(width: 4),
+          TextDirectionButton(),
+          SizedBox(width: 4),
+        ],
+      ),
+      body: const EventOverlayPortal(child: SingleCalendarView()),
+    );
   }
 }
 
@@ -92,14 +111,6 @@ class DesktopHomePage extends StatefulWidget {
 class _DesktopHomePageState extends State<DesktopHomePage> {
   /// The type of the calendar view.
   ViewType _type = ViewType.single;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _insertEvents);
-  }
-
-  void _insertEvents() => MyApp.eventsController(context).addEvents(generateEvents(context));
 
   @override
   Widget build(BuildContext context) {

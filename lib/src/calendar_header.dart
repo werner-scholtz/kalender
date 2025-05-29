@@ -17,7 +17,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   final MultiDayHeaderConfiguration<T>? multiDayHeaderConfiguration;
 
   /// The tile components used by the [MultiDayHeader].
-  final TileComponents<T> multiDayTileComponents;
+  final TileComponents<T>? multiDayTileComponents;
 
   /// The interaction notifier used by the [MultiDayHeader].
   final ValueNotifier<CalendarInteraction>? interaction;
@@ -29,6 +29,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   /// This creates the correct header based on the [ViewController] inside the [CalendarController]
   /// - [MultiDayHeader]
   /// - [MonthHeader]
+  /// - [ScheduleHeader]
   ///
   const CalendarHeader({
     super.key,
@@ -64,6 +65,8 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
       return MonthHeader<T>(
         calendarController: calendarController,
       );
+    } else if (viewController is ScheduleViewController<T>) {
+      return ScheduleHeader<T>();
     } else {
       throw UnimplementedError();
     }

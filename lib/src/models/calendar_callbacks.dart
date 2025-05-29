@@ -125,8 +125,8 @@ typedef OnEventCreated<T extends Object?> = void Function(CalendarEvent<T> event
 
 /// The callback for when a calendar page is changed.
 ///
-/// [visibleDateTimeRange] is the range of dates that are visible.
-typedef OnPageChanged = void Function(DateTimeRange visibleDateTimeRange);
+/// [dateTimeRange] is the range of dates that can be displayed in the new page.
+typedef OnPageChanged = void Function(DateTimeRange dateTimeRange);
 
 /// The callback for when a user taps on an empty space in day.
 ///

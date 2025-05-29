@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: CalendarBody(
           multiDayTileComponents: tileComponents(context),
           monthTileComponents: tileComponents(context, body: false),
+          scheduleTileComponents: scheduleTileComponents(context),
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MultiDayHeaderConfiguration(),
         ),

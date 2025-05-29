@@ -3,6 +3,8 @@ import 'package:kalender/src/models/components/month_components.dart';
 import 'package:kalender/src/models/components/month_styles.dart';
 import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/components/multi_day_styles.dart';
+import 'package:kalender/src/models/components/schedule_components.dart';
+import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
@@ -24,11 +26,19 @@ class CalendarComponents<T extends Object?> {
   /// Styles used by the multi day view.
   final MultiDayComponentStyles? multiDayComponentStyles;
 
+  /// Components used to override the default schedule components.
+  final ScheduleComponents<T>? scheduleComponents;
+
+  /// Styles used by the schedule view.
+  final ScheduleComponentStyles? scheduleComponentStyles;
+
   CalendarComponents({
     this.monthComponents,
     this.monthComponentStyles,
     this.multiDayComponents,
     this.multiDayComponentStyles,
+    this.scheduleComponents,
+    this.scheduleComponentStyles,
   });
 }
 

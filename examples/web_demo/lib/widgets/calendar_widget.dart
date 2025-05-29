@@ -80,6 +80,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         monthTileComponents: _multiDayTileComponents,
                         multiDayBodyConfiguration: _configuration.multiDayBodyConfiguration,
                         monthBodyConfiguration: _configuration.monthBodyConfiguration,
+                        scheduleTileComponents: _scheduleTileComponents,
                         interaction: _configuration.interactionBody,
                         snapping: _configuration.snapping,
                       ),
@@ -127,6 +128,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       dragAnchorStrategy: _dragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
+    );
+  }
+
+  ScheduleTileComponents<Event> get _scheduleTileComponents {
+    return ScheduleTileComponents<Event>(
+      tileBuilder: MultiDayEventTile.builder,
+      overlayTileBuilder: OverlayEventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      dragAnchorStrategy: _dragAnchorStrategy,
     );
   }
 
