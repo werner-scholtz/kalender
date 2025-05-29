@@ -15,7 +15,9 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
   final ScrollController scrollController;
   final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents; /// TODO: Remove this.
+  final TileComponents<T> tileComponents;
+
+  /// TODO: Remove this.
   final MultiDayBodyConfiguration bodyConfiguration;
 
   final TimeOfDayRange timeOfDayRange;

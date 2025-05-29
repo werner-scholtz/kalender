@@ -125,10 +125,10 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
             final positions = viewController.itemPositionsListener.itemPositions.value;
             if (positions.isEmpty) return;
             final first = positions.reduce((value, element) => value.index < element.index ? value : element).index;
-        
+
             final targetIndex = first - 1;
             if (targetIndex < 0) return;
-        
+
             viewController.itemScrollController.scrollTo(
               index: targetIndex,
               duration: scrollTrigger.animationDuration,

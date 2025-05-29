@@ -74,7 +74,6 @@ class ScheduleBodyConfiguration {
   /// The configuration for the scroll navigation triggers.
   final ScrollTriggerConfiguration scrollTriggerConfiguration;
 
-  
   /// The [ScrollPhysics] used by the scrollable body.
   final ScrollPhysics? scrollPhysics;
 

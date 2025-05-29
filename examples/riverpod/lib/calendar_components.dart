@@ -35,7 +35,6 @@ TileComponents tileComponents(BuildContext context, {bool body = true}) {
   );
 }
 
-
 ScheduleTileComponents scheduleTileComponents(BuildContext context) {
   final color = Theme.of(context).colorScheme.primaryContainer;
   return ScheduleTileComponents(
