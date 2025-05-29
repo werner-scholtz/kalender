@@ -103,3 +103,31 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
     );
   }
 }
+
+class ScheduleBodyConfigurationWidget extends StatelessWidget {
+  final CalendarConfiguration calendarConfiguration;
+  const ScheduleBodyConfigurationWidget({super.key, required this.calendarConfiguration});
+
+  ScheduleBodyConfiguration get configuration => calendarConfiguration.scheduleBodyConfiguration;
+  ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionBody;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: const Text("Body Configuration"),
+      initiallyExpanded: true,
+      children: [
+        DropDownEditor<EmptyDayBehavior>(
+          label: "Empty Day Behavior",
+          value: calendarConfiguration.scheduleBodyConfiguration.emptyDay,
+          items: EmptyDayBehavior.values,
+          onChanged: (value) => calendarConfiguration.scheduleBodyConfiguration = configuration.copyWith(
+            emptyDay: value,
+          ),
+          itemToString: (value) => value.toString(),
+        ),
+        InteractionEditorWidget(interaction: interaction),
+      ],
+    );
+  }
+}

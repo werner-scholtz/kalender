@@ -45,6 +45,8 @@ class CalendarConfigurationWidget extends StatelessWidget {
                     MultiDayBodyConfigurationWidget(calendarConfiguration: configuration),
                   ] else if (configuration.viewConfiguration is MonthViewConfiguration) ...[
                     MonthBodyConfigurationWidget(calendarConfiguration: configuration),
+                  ] else if (configuration.viewConfiguration is ScheduleViewConfiguration) ...[
+                    ScheduleBodyConfigurationWidget(calendarConfiguration: configuration),
                   ] else
                     const SizedBox.shrink()
                 ],

@@ -79,4 +79,44 @@ class ScheduleBodyConfiguration {
 
   /// The [ScrollPhysics] used by the page view.
   final ScrollPhysics? pageScrollPhysics;
+
+  /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
+  ScheduleBodyConfiguration copyWith({
+    EmptyDayBehavior? emptyDay,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+    ScrollTriggerConfiguration? scrollTriggerConfiguration,
+    ScrollPhysics? scrollPhysics,
+    ScrollPhysics? pageScrollPhysics,
+  }) {
+    return ScheduleBodyConfiguration(
+      emptyDay: emptyDay ?? this.emptyDay,
+      pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
+      scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
+      scrollPhysics: scrollPhysics ?? this.scrollPhysics,
+      pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScheduleBodyConfiguration &&
+        other.emptyDay == emptyDay &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
+        other.scrollPhysics == scrollPhysics &&
+        other.pageScrollPhysics == pageScrollPhysics;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      emptyDay,
+      pageTriggerConfiguration,
+      scrollTriggerConfiguration,
+      scrollPhysics,
+      pageScrollPhysics,
+    );
+  }
 }

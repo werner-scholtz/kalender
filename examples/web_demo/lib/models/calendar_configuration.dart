@@ -51,6 +51,14 @@ class CalendarConfiguration extends ChangeNotifier {
     notifyListeners();
   }
 
+  final scheduleBodyConfigurationNotifier = ValueNotifier(ScheduleBodyConfiguration());
+  ScheduleBodyConfiguration get scheduleBodyConfiguration => scheduleBodyConfigurationNotifier.value;
+  set scheduleBodyConfiguration(ScheduleBodyConfiguration value) {
+    if (scheduleBodyConfigurationNotifier.value == value) return;
+    scheduleBodyConfigurationNotifier.value = value;
+    notifyListeners();
+  }
+
   /// The header interaction of the calendar.
   late final ValueNotifier<CalendarInteraction> interactionHeader = ValueNotifier(CalendarInteraction(
     createEventGesture: isMobile ? CreateEventGesture.longPress : CreateEventGesture.tap,

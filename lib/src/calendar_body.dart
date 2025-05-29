@@ -96,6 +96,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         callbacks: callbacks,
         tileComponents: scheduleTileComponents,
         configuration: scheduleBodyConfiguration,
+        interaction: interaction,
       );
     } else {
       throw UnimplementedError();

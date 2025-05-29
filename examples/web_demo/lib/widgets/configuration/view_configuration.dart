@@ -16,6 +16,9 @@ class CalendarViewConfiguration extends StatelessWidget {
       case const (MonthViewConfiguration):
         final config = viewConfiguration as MonthViewConfiguration;
         return MonthViewConfigurationWidget(viewConfiguration: config);
+      case const (ScheduleViewConfiguration):
+        final config = viewConfiguration as ScheduleViewConfiguration;
+        return ScheduleViewConfigurationWidget(viewConfiguration: config);
       default:
         return const Text("Unknown");
     }
@@ -123,6 +126,22 @@ class MonthViewConfigurationWidget extends StatelessWidget {
             viewConfiguration.copyWith(firstDayOfWeek: value),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class ScheduleViewConfigurationWidget extends StatelessWidget {
+  final ScheduleViewConfiguration viewConfiguration;
+  const ScheduleViewConfigurationWidget({super.key, required this.viewConfiguration});
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text('${viewConfiguration.name} Configuration'),
+      initiallyExpanded: true,
+      children: const [
+        Text("No view configuration options available for this view type."),
       ],
     );
   }
