@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/components/schedule_components.dart';
-import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
@@ -315,16 +313,17 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             final item = viewController.item(index);
             final date = viewController.dateTimeFromIndex(index)!;
 
-            late final leading = components.dayHeaderBuilder.call(date.asLocal, styles.scheduleDateStyle);
+            late final leading = components.leadingDateBuilder.call(date.asLocal, styles.scheduleDateStyle);
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             if (item is MonthItem) {
-              return ListTile(title: Text(date.monthNameEnglish));
+              return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
+                  ListTile(title: Text(date.monthNameEnglish));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 leading: leading,
-                title: tileComponents.emptyDayBuilder?.call(date.asLocal.dayRange),
+                title: tileComponents.emptyItemBuilder?.call(date.asLocal.dayRange),
               );
 
               return highlightBuilder(

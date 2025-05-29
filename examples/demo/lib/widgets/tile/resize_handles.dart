@@ -13,6 +13,7 @@ class _VerticalResizeHandleState extends State<VerticalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // ignore: deprecated_member_use
     final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 8)
@@ -52,6 +53,7 @@ class _HorizontalResizeHandleState extends State<HorizontalResizeHandle> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // ignore: deprecated_member_use
     final color = hovering ? theme.colorScheme.onSurface.withOpacity(0.5) : Colors.transparent;
     final margin = hovering
         ? const EdgeInsets.symmetric(vertical: 4, horizontal: 4)
