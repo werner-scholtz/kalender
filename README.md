@@ -32,28 +32,27 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 Displays one or more days with time on the vertical axis, ideal for detailed scheduling.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="assets/desktop_day_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/desktop_day_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_day_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_day_dark.png" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_day_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_day_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_day_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_day_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="assets/desktop_week_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/desktop_week_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_week_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_week_dark.png" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_week_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_week_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_week_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_week_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
-
 
 ### MonthView
 Shows an entire month at a glance, with days arranged horizontally.
 
 <div style="border-radius:8px; padding:8px; display:inline-block; text-align:center;">
-  <img src="assets/desktop_month_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/desktop_month_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_month_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_month_dark.png" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_month_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_month_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_month_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_month_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
 
 
@@ -61,19 +60,11 @@ Shows an entire month at a glance, with days arranged horizontally.
 Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="assets/desktop_schedule_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/desktop_schedule_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_schedule_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="assets/mobile_schedule_dark.png" width="9%" style="border-radius:6px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_schedule_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/desktop_schedule_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_schedule_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/assets/mobile_schedule_dark.png?raw=true" width="9%" style="border-radius:6px;" />
 </div>
-
-<!-- <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/day_view.png?raw=true" width="25%"/> 
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/week_view.png?raw=true" width="25%"/> 
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/custom_view.png?raw=true" width="25%"/>
-
-<img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/month_view.png?raw=true" width="25%"/>   -->
 
 ## Basic Usage
 
@@ -115,9 +106,7 @@ The calendar widget supports three main views types, MultiDay, Month and Schedul
 These views are configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
 - The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
 - The MonthView is configured with the [MonthViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L6).
-- The Schedule view is configured with the [ScheduleViewConfiguration](TODO add link)
-
-<!-- TODO: Add some details for each constructor provided. -->
+- The Schedule view is configured with the [ScheduleViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L26)
 
 #### MultiDayViewConfiguration
 The `MultiDayViewConfiguration` has the following constructors.
@@ -134,8 +123,8 @@ The `MonthViewConfiguration` currently only has the one constructor.
 
 #### ScheduleViewConfiguration
 The `ScheduleViewConfiguration` has two constructors:
-- [ScheduleViewConfiguration.continuous](TODO: add link) displays a single list of all events.
-- [ScheduleViewConfiguration.paginated](TODO: add link) displays a single list of events for each month in a pageview.
+- [ScheduleViewConfiguration.continuous](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L40) displays a single list of all events.
+- [ScheduleViewConfiguration.paginated](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L47) displays a single list of events for each month in a pageview.
 
 ## Controllers
 
@@ -520,7 +509,7 @@ By default the calendar uses default components which can be customized with `Co
 #### Default Component Styles
 
 > You can style the default components by passing the CalendarView `CalendarComponents` object that contains a [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart) and/or [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart) and/or
-[`ScheduleComponents`](TODO: add link)
+[`ScheduleComponents`](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/components/schedule_components.dart#L5)
 #### Custom Components
 
 <details>
