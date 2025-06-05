@@ -43,7 +43,8 @@ void main() {
 
   // The date range for the tests. This gives good coverage for the different view configurations.
   final start = DateTime(2024, 1, 1);
-  final end = DateTime(2026, 12, 31);
+  final end = DateTime(2027, 1, 1);
+  final lastDisplayDate = DateTime(2025, 12, 31);
   final displayRange = DateTimeRange(start: start, end: end);
 
   // The initial date for the calendar controller.
@@ -51,7 +52,7 @@ void main() {
 
   /// What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
   final eventMapItems = List.generate(
-    displayRange.dates().length + 1,
+    displayRange.dates().length,
     (i) {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i).startOfDay;
       final end = key.copyWith(hour: start.hour + 1);
@@ -66,7 +67,7 @@ void main() {
 
   // Test animating to specific events.
   final firstEvent = eventsController.byId(eventsMap[start]!)!;
-  final lastEvent = eventsController.byId(eventsMap[end]!)!;
+  final lastEvent = eventsController.byId(eventsMap[lastDisplayDate]!)!;
   final middleEvent = eventsController.byId(eventsMap[initialDate]!)!;
   final eventsToTest = [firstEvent, lastEvent, middleEvent];
 
@@ -94,29 +95,27 @@ void main() {
           controller: controller,
           dateTime: start,
           function: function,
-          event: eventsController.byId(eventsMap[start]!),
+          event: firstEvent,
         );
 
-        // TODO: this is also failing maybe a good idea to check why the end dates are not working as expected.
-        // await tester.testDateFunctionExact(
-        //   controller: controller,
-        //   dateTime: end,
-        //   function: function,
-        //   event: eventsController.byId(eventsMap[end]!),
-        // );
+        await tester.testDateFunctionExact(
+          controller: controller,
+          dateTime: lastDisplayDate,
+          function: function,
+          event: lastEvent,
+        );
 
         await tester.testDateFunctionExact(
           controller: controller,
           dateTime: initialDate,
           function: function,
-          event: eventsController.byId(eventsMap[initialDate]!),
+          event: middleEvent,
         );
       }
 
       // Test animating to specific events.
-      // TODO: this is also failing maybe a good idea to check why the end dates are not working as expected.
       for (final event in eventsToTest) {
-        // await tester.testAnimateToCalendarEvent(controller, event);
+        await tester.testAnimateToCalendarEvent(controller, event);
       }
     });
     testWidgets('week', (tester) async {
@@ -136,29 +135,27 @@ void main() {
           controller: controller,
           dateTime: start,
           function: function,
-          event: eventsController.byId(eventsMap[start]!),
+          event: firstEvent,
         );
 
-        // TODO: this is also failing maybe a good idea to check why the end dates are not working as expected.
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: end,
+          dateTime: lastDisplayDate,
           function: function,
-          event: eventsController.byId(eventsMap[end]!),
+          event: lastEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
           dateTime: initialDate,
           function: function,
-          event: eventsController.byId(eventsMap[initialDate]!),
+          event: middleEvent,
         );
       }
 
       // Test animating to specific events.
-      // TODO: this is also failing maybe a good idea to check why the end dates are not working as expected.
       for (final event in eventsToTest) {
-        // await tester.testAnimateToCalendarEvent(controller, event);
+        await tester.testAnimateToCalendarEvent(controller, event);
       }
     });
     group('workWeek', () {
@@ -190,30 +187,27 @@ void main() {
           controller: controller,
           dateTime: start,
           function: function,
-          event: eventsController.byId(eventsMap[start]!),
+          event: firstEvent,
         );
 
-        // TODO: this is failing why ? (Is the page navigation functions broken ?)
-        //
-        // await tester.testDateFunctionCallWithin(
-        //   controller: controller,
-        //   dateTime: end,
-        //   function: function,
-        //   event: eventsController.byId(eventsMap[end]!),
-        // );
+        await tester.testDateFunctionCallWithin(
+          controller: controller,
+          dateTime: lastDisplayDate,
+          function: function,
+          event: lastEvent,
+        );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
           dateTime: initialDate,
           function: function,
-          event: eventsController.byId(eventsMap[initialDate]!),
+          event: middleEvent,
         );
       }
 
       // Test animating to specific events.
-      // TODO: this is also failing because the last event is not visible in the widget tree.
       for (final event in eventsToTest) {
-        // await tester.testAnimateToCalendarEvent(controller, event);
+        await tester.testAnimateToCalendarEvent(controller, event);
       }
     });
   });
@@ -237,21 +231,21 @@ void main() {
           controller: controller,
           dateTime: start,
           function: function,
-          event: eventsController.byId(eventsMap[start]!),
+          event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: end,
+          dateTime: lastDisplayDate,
           function: function,
-          event: eventsController.byId(eventsMap[end]!),
+          event: lastEvent,
         );
 
         await tester.testDateFunctionExact(
           controller: controller,
           dateTime: initialDate,
           function: function,
-          event: eventsController.byId(eventsMap[initialDate]!),
+          event: middleEvent,
         );
       }
 
@@ -280,21 +274,21 @@ void main() {
           controller: controller,
           dateTime: start,
           function: function,
-          event: eventsController.byId(eventsMap[start]!),
+          event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: end,
+          dateTime: lastDisplayDate,
           function: function,
-          event: eventsController.byId(eventsMap[end]!),
+          event: lastEvent,
         );
 
         await tester.testDateFunctionExact(
           controller: controller,
           dateTime: initialDate,
           function: function,
-          event: eventsController.byId(eventsMap[initialDate]!),
+          event: middleEvent,
         );
       }
 
