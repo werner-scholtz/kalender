@@ -298,6 +298,162 @@ Future<void> main() async {
           expect(range2.overlaps(range1), isTrue);
         });
       });
+
+      group('dominantMonthDate', () {
+        test('should return the month with the most days in single month range', () {
+          final range = DateTimeRange(
+            start: DateTime(2024, 6, 1),
+            end: DateTime(2024, 6, 30),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 6, 1)));
+        });
+
+        test('should return the month with the most days when spanning multiple months', () {
+          // Range with more days in January than February
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 10),
+            end: DateTime(2024, 2, 5),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 1, 1)));
+        });
+
+        test('should handle range where February is dominant', () {
+          // Range with more days in February than January
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 25),
+            end: DateTime(2024, 2, 28),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 2, 1)));
+        });
+
+        test('should handle range spanning three months', () {
+          // Range spanning April, May, and June with May having most days
+          final range = DateTimeRange(
+            start: DateTime(2024, 4, 25),
+            end: DateTime(2024, 6, 5),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 5, 1)));
+        });
+
+        test('should handle leap year correctly', () {
+          // Leap year February vs March
+          final range = DateTimeRange(
+            start: DateTime(2024, 2, 10),
+            end: DateTime(2024, 3, 10),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 2, 1))); // February has 19 days, March has 10
+        });
+
+        test('should handle non-leap year correctly', () {
+          // Non-leap year February vs March
+          final range = DateTimeRange(
+            start: DateTime(2023, 2, 10),
+            end: DateTime(2023, 3, 10),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2023, 2, 1))); // February has 18 days, March has 10
+        });
+
+        test('should handle equal days by returning first month', () {
+          // Create a range where both months have equal days
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 16),
+            end: DateTime(2024, 2, 15),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 1, 1))); // Both have 15 days, should return first
+        });
+
+        test('should handle year boundary correctly', () {
+          // Range spanning December to January
+          final range = DateTimeRange(
+            start: DateTime(2023, 12, 15),
+            end: DateTime(2024, 1, 10),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2023, 12, 1))); // December has more days
+        });
+
+        test('should handle single day range', () {
+          final range = DateTimeRange(
+            start: DateTime(2024, 6, 15),
+            end: DateTime(2024, 6, 15),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 6, 1)));
+        });
+
+        test('should handle partial month at beginning and end', () {
+          // Range from mid-January to mid-March with February being complete
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 20),
+            end: DateTime(2024, 3, 10),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 2, 1))); // February has 29 days (leap year)
+        });
+
+        test('should handle range spanning entire year', () {
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 1),
+            end: DateTime(2024, 12, 31),
+          );
+
+          final result = range.dominantMonthDate;
+
+          // January and March tie with 31 days each, but January should be returned as it's first
+          expect(result, equals(DateTime(2024, 1, 1)));
+        });
+
+        test('should handle UTC dates correctly', () {
+          final range = DateTimeRange(
+            start: DateTime.utc(2024, 6, 1),
+            end: DateTime.utc(2024, 7, 15),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime.utc(2024, 6, 1))); // June has more days
+          expect(result.isUtc, isTrue); // Result should be UTC
+        });
+
+        test('should handle very short ranges correctly', () {
+          // Two-day range spanning months
+          final range = DateTimeRange(
+            start: DateTime(2024, 1, 31),
+            end: DateTime(2024, 2, 1),
+          );
+
+          final result = range.dominantMonthDate;
+
+          expect(result, equals(DateTime(2024, 1, 1))); // Both have 1 day, first month wins
+        });
+      });
     },
   );
 }
