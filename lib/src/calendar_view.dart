@@ -67,7 +67,14 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
       setState(() {
-        final initialDate = _viewController.visibleDateTimeRange.value.start;
+        // Use selectedDate if available, otherwise use the initial date selection strategy
+        final initialDate = widget.viewConfiguration.selectedDate ??
+            widget.viewConfiguration.initialDateSelectionStrategy.calculateInitialDate(
+              oldViewController: _viewController,
+              newViewConfiguration: widget.viewConfiguration,
+              currentVisibleRange: _viewController.visibleDateTimeRange.value,
+            );
+
         _viewController = _createViewController(initialDate: initialDate);
         // Dispose the old view controller if it exists.
         widget.calendarController.viewController?.dispose();

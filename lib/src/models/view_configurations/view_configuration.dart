@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
+import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
@@ -10,10 +11,27 @@ export 'package:kalender/kalender_extensions.dart';
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
 abstract class ViewConfiguration<T extends Object?> {
-  const ViewConfiguration({required this.name});
+  const ViewConfiguration({
+    required this.name,
+    this.selectedDate,
+    this.initialDateSelectionStrategy = const DefaultInitialDateSelectionStrategy(),
+  });
 
   /// The name of the [ViewConfiguration].
   final String name;
+
+  /// The selected date to start the view from.
+  ///
+  /// If this is provided, it will take precedence over the initial date selection strategy.
+  /// When null, the view will use the initialDateSelectionStrategy for transition behavior.
+  final DateTime? selectedDate;
+
+  /// The strategy used for determining initial date when transitioning between view configurations.
+  ///
+  /// This determines how the calendar chooses which date to display when switching
+  /// between different view types (daily, weekly, monthly, schedule).
+  /// Defaults to [DefaultInitialDateSelectionStrategy] which follows specific rules for each transition type.
+  final InitialDateSelectionStrategy initialDateSelectionStrategy;
 
   /// The functions for navigating the [PageView].
   PageNavigationFunctions get pageNavigationFunctions;
