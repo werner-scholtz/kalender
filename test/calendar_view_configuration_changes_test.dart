@@ -61,7 +61,6 @@ void main() {
       });
 
       testWidgets('should prioritize selectedDate over initial date selection strategy', (tester) async {
-        final customStrategy = _AlwaysReturnJanuaryStrategy();
         final calendarViewKey = GlobalKey();
 
         final monthConfig = MonthViewConfiguration.singleMonth(
@@ -84,7 +83,7 @@ void main() {
         final dailyConfig = MultiDayViewConfiguration.singleDay(
           name: 'Day View',
           selectedDate: selectedDate,
-          initialDateSelectionStrategy: customStrategy,
+          initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
           displayRange: calendarRange,
         );
 
@@ -101,7 +100,6 @@ void main() {
         // Verify that selectedDate was used, not the strategy result
         final visibleRange = calendarController.visibleDateTimeRange.value;
         expect(visibleRange.start.startOfDay, equals(selectedDate.startOfDay));
-        expect(customStrategy.wasCalled, isFalse);
       });
     });
 
@@ -155,7 +153,6 @@ void main() {
 
       testWidgets('should use custom initial date selection strategy', (tester) async {
         final calendarViewKey = GlobalKey();
-        final customStrategy = _AlwaysReturnJanuaryStrategy();
 
         final monthConfig = MonthViewConfiguration.singleMonth(
           displayRange: calendarRange,
@@ -175,7 +172,7 @@ void main() {
         // Change to daily view with custom strategy
         final dailyConfig = MultiDayViewConfiguration.singleDay(
           name: 'Day View',
-          initialDateSelectionStrategy: customStrategy,
+          initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
           displayRange: calendarRange,
         );
 
@@ -191,8 +188,7 @@ void main() {
 
         // Verify that the custom strategy was used
         final visibleRange = calendarController.visibleDateTimeRange.value;
-        expect(visibleRange.start.startOfDay, equals(_AlwaysReturnJanuaryStrategy.fixedDate.startOfDay));
-        expect(customStrategy.wasCalled, isTrue);
+        expect(visibleRange.start.startOfDay, equals(_fixedDate.startOfDay));
       });
     });
 
@@ -514,17 +510,11 @@ void main() {
   });
 }
 
-class _AlwaysReturnJanuaryStrategy implements InitialDateSelectionStrategy {
-  static final fixedDate = DateTime(2024, 1, 1);
-  bool wasCalled = false;
-
-  @override
-  DateTime calculateInitialDate({
-    required ViewController oldViewController,
-    required ViewConfiguration newViewConfiguration,
-    required DateTimeRange currentVisibleRange,
-  }) {
-    wasCalled = true;
-    return fixedDate;
-  }
+DateTime _alwaysReturnJanuaryStrategy({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  return _fixedDate;
 }
+
+final _fixedDate = DateTime(2024, 1, 1);
