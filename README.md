@@ -101,30 +101,31 @@ Widget build(BuildContext context) {
 
 ## Views
 
-The calendar widget supports three main views types, MultiDay, Month and Schedule. 
+The Kalender package supports three main calendar views (by default), each tailored for different scheduling needs. You can switch between these views by providing the appropriate `ViewConfiguration` to the `CalendarView` widget.
 
-These views are configured with [ViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/view_configuration.dart#L11) objects.
-- The MultiDayView is configured with the [MultiDayViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L19).
-- The MonthView is configured with the [MonthViewConfiguration](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L6).
-- The Schedule view is configured with the [ScheduleViewConfiguration](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L26)
+When the `CalenderView` switches between different `ViewConfiguration`s it uses the `initialDateSelectionStrategy` function defined in the view configuration object, to determine which day(s) should be visible.
 
-#### MultiDayViewConfiguration
-The `MultiDayViewConfiguration` has the following constructors.
+### MultiDay View
+Displays one or more days with time on the vertical axis, ideal for detailed scheduling (e.g., day, week, or custom ranges).
 
-- [MultiDayViewConfiguration.singleDay()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L36) displays a single day.
-- [MultiDayViewConfiguration.week()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L53) displays a whole week.
-- [MultiDayViewConfiguration.workWeek()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays monday to friday.
-- [MultiDayViewConfiguration.custom()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/multi_day_view_configuration.dart#L87) displays a custom amount of days.
+**Constructors:**
+- `MultiDayViewConfiguration.singleDay()` – single day view.
+- `MultiDayViewConfiguration.week()` – full week view.
+- `MultiDayViewConfiguration.workWeek()` – Monday to Friday.
+- `MultiDayViewConfiguration.custom(days: n)` – custom number of days.
 
-#### MonthViewConfiguration
-The `MonthViewConfiguration` currently only has the one constructor.
+### Month View
+Shows an entire month at a glance, with days arranged horizontally and weeks vertically.
 
-- [MonthViewConfiguration.singleMonth()](https://github.com/werner-scholtz/kalender/blob/5407e6af18df4e356abab12a0425221e1fe56fa9/lib/src/models/view_configurations/month_view_configuration.dart#L19C26-L19C37) displays one whole month.
+**Constructors:**
+- `MonthViewConfiguration.singleMonth()`
 
-#### ScheduleViewConfiguration
-The `ScheduleViewConfiguration` has two constructors:
-- [ScheduleViewConfiguration.continuous](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L40) displays a single list of all events.
-- [ScheduleViewConfiguration.paginated](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/view_configurations/schedule_view_configuration.dart#L47) displays a single list of events for each month in a pageview.
+### Schedule View
+Presents events in a continuous, scrollable list, focusing on upcoming or grouped events rather than a grid.
+
+**Constructors:**
+- `ScheduleViewConfiguration.continuous()` – single, continuous list of events.
+- `ScheduleViewConfiguration.paginated()` – paginated by month.
 
 ## Controllers
 
@@ -524,6 +525,9 @@ By default the calendar uses default components which can be customized with `Co
           weekDayHeaderBuilder: (date, style) => SizedBox(),
         ),
         bodyComponents: MonthBodyComponents(
+          // Custom day header for month cells.
+          monthDayHeaderBuilder(date, style) => SizedBox(),
+
           // Custom grid builder.
           monthGridBuilder: (style) => SizedBox(),
 
