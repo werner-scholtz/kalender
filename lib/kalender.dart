@@ -34,6 +34,7 @@ export 'package:kalender/src/models/controllers/events_controller.dart';
 
 /// View Controllers
 export 'package:kalender/src/models/controllers/view_controller.dart';
+export 'package:kalender/src/models/initial_date_selection_strategy.dart';
 export 'package:kalender/src/models/navigation_triggers.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 export 'package:kalender/src/models/view_configurations/month_view_configuration.dart';

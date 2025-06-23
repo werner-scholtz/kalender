@@ -274,4 +274,34 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// print(localRange.end);   // Output: 2024-01-10 00:00:00.000
   /// ```
   DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
+
+  /// Returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
+  ///
+  /// This method returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
+  ///
+  /// Example:
+  /// ```dart
+  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));
+  /// final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 2, 28));
+  /// final dominantMonth = range.dominantMonthDate;
+  /// print(dominantMonth); // Output: 2024-01-01
+  /// final dominantMonth2 = range2.dominantMonthDate;
+  /// print(dominantMonth2); // Output: 2024-01-01
+  /// ```
+  DateTime get dominantMonthDate {
+    final monthCounts = <(int year, int month), int>{};
+
+    for (final date in dates()) {
+      final key = (date.year, date.month);
+      monthCounts[key] = (monthCounts[key] ?? 0) + 1;
+    }
+
+    final dominant = monthCounts.entries.reduce(
+      (a, b) => a.value >= b.value ? a : b,
+    );
+
+    return start.isUtc
+        ? DateTime.utc(dominant.key.$1, dominant.key.$2, 1)
+        : DateTime(dominant.key.$1, dominant.key.$2, 1);
+  }
 }

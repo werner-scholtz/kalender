@@ -20,6 +20,8 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
   MonthViewConfiguration({
     required super.name,
+    super.selectedDate,
+    super.initialDateSelectionStrategy,
     required this.firstDayOfWeek,
     required this.pageNavigationFunctions,
     required this.eventLayoutStrategy,
@@ -31,6 +33,8 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy,
@@ -41,11 +45,15 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
   MonthViewConfiguration copyWith({
     String? name,
+    DateTime? selectedDate,
+    InitialDateSelectionStrategy? initialDateSelectionStrategy,
     int? firstDayOfWeek,
     EdgeInsets? eventPadding,
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
+      selectedDate: selectedDate ?? this.selectedDate,
+      initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       eventLayoutStrategy: null,
       displayRange: pageNavigationFunctions.originalRange,
@@ -57,13 +65,14 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     if (identical(this, other)) return true;
 
     return other is MonthViewConfiguration &&
+        other.selectedDate == selectedDate &&
         other.pageNavigationFunctions == pageNavigationFunctions &&
         other.firstDayOfWeek == firstDayOfWeek;
   }
 
   @override
   int get hashCode {
-    return Object.hash(pageNavigationFunctions, firstDayOfWeek);
+    return Object.hash(selectedDate, pageNavigationFunctions, firstDayOfWeek);
   }
 }
 

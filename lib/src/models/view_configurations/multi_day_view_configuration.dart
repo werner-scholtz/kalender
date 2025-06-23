@@ -3,6 +3,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
+import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -42,6 +43,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   MultiDayViewConfiguration({
     required super.name,
+    super.selectedDate,
+    super.initialDateSelectionStrategy,
     required this.timeOfDayRange,
     required this.numberOfDays,
     required this.firstDayOfWeek,
@@ -58,6 +61,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// Creates a [MultiDayViewConfiguration] for a single day.
   MultiDayViewConfiguration.singleDay({
     super.name = 'Day',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToDaily,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -71,6 +76,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
     super.name = 'Week',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -87,6 +94,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// Creates a [MultiDayViewConfiguration] for a work week.
   MultiDayViewConfiguration.workWeek({
     super.name = 'Work Week',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
@@ -100,6 +109,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
     super.name = 'Custom',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
@@ -114,6 +125,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
   MultiDayViewConfiguration.freeScroll({
     super.name = 'Free Scroll',
+    super.selectedDate,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
@@ -126,6 +139,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
   MultiDayViewConfiguration copyWith({
     String? name,
+    DateTime? selectedDate,
+    InitialDateSelectionStrategy? initialDateSelectionStrategy,
     TimeOfDayRange? timeOfDayRange,
     DateTimeRange? displayRange,
     int? numberOfDays,
@@ -133,6 +148,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     TimeOfDay? initialTimeOfDay,
   }) {
     final name0 = name ?? this.name;
+    final selectedDate0 = selectedDate ?? this.selectedDate;
+    final initialDateSelectionStrategy0 = initialDateSelectionStrategy ?? this.initialDateSelectionStrategy;
     final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
     final displayRange0 = displayRange ?? this.displayRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
@@ -141,6 +158,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
           name: name0,
+          selectedDate: selectedDate0,
+          initialDateSelectionStrategy: initialDateSelectionStrategy0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -148,6 +167,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
           name: name0,
+          selectedDate: selectedDate0,
+          initialDateSelectionStrategy: initialDateSelectionStrategy0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -155,12 +176,16 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
           name: name0,
+          selectedDate: selectedDate0,
+          initialDateSelectionStrategy: initialDateSelectionStrategy0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           initialTimeOfDay: initialTimeOfDay0,
         ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
           name: name0,
+          selectedDate: selectedDate0,
+          initialDateSelectionStrategy: initialDateSelectionStrategy0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -169,6 +194,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
           name: name0,
+          selectedDate: selectedDate0,
+          initialDateSelectionStrategy: initialDateSelectionStrategy0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
@@ -183,6 +210,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
     return other is MultiDayViewConfiguration &&
         other.name == name &&
+        other.selectedDate == selectedDate &&
+        other.initialDateSelectionStrategy == initialDateSelectionStrategy &&
         other.timeOfDayRange == timeOfDayRange &&
         other.displayRange == displayRange &&
         other.numberOfDays == numberOfDays &&
@@ -194,6 +223,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   int get hashCode {
     return Object.hash(
       name,
+      selectedDate,
+      initialDateSelectionStrategy,
       timeOfDayRange,
       displayRange,
       numberOfDays,
@@ -206,6 +237,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   String toString() {
     return '''
     name: $name
+    selectedDate: $selectedDate
+    initialDateSelectionStrategy: $initialDateSelectionStrategy
     timeOfDayRange: $timeOfDayRange
     displayRange: $displayRange
     numberOfDays: $numberOfDays

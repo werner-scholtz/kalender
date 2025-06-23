@@ -67,7 +67,13 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
       setState(() {
-        final initialDate = _viewController.visibleDateTimeRange.value.start;
+        // Use selectedDate if available, otherwise use the initial date selection strategy
+        final initialDate = widget.viewConfiguration.selectedDate ??
+            widget.viewConfiguration.initialDateSelectionStrategy(
+              oldViewController: _viewController,
+              newViewConfiguration: widget.viewConfiguration,
+            );
+
         _viewController = _createViewController(initialDate: initialDate);
         // Dispose the old view controller if it exists.
         widget.calendarController.viewController?.dispose();
@@ -100,26 +106,26 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: widget.calendarController.initialDate,
+          initialDate: initialDate ?? widget.calendarController.initialDate,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: widget.calendarController.initialDate,
+          initialDate: initialDate ?? widget.calendarController.initialDate,
         ),
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController<T>(
               viewConfiguration: viewConfiguration,
               visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: widget.calendarController.initialDate,
+              initialDate: initialDate ?? widget.calendarController.initialDate,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
               visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: widget.calendarController.initialDate,
+              initialDate: initialDate ?? widget.calendarController.initialDate,
             ),
         },
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
