@@ -1,3 +1,12 @@
+## 0.9.0
+
+### Features
+- Preserve visible date when switching between different views. [#165](https://github.com/werner-scholtz/kalender/issues/165)
+
+### Documentation
+
+- Updated `MonthBodyComponents` in readme to include all custom components. [#168](https://github.com/werner-scholtz/kalender/issues/168)
+
 ## 0.8.0
 
 ### Features
@@ -95,7 +104,6 @@
 ### Boring stuff
 - Lots of new unit tests that run in multiple timezones to ensure there are no regressions.
 - Example directory layout has changed.
-
 
 ## 0.5.0
 
