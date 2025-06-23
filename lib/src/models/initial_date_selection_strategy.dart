@@ -1,102 +1,128 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// Strategy interface for determining the initial date when transitioning between view configurations
-abstract class InitialDateSelectionStrategy {
-  /// Calculates the initial date when transitioning between view configurations
-  ///
-  /// [oldViewController] - the previous view controller
-  /// [newViewConfiguration] - the new view configuration
-  /// [currentVisibleRange] - the currently visible date range
-  DateTime calculateInitialDate({
-    required ViewController oldViewController,
-    required ViewConfiguration newViewConfiguration,
-    required DateTimeRange currentVisibleRange,
-  });
-}
+/// Strategy typedef for determining the initial date when transitioning between view configurations
+typedef InitialDateSelectionStrategy = DateTime Function({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+});
 
-/// Default implementation of initial date selection strategy following specific rules for each transition type
-class DefaultInitialDateSelectionStrategy implements InitialDateSelectionStrategy {
-  const DefaultInitialDateSelectionStrategy();
-
-  @override
-  DateTime calculateInitialDate({
-    required ViewController oldViewController,
-    required ViewConfiguration newViewConfiguration,
-    required DateTimeRange currentVisibleRange,
-  }) {
-    final oldConfig = oldViewController.viewConfiguration;
-
-    // Determine view types
-    final oldViewType = _getViewType(oldConfig);
-    final newViewType = _getViewType(newViewConfiguration);
-
-    return switch ((oldViewType, newViewType)) {
-      // Monthly to Daily: take first day of current month
-      (_ViewType.monthly, _ViewType.daily) => _monthToDaily(currentVisibleRange),
-
-      // Monthly to Weekly: take first week from visualized months (start of visible range)
-      (_ViewType.monthly, _ViewType.weekly) => _monthToWeekly(currentVisibleRange),
-
-      // Weekly to Daily: take first day of the week
-      (_ViewType.weekly, _ViewType.daily) => _weeklyToDaily(currentVisibleRange),
-
-      // Weekly to Monthly: check current week days, take majority month
-      (_ViewType.weekly, _ViewType.monthly) => _weeklyToMonthly(currentVisibleRange),
-
-      // Daily to Weekly: show current day's week
-      (_ViewType.daily, _ViewType.weekly) => _dailyToWeekly(currentVisibleRange),
-
-      // Daily to Monthly: show this day's month
-      (_ViewType.daily, _ViewType.monthly) => _dailyToMonthly(currentVisibleRange),
-
-      // Schedule transitions - use start of visible range
-      (_ViewType.schedule, _) => currentVisibleRange.start,
-      (_, _ViewType.schedule) => currentVisibleRange.start,
-
-      // Same type transitions - maintain current position
-      _ => currentVisibleRange.start,
-    };
-  }
-
-  DateTime _monthToDaily(DateTimeRange currentVisibleRange) => currentVisibleRange.dominantMonthDate;
-
-  DateTime _monthToWeekly(DateTimeRange currentVisibleRange) => currentVisibleRange.start;
-
-  DateTime _weeklyToDaily(DateTimeRange currentVisibleRange) => currentVisibleRange.start;
-
-  DateTime _weeklyToMonthly(DateTimeRange currentVisibleRange) => currentVisibleRange.dominantMonthDate;
-
-  DateTime _dailyToWeekly(DateTimeRange currentVisibleRange) => currentVisibleRange.start;
-
-  DateTime _dailyToMonthly(DateTimeRange currentVisibleRange) =>
-      DateTime(currentVisibleRange.start.year, currentVisibleRange.start.month, 1);
-
-  _ViewType _getViewType(ViewConfiguration config) {
-    return switch (config.runtimeType) {
-      const (MonthViewConfiguration) => _ViewType.monthly,
-      const (MultiDayViewConfiguration) => _getMultiDayViewType(config as MultiDayViewConfiguration),
-      const (ScheduleViewConfiguration) => _ViewType.schedule,
-      _ => _ViewType.unknown,
-    };
-  }
-
-  _ViewType _getMultiDayViewType(MultiDayViewConfiguration config) {
-    return switch (config.type) {
-      MultiDayViewType.singleDay => _ViewType.daily,
-      MultiDayViewType.week => _ViewType.weekly,
-      MultiDayViewType.workWeek => _ViewType.weekly,
-      MultiDayViewType.custom => config.numberOfDays == 1 ? _ViewType.daily : _ViewType.weekly,
-      MultiDayViewType.freeScroll => _ViewType.weekly,
-    };
+/// Default implementation for transitioning to Monthly view
+DateTime kDefaultToMonthly({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  final oldConfig = oldViewController.viewConfiguration;
+  final oldRange = oldViewController.visibleDateTimeRange.value;
+  switch (oldConfig) {
+    case MonthViewConfiguration _:
+      return oldRange.dominantMonthDate;
+    case MultiDayViewConfiguration _:
+      return oldRange.start;
+    case ScheduleViewConfiguration _:
+      return oldRange.start;
+    default:
+      return oldRange.dominantMonthDate;
   }
 }
 
-/// Enumeration of view types for easier pattern matching
-enum _ViewType {
+/// Default implementation for transitioning to Weekly view
+DateTime kDefaultToWeekly({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  final oldConfig = oldViewController.viewConfiguration;
+  final oldRange = oldViewController.visibleDateTimeRange.value;
+  switch (oldConfig) {
+    case MonthViewConfiguration _:
+      return oldRange.start;
+    case final MultiDayViewConfiguration multiDayConfig:
+      final viewType = _getMultiDayViewType(multiDayConfig);
+      return switch (viewType) {
+        _MultiDayViewType.weekly => oldRange.start,
+        _MultiDayViewType.daily => oldRange.start,
+      };
+    case ScheduleViewConfiguration _:
+      return oldRange.start;
+    default:
+      return oldRange.start;
+  }
+}
+
+/// Default implementation for transitioning to Daily view
+DateTime kDefaultToDaily({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  final oldConfig = oldViewController.viewConfiguration;
+  final oldRange = oldViewController.visibleDateTimeRange.value;
+  switch (oldConfig) {
+    case MonthViewConfiguration _:
+      return oldRange.dominantMonthDate;
+    case final MultiDayViewConfiguration multiDayConfig:
+      final viewType = _getMultiDayViewType(multiDayConfig);
+      return switch (viewType) {
+        _MultiDayViewType.weekly => oldRange.start,
+        _MultiDayViewType.daily => oldRange.start,
+      };
+    case ScheduleViewConfiguration _:
+      return oldRange.start;
+    default:
+      return oldRange.start;
+  }
+}
+
+/// Default implementation for transitioning to Schedule view
+DateTime kDefaultToSchedule({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  final oldRange = oldViewController.visibleDateTimeRange.value;
+  return oldRange.start;
+}
+
+/// General default strategy that routes to appropriate specific strategies
+DateTime kDefaultInitialDateSelectionStrategy({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) {
+  return switch (newViewConfiguration) {
+    MonthViewConfiguration _ => kDefaultToMonthly(
+        oldViewController: oldViewController,
+        newViewConfiguration: newViewConfiguration,
+      ),
+    final MultiDayViewConfiguration multiDayConfig => switch (_getMultiDayViewType(multiDayConfig)) {
+        _MultiDayViewType.weekly => kDefaultToWeekly(
+            oldViewController: oldViewController,
+            newViewConfiguration: newViewConfiguration,
+          ),
+        _MultiDayViewType.daily => kDefaultToDaily(
+            oldViewController: oldViewController,
+            newViewConfiguration: newViewConfiguration,
+          ),
+      },
+    ScheduleViewConfiguration _ => kDefaultToSchedule(
+        oldViewController: oldViewController,
+        newViewConfiguration: newViewConfiguration,
+      ),
+    _ => kDefaultToDaily(
+        oldViewController: oldViewController,
+        newViewConfiguration: newViewConfiguration,
+      ),
+  };
+}
+
+_MultiDayViewType _getMultiDayViewType(MultiDayViewConfiguration config) {
+  return switch (config.type) {
+    MultiDayViewType.singleDay => _MultiDayViewType.daily,
+    MultiDayViewType.week => _MultiDayViewType.weekly,
+    MultiDayViewType.workWeek => _MultiDayViewType.weekly,
+    MultiDayViewType.custom => config.numberOfDays == 1 ? _MultiDayViewType.daily : _MultiDayViewType.weekly,
+    MultiDayViewType.freeScroll => _MultiDayViewType.weekly,
+  };
+}
+
+/// Enumeration of multi-day view types for easier pattern matching
+enum _MultiDayViewType {
   daily,
   weekly,
-  monthly,
-  schedule,
-  unknown,
 }

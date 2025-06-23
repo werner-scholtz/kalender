@@ -34,7 +34,7 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy,

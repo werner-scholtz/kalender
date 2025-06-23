@@ -69,10 +69,9 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       setState(() {
         // Use selectedDate if available, otherwise use the initial date selection strategy
         final initialDate = widget.viewConfiguration.selectedDate ??
-            widget.viewConfiguration.initialDateSelectionStrategy.calculateInitialDate(
+            widget.viewConfiguration.initialDateSelectionStrategy(
               oldViewController: _viewController,
               newViewConfiguration: widget.viewConfiguration,
-              currentVisibleRange: _viewController.visibleDateTimeRange.value,
             );
 
         _viewController = _createViewController(initialDate: initialDate);

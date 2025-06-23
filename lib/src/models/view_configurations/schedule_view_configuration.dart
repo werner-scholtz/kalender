@@ -42,7 +42,7 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
   ScheduleViewConfiguration.continuous({
     super.name = 'Schedule (continuous)',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
   })  : pageNavigationFunctions = PageNavigationFunctions.scheduleContinuous(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.continuous;
@@ -51,7 +51,7 @@ class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
   ScheduleViewConfiguration.paginated({
     super.name = 'Schedule (paginated)',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
   })  : pageNavigationFunctions = PageNavigationFunctions.schedulePaginated(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.paginated;

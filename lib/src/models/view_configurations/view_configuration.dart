@@ -14,7 +14,7 @@ abstract class ViewConfiguration<T extends Object?> {
   const ViewConfiguration({
     required this.name,
     this.selectedDate,
-    this.initialDateSelectionStrategy = const DefaultInitialDateSelectionStrategy(),
+    this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
   });
 
   /// The name of the [ViewConfiguration].
@@ -30,7 +30,7 @@ abstract class ViewConfiguration<T extends Object?> {
   ///
   /// This determines how the calendar chooses which date to display when switching
   /// between different view types (daily, weekly, monthly, schedule).
-  /// Defaults to [DefaultInitialDateSelectionStrategy] which follows specific rules for each transition type.
+  /// Defaults to [kDefaultInitialDateSelectionStrategy] which follows specific rules for each transition type.
   final InitialDateSelectionStrategy initialDateSelectionStrategy;
 
   /// The functions for navigating the [PageView].

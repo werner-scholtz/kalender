@@ -62,7 +62,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration.singleDay({
     super.name = 'Day',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToDaily,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -77,7 +77,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration.week({
     super.name = 'Week',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -95,7 +95,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration.workWeek({
     super.name = 'Work Week',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
@@ -110,7 +110,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration.custom({
     super.name = 'Custom',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
@@ -126,7 +126,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   MultiDayViewConfiguration.freeScroll({
     super.name = 'Free Scroll',
     super.selectedDate,
-    super.initialDateSelectionStrategy,
+    super.initialDateSelectionStrategy = kDefaultToWeekly,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
