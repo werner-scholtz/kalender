@@ -329,6 +329,21 @@ void main() {
     });
   });
   group('ScheduleViewConfiguration', () {
+    test('continuous (uninitialized)', () async {
+      final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
+      final viewController = ContinuousScheduleViewController(
+        viewConfiguration: viewConfiguration,
+        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        initialDate: initialDate,
+      );
+
+      await expectLater(viewController.animateToDate(DateTime.now()), completes);
+      await expectLater(viewController.animateToDateTime(DateTime.now()), completes);
+      await expectLater(viewController.animateToNextPage(), completes);
+      await expectLater(viewController.animateToPreviousPage(), completes);
+    });
+
     testWidgets('continuous', (tester) async {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
 
@@ -370,6 +385,21 @@ void main() {
       for (final event in eventsToTest) {
         await tester.testAnimateToCalendarEvent(controller, event);
       }
+    });
+
+    test('paginated (uninitialized)', () async {
+      final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
+      final viewController = PaginatedScheduleViewController(
+        viewConfiguration: viewConfiguration,
+        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        initialDate: initialDate,
+      );
+
+      await expectLater(viewController.animateToDate(DateTime.now()), completes);
+      await expectLater(viewController.animateToDateTime(DateTime.now()), completes);
+      await expectLater(viewController.animateToNextPage(), completes);
+      await expectLater(viewController.animateToPreviousPage(), completes);
     });
 
     testWidgets('paginated', (tester) async {
