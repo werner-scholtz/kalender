@@ -88,6 +88,21 @@ void main() {
     });
   });
   group('ScheduleViewConfiguration', () {
+    test('continuous (uninitialized)', () async {
+      final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
+      final viewController = ContinuousScheduleViewController(
+        viewConfiguration: viewConfiguration,
+        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        initialDate: initialDate,
+      );
+
+      await expectLater(viewController.animateToDate(DateTime.now()), completes);
+      await expectLater(viewController.animateToDateTime(DateTime.now()), completes);
+      await expectLater(viewController.animateToNextPage(), completes);
+      await expectLater(viewController.animateToPreviousPage(), completes);
+    });
+
     testWidgets('continuous', (tester) async {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final controller = CalendarController(initialDate: initialDate);
@@ -202,6 +217,21 @@ void main() {
           reason: 'Event start ${event.start} should be within the visible range after animating to it',
         );
       }
+    });
+
+    test('paginated (uninitialized)', () async {
+      final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
+      final viewController = PaginatedScheduleViewController(
+        viewConfiguration: viewConfiguration,
+        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
+        initialDate: initialDate,
+      );
+
+      await expectLater(viewController.animateToDate(DateTime.now()), completes);
+      await expectLater(viewController.animateToDateTime(DateTime.now()), completes);
+      await expectLater(viewController.animateToNextPage(), completes);
+      await expectLater(viewController.animateToPreviousPage(), completes);
     });
 
     testWidgets('paginated', (tester) async {
