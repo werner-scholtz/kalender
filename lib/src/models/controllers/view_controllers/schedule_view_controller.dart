@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
@@ -28,10 +30,10 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   }
 
   /// The [ItemScrollController] used to control the scrollable list of the current page.
-  late ItemScrollController itemScrollController;
+  ItemScrollController? itemScrollController;
 
   /// The [ItemPositionsListener] used to listen to the scroll position of the list.
-  late ItemPositionsListener itemPositionsListener;
+  ItemPositionsListener? itemPositionsListener;
 
   /// The highlighted date time range.
   final highlightedDateTimeRange = ValueNotifier<DateTimeRange?>(null);
@@ -69,8 +71,9 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   }
 
   /// Animate to the given index.
-  Future<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
-    return itemScrollController.scrollTo(
+  FutureOr<void> _animateToIndex(int index, {Duration? duration, Curve? curve}) {
+    if (!hasInitialized) return null;
+    return itemScrollController?.scrollTo(
       index: index,
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -79,6 +82,17 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
 
   @override
   void dispose() => highlightedDateTimeRange.dispose();
+
+  /// Check if the controller has been initialized with the necessary components.
+  bool get hasInitialized {
+    if (itemScrollController == null || itemPositionsListener == null) {
+      debugPrint(
+        'ScheduleViewController has not been initialized with ItemScrollController and ItemPositionsListener.',
+      );
+      return false;
+    }
+    return true;
+  }
 }
 
 class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
@@ -124,7 +138,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
-    final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
+    if (!hasInitialized) return;
+    final currentIndex = itemPositionsListener!.itemPositions.value.firstOrNull?.index;
     if (currentIndex == null) return;
 
     final date = dateTimeFromIndex(currentIndex);
@@ -137,7 +152,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
-    final currentIndex = itemPositionsListener.itemPositions.value.firstOrNull?.index;
+    if (!hasInitialized) return;
+    final currentIndex = itemPositionsListener!.itemPositions.value.firstOrNull?.index;
     if (currentIndex == null) return;
 
     final currentDate = dateTimeFromIndex(currentIndex);
@@ -151,9 +167,10 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   void jumpToDate(DateTime date) {
+    if (!hasInitialized) return;
     final dateAsUtc = date.asUtc.startOfDay;
     final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
-    itemScrollController.jumpTo(index: index);
+    itemScrollController!.jumpTo(index: index);
   }
 
   @override
@@ -180,6 +197,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   /// Animate to the page index.
   Future<void> _animateToPage(int pageIndex, {Duration? duration, Curve? curve}) async {
+    if (!_hasClients) return;
     return pageController.animateToPage(
       pageIndex,
       duration: duration ?? const Duration(milliseconds: 300),
@@ -232,6 +250,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToNextPage({Duration? duration, Curve? curve}) async {
+    if (!_hasClients) return;
     return await pageController.nextPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -240,6 +259,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToPreviousPage({Duration? duration, Curve? curve}) async {
+    if (!_hasClients) return;
     return await pageController.previousPage(
       duration: duration ?? const Duration(milliseconds: 300),
       curve: curve ?? Curves.easeInOut,
@@ -260,5 +280,17 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
   }
 
   @override
-  void jumpToPage(int page) => pageController.jumpToPage(page);
+  void jumpToPage(int page) {
+    if (!_hasClients) return;
+    pageController.jumpToPage(page);
+  }
+
+  /// Check if the page controller has clients.
+  bool get _hasClients {
+    if (!pageController.hasClients) {
+      debugPrint("$PaginatedScheduleViewController's PageController has no clients.");
+      return false;
+    }
+    return true;
+  }
 }

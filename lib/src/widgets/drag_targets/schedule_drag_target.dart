@@ -122,14 +122,16 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
         final topScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () {
-            final positions = viewController.itemPositionsListener.itemPositions.value;
+            if (!viewController.hasInitialized) return;
+
+            final positions = viewController.itemPositionsListener!.itemPositions.value;
             if (positions.isEmpty) return;
             final first = positions.reduce((value, element) => value.index < element.index ? value : element).index;
 
             final targetIndex = first - 1;
             if (targetIndex < 0) return;
 
-            viewController.itemScrollController.scrollTo(
+            viewController.itemScrollController!.scrollTo(
               index: targetIndex,
               duration: scrollTrigger.animationDuration,
               curve: scrollTrigger.animationCurve,
@@ -141,13 +143,16 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
         final bottomScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () {
-            final positions = viewController.itemPositionsListener.itemPositions.value;
+            if (!viewController.hasInitialized) return;
+
+            final positions = viewController.itemPositionsListener!.itemPositions.value;
             if (positions.isEmpty) return;
+
             final last = positions.reduce((value, element) => value.index > element.index ? value : element).index;
             final targetIndex = last + 1;
             if (targetIndex >= viewController.itemCount) return;
 
-            viewController.itemScrollController.scrollTo(
+            viewController.itemScrollController!.scrollTo(
               index: targetIndex,
               duration: scrollTrigger.animationDuration,
               curve: scrollTrigger.animationCurve,
@@ -176,7 +181,9 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
     // Find the item index based on the cursor position.
     final viewController = widget.viewController;
-    final itemPositions = viewController.itemPositionsListener.itemPositions.value;
+    if (!viewController.hasInitialized) return null;
+
+    final itemPositions = viewController.itemPositionsListener!.itemPositions.value;
     final proportionalOffset = localCursorPosition.dy / widget.constraints.maxHeight;
     final itemIndex = itemPositions
         .where((item) => item.itemLeadingEdge <= proportionalOffset && item.itemTrailingEdge >= proportionalOffset)

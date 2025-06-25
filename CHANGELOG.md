@@ -1,3 +1,7 @@
+## 0.9.1
+
+- fix: ScheduleViewController ItemPositionsListener has not been initialized. [#170](https://github.com/werner-scholtz/kalender/issues/170)
+
 ## 0.9.0
 
 ### Features

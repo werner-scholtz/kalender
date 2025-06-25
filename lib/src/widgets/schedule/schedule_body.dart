@@ -205,13 +205,13 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
     _generateMap();
     eventsController.addListener(_updateMap);
-    viewController.itemPositionsListener.itemPositions.addListener(_positionListener);
+    _itemPositionsListener.itemPositions.addListener(_positionListener);
   }
 
   @override
   void dispose() {
     eventsController.removeListener(_updateMap);
-    viewController.itemPositionsListener.itemPositions.removeListener(_positionListener);
+    _itemPositionsListener.itemPositions.removeListener(_positionListener);
     super.dispose();
   }
 
@@ -270,7 +270,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   }
 
   void _positionListener() {
-    final itemPositions = viewController.itemPositionsListener.itemPositions.value;
+    final itemPositions = _itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
       // Get the first and last visible item positions.
       var first = viewController.itemCount;
