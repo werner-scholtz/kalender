@@ -156,11 +156,11 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    final layoutStrategy = configuration.eventLayoutStrategy;
+    final events = ValueListenableBuilder(
       valueListenable: eventNotifier,
       builder: (context, events, child) {
-        final layoutStrategy = configuration.eventLayoutStrategy;
-        final eventsWidget = CustomMultiChildLayout(
+        return CustomMultiChildLayout(
           delegate: layoutStrategy.call(
             events,
             date,
@@ -168,13 +168,13 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
             heightPerMinute,
             configuration.minimumTileHeight,
           ),
-          children: events.indexed
+          children: events
               .map(
                 (item) => LayoutId(
-                  id: item.$1,
+                  id: item.id,
                   child: DayEventTile(
-                    key: DayEventTile.getKey(item.$2.id),
-                    event: item.$2,
+                    key: DayEventTile.getKey(item.id),
+                    event: item,
                     eventsController: eventsController,
                     controller: controller,
                     callbacks: callbacks,
@@ -186,62 +186,62 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
               )
               .toList(),
         );
+      },
+    );
 
-        // TODO: investigate a more efficient way to do this.
-        // This can get computationally expensive when there a lot of events.
-        // Might be worth it to store the current layout instead of re-calculating every time.
-        final dropTargetWidget = ValueListenableBuilder(
-          valueListenable: controller.selectedEvent,
-          builder: (context, event, child) {
-            // If there is no event being dragged, return an empty widget.
-            if (event == null) return const SizedBox();
-            if (!event.dateTimeRangeAsUtc.overlaps(date.dayRange)) return const SizedBox();
-            if (!configuration.showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
+    // TODO: investigate a more efficient way to do this.
+    // This can get computationally expensive when there a lot of events.
+    // Might be worth it to store the current layout instead of re-calculating every time.
+    final dropTargetWidget = ValueListenableBuilder(
+      valueListenable: controller.selectedEvent,
+      builder: (context, event, child) {
+        // If there is no event being dragged, return an empty widget.
+        if (event == null) return const SizedBox();
+        if (!event.dateTimeRangeAsUtc.overlaps(date.dayRange)) return const SizedBox();
+        if (!configuration.showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
 
-            final eventList = events.toList();
-            // Find the index of the selected event.
-            final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
-            if (index != -1) {
-              // If it exists override it with the selectedEvent.
-              eventList[index] = event;
-            } else {
-              // Else add it at the start of the list.
-              eventList.insert(0, event);
-            }
+        final eventList = <CalendarEvent<T>>[]; // eventNotifier.value.toList();
+        // Find the index of the selected event.
+        final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
+        if (index != -1) {
+          // If it exists override it with the selectedEvent.
+          eventList[index] = event;
+        } else {
+          // Else add it at the start of the list.
+          eventList.insert(0, event);
+        }
 
-            final dropTarget = tileComponents.dropTargetTile;
+        final dropTarget = tileComponents.dropTargetTile;
 
-            return CustomMultiChildLayout(
-              delegate: layoutStrategy.call(
-                eventList,
-                date,
-                timeOfDayRange,
-                heightPerMinute,
-                configuration.minimumTileHeight,
-              ),
-              children: eventList.indexed.map(
-                (item) {
-                  final event = item.$2;
-                  final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
+        return CustomMultiChildLayout(
+          delegate: layoutStrategy.call(
+            eventList,
+            date,
+            timeOfDayRange,
+            heightPerMinute,
+            configuration.minimumTileHeight,
+          ),
+          children: eventList.map(
+            (item) {
+              final event = item;
+              final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
 
-                  return LayoutId(
-                    id: item.$1,
-                    child: drawTile ? dropTarget.call(event) : const SizedBox(),
-                  );
-                },
-              ).toList(),
-            );
-          },
-        );
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned.fill(child: eventsWidget),
-            Positioned.fill(child: PassThroughPointer(child: dropTargetWidget)),
-          ],
+              return LayoutId(
+                id: item.id,
+                child: drawTile ? dropTarget.call(event) : const SizedBox(),
+              );
+            },
+          ).toList(),
         );
       },
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned.fill(child: events),
+        Positioned.fill(child: PassThroughPointer(child: dropTargetWidget)),
+      ],
     );
   }
 }
