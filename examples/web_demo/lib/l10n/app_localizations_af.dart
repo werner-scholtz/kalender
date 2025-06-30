@@ -42,16 +42,16 @@ class AppLocalizationsAf extends AppLocalizations {
   String get allowEventCreation => 'Laat Gebeurtenis Skep Toe';
 
   @override
-  String get snapToOtherEvents => 'Snaps na ander gebeurtenisse';
+  String get snapToOtherEvents => 'Spring na ander gebeurtenisse';
 
   @override
-  String get snapToTimeIndicator => 'Snaps na tyd-aanwyser';
+  String get snapToTimeIndicator => 'Spring na tyd-aanwyser';
 
   @override
-  String get snapInterval => 'Snap-interval';
+  String get snapInterval => 'Spring-interval';
 
   @override
-  String get snapRange => 'Snap-bereik';
+  String get snapRange => 'Spring-bereik';
 
   @override
   String get firstDayOfWeek => 'Eerste dag van die week';
