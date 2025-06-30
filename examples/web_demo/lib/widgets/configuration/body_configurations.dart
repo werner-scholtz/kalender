@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
+import 'package:web_demo/utils.dart';
 
 class MultiDayBodyConfigurationWidget extends StatelessWidget {
   final CalendarConfiguration calendarConfiguration;
@@ -15,7 +16,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: const Text("Body Configuration"),
+      title: Text(context.l10n.bodyConfiguration),
       initiallyExpanded: true,
       children: [
         SwitchListTile.adaptive(
@@ -23,10 +24,10 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
           onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = configuration.copyWith(
             showMultiDayEvents: value,
           ),
-          title: const Text("Show multi day events"),
+          title: Text(context.l10n.showMultiDayEvents),
         ),
         DropDownEditor<EdgeInsets>(
-          label: "Event Padding (LR)",
+          label: context.l10n.eventPaddingLR,
           value: configuration.horizontalPadding,
           items: const [
             EdgeInsets.only(left: 0, right: 4, top: 0, bottom: 0),
@@ -42,7 +43,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
           itemToString: (value) => "L: ${value.left.toInt()}, R: ${value.right.toInt()}",
         ),
         DropDownEditor<double?>(
-          label: "Minimum tile height",
+          label: context.l10n.minimumTileHeight,
           value: configuration.minimumTileHeight,
           items: const [-1, 24.0, 32.0, 40.0, 48.0],
           onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = MultiDayBodyConfiguration(
@@ -50,7 +51,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
             showMultiDayEvents: configuration.showMultiDayEvents,
             horizontalPadding: configuration.horizontalPadding,
           ),
-          itemToString: (value) => value == -1 ? "None" : value.toString(),
+          itemToString: (value) => value == -1 ? context.l10n.none : value.toString(),
         ),
         SnappingEditorWidget(snapping: snapping),
         InteractionEditorWidget(interaction: interaction),
@@ -69,11 +70,11 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: const Text("Body Configuration"),
+      title: Text(context.l10n.bodyConfiguration),
       initiallyExpanded: true,
       children: [
         DropDownEditor<double>(
-          label: "Tile Height",
+          label: context.l10n.tileHeight,
           value: configuration.tileHeight,
           items: const [24.0, 32.0, 40.0, 48.0],
           onChanged: (value) => calendarConfiguration.monthBodyConfiguration = configuration.copyWith(
@@ -82,7 +83,7 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
           itemToString: (value) => value.toString(),
         ),
         DropDownEditor<EdgeInsets>(
-          label: "Event Padding (LRTB)",
+          label: context.l10n.eventPaddingLRTB,
           value: configuration.eventPadding,
           items: const [
             EdgeInsets.only(left: 0, right: 4, top: 0, bottom: 2),
@@ -114,11 +115,11 @@ class ScheduleBodyConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: const Text("Body Configuration"),
+      title: Text(context.l10n.bodyConfiguration),
       initiallyExpanded: true,
       children: [
         DropDownEditor<EmptyDayBehavior>(
-          label: "Empty Day Behavior",
+          label: context.l10n.emptyDayBehavior,
           value: calendarConfiguration.scheduleBodyConfiguration.emptyDay,
           items: EmptyDayBehavior.values,
           onChanged: (value) => calendarConfiguration.scheduleBodyConfiguration = configuration.copyWith(

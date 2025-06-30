@@ -47,49 +47,44 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 builder: (context, child) {
                   return ZoomDetector(
                     controller: _controller,
-                    child: ValueListenableBuilder(
-                      valueListenable: MyApp.of(context)!.locale,
-                      builder: (context, value, child) {
-                        return CalendarView<Event>(
-                          locale: value.toLanguageTag(),
-                          calendarController: _controller,
-                          eventsController: _eventsController,
-                          viewConfiguration: _configuration.viewConfiguration,
-                          callbacks: _callbacks,
-                          header: Material(
-                            color: Theme.of(context).colorScheme.surface,
-                            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-                            elevation: 2,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: NavigationHeader(
-                                    controller: _controller,
-                                    viewConfigurations: _configuration.viewConfigurations,
-                                    viewConfiguration: _configuration.viewConfiguration,
-                                  ),
-                                ),
-                                if (_configuration.showHeader)
-                                  CalendarHeader<Event>(
-                                    multiDayTileComponents: _multiDayTileComponents,
-                                    multiDayHeaderConfiguration: _configuration.multiDayHeaderConfiguration,
-                                    interaction: _configuration.interactionHeader,
-                                  ),
-                              ],
+                    child: CalendarView<Event>(
+                      locale: Localizations.localeOf(context).toLanguageTag(),
+                      calendarController: _controller,
+                      eventsController: _eventsController,
+                      viewConfiguration: _configuration.viewConfiguration,
+                      callbacks: _callbacks,
+                      header: Material(
+                        color: Theme.of(context).colorScheme.surface,
+                        surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: NavigationHeader(
+                                controller: _controller,
+                                viewConfigurations: _configuration.viewConfigurations,
+                                viewConfiguration: _configuration.viewConfiguration,
+                              ),
                             ),
-                          ),
-                          body: CalendarBody<Event>(
-                            multiDayTileComponents: _tileComponents,
-                            monthTileComponents: _multiDayTileComponents,
-                            multiDayBodyConfiguration: _configuration.multiDayBodyConfiguration,
-                            monthBodyConfiguration: _configuration.monthBodyConfiguration,
-                            scheduleTileComponents: _scheduleTileComponents,
-                            interaction: _configuration.interactionBody,
-                            snapping: _configuration.snapping,
-                          ),
-                        );
-                      },
+                            if (_configuration.showHeader)
+                              CalendarHeader<Event>(
+                                multiDayTileComponents: _multiDayTileComponents,
+                                multiDayHeaderConfiguration: _configuration.multiDayHeaderConfiguration,
+                                interaction: _configuration.interactionHeader,
+                              ),
+                          ],
+                        ),
+                      ),
+                      body: CalendarBody<Event>(
+                        multiDayTileComponents: _tileComponents,
+                        monthTileComponents: _multiDayTileComponents,
+                        multiDayBodyConfiguration: _configuration.multiDayBodyConfiguration,
+                        monthBodyConfiguration: _configuration.monthBodyConfiguration,
+                        scheduleTileComponents: _scheduleTileComponents,
+                        interaction: _configuration.interactionBody,
+                        snapping: _configuration.snapping,
+                      ),
                     ),
                   );
                 },

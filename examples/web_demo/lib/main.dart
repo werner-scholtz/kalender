@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/l10n/app_localizations.dart';
 import 'package:web_demo/locales.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
@@ -12,6 +13,7 @@ import 'package:web_demo/widgets/locale_dropdown.dart';
 import 'package:web_demo/widgets/text_direction_button.dart';
 import 'package:web_demo/widgets/theme_button.dart';
 import 'package:web_demo/widgets/view_type_picker.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -52,9 +54,9 @@ class MyAppState extends State<MyApp> {
     return setState(() => _textDirection = _textDirection == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr);
   }
 
-  final _locale = ValueNotifier(supportedLocales.first);
-  ValueNotifier<Locale> get locale => _locale;
-  void setLocale(Locale locale) => _locale.value = locale;
+  Locale _locale = supportedLocales.first;
+  Locale get locale => _locale;
+  void setLocale(Locale locale) => setState(() => _locale = locale);
 
   final _eventsController = DefaultEventsController<Event>();
   DefaultEventsController<Event> get eventsController => _eventsController;
@@ -63,6 +65,16 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _eventsController.addEvents(generateEvents(context));
+  }
+
+  Locale _resolveLocale(Locale? locale, Iterable<Locale> supportedLocales) {
+    if (locale == null) return const Locale('en', 'US');
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return supportedLocale;
+      }
+    }
+    return const Locale('en', 'US');
   }
 
   @override
@@ -80,6 +92,18 @@ class MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
       ),
+      locale: locale,
+      supportedLocales: supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: (locale, supportedLocales) => _resolveLocale(locale, supportedLocales),
+      localeListResolutionCallback: (locales, supportedLocales) {
+        return _resolveLocale(locales?.isNotEmpty == true ? locales!.first : null, supportedLocales);
+      },
       home: Directionality(
         textDirection: _textDirection,
         child: isMobile ? const MobileHomePage() : const DesktopHomePage(),
@@ -96,7 +120,7 @@ class MobileHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Kalender Web Demo"),
+        title: Text(context.l10n.appTitle),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
         actions: const [
           ThemeButton(),
@@ -125,7 +149,7 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Kalender Web Demo"),
+        title: Text(context.l10n.appTitle),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
         actions: [
           const ThemeButton(),
