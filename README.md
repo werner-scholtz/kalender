@@ -13,6 +13,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 * **Behavior:** Choose how you want to handle interaction with the calendar. [find out more](#behavior)
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
+* **Locale:** Provide a locale for the desired language. [find out more](#locale)
 
 ## Roadmap
 
@@ -630,6 +631,28 @@ By default the calendar uses default components which can be customized with `Co
 
   </summary>
 </details>
+
+### Locale
+The CalenderView has a locale property, if it is unspecified a default locale will be used, this locale will only translate day / month names in the package.
+
+#### Setup 
+1. You will need to add the [intl package](https://pub.dev/packages/intl)
+2. Make sure you run the `initializeDateFormatting()` function from the intl package in your `main()`.
+```dart
+void main() async {
+  await initializeDateFormatting();
+  runApp(const MyApp());
+}
+```
+
+#### Specify the language
+To specify the language you want to use:
+
+```dart
+CalendarView(
+  locale: 'af_ZA',
+)
+```
 
 ### Event layout
 
