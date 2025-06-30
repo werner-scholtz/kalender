@@ -22,7 +22,6 @@ List<CalendarEvent<Event>> generateEvents(BuildContext context) {
   });
 }
 
-
 extension BuildContextExtension on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
   String get localeTag => Localizations.localeOf(this).toLanguageTag();
