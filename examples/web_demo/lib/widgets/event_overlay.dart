@@ -56,7 +56,10 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                         child: TextFormField(
                           initialValue: event.data?.title,
                           style: Theme.of(context).textTheme.titleMedium,
-                          decoration: InputDecoration(border: const OutlineInputBorder(), labelText: context.l10n.title),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            labelText: context.l10n.title,
+                          ),
                           onChanged: (value) {
                             final updatedEvent = event.copyWith(data: event.data?.copyWith(title: value));
                             widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
