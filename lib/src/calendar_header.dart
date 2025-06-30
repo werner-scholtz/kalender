@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-class CalendarHeader<T extends Object?> extends StatelessWidget {
+class CalendarHeader<T extends Object?> extends StatefulWidget {
   final EventsController<T>? eventsController;
   final CalendarController<T>? calendarController;
 
@@ -42,9 +42,14 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   });
 
   @override
+  State<CalendarHeader<T>> createState() => _CalendarHeaderState<T>();
+}
+
+class _CalendarHeaderState<T extends Object?> extends State<CalendarHeader<T>> {
+  @override
   Widget build(BuildContext context) {
     late final provider = CalendarProvider.maybeOf<T>(context);
-    final viewController = calendarController?.viewController ?? provider?.viewController;
+    final viewController = widget.calendarController?.viewController ?? provider?.viewController;
 
     assert(
       viewController != null,
@@ -54,16 +59,16 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
 
     if (viewController is MultiDayViewController<T>) {
       return MultiDayHeader<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        callbacks: callbacks,
-        tileComponents: multiDayTileComponents,
-        configuration: multiDayHeaderConfiguration,
-        interaction: interaction,
+        eventsController: widget.eventsController,
+        calendarController: widget.calendarController,
+        callbacks: widget.callbacks,
+        tileComponents: widget.multiDayTileComponents,
+        configuration: widget.multiDayHeaderConfiguration,
+        interaction: widget.interaction,
       );
     } else if (viewController is MonthViewController<T>) {
       return MonthHeader<T>(
-        calendarController: calendarController,
+        calendarController: widget.calendarController,
       );
     } else if (viewController is ScheduleViewController<T>) {
       return ScheduleHeader<T>();

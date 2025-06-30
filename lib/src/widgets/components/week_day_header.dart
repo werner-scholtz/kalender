@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/locale_provider.dart';
 
 /// The week day header builder.
 ///
@@ -45,7 +46,8 @@ class WeekDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final padding = style?.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.bodySmall;
-    final dateText = style?.stringBuilder?.call(date) ?? date.dayNameEnglish;
+    final locale = LocaleProvider.of(context);
+    final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(locale);
     return Padding(
       padding: padding,
       child: Center(

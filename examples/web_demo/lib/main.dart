@@ -1,17 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
+import 'package:web_demo/locales.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/event_overlay_portal.dart';
+import 'package:web_demo/widgets/locale_dropdown.dart';
 import 'package:web_demo/widgets/text_direction_button.dart';
 import 'package:web_demo/widgets/theme_button.dart';
 import 'package:web_demo/widgets/view_type_picker.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting().then((value) => runApp(const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -47,6 +50,10 @@ class MyAppState extends State<MyApp> {
   void toggleTextDirection() {
     return setState(() => _textDirection = _textDirection == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr);
   }
+
+  final _locale = ValueNotifier(supportedLocales.first);
+  ValueNotifier<Locale> get locale => _locale;
+  void setLocale(Locale locale) => _locale.value = locale;
 
   final _eventsController = DefaultEventsController<Event>();
   DefaultEventsController<Event> get eventsController => _eventsController;
@@ -123,6 +130,8 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
           const ThemeButton(),
           const SizedBox(width: 4),
           const TextDirectionButton(),
+          const SizedBox(width: 4),
+          const LocaleDropdown(),
           const SizedBox(width: 4),
           ViewTypePicker(type: _type, onChanged: (value) => setState(() => _type = value)),
         ],

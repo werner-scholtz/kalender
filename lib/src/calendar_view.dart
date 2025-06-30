@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/locale_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
+  /// The locale used for internationalization.
+  final dynamic locale;
+
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController<T> eventsController;
 
@@ -34,6 +38,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// It then attaches the [ViewController] to the [calendarController].
   const CalendarView({
     super.key,
+    this.locale,
     required this.eventsController,
     required this.calendarController,
     required this.viewConfiguration,
@@ -50,6 +55,7 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 class _CalendarViewState<T> extends State<CalendarView<T>> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController<T> _viewController;
+  late dynamic _locale = widget.locale;
 
   @override
   void initState() {
@@ -80,6 +86,11 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
 
         widget.calendarController.attach(_viewController);
       });
+    }
+
+    if (_locale != widget.locale) {
+      // Update the locale if it has changed.
+      setState(() => _locale = widget.locale);
     }
   }
 
@@ -137,25 +148,28 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     final bodyId = widget.body == null ? null : 1;
     final headerId = widget.header == null ? null : 0;
 
-    return CalendarProvider<T>(
-      eventsController: widget.eventsController,
-      calendarController: widget.calendarController,
-      callbacks: widget.callbacks,
-      components: widget.components,
-      child: CustomMultiChildLayout(
-        delegate: CalendarLayoutDelegate(headerId, bodyId),
-        children: [
-          if (bodyId != null)
-            LayoutId(
-              id: bodyId,
-              child: widget.body!,
-            ),
-          if (headerId != null)
-            LayoutId(
-              id: headerId,
-              child: widget.header!,
-            ),
-        ],
+    return LocaleProvider(
+      locale: _locale,
+      child: CalendarProvider<T>(
+        eventsController: widget.eventsController,
+        calendarController: widget.calendarController,
+        callbacks: widget.callbacks,
+        components: widget.components,
+        child: CustomMultiChildLayout(
+          delegate: CalendarLayoutDelegate(headerId, bodyId),
+          children: [
+            if (bodyId != null)
+              LayoutId(
+                id: bodyId,
+                child: widget.body!,
+              ),
+            if (headerId != null)
+              LayoutId(
+                id: headerId,
+                child: widget.header!,
+              ),
+          ],
+        ),
       ),
     );
   }

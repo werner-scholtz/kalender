@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/locale_provider.dart';
 
 /// The day header builder.
 ///
@@ -45,8 +46,9 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = LocaleProvider.of(context);
     final text = Text(
-      style?.stringBuilder?.call(date) ?? date.dayNameEnglish.characters.take(3).toString(),
+      style?.stringBuilder?.call(date) ?? date.dayNameShortLocalized(locale),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 

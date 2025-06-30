@@ -420,15 +420,15 @@ class FirstDayOfWeekEditor extends StatelessWidget {
       dropdownMenuEntries: [
         DropdownMenuEntry(
           value: 1,
-          label: DateTime(2024, 1, 1).dayNameEnglish,
+          label: DateTime(2024, 1, 1).dayNameLocalized(),
         ),
         DropdownMenuEntry(
           value: 6,
-          label: DateTime(2024, 1, 6).dayNameEnglish,
+          label: DateTime(2024, 1, 6).dayNameLocalized(),
         ),
         DropdownMenuEntry(
           value: 7,
-          label: DateTime(2024, 1, 7).dayNameEnglish,
+          label: DateTime(2024, 1, 7).dayNameLocalized(),
         ),
       ],
       initialSelection: initialFirstDayOfWeek,
