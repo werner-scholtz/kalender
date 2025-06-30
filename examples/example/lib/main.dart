@@ -205,10 +205,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       // we need to check the second week of the visibleDateTimeRange to determine the month and year.
                       final secondWeek = value.start.addDays(7);
                       year = secondWeek.year;
-                      month = secondWeek.monthNameEnglish;
+                      month = secondWeek.monthNameLocalized();
                     } else {
                       year = value.start.year;
-                      month = value.start.monthNameEnglish;
+                      month = value.start.monthNameLocalized();
                     }
                     return FilledButton.tonal(
                       onPressed: () {},
