@@ -13,8 +13,9 @@ import 'package:web_demo/widgets/text_direction_button.dart';
 import 'package:web_demo/widgets/theme_button.dart';
 import 'package:web_demo/widgets/view_type_picker.dart';
 
-void main() {
-  initializeDateFormatting().then((value) => runApp(const MyApp()));
+void main() async {
+  await initializeDateFormatting();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
