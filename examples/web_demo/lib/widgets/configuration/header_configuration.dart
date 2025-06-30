@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
+import 'package:web_demo/utils.dart';
 
 class MultiDayHeaderConfigurationWidget extends StatelessWidget {
   final CalendarConfiguration calendarConfiguration;
@@ -18,24 +19,24 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: const Text("Header Configuration"),
+      title: Text(context.l10n.headerConfiguration),
       initiallyExpanded: true,
       children: [
         SwitchListTile.adaptive(
           value: calendarConfiguration.showHeader,
           onChanged: (value) => calendarConfiguration.showHeader = value,
-          title: const Text("Show Header"),
-          subtitle: Text("Show header for ${calendarConfiguration.viewConfiguration.name} view"),
+          title: Text(context.l10n.showHeader),
+          subtitle: Text(context.l10n.showHeaderForView(calendarConfiguration.viewConfiguration.name)),
         ),
         SwitchListTile.adaptive(
           value: configuration.showTiles,
           onChanged: (value) => calendarConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
             showTiles: value,
           ),
-          title: const Text("Show Tiles"),
+          title: Text(context.l10n.showTiles),
         ),
         DropDownEditor<double>(
-          label: "Tile Height",
+          label: context.l10n.tileHeight,
           value: configuration.tileHeight,
           items: const [24.0, 32.0, 40.0, 48.0],
           onChanged: (value) => calendarConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
@@ -44,7 +45,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
           itemToString: (value) => value.toString(),
         ),
         DropDownEditor<int>(
-          label: "Max number of vertical events",
+          label: context.l10n.maxNumberOfVerticalEvents,
           value: configuration.maximumNumberOfVerticalEvents ?? 0,
           items: const [0, 1, 2, 3, 4, 5],
           onChanged: (value) {
@@ -55,10 +56,11 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
                   )
                 : configuration.copyWith(maximumNumberOfVerticalEvents: value);
           },
-          itemToString: (value) => value != 0 ? value.toString() : "Unlimited",
+          itemToString: (value) => value != 0 ? value.toString() : context.l10n.unlimited,
         ),
         DropDownEditor<EdgeInsets>(
-          label: "Event Padding (LRTB)",
+          key: Key(context.localeTag),
+          label: context.l10n.eventPaddingLRTB,
           value: configuration.eventPadding,
           items: const [
             EdgeInsets.only(left: 0, right: 4, top: 0, bottom: 2),
