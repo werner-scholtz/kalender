@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/utils.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
   final CalendarEvent<Event> event;
@@ -17,7 +18,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
   bool get continuesAfter => event.dateTimeRange.end.isAfter(tileRange.end);
   bool get continuesBefore => event.dateTimeRange.start.isBefore(tileRange.start);
-  String get title => event.data?.title ?? "New Event";
+  String title(BuildContext context) => event.data?.title ?? context.l10n.newEvent;
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(8);
   BoxDecoration get decoration => BoxDecoration(color: color.withAlpha(150), borderRadius: defaultBorderRadius);
@@ -37,7 +38,7 @@ class EventTile extends BaseEventTile {
       decoration: decoration,
       child: Padding(
         padding: padding,
-        child: Text(title, style: TextStyle(color: textColor(color))),
+        child: Text(title(context), style: TextStyle(color: textColor(color))),
       ),
     );
   }
@@ -57,7 +58,7 @@ class MultiDayEventTile extends BaseEventTile {
       decoration: decoration,
       child: Padding(
         padding: padding,
-        child: Text(title, style: TextStyle(color: textColor(color))),
+        child: Text(title(context), style: TextStyle(color: textColor(color))),
       ),
     );
   }
@@ -86,7 +87,7 @@ class OverlayEventTile extends BaseEventTile {
             ),
             child: Padding(
               padding: padding,
-              child: Text(title, style: TextStyle(color: textColor(color))),
+              child: Text(title(context), style: TextStyle(color: textColor(color))),
             ),
           ),
         ),

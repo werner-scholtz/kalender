@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:web_demo/utils.dart';
 
 enum ViewType {
   // A view that shows a single calendar.
-  single('Single Calendar'),
+  single(),
 
   // A view that shows multiple calendars next to each other.
-  double('Multi Calendar');
+  double();
 
-  const ViewType(this.label);
-  final String label;
+  const ViewType();
 }
 
 class ViewTypePicker extends StatelessWidget {
@@ -19,9 +19,17 @@ class ViewTypePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<ViewType>(
+      key: Key(Localizations.localeOf(context).languageCode),
       initialSelection: type,
       dropdownMenuEntries: [
-        ...ViewType.values.map((e) => DropdownMenuEntry(value: e, label: e.label)),
+        DropdownMenuEntry(
+          value: ViewType.single,
+          label: context.l10n.singleCalendar,
+        ),
+        DropdownMenuEntry(
+          value: ViewType.double,
+          label: context.l10n.multiCalendar,
+        ),
       ],
       onSelected: (value) {
         if (value == null) return;

@@ -10,7 +10,7 @@ class LocaleDropdown extends StatelessWidget {
     final appState = MyApp.of(context)!;
 
     return DropdownMenu<Locale>(
-      initialSelection: appState.locale.value,
+      initialSelection: appState.locale,
       dropdownMenuEntries: [
         ...supportedLocales.map(
           (locale) => DropdownMenuEntry<Locale>(
