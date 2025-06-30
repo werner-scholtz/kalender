@@ -5,9 +5,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/providers/locale_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
-  /// The locale used for internationalization.
-  final dynamic locale;
-
   /// The [EventsController] that will be used to populate the events in the calendar view.
   final EventsController<T> eventsController;
 
@@ -31,6 +28,11 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   /// The body widget that will be displayed below the header.
   final Widget? body;
+
+  /// The locale used for internationalization ex. `en_US`, `de_DE`, etc.
+  ///
+  /// If not provided, a default locale be used.
+  final dynamic locale;
 
   /// Creates a [CalendarView] widget.
   ///
