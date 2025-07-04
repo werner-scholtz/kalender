@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/locale_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -318,8 +319,10 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             if (item is MonthItem) {
+              final locale = LocaleProvider.of(context);
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
-                  ListTile(title: Text(date.monthNameEnglish));
+                  // TODO: add a default month item builder.
+                  ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 leading: leading,

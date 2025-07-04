@@ -1,3 +1,8 @@
+## 0.10.0
+
+### Features
+- Added locale property to CalenderView allowing users to specify a language with the [intl](https://pub.dev/packages/intl) package. [#172](https://github.com/werner-scholtz/kalender/issues/172) 
+
 ## 0.9.1
 
 - fix: ScheduleViewController ItemPositionsListener was not initialized. [#170](https://github.com/werner-scholtz/kalender/issues/170)

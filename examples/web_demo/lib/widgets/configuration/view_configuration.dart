@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
+import 'package:web_demo/utils.dart';
 
 class CalendarViewConfiguration extends StatelessWidget {
   final ViewConfiguration viewConfiguration;
@@ -40,7 +41,7 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text('${viewConfiguration.name} Configuration'),
+      title: Text(context.l10n.viewConfigurationTitle(viewConfiguration.name)),
       initiallyExpanded: true,
       children: [
         if (showFirstDay)
@@ -53,7 +54,7 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
           ),
         if (showNumberOfDays)
           DropDownEditor<int>(
-            label: "Number of days",
+            label: context.l10n.numberOfDays,
             value: viewConfiguration.numberOfDays,
             items: List.generate(7, (index) => index + 1),
             onChanged: (value) => CalendarWidget.setViewConfiguration(
@@ -66,7 +67,7 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
           children: [
             Flexible(
               child: DropDownEditor<TimeOfDay>(
-                label: "Start Time",
+                label: context.l10n.startTime,
                 value: viewConfiguration.timeOfDayRange.start,
                 items: List.generate(
                   viewConfiguration.timeOfDayRange.end.hour,
@@ -81,7 +82,7 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
             ),
             Flexible(
               child: DropDownEditor<TimeOfDay>(
-                label: "End Time",
+                label: context.l10n.endTime,
                 value: viewConfiguration.timeOfDayRange.end,
                 items: List.generate(
                   24 - viewConfiguration.timeOfDayRange.start.hour,
@@ -116,7 +117,7 @@ class MonthViewConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text('${viewConfiguration.name} Configuration'),
+      title: Text(context.l10n.viewConfigurationTitle(viewConfiguration.name)),
       initiallyExpanded: true,
       children: [
         FirstDayOfWeekEditor(
@@ -138,10 +139,10 @@ class ScheduleViewConfigurationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text('${viewConfiguration.name} Configuration'),
+      title: Text(context.l10n.viewConfigurationTitle(viewConfiguration.name)),
       initiallyExpanded: true,
-      children: const [
-        Text("No view configuration options available for this view type."),
+      children: [
+        Text(context.l10n.noViewConfigurationOptions),
       ],
     );
   }

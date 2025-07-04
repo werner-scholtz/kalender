@@ -48,6 +48,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   return ZoomDetector(
                     controller: _controller,
                     child: CalendarView<Event>(
+                      locale: Localizations.localeOf(context).toLanguageTag(),
                       calendarController: _controller,
                       eventsController: _eventsController,
                       viewConfiguration: _configuration.viewConfiguration,

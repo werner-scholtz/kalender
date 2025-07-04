@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/utils.dart';
 
 class EventOverlayCard extends StatefulWidget {
   final CalendarEvent<Event> event;
@@ -55,7 +56,10 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                         child: TextFormField(
                           initialValue: event.data?.title,
                           style: Theme.of(context).textTheme.titleMedium,
-                          decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Title"),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            labelText: context.l10n.title,
+                          ),
                           onChanged: (value) {
                             final updatedEvent = event.copyWith(data: event.data?.copyWith(title: value));
                             widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
@@ -144,7 +148,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                   widget.eventsController.removeEvent(event);
                   widget.onDismiss();
                 },
-                child: const Text("Delete"),
+                child: Text(context.l10n.delete),
               ),
             ],
           ),

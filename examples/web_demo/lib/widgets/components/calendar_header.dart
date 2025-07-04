@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
 class NavigationHeader extends StatelessWidget {
@@ -90,10 +91,10 @@ class HeaderDateButton extends StatelessWidget {
           // we need to check the second week of the visibleDateTimeRange to determine the month and year.
           final secondWeek = value.start.addDays(7);
           year = secondWeek.year;
-          month = secondWeek.monthNameEnglish;
+          month = secondWeek.monthNameLocalized(context.localeTag);
         } else {
           year = value.start.year;
-          month = value.start.monthNameEnglish;
+          month = value.start.monthNameLocalized(context.localeTag);
         }
 
         return FilledButton.tonal(
