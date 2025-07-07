@@ -122,6 +122,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
+      // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
@@ -205,17 +206,40 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     viewController.currentPage = widget.currentPage;
 
     _generateMap();
-    eventsController.addListener(_updateMap);
-    _itemPositionsListener.itemPositions.addListener(_positionListener);
+    _addListeners();
+  }
+
+  @override
+  void didUpdateWidget(covariant SchedulePositionList<T> oldWidget) {
+    _updateMap();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _removeListeners();
+    _generateMap();
+    _addListeners();
+    super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    eventsController.removeListener(_updateMap);
-    _itemPositionsListener.itemPositions.removeListener(_positionListener);
+    _removeListeners();
     super.dispose();
   }
 
+  void _addListeners() {
+    eventsController.addListener(_updateMap);
+    _itemPositionsListener.itemPositions.addListener(_positionListener);
+  }
+
+  void _removeListeners() {
+    eventsController.removeListener(_updateMap);
+    _itemPositionsListener.itemPositions.removeListener(_positionListener);
+  }
+
+  /// Updates the map of items in the view controller.
   void _updateMap() => setState(_generateMap);
 
   void _generateMap() {
@@ -321,7 +345,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             if (item is MonthItem) {
               final locale = LocaleProvider.of(context);
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
-                  // TODO: add a default month item builder.
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
