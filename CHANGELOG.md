@@ -1,7 +1,7 @@
 ## 0.10.0
 
-### Features
-- Added locale property to CalenderView allowing users to specify a language with the [intl](https://pub.dev/packages/intl) package. [#172](https://github.com/werner-scholtz/kalender/issues/172) 
+- feat: Added locale property to CalenderView allowing users to specify a language with the [intl](https://pub.dev/packages/intl) package. [#172](https://github.com/werner-scholtz/kalender/issues/172)
+- fix: Overlap when scrolling. [#174](https://github.com/werner-scholtz/kalender/issues/174)
 
 ## 0.9.1
 
