@@ -63,10 +63,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
 
-    final calendarComponents = provider?.components;
+    final calendarComponents = provider?.components as CalendarComponents<T>?;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components =
-        calendarComponents?.monthComponents?.bodyComponents as MonthBodyComponents<T>? ?? MonthBodyComponents<T>();
+    final components = calendarComponents?.monthComponents?.bodyComponents ?? MonthBodyComponents<T>();
     final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
 
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
@@ -161,8 +160,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     showAllEvents: true,
                                     callbacks: callbacks,
                                     generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
-                                    overlayBuilders: components.overlayBuilders,
-                                    overlayStyles: styles?.overlayStyles,
+                                    overlayBuilders: components.overlayBuilders ?? calendarComponents?.overlayBuilders,
+                                    overlayStyles: styles?.overlayStyles ?? calendarComponents?.overlayStyles,
                                     eventPadding: bodyConfiguration.eventPadding,
                                   );
                                 },
