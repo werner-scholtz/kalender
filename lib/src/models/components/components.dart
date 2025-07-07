@@ -33,12 +33,12 @@ class CalendarComponents<T extends Object?> {
   final ScheduleComponentStyles? scheduleComponentStyles;
 
   /// Default override for the overlay widgets.
-  /// 
+  ///
   /// If a more specific builder is provided in [multiDayComponents] or [monthComponents], that will be used instead.
   final OverlayBuilders<T>? overlayBuilders;
 
   /// Default styles for the overlay widgets.
-  /// 
+  ///
   /// If another style is provided in [multiDayComponentStyles] or [monthComponentStyles], that will be used instead.
   final OverlayStyles? overlayStyles;
 
