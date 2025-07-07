@@ -79,7 +79,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     if (!headerController.hasClients) return;
     headerController.position.correctPixels(pageController.offset);
     headerController.position.notifyListeners();
-
+    
     // Update the pageOffset based on the current pageController position.
     pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
   }
