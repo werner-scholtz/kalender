@@ -4,8 +4,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
-import 'package:kalender/src/widgets/internal_components/page_clipper.dart';
-import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
+import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 /// This widget is used to display a multi-day body.
@@ -113,133 +112,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
           selectedEvent,
           viewController.visibleDateTimeRange,
         );
-
         final timeIndicatorStyle = styles?.timeIndicatorStyle;
         late final timeIndicator = components.timeIndicator.call(
           timeOfDayRange,
           heightPerMinute,
           0, // TODO: remove this
           timeIndicatorStyle,
-        );
-
-        final content = LayoutBuilder(
-          key: contentKey,
-          builder: (context, constraints) {
-            final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
-
-            final pageView = PageClipWidget(
-              start: -16,
-              child: PageView.builder(
-                padEnds: false,
-                key: ValueKey(viewConfiguration.hashCode),
-                controller: viewController.pageController,
-                itemCount: viewController.numberOfPages,
-                physics: configuration?.pageScrollPhysics,
-                clipBehavior: Clip.none,
-                onPageChanged: (index) {
-                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-
-                  if (viewConfiguration.type == MultiDayViewType.freeScroll) {
-                    final range = DateTimeRange(
-                      start: visibleRange.start,
-                      end: visibleRange.start.addDays(numberOfDays),
-                    );
-                    viewController.visibleDateTimeRange.value = range;
-                  } else {
-                    viewController.visibleDateTimeRange.value = visibleRange;
-                  }
-
-                  callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
-                },
-                itemBuilder: (context, index) {
-                  final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-                  final visibleDates = visibleRange.dates();
-
-                  final daySeparatorStyle = styles?.daySeparatorStyle;
-                  final daySeparator = components.daySeparator.call(daySeparatorStyle);
-                  final daySeparators = List.generate(
-                    numberOfDays + 1,
-                    (index) {
-                      final left = dayWidth * index;
-                      return PositionedDirectional(top: 0, bottom: 0, start: left, child: daySeparator);
-                    },
-                  );
-
-                  final events = DayEventsWidget<T>(
-                    eventsController: eventsController,
-                    controller: calendarController,
-                    callbacks: callbacks,
-                    tileComponents: tileComponents,
-                    configuration: bodyConfiguration,
-                    dayWidth: dayWidth,
-                    heightPerMinute: heightPerMinute,
-                    visibleDateTimeRange: visibleRange,
-                    timeOfDayRange: timeOfDayRange,
-                    interaction: interaction,
-                  );
-
-                  final draggable = DayEventDraggableWidgets<T>(
-                    controller: calendarController,
-                    callbacks: callbacks,
-                    visibleDateTimeRange: visibleRange,
-                    timeOfDayRange: timeOfDayRange,
-                    dayWidth: dayWidth,
-                    pageHeight: pageHeight,
-                    heightPerMinute: heightPerMinute,
-                    interaction: interaction,
-                    snapping: snapping,
-                  );
-
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      ...daySeparators,
-                      Positioned.fill(child: draggable),
-                      Positioned.fill(child: events),
-                      PositionedTimeIndicator(
-                        visibleDates: visibleDates,
-                        dayWidth: dayWidth,
-                        child: timeIndicator,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            );
-
-            return pageView;
-          },
-        );
-
-        final dragTarget = LayoutBuilder(
-          builder: (context, constraints) {
-            final pageHeight = constraints.maxHeight;
-            final pageWidth = constraints.maxWidth;
-            final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
-
-            return SizedBox(
-              height: pageHeight,
-              child: DayDragTarget<T>(
-                eventsController: eventsController,
-                calendarController: calendarController,
-                viewController: viewController,
-                scrollController: viewController.scrollController,
-                callbacks: callbacks,
-                tileComponents: tileComponents,
-                bodyConfiguration: bodyConfiguration,
-                timeOfDayRange: timeOfDayRange,
-                pageWidth: pageWidth,
-                dayWidth: dayWidth,
-                viewPortHeight: pageHeight,
-                heightPerMinute: heightPerMinute,
-                leftPageTrigger: components.leftTriggerBuilder,
-                rightPageTrigger: components.rightTriggerBuilder,
-                topScrollTrigger: components.topTriggerBuilder,
-                bottomScrollTrigger: components.bottomTriggerBuilder,
-                snapping: snapping,
-              ),
-            );
-          },
         );
 
         return Stack(
@@ -251,25 +129,150 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                 physics: configuration?.scrollPhysics,
                 child: SizedBox(
                   height: pageHeight,
-                  child: Stack(
+                  child: Row(
                     children: [
-                      Positioned.fill(child: hourLines),
-                      Row(
-                        children: [
-                          SizedBox(height: pageHeight, child: timeline),
-                          Expanded(child: content),
-                        ],
+                      // The timeline is always on the left side of the page, but should not scroll with the pageview.
+                      SizedBox(height: pageHeight, child: timeline),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final pageWidth = constraints.maxWidth;
+                            final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+
+                            return Stack(
+                              children: [
+                                Positioned.fill(child: hourLines),
+                                Positioned.fill(
+                                  child: PageView.builder(
+                                    padEnds: false,
+                                    key: ValueKey(viewConfiguration.hashCode),
+                                    controller: viewController.pageController,
+                                    itemCount: viewController.numberOfPages,
+                                    physics: configuration?.pageScrollPhysics,
+                                    onPageChanged: (index) {
+                                      final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+
+                                      if (viewConfiguration.type == MultiDayViewType.freeScroll) {
+                                        final range = DateTimeRange(
+                                          start: visibleRange.start,
+                                          end: visibleRange.start.addDays(numberOfDays),
+                                        );
+                                        viewController.visibleDateTimeRange.value = range;
+                                      } else {
+                                        viewController.visibleDateTimeRange.value = visibleRange;
+                                      }
+
+                                      callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
+                                    },
+                                    itemBuilder: (context, index) {
+                                      final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+                                      final daySeparatorStyle = styles?.daySeparatorStyle;
+                                      final daySeparator = components.daySeparator.call(daySeparatorStyle);
+                                      final daySeparators = List.generate(
+                                        numberOfDays + 1,
+                                        (index) {
+                                          final left = dayWidth * index;
+                                          return PositionedDirectional(
+                                            top: 0,
+                                            bottom: 0,
+                                            start: left,
+                                            child: daySeparator,
+                                          );
+                                        },
+                                      );
+
+                                      final events = DayEventsWidget<T>(
+                                        eventsController: eventsController,
+                                        controller: calendarController,
+                                        callbacks: callbacks,
+                                        tileComponents: tileComponents,
+                                        configuration: bodyConfiguration,
+                                        dayWidth: dayWidth,
+                                        heightPerMinute: heightPerMinute,
+                                        visibleDateTimeRange: visibleRange,
+                                        timeOfDayRange: timeOfDayRange,
+                                        interaction: interaction,
+                                      );
+
+                                      final draggable = DayEventDraggableWidgets<T>(
+                                        controller: calendarController,
+                                        callbacks: callbacks,
+                                        visibleDateTimeRange: visibleRange,
+                                        timeOfDayRange: timeOfDayRange,
+                                        dayWidth: dayWidth,
+                                        pageHeight: pageHeight,
+                                        heightPerMinute: heightPerMinute,
+                                        interaction: interaction,
+                                        snapping: snapping,
+                                      );
+
+                                      return Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          ...daySeparators,
+                                          Positioned.fill(child: draggable),
+                                          Positioned.fill(child: events),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                TimeIndicatorPositioner<T>(
+                                  viewController: viewController,
+                                  dayWidth: dayWidth,
+                                  pageWidth: pageWidth,
+                                  initialPage: viewController.initialPage,
+                                  child: timeIndicator,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+            // The DayDragTarget is positioned on top of the content.
+            // It should not scroll with the content or move with the page view.
+            // It should always be positioned at the top of the page.
             Positioned.fill(
               child: Row(
                 children: [
                   TimelineSizer<T>(child: const SizedBox()),
-                  Expanded(child: dragTarget),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final pageHeight = constraints.maxHeight;
+                        final pageWidth = constraints.maxWidth;
+                        final dayWidth = constraints.maxWidth / viewConfiguration.numberOfDays;
+
+                        return SizedBox(
+                          height: pageHeight,
+                          child: DayDragTarget<T>(
+                            eventsController: eventsController,
+                            calendarController: calendarController,
+                            viewController: viewController,
+                            scrollController: viewController.scrollController,
+                            callbacks: callbacks,
+                            tileComponents: tileComponents,
+                            bodyConfiguration: bodyConfiguration,
+                            timeOfDayRange: timeOfDayRange,
+                            pageWidth: pageWidth,
+                            dayWidth: dayWidth,
+                            viewPortHeight: pageHeight,
+                            heightPerMinute: heightPerMinute,
+                            leftPageTrigger: components.leftTriggerBuilder,
+                            rightPageTrigger: components.rightTriggerBuilder,
+                            topScrollTrigger: components.topTriggerBuilder,
+                            bottomScrollTrigger: components.bottomTriggerBuilder,
+                            snapping: snapping,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
