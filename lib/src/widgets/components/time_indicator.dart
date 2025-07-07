@@ -87,6 +87,9 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   late DateTime _endTime;
   late DateTime _currentTime;
 
+  /// The offset to center the circle on the first pixel of the pageview.
+  static const _circleCenterOffset = 1.0;
+
   /// Whether the indicator should be shown.
   bool get showIndicator {
     return _currentTime.isAfter(_startTime) && _currentTime.isBefore(_endTime);
@@ -150,7 +153,9 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final circleWidth = (widget.style?.circleSize?.width) ?? 10;
     final circleHeight = (widget.style?.circleSize?.height) ?? 10;
     final circleTop = top - circleHeight / 2;
-    final circleLeft = widget.timelineWidth - (circleWidth / 2);
+
+    // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
+    final circleLeft = widget.timelineWidth - (circleWidth / 2) + _circleCenterOffset;
 
     final timeIndicatorCircle = DecoratedBox(
       decoration: BoxDecoration(
