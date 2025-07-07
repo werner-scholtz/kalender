@@ -55,7 +55,7 @@ class HourLines extends StatelessWidget {
   Widget build(BuildContext context) {
     final thickness = style?.thickness ?? 1;
     final color = style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
-    final indent = style?.indent ?? 40;
+    final indent = style?.indent ?? 0;
     final endIndent = style?.endIndent ?? 0;
 
     final hours = timeOfDayRange.hourRanges;
