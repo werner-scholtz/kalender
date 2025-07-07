@@ -65,6 +65,10 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// The height per minute of the view.
   late ValueNotifier<double> heightPerMinute;
 
+  /// The page offset of the view.
+  /// This is a value notifier that updates when the page is scrolled.
+  ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
+
   @override
   final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
@@ -75,6 +79,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     if (!headerController.hasClients) return;
     headerController.position.correctPixels(pageController.offset);
     headerController.position.notifyListeners();
+
+    // Update the pageOffset based on the current pageController position.
+    pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
   }
 
   @override
