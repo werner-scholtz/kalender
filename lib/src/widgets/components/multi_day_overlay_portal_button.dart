@@ -18,7 +18,10 @@ class MultiDayPortalOverlayButtonStyle {
   /// The padding of the text.
   final EdgeInsetsGeometry? textPadding;
 
-  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding});
+  /// A function that builds a string based on the number of hidden rows.
+  final String Function(int numberOfHiddenRows)? stringBuilder;
+
+  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder});
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {
@@ -52,8 +55,12 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
     return InkWell(
       onTap: portalController.show,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Text('$numberOfHiddenRows more', key: textKey),
+        padding: style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
+        child: Text(
+          style?.stringBuilder?.call(numberOfHiddenRows) ?? '$numberOfHiddenRows more',
+          style: style?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+          key: textKey,
+        ),
       ),
     );
   }
