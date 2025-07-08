@@ -7,25 +7,52 @@ import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+/// A widget that displays events in a schedule/list format.
+///
+/// The [ScheduleBody] is the main widget for displaying calendar events in a
+/// vertical list format, similar to a traditional agenda or schedule view.
+/// It supports both continuous scrolling and paginated navigation.
+///
+/// The widget automatically detects the type of [ScheduleViewController] and
+/// renders either:
+/// - [ContinuousScheduleViewController]: Single scrollable list of all events
+/// - [PaginatedScheduleViewController]: Paginated view with discrete pages
 class ScheduleBody<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [ScheduleBody].
+  /// The [EventsController] that manages the events displayed in the schedule.
+  ///
+  /// If not provided, it will be retrieved from the [CalendarProvider].
   final EventsController<T>? eventsController;
 
-  /// The [CalendarController] that will be used by the [ScheduleBody].
+  /// The [CalendarController] that manages the calendar state and navigation.
+  ///
+  /// If not provided, it will be retrieved from the [CalendarProvider].
   final CalendarController<T>? calendarController;
 
-  /// The callbacks used by the [ScheduleBody].
+  /// The callbacks used for handling user interactions with the schedule.
+  ///
+  /// If not provided, they will be retrieved from the [CalendarProvider].
   final CalendarCallbacks<T>? callbacks;
 
-  /// The tile components used by the [ScheduleBody].
+  /// The tile components used for customizing the appearance of schedule items.
+  ///
+  /// This includes builders for event tiles, month headers, and empty day displays.
   final ScheduleTileComponents<T>? tileComponents;
 
-  /// The [CalendarInteraction] that will be used by the [ScheduleBody].
+  /// The interaction state notifier for tracking user interactions.
+  ///
+  /// If not provided, a default [CalendarInteraction] will be created.
   final ValueNotifier<CalendarInteraction>? interaction;
 
-  /// The configuration for the schedule body.
+  /// Configuration options for the schedule body behavior and appearance.
+  ///
+  /// If not provided, default [ScheduleBodyConfiguration] will be used.
   final ScheduleBodyConfiguration? configuration;
 
+  /// Creates a [ScheduleBody].
+  ///
+  /// The [tileComponents] parameter is required to define how schedule items
+  /// should be rendered. All other parameters are optional and will fall back
+  /// to values from [CalendarProvider] or default implementations.
   const ScheduleBody({
     super.key,
     this.eventsController,
@@ -90,17 +117,43 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   }
 }
 
+/// A paginated schedule widget that displays events across multiple pages.
+///
+/// This widget is used when the [ScheduleViewController] is a
+/// [PaginatedScheduleViewController]. It creates a [PageView] where each page
+/// contains a [SchedulePositionList] for a specific date range.
+///
+/// The pagination allows users to swipe between different time periods
+/// (e.g., weeks, months) in the schedule view.
 class PaginatedSchedule<T extends Object?> extends StatefulWidget {
+  /// The controller managing the events in the schedule.
   final EventsController<T> eventsController;
+
+  /// The controller managing the calendar state.
   final CalendarController<T> calendarController;
+
+  /// The controller specifically for paginated schedule view.
   final PaginatedScheduleViewController<T> viewController;
+
+  /// Callbacks for handling user interactions.
   final CalendarCallbacks<T>? callbacks;
+
+  /// Components for customizing the appearance of schedule tiles.
   final ScheduleTileComponents<T> tileComponents;
+
+  /// Notifier for tracking user interaction state.
   final ValueNotifier<CalendarInteraction> interaction;
+
+  /// Styling configuration for schedule components.
   final ScheduleComponentStyles styles;
+
+  /// Component builders for schedule elements.
   final ScheduleComponents components;
+
+  /// Configuration for schedule body behavior.
   final ScheduleBodyConfiguration configuration;
 
+  /// Creates a [PaginatedSchedule].
   const PaginatedSchedule({
     super.key,
     required this.eventsController,
@@ -122,6 +175,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
+      // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
@@ -149,20 +203,56 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
   }
 }
 
+/// A scrollable list widget that displays schedule items with position tracking.
+///
+/// This widget creates a scrollable list of schedule items (events, month headers,
+/// empty days) and tracks their positions for visibility and navigation purposes.
+/// It's used both in continuous schedule views and as individual pages in
+/// paginated schedule views.
+///
+/// The widget automatically generates and maintains a map of items based on the
+/// provided date range and events, handling different item types:
+/// - [MonthItem]: Month header separators
+/// - [EventItem]: Individual event entries
+/// - [EmptyItem]: Placeholder for days with no events (configurable)
 class SchedulePositionList<T extends Object?> extends StatefulWidget {
+  /// The controller managing the events displayed in this list.
   final EventsController<T> eventsController;
+
+  /// The main calendar controller managing overall state.
   final CalendarController<T> calendarController;
+
+  /// The schedule view controller for this specific view.
   final ScheduleViewController<T> viewController;
+
+  /// Configuration options for the schedule body behavior.
   final ScheduleBodyConfiguration configuration;
+
+  /// Callbacks for handling user interactions.
   final CalendarCallbacks<T>? callbacks;
+
+  /// Components for customizing tile appearance and behavior.
   final ScheduleTileComponents<T> tileComponents;
+
+  /// Notifier for tracking current user interactions.
   final ValueNotifier<CalendarInteraction> interaction;
+
+  /// Styling configuration for schedule components.
   final ScheduleComponentStyles styles;
+
+  /// Component builders for various schedule elements.
   final ScheduleComponents components;
+
+  /// The date range to display in this list.
   final DateTimeRange dateTimeRange;
+
+  /// The current page index (used in paginated views).
   final int currentPage;
+
+  /// Whether this list is part of a paginated view.
   final bool paginated;
 
+  /// Creates a [SchedulePositionList].
   const SchedulePositionList({
     super.key,
     required this.eventsController,
@@ -183,7 +273,13 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   State<SchedulePositionList<T>> createState() => _SchedulePositionListState<T>();
 }
 
+/// The state implementation for [SchedulePositionList].
+///
+/// This class manages the complex logic of generating, organizing, and tracking
+/// schedule items. It handles event changes, position updates, and maintains
+/// the mapping between dates and schedule items.
 class _SchedulePositionListState<T extends Object?> extends State<SchedulePositionList<T>> {
+  // Convenience getters for accessing widget properties
   ScheduleViewController<T> get viewController => widget.viewController;
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => widget.calendarController;
@@ -194,33 +290,83 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ScheduleComponents get components => widget.components;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
+  /// Controller for programmatically scrolling to specific items in the list.
   final ItemScrollController _itemScrollController = ItemScrollController();
+
+  /// Listener for tracking which items are currently visible in the viewport.
   final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   @override
   void initState() {
     super.initState();
-    viewController.itemScrollController = _itemScrollController;
-    viewController.itemPositionsListener = _itemPositionsListener;
-    viewController.currentPage = widget.currentPage;
+    _setup();
+  }
 
-    _generateMap();
-    eventsController.addListener(_updateMap);
-    _itemPositionsListener.itemPositions.addListener(_positionListener);
+  @override
+  void didUpdateWidget(covariant SchedulePositionList<T> oldWidget) {
+    _removeListeners();
+    _setup();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _removeListeners();
+    _setup();
+    super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    eventsController.removeListener(_updateMap);
-    _itemPositionsListener.itemPositions.removeListener(_positionListener);
+    _removeListeners();
     super.dispose();
   }
 
+  /// Sets up all necessary components for the schedule list.
+  ///
+  /// This method initializes the view controller, generates the item mapping,
+  /// and sets up event listeners. Called during initialization and when
+  /// dependencies change.
+  void _setup() {
+    _setupViewController();
+    _generateMap();
+    _addListeners();
+  }
+
+  /// Adds event listeners for tracking changes and position updates.
+  void _addListeners() {
+    eventsController.addListener(_updateMap);
+    _itemPositionsListener.itemPositions.addListener(_positionListener);
+  }
+
+  /// Removes all event listeners to prevent memory leaks.
+  void _removeListeners() {
+    eventsController.removeListener(_updateMap);
+    _itemPositionsListener.itemPositions.removeListener(_positionListener);
+  }
+
+  /// Configures the view controller with the necessary controllers and state.
+  void _setupViewController() {
+    viewController.itemScrollController = _itemScrollController;
+    viewController.itemPositionsListener = _itemPositionsListener;
+    viewController.currentPage = widget.currentPage;
+  }
+
+  /// Updates the item mapping when events change.
+  ///
+  /// This is called as a listener callback when the events controller notifies
+  /// of changes to the event data.
   void _updateMap() => setState(_generateMap);
 
+  /// Generates the complete mapping of schedule items for the current date range.
+  ///
+  /// This method processes all dates in the range and creates appropriate
+  /// schedule items (months, events, empty days) based on the configuration
+  /// and available events. This is a potentially expensive operation for
+  /// large date ranges with many events.
+  ///
+  /// TODO: Performance optimization needed for large event collections.
   void _generateMap() {
-    // TODO: I have some concerns about the performance of this when a lot of events are present.
-
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
     viewController.clear();
@@ -262,6 +408,12 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     }
   }
 
+  /// Adds a month header item if needed for the given date.
+  ///
+  /// This method checks if a month header should be added based on whether
+  /// this is the first occurrence of a new month in the current view.
+  ///
+  /// [date] The date to potentially add a month header for.
   void _addMonthItem(DateTime date) {
     // Check if the date is the first date of the month.
     final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
@@ -270,6 +422,11 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     }
   }
 
+  /// Handles position changes in the scrollable list.
+  ///
+  /// This method tracks which items are currently visible and updates the
+  /// view controller's visible date range and events accordingly. This enables
+  /// features like highlighting current dates and optimizing performance.
   void _positionListener() {
     final itemPositions = _itemPositionsListener.itemPositions.value;
     if (itemPositions.isNotEmpty) {
@@ -321,7 +478,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             if (item is MonthItem) {
               final locale = LocaleProvider.of(context);
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
-                  // TODO: add a default month item builder.
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
