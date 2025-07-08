@@ -292,7 +292,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
   /// Controller for programmatically scrolling to specific items in the list.
   final ItemScrollController _itemScrollController = ItemScrollController();
-  
+
   /// Listener for tracking which items are currently visible in the viewport.
   final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
