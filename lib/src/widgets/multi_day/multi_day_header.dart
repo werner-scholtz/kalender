@@ -59,12 +59,8 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration<T>();
 
-    final calendarComponents = provider?.components;
-    final styles = calendarComponents?.multiDayComponentStyles?.headerStyles;
-    final components = calendarComponents?.multiDayComponents?.headerComponents as MultiDayHeaderComponents<T>? ??
-        MultiDayHeaderComponents<T>();
+    final calendarComponents = provider?.components as CalendarComponents<T>?;
     final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
-
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
     return LayoutBuilder(
@@ -76,8 +72,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               calendarController: calendarController,
               configuration: headerConfiguration,
               tileComponents: tileComponents,
-              components: components,
-              componentStyles: styles,
+              components: calendarComponents,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
               interaction: interaction,
@@ -88,8 +83,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               calendarController: calendarController,
               configuration: headerConfiguration,
               tileComponents: tileComponents,
-              components: components,
-              componentStyles: styles,
+              components: calendarComponents,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
               interaction: interaction,
@@ -100,8 +94,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
               calendarController: calendarController,
               configuration: headerConfiguration,
               tileComponents: tileComponents,
-              components: components,
-              componentStyles: styles,
+              components: calendarComponents,
               tileHeight: headerConfiguration.tileHeight,
               callbacks: callbacks,
               interaction: interaction,
@@ -118,13 +111,10 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
-
   final CalendarCallbacks<T>? callbacks;
-
   final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponents<T> components;
-  final MultiDayHeaderComponentStyles? componentStyles;
+  final CalendarComponents<T>? components;
   final double tileHeight;
   final ValueNotifier<CalendarInteraction> interaction;
 
@@ -136,7 +126,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     required this.configuration,
     required this.tileComponents,
     required this.components,
-    required this.componentStyles,
     required this.tileHeight,
     required this.interaction,
   });
@@ -146,12 +135,14 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
+    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
 
     final dayHeaderStyle = componentStyles?.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleRange, child) {
-        return components.dayHeaderBuilder.call(visibleRange.start.asLocal, dayHeaderStyle);
+        return headerComponents.dayHeaderBuilder.call(visibleRange.start.asLocal, dayHeaderStyle);
       },
     );
 
@@ -179,8 +170,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: components.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
+              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -194,8 +185,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               pageWidth: pageWidth,
               tileHeight: tileHeight,
               allowSingleDayEvents: false,
-              leftPageTrigger: components.leftTriggerBuilder,
-              rightPageTrigger: components.rightTriggerBuilder,
+              leftPageTrigger: headerComponents.leftTriggerBuilder,
+              rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
             final draggable = MultiDayEventDraggableWidgets<T>(
@@ -231,8 +222,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponents<T> components;
-  final MultiDayHeaderComponentStyles? componentStyles;
+  final CalendarComponents<T>? components;
   final double tileHeight;
   final ValueNotifier<CalendarInteraction> interaction;
 
@@ -244,7 +234,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     required this.configuration,
     required this.tileComponents,
     required this.components,
-    required this.componentStyles,
     required this.tileHeight,
     required this.interaction,
   });
@@ -254,13 +243,14 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
+    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
 
     final weekNumberStyle = componentStyles?.weekNumberStyle;
-
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
-        return components.weekNumberBuilder.call(value, weekNumberStyle);
+        return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
       },
     );
 
@@ -278,7 +268,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
-              final dayHeader = components.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
+              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
               return SizedBox(width: dayWidth, child: dayHeader);
             }).toList();
 
@@ -296,8 +286,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: components.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
+              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -311,8 +301,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               pageWidth: pageWidth,
               tileHeight: tileHeight,
               allowSingleDayEvents: false,
-              leftPageTrigger: components.leftTriggerBuilder,
-              rightPageTrigger: components.rightTriggerBuilder,
+              leftPageTrigger: headerComponents.leftTriggerBuilder,
+              rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
             final draggable = MultiDayEventDraggableWidgets<T>(
@@ -354,8 +344,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final MultiDayHeaderConfiguration<T> configuration;
   final TileComponents<T> tileComponents;
-  final MultiDayHeaderComponents<T> components;
-  final MultiDayHeaderComponentStyles? componentStyles;
+  final CalendarComponents<T>? components;
   final double tileHeight;
   final ValueNotifier<CalendarInteraction> interaction;
 
@@ -367,7 +356,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
     required this.configuration,
     required this.tileComponents,
     required this.components,
-    required this.componentStyles,
     required this.tileHeight,
     required this.interaction,
   });
@@ -377,13 +365,14 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
+    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
 
     final weekNumberStyle = componentStyles?.weekNumberStyle;
-
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
-        return components.weekNumberBuilder.call(value, weekNumberStyle);
+        return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
       },
     );
 
@@ -404,7 +393,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
             final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
-              final dayHeader = components.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
+              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
               return SizedBox(width: dayWidth, child: dayHeader);
             }).toList();
 
@@ -421,8 +410,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: components.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
+              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -436,8 +425,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               pageWidth: pageWidth,
               tileHeight: tileHeight,
               allowSingleDayEvents: false,
-              leftPageTrigger: components.leftTriggerBuilder,
-              rightPageTrigger: components.rightTriggerBuilder,
+              leftPageTrigger: headerComponents.leftTriggerBuilder,
+              rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
             final draggable = MultiDayEventDraggableWidgets<T>(

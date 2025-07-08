@@ -645,7 +645,7 @@ void main() async {
 }
 ```
 
-#### Specify the language
+#### Specify the language for dates and times.
 To specify the language you want to use:
 
 ```dart
@@ -653,6 +653,24 @@ CalendarView(
   locale: 'af_ZA',
 )
 ```
+
+#### Overlay button language.
+Currently you will have to override the MultiDayPortalOverlayButtonStyle to completely translate the calender:
+
+```dart
+CalendarView(
+  components: CalendarComponents(
+    overlayStyles: OverlayStyles(
+      multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
+        // Usually displays '$numberOfHiddenRows more' ex `1 more`,
+        stringBuilder: (numberOfHiddenRows) => "My Custom Button Text ($numberOfHiddenRows)", 
+      )
+    )
+  ),
+);
+```
+
+
 
 ### Event layout
 

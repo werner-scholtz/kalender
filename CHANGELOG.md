@@ -1,6 +1,8 @@
 ## 0.10.0
 
 - feat: Added locale property to CalenderView allowing users to specify a language with the [intl](https://pub.dev/packages/intl) package. [#172](https://github.com/werner-scholtz/kalender/issues/172)
+- feat: Add string builder to MultiDayPortalOverlayButtonStyle for easy override of the text. [#172](https://github.com/werner-scholtz/kalender/issues/172)
+- fix: MultiDayPortalOverlayButtonStyle not using style overrides. [#172](https://github.com/werner-scholtz/kalender/issues/172)
 - fix: Overlap when scrolling. [#174](https://github.com/werner-scholtz/kalender/issues/174)
 
 ## 0.9.1
