@@ -4,6 +4,7 @@
 - feat: Add string builder to MultiDayPortalOverlayButtonStyle for easy override of the text. [#172](https://github.com/werner-scholtz/kalender/issues/172)
 - fix: MultiDayPortalOverlayButtonStyle not using style overrides. [#172](https://github.com/werner-scholtz/kalender/issues/172)
 - fix: Overlap when scrolling. [#174](https://github.com/werner-scholtz/kalender/issues/174)
+- fix: ScheduleView reload issues. [#170](https://github.com/werner-scholtz/kalender/issues/170)
 
 ## 0.9.1
 
