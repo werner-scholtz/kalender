@@ -76,10 +76,20 @@ class CalendarEvent<T extends Object?> {
   }
 
   @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CalendarEvent<T>) return false;
+    return _dateTimeRange == other._dateTimeRange && data == other.data && canModify == other.canModify;
+  }
+
+  @override
   String toString() {
     return 'CalendarEvent<$T> ($id):'
         '\nstart:  $startAsUtc'
         '\nend: $endAsUtc'
         '\ndata: ${data.toString()}';
   }
+
+  @override
+  int get hashCode => Object.hash(_dateTimeRange, data, canModify);
 }

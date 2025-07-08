@@ -35,6 +35,7 @@ class EventTile extends BaseEventTile {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: ValueKey('EventTile-${event.id}'),
       decoration: decoration,
       child: Padding(
         padding: padding,
@@ -55,6 +56,7 @@ class MultiDayEventTile extends BaseEventTile {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: ValueKey('MultiDayEventTile-${event.id}'),
       decoration: decoration,
       child: Padding(
         padding: padding,
@@ -76,6 +78,7 @@ class OverlayEventTile extends BaseEventTile {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      key: ValueKey('OverlayEventTile-${event.id}'),
       children: [
         Positioned.fill(
           left: continuesBefore ? 20 : 0,
@@ -109,6 +112,7 @@ class FeedbackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      key: ValueKey('FeedbackTile-${event.id}'),
       duration: const Duration(milliseconds: 250),
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
@@ -130,6 +134,7 @@ class DropTargetTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: ValueKey('DropTargetTile-${event.id}'),
       decoration: BoxDecoration(
         border: Border.all(color: (event.data?.color ?? BaseEventTile.defaultColor), width: 2),
         borderRadius: BaseEventTile.defaultBorderRadius,
@@ -148,6 +153,7 @@ class TileWhenDragging extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: ValueKey('TileWhenDragging-${event.id}'),
       decoration: BoxDecoration(
         color: (event.data?.color ?? BaseEventTile.defaultColor).withAlpha(20),
         borderRadius: BaseEventTile.defaultBorderRadius,

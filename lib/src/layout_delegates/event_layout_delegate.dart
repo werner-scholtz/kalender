@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
@@ -111,7 +112,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   double calculateDistanceFromStart(CalendarEvent<T> event) {
     final eventStart = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     final dateStart = timeOfDayRange.start.toDateTime(date);
-    return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
+    return (eventStart.difference(dateStart).inMinutes * heightPerMinute).floorToDouble();
   }
 
   /// This is used to sort the vertical layout data after calculation.
@@ -127,8 +128,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     final layoutEvents = <VerticalLayoutData>[];
     // Calculate the top and bottom of each event.
     for (var i = 0; i < numberOfChildren; i++) {
-      final id = i;
       final event = events.elementAt(i);
+      final id = event.id;
 
       var top = calculateDistanceFromStart(event);
       final height = calculateHeight(event);
@@ -179,7 +180,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 
   @override
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
-    return oldDelegate.events != events ||
+    return !setEquals(oldDelegate.events.toSet(), events.toSet()) ||
         oldDelegate.heightPerMinute != heightPerMinute ||
         oldDelegate.timeOfDayRange != timeOfDayRange ||
         oldDelegate.date != date ||
@@ -263,6 +264,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
 
   @override
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) => events.toList();
+
   @override
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
     // Sort the data from top to bottom.
@@ -333,6 +335,8 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
         tiles[id] = Offset(tileXOffset, data.top);
         tileWidths[id] = tileWidth;
       }
+
+      print(tileWidths);
 
       for (final tile in tiles.entries) {
         positionChild(tile.key, tile.value);
