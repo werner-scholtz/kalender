@@ -110,6 +110,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
             child: Padding(
               padding: widget.configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
               child: _SingleDayWidget<T>(
+                key: _SingleDayWidget.getKey(date),
                 date: date,
                 eventNotifier: _notifiersMap[date]!,
                 heightPerMinute: widget.heightPerMinute,
@@ -154,6 +155,15 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
     required this.interaction,
   });
 
+  /// Creates a key for the widget based on the date.
+  static ValueKey<String> getKey(DateTime date) => ValueKey('DayEventsWidget-$date');
+
+  /// Creates a key for the layout of the events widget based on the date.
+  static ValueKey<String> getEventsKey(DateTime date) => ValueKey('DayEventsWidget-Layout-$date');
+
+  /// Creates a key for the drop target events widget based on the date.
+  static ValueKey<String> getDropTargetEventsKey(DateTime date) => ValueKey('DayEventsWidget-EventsDropTarget-$date');
+
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = configuration.eventLayoutStrategy;
@@ -161,6 +171,7 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
       valueListenable: eventNotifier,
       builder: (context, events, child) {
         return CustomMultiChildLayout(
+          key: getEventsKey(date),
           delegate: layoutStrategy.call(
             events,
             date,
@@ -172,6 +183,7 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
               .map(
                 (item) => LayoutId(
                   id: item.id,
+                  key: DayEventTile.getLayoutKey(item.id),
                   child: DayEventTile(
                     key: DayEventTile.getKey(item.id),
                     event: item,
@@ -214,6 +226,7 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
         final dropTarget = tileComponents.dropTargetTile;
 
         return CustomMultiChildLayout(
+          key: getDropTargetEventsKey(date),
           delegate: layoutStrategy.call(
             eventList,
             date,
@@ -227,6 +240,7 @@ class _SingleDayWidget<T extends Object?> extends StatelessWidget {
               final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
 
               return LayoutId(
+                key: ValueKey('DropTargetTile-${event.id}'),
                 id: item.id,
                 child: drawTile ? dropTarget.call(event) : const SizedBox(),
               );

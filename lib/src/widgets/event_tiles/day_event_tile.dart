@@ -10,6 +10,9 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 class DayEventTile<T extends Object?> extends EventTile<T> {
   /// A key used to identify the tile.
   static ValueKey<String> getKey(int eventId) => ValueKey('DayEventTile-$eventId');
+  
+  /// A key used to identify the layout of the tile.
+  static ValueKey<String> getLayoutKey(int eventId) => ValueKey('DayEventTile-Layout-$eventId');
 
   /// A key used to identify the top resize handle.
   static const topResizeDraggable = ValueKey('TopResizeDraggable');
