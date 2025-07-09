@@ -56,7 +56,7 @@ class MultiDayBodyComponents<T> {
   final HourLinesBuilder hourLines;
 
   /// A function that builds the timeline widget.
-  /// 
+  ///
   /// If you override this, you must ensure that you also override the [prototypeTimeLine] builder,
   /// and ensure that the two widgets resolve to the same width.
   /// Otherwise, you might encounter alignment issues between the header and body.
