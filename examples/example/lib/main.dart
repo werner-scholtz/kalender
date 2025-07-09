@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
         // Customize the components.
-        components: CalendarComponents(
+        components: CalendarComponents<Event>(
           multiDayComponents: MultiDayComponents(),
           multiDayComponentStyles: MultiDayComponentStyles(),
           monthComponents: MonthComponents(),
