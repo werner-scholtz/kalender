@@ -40,6 +40,9 @@ class TimeIndicatorPositioner<T extends Object?> extends StatefulWidget {
   /// The initial page number to start from.
   final int initialPage;
 
+  /// An optional override for the current time.
+  final DateTime? dateOverride;
+
   /// Creates a [TimeIndicatorPositioner].
   const TimeIndicatorPositioner({
     super.key,
@@ -48,6 +51,7 @@ class TimeIndicatorPositioner<T extends Object?> extends StatefulWidget {
     required this.dayWidth,
     required this.pageWidth,
     required this.initialPage,
+    this.dateOverride,
   });
 
   @override
@@ -77,6 +81,9 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
   /// point for positioning the time indicator.
   late int todayPageNumber;
 
+  /// The index of today's date on the page that contains it.
+  late int todayIndex;
+
   /// The current page offset relative to today's page.
   ///
   /// This value represents how far the current view has scrolled from
@@ -90,7 +97,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
   /// This position is calculated based on the page offset and page width,
   /// determining where the time indicator should be positioned horizontally
   /// to align with the current day column.
-  double get left => pageOffset * widget.pageWidth;
+  double get left => (pageOffset * widget.pageWidth) + (todayIndex * widget.dayWidth);
 
   @override
   void initState() {
@@ -136,8 +143,13 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
   }
 
   /// Updates the today page number based on the current date.
-  void _updateTodayPageNumber() =>
-      todayPageNumber = viewController!.viewConfiguration.pageNavigationFunctions.indexFromDate(DateTime.now().asUtc);
+  void _updatePageNumberAndIndex() {
+    final now = (widget.dateOverride?.asUtc.startOfDay) ?? DateTime.now().asUtc.startOfDay;
+    final pageNavigation = widget.viewController.viewConfiguration.pageNavigationFunctions;
+    todayPageNumber = pageNavigation.indexFromDate(DateTime.now().asUtc);
+    final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber);
+    todayIndex = range.dates().indexOf(now);
+  }
 
   /// Sets up a timer that triggers every day at midnight to update the today page number.
   void _setupDailyTimer() {
@@ -145,7 +157,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
     _dailyUpdateTimer?.cancel();
 
     // Update the today page number immediately.
-    _updateTodayPageNumber();
+    _updatePageNumberAndIndex();
 
     final now = DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
@@ -153,7 +165,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
 
     // Set up the first timer to trigger at the next midnight
     _dailyUpdateTimer = Timer(timeUntilMidnight, () {
-      _updateTodayPageNumber();
+      _updatePageNumberAndIndex();
       // Update the page offset to reflect the new today page
       pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
       if (mounted) {
@@ -162,7 +174,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
 
       // Set up recurring daily timer
       _dailyUpdateTimer = Timer.periodic(const Duration(days: 1), (_) {
-        _updateTodayPageNumber();
+        _updatePageNumberAndIndex();
         pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
         if (mounted) {
           setState(() {});
