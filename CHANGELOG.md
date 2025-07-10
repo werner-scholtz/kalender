@@ -1,3 +1,6 @@
+## 0.10.1
+- fix: Time indicator not rendered under the correct date. [#182](https://github.com/werner-scholtz/kalender/issues/182)
+
 ## 0.10.0
 
 - feat: Added locale property to CalenderView allowing users to specify a language with the [intl](https://pub.dev/packages/intl) package. [#172](https://github.com/werner-scholtz/kalender/issues/172)
