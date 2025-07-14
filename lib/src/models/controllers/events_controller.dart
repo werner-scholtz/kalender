@@ -180,7 +180,7 @@ abstract class DateMap<T> {
   /// Remove the [event].
   void removeEvent(CalendarEvent<T> event);
 
-  void removeEvents(List<CalendarEvent<T>> event);
+  void removeEvents(List<CalendarEvent<T>> events);
 
   /// Remove an event by its id.
   void removeById(int id);
@@ -225,20 +225,6 @@ class DefaultDateMap<T> extends DateMap<T> {
     idEvent.clear();
   }
 
-  /// Add an [event] to the map.
-  void _addEvent(CalendarEvent<T> event) {
-    final id = event.id;
-    idEvent[id] = event;
-    final dates = event.datesSpanned;
-    for (final date in dates) {
-      dateIds.update(
-        date,
-        (value) => value..add(id),
-        ifAbsent: () => {id},
-      );
-    }
-  }
-
   @override
   int addNewEvent(CalendarEvent<T> event) {
     final eventWithId = assignId(event);
@@ -246,16 +232,10 @@ class DefaultDateMap<T> extends DateMap<T> {
     return eventWithId.id;
   }
 
-  /// Assign and id to an event.
-  CalendarEvent<T> assignId(CalendarEvent<T> event) {
-    assert(event.id == -1, 'The id of the event must not be set manually.');
-    event.id = _nextId;
-    return event;
-  }
-
   @override
   void removeById(int id) {
     final event = idEvent[id];
+    assert(event != null, 'The event with id $id cannot be removed as it does not exist in the map.');
     if (event == null) return;
     removeEvent(event);
   }
@@ -263,6 +243,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   @override
   void removeEvent(CalendarEvent event) {
     final id = event.id;
+    assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
     idEvent.remove(id);
 
     final dates = event.datesSpanned;
@@ -275,7 +256,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  void removeEvents(List<CalendarEvent<T>> event) => events.forEach(removeEvent);
+  void removeEvents(List<CalendarEvent<T>> events) => events.forEach(removeEvent);
 
   @override
   void updateEvent(CalendarEvent<T> event, CalendarEvent<T> updatedEvent) {
@@ -285,13 +266,7 @@ class DefaultDateMap<T> extends DateMap<T> {
 
   @override
   void removeWhere(bool Function(int key, CalendarEvent<T> element) test) {
-    idEvent.removeWhere(
-      (key, event) {
-        final remove = test(key, event);
-        if (remove) removeEvent(event);
-        return remove;
-      },
-    );
+    return idEvent.removeWhere((key, event) => test(key, event));
   }
 
   @override
@@ -303,5 +278,26 @@ class DefaultDateMap<T> extends DateMap<T> {
       eventIds.addAll(dateIds[day] ?? {});
     }
     return eventIds;
+  }
+
+  /// Assign and id to an event.
+  CalendarEvent<T> assignId(CalendarEvent<T> event) {
+    assert(event.id == -1, 'The id of the event must not be set manually.');
+    event.id = _nextId;
+    return event;
+  }
+
+  /// Add an [event] to the map.
+  void _addEvent(CalendarEvent<T> event) {
+    final id = event.id;
+    idEvent[id] = event;
+    final dates = event.datesSpanned;
+    for (final date in dates) {
+      dateIds.update(
+        date,
+        (value) => value..add(id),
+        ifAbsent: () => {id},
+      );
+    }
   }
 }
