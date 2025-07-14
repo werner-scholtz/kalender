@@ -1,3 +1,6 @@
+## 0.10.2
+- fix: DefaultEventsController ConcurrentModificationError. [#184](https://github.com/werner-scholtz/kalender/issues/184)
+
 ## 0.10.1
 - fix: Time indicator not rendered under the correct date. [#182](https://github.com/werner-scholtz/kalender/issues/182)
 
