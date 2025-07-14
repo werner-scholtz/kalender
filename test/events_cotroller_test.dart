@@ -179,7 +179,6 @@ void main() {
             expect(eventsController.events.isEmpty, true);
             expect(eventsController.events.length, 0);
           });
-
         });
 
         group('updateEvent', () {
