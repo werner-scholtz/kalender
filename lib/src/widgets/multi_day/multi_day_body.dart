@@ -18,29 +18,8 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 /// 2. The [DayDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [MultiDayBody].
-  final EventsController<T>? eventsController;
-
-  /// The [CalendarController] that will be used by the [MultiDayBody].
-  final CalendarController<T>? calendarController;
-
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
-
-  /// The callbacks used by the [MultiDayBody].
-  final CalendarCallbacks<T>? callbacks;
-
-  /// The tile components used by the [MultiDayBody].
-  final TileComponents<T>? tileComponents;
-
-  /// The [ValueNotifier] containing the [heightPerMinute] value.
-  final ValueNotifier<double>? heightPerMinute;
-
-  /// The [ValueNotifier] containing the [CalendarInteraction] value.
-  final ValueNotifier<CalendarInteraction>? interaction;
-
-  /// The [ValueNotifier] containing the [CalendarSnapping] value.
-  final ValueNotifier<CalendarSnapping>? snapping;
 
   /// Creates a new [MultiDayBody].
   ///
@@ -49,50 +28,39 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// This widget is intended to be the body of a [CalendarView].
   const MultiDayBody({
     super.key,
-    this.eventsController,
-    this.calendarController,
-    this.callbacks,
-    required this.tileComponents,
-    this.heightPerMinute,
     this.configuration,
-    this.interaction,
-    this.snapping,
   });
 
+  /// The key used to identify the content of the [MultiDayBody].
   static const contentKey = ValueKey('contentKey');
 
   @override
   Widget build(BuildContext context) {
-    final provider = CalendarProvider.maybeOf<T>(context);
-    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf(context);
-    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf(context);
-    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf(context);
+    final eventsController = context.eventsController<T>();
+    final controller = context.calendarController<T>();
+    final components = context.components<T>();
+    final callbacks = context.callbacks<T>();
 
     assert(
-      calendarController.viewController is MultiDayViewController<T>,
+      controller.viewController is MultiDayViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
     );
 
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final viewController = controller.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final selectedEvent = calendarController.selectedEvent;
+    final selectedEvent = controller.selectedEvent;
     final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
 
-    final calendarComponents = provider?.components;
-    final styles = calendarComponents?.multiDayComponentStyles?.bodyStyles;
-    final components = calendarComponents?.multiDayComponents?.bodyComponents ?? const MultiDayBodyComponents();
-    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
+    final styles = components?.multiDayComponentStyles?.bodyStyles;
+    final bodyComponents = components?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
 
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
-    final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
-
-    // Override the height per minute if it is provided.
-    if (heightPerMinute != null) {
-      viewController.heightPerMinute = heightPerMinute!;
-    }
+    final bodyProvider = context.bodyProvider<T>();
+    final tileComponents = bodyProvider.tileComponents;
+    final interaction = bodyProvider.interaction;
+    final snapping = bodyProvider.snapping;
 
     return ValueListenableBuilder(
       valueListenable: viewController.heightPerMinute,
@@ -101,23 +69,15 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         final dayDuration = timeOfDayRange.duration;
         final pageHeight = heightPerMinute * dayDuration.inMinutes;
 
-        final hourLinesStyle = styles?.hourLinesStyle;
-        final hourLines = components.hourLines.call(heightPerMinute, timeOfDayRange, hourLinesStyle);
-
-        final timelineStyle = styles?.timelineStyle;
-        final timeline = components.timeline.call(
+        final hourLines = _getHourLines(styles, bodyComponents, heightPerMinute, timeOfDayRange);
+        final timeIndicator = _getTimeIndicator(styles, bodyComponents, timeOfDayRange, heightPerMinute);
+        final timeline = _getTimeline(
+          styles,
+          bodyComponents,
           heightPerMinute,
           timeOfDayRange,
-          timelineStyle,
           selectedEvent,
-          viewController.visibleDateTimeRange,
-        );
-        final timeIndicatorStyle = styles?.timeIndicatorStyle;
-        late final timeIndicator = components.timeIndicator.call(
-          timeOfDayRange,
-          heightPerMinute,
-          0, // TODO: remove this
-          timeIndicatorStyle,
+          viewController,
         );
 
         return Stack(
@@ -166,36 +126,25 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                     },
                                     itemBuilder: (context, index) {
                                       final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-                                      final daySeparatorStyle = styles?.daySeparatorStyle;
-                                      final daySeparator = components.daySeparator.call(daySeparatorStyle);
-                                      final daySeparators = List.generate(
-                                        numberOfDays + 1,
-                                        (index) {
-                                          final left = dayWidth * index;
-                                          return PositionedDirectional(
-                                            top: 0,
-                                            bottom: 0,
-                                            start: left,
-                                            child: daySeparator,
-                                          );
-                                        },
+                                      final daySeparators = _generateDaySeparators(
+                                        styles,
+                                        bodyComponents,
+                                        numberOfDays,
+                                        dayWidth,
                                       );
 
                                       final events = DayEventsWidget<T>(
                                         eventsController: eventsController,
-                                        controller: calendarController,
-                                        callbacks: callbacks,
-                                        tileComponents: tileComponents,
+                                        controller: controller,
                                         configuration: bodyConfiguration,
                                         dayWidth: dayWidth,
                                         heightPerMinute: heightPerMinute,
                                         visibleDateTimeRange: visibleRange,
                                         timeOfDayRange: timeOfDayRange,
-                                        interaction: interaction,
                                       );
 
                                       final draggable = DayEventDraggableWidgets<T>(
-                                        controller: calendarController,
+                                        controller: controller,
                                         callbacks: callbacks,
                                         visibleDateTimeRange: visibleRange,
                                         timeOfDayRange: timeOfDayRange,
@@ -207,6 +156,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                       );
 
                                       return Stack(
+                                        key: contentKey,
                                         clipBehavior: Clip.none,
                                         children: [
                                           ...daySeparators,
@@ -252,7 +202,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                           height: pageHeight,
                           child: DayDragTarget<T>(
                             eventsController: eventsController,
-                            calendarController: calendarController,
+                            calendarController: controller,
                             viewController: viewController,
                             scrollController: viewController.scrollController,
                             callbacks: callbacks,
@@ -263,10 +213,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             dayWidth: dayWidth,
                             viewPortHeight: pageHeight,
                             heightPerMinute: heightPerMinute,
-                            leftPageTrigger: components.leftTriggerBuilder,
-                            rightPageTrigger: components.rightTriggerBuilder,
-                            topScrollTrigger: components.topTriggerBuilder,
-                            bottomScrollTrigger: components.bottomTriggerBuilder,
+                            leftPageTrigger: bodyComponents.leftTriggerBuilder,
+                            rightPageTrigger: bodyComponents.rightTriggerBuilder,
+                            topScrollTrigger: bodyComponents.topTriggerBuilder,
+                            bottomScrollTrigger: bodyComponents.bottomTriggerBuilder,
                             snapping: snapping,
                           ),
                         );
@@ -280,5 +230,78 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Gets the time indicator widget for the multi-day body.
+  Widget _getTimeIndicator(
+    MultiDayBodyComponentStyles? styles,
+    MultiDayBodyComponents<dynamic> bodyComponents,
+    TimeOfDayRange timeOfDayRange,
+    double heightPerMinute,
+  ) {
+    final timeIndicatorStyle = styles?.timeIndicatorStyle;
+    late final timeIndicator = bodyComponents.timeIndicator.call(
+      timeOfDayRange,
+      heightPerMinute,
+      0, // TODO: remove this
+      timeIndicatorStyle,
+    );
+    return timeIndicator;
+  }
+
+  /// Gets the timeline widget for the multi-day body.
+  Widget _getTimeline(
+    MultiDayBodyComponentStyles? styles,
+    MultiDayBodyComponents<dynamic> bodyComponents,
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+    ValueNotifier<CalendarEvent<dynamic>?> selectedEvent,
+    MultiDayViewController<dynamic> viewController,
+  ) {
+    final timelineStyle = styles?.timelineStyle;
+    final timeline = bodyComponents.timeline.call(
+      heightPerMinute,
+      timeOfDayRange,
+      timelineStyle,
+      selectedEvent,
+      viewController.visibleDateTimeRange,
+    );
+    return timeline;
+  }
+
+  /// Gets the hour lines widget for the multi-day body.
+  Widget _getHourLines(
+    MultiDayBodyComponentStyles? styles,
+    MultiDayBodyComponents<dynamic> bodyComponents,
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+  ) {
+    final hourLinesStyle = styles?.hourLinesStyle;
+    final hourLines = bodyComponents.hourLines.call(heightPerMinute, timeOfDayRange, hourLinesStyle);
+    return hourLines;
+  }
+
+  /// Generates the day separators for the multi-day body.
+  List<PositionedDirectional> _generateDaySeparators(
+    MultiDayBodyComponentStyles? styles,
+    MultiDayBodyComponents<dynamic> bodyComponents,
+    int numberOfDays,
+    double dayWidth,
+  ) {
+    final daySeparatorStyle = styles?.daySeparatorStyle;
+    final daySeparator = bodyComponents.daySeparator.call(daySeparatorStyle);
+    final daySeparators = List.generate(
+      numberOfDays + 1,
+      (index) {
+        final left = dayWidth * index;
+        return PositionedDirectional(
+          top: 0,
+          bottom: 0,
+          start: left,
+          child: daySeparator,
+        );
+      },
+    );
+    return daySeparators;
   }
 }

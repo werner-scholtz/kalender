@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/locale_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -18,58 +17,23 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 /// - [ContinuousScheduleViewController]: Single scrollable list of all events
 /// - [PaginatedScheduleViewController]: Paginated view with discrete pages
 class ScheduleBody<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that manages the events displayed in the schedule.
-  ///
-  /// If not provided, it will be retrieved from the [CalendarProvider].
-  final EventsController<T>? eventsController;
-
-  /// The [CalendarController] that manages the calendar state and navigation.
-  ///
-  /// If not provided, it will be retrieved from the [CalendarProvider].
-  final CalendarController<T>? calendarController;
-
-  /// The callbacks used for handling user interactions with the schedule.
-  ///
-  /// If not provided, they will be retrieved from the [CalendarProvider].
-  final CalendarCallbacks<T>? callbacks;
-
-  /// The tile components used for customizing the appearance of schedule items.
-  ///
-  /// This includes builders for event tiles, month headers, and empty day displays.
-  final ScheduleTileComponents<T>? tileComponents;
-
-  /// The interaction state notifier for tracking user interactions.
-  ///
-  /// If not provided, a default [CalendarInteraction] will be created.
-  final ValueNotifier<CalendarInteraction>? interaction;
-
   /// Configuration options for the schedule body behavior and appearance.
   ///
   /// If not provided, default [ScheduleBodyConfiguration] will be used.
   final ScheduleBodyConfiguration? configuration;
 
   /// Creates a [ScheduleBody].
-  ///
-  /// The [tileComponents] parameter is required to define how schedule items
-  /// should be rendered. All other parameters are optional and will fall back
-  /// to values from [CalendarProvider] or default implementations.
-  const ScheduleBody({
-    super.key,
-    this.eventsController,
-    this.calendarController,
-    this.callbacks,
-    this.interaction,
-    required this.tileComponents,
-    this.configuration,
-  });
+  const ScheduleBody({super.key, this.configuration});
 
   @override
   Widget build(BuildContext context) {
-    final provider = CalendarProvider.maybeOf<T>(context);
-    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf<T>(context);
-    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf<T>(context);
-    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf<T>(context);
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+    final provider = context.provider<T>();
+    final eventsController = provider.eventsController;
+    final calendarController = provider.calendarController;
+
+    final bodyProvider = context.bodyProvider<T>();
+    final callbacks = bodyProvider.callbacks;
+    final interaction = bodyProvider.interaction;
 
     assert(
       calendarController.viewController is ScheduleViewController<T>,
@@ -77,10 +41,10 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     );
 
     final viewController = calendarController.viewController as ScheduleViewController<T>;
-    final components = provider?.components?.scheduleComponents ?? ScheduleComponents();
-    final styles = provider?.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
+    final components = provider.components?.scheduleComponents ?? ScheduleComponents();
+    final styles = provider.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
-    final tileComponents = this.tileComponents ?? ScheduleTileComponents.defaultComponents<T>();
+    final tileComponents = bodyProvider.tileComponents as ScheduleTileComponents<T>;
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
@@ -476,7 +440,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             if (item is MonthItem) {
-              final locale = LocaleProvider.of(context);
+              final locale = CalendarProvider.single(context).locale;
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {

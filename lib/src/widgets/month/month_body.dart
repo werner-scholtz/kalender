@@ -11,41 +11,20 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 ///   - Static content [MonthGrid].
 ///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayEventDraggableWidgets].
 class MonthBody<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [MonthBody].
-  final EventsController<T>? eventsController;
-
-  /// The [CalendarController] that will be used by the [MonthBody].
-  final CalendarController<T>? calendarController;
-
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? configuration;
 
-  /// The callbacks used by the [MonthBody].
-  final CalendarCallbacks<T>? callbacks;
-
-  /// The tile components used by the [MonthBody].
-  final TileComponents<T>? tileComponents;
-
-  /// The [CalendarInteraction] that will be used by the [MonthBody].
-  final ValueNotifier<CalendarInteraction>? interaction;
-
   /// Creates a new [MonthBody].
-  const MonthBody({
-    super.key,
-    this.eventsController,
-    this.calendarController,
-    this.callbacks,
-    required this.tileComponents,
-    this.configuration,
-    required this.interaction,
-  });
+  const MonthBody({super.key, this.configuration});
 
   @override
   Widget build(BuildContext context) {
-    final provider = CalendarProvider.maybeOf<T>(context);
-    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf<T>(context);
-    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf<T>(context);
-    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf<T>(context);
+    final provider = context.provider<T>();
+    final eventsController = provider.eventsController;
+    final calendarController = provider.calendarController;
+
+    final bodyProvider = context.bodyProvider<T>();
+    final callbacks = bodyProvider.callbacks;
 
     assert(
       calendarController.viewController is MonthViewController<T>,
@@ -63,12 +42,11 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
 
-    final calendarComponents = provider?.components as CalendarComponents<T>?;
+    final calendarComponents = provider.components;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
     final components = calendarComponents?.monthComponents?.bodyComponents ?? MonthBodyComponents<T>();
-    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
-
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+    final tileComponents = bodyProvider.tileComponents;
+    final interaction = bodyProvider.interaction;
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 
 import 'utilities.dart';
@@ -48,22 +49,25 @@ void main() {
     // Build the DayEventsWidget
     await tester.pumpWidget(
       wrapWithMaterialApp(
-        DayEventsWidget<int>(
-          eventsController: eventsController,
-          controller: calendarController,
-          callbacks: null,
+        BodyProvider(
+          callbacks: null, // Use default callbacks
           tileComponents: TileComponents<int>(
             tileBuilder: (event, tileRange) => Container(
               key: ValueKey(event.data!),
               child: Text(event.data.toString()),
             ),
           ),
-          configuration: configuration,
-          dayWidth: 100,
-          heightPerMinute: 1,
-          visibleDateTimeRange: displayRange,
-          timeOfDayRange: timeOfDayRange,
           interaction: interaction,
+          snapping: ValueNotifier(const CalendarSnapping()),
+          child: DayEventsWidget<int>(
+            eventsController: eventsController,
+            controller: calendarController,
+            configuration: configuration,
+            dayWidth: 100,
+            heightPerMinute: 1,
+            visibleDateTimeRange: displayRange,
+            timeOfDayRange: timeOfDayRange,
+          ),
         ),
       ),
     );

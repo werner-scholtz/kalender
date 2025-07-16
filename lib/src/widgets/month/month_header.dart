@@ -4,16 +4,13 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The month header is a simple widget that just displays the day names.
 class MonthHeader<T extends Object?> extends StatelessWidget {
-  /// The [CalendarController] that will be used by the [MonthBody].
-  final CalendarController<T>? calendarController;
-
   /// Creates a new [MonthHeader].
-  const MonthHeader({super.key, this.calendarController});
+  const MonthHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = CalendarProvider.maybeOf<T>(context);
-    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf(context);
+    final provider = context.provider<T>();
+    final calendarController = provider.calendarController;
 
     assert(
       calendarController.viewController is MonthViewController<T>,
@@ -22,7 +19,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController.viewController as MonthViewController<T>;
 
-    final calendarComponents = provider?.components;
+    final calendarComponents = provider.components;
     final styles = calendarComponents?.monthComponentStyles?.headerStyles;
     final components = calendarComponents?.monthComponents?.headerComponents ?? const MonthHeaderComponents();
 
