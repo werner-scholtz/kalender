@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 
-class MonthViewConfiguration<T extends Object?> extends ViewConfiguration {
+class MonthViewConfiguration extends ViewConfiguration {
   @override
   final MonthPageFunctions pageNavigationFunctions;
 
@@ -16,7 +16,7 @@ class MonthViewConfiguration<T extends Object?> extends ViewConfiguration {
 This method is deprecated and will be removed in a future release. 
 Please use the `generateFrame` method in the `MonthBodyConfiguration` configuration instead.
 ''')
-  final MultiDayEventLayoutStrategy<T>? eventLayoutStrategy;
+  final MultiDayEventLayoutStrategy<Object?>? eventLayoutStrategy;
 
   MonthViewConfiguration({
     required super.name,

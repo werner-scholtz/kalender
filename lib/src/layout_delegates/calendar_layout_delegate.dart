@@ -11,6 +11,9 @@ class CalendarLayoutDelegate extends MultiChildLayoutDelegate {
   final int? bodyId;
   CalendarLayoutDelegate(this.headerId, this.bodyId);
 
+  static const header = 0;
+  static const body = 1;
+
   @override
   void performLayout(Size size) {
     Size? headerSize;

@@ -10,7 +10,7 @@ export 'package:kalender/kalender_extensions.dart';
 /// The base class for all [ViewConfiguration]s.
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
-abstract class ViewConfiguration<T extends Object?> {
+abstract class ViewConfiguration {
   const ViewConfiguration({
     required this.name,
     this.selectedDate,

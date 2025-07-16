@@ -23,7 +23,7 @@ enum EmptyDayBehavior {
   hide,
 }
 
-class ScheduleViewConfiguration<T extends Object?> extends ViewConfiguration {
+class ScheduleViewConfiguration extends ViewConfiguration {
   @override
   final PageNavigationFunctions pageNavigationFunctions;
 

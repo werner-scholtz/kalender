@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/locale_provider.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
 
 /// A function that returns a [MultiDayOverlayEventTile] for the multi-day overlay.
@@ -139,7 +139,7 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
     const headerHeight = defaultHeaderHeight;
     final (top, left) = calculatePosition(getOverlayPortalRenderBox.call(), headerHeight, width);
     final textDirection = Directionality.of(context);
-    final locale = LocaleProvider.of(context);
+    final locale = CalendarProvider.single(context).locale;
 
     return Stack(
       fit: StackFit.expand,
