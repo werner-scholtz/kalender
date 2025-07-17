@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/providers/locale_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
@@ -19,9 +18,16 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   /// The components and styles used by the calendar.
   ///
-  /// Components: [MultiDayComponents], [MonthComponents]
-  /// Styles: [MultiDayComponentStyles], [MonthComponentStyles]
-  final CalendarComponents? components;
+  /// Components: 
+  /// - [MultiDayComponents]
+  /// - [MonthComponents]
+  /// - [ScheduleComponents]
+  /// 
+  /// Styles: 
+  /// - [MultiDayComponentStyles]
+  /// - [MonthComponentStyles], 
+  /// - [ScheduleComponentStyles]
+  final CalendarComponents<T>? components;
 
   /// The header widget that will be displayed above the body.
   final Widget? header;
@@ -122,7 +128,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           initialDate: initialDate ?? widget.calendarController.initialDate,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
-          viewConfiguration: viewConfiguration as MonthViewConfiguration,
+          viewConfiguration: viewConfiguration as MonthViewConfiguration, 
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
@@ -147,31 +153,29 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final bodyId = widget.body == null ? null : 1;
-    final headerId = widget.header == null ? null : 0;
+    final bodyId = widget.body == null ? null : CalendarLayoutDelegate.body;
+    final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
 
-    return LocaleProvider(
+    return CalendarProvider<T>(
+      eventsController: widget.eventsController,
+      calendarController: widget.calendarController,
+      callbacks: widget.callbacks,
+      components: widget.components,
       locale: _locale,
-      child: CalendarProvider<T>(
-        eventsController: widget.eventsController,
-        calendarController: widget.calendarController,
-        callbacks: widget.callbacks,
-        components: widget.components,
-        child: CustomMultiChildLayout(
-          delegate: CalendarLayoutDelegate(headerId, bodyId),
-          children: [
-            if (bodyId != null)
-              LayoutId(
-                id: bodyId,
-                child: widget.body!,
-              ),
-            if (headerId != null)
-              LayoutId(
-                id: headerId,
-                child: widget.header!,
-              ),
-          ],
-        ),
+      child: CustomMultiChildLayout(
+        delegate: CalendarLayoutDelegate(headerId, bodyId),
+        children: [
+          if (bodyId != null)
+            LayoutId(
+              id: bodyId,
+              child: widget.body!,
+            ),
+          if (headerId != null)
+            LayoutId(
+              id: headerId,
+              child: widget.header!,
+            ),
+        ],
       ),
     );
   }

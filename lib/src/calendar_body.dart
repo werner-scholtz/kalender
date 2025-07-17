@@ -4,7 +4,9 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
 class CalendarBody<T extends Object?> extends StatelessWidget {
+  @Deprecated('This will be removed in the future, use CalendarProvider instead.')
   final EventsController<T>? eventsController;
+  @Deprecated('This will be removed in the future, use CalendarProvider instead.')
   final CalendarController<T>? calendarController;
 
   /// The callbacks used by the [CalendarBody].
@@ -61,45 +63,38 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late final provider = CalendarProvider.maybeOf<T>(context);
-    final viewController = calendarController?.viewController ?? provider?.viewController;
+    final provider = context.provider<T>();
+    final viewController = provider.viewController;
+    final callbacks = this.callbacks ?? provider.callbacks;
+    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+    final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
 
-    assert(
-      viewController != null,
-      'The $CalendarController<$T> must have a $ViewController<$T> attached to it. \n'
-      'If you are using the $CalendarController<$T> directly, make sure to attach a $ViewController<$T> to it.',
-    );
-
-    if (viewController is MultiDayViewController<T>) {
-      return MultiDayBody<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        configuration: multiDayBodyConfiguration,
-        callbacks: callbacks,
-        interaction: interaction,
-        snapping: snapping,
-        tileComponents: multiDayTileComponents,
-      );
-    } else if (viewController is MonthViewController<T>) {
-      return MonthBody<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        callbacks: callbacks,
-        tileComponents: monthTileComponents,
-        configuration: monthBodyConfiguration,
-        interaction: interaction,
-      );
-    } else if (viewController is ScheduleViewController<T>) {
-      return ScheduleBody<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        callbacks: callbacks,
-        tileComponents: scheduleTileComponents,
-        configuration: scheduleBodyConfiguration,
-        interaction: interaction,
-      );
-    } else {
-      throw UnimplementedError();
-    }
+    return switch (viewController) {
+      MultiDayViewController<T>() => BodyProvider<T>(
+          callbacks: callbacks,
+          tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
+          interaction: interaction,
+          snapping: snapping,
+          child: MultiDayBody<T>(configuration: multiDayBodyConfiguration),
+        ),
+      MonthViewController<T>() => BodyProvider<T>(
+          callbacks: callbacks,
+          tileComponents: monthTileComponents ?? TileComponents.defaultComponents<T>(),
+          interaction: interaction,
+          snapping: snapping,
+          child: MonthBody<T>(configuration: monthBodyConfiguration),
+        ),
+      ScheduleViewController<T>() => BodyProvider<T>(
+          callbacks: callbacks,
+          tileComponents: scheduleTileComponents ?? ScheduleTileComponents.defaultComponents<T>(),
+          interaction: interaction,
+          snapping: snapping,
+          child: ScheduleBody<T>(configuration: scheduleBodyConfiguration),
+        ),
+      _ => throw ErrorHint(
+          'Unsupported ViewController type: ${viewController.runtimeType}. '
+          'Make sure to use the correct CalendarBody for the ViewController.',
+        ),
+    };
   }
 }

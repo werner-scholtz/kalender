@@ -14,42 +14,18 @@ import 'package:kalender/src/widgets/internal_components/multi_day_header_layout
 ///
 /// All Header widgets make use of the [ExpandablePageView] which uses a [SizeReportingWidget]to set the the Height of the header, this is so they can resize dynamically.
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
-  /// The [EventsController] that will be used by the [MultiDayHeader].
-  final EventsController<T>? eventsController;
-
-  /// The [CalendarController] that will be used by the [MultiDayHeader].
-  final CalendarController<T>? calendarController;
-
-  /// The [CalendarCallbacks] that will be used by the [MultiDayHeader].
-  final CalendarCallbacks<T>? callbacks;
-
-  /// The [TileComponents] that will be used by the [MultiDayHeader].
-  final TileComponents<T>? tileComponents;
-
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final MultiDayHeaderConfiguration<T>? configuration;
 
-  /// The [ValueNotifier] containing the [CalendarInteraction] value.
-  final ValueNotifier<CalendarInteraction>? interaction;
-
   /// Creates a new [MultiDayHeader].
-  const MultiDayHeader({
-    super.key,
-    this.eventsController,
-    this.calendarController,
-    this.callbacks,
-    required this.tileComponents,
-    this.configuration,
-    this.interaction,
-  });
+  const MultiDayHeader({super.key, this.configuration});
 
   @override
   Widget build(BuildContext context) {
-    final provider = CalendarProvider.maybeOf<T>(context);
-    final eventsController = this.eventsController ?? CalendarProvider.eventsControllerOf<T>(context);
-    final calendarController = this.calendarController ?? CalendarProvider.calendarControllerOf<T>(context);
-    final callbacks = this.callbacks ?? CalendarProvider.callbacksOf<T>(context);
-
+    final provider = context.provider<T>();
+    final eventsController = provider.eventsController;
+    final calendarController = provider.calendarController;
+    final callbacks = provider.callbacks;
     assert(
       calendarController.viewController is MultiDayViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
@@ -59,9 +35,10 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration<T>();
 
-    final calendarComponents = provider?.components as CalendarComponents<T>?;
-    final tileComponents = this.tileComponents ?? TileComponents.defaultComponents<T>();
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
+    final calendarComponents = provider.components;
+    final headerProvider = context.headerProvider<T>();
+    final tileComponents = headerProvider.tileComponents;
+    final interaction = headerProvider.interaction;
 
     return LayoutBuilder(
       builder: (context, constraints) {

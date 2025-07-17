@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
@@ -20,29 +21,22 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 class DayEventsWidget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
-  final CalendarCallbacks<T>? callbacks;
-
-  final TileComponents<T> tileComponents;
   final MultiDayBodyConfiguration configuration;
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
   final double heightPerMinute;
-  final ValueNotifier<CalendarInteraction> interaction;
 
   /// Creates a [DayEventsWidget].
   const DayEventsWidget({
     super.key,
     required this.eventsController,
     required this.controller,
-    required this.callbacks,
-    required this.tileComponents,
     required this.configuration,
     required this.dayWidth,
     required this.heightPerMinute,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
-    required this.interaction,
   });
 
   @override
@@ -117,10 +111,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
                 timeOfDayRange: widget.timeOfDayRange,
                 eventsController: widget.eventsController,
                 controller: widget.controller,
-                callbacks: widget.callbacks,
-                tileComponents: widget.tileComponents,
                 configuration: widget.configuration,
-                interaction: widget.interaction,
               ),
             ),
           ),
@@ -136,10 +127,8 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
   final CalendarController<T> controller;
   final double heightPerMinute;
   final TimeOfDayRange timeOfDayRange;
-  final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
+
   final MultiDayBodyConfiguration configuration;
-  final ValueNotifier<CalendarInteraction> interaction;
 
   const _SingleDayWidget({
     super.key,
@@ -149,10 +138,7 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
     required this.timeOfDayRange,
     required this.eventsController,
     required this.controller,
-    required this.callbacks,
-    required this.tileComponents,
     required this.configuration,
-    required this.interaction,
   });
 
   @override
@@ -197,10 +183,10 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
                 event: item.$2,
                 eventsController: widget.eventsController,
                 controller: widget.controller,
-                callbacks: widget.callbacks,
-                tileComponents: widget.tileComponents,
+                callbacks: context.callbacks<T>(),
+                tileComponents: context.tileComponents<T>(),
                 dateTimeRange: date.dayRange,
-                interaction: widget.interaction,
+                interaction: context.interaction<T>(),
               ),
             ),
           )
@@ -229,7 +215,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
           eventList.insert(0, event);
         }
 
-        final dropTarget = widget.tileComponents.dropTargetTile;
+        final dropTarget = context.tileComponents<T>().dropTargetTile;
 
         return CustomMultiChildLayout(
           delegate: layoutStrategy.call(

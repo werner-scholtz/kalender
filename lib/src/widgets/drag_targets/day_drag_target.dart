@@ -12,13 +12,11 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final CalendarController<T> calendarController;
   final MultiDayViewController<T> viewController;
+  final MultiDayBodyConfiguration bodyConfiguration;
 
   final ScrollController scrollController;
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
-
-  /// TODO: Remove this.
-  final MultiDayBodyConfiguration bodyConfiguration;
 
   final TimeOfDayRange timeOfDayRange;
   final double pageWidth;
