@@ -1,76 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:testing/test_configuration.dart';
+import 'package:testing/tiles.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class TestConfiguration {
-  final ViewConfiguration viewConfiguration;
-
-  TestConfiguration({required this.viewConfiguration});
-
-  TestConfiguration.week()
-    : viewConfiguration = MultiDayViewConfiguration.week(
-        displayRange: testRange,
-        selectedDate: selectedDate,
-      );
-
-  TestConfiguration.month()
-    : viewConfiguration = MonthViewConfiguration.singleMonth(
-        displayRange: testRange,
-        selectedDate: selectedDate,
-      );
-
-  TestConfiguration.schedule()
-    : viewConfiguration = ScheduleViewConfiguration.continuous(
-        displayRange: testRange,
-        selectedDate: selectedDate,
-      );
-
-  static final selectedDate = DateTime(2024, 6, 1);
-  static final start = DateTime(2024, 1, 1);
-  static final end = DateTime(2024, 12, 31);
-  static DateTimeRange get testRange => DateTimeRange(start: start, end: end);
-
-  /// The events controller for the test.
-  final eventsController = DefaultEventsController<Event>();
-
-  /// The calendar controller for the test.
-  final calendarController = CalendarController<Event>();
-
-  static List<CalendarEvent<Event>> generate(List<TimeOfDayRange> timeOfDayRanges) {
-    assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
-
-    // Loop through the test range and create events.
-    final events = <CalendarEvent<Event>>[
-      for (var date in testRange.dates()) ...[
-        for (var timeOfDayRange in timeOfDayRanges)
-          CalendarEvent<Event>(
-            dateTimeRange: DateTimeRange(
-              start: timeOfDayRange.start.toDateTime(date),
-              end: timeOfDayRange.end.toDateTime(date),
-            ),
-            data: Event(
-              title: 'Event',
-              description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
-              color: Colors.primaries[date.day % Colors.primaries.length],
-            ),
-          ),
-      ],
-    ];
-
-    return events;
-  }
-}
-
-/// Represents an event with a title and color.
-class Event {
-  final String title;
-  final Color color;
-  final String description;
-
-  Event({required this.title, required this.color, required this.description});
 }
 
 class MyApp extends StatelessWidget {
@@ -109,15 +43,47 @@ class _HomeState extends State<Home> {
         calendarController: config.calendarController,
         viewConfiguration: config.viewConfiguration,
         components: CalendarComponents(),
-        header: CalendarHeader<Event>(),
+        callbacks: CalendarCallbacks(
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventCreate: (event) => event,
+          onEventCreated: (event) => eventsController.addEvent(event),
+        ),
+        header: CalendarHeader<Event>(multiDayTileComponents: _multiDayTileComponents),
         body: CalendarBody<Event>(
-          multiDayTileComponents: TileComponents(
-            tileBuilder: (event, tileRange) {
-              return Container(key: Home.getTileKey(event.id), color: event.data?.color);
-            },
-          ),
+          multiDayTileComponents: _tileComponents,
+          monthTileComponents: _multiDayTileComponents,
+          scheduleTileComponents: _scheduleTileComponents,
         ),
       ),
+    );
+  }
+
+  TileComponents<Event> get _tileComponents {
+    return TileComponents<Event>(
+      tileBuilder: EventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
+    );
+  }
+
+  TileComponents<Event> get _multiDayTileComponents {
+    return TileComponents<Event>(
+      tileBuilder: MultiDayEventTile.builder,
+      overlayTileBuilder: OverlayEventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
+    );
+  }
+
+  ScheduleTileComponents<Event> get _scheduleTileComponents {
+    return ScheduleTileComponents<Event>(
+      tileBuilder: MultiDayEventTile.builder,
+      overlayTileBuilder: OverlayEventTile.builder,
+      dropTargetTile: DropTargetTile.builder,
+      feedbackTileBuilder: FeedbackTile.builder,
+      tileWhenDraggingBuilder: TileWhenDragging.builder,
     );
   }
 }
