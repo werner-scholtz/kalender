@@ -26,7 +26,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   late int _currentPage;
 
   /// The current height of the page view.
-  double get _currentHeight => _heights[_currentPage];
+  double get _currentHeight => _heights.elementAtOrNull(_currentPage) ?? 80;
 
   @override
   void initState() {
