@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:perf_profiling/main.dart';
+import 'package:testing/main.dart';
 
 enum ReportKeys { loadingEvents, navigation, scrolling }
 
