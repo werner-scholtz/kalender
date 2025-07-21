@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter Performance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Flutter Performance Dashboard</h1>
+            <p>Real-time performance metrics from automated tests</p>
+            <div id="lastUpdate" class="last-update">Loading...</div>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading performance data...</p>
+        </div>
+        
+        <div id="dashboard" style="display: none;">
+            <!-- Summary Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Latest Build Time</div>
+                    <div class="metric-value" id="latestBuildTime">--</div>
+                    <div class="metric-unit">ms</div>
+                    <div class="metric-trend" id="buildTimeTrend"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Latest Raster Time</div>
+                    <div class="metric-value" id="latestRasterTime">--</div>
+                    <div class="metric-unit">ms</div>
+                    <div class="metric-trend" id="rasterTimeTrend"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Test Status</div>
+                    <div class="metric-value" id="testStatus">--</div>
+                    <div class="metric-unit">latest run</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Total Tests</div>
+                    <div class="metric-value" id="totalTests">--</div>
+                    <div class="metric-unit">historical</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-container">
+                <h3>Performance Trends (Last 30 Days)</h3>
+                <canvas id="performanceChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>Test Results Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <!-- Recent Results Table -->
+            <div class="table-container">
+                <h3>Recent Test Results</h3>
+                <div class="table-wrapper">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Commit</th>
+                                <th>Branch</th>
+                                <th>Status</th>
+                                <th>Build Time</th>
+                                <th>Raster Time</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <h3>Unable to load performance data</h3>
+            <p>Please check that the workflow has run and generated results.</p>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

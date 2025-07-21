@@ -69,19 +69,34 @@ jobs:
           # Extract JSON from machine output
           grep -E '^\{.*\}$' test_output.log > test_results.json || echo "{}" > test_results.json
           echo "Test execution completed"
-          if [ -f test_results.json ]; then
-            echo "Test results file created successfully"
-            cat test_results.json
-          else
-            echo "No test results file found"
-          fi
+          
+          # Create performance summary with timestamp
+          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          commit_sha="${{ github.sha }}"
+          run_number="${{ github.run_number }}"
+          
+          cat > performance_summary.json << EOF
+          {
+            "timestamp": "$timestamp",
+            "commit_sha": "$commit_sha",
+            "run_number": $run_number,
+            "branch": "${{ github.ref_name }}",
+            "platform": "${{ matrix.platform }}",
+            "test_results": $(cat test_results.json)
+          }
+          EOF
+          
+          echo "Performance summary created:"
+          cat performance_summary.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-results-${{ matrix.platform }}-${{ github.run_number }}
-          path: examples/testing/test_results.json
+          path: |
+            examples/testing/test_results.json
+            examples/testing/performance_summary.json
 
       - name: Upload performance JSON (if exists)
         uses: actions/upload-artifact@v4
@@ -94,44 +109,82 @@ jobs:
     needs: performance-test
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      contents: write
+      pages: write
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
 
-      - name: Consolidate and compare results
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Consolidate and store results
         run: |
-          echo "# Performance Test Results by Platform" > consolidated_results.md
-          echo "" >> consolidated_results.md
+          # Create performance dashboard directory structure
+          mkdir -p performance-dashboard/data
+          
+          # Process each platform result
+          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          
+          for platform in linux; do
+            if [ -f "performance-results-${platform}-${{ github.run_number }}/performance_summary.json" ]; then
+              # Store individual result
+              filename="performance-dashboard/data/perf_${platform}_$(date -u +%Y%m%d_%H%M%S).json"
+              cp "performance-results-${platform}-${{ github.run_number }}/performance_summary.json" "$filename"
+              echo "Stored result: $filename"
+            fi
+          done
+          
+          # Create latest results summary
+          cat > performance-dashboard/data/latest.json << EOF
+          {
+            "lastUpdate": "$timestamp",
+            "runNumber": ${{ github.run_number }},
+            "commitSha": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}"
+          }
+          EOF
 
-          echo "## linux Results" >> consolidated_results.md
-          if [ -f "performance-json-linux-${{ github.run_number }}/performance_summary.json" ]; then
-            echo '```json' >> consolidated_results.md
-            cat "performance-json-linux-${{ github.run_number }}/performance_summary.json" >> consolidated_results.md
-            echo '```' >> consolidated_results.md
-          else
-            echo "No results available for linux" >> consolidated_results.md
+      - name: Checkout gh-pages for dashboard update
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages-content
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update performance dashboard on gh-pages
+        run: |
+          # Copy dashboard files to gh-pages if they don't exist
+          if [ ! -f "gh-pages-content/performance/index.html" ]; then
+            mkdir -p gh-pages-content/performance
+            # Dashboard files will be created in the next step
           fi
-          echo "" >> consolidated_results.md
+          
+          # Copy new data to existing gh-pages structure
+          mkdir -p gh-pages-content/performance/data
+          cp -r performance-dashboard/data/* gh-pages-content/performance/data/
+          
+          # Copy dashboard files (will be created below)
+          cp docs/performance/* gh-pages-content/performance/ 2>/dev/null || true
 
-      - name: Upload consolidated results
-        uses: actions/upload-artifact@v4
-        with:
-          name: consolidated-results-${{ github.run_number }}
-          path: consolidated_results.md
+      - name: Create dashboard files in workspace
+        run: |
+          mkdir -p docs/performance
+          # Dashboard files will be added as separate file modifications
 
-      - name: Comment PR with consolidated results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            if (fs.existsSync('consolidated_results.md')) {
-              const results = fs.readFileSync('consolidated_results.md', 'utf8');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: results
-              });
-            }
+      - name: Deploy updated gh-pages
+        run: |
+          cd gh-pages-content
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update performance dashboard data" || exit 0
+          git push
