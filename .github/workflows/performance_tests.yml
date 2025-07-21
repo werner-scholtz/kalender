@@ -109,14 +109,12 @@ jobs:
           name: performance-json-${{ matrix.platform }}-${{ github.run_number }}
           path: examples/testing/performance_*.json
 
-      - name: Commit performance data
+      - name: Trigger dashboard build
         if: github.ref == 'refs/heads/main'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add dashboard/data/
-          git diff --staged --quiet || git commit -m "Add performance data for run ${{ github.run_number }}"
-          git push
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: build-dashboard
 
       - name: Trigger dashboard build
         if: github.ref == 'refs/heads/main'
