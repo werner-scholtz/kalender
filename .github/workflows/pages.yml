@@ -1,0 +1,58 @@
+name: Pages Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:    
+    runs-on: ubuntu-latest
+    # if: contains(github.event.head_commit.message, 'pages')
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.0"
+      
+      - name: Build web demo
+        run: flutter build web --release --base-href /kalender/
+        shell: bash
+        working-directory: examples/web_demo
+      
+      - name: Build performance dashboard
+        run: |
+          flutter pub get
+          flutter build web --release --base-href /kalender/performance/
+        shell: bash
+        working-directory: dashboards/performance_dashboard
+      
+      - run: git config user.name github-actions
+        shell: bash
+      - run: git config user.email github-actions@github.com
+        shell: bash
+      - run: |
+          # Switch to gh-pages branch
+          git fetch origin gh-pages:gh-pages || echo "No gh-pages branch yet"
+          git checkout gh-pages || git checkout --orphan gh-pages
+          
+          # Copy web demo files to root
+          cp -r examples/web_demo/build/web/* .
+          
+          # Copy performance dashboard to performance directory
+          mkdir -p performance
+          cp -r dashboards/performance_dashboard/build/web/* performance/
+          
+          git add --all
+        shell: bash
+      - run: git commit -m "Automatic deployment by github-actions"
+        shell: bash
+      - run: git push origin gh-pages
+        shell: bash
