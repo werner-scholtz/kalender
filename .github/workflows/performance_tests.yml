@@ -135,30 +135,3 @@ jobs:
                 body: results
               });
             }
-              echo '```' >> consolidated_results.md
-            else
-              echo "No results available for $platform" >> consolidated_results.md
-            fi
-            echo "" >> consolidated_results.md
-
-      - name: Upload consolidated results
-        uses: actions/upload-artifact@v4
-        with:
-          name: consolidated-results-${{ github.run_number }}
-          path: consolidated_results.md
-
-      - name: Comment PR with consolidated results
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            if (fs.existsSync('consolidated_results.md')) {
-              const results = fs.readFileSync('consolidated_results.md', 'utf8');
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: results
-              });
-            }
