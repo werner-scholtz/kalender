@@ -61,6 +61,6 @@ jobs:
         with:
           name: performance-reports-${{ github.run_number }}
           path: |
-            examples/testing/*.timeline.json
-            examples/testing/*.timeline_summary.json
+            examples/testing/build/*.timeline.json
+            examples/testing/performance_summary.json
           retention-days: 30

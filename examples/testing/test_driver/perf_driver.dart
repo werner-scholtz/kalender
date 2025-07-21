@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart' as driver;
 import 'package:integration_test/integration_test_driver.dart';
 
@@ -21,6 +24,8 @@ enum Views { week, month, schedule }
 Future<void> main() {
   return integrationDriver(
     responseDataCallback: (data) async {
+      final summary = <String, dynamic>{};
+
       if (data != null) {
         final keys = [
           for (final scenario in Scenario.values)
@@ -51,8 +56,14 @@ Future<void> main() {
               '\n- 99th Build: ${timelineSummary.summaryJson['99th_percentile_frame_build_time_millis']}ms'
               '\n- Avg Raster: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}\n';
 
+          summary[key] = timelineSummary.summaryJson;
+
           print('✅ Processed: $key ($frameCount events)$metricsStr');
         }
+
+        final summaryFile = File('performance_summary.json');
+        const encoder = JsonEncoder.withIndent('  ');
+        await summaryFile.writeAsString(encoder.convert(summary));
       } else {
         print('❌ No profiling data received');
       }
