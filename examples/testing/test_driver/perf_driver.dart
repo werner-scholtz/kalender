@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_driver/flutter_driver.dart' as driver;
 import 'package:integration_test/integration_test_driver.dart';
 
@@ -26,22 +28,33 @@ Future<void> main() {
               for (var key in ReportKeys.values) scenario.getReportKey(view, key),
         ];
 
+        print('\n=== Performance Profiling Summary ===');
+        print('Total expected reports: ${keys.length}');
+        print('Available data keys: ${data.keys.length}');
+        print('\nProcessing reports...\n');
+
         for (final key in keys) {
-          if (!data.containsKey(key)) continue;
+          if (!data.containsKey(key)) {
+            continue;
+          }
 
           final timeline = driver.Timeline.fromJson(data[key] as Map<String, dynamic>);
+          final timelineSummary = driver.TimelineSummary.summarize(timeline);
 
-          // Convert the Timeline into a TimelineSummary that's easier to
-          // read and understand.
-          final summary = driver.TimelineSummary.summarize(timeline);
+          // Extract key metrics
+          final frameCount = timeline.events?.length ?? 0;
 
-          // Then, write the entire timeline to disk in a json format.
-          // This file can be opened in the Chrome browser's tracing tools
-          // found by navigating to chrome://tracing.
-          // Optionally, save the summary to disk by setting includeSummary
-          // to true
-          await summary.writeTimelineToFile(key, pretty: true, includeSummary: true);
+          await timelineSummary.writeTimelineToFile(key, pretty: true, includeSummary: true);
+
+          final metricsStr =
+              '\n- Avg Build: ${timelineSummary.summaryJson['average_frame_build_time_millis']}ms'
+              '\n- 99th Build: ${timelineSummary.summaryJson['99th_percentile_frame_build_time_millis']}ms'
+              '\n- Avg Raster: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}\n';
+
+          print('✅ Processed: $key ($frameCount events)$metricsStr');
         }
+      } else {
+        print('❌ No profiling data received');
       }
     },
   );
