@@ -121,6 +121,15 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                       } else {
                                         viewController.visibleDateTimeRange.value = visibleRange;
                                       }
+                                      
+                                      // TODO: we need to udate the visible events here.
+                                      // This is because freeScroll builds multiple pages at once.
+                                      final events = eventsController.eventsFromDateTimeRange(
+                                        visibleRange,
+                                        includeDayEvents: true,
+                                        includeMultiDayEvents: configuration?.showMultiDayEvents ?? false,
+                                      );
+                                      controller.visibleEvents.value = events.toSet();
 
                                       callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
                                     },

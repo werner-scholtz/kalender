@@ -92,7 +92,7 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
       entries.add(MapEntry(date, sortedEvents));
     }
 
-    widget.controller.visibleEvents.value = allEvents;
+    // widget.controller.visibleEvents.value = allEvents;
     eventsMap = Map.fromEntries(entries);
   }
 

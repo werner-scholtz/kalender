@@ -244,7 +244,7 @@ void main() {
     testWidgets('freeScroll', (tester) async {
       // TODO: Implement free scroll view configuration test.
 
-      final viewConfiguration = MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 1);
+      final viewConfiguration = MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 2);
 
       await tester.pumpCalendarView(
         controller: controller,
@@ -255,6 +255,10 @@ void main() {
       );
 
       expect(find.byType(MultiDayBody), findsOneWidget);
+
+      // The viewController's visible events should be empty at this point.
+      // This is because the page(s) have been built already.
+      expect(controller.visibleEvents.value.isNotEmpty, isTrue);
 
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionCallWithin(
