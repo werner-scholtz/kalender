@@ -28,9 +28,7 @@ jobs:
         working-directory: examples/web_demo
       
       - name: Build performance dashboard
-        run: |
-          flutter pub get
-          flutter build web --release --base-href /kalender/performance/
+        run: flutter build web --release --base-href /kalender/performance/
         shell: bash
         working-directory: dashboards/performance_dashboard
       
