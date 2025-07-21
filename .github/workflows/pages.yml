@@ -28,18 +28,27 @@ jobs:
         working-directory: examples/web_demo
       
       - name: Build performance dashboard
-        run: flutter build web --release --base-href /kalender/performance/
+        run: |
+          flutter pub get
+          flutter build web --release --base-href /kalender/performance/
         shell: bash
         working-directory: dashboards/performance_dashboard
       
-      - run: git config user.name github-actions
-        shell: bash
-      - run: git config user.email github-actions@github.com
-        shell: bash
-      - run: |
-          # Switch to gh-pages branch
-          git fetch origin gh-pages:gh-pages || echo "No gh-pages branch yet"
+      - name: Deploy to gh-pages
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          
+          # Stash any uncommitted changes
+          git stash --include-untracked || true
+          
+          # Switch to gh-pages branch (delete local if exists, then checkout)
+          git branch -D gh-pages 2>/dev/null || true
+          git fetch origin gh-pages || echo "No remote gh-pages branch yet"
           git checkout gh-pages || git checkout --orphan gh-pages
+          
+          # Clear existing content (keep .git)
+          find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} + 2>/dev/null || true
           
           # Copy web demo files to root
           cp -r examples/web_demo/build/web/* .
@@ -49,8 +58,6 @@ jobs:
           cp -r dashboards/performance_dashboard/build/web/* performance/
           
           git add --all
-        shell: bash
-      - run: git commit -m "Automatic deployment by github-actions"
-        shell: bash
-      - run: git push origin gh-pages
+          git commit -m "Automatic deployment by github-actions - $(date)"
+          git push origin gh-pages
         shell: bash
