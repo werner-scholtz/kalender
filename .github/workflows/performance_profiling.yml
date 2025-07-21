@@ -1,0 +1,63 @@
+name: Performance Profiling Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  performance-profiling:
+    runs-on: ubuntu-latest
+
+    env:
+      DISPLAY: :99
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
+          sudo apt-get install -y xvfb
+          sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
+          sudo apt-get install -y mesa-common-dev
+
+      - name: Get Flutter dependencies
+        working-directory: ./examples/testing
+        run: flutter pub get
+
+      - name: Start virtual display
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          sleep 3
+
+      - name: Run performance profiling tests
+        working-directory: ./examples/testing
+        env:
+          DISPLAY: :99
+        run: |
+          flutter drive \
+            --driver=test_driver/perf_driver.dart \
+            --target=integration_test/performance_profiling_test.dart \
+            --profile
+
+      - name: List generated files
+        working-directory: ./examples/testing
+        run: |
+          echo "Generated performance files:"
+          find . -name "*.timeline_summary.json" -o -name "*.timeline.json" | head -20
+
+      - name: Upload performance reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-reports-${{ github.run_number }}
+          path: |
+            examples/testing/*.timeline.json
+            examples/testing/*.timeline_summary.json
+          retention-days: 30

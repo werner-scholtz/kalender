@@ -102,6 +102,10 @@ class TimeLine extends StatelessWidget {
     );
   }
 
+  static Key getTimeKey(int hour, int minute) {
+    return Key('time-$hour-$minute');
+  } 
+
   /// The [TextStyle] that will be used for the text.
   TextStyle textStyle(BuildContext context) => style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
 
@@ -190,6 +194,7 @@ class TimeLine extends StatelessWidget {
           child: Padding(
             padding: textPadding,
             child: Text(
+              key: getTimeKey(displayTime.hour, displayTime.minute),
               text,
               style: textStyle,
               textDirection: textDirection,

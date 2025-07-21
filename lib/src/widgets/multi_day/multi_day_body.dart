@@ -32,7 +32,10 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
   });
 
   /// The key used to identify the content of the [MultiDayBody].
-  static const contentKey = ValueKey('contentKey');
+  static const contentKey = Key('contentKey');
+
+  /// The key used to identify the single child scroll view of the [MultiDayBody].
+  static const singleChildScrollViewKey = Key('singleChildScrollViewKey');
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +88,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             Scrollbar(
               controller: viewController.scrollController,
               child: SingleChildScrollView(
+                key: singleChildScrollViewKey,
                 controller: viewController.scrollController,
                 physics: configuration?.scrollPhysics,
                 child: SizedBox(
