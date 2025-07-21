@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -50,6 +53,7 @@ void main() {
     // Print comparison table after all tests
     tearDownAll(() {
       _printComparisonTable(allResults);
+      _writeJsonResults(allResults);
     });
   });
 }
@@ -193,3 +197,48 @@ void _printComparisonTable(List<Map<String, dynamic>> allResults) {
     print('-' * 120);
   }
 }
+
+void _writeJsonResults(List<Map<String, dynamic>> allResults) {
+  final jsonResults = {
+    'timestamp': DateTime.now().toIso8601String(),
+    'results': allResults,
+    'summary': _generateSummary(allResults),
+  };
+
+  try {
+    final file = File('performance_results.json');
+    file.writeAsStringSync(jsonEncoder.convert(jsonResults));
+    print('\nResults written to: ${file.absolute.path}');
+    
+    // Also create a summary file for CI
+    final summaryFile = File('performance_summary.json');
+    summaryFile.writeAsStringSync(jsonEncoder.convert(jsonResults['summary']));
+  } catch (e) {
+    print('Error writing results: $e');
+  }
+}
+
+Map<String, dynamic> _generateSummary(List<Map<String, dynamic>> allResults) {
+  final summary = <String, dynamic>{};
+  
+  for (final result in allResults) {
+    final scenario = result['scenario'] as String;
+    final results = result['results'] as Map<String, Map<String, dynamic>>;
+    
+    summary[scenario] = {};
+    for (final reportKey in ReportKeys.values) {
+      final report = results[reportKey.name];
+      if (report != null) {
+        summary[scenario][reportKey.name] = {
+          'avg_build_time': report['average_frame_build_time_millis'],
+          'missed_frames': report['missed_frame_build_budget_count'],
+          'frame_count': report['frame_count'],
+        };
+      }
+    }
+  }
+  
+  return summary;
+}
+
+final jsonEncoder = JsonEncoder.withIndent('  ');
