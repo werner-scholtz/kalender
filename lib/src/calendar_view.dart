@@ -18,14 +18,14 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   /// The components and styles used by the calendar.
   ///
-  /// Components: 
+  /// Components:
   /// - [MultiDayComponents]
   /// - [MonthComponents]
   /// - [ScheduleComponents]
-  /// 
-  /// Styles: 
+  ///
+  /// Styles:
   /// - [MultiDayComponentStyles]
-  /// - [MonthComponentStyles], 
+  /// - [MonthComponentStyles],
   /// - [ScheduleComponentStyles]
   final CalendarComponents<T>? components;
 
@@ -128,7 +128,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           initialDate: initialDate ?? widget.calendarController.initialDate,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
-          viewConfiguration: viewConfiguration as MonthViewConfiguration, 
+          viewConfiguration: viewConfiguration as MonthViewConfiguration,
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
