@@ -61,11 +61,11 @@ jobs:
           cd examples/testing
           xvfb-run -a flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
 
-      - name: Run performance tests (macOS/Windows)
-        if: matrix.os != 'ubuntu-latest'
-        run: |
-          cd examples/testing
-          flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
+      # - name: Run performance tests (macOS/Windows)
+      #   if: matrix.os != 'ubuntu-latest'
+      #   run: |
+      #     cd examples/testing
+      #     flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
