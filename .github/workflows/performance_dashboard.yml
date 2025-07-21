@@ -23,7 +23,7 @@ jobs:
 
       - name: Build performance dashboard
         run: |
-          cd examples/performance_dashboard
+          cd dashboards/performance_dashboard
           flutter pub get
           flutter build web --release --base-href /kalender/performance/
 
@@ -38,7 +38,7 @@ jobs:
           
           # Create performance directory and copy built files
           mkdir -p performance
-          cp -r examples/performance_dashboard/build/web/* performance/
+          cp -r dashboards/performance_dashboard/build/web/* performance/
           
           git add performance/
           git commit -m "Update performance dashboard - $(date)"
