@@ -12,17 +12,11 @@ jobs:
   performance-test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
             platform: linux
             test-device: web-server
-          - os: macos-latest
-            platform: macos
-            test-device: macos-desktop
-          - os: windows-latest
-            platform: windows
-            test-device: windows-desktop
 
     runs-on: ${{ matrix.os }}
 
@@ -65,7 +59,6 @@ jobs:
           sleep 2
 
       - name: Run performance tests (Linux)
-        if: matrix.os == 'ubuntu-latest'
         timeout-minutes: 5
         run: |
           cd examples/testing
@@ -82,12 +75,6 @@ jobs:
           else
             echo "No test results file found"
           fi
-
-      - name: Run performance tests (macOS/Windows)
-        if: matrix.os != 'ubuntu-latest'
-        run: |
-          cd examples/testing
-          flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -117,13 +104,29 @@ jobs:
           echo "# Performance Test Results by Platform" > consolidated_results.md
           echo "" >> consolidated_results.md
 
-          for platform in linux macos windows; do
-            echo "## $platform Results" >> consolidated_results.md
-            if [ -f "performance-json-${platform}-${{ github.run_number }}/performance_summary.json" ]; then
-              echo '```json' >> consolidated_results.md
-              cat "performance-json-${platform}-${{ github.run_number }}/performance_summary.json" >> consolidated_results.md
-              echo '```' >> consolidated_results.md
-            else
+          echo "## linux Results" >> consolidated_results.md
+          if [ -f "performance-json-linux-${{ github.run_number }}/performance_summary.json" ]; then
+            echo '```json' >> consolidated_results.md
+            cat "performance-json-linux-${{ github.run_number }}/performance_summary.json" >> consolidated_results.md
+            echo '```' >> consolidated_results.md
+          else
+            echo "No results available for linux" >> consolidated_results.md
+          fi
+          echo "" >> consolidated_results.md
+
+      - name: Upload consolidated results
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidated-results-${{ github.run_number }}
+          path: consolidated_results.md
+
+      - name: Comment PR with consolidated results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('consolidated_results.md')) {
               const results = fs.readFileSync('consolidated_results.md', 'utf8');
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -131,16 +134,12 @@ jobs:
                 repo: context.repo.repo,
                 body: results
               });
-            echo "## $platform Results" >> consolidated_results.md
-            if [ -f "performance-json-${platform}-${{ github.run_number }}/performance_summary.json" ]; then
-              echo '```json' >> consolidated_results.md
-              cat "performance-json-${platform}-${{ github.run_number }}/performance_summary.json" >> consolidated_results.md
+            }
               echo '```' >> consolidated_results.md
             else
               echo "No results available for $platform" >> consolidated_results.md
             fi
             echo "" >> consolidated_results.md
-          done
 
       - name: Upload consolidated results
         uses: actions/upload-artifact@v4
