@@ -207,6 +207,7 @@ void _writeJsonResults(List<Map<String, dynamic>> allResults) {
 
   try {
     final file = File('performance_results.json');
+    file.createSync();
     file.writeAsStringSync(jsonEncoder.convert(jsonResults));
     print('\nResults written to: ${file.absolute.path}');
     
