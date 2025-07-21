@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-
-
 /// The [CalendarProvider] is used to provide the [CalendarController], [EventsController], and other components
 /// to the [CalendarView]'s descendants.
 class CalendarProvider<T extends Object?> extends InheritedWidget {
@@ -32,7 +30,7 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   });
 
   /// The [ViewController] used by the [CalendarController] to controller this view.
-  ViewController get viewController {
+  ViewController<T> get viewController {
     final viewController = calendarController.viewController;
     if (viewController == null) throw ErrorHint('Calendar not attached');
     return viewController;
