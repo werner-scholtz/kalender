@@ -19,8 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.32.0"
       
       - name: Build web demo
         run: flutter build web --release --base-href /kalender/
@@ -34,30 +32,25 @@ jobs:
         shell: bash
         working-directory: dashboards/performance_dashboard
       
-      - name: Deploy to gh-pages
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          
-          # Stash any uncommitted changes
-          git stash --include-untracked || true
-          
-          # Switch to gh-pages branch (delete local if exists, then checkout)
-          git branch -D gh-pages 2>/dev/null || true
-          git fetch origin gh-pages || echo "No remote gh-pages branch yet"
-          git checkout gh-pages || git checkout --orphan gh-pages
-          
-          # Clear existing content (keep .git)
-          find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} + 2>/dev/null || true
-          
-          # Copy web demo files to root
-          cp -r examples/web_demo/build/web/* .
-          
-          # Copy performance dashboard to performance directory
+      - run: git config user.name github-actions
+        shell: bash
+
+      - run: git config user.email github-actions@github.com
+        shell: bash
+
+      - run: |
+          # Add web demo files to root
+          git --work-tree examples/web_demo/build/web add --all
+          # Add performance dashboard files to performance folder
           mkdir -p performance
           cp -r dashboards/performance_dashboard/build/web/* performance/
-          
-          git add --all
-          git commit -m "Automatic deployment by github-actions - $(date)"
-          git push origin gh-pages
+          git add performance/
         shell: bash
+
+      - run: git commit -m "Automatic deployment by github-actions"
+        shell: bash
+        
+      - run: git push origin HEAD:gh-pages --force
+        shell: bash
+
+
