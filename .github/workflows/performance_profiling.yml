@@ -3,9 +3,11 @@ name: Performance Profiling Tests
 on:
   push:
     branches: [main]
+  # TODO: this should not always run for prs.
   pull_request:
     branches: [main]
-  workflow_dispatch: # Allow manual trigger
+  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   performance-profiling:
@@ -44,7 +46,8 @@ jobs:
           flutter drive \
             --driver=test_driver/perf_driver.dart \
             --target=integration_test/performance_profiling_test.dart \
-            --profile
+            --profile \
+            -d linux
 
       - name: List generated files
         working-directory: ./examples/testing
