@@ -244,45 +244,45 @@ void main() {
     testWidgets('freeScroll', (tester) async {
       // TODO: Implement free scroll view configuration test.
 
-      // final viewConfiguration = MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 3);
+      final viewConfiguration = MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 1);
 
-      // await tester.pumpCalendarView(
-      //   controller: controller,
-      //   viewConfiguration: viewConfiguration,
-      //   eventsController: eventsController,
-      //   components: components,
-      //   scheduleComponents: scheduleComponents,
-      // );
+      await tester.pumpCalendarView(
+        controller: controller,
+        viewConfiguration: viewConfiguration,
+        eventsController: eventsController,
+        components: components,
+        scheduleComponents: scheduleComponents,
+      );
 
-      // expect(find.byType(MultiDayBody), findsOneWidget);
+      expect(find.byType(MultiDayBody), findsOneWidget);
 
-      // for (final function in repeatableFunctions) {
-      //   await tester.testDateFunctionExact(
-      //     controller: controller,
-      //     dateTime: start,
-      //     function: function,
-      //     event: firstEvent,
-      //   );
+      for (final function in repeatableFunctions) {
+        await tester.testDateFunctionCallWithin(
+          controller: controller,
+          dateTime: start,
+          function: function,
+          event: firstEvent,
+        );
 
-      //   await tester.testDateFunctionCallWithin(
-      //     controller: controller,
-      //     dateTime: lastDisplayDate,
-      //     function: function,
-      //     event: lastEvent,
-      //   );
+        await tester.testDateFunctionCallWithin(
+          controller: controller,
+          dateTime: lastDisplayDate,
+          function: function,
+          event: lastEvent,
+        );
 
-      //   await tester.testDateFunctionCallWithin(
-      //     controller: controller,
-      //     dateTime: initialDate,
-      //     function: function,
-      //     event: middleEvent,
-      //   );
-      // }
+        await tester.testDateFunctionCallWithin(
+          controller: controller,
+          dateTime: initialDate,
+          function: function,
+          event: middleEvent,
+        );
+      }
 
-      // // Test animating to specific events.
-      // for (final event in eventsToTest) {
-      //   await tester.testAnimateToCalendarEvent(controller, event);
-      // }
+      // Test animating to specific events.
+      for (final event in eventsToTest) {
+        await tester.testAnimateToCalendarEvent(controller, event);
+      }
     });
   });
   group('MonthViewConfiguration', () {
