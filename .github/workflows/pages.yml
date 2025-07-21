@@ -52,5 +52,6 @@ jobs:
         
       - run: git push origin HEAD:gh-pages --force
         shell: bash
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
 
