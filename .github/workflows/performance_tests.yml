@@ -12,17 +12,17 @@ jobs:
   performance-test:
     strategy:
       matrix:
-        os: [ubuntu-latest] # macos-latest, windows-latest
+        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
             platform: linux
             test-device: web-server
-          # - os: macos-latest
-          #   platform: macos
-          #   test-device: macos-desktop
-          # - os: windows-latest
-          #   platform: windows
-          #   test-device: windows-desktop
+          - os: macos-latest
+            platform: macos
+            test-device: macos-desktop
+          - os: windows-latest
+            platform: windows
+            test-device: windows-desktop
 
     runs-on: ${{ matrix.os }}
 
@@ -49,7 +49,6 @@ jobs:
           sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
           sudo apt-get install -y xvfb
-          # Updated package names for recent Ubuntu versions
           sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
           sudo apt-get install -y mesa-common-dev
 
@@ -67,7 +66,7 @@ jobs:
 
       - name: Run performance tests (Linux)
         if: matrix.os == 'ubuntu-latest'
-        timeout-minutes: 20
+        timeout-minutes: 5
         run: |
           cd examples/testing
           echo "Available devices:"
@@ -84,11 +83,11 @@ jobs:
             echo "No test results file found"
           fi
 
-      # - name: Run performance tests (macOS/Windows)
-      #   if: matrix.os != 'ubuntu-latest'
-      #   run: |
-      #     cd examples/testing
-      #     flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
+      - name: Run performance tests (macOS/Windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: |
+          cd examples/testing
+          flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -132,7 +131,6 @@ jobs:
                 repo: context.repo.repo,
                 body: results
               });
-            }
             echo "## $platform Results" >> consolidated_results.md
             if [ -f "performance-json-${platform}-${{ github.run_number }}/performance_summary.json" ]; then
               echo '```json' >> consolidated_results.md
