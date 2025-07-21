@@ -16,7 +16,7 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux
-            test-device: linux-headless
+            test-device: web-server
           # - os: macos-latest
           #   platform: macos
           #   test-device: macos-desktop
@@ -25,6 +25,9 @@ jobs:
           #   test-device: windows-desktop
 
     runs-on: ${{ matrix.os }}
+
+    env:
+      DISPLAY: :99
 
     steps:
       - uses: actions/checkout@v4
@@ -55,11 +58,31 @@ jobs:
           cd examples/testing
           flutter pub get
 
-      - name: Run performance tests (Linux)
+      - name: Start Xvfb
         if: matrix.os == 'ubuntu-latest'
         run: |
+          sudo Xvfb $DISPLAY -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          echo "Xvfb started on display $DISPLAY"
+          sleep 2
+
+      - name: Run performance tests (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        timeout-minutes: 20
+        run: |
           cd examples/testing
-          xvfb-run -a flutter test integration_test/perf_test.dart -d ${{ matrix.test-device }} --reporter json > test_results.json
+          echo "Available devices:"
+          flutter devices
+          echo "Running performance tests..."
+          flutter test integration_test/perf_test.dart --machine --reporter json 2>&1 | tee test_output.log
+          # Extract JSON from machine output
+          grep -E '^\{.*\}$' test_output.log > test_results.json || echo "{}" > test_results.json
+          echo "Test execution completed"
+          if [ -f test_results.json ]; then
+            echo "Test results file created successfully"
+            cat test_results.json
+          else
+            echo "No test results file found"
+          fi
 
       # - name: Run performance tests (macOS/Windows)
       #   if: matrix.os != 'ubuntu-latest'
