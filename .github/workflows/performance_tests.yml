@@ -69,12 +69,12 @@ jobs:
           # Extract JSON from machine output
           grep -E '^\{.*\}$' test_output.log > test_results.json || echo "{}" > test_results.json
           echo "Test execution completed"
-          
+
           # Create performance summary with timestamp
           timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           commit_sha="${{ github.sha }}"
           run_number="${{ github.run_number }}"
-          
+
           cat > performance_summary.json << EOF
           {
             "timestamp": "$timestamp",
@@ -85,9 +85,13 @@ jobs:
             "test_results": $(cat test_results.json)
           }
           EOF
-          
+
           echo "Performance summary created:"
           cat performance_summary.json
+
+          # Store results in dashboard data format
+          mkdir -p ../../dashboard/data
+          cp performance_summary.json "../../dashboard/data/perf_${run_number}_${timestamp}.json"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -105,86 +109,18 @@ jobs:
           name: performance-json-${{ matrix.platform }}-${{ github.run_number }}
           path: examples/testing/performance_*.json
 
-  consolidate-results:
-    needs: performance-test
-    runs-on: ubuntu-latest
-    if: always()
-    permissions:
-      contents: write
-      pages: write
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Consolidate and store results
+      - name: Commit performance data
+        if: github.ref == 'refs/heads/main'
         run: |
-          # Create performance dashboard directory structure
-          mkdir -p performance-dashboard/data
-          
-          # Process each platform result
-          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          
-          for platform in linux; do
-            if [ -f "performance-results-${platform}-${{ github.run_number }}/performance_summary.json" ]; then
-              # Store individual result
-              filename="performance-dashboard/data/perf_${platform}_$(date -u +%Y%m%d_%H%M%S).json"
-              cp "performance-results-${platform}-${{ github.run_number }}/performance_summary.json" "$filename"
-              echo "Stored result: $filename"
-            fi
-          done
-          
-          # Create latest results summary
-          cat > performance-dashboard/data/latest.json << EOF
-          {
-            "lastUpdate": "$timestamp",
-            "runNumber": ${{ github.run_number }},
-            "commitSha": "${{ github.sha }}",
-            "branch": "${{ github.ref_name }}"
-          }
-          EOF
-
-      - name: Checkout gh-pages for dashboard update
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages-content
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update performance dashboard on gh-pages
-        run: |
-          # Copy dashboard files to gh-pages if they don't exist
-          if [ ! -f "gh-pages-content/performance/index.html" ]; then
-            mkdir -p gh-pages-content/performance
-            # Dashboard files will be created in the next step
-          fi
-          
-          # Copy new data to existing gh-pages structure
-          mkdir -p gh-pages-content/performance/data
-          cp -r performance-dashboard/data/* gh-pages-content/performance/data/
-          
-          # Copy dashboard files (will be created below)
-          cp docs/performance/* gh-pages-content/performance/ 2>/dev/null || true
-
-      - name: Create dashboard files in workspace
-        run: |
-          mkdir -p docs/performance
-          # Dashboard files will be added as separate file modifications
-
-      - name: Deploy updated gh-pages
-        run: |
-          cd gh-pages-content
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Update performance dashboard data" || exit 0
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add dashboard/data/
+          git diff --staged --quiet || git commit -m "Add performance data for run ${{ github.run_number }}"
           git push
+
+      - name: Trigger dashboard build
+        if: github.ref == 'refs/heads/main'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: build-dashboard

@@ -22,6 +22,11 @@ jobs:
         run: rm -rf examples/
         shell: bash
         working-directory: ./
+      
+      - name: Remove dashboards folder.
+        run: rm -rf dashboards/
+        shell: bash
+        working-directory: ./
 
       - name: Install dependencies
         run: flutter pub get
