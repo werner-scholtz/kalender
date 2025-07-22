@@ -27,52 +27,24 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.provider<T>();
-    final eventsController = provider.eventsController;
-    final calendarController = provider.calendarController;
-
-    final bodyProvider = context.bodyProvider<T>();
-    final callbacks = bodyProvider.callbacks;
-    final interaction = bodyProvider.interaction;
-
+    final calendarController = context.calendarController<T>();
     assert(
       calendarController.viewController is ScheduleViewController<T>,
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
-
     final viewController = calendarController.viewController as ScheduleViewController<T>;
-    final components = provider.components?.scheduleComponents ?? ScheduleComponents();
-    final styles = provider.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
-    final tileComponents = bodyProvider.tileComponents as ScheduleTileComponents<T>;
-
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
+        eventsController: context.eventsController<T>(),
         viewController: viewController,
-        callbacks: callbacks,
-        tileComponents: tileComponents,
-        styles: styles,
-        interaction: interaction,
-        components: components,
         dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
         currentPage: 0,
         paginated: false,
         configuration: configuration,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
-      return PaginatedSchedule<T>(
-        eventsController: eventsController,
-        calendarController: calendarController,
-        viewController: viewController,
-        callbacks: callbacks,
-        tileComponents: tileComponents,
-        styles: styles,
-        interaction: interaction,
-        components: components,
-        configuration: configuration,
-      );
+      return PaginatedSchedule<T>(viewController: viewController, configuration: configuration);
     } else {
       throw Exception(
         'The view controller is not a $PaginatedScheduleViewController or $ContinuousScheduleViewController',
@@ -90,29 +62,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 /// The pagination allows users to swipe between different time periods
 /// (e.g., weeks, months) in the schedule view.
 class PaginatedSchedule<T extends Object?> extends StatefulWidget {
-  /// The controller managing the events in the schedule.
-  final EventsController<T> eventsController;
-
-  /// The controller managing the calendar state.
-  final CalendarController<T> calendarController;
-
   /// The controller specifically for paginated schedule view.
   final PaginatedScheduleViewController<T> viewController;
-
-  /// Callbacks for handling user interactions.
-  final CalendarCallbacks<T>? callbacks;
-
-  /// Components for customizing the appearance of schedule tiles.
-  final ScheduleTileComponents<T> tileComponents;
-
-  /// Notifier for tracking user interaction state.
-  final ValueNotifier<CalendarInteraction> interaction;
-
-  /// Styling configuration for schedule components.
-  final ScheduleComponentStyles styles;
-
-  /// Component builders for schedule elements.
-  final ScheduleComponents components;
 
   /// Configuration for schedule body behavior.
   final ScheduleBodyConfiguration configuration;
@@ -120,14 +71,7 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   /// Creates a [PaginatedSchedule].
   const PaginatedSchedule({
     super.key,
-    required this.eventsController,
-    required this.calendarController,
     required this.viewController,
-    required this.callbacks,
-    required this.tileComponents,
-    required this.styles,
-    required this.interaction,
-    required this.components,
     required this.configuration,
   });
 
@@ -145,18 +89,12 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
         final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
-        widget.callbacks?.onPageChanged?.call(range);
+        context.callbacks<T>()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
-          eventsController: widget.eventsController,
-          calendarController: widget.calendarController,
+          eventsController: context.eventsController<T>(),
           viewController: widget.viewController,
-          callbacks: widget.callbacks,
-          tileComponents: widget.tileComponents,
-          styles: widget.styles,
-          interaction: widget.interaction,
-          components: widget.components,
           dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
           paginated: true,
@@ -183,29 +121,11 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   /// The controller managing the events displayed in this list.
   final EventsController<T> eventsController;
 
-  /// The main calendar controller managing overall state.
-  final CalendarController<T> calendarController;
-
   /// The schedule view controller for this specific view.
   final ScheduleViewController<T> viewController;
 
   /// Configuration options for the schedule body behavior.
   final ScheduleBodyConfiguration configuration;
-
-  /// Callbacks for handling user interactions.
-  final CalendarCallbacks<T>? callbacks;
-
-  /// Components for customizing tile appearance and behavior.
-  final ScheduleTileComponents<T> tileComponents;
-
-  /// Notifier for tracking current user interactions.
-  final ValueNotifier<CalendarInteraction> interaction;
-
-  /// Styling configuration for schedule components.
-  final ScheduleComponentStyles styles;
-
-  /// Component builders for various schedule elements.
-  final ScheduleComponents components;
 
   /// The date range to display in this list.
   final DateTimeRange dateTimeRange;
@@ -220,13 +140,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   const SchedulePositionList({
     super.key,
     required this.eventsController,
-    required this.calendarController,
     required this.viewController,
-    required this.callbacks,
-    required this.tileComponents,
-    required this.styles,
-    required this.interaction,
-    required this.components,
     required this.dateTimeRange,
     required this.currentPage,
     required this.paginated,
@@ -246,12 +160,11 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   // Convenience getters for accessing widget properties
   ScheduleViewController<T> get viewController => widget.viewController;
   EventsController<T> get eventsController => widget.eventsController;
-  CalendarController<T> get calendarController => widget.calendarController;
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  ScheduleTileComponents<T> get tileComponents => widget.tileComponents;
-  ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
-  ScheduleComponentStyles get styles => widget.styles;
-  ScheduleComponents get components => widget.components;
+  CalendarController<T> get calendarController => context.calendarController<T>();
+  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
+  ScheduleComponentStyles get styles =>
+      context.components<T>()?.scheduleComponentStyles ?? const ScheduleComponentStyles();
+  ScheduleComponents get components => context.components<T>()?.scheduleComponents ?? ScheduleComponents();
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   /// Controller for programmatically scrolling to specific items in the list.
@@ -439,8 +352,9 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
+            late final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
             if (item is MonthItem) {
-              final locale = CalendarProvider.single(context).locale;
+              final locale = context.locale;
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
@@ -448,13 +362,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                 leading: leading,
                 title: tileComponents.emptyItemBuilder?.call(date.asLocal.dayRange),
               );
-
-              return highlightBuilder(
-                date,
-                viewController.highlightedDateTimeRange,
-                highlightStyle,
-                child,
-              );
+              return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
             } else if (item is EventItem) {
               final showDate = item.isFirst;
               final event = eventsController.byId(item.eventId)!;
@@ -468,16 +376,11 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   tileComponents: tileComponents,
                   event: event,
                   dateTimeRange: date.dayRange,
-                  interaction: interaction,
+                  interaction: context.interaction,
                 ),
               );
 
-              return highlightBuilder(
-                date,
-                viewController.highlightedDateTimeRange,
-                highlightStyle,
-                child,
-              );
+              return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
             } else {
               throw Exception('Unknown item type: ${item.runtimeType}');
             }

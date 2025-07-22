@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The hour lines builder.
 ///
@@ -49,6 +50,16 @@ class HourLines extends StatelessWidget {
   const HourLines({super.key, required this.timeOfDayRange, required this.heightPerMinute, this.style});
   static HourLines builder(double heightPerMinute, TimeOfDayRange timeOfDayRange, HourLinesStyle? style) {
     return HourLines(heightPerMinute: heightPerMinute, timeOfDayRange: timeOfDayRange, style: style);
+  }
+
+  static Widget fromContext<T extends Object?>(
+    BuildContext context,
+    TimeOfDayRange timeOfDayRange, {
+    HourLinesStyle? style,
+  }) {
+    final hourLinesStyle = context.components<T>()?.multiDayComponentStyles?.bodyStyles?.hourLinesStyle;
+    final components = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    return components.hourLines.call(context.heightPerMinute, timeOfDayRange, hourLinesStyle);
   }
 
   @override

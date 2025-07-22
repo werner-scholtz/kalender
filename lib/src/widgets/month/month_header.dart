@@ -10,7 +10,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final calendarController = provider.calendarController;
+    final calendarController = context.calendarController<T>();
 
     assert(
       calendarController.viewController is MonthViewController<T>,
@@ -18,7 +18,6 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
     );
 
     final viewController = calendarController.viewController as MonthViewController<T>;
-
     final calendarComponents = provider.components;
     final styles = calendarComponents?.monthComponentStyles?.headerStyles;
     final components = calendarComponents?.monthComponents?.headerComponents ?? const MonthHeaderComponents();

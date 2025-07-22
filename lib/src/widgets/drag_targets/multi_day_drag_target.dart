@@ -4,16 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
 ///
 /// The [MultiDayDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> calendarController;
-  final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
   final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
   final double dayWidth;
@@ -26,10 +23,6 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
   const MultiDayDragTarget({
     super.key,
-    required this.eventsController,
-    required this.calendarController,
-    required this.callbacks,
-    required this.tileComponents,
     required this.pageTriggerSetup,
     required this.visibleDateTimeRange,
     required this.dayWidth,
@@ -46,20 +39,20 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> with DragTargetUtilities<T> {
   @override
-  EventsController<T> get eventsController => widget.eventsController;
+  EventsController<T> get eventsController => context.eventsController<T>();
   @override
-  CalendarController<T> get controller => widget.calendarController;
+  CalendarController<T> get controller => context.calendarController<T>();
   @override
   double get dayWidth => widget.dayWidth;
   @override
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
   @override
   List<DateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController<T> get viewController => controller.viewController!;
-  TileComponents<T> get tileComponents => widget.tileComponents;
+  TileComponents<T> get tileComponents => context.tileComponents<T>();
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.pageTriggerSetup;
 

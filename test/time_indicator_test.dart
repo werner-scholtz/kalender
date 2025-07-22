@@ -10,6 +10,7 @@ void main() {
     final key = UniqueKey();
     final now = DateTime.now().asUtc.startOfWeek();
     final range = DateTimeRange(start: now, end: now.endOfWeek());
+    final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range);
 
     for (final (index, date) in range.dates().indexed) {
       testWidgets('TimeIndicatorPositioner for date index: ($index)', (tester) async {
@@ -20,17 +21,15 @@ void main() {
               height: 100,
               child: Stack(
                 children: [
-                  TimeIndicatorPositioner(
+                  PositionedTimeIndicator(
                     viewController: MultiDayViewController(
-                      viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+                      viewConfiguration: viewConfiguration,
                       visibleDateTimeRange: ValueNotifier(range),
                       visibleEvents: ValueNotifier(<CalendarEvent>{}),
                     ),
-                    dayWidth: 100,
-                    pageWidth: 700,
                     initialPage: 0,
                     dateOverride: date,
-                    child: SizedBox(key: key),
+                    childOverride: SizedBox(key: key),
                   ),
                 ],
               ),
