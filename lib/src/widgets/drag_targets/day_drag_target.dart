@@ -10,6 +10,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class DayDragTarget<T extends Object?> extends StatefulWidget {
+  final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
   final MultiDayBodyConfiguration configuration;
 
@@ -22,6 +23,7 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   /// Creates a [DayDragTarget].
   const DayDragTarget({
     super.key,
+    required this.controller,
     required this.viewController,
     required this.configuration,
     required this.pageWidth,
@@ -40,7 +42,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   @override
-  CalendarController<T> get controller => context.calendarController<T>();
+  CalendarController<T> get controller => widget.controller;
 
   @override
   List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();

@@ -30,7 +30,7 @@ void main() {
       final calendarController = CalendarController(initialDate: start);
 
       /// A list of different view configurations to test.
-      final viewconfigurations = [
+      final viewConfigurations = [
         MultiDayViewConfiguration.singleDay(
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
@@ -68,7 +68,7 @@ void main() {
 
       tearDown(eventsController.clearEvents);
 
-      for (final viewConfiguration in viewconfigurations) {
+      for (final viewConfiguration in viewConfigurations) {
         testWidgets('Event resize', (tester) async {
           await tester.pumpWidget(
             wrapWithMaterialApp(

@@ -162,6 +162,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     return SizedBox(
                       height: pageHeight,
                       child: DayDragTarget<T>(
+                        controller: context.calendarController<T>(),
                         viewController: viewController,
                         configuration: configuration,
                         pageWidth: pageWidth,
