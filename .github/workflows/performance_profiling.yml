@@ -11,7 +11,7 @@ on:
 
 jobs:
   performance-profiling:
-    if: ${{ github.event.label.name == 'profile' }}
+    if: contains(github.event.pull_request.labels.*.name, 'profile')
     runs-on: ubuntu-latest
 
     env:
