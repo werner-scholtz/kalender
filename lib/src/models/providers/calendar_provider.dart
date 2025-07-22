@@ -9,12 +9,7 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   /// Components used by the CalendarView.
   final CalendarComponents<T>? components;
 
-  const CalendarProvider({
-    required this.callbacks,
-    required this.components,
-    required super.child,
-    super.key,
-  });
+  const CalendarProvider({required this.callbacks, required this.components, required super.child, super.key});
 
   /// Finds the [CalendarProvider] of type [T] in the widget tree, or null if not found.
   static CalendarProvider<T>? maybeOf<T>(BuildContext context) {
