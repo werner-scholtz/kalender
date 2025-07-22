@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// The [CalendarProvider] is used to provide the [CalendarController], [EventsController], and other components
-/// to the [CalendarView]'s descendants.
+/// The [CalendarProvider] is used to provide the [CalendarCallbacks] and [CalendarComponents] to the [CalendarView]'s descendants.
 class CalendarProvider<T extends Object?> extends InheritedWidget {
   /// The [CalendarCallbacks] that will be used by the Calendar.
   final CalendarCallbacks<T>? callbacks;
@@ -35,12 +34,9 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   }
 }
 
+/// The [EventsControllerProvider] is used to provide the [EventsController] to the [CalendarView]'s descendants.
 class EventsControllerProvider<T extends Object?> extends InheritedNotifier<EventsController<T>> {
-  const EventsControllerProvider({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
+  const EventsControllerProvider({super.key, required super.notifier, required super.child});
 
   /// Gets the [EventsControllerProvider] of type [T] from the context.
   static EventsController<T> of<T>(BuildContext context) {
@@ -50,12 +46,9 @@ class EventsControllerProvider<T extends Object?> extends InheritedNotifier<Even
   }
 }
 
+/// The [CalendarControllerProvider] is used to provide the [CalendarController] to the [CalendarView]'s descendants.
 class CalendarControllerProvider<T extends Object?> extends InheritedNotifier<CalendarController<T>> {
-  const CalendarControllerProvider({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
+  const CalendarControllerProvider({super.key, required super.notifier, required super.child});
 
   /// Gets the [CalendarControllerProvider] of type [T] from the context.
   static CalendarController<T> of<T>(BuildContext context) {
@@ -71,11 +64,8 @@ class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.
   final dynamic locale;
 
-  const LocaleProvider({
-    super.key,
-    required this.locale,
-    required super.child,
-  });
+  /// Creates a [LocaleProvider] with the specified locale.
+  const LocaleProvider({super.key, required this.locale, required super.child});
 
   /// Gets the [LocaleProvider] of type [T] from the context.
   static dynamic of(BuildContext context) {
@@ -90,15 +80,13 @@ class LocaleProvider extends InheritedWidget {
   }
 }
 
+/// The [Callbacks] widget provides the [CalendarCallbacks] to the widget tree.
 class Callbacks<T extends Object?> extends InheritedWidget {
   /// The [CalendarCallbacks] that will be used by the Calendar.
   final CalendarCallbacks<T>? callbacks;
 
-  const Callbacks({
-    super.key,
-    required this.callbacks,
-    required super.child,
-  });
+  /// Creates a [Callbacks] with the specified callbacks.
+  const Callbacks({super.key, required this.callbacks, required super.child});
 
   @override
   bool updateShouldNotify(covariant Callbacks<T> oldWidget) {
@@ -113,15 +101,13 @@ class Callbacks<T extends Object?> extends InheritedWidget {
   }
 }
 
+/// The [TileComponentProvider] provides the [TileComponents] to the widget tree.
 class TileComponentProvider<T extends Object?> extends InheritedWidget {
   /// The tile components used by the Calendar.
   final TileComponents<T> tileComponents;
 
-  const TileComponentProvider({
-    super.key,
-    required this.tileComponents,
-    required super.child,
-  });
+  /// Creates a [TileComponentProvider] with the specified tile components.
+  const TileComponentProvider({super.key, required this.tileComponents, required super.child});
 
   @override
   bool updateShouldNotify(covariant TileComponentProvider<T> oldWidget) {
@@ -136,12 +122,9 @@ class TileComponentProvider<T extends Object?> extends InheritedWidget {
   }
 }
 
+/// The [Interaction] widget provides the [CalendarInteraction] to the widget tree.
 class Interaction extends InheritedNotifier<ValueNotifier<CalendarInteraction>> {
-  const Interaction({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
+  const Interaction({super.key, required super.notifier, required super.child});
 
   /// Gets the [Interaction] from the context.
   static CalendarInteraction of(BuildContext context) {
@@ -151,12 +134,9 @@ class Interaction extends InheritedNotifier<ValueNotifier<CalendarInteraction>> 
   }
 }
 
+/// The [Snapping] widget provides the [CalendarSnapping] to the widget tree.
 class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
-  const Snapping({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
+  const Snapping({super.key, required super.notifier, required super.child});
 
   /// Gets the [Snapping] from the context.
   static CalendarSnapping of(BuildContext context) {
@@ -172,12 +152,9 @@ class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
   }
 }
 
+/// The [HeightPerMinuteProvider] provides the height per minute to the widget tree.
 class HeightPerMinuteProvider extends InheritedNotifier<ValueNotifier<double>> {
-  const HeightPerMinuteProvider({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
+  const HeightPerMinuteProvider({super.key, required super.notifier, required super.child});
 
   /// Gets the [HeightPerMinuteProvider] of type [T] from the context.
   static double of(BuildContext context) {
@@ -187,6 +164,7 @@ class HeightPerMinuteProvider extends InheritedNotifier<ValueNotifier<double>> {
   }
 }
 
+/// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Returns the [CalendarProvider] of type [T] from the context.
   CalendarProvider<T> provider<T extends Object?>() => CalendarProvider.of<T>(this);
