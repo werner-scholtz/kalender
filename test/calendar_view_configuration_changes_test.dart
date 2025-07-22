@@ -4,7 +4,6 @@ import 'package:kalender/kalender.dart';
 
 import 'utilities.dart';
 
-/// TODO: redo tests.
 void main() {
   group('CalendarView Configuration Changes', () {
     late EventsController eventsController;
