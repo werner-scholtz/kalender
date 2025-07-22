@@ -196,6 +196,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
         return LayoutId(
           id: id,
+          key: MultiDayEventTile.tileKey(id),
           child: Padding(
             padding: widget.eventPadding ?? const EdgeInsets.all(0),
             child: MultiDayEventTile<T>(

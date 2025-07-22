@@ -8,20 +8,8 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 ///
 /// The tile widget is rendered below the resize handles.
 class DayEventTile<T extends Object?> extends EventTile<T> {
-  /// A key used to identify the tile.
-  static ValueKey<String> getKey(int eventId) => ValueKey('DayEventTile-$eventId');
-
-  /// A key used to identify the top resize handle.
-  static const topResizeDraggable = ValueKey('TopResizeDraggable');
-
-  /// A key used to identify the bottom resize handle.
-  static const bottomResizeDraggable = ValueKey('BottomResizeDraggable');
-
-  /// A key used to identify the reschedule draggable.
-  static const rescheduleDraggable = ValueKey('RescheduleDraggable');
-
   const DayEventTile({
-    required super.key,
+    super.key,
     required super.controller,
     required super.eventsController,
     required super.callbacks,
@@ -31,16 +19,20 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
     required super.interaction,
   });
 
+  /// A key used to identify the tile.
+  static Key tileKey(int eventId) => Key('DayEventTile-$eventId');
+
+  /// A key used to identify the top resize handle.
+  static Key topResizeDraggableKey(int eventId) => Key('DayEventTile-StartResizeDraggable-$eventId');
+
+  /// A key used to identify the bottom resize handle.
+  static Key bottomResizeDraggableKey(int eventId) => Key('DayEventTile-BottomResizeDraggable-$eventId');
+
+  /// A key used to identify the reschedule draggable.
+  static Key rescheduleDraggableKey(int eventId) => Key('DayEventTile-RescheduleDraggable-$eventId');
+
   @override
   Widget build(BuildContext context) {
-    /// TODO: CHeck  that removing interaction does not break anything.
-    // return ValueListenableBuilder(
-    //   valueListenable: interaction,
-    //   builder: (context, interaction, child) {
-
-    //   },
-    // );
-
     late final topResizeDetector = ValueListenableBuilder(
       valueListenable: selectedEvent,
       builder: (context, value, child) {
@@ -51,7 +43,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
         }
 
         return Draggable<Resize<T>>(
-          key: topResizeDraggable,
+          key: topResizeDraggableKey(event.id),
           data: resizeEvent(ResizeDirection.top),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -71,7 +63,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
         }
 
         return Draggable<Resize<T>>(
-          key: bottomResizeDraggable,
+          key: bottomResizeDraggableKey(event.id),
           data: resizeEvent(ResizeDirection.bottom),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -94,7 +86,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
     final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
     late final draggable = isMobileDevice
         ? LongPressDraggable<Reschedule<T>>(
-            key: rescheduleDraggable,
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
@@ -104,7 +96,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           )
         : Draggable<Reschedule<T>>(
-            key: rescheduleDraggable,
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
