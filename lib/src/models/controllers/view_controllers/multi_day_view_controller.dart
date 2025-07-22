@@ -36,7 +36,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final timeDifference = initialTimeOfDay.difference(dayStart);
     final initialScrollOffset = timeDifference.inMinutes * (heightPerMinute.value);
     scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
-
+  
     visibleEvents.value = {};
 
     // This listener will sync the headerController with the pageController.
