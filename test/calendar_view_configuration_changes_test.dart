@@ -19,10 +19,13 @@ void main() {
 
     group('View configuration changes with selectedDate', () {
       testWidgets('should use selectedDate when provided during view configuration change', (tester) async {
+        final calendarViewKey = GlobalKey();
         final monthConfig = MonthViewConfiguration.singleMonth(displayRange: calendarRange);
+
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
+            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: monthConfig,
@@ -39,6 +42,7 @@ void main() {
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
+            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: dailyConfig,

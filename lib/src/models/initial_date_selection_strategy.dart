@@ -71,6 +71,22 @@ DateTime kDefaultToDaily({
   }
 }
 
+_MultiDayViewType _getMultiDayViewType(MultiDayViewConfiguration config) {
+  return switch (config.type) {
+    MultiDayViewType.singleDay => _MultiDayViewType.daily,
+    MultiDayViewType.week => _MultiDayViewType.weekly,
+    MultiDayViewType.workWeek => _MultiDayViewType.weekly,
+    MultiDayViewType.custom => config.numberOfDays == 1 ? _MultiDayViewType.daily : _MultiDayViewType.weekly,
+    MultiDayViewType.freeScroll => _MultiDayViewType.weekly,
+  };
+}
+
+/// Enumeration of multi-day view types for easier pattern matching
+enum _MultiDayViewType {
+  daily,
+  weekly,
+}
+
 /// Default implementation for transitioning to Schedule view
 DateTime kDefaultToSchedule({
   required ViewController oldViewController,
@@ -86,43 +102,20 @@ DateTime kDefaultInitialDateSelectionStrategy({
   required ViewConfiguration newViewConfiguration,
 }) {
   return switch (newViewConfiguration) {
-    MonthViewConfiguration _ => kDefaultToMonthly(
-        oldViewController: oldViewController,
-        newViewConfiguration: newViewConfiguration,
-      ),
-    final MultiDayViewConfiguration multiDayConfig => switch (_getMultiDayViewType(multiDayConfig)) {
-        _MultiDayViewType.weekly => kDefaultToWeekly(
-            oldViewController: oldViewController,
-            newViewConfiguration: newViewConfiguration,
-          ),
-        _MultiDayViewType.daily => kDefaultToDaily(
-            oldViewController: oldViewController,
-            newViewConfiguration: newViewConfiguration,
-          ),
+    MonthViewConfiguration _ =>
+      kDefaultToMonthly(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+    ScheduleViewConfiguration _ =>
+      kDefaultToSchedule(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+    final MultiDayViewConfiguration viewConfig => switch (viewConfig.type) {
+        MultiDayViewType.custom when viewConfig.numberOfDays == 1 =>
+          kDefaultToDaily(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+        MultiDayViewType.freeScroll when viewConfig.numberOfDays == 1 =>
+          kDefaultToDaily(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+        MultiDayViewType.singleDay =>
+          kDefaultToDaily(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+        _ => kDefaultToWeekly(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
       },
-    ScheduleViewConfiguration _ => kDefaultToSchedule(
-        oldViewController: oldViewController,
-        newViewConfiguration: newViewConfiguration,
-      ),
-    _ => kDefaultToDaily(
-        oldViewController: oldViewController,
-        newViewConfiguration: newViewConfiguration,
-      ),
+    // kDefaultToWeekly(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
+    _ => kDefaultToDaily(oldViewController: oldViewController, newViewConfiguration: newViewConfiguration),
   };
-}
-
-_MultiDayViewType _getMultiDayViewType(MultiDayViewConfiguration config) {
-  return switch (config.type) {
-    MultiDayViewType.singleDay => _MultiDayViewType.daily,
-    MultiDayViewType.week => _MultiDayViewType.weekly,
-    MultiDayViewType.workWeek => _MultiDayViewType.weekly,
-    MultiDayViewType.custom => config.numberOfDays == 1 ? _MultiDayViewType.daily : _MultiDayViewType.weekly,
-    MultiDayViewType.freeScroll => _MultiDayViewType.weekly,
-  };
-}
-
-/// Enumeration of multi-day view types for easier pattern matching
-enum _MultiDayViewType {
-  daily,
-  weekly,
 }
