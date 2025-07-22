@@ -120,7 +120,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
             return Stack(
               children: [
-                Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
+                Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
                 ConstrainedBox(constraints: constraints, child: multiDayEvents),
                 Positioned.fill(child: multiDayDragTarget),
               ],
@@ -208,7 +208,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                 if (configuration.showTiles)
                   Stack(
                     children: [
-                      Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
+                      Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
                       ConstrainedBox(constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],
@@ -305,7 +305,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                 if (configuration.showTiles)
                   Stack(
                     children: [
-                      Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
+                      Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
                       ConstrainedBox(constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],

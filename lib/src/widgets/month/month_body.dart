@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 ///
 /// The month body's content:
 ///   - Static content [MonthGrid].
-///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayEventDraggableWidgets].
+///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayDraggable].
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? configuration;
@@ -82,7 +82,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   rightPageTrigger: components.rightTriggerBuilder,
                 );
 
-                final draggable = MultiDayEventDraggableWidgets<T>(
+                final draggable = MultiDayDraggable<T>(
                   visibleDateTimeRange: visibleDateTimeRange,
                 );
 

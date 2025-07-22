@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 /// 1. The content:
 ///   - Static content such as [HourLines] and [_TimeLine].
 ///   - Dynamic content such as the [PageView] which displays:
-///     [DaySeparator], [DayEventDraggableWidgets], [DayEventsWidget] and the [TimeIndicator]
+///     [DaySeparator], [DayDraggable], [DayEventsWidget] and the [TimeIndicator]
 ///
 /// 2. The [DayDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
@@ -112,7 +112,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                     ),
                                   ),
                                   Positioned.fill(
-                                    child: DayEventDraggableWidgets<T>(
+                                    child: DayDraggable<T>(
                                       visibleDateTimeRange: visibleRange,
                                       timeOfDayRange: timeOfDayRange,
                                       pageHeight: pageHeight,

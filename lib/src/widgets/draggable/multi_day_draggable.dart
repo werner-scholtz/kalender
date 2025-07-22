@@ -4,15 +4,20 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
-class MultiDayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
+class MultiDayDraggable<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
-  const MultiDayEventDraggableWidgets({super.key, required this.visibleDateTimeRange});
+  const MultiDayDraggable({super.key, required this.visibleDateTimeRange});
   @override
-  State<MultiDayEventDraggableWidgets<T>> createState() => _MultiDayEventDraggableWidgetsState<T>();
+  State<MultiDayDraggable<T>> createState() => _MultiDayDraggableState<T>();
 }
 
-class _MultiDayEventDraggableWidgetsState<T extends Object?> extends State<MultiDayEventDraggableWidgets<T>>
-    with NewDraggableWidget<T> {
+class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable<T>> with NewDraggableWidget<T> {
+  @override
+  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
+
+  @override
+  CalendarController<T> get controller => context.calendarController<T>();
+
   @override
   Widget build(BuildContext context) {
     var localPosition = Offset.zero;
@@ -67,10 +72,4 @@ class _MultiDayEventDraggableWidgetsState<T extends Object?> extends State<Multi
     final end = start.endOfDay;
     return DateTimeRange(start: start, end: end);
   }
-
-  @override
-  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
-
-  @override
-  CalendarController<T> get controller => context.calendarController<T>();
 }

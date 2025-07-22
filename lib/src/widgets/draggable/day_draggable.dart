@@ -7,12 +7,12 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// This widget generates draggable widgets for each visible day.
 /// - These draggable widgets are used to create new events.
 ///
-class DayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
+class DayDraggable<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double pageHeight;
 
-  const DayEventDraggableWidgets({
+  const DayDraggable({
     super.key,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
@@ -20,11 +20,10 @@ class DayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<DayEventDraggableWidgets<T>> createState() => _DayEventDraggableWidgetsState<T>();
+  State<DayDraggable<T>> createState() => _DayDraggableState<T>();
 }
 
-class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDraggableWidgets<T>>
-    with NewDraggableWidget<T> {
+class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with NewDraggableWidget<T> {
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
 
