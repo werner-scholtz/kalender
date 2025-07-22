@@ -186,7 +186,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
                 callbacks: context.callbacks<T>(),
                 tileComponents: context.tileComponents<T>(),
                 dateTimeRange: date.dayRange,
-                interaction: context.interaction<T>(),
+                interaction: context.interaction,
               ),
             ),
           )

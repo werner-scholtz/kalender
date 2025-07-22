@@ -46,8 +46,7 @@ class WeekDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final padding = style?.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.bodySmall;
-    final locale = CalendarProvider.single(context).locale;
-    final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(locale);
+    final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
     return Padding(
       padding: padding,
       child: Center(

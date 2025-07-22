@@ -10,7 +10,7 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final calendarController = provider.calendarController;
+    final calendarController = context.calendarController<T>();
 
     assert(
       calendarController.viewController is MonthViewController<T>,

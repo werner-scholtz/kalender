@@ -28,12 +28,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final eventsController = provider.eventsController;
-    final calendarController = provider.calendarController;
-
-    final bodyProvider = context.bodyProvider<T>();
-    final callbacks = bodyProvider.callbacks;
-    final interaction = bodyProvider.interaction;
+    final eventsController = context.eventsController<T>();
+    final calendarController = context.calendarController<T>();
 
     assert(
       calendarController.viewController is ScheduleViewController<T>,
@@ -44,17 +40,15 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final components = provider.components?.scheduleComponents ?? ScheduleComponents();
     final styles = provider.components?.scheduleComponentStyles ?? const ScheduleComponentStyles();
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
-    final tileComponents = bodyProvider.tileComponents as ScheduleTileComponents<T>;
+    final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
 
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
         eventsController: eventsController,
         calendarController: calendarController,
         viewController: viewController,
-        callbacks: callbacks,
-        tileComponents: tileComponents,
+        callbacks: context.callbacks<T>(),
         styles: styles,
-        interaction: interaction,
         components: components,
         dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
         currentPage: 0,
@@ -66,10 +60,9 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         eventsController: eventsController,
         calendarController: calendarController,
         viewController: viewController,
-        callbacks: callbacks,
+        callbacks: context.callbacks<T>(),
         tileComponents: tileComponents,
         styles: styles,
-        interaction: interaction,
         components: components,
         configuration: configuration,
       );
@@ -105,9 +98,6 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   /// Components for customizing the appearance of schedule tiles.
   final ScheduleTileComponents<T> tileComponents;
 
-  /// Notifier for tracking user interaction state.
-  final ValueNotifier<CalendarInteraction> interaction;
-
   /// Styling configuration for schedule components.
   final ScheduleComponentStyles styles;
 
@@ -126,7 +116,6 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
     required this.callbacks,
     required this.tileComponents,
     required this.styles,
-    required this.interaction,
     required this.components,
     required this.configuration,
   });
@@ -153,9 +142,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           calendarController: widget.calendarController,
           viewController: widget.viewController,
           callbacks: widget.callbacks,
-          tileComponents: widget.tileComponents,
           styles: widget.styles,
-          interaction: widget.interaction,
           components: widget.components,
           dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
           currentPage: index,
@@ -195,12 +182,6 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   /// Callbacks for handling user interactions.
   final CalendarCallbacks<T>? callbacks;
 
-  /// Components for customizing tile appearance and behavior.
-  final ScheduleTileComponents<T> tileComponents;
-
-  /// Notifier for tracking current user interactions.
-  final ValueNotifier<CalendarInteraction> interaction;
-
   /// Styling configuration for schedule components.
   final ScheduleComponentStyles styles;
 
@@ -223,9 +204,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.calendarController,
     required this.viewController,
     required this.callbacks,
-    required this.tileComponents,
     required this.styles,
-    required this.interaction,
     required this.components,
     required this.dateTimeRange,
     required this.currentPage,
@@ -248,8 +227,6 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => widget.calendarController;
   CalendarCallbacks<T>? get callbacks => widget.callbacks;
-  ScheduleTileComponents<T> get tileComponents => widget.tileComponents;
-  ValueNotifier<CalendarInteraction> get interaction => widget.interaction;
   ScheduleComponentStyles get styles => widget.styles;
   ScheduleComponents get components => widget.components;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
@@ -439,8 +416,9 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
+            late final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
             if (item is MonthItem) {
-              final locale = CalendarProvider.single(context).locale;
+              final locale = context.locale;
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
@@ -468,7 +446,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   tileComponents: tileComponents,
                   event: event,
                   dateTimeRange: date.dayRange,
-                  interaction: interaction,
+                  interaction: context.interaction,
                 ),
               );
 

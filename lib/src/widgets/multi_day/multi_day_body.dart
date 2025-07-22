@@ -57,11 +57,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final styles = components?.multiDayComponentStyles?.bodyStyles;
     final bodyComponents = components?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
 
-    final bodyProvider = context.bodyProvider<T>();
-    final tileComponents = bodyProvider.tileComponents;
-    final interaction = bodyProvider.interaction;
-    final snapping = bodyProvider.snapping;
-
     return ValueListenableBuilder(
       valueListenable: viewController.heightPerMinute,
       builder: (context, heightPerMinute, child) {
@@ -151,8 +146,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                         dayWidth: dayWidth,
                                         pageHeight: pageHeight,
                                         heightPerMinute: heightPerMinute,
-                                        interaction: interaction,
-                                        snapping: snapping,
                                       );
 
                                       return Stack(
@@ -206,7 +199,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             viewController: viewController,
                             scrollController: viewController.scrollController,
                             callbacks: callbacks,
-                            tileComponents: tileComponents,
+                            tileComponents: context.tileComponents<T>(),
                             bodyConfiguration: bodyConfiguration,
                             timeOfDayRange: timeOfDayRange,
                             pageWidth: pageWidth,
@@ -217,7 +210,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             rightPageTrigger: bodyComponents.rightTriggerBuilder,
                             topScrollTrigger: bodyComponents.topTriggerBuilder,
                             bottomScrollTrigger: bodyComponents.bottomTriggerBuilder,
-                            snapping: snapping,
+                            snapping: context.snappingNotifier,
                           ),
                         );
                       },

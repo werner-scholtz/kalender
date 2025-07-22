@@ -18,14 +18,14 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   /// The components and styles used by the calendar.
   ///
-  /// Components: 
+  /// Components:
   /// - [MultiDayComponents]
   /// - [MonthComponents]
   /// - [ScheduleComponents]
-  /// 
-  /// Styles: 
+  ///
+  /// Styles:
   /// - [MultiDayComponentStyles]
-  /// - [MonthComponentStyles], 
+  /// - [MonthComponentStyles],
   /// - [ScheduleComponentStyles]
   final CalendarComponents<T>? components;
 
@@ -57,10 +57,19 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<CalendarView<T>> createState() => _CalendarViewState<T>();
+  State<CalendarView<T>> createState() => CalendarViewState<T>();
+
+  /// Finds the [CalendarViewState] of type [T] in the widget tree.
+  static CalendarViewState<T> of<T extends Object?>(BuildContext context) {
+    final state = context.findAncestorStateOfType<CalendarViewState<T>>();
+    if (state == null) {
+      throw ErrorHint('No CalendarViewState found in the widget tree.');
+    }
+    return state;
+  }
 }
 
-class _CalendarViewState<T> extends State<CalendarView<T>> {
+class CalendarViewState<T> extends State<CalendarView<T>> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController<T> _viewController;
   late dynamic _locale = widget.locale;
@@ -128,7 +137,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
           initialDate: initialDate ?? widget.calendarController.initialDate,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
-          viewConfiguration: viewConfiguration as MonthViewConfiguration, 
+          viewConfiguration: viewConfiguration as MonthViewConfiguration,
           visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
@@ -156,26 +165,29 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     final bodyId = widget.body == null ? null : CalendarLayoutDelegate.body;
     final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
 
-    return CalendarProvider<T>(
-      eventsController: widget.eventsController,
-      calendarController: widget.calendarController,
-      callbacks: widget.callbacks,
-      components: widget.components,
+    return LocaleProvider(
       locale: _locale,
-      child: CustomMultiChildLayout(
-        delegate: CalendarLayoutDelegate(headerId, bodyId),
-        children: [
-          if (bodyId != null)
-            LayoutId(
-              id: bodyId,
-              child: widget.body!,
-            ),
-          if (headerId != null)
-            LayoutId(
-              id: headerId,
-              child: widget.header!,
-            ),
-        ],
+      child: CalendarProvider<T>(
+        callbacks: widget.callbacks,
+        components: widget.components,
+        child: EventsControllerProvider<T>(
+          notifier: widget.eventsController,
+          child: CustomMultiChildLayout(
+            delegate: CalendarLayoutDelegate(headerId, bodyId),
+            children: [
+              if (bodyId != null)
+                LayoutId(
+                  id: bodyId,
+                  child: widget.body!,
+                ),
+              if (headerId != null)
+                LayoutId(
+                  id: headerId,
+                  child: widget.header!,
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

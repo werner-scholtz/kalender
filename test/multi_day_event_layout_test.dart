@@ -9,7 +9,6 @@ void main() {
   group('MultiDayEventLayoutWidget', () {
     final eventsController = DefaultEventsController<int>();
     final controller = CalendarController<int>();
-    final interaction = ValueNotifier(CalendarInteraction());
     final tileComponents = TileComponents<int>(
       tileBuilder: (event, tileRange) => Container(
         key: ValueKey(event.data!),
@@ -49,23 +48,24 @@ void main() {
 
       await tester.pumpWidget(
         wrapWithMaterialApp(
-          MultiDayEventLayoutWidget<int>(
-            events: eventsController.events.toList(),
+          TestProvider(
+            calendarController: controller,
             eventsController: eventsController,
-            controller: controller,
-            visibleDateTimeRange: visibleRange,
             tileComponents: tileComponents,
-            callbacks: null,
-            dayWidth: dayWidth,
-            showAllEvents: true,
-            tileHeight: tileHeight,
-            maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-            interaction: interaction,
-            generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-            eventPadding: const EdgeInsets.all(0),
-            textDirection: TextDirection.ltr,
-            multiDayOverlayBuilders: null,
-            multiDayOverlayStyles: null,
+            child: MultiDayEventLayoutWidget<int>(
+              events: eventsController.events.toList(),
+              eventsController: eventsController,
+              visibleDateTimeRange: visibleRange,
+              dayWidth: dayWidth,
+              showAllEvents: true,
+              tileHeight: tileHeight,
+              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+              generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
+              eventPadding: const EdgeInsets.all(0),
+              textDirection: TextDirection.ltr,
+              multiDayOverlayBuilders: null,
+              multiDayOverlayStyles: null,
+            ),
           ),
         ),
       );
@@ -148,27 +148,28 @@ void main() {
 
       await tester.pumpWidget(
         wrapWithMaterialApp(
-          SizedBox(
-            key: const ValueKey('test'),
-            width: dayWidth * 7,
-            height: tileHeight * 3,
-            child: MultiDayEventLayoutWidget<int>(
-              events: eventsController.events.toList(),
-              eventsController: eventsController,
-              controller: controller,
-              visibleDateTimeRange: visibleRange,
-              tileComponents: tileComponents,
-              callbacks: null,
-              dayWidth: dayWidth,
-              showAllEvents: true,
-              tileHeight: tileHeight,
-              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-              interaction: interaction,
-              generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-              eventPadding: const EdgeInsets.all(0),
-              textDirection: TextDirection.ltr,
-              multiDayOverlayBuilders: null,
-              multiDayOverlayStyles: null,
+          TestProvider(
+            calendarController: controller,
+            eventsController: eventsController,
+            tileComponents: tileComponents,
+            child: SizedBox(
+              key: const ValueKey('test'),
+              width: dayWidth * 7,
+              height: tileHeight * 3,
+              child: MultiDayEventLayoutWidget<int>(
+                events: eventsController.events.toList(),
+                eventsController: eventsController,
+                visibleDateTimeRange: visibleRange,
+                dayWidth: dayWidth,
+                showAllEvents: true,
+                tileHeight: tileHeight,
+                maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+                generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
+                eventPadding: const EdgeInsets.all(0),
+                textDirection: TextDirection.ltr,
+                multiDayOverlayBuilders: null,
+                multiDayOverlayStyles: null,
+              ),
             ),
           ),
         ),
@@ -250,23 +251,24 @@ void main() {
 
       await tester.pumpWidget(
         wrapWithMaterialApp(
-          MultiDayEventLayoutWidget<int>(
-            events: eventsController.events.toList(),
+          TestProvider(
+            calendarController: controller,
             eventsController: eventsController,
-            controller: controller,
-            visibleDateTimeRange: visibleRange,
             tileComponents: tileComponents,
-            callbacks: null,
-            dayWidth: dayWidth,
-            showAllEvents: true,
-            tileHeight: tileHeight,
-            maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-            interaction: interaction,
-            generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-            eventPadding: const EdgeInsets.all(0),
-            textDirection: TextDirection.ltr,
-            multiDayOverlayBuilders: null,
-            multiDayOverlayStyles: null,
+            child: MultiDayEventLayoutWidget<int>(
+              events: eventsController.events.toList(),
+              eventsController: eventsController,
+              visibleDateTimeRange: visibleRange,
+              dayWidth: dayWidth,
+              showAllEvents: true,
+              tileHeight: tileHeight,
+              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+              generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
+              eventPadding: const EdgeInsets.all(0),
+              textDirection: TextDirection.ltr,
+              multiDayOverlayBuilders: null,
+              multiDayOverlayStyles: null,
+            ),
           ),
         ),
       );

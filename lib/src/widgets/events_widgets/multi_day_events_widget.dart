@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
@@ -19,17 +20,12 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
 class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> controller;
   final DateTimeRange visibleDateTimeRange;
-  final TileComponents<T> tileComponents;
-  final CalendarCallbacks<T>? callbacks;
   final double dayWidth;
   final int? maxNumberOfRows;
   final double tileHeight;
   final bool showAllEvents;
   final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
-  final ValueNotifier<CalendarInteraction> interaction;
   final EdgeInsets? eventPadding;
 
   final OverlayBuilders<T>? overlayBuilders;
@@ -38,26 +34,24 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   const MultiDayEventWidget({
     super.key,
     required this.visibleDateTimeRange,
-    required this.eventsController,
-    required this.controller,
-    required this.tileComponents,
     required this.dayWidth,
     required this.showAllEvents,
     required this.tileHeight,
     required this.maxNumberOfRows,
     required this.eventPadding,
-    required this.interaction,
-    required this.callbacks,
     required this.generateMultiDayLayoutFrame,
     required this.overlayBuilders,
     required this.overlayStyles,
   });
 
-  ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
+  // ValueNotifier<Set<CalendarEvent<T>>> get visibleEventsNotifier => controller.visibleEvents;
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.calendarController();
+    final eventsController = context.eventsController<T>();
     return ListenableBuilder(
+      /// TODO: consider using a inheritedvalue for the eventsController.
       listenable: eventsController,
       builder: (context, child) {
         // Get the visible events from the events controller.
@@ -68,20 +62,19 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
         );
 
         // Add the events to the visible events notifier.
-        visibleEventsNotifier.value = {...visibleEventsNotifier.value, ...visibleEvents};
+        controller.visibleEvents.value = {
+          ...controller.visibleEvents.value,
+          ...visibleEvents,
+        };
 
         return MultiDayEventLayoutWidget<T>(
           events: visibleEvents.toList(),
           eventsController: eventsController,
-          controller: controller,
           visibleDateTimeRange: visibleDateTimeRange,
-          tileComponents: tileComponents,
-          callbacks: callbacks,
           dayWidth: dayWidth,
           showAllEvents: showAllEvents,
           tileHeight: tileHeight,
           maxNumberOfVerticalEvents: maxNumberOfRows,
-          interaction: interaction,
           generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
           textDirection: Directionality.of(context),
           multiDayOverlayBuilders: overlayBuilders,
@@ -105,16 +98,12 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   const MultiDayEventLayoutWidget({
     required this.events,
     required this.eventsController,
-    required this.controller,
     required this.visibleDateTimeRange,
-    required this.tileComponents,
-    required this.callbacks,
     required this.dayWidth,
     required this.showAllEvents,
     required this.tileHeight,
     required this.maxNumberOfVerticalEvents,
     required this.eventPadding,
-    required this.interaction,
     required this.generateMultiDayLayoutFrame,
     required this.textDirection,
     required this.multiDayOverlayBuilders,
@@ -123,16 +112,12 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   });
 
   final EventsController<T> eventsController;
-  final CalendarController<T> controller;
   final DateTimeRange visibleDateTimeRange;
-  final TileComponents<T> tileComponents;
-  final CalendarCallbacks<T>? callbacks;
   final double dayWidth;
   final bool showAllEvents;
   final double tileHeight;
   final int? maxNumberOfVerticalEvents;
   final EdgeInsets? eventPadding;
-  final ValueNotifier<CalendarInteraction> interaction;
   final OverlayBuilders<T>? multiDayOverlayBuilders;
   final OverlayStyles? multiDayOverlayStyles;
 
@@ -176,11 +161,13 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       event: event,
       dateTimeRange: dateTimeRange,
       eventsController: widget.eventsController,
-      controller: widget.controller,
-      callbacks: widget.callbacks,
-      tileComponents: widget.tileComponents,
-      interaction: widget.interaction,
+      controller: context.calendarController<T>(),
+      callbacks: context.callbacks<T>(),
+      tileComponents: context.tileComponents<T>(),
       dismissOverlay: dismissOverlay,
+
+      /// TODO: check if this can be removed.
+      interaction: context.interaction,
     );
   }
 
@@ -205,11 +192,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
         oldWidget.showAllEvents != widget.showAllEvents ||
-        oldWidget.dayWidth != widget.dayWidth ||
-        oldWidget.interaction != widget.interaction ||
-        oldWidget.tileComponents != widget.tileComponents ||
-        oldWidget.callbacks != widget.callbacks ||
-        oldWidget.controller != widget.controller;
+        oldWidget.dayWidth != widget.dayWidth;
 
     if (didUpdate) {
       _dateTimeRange = widget.visibleDateTimeRange;
@@ -251,10 +234,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             child: MultiDayEventTile<T>(
               event: event,
               eventsController: widget.eventsController,
-              controller: widget.controller,
-              callbacks: widget.callbacks,
-              tileComponents: widget.tileComponents,
-              interaction: widget.interaction,
+              controller: context.calendarController<T>(),
+              callbacks: context.callbacks<T>(),
+              tileComponents: context.tileComponents<T>(),
+              interaction: context.interaction,
               dateTimeRange: widget.visibleDateTimeRange,
             ),
           ),
@@ -264,7 +247,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
     // The drop target widget is used to show the drop target for the event that is being dragged.
     final dropTargetWidget = ValueListenableBuilder(
-      valueListenable: widget.controller.selectedEvent,
+      valueListenable: context.calendarController<T>().selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
@@ -285,10 +268,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           children: [
             LayoutId(
               id: event.id,
-              child: event.id == -1 || event.id == widget.controller.selectedEventId
+              child: event.id == -1 || event.id == context.calendarController<T>().selectedEventId
                   ? Padding(
                       padding: widget.eventPadding ?? const EdgeInsets.all(0),
-                      child: widget.tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
+                      child: context.tileComponents<T>().dropTargetTile?.call(event) ?? const SizedBox(),
                     )
                   : const SizedBox(),
             ),

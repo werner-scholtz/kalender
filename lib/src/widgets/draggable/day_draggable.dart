@@ -1,74 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 /// This widget generates draggable widgets for each visible day.
 /// - These draggable widgets are used to create new events.
 ///
-class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> {
+class DayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
+  final CalendarController<T> controller;
+
+  final CalendarCallbacks<T>? callbacks;
+
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double dayWidth;
   final double pageHeight;
   final double heightPerMinute;
-  final ValueNotifier<CalendarInteraction> interaction;
-  final ValueNotifier<CalendarSnapping> snapping;
 
   const DayEventDraggableWidgets({
     super.key,
-    required super.controller,
-    required super.callbacks,
+    required this.controller,
+    required this.callbacks,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
     required this.pageHeight,
     required this.dayWidth,
     required this.heightPerMinute,
-    required this.interaction,
-    required this.snapping,
   });
 
+  @override
+  State<DayEventDraggableWidgets<T>> createState() => _DayEventDraggableWidgetsState<T>();
+}
+
+class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDraggableWidgets<T>>
+    with NewDraggableWidget<T> {
   @override
   Widget build(BuildContext context) {
     var localPosition = Offset.zero;
 
+    /// Check if this is affected by removing interaction.
     return Listener(
       onPointerDown: (event) => localPosition = event.localPosition,
       onPointerSignal: (event) => localPosition = event.localPosition,
       onPointerMove: (event) => localPosition = event.localPosition,
-      child: ValueListenableBuilder(
-        valueListenable: interaction,
-        builder: (context, interaction, child) {
-          return Row(
-            children: [
-              if (interaction.allowEventCreation)
-                for (final date in visibleDateTimeRange.dates())
-                  GestureDetector(
-                    onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
-                    child: switch (interaction.createEventGesture) {
-                      CreateEventGesture.tap => Draggable(
-                          dragAnchorStrategy: pointerDragAnchorStrategy,
-                          onDragStarted: () => createNewEvent(date, localPosition),
-                          onDraggableCanceled: onDragFinished,
-                          onDragEnd: onDragFinished,
-                          data: Create(controllerId: controller.id),
-                          feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                          child: Container(color: Colors.transparent, width: dayWidth, height: pageHeight),
-                        ),
-                      CreateEventGesture.longPress => LongPressDraggable(
-                          dragAnchorStrategy: pointerDragAnchorStrategy,
-                          onDragStarted: () => createNewEvent(date, localPosition),
-                          onDraggableCanceled: onDragFinished,
-                          onDragEnd: onDragFinished,
-                          data: Create(controllerId: controller.id),
-                          feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                          child: Container(color: Colors.transparent, width: dayWidth, height: pageHeight),
-                        ),
-                    },
-                  ),
-            ],
-          );
-        },
+      child: Row(
+        children: [
+          if (context.interaction.allowEventCreation)
+            for (final date in widget.visibleDateTimeRange.dates())
+              GestureDetector(
+                onTapUp: (details) =>
+                    widget.callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
+                child: switch (context.interaction.createEventGesture) {
+                  CreateEventGesture.tap => Draggable(
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      data: Create(controllerId: widget.controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, width: widget.dayWidth, height: widget.pageHeight),
+                    ),
+                  CreateEventGesture.longPress => LongPressDraggable(
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      data: Create(controllerId: widget.controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, width: widget.dayWidth, height: widget.pageHeight),
+                    ),
+                },
+              ),
+        ],
       ),
     );
   }
@@ -80,7 +84,7 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
-    final snapInterval = snapping.value.snapIntervalMinutes;
+    final snapInterval = context.snapping.snapIntervalMinutes;
     final end = start.copyWith(minute: start.minute + snapInterval);
     return DateTimeRange(start: start, end: end);
   }
@@ -88,22 +92,28 @@ class DayEventDraggableWidgets<T extends Object?> extends NewDraggableWidget<T> 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
   DateTime _calculateTimeAndDate(DateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
-    final durationFromStart = localPosition.dy ~/ heightPerMinute;
+    final durationFromStart = localPosition.dy ~/ widget.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
     // Calculate the start of the day.
-    final startOfDay = timeOfDayRange.start.toDateTime(date);
+    final startOfDay = widget.timeOfDayRange.start.toDateTime(date);
 
     // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);
 
     // Snap the datetime based on the snap strategy.
-    final snappedDateTime = snapping.value.eventSnapStrategy(
+    final snappedDateTime = context.snapping.eventSnapStrategy(
       startOfEvent,
       startOfDay,
-      snapping.value.snapIntervalMinutes,
+      context.snapping.snapIntervalMinutes,
     );
 
     return snappedDateTime;
   }
+
+  @override
+  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+
+  @override
+  CalendarController<T> get controller => widget.controller;
 }
