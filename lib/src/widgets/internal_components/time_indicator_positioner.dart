@@ -188,7 +188,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
                         context,
                         widget.viewController.viewConfiguration.timeOfDayRange,
                       ),
-            )
+            ),
           ],
         );
       },
