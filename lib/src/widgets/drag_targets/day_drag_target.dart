@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
@@ -22,7 +23,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   final double pageWidth;
   final double dayWidth;
   final double viewPortHeight;
-  final double heightPerMinute;
 
   final HorizontalTriggerWidgetBuilder? leftPageTrigger;
   final HorizontalTriggerWidgetBuilder? rightPageTrigger;
@@ -45,7 +45,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
     required this.pageWidth,
     required this.dayWidth,
     required this.viewPortHeight,
-    required this.heightPerMinute,
     required this.leftPageTrigger,
     required this.rightPageTrigger,
     required this.topScrollTrigger,
@@ -92,7 +91,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
   Duration get snapRange => snapping.snapRange;
 
-  double get heightPerMinute => widget.heightPerMinute;
+  double get heightPerMinute => context.heightPerMinute;
   double get pageWidth => widget.pageWidth;
   double get viewPortHeight => widget.viewPortHeight;
 

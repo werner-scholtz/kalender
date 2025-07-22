@@ -24,8 +24,6 @@ class DayEventsWidget<T extends Object?> extends StatefulWidget {
   final MultiDayBodyConfiguration configuration;
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
-  final double dayWidth;
-  final double heightPerMinute;
 
   /// Creates a [DayEventsWidget].
   const DayEventsWidget({
@@ -33,8 +31,6 @@ class DayEventsWidget<T extends Object?> extends StatefulWidget {
     required this.eventsController,
     required this.controller,
     required this.configuration,
-    required this.dayWidth,
-    required this.heightPerMinute,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
   });
@@ -107,7 +103,6 @@ class _DayEventsWidgetState<T extends Object?> extends State<DayEventsWidget<T>>
               child: _SingleDayWidget<T>(
                 date: entry.key,
                 events: entry.value,
-                heightPerMinute: widget.heightPerMinute,
                 timeOfDayRange: widget.timeOfDayRange,
                 eventsController: widget.eventsController,
                 controller: widget.controller,
@@ -125,7 +120,6 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
   final List<CalendarEvent<T>> events;
   final EventsController<T> eventsController;
   final CalendarController<T> controller;
-  final double heightPerMinute;
   final TimeOfDayRange timeOfDayRange;
 
   final MultiDayBodyConfiguration configuration;
@@ -134,7 +128,6 @@ class _SingleDayWidget<T extends Object?> extends StatefulWidget {
     super.key,
     required this.date,
     required this.events,
-    required this.heightPerMinute,
     required this.timeOfDayRange,
     required this.eventsController,
     required this.controller,
@@ -171,7 +164,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
         events,
         date,
         widget.timeOfDayRange,
-        widget.heightPerMinute,
+        context.heightPerMinute,
         widget.configuration.minimumTileHeight,
       ),
       children: events.indexed
@@ -222,7 +215,7 @@ class _SingleDayWidgetState<T extends Object?> extends State<_SingleDayWidget<T>
             eventList,
             date,
             widget.timeOfDayRange,
-            widget.heightPerMinute,
+            context.heightPerMinute,
             widget.configuration.minimumTileHeight,
           ),
           children: eventList.indexed.map(

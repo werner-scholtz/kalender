@@ -8,25 +8,15 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// - These draggable widgets are used to create new events.
 ///
 class DayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
-  final CalendarController<T> controller;
-
-  final CalendarCallbacks<T>? callbacks;
-
   final DateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
-  final double dayWidth;
   final double pageHeight;
-  final double heightPerMinute;
 
   const DayEventDraggableWidgets({
     super.key,
-    required this.controller,
-    required this.callbacks,
     required this.visibleDateTimeRange,
     required this.timeOfDayRange,
     required this.pageHeight,
-    required this.dayWidth,
-    required this.heightPerMinute,
   });
 
   @override
@@ -35,6 +25,12 @@ class DayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
 
 class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDraggableWidgets<T>>
     with NewDraggableWidget<T> {
+  @override
+  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
+
+  @override
+  CalendarController<T> get controller => context.calendarController<T>();
+
   @override
   Widget build(BuildContext context) {
     var localPosition = Offset.zero;
@@ -46,31 +42,32 @@ class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDr
       onPointerMove: (event) => localPosition = event.localPosition,
       child: Row(
         children: [
-          if (context.interaction.allowEventCreation)
-            for (final date in widget.visibleDateTimeRange.dates())
-              GestureDetector(
-                onTapUp: (details) =>
-                    widget.callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
-                child: switch (context.interaction.createEventGesture) {
-                  CreateEventGesture.tap => Draggable(
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      data: Create(controllerId: widget.controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, width: widget.dayWidth, height: widget.pageHeight),
-                    ),
-                  CreateEventGesture.longPress => LongPressDraggable(
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      data: Create(controllerId: widget.controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, width: widget.dayWidth, height: widget.pageHeight),
-                    ),
-                },
+          for (final date in widget.visibleDateTimeRange.dates())
+            if (context.interaction.allowEventCreation)
+              Expanded(
+                child: GestureDetector(
+                  onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
+                  child: switch (context.interaction.createEventGesture) {
+                    CreateEventGesture.tap => Draggable(
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        onDragStarted: () => createNewEvent(date, localPosition),
+                        onDraggableCanceled: onDragFinished,
+                        onDragEnd: onDragFinished,
+                        data: Create(controllerId: controller.id),
+                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                        child: SizedBox(height: widget.pageHeight),
+                      ),
+                    CreateEventGesture.longPress => LongPressDraggable(
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        onDragStarted: () => createNewEvent(date, localPosition),
+                        onDraggableCanceled: onDragFinished,
+                        onDragEnd: onDragFinished,
+                        data: Create(controllerId: controller.id),
+                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                        child: SizedBox(height: widget.pageHeight),
+                      ),
+                  },
+                ),
               ),
         ],
       ),
@@ -92,7 +89,7 @@ class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDr
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
   DateTime _calculateTimeAndDate(DateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
-    final durationFromStart = localPosition.dy ~/ widget.heightPerMinute;
+    final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
     // Calculate the start of the day.
@@ -110,10 +107,4 @@ class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDr
 
     return snappedDateTime;
   }
-
-  @override
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
-
-  @override
-  CalendarController<T> get controller => widget.controller;
 }

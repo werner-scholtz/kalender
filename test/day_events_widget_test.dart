@@ -56,14 +56,15 @@ void main() {
               child: Text(event.data.toString()),
             ),
           ),
-          child: DayEventsWidget<int>(
-            eventsController: eventsController,
-            controller: calendarController,
-            configuration: configuration,
-            dayWidth: 100,
-            heightPerMinute: 1,
-            visibleDateTimeRange: displayRange,
-            timeOfDayRange: timeOfDayRange,
+          child: SizedBox(
+            width: 700,
+            child: DayEventsWidget<int>(
+              eventsController: eventsController,
+              controller: calendarController,
+              configuration: configuration,
+              visibleDateTimeRange: displayRange,
+              timeOfDayRange: timeOfDayRange,
+            ),
           ),
         ),
       ),

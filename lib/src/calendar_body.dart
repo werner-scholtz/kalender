@@ -72,7 +72,6 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     final callbacks = this.callbacks ?? provider.callbacks;
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
     final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
-    final heightPerMinuteNotifier = this.heightPerMinute ?? ValueNotifier(0.7);
 
     return Callbacks(
       callbacks: callbacks,
@@ -82,7 +81,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
           MultiDayViewController<T>() => TileComponentProvider(
               tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
               child: HeightPerMinuteProvider(
-                notifier: heightPerMinuteNotifier,
+                notifier: viewController.heightPerMinute,
                 child: Snapping(
                   notifier: snapping,
                   child: MultiDayBody<T>(configuration: multiDayBodyConfiguration),

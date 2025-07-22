@@ -48,7 +48,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.calendarController();
+    final controller = context.calendarController<T>();
     final eventsController = context.eventsController<T>();
     return ListenableBuilder(
       /// TODO: consider using a inheritedvalue for the eventsController.
