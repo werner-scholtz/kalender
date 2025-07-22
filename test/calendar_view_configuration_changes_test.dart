@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 
 import 'utilities.dart';
 
+/// TODO: redo tests.
 void main() {
   group('CalendarView Configuration Changes', () {
     late EventsController eventsController;
@@ -13,24 +14,15 @@ void main() {
     setUp(() {
       eventsController = DefaultEventsController();
       calendarController = CalendarController(initialDate: DateTime(2024, 6, 15));
-      calendarRange = DateTimeRange(
-        start: DateTime(2024, 1, 1),
-        end: DateTime(2026, 12, 31),
-      );
+      calendarRange = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
     });
 
     group('View configuration changes with selectedDate', () {
       testWidgets('should use selectedDate when provided during view configuration change', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
-
+        final monthConfig = MonthViewConfiguration.singleMonth(displayRange: calendarRange);
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
-            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: monthConfig,
@@ -40,7 +32,6 @@ void main() {
         // Change to daily view with specific selectedDate
         final selectedDate = DateTime(2024, 8, 20);
         final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
           selectedDate: selectedDate,
           displayRange: calendarRange,
         );
@@ -48,7 +39,6 @@ void main() {
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
-            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: dailyConfig,
