@@ -98,7 +98,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
             final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               visibleDateTimeRange: visibleRange,
-              dayWidth: pageWidth,
               showAllEvents: false,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
@@ -119,14 +118,9 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
-            final draggable = MultiDayEventDraggableWidgets<T>(
-              visibleDateTimeRange: visibleRange,
-              dayWidth: pageWidth,
-            );
-
             return Stack(
               children: [
-                Positioned.fill(child: draggable),
+                Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
                 ConstrainedBox(constraints: constraints, child: multiDayEvents),
                 Positioned.fill(child: multiDayDragTarget),
               ],
@@ -188,7 +182,6 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
             final constraints = BoxConstraints(minHeight: configuration.tileHeight, minWidth: pageWidth);
             final multiDayEvents = MultiDayEventWidget<T>(
               visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
               showAllEvents: false,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
@@ -209,18 +202,13 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
-            final draggable = MultiDayEventDraggableWidgets<T>(
-              visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
-            );
-
             return Column(
               children: [
                 Row(children: [...dayHeaders]),
                 if (configuration.showTiles)
                   Stack(
                     children: [
-                      Positioned.fill(child: draggable),
+                      Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
                       ConstrainedBox(constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],
@@ -286,7 +274,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
             final multiDayEvents = MultiDayEventWidget<T>(
               visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
               showAllEvents: false,
               tileHeight: configuration.tileHeight,
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
@@ -307,11 +294,6 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
 
-            final draggable = MultiDayEventDraggableWidgets<T>(
-              visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
-            );
-
             final constraints = BoxConstraints(
               minHeight: configuration.tileHeight,
               minWidth: pageWidth,
@@ -323,7 +305,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                 if (configuration.showTiles)
                   Stack(
                     children: [
-                      Positioned.fill(child: draggable),
+                      Positioned.fill(child: MultiDayEventDraggableWidgets<T>(visibleDateTimeRange: visibleRange)),
                       ConstrainedBox(constraints: constraints, child: multiDayEvents),
                       Positioned.fill(child: multiDayDragTarget),
                     ],

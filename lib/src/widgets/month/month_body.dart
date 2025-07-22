@@ -84,7 +84,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
                 final draggable = MultiDayEventDraggableWidgets<T>(
                   visibleDateTimeRange: visibleDateTimeRange,
-                  dayWidth: dayWidth,
                 );
 
                 final dates = List.generate(7, (index) {
@@ -114,7 +113,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                   final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
                                   return MultiDayEventWidget<T>(
                                     visibleDateTimeRange: visibleDateTimeRange,
-                                    dayWidth: dayWidth,
                                     tileHeight: bodyConfiguration.tileHeight,
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,

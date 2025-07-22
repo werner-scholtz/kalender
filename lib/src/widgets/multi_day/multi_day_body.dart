@@ -36,10 +36,9 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventsController = context.eventsController<T>();
+    // final eventsController = context.eventsController<T>();
     final controller = context.calendarController<T>();
-    final components = context.components<T>();
-    final callbacks = context.callbacks<T>();
+    // final components = context.components<T>();
 
     assert(
       controller.viewController is MultiDayViewController<T>,
@@ -51,9 +50,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
     final numberOfDays = viewConfiguration.numberOfDays;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final bodyConfiguration = this.configuration ?? MultiDayBodyConfiguration();
-
-    final bodyComponents = components?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    final configuration = this.configuration ?? MultiDayBodyConfiguration();
 
     // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
@@ -64,7 +61,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
           controller: viewController.scrollController,
           child: SingleChildScrollView(
             controller: viewController.scrollController,
-            physics: configuration?.scrollPhysics,
+            physics: configuration.scrollPhysics,
             child: SizedBox(
               height: pageHeight,
               child: Row(
@@ -81,7 +78,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             key: ValueKey(viewConfiguration.hashCode),
                             controller: viewController.pageController,
                             itemCount: viewController.numberOfPages,
-                            physics: configuration?.pageScrollPhysics,
+                            physics: configuration.pageScrollPhysics,
                             onPageChanged: (index) {
                               final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
 
@@ -95,6 +92,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                 viewController.visibleDateTimeRange.value = visibleRange;
                               }
 
+                              final callbacks = context.callbacks<T>();
                               callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
                             },
                             itemBuilder: (context, index) {
@@ -122,9 +120,9 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                                   ),
                                   Positioned.fill(
                                     child: DayEventsWidget<T>(
-                                      eventsController: eventsController,
+                                      eventsController: context.eventsController<T>(),
                                       controller: controller,
-                                      configuration: bodyConfiguration,
+                                      configuration: configuration,
                                       visibleDateTimeRange: visibleRange,
                                       timeOfDayRange: timeOfDayRange,
                                     ),
@@ -164,21 +162,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     return SizedBox(
                       height: pageHeight,
                       child: DayDragTarget<T>(
-                        eventsController: eventsController,
-                        calendarController: controller,
                         viewController: viewController,
                         scrollController: viewController.scrollController,
-                        callbacks: callbacks,
-                        tileComponents: context.tileComponents<T>(),
-                        bodyConfiguration: bodyConfiguration,
-                        timeOfDayRange: timeOfDayRange,
+                        configuration: configuration,
                         pageWidth: pageWidth,
                         dayWidth: dayWidth,
                         viewPortHeight: pageHeight,
-                        leftPageTrigger: bodyComponents.leftTriggerBuilder,
-                        rightPageTrigger: bodyComponents.rightTriggerBuilder,
-                        topScrollTrigger: bodyComponents.topTriggerBuilder,
-                        bottomScrollTrigger: bodyComponents.bottomTriggerBuilder,
                         snapping: context.snappingNotifier,
                       ),
                     );

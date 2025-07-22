@@ -6,14 +6,7 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayEventDraggableWidgets<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
-  final double dayWidth;
-
-  const MultiDayEventDraggableWidgets({
-    super.key,
-    required this.visibleDateTimeRange,
-    required this.dayWidth,
-  });
-
+  const MultiDayEventDraggableWidgets({super.key, required this.visibleDateTimeRange});
   @override
   State<MultiDayEventDraggableWidgets<T>> createState() => _MultiDayEventDraggableWidgetsState<T>();
 }
@@ -31,31 +24,33 @@ class _MultiDayEventDraggableWidgetsState<T extends Object?> extends State<Multi
       onPointerMove: (event) => localPosition = event.localPosition,
       child: Row(
         children: [
-          if (context.interaction.allowEventCreation)
-            for (final date in widget.visibleDateTimeRange.dates())
-              GestureDetector(
-                onTapUp: (details) =>
-                    callbacks?.onMultiDayTapped?.call(calculateDateTimeRange(date, localPosition).asLocal),
-                child: switch (context.interaction.createEventGesture) {
-                  CreateEventGesture.tap => Draggable(
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      data: Create(controllerId: controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, width: widget.dayWidth),
-                    ),
-                  CreateEventGesture.longPress => LongPressDraggable(
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      data: Create(controllerId: controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, width: widget.dayWidth),
-                    ),
-                },
+          for (final date in widget.visibleDateTimeRange.dates())
+            if (context.interaction.allowEventCreation)
+              Expanded(
+                child: GestureDetector(
+                  onTapUp: (details) =>
+                      callbacks?.onMultiDayTapped?.call(calculateDateTimeRange(date, localPosition).asLocal),
+                  child: switch (context.interaction.createEventGesture) {
+                    CreateEventGesture.tap => Draggable(
+                        onDragStarted: () => createNewEvent(date, localPosition),
+                        onDraggableCanceled: onDragFinished,
+                        onDragEnd: onDragFinished,
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        data: Create(controllerId: controller.id),
+                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                        child: Container(color: Colors.transparent),
+                      ),
+                    CreateEventGesture.longPress => LongPressDraggable(
+                        onDragStarted: () => createNewEvent(date, localPosition),
+                        onDraggableCanceled: onDragFinished,
+                        onDragEnd: onDragFinished,
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        data: Create(controllerId: controller.id),
+                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                        child: Container(color: Colors.transparent),
+                      ),
+                  },
+                ),
               ),
         ],
       ),

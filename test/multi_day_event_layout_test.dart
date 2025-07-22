@@ -43,7 +43,6 @@ void main() {
       eventsController.addEvents(events);
 
       const tileHeight = 50.0;
-      const dayWidth = 50.0;
       const maxNumberOfVerticalEvents = 2;
 
       await tester.pumpWidget(
@@ -56,7 +55,6 @@ void main() {
               events: eventsController.events.toList(),
               eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
               showAllEvents: true,
               tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
@@ -160,7 +158,6 @@ void main() {
                 events: eventsController.events.toList(),
                 eventsController: eventsController,
                 visibleDateTimeRange: visibleRange,
-                dayWidth: dayWidth,
                 showAllEvents: true,
                 tileHeight: tileHeight,
                 maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
@@ -246,7 +243,6 @@ void main() {
       eventsController.addEvents(events);
 
       const tileHeight = 50.0;
-      const dayWidth = 50.0;
       const maxNumberOfVerticalEvents = 2;
 
       await tester.pumpWidget(
@@ -259,7 +255,6 @@ void main() {
               events: eventsController.events.toList(),
               eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
               showAllEvents: true,
               tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
