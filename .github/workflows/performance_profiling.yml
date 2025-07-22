@@ -3,21 +3,45 @@ name: Performance Profiling Tests
 on:
   push:
     branches: [main]
-  # TODO: this should not always run for prs.
   pull_request:
-    branches: [main]
+    types: [labeled]
+  issue_comment:
+    types: [created]
   # Allow manual trigger
   workflow_dispatch:
 
 jobs:
   performance-profiling:
     runs-on: ubuntu-latest
+    # Only run if:
+    # - Push to main branch
+    # - PR labeled with 'performance-test'
+    # - Comment contains '/performance-test'
+    # - Manual trigger
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.label.name, 'performance-test')) ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request && 
+       contains(github.event.comment.body, '/performance-test'))
 
     env:
       DISPLAY: :99
 
     steps:
+      - name: Get PR info
+        if: github.event_name == 'issue_comment'
+        id: pr
+        run: |
+          echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          echo "head_sha=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}" | \
+            jq -r .head.sha)" >> $GITHUB_OUTPUT
+
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'issue_comment' && steps.pr.outputs.head_sha || github.sha }}
       - uses: subosito/flutter-action@v2
       - name: Install Linux dependencies
         run: |
