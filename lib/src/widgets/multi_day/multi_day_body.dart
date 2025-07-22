@@ -163,7 +163,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       height: pageHeight,
                       child: DayDragTarget<T>(
                         viewController: viewController,
-                        scrollController: viewController.scrollController,
                         configuration: configuration,
                         pageWidth: pageWidth,
                         dayWidth: dayWidth,

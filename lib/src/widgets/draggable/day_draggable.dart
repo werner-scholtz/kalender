@@ -55,7 +55,7 @@ class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDr
                         onDragEnd: onDragFinished,
                         data: Create(controllerId: controller.id),
                         feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                        child: SizedBox(height: widget.pageHeight),
+                        child: Container(color: Colors.transparent, height: widget.pageHeight),
                       ),
                     CreateEventGesture.longPress => LongPressDraggable(
                         dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -64,7 +64,7 @@ class _DayEventDraggableWidgetsState<T extends Object?> extends State<DayEventDr
                         onDragEnd: onDragFinished,
                         data: Create(controllerId: controller.id),
                         feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                        child: SizedBox(height: widget.pageHeight),
+                        child: Container(color: Colors.transparent, height: widget.pageHeight),
                       ),
                   },
                 ),

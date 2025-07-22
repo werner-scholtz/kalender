@@ -12,7 +12,6 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 class DayDragTarget<T extends Object?> extends StatefulWidget {
   final MultiDayViewController<T> viewController;
   final MultiDayBodyConfiguration configuration;
-  final ScrollController scrollController;
 
   final double pageWidth;
   final double dayWidth;
@@ -24,7 +23,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   const DayDragTarget({
     super.key,
     required this.viewController,
-    required this.scrollController,
     required this.configuration,
     required this.pageWidth,
     required this.dayWidth,
@@ -57,7 +55,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   bool get multiDayDragTarget => false;
 
   MultiDayViewController<T> get viewController => widget.viewController;
-  ScrollController get scrollController => widget.scrollController;
+  ScrollController get scrollController => viewController.scrollController;
   TimeOfDayRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
   MultiDayBodyConfiguration get bodyConfiguration => widget.configuration;

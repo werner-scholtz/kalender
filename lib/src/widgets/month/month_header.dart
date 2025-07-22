@@ -18,7 +18,6 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
     );
 
     final viewController = calendarController.viewController as MonthViewController<T>;
-
     final calendarComponents = provider.components;
     final styles = calendarComponents?.monthComponentStyles?.headerStyles;
     final components = calendarComponents?.monthComponents?.headerComponents ?? const MonthHeaderComponents();
