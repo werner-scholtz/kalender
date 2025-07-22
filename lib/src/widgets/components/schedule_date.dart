@@ -48,9 +48,8 @@ class ScheduleDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = CalendarProvider.single(context).locale;
     final text = Text(
-      style?.stringBuilder?.call(date) ?? date.dayNameLocalized(locale).characters.take(3).toString(),
+      style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale).characters.take(3).toString(),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 

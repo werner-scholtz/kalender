@@ -139,7 +139,6 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
     const headerHeight = defaultHeaderHeight;
     final (top, left) = calculatePosition(getOverlayPortalRenderBox.call(), headerHeight, width);
     final textDirection = Directionality.of(context);
-    final locale = CalendarProvider.single(context).locale;
 
     return Stack(
       fit: StackFit.expand,
@@ -163,7 +162,7 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
                         Align(
                           alignment: Alignment.topCenter,
                           child: Text(
-                            style?.dayNameBuilder?.call(date) ?? date.dayNameLocalized(locale),
+                            style?.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
                             style: style?.dayNameTextStyle,
                           ),
                         ),

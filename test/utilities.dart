@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 final datesToTest = [
   DateTime.now(),
@@ -80,5 +82,65 @@ Future<void> pumpAndSettleWithMaterialApp(
     await tester.pumpAndSettle(duration);
   } else {
     await tester.pumpAndSettle();
+  }
+}
+
+class TestProvider<T> extends StatelessWidget {
+  final Widget child;
+  final CalendarController<T> calendarController;
+  final EventsController<T> eventsController;
+  final CalendarCallbacks<T>? callbacks;
+  final CalendarComponents<T>? components;
+  final TileComponents<T> tileComponents;
+  final ValueNotifier<CalendarInteraction>? interaction;
+  final ValueNotifier<CalendarSnapping>? snapping;
+  final ValueNotifier<double>? heightPerMinute;
+  final dynamic locale;
+
+  const TestProvider({
+    super.key,
+    required this.child,
+    required this.calendarController,
+    required this.eventsController,
+    required this.tileComponents,
+    this.callbacks,
+    this.components,
+    this.interaction,
+    this.snapping,
+    this.heightPerMinute,
+    this.locale,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return EventsControllerProvider<T>(
+      notifier: eventsController,
+      child: CalendarControllerProvider(
+        notifier: calendarController,
+        child: CalendarProvider<T>(
+          callbacks: null,
+          components: components,
+          child: Interaction(
+            notifier: interaction ?? ValueNotifier(CalendarInteraction()),
+            child: Snapping(
+              notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
+              child: HeightPerMinuteProvider(
+                notifier: heightPerMinute ?? ValueNotifier(0.7),
+                child: Callbacks<T>(
+                  callbacks: callbacks ?? CalendarCallbacks<T>(),
+                  child: TileComponentProvider<T>(
+                    tileComponents: tileComponents,
+                    child: LocaleProvider(
+                      locale: locale,
+                      child: child,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 ///
 /// The month body's content:
 ///   - Static content [MonthGrid].
-///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayEventDraggableWidgets].
+///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayDraggable].
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
   final MultiDayHeaderConfiguration<T>? configuration;
@@ -20,11 +20,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final eventsController = provider.eventsController;
-    final calendarController = provider.calendarController;
-
-    final bodyProvider = context.bodyProvider<T>();
-    final callbacks = bodyProvider.callbacks;
+    final calendarController = context.calendarController<T>();
 
     assert(
       calendarController.viewController is MonthViewController<T>,
@@ -45,8 +41,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final calendarComponents = provider.components;
     final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
     final components = calendarComponents?.monthComponents?.bodyComponents ?? MonthBodyComponents<T>();
-    final tileComponents = bodyProvider.tileComponents;
-    final interaction = bodyProvider.interaction;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -62,7 +56,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
           onPageChanged: (index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
             viewController.visibleDateTimeRange.value = visibleRange;
-            callbacks?.onPageChanged?.call(visibleRange);
+            context.callbacks<T>()?.onPageChanged?.call(visibleRange);
           },
           itemBuilder: (context, index) {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
@@ -78,10 +72,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                 );
 
                 final multiDayDragTarget = MultiDayDragTarget<T>(
-                  eventsController: eventsController,
-                  calendarController: calendarController,
-                  callbacks: callbacks,
-                  tileComponents: tileComponents,
                   pageTriggerSetup: pageTriggerConfiguration,
                   visibleDateTimeRange: visibleDateTimeRange,
                   dayWidth: dayWidth,
@@ -92,13 +82,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   rightPageTrigger: components.rightTriggerBuilder,
                 );
 
-                final draggable = MultiDayEventDraggableWidgets<T>(
-                  eventsController: eventsController,
-                  controller: calendarController,
-                  callbacks: callbacks,
+                final draggable = MultiDayDraggable<T>(
                   visibleDateTimeRange: visibleDateTimeRange,
-                  dayWidth: dayWidth,
-                  interaction: interaction,
                 );
 
                 final dates = List.generate(7, (index) {
@@ -127,16 +112,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                   // Subtract 1 to account for the extra widget at the bottom.
                                   final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
                                   return MultiDayEventWidget<T>(
-                                    controller: calendarController,
-                                    eventsController: eventsController,
                                     visibleDateTimeRange: visibleDateTimeRange,
-                                    tileComponents: tileComponents,
-                                    dayWidth: dayWidth,
-                                    interaction: interaction,
                                     tileHeight: bodyConfiguration.tileHeight,
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,
-                                    callbacks: callbacks,
                                     generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
                                     overlayBuilders: components.overlayBuilders ?? calendarComponents?.overlayBuilders,
                                     overlayStyles: styles?.overlayStyles ?? calendarComponents?.overlayStyles,

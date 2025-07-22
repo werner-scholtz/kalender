@@ -19,7 +19,7 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   final CalendarCallbacks<T>? callbacks;
   final TileComponents<T> tileComponents;
 
-  final ValueNotifier<CalendarInteraction> interaction;
+  final CalendarInteraction interaction;
 
   /// The dateTimeRange of this tile
   final DateTimeRange dateTimeRange;
@@ -53,9 +53,9 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
 
   bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
   bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
-  bool get showStart => interaction.value.allowResizing && event.canModify && !continuesBefore;
-  bool get showEnd => interaction.value.allowResizing && event.canModify && !continuesAfter;
-  bool get canReschedule => interaction.value.allowRescheduling && event.canModify;
+  bool get showStart => interaction.allowResizing && event.canModify && !continuesBefore;
+  bool get showEnd => interaction.allowResizing && event.canModify && !continuesAfter;
+  bool get canReschedule => interaction.allowRescheduling && event.canModify;
 
   Reschedule<T> get rescheduleEvent => Reschedule<T>(event: event);
   Resize<T> resizeEvent(ResizeDirection direction) => Resize<T>(event: event, direction: direction);

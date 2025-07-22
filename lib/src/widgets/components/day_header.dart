@@ -46,9 +46,8 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = CalendarProvider.single(context).locale;
     final text = Text(
-      style?.stringBuilder?.call(date) ?? date.dayNameShortLocalized(locale),
+      style?.stringBuilder?.call(date) ?? date.dayNameShortLocalized(context.locale),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 
