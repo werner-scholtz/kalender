@@ -201,7 +201,6 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             padding: widget.eventPadding ?? const EdgeInsets.all(0),
             child: MultiDayEventTile<T>(
               event: event,
-              eventsController: widget.eventsController,
               controller: context.calendarController<T>(),
               callbacks: context.callbacks<T>(),
               tileComponents: context.tileComponents<T>(),
@@ -304,7 +303,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
     return MultiDayOverlayEventTile<T>(
       event: event,
       dateTimeRange: dateTimeRange,
-      eventsController: widget.eventsController,
+
       controller: context.calendarController<T>(),
       callbacks: context.callbacks<T>(),
       tileComponents: context.tileComponents<T>(),

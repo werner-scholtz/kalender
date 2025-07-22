@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 typedef UpdatedEvent<T> = (CalendarEvent<T>, CalendarEvent<T>);
 
@@ -125,7 +126,7 @@ mixin DragTargetUtilities<T> {
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    eventsController.feedbackWidgetSize.value = Size.zero;
+    context.feedbackWidgetSizeNotifier.value = Size.zero;
     controller.deselectEvent();
     callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }

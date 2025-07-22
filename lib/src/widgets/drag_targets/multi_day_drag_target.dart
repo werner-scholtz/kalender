@@ -56,8 +56,6 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.pageTriggerSetup;
 
-  ValueNotifier<Size> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
-
   double get pageWidth => widget.pageWidth;
   double get tileHeight => widget.tileHeight;
 
@@ -71,7 +69,9 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
           onReschedule: (event) {
             if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
             // Set the size of the feedback widget.
-            feedbackWidgetSize.value = Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
+            context.feedbackWidgetSizeNotifier.value =
+                Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
+
             controller.selectEvent(event, internal: true);
             return true;
           },

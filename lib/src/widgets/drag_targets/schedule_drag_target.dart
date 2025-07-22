@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart' show CursorNavigationTrigger;
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
@@ -53,7 +54,6 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
   @override
   EventsController<T> get eventsController => widget.eventsController;
-  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   @override
   CalendarController<T> get controller => widget.calendarController;
@@ -83,7 +83,8 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
           onReschedule: (event) {
             // Set the size of the feedback widget.
             const height = 24.0;
-            feedbackWidgetSize.value = Size(dayWidth, height);
+
+            context.feedbackWidgetSizeNotifier.value = Size(dayWidth, height);
             controller.selectEvent(event, internal: true);
             return true;
           },

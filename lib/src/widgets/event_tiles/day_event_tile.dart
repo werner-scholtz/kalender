@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
@@ -11,7 +12,6 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
   const DayEventTile({
     super.key,
     required super.controller,
-    required super.eventsController,
     required super.callbacks,
     required super.tileComponents,
     required super.event,
@@ -73,14 +73,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
       },
     );
 
-    late final feedback = ValueListenableBuilder(
-      valueListenable: feedbackWidgetSize,
-      builder: (context, value, child) {
-        final feedbackTile = feedbackTileBuilder?.call(event, value);
-        return feedbackTile ?? const SizedBox();
-      },
-    );
-
+    late final feedback = feedbackTileBuilder?.call(event, context.feedbackWidgetSize) ?? const SizedBox();
     final tile = tileBuilder.call(event, localDateTimeRange);
     final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
     final isDragging = controller.selectedEventId == event.id && controller.internalFocus;

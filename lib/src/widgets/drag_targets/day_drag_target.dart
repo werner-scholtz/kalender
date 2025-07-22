@@ -39,7 +39,6 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints, DragTargetUtilities<T> {
   @override
   EventsController<T> get eventsController => context.eventsController<T>();
-  ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   @override
   CalendarController<T> get controller => widget.controller;
@@ -126,7 +125,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             // Calculate the size of the feedback widget.
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
             // Set the size of the feedback widget.
-            feedbackWidgetSize.value = Size(dayWidth, eventHeight);
+
+            context.feedbackWidgetSizeNotifier.value = Size(dayWidth, eventHeight);
             // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
             return true;

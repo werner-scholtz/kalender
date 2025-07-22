@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
@@ -11,7 +12,6 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
   const MultiDayEventTile({
     super.key,
     required super.controller,
-    required super.eventsController,
     required super.callbacks,
     required super.tileComponents,
     required super.event,
@@ -22,10 +22,10 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
   /// A key used to identify the tile.
   static Key tileKey(int eventId) => Key('MultiDayEventTile-$eventId');
 
-  /// A key used to identify the top resize handle.
+  /// A key used to identify the left resize handle.
   static Key leftResizeDraggableKey(int eventId) => Key('MultiDayEventTile-StartResizeDraggable-$eventId');
 
-  /// A key used to identify the bottom resize handle.
+  /// A key used to identify the right resize handle.
   static Key rightResizeDraggableKey(int eventId) => Key('MultiDayEventTile-BottomResizeDraggable-$eventId');
 
   /// A key used to identify the reschedule draggable.
@@ -62,14 +62,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
         );
       },
     );
-
-    late final feedback = ValueListenableBuilder(
-      valueListenable: feedbackWidgetSize,
-      builder: (context, value, child) {
-        final feedbackTile = feedbackTileBuilder?.call(event, value);
-        return feedbackTile ?? const SizedBox();
-      },
-    );
+    late final feedback = feedbackTileBuilder?.call(event, context.feedbackWidgetSize) ?? const SizedBox();
 
     final tile = tileBuilder.call(event, localDateTimeRange);
     final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
