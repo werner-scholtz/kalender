@@ -5,7 +5,7 @@ on:
     branches: [main]
   # TODO: this should not always run for prs.
   pull_request:
-    types: [labeled]
+    branches: [main]
   # Allow manual trigger
   workflow_dispatch:
 
