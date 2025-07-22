@@ -106,10 +106,10 @@ class Callbacks<T extends Object?> extends InheritedWidget {
   }
 
   /// Gets the [Callbacks] of type [T] from the context.
-  static CalendarCallbacks<T> of<T>(BuildContext context) {
+  static CalendarCallbacks<T>? of<T>(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<Callbacks<T>>();
     assert(result != null, 'No CallbackProvider of <$T> found.');
-    return result!.callbacks!;
+    return result!.callbacks;
   }
 }
 

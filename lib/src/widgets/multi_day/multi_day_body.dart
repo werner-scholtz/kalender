@@ -152,7 +152,6 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
             children: [
               TimelineSizer<T>(child: const SizedBox()),
               Expanded(
-                // TODO: should be possible to remove this LayoutBuilder as well.
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final pageHeight = constraints.maxHeight;

@@ -6,8 +6,8 @@ import 'utilities.dart';
 
 void main() {
   group('CalendarView Configuration Changes', () {
-    late EventsController<Object?> eventsController;
-    late CalendarController<Object?> calendarController;
+    late EventsController eventsController;
+    late CalendarController calendarController;
     late DateTimeRange calendarRange;
 
     setUp(() {
@@ -338,14 +338,8 @@ void main() {
       });
 
       testWidgets('should handle schedule to daily transition correctly', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final scheduleConfig = ScheduleViewConfiguration.continuous(
-          name: 'Schedule View',
-          displayRange: calendarRange,
-        );
-
+        final scheduleConfig = ScheduleViewConfiguration.continuous(name: 'Schedule View', displayRange: calendarRange);
         final calendarView = CalendarView(
-          key: calendarViewKey,
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: scheduleConfig,
@@ -370,7 +364,6 @@ void main() {
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
-            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: dailyConfig,

@@ -44,10 +44,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         configuration: configuration,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
-      return PaginatedSchedule<T>(
-        viewController: viewController,
-        configuration: configuration,
-      );
+      return PaginatedSchedule<T>(viewController: viewController, configuration: configuration);
     } else {
       throw Exception(
         'The view controller is not a $PaginatedScheduleViewController or $ContinuousScheduleViewController',
