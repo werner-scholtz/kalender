@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 
 /// TODO: consider a abstract class for CalendarEvent that needs to be implemented by users.
@@ -16,9 +17,14 @@ class CalendarEvent<T extends Object?> {
   final DateTimeRange _dateTimeRange;
 
   /// Whether this [CalendarEvent] can be modified.
-  ///
-  /// TODO: split this into canResize (start/end), canDrag, canCreate, etc.
+  /// *This will be deprecated in the future.
+  /// TODO: Depricate this in 1.0.0
   final bool canModify;
+
+  /// The interaction for the [CalendarEvent].
+  ///
+  /// * This will override the behavior from [canModify] property.
+  final EventInteraction interaction;
 
   /// The id of the [CalendarEvent].
   /// Do not set this value manually as this is set by the [EventsController].
@@ -33,7 +39,9 @@ class CalendarEvent<T extends Object?> {
     required DateTimeRange dateTimeRange,
     this.data,
     this.canModify = true,
-  }) : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange;
+    EventInteraction? interaction,
+  })  : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange,
+        interaction = interaction ?? EventInteraction.fromCanModify(canModify);
 
   /// The [DateTimeRange] of the [CalendarEvent] in the local timezone.
   DateTimeRange get dateTimeRange => _dateTimeRange;
@@ -67,11 +75,13 @@ class CalendarEvent<T extends Object?> {
     DateTimeRange? dateTimeRange,
     T? data,
     bool? canModify,
+    EventInteraction? interaction,
   }) {
     return CalendarEvent<T>(
       data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       canModify: canModify ?? this.canModify,
+      interaction: interaction ?? this.interaction,
     );
   }
 
