@@ -30,9 +30,9 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   ///
   const CalendarHeader({
     super.key,
-    required this.multiDayTileComponents,
-    this.callbacks,
+    this.multiDayTileComponents,
     this.multiDayHeaderConfiguration,
+    this.callbacks,
     this.interaction,
   });
 

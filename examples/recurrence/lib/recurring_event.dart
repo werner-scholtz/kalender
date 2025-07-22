@@ -7,6 +7,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
   RecurringCalendarEvent({
     required this.groupId,
     required super.dateTimeRange,
+    super.interaction,
     super.data,
     super.canModify,
   });
@@ -24,6 +25,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
   @override
   RecurringCalendarEvent<Event> copyWith({
     DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
     Event? data,
     bool? canModify,
   }) {
@@ -31,6 +33,8 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
       data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? dateTimeRangeAsUtc,
       groupId: groupId,
+      canModify: canModify ?? this.canModify,
+      interaction: interaction ?? this.interaction,
     );
   }
 }

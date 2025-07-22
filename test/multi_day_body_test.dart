@@ -90,18 +90,18 @@ void main() {
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
-          final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
           // Find the resize handles.
           final topResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.topResizeDraggable),
+            matching: find.byKey(DayEventTile.topResizeDraggableKey(eventId)),
           );
           expect(topResizeHandle, findsOneWidget, reason: 'Top resize handle should be rendered');
           final bottomResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.bottomResizeDraggable),
+            matching: find.byKey(DayEventTile.bottomResizeDraggableKey(eventId)),
           );
           expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should be rendered');
 
@@ -145,12 +145,12 @@ void main() {
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
-          final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
           final rescheduleDraggable = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.rescheduleDraggable),
+            matching: find.byKey(DayEventTile.rescheduleDraggableKey(eventId)),
           );
 
           // Check that the draggable(s) widget is rendered.
@@ -188,7 +188,7 @@ void main() {
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
           // Check that the event is rendered.
-          final dayEventTile = find.byKey(DayEventTile.getKey(eventId));
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
           // get the bottom of the dayEventTile

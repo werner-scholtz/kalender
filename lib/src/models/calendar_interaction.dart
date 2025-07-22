@@ -110,6 +110,71 @@ class CalendarInteraction {
       );
 }
 
+/// The [EventInteraction] class defines the interaction settings for individual calendar events.
+///
+/// This class allows you to configure how users can interact with specific events,
+/// such as resizing the start/end times and rescheduling. Unlike [CalendarInteraction] which
+/// applies globally, [EventInteraction] is applied per event for fine-grained control.
+///
+/// Example usage:
+/// ```dart
+/// EventInteraction(
+///   allowStartResize: true,
+///   allowEndResize: true,
+///   allowRescheduling: true,
+/// );
+/// ```
+class EventInteraction {
+  /// Whether the start of the event can be resized.
+  ///
+  /// If set to `true`, users can resize the event's start time by dragging the top edge.
+  final bool allowStartResize;
+
+  /// Whether the end of the event can be resized.
+  ///
+  /// If set to `true`, users can resize the event's end time by dragging the bottom edge.
+  final bool allowEndResize;
+
+  /// Whether the event can be rescheduled.
+  ///
+  /// If set to `true`, users can reschedule the event by dragging it to a different time slot.
+  final bool allowRescheduling;
+
+  /// Creates a new [EventInteraction] instance with the specified settings.
+  ///
+  /// All parameters are optional and default to `true`, allowing all interactions.
+  EventInteraction({
+    this.allowStartResize = true,
+    this.allowEndResize = true,
+    this.allowRescheduling = true,
+  });
+
+  /// Creates an [EventInteraction] from the now deprecated [canModify] property.
+  ///
+  /// This constructor maintains backward compatibility by setting all interaction
+  /// permissions based on a single boolean value.
+  EventInteraction.fromCanModify(bool canModify)
+      : allowStartResize = canModify,
+        allowEndResize = canModify,
+        allowRescheduling = canModify;
+
+  /// Creates an [EventInteraction] that disables all interactions.
+  ///
+  /// This is equivalent to creating an instance with all parameters set to `false`.
+  EventInteraction.allowNone()
+      : allowStartResize = false,
+        allowEndResize = false,
+        allowRescheduling = false;
+
+  /// Creates an [EventInteraction] that enables all interactions.
+  ///
+  /// This is equivalent to creating an instance with all parameters set to `true`.
+  EventInteraction.allowAll()
+      : allowStartResize = true,
+        allowEndResize = true,
+        allowRescheduling = true;
+}
+
 /// The [CalendarSnapping] class defines the snapping settings for the calendar.
 ///
 /// This class allows you to configure various aspects of how events snap to specific intervals

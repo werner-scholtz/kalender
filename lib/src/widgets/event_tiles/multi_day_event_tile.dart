@@ -19,14 +19,26 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
     required super.interaction,
   });
 
+  /// A key used to identify the tile.
+  static Key tileKey(int eventId) => Key('MultiDayEventTile-$eventId');
+
+  /// A key used to identify the top resize handle.
+  static Key leftResizeDraggableKey(int eventId) => Key('MultiDayEventTile-StartResizeDraggable-$eventId');
+
+  /// A key used to identify the bottom resize handle.
+  static Key rightResizeDraggableKey(int eventId) => Key('MultiDayEventTile-BottomResizeDraggable-$eventId');
+
+  /// A key used to identify the reschedule draggable.
+  static Key rescheduleDraggableKey(int eventId) => Key('MultiDayEventTile-RescheduleDraggable-$eventId');
+
   @override
   Widget build(BuildContext context) {
-    /// TODO: CHeck  that removing interaction does not break anything.
     late final leftResize = ValueListenableBuilder(
       valueListenable: selectedEvent,
       builder: (context, value, child) {
         if (value != null || controller.internalFocus) return const SizedBox();
         return Draggable<Resize<T>>(
+          key: leftResizeDraggableKey(event.id),
           data: resizeEvent(ResizeDirection.left),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -41,6 +53,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
       builder: (context, value, child) {
         if (value != null || controller.internalFocus) return const SizedBox();
         return Draggable<Resize<T>>(
+          key: rightResizeDraggableKey(event.id),
           data: resizeEvent(ResizeDirection.right),
           feedback: const SizedBox(),
           dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -63,6 +76,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
     final isDragging = controller.selectedEventId == event.id;
     late final draggableTile = isMobileDevice
         ? LongPressDraggable<Reschedule<T>>(
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
@@ -72,6 +86,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           )
         : Draggable<Reschedule<T>>(
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
@@ -112,11 +127,5 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
         Positioned.fill(child: resizeHandles),
       ],
     );
-    // return ValueListenableBuilder(
-    //   valueListenable: interaction,
-    //   builder: (context, interaction, child) {
-
-    //   },
-    // );
   }
 }

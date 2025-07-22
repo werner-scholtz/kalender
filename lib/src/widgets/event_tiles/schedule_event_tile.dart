@@ -19,9 +19,14 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
     required super.interaction,
   });
 
+  /// A key used to identify the tile.
+  static Key tileKey(int eventId) => Key('ScheduleEventTile-$eventId');
+
+  /// A key used to identify the reschedule draggable.
+  static Key rescheduleDraggableKey(int eventId) => Key('ScheduleEventTile-RescheduleDraggable-$eventId');
+
   @override
   Widget build(BuildContext context) {
-    /// TODO: CHeck  that removing interaction does not break anything.
     late final feedback = ValueListenableBuilder(
       valueListenable: feedbackWidgetSize,
       builder: (context, value, child) {
@@ -35,6 +40,7 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
     final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
     late final draggableTile = isMobileDevice
         ? LongPressDraggable<Reschedule<T>>(
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
@@ -44,6 +50,7 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           )
         : Draggable<Reschedule<T>>(
+            key: rescheduleDraggableKey(event.id),
             data: rescheduleEvent,
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
@@ -65,11 +72,5 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
     );
 
     return tileWidget;
-    // return ValueListenableBuilder(
-    //   valueListenable: interaction,
-    //   builder: (context, interaction, child) {
-
-    //   },
-    // );
   }
 }

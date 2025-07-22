@@ -370,6 +370,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
               final child = ListTile(
                 leading: showDate ? leading : const SizedBox(width: 32),
                 title: ScheduleEventTile(
+                  key: ScheduleEventTile.tileKey(event.id),
                   controller: calendarController,
                   eventsController: eventsController,
                   callbacks: callbacks,

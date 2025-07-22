@@ -53,9 +53,9 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
 
   bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
   bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
-  bool get showStart => interaction.allowResizing && event.canModify && !continuesBefore;
-  bool get showEnd => interaction.allowResizing && event.canModify && !continuesAfter;
-  bool get canReschedule => interaction.allowRescheduling && event.canModify;
+  bool get showStart => interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore;
+  bool get showEnd => interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter;
+  bool get canReschedule => interaction.allowRescheduling && event.interaction.allowRescheduling;
 
   Reschedule<T> get rescheduleEvent => Reschedule<T>(event: event);
   Resize<T> resizeEvent(ResizeDirection direction) => Resize<T>(event: event, direction: direction);
