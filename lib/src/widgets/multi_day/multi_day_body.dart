@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
@@ -31,17 +32,12 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     this.configuration,
   });
 
-  /// The key used to identify the content of the [MultiDayBody].
-  static const contentKey = ValueKey('contentKey');
-
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
   static const singleChildScrollViewKey = ValueKey('singleChildScrollViewKey');
 
   @override
   Widget build(BuildContext context) {
-    // final eventsController = context.eventsController<T>();
     final controller = context.calendarController<T>();
-    // final components = context.components<T>();
 
     assert(
       controller.viewController is MultiDayViewController<T>,
@@ -51,8 +47,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final viewController = controller.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
-    final numberOfDays = viewConfiguration.numberOfDays;
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+
     final configuration = this.configuration ?? MultiDayBodyConfiguration();
 
     // Calculate the height of the page.
@@ -77,63 +72,11 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                       children: [
                         Positioned.fill(child: HourLines.fromContext<T>(context, timeOfDayRange)),
                         Positioned.fill(
-                          child: PageView.builder(
-                            padEnds: false,
-                            key: ValueKey(viewConfiguration.hashCode),
-                            controller: viewController.pageController,
-                            itemCount: viewController.numberOfPages,
-                            physics: configuration.pageScrollPhysics,
-                            onPageChanged: (index) {
-                              final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-
-                              if (viewConfiguration.type == MultiDayViewType.freeScroll) {
-                                final range = DateTimeRange(
-                                  start: visibleRange.start,
-                                  end: visibleRange.start.addDays(numberOfDays),
-                                );
-                                viewController.visibleDateTimeRange.value = range;
-                              } else {
-                                viewController.visibleDateTimeRange.value = visibleRange;
-                              }
-
-                              final callbacks = context.callbacks<T>();
-                              callbacks?.onPageChanged?.call(viewController.visibleDateTimeRange.value.asLocal);
-                            },
-                            itemBuilder: (context, index) {
-                              final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-
-                              return Stack(
-                                key: contentKey,
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Positioned.fill(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: List.generate(
-                                        numberOfDays + 1,
-                                        (_) => DaySeparator.fromContext<T>(context),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned.fill(
-                                    child: DayDraggable<T>(
-                                      visibleDateTimeRange: visibleRange,
-                                      timeOfDayRange: timeOfDayRange,
-                                      pageHeight: pageHeight,
-                                    ),
-                                  ),
-                                  Positioned.fill(
-                                    child: DayEventsWidget<T>(
-                                      eventsController: context.eventsController<T>(),
-                                      controller: controller,
-                                      configuration: configuration,
-                                      visibleDateTimeRange: visibleRange,
-                                      timeOfDayRange: timeOfDayRange,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                          child: MultiDayPage<T>(
+                            eventsController: context.eventsController<T>(),
+                            viewController: viewController,
+                            configuration: configuration,
+                            pageHeight: pageHeight,
                           ),
                         ),
                         PositionedTimeIndicator<T>(
@@ -181,6 +124,115 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MultiDayPage<T extends Object?> extends StatefulWidget {
+  const MultiDayPage({
+    super.key,
+    required this.eventsController,
+    required this.viewController,
+    required this.configuration,
+    required this.pageHeight,
+  });
+
+  final EventsController<T> eventsController;
+  final MultiDayViewController<T> viewController;
+  final MultiDayBodyConfiguration configuration;
+
+  final double pageHeight;
+
+  /// The key used to identify the content of the [MultiDayBody].
+  static const contentKey = ValueKey('contentKey');
+
+  @override
+  State<MultiDayPage<T>> createState() => _MultiDayPageState<T>();
+}
+
+class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
+  EventsController<T> get eventsController => widget.eventsController;
+  MultiDayViewController<T> get controller => widget.viewController;
+  MultiDayViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
+  PageNavigationFunctions get pageNavigation => viewConfiguration.pageNavigationFunctions;
+  MultiDayBodyConfiguration get configuration => widget.configuration;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateVisibleEvents(controller.initialPage);
+  }
+
+  void _updateVisibleEvents(int index) {
+    final events = eventsController.eventsFromDateTimeRange(
+      pageNavigation.dateTimeRangeFromIndex(index),
+      includeDayEvents: true,
+      includeMultiDayEvents: configuration.showMultiDayEvents,
+    );
+    controller.visibleEvents.value = events.toSet();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      padEnds: false,
+      key: ValueKey(widget.viewController.viewConfiguration.hashCode),
+      controller: widget.viewController.pageController,
+      itemCount: widget.viewController.numberOfPages,
+      physics: widget.configuration.pageScrollPhysics,
+      onPageChanged: (index) {
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+
+        if (widget.viewController.viewConfiguration.type == MultiDayViewType.freeScroll) {
+          final range = DateTimeRange(
+            start: visibleRange.start,
+            end: visibleRange.start.addDays(viewConfiguration.numberOfDays),
+          );
+          widget.viewController.visibleDateTimeRange.value = range;
+        } else {
+          widget.viewController.visibleDateTimeRange.value = visibleRange;
+        }
+
+        _updateVisibleEvents(index);
+
+        final callbacks = context.callbacks<T>();
+        callbacks?.onPageChanged?.call(widget.viewController.visibleDateTimeRange.value.asLocal);
+      },
+      itemBuilder: (context, index) {
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+
+        return Stack(
+          key: MultiDayPage.contentKey,
+          clipBehavior: Clip.none,
+          children: [
+            Positioned.fill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  viewConfiguration.numberOfDays + 1,
+                  (_) => DaySeparator.fromContext<T>(context),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: DayDraggable<T>(
+                visibleDateTimeRange: visibleRange,
+                timeOfDayRange: viewConfiguration.timeOfDayRange,
+                pageHeight: widget.pageHeight,
+              ),
+            ),
+            Positioned.fill(
+              child: DayEventsWidget<T>(
+                eventsController: context.eventsController<T>(),
+                controller: context.calendarController<T>(),
+                configuration: widget.configuration,
+                visibleDateTimeRange: visibleRange,
+                timeOfDayRange: viewConfiguration.timeOfDayRange,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
