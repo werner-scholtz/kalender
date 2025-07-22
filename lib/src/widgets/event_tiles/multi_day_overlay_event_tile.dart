@@ -25,54 +25,50 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: interaction,
-      builder: (context, interaction, child) {
-        late final feedback = ValueListenableBuilder(
-          valueListenable: feedbackWidgetSize,
-          builder: (context, value, child) {
-            final feedbackTile = feedbackTileBuilder?.call(event, value);
-            return feedbackTile ?? const SizedBox();
-          },
-        );
-
-        final tile = overlayTileBuilder.call(event, localDateTimeRange);
-        final isDragging = controller.selectedEventId == event.id;
-        late final draggableTile = isMobileDevice
-            ? LongPressDraggable<Reschedule<T>>(
-                data: rescheduleEvent,
-                feedback: feedback,
-                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () {
-                  selectEvent();
-                  dismissOverlay();
-                },
-                maxSimultaneousDrags: 1,
-                child: isDragging ? const SizedBox.shrink() : tile,
-              )
-            : Draggable<Reschedule<T>>(
-                data: rescheduleEvent,
-                feedback: feedback,
-                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: () {
-                  selectEvent();
-                  dismissOverlay();
-                },
-                child: isDragging ? const SizedBox.shrink() : tile,
-              );
-
-        return GestureDetector(
-          onTap: onEventTapped != null
-              ? () {
-                  // Find the global position and size of the tile.
-                  final renderObject = context.findRenderObject()! as RenderBox;
-                  onEventTapped!.call(event, renderObject);
-                  onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
-                }
-              : null,
-          child: canReschedule ? draggableTile : tile,
-        );
+    /// TODO: Check that removing interaction listener does not break anything.
+    late final feedback = ValueListenableBuilder(
+      valueListenable: feedbackWidgetSize,
+      builder: (context, value, child) {
+        final feedbackTile = feedbackTileBuilder?.call(event, value);
+        return feedbackTile ?? const SizedBox();
       },
+    );
+
+    final tile = overlayTileBuilder.call(event, localDateTimeRange);
+    final isDragging = controller.selectedEventId == event.id;
+    late final draggableTile = isMobileDevice
+        ? LongPressDraggable<Reschedule<T>>(
+            data: rescheduleEvent,
+            feedback: feedback,
+            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+            onDragStarted: () {
+              selectEvent();
+              dismissOverlay();
+            },
+            maxSimultaneousDrags: 1,
+            child: isDragging ? const SizedBox.shrink() : tile,
+          )
+        : Draggable<Reschedule<T>>(
+            data: rescheduleEvent,
+            feedback: feedback,
+            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+            onDragStarted: () {
+              selectEvent();
+              dismissOverlay();
+            },
+            child: isDragging ? const SizedBox.shrink() : tile,
+          );
+
+    return GestureDetector(
+      onTap: onEventTapped != null
+          ? () {
+              // Find the global position and size of the tile.
+              final renderObject = context.findRenderObject()! as RenderBox;
+              onEventTapped!.call(event, renderObject);
+              onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
+            }
+          : null,
+      child: canReschedule ? draggableTile : tile,
     );
   }
 }

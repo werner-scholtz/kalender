@@ -3,53 +3,32 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class DayDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> calendarController;
+  final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
-  final MultiDayBodyConfiguration bodyConfiguration;
+  final MultiDayBodyConfiguration configuration;
 
-  final ScrollController scrollController;
-  final CalendarCallbacks<T>? callbacks;
-  final TileComponents<T> tileComponents;
-
-  final TimeOfDayRange timeOfDayRange;
   final double pageWidth;
   final double dayWidth;
   final double viewPortHeight;
-  final double heightPerMinute;
-
-  final HorizontalTriggerWidgetBuilder? leftPageTrigger;
-  final HorizontalTriggerWidgetBuilder? rightPageTrigger;
-  final VerticalTriggerWidgetBuilder? topScrollTrigger;
-  final VerticalTriggerWidgetBuilder? bottomScrollTrigger;
 
   final ValueNotifier<CalendarSnapping> snapping;
 
   /// Creates a [DayDragTarget].
   const DayDragTarget({
     super.key,
-    required this.eventsController,
-    required this.calendarController,
+    required this.controller,
     required this.viewController,
-    required this.scrollController,
-    required this.callbacks,
-    required this.tileComponents,
-    required this.bodyConfiguration,
-    required this.timeOfDayRange,
+    required this.configuration,
     required this.pageWidth,
     required this.dayWidth,
     required this.viewPortHeight,
-    required this.heightPerMinute,
-    required this.leftPageTrigger,
-    required this.rightPageTrigger,
-    required this.topScrollTrigger,
-    required this.bottomScrollTrigger,
     required this.snapping,
   });
 
@@ -59,17 +38,17 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
 class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints, DragTargetUtilities<T> {
   @override
-  EventsController<T> get eventsController => widget.eventsController;
+  EventsController<T> get eventsController => context.eventsController<T>();
   ValueNotifier<Size?> get feedbackWidgetSize => eventsController.feedbackWidgetSize;
 
   @override
-  CalendarController<T> get controller => widget.calendarController;
+  CalendarController<T> get controller => widget.controller;
 
   @override
   List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();
 
   @override
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
 
   @override
   double get dayWidth => widget.dayWidth;
@@ -78,10 +57,10 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   bool get multiDayDragTarget => false;
 
   MultiDayViewController<T> get viewController => widget.viewController;
-  ScrollController get scrollController => widget.scrollController;
-  TimeOfDayRange get timeOfDayRange => widget.timeOfDayRange;
+  ScrollController get scrollController => viewController.scrollController;
+  TimeOfDayRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
-  MultiDayBodyConfiguration get bodyConfiguration => widget.bodyConfiguration;
+  MultiDayBodyConfiguration get bodyConfiguration => widget.configuration;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
@@ -92,7 +71,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   bool get snapToTimeIndicator => snapping.snapToTimeIndicator;
   Duration get snapRange => snapping.snapRange;
 
-  double get heightPerMinute => widget.heightPerMinute;
+  double get heightPerMinute => context.heightPerMinute;
   double get pageWidth => widget.pageWidth;
   double get viewPortHeight => widget.viewPortHeight;
 
@@ -113,10 +92,6 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     if (oldWidget.snapping != widget.snapping) {
       oldWidget.snapping.removeListener(_updateSnapPoints);
       widget.snapping.addListener(_updateSnapPoints);
-    }
-    if (oldWidget.calendarController.visibleEvents != controller.visibleEvents) {
-      oldWidget.calendarController.visibleEvents.removeListener(_updateSnapPoints);
-      controller.visibleEvents.addListener(_updateSnapPoints);
     }
   }
 
@@ -164,6 +139,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
+        final components = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
 
         final triggerWidth = pageWidth / 50;
         final rightTrigger = CursorNavigationTrigger(
@@ -172,7 +148,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             duration: pageTrigger.animationDuration,
             curve: pageTrigger.animationCurve,
           ),
-          child: widget.rightPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+          child:
+              components.rightTriggerBuilder?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final leftTrigger = CursorNavigationTrigger(
@@ -181,7 +158,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             duration: pageTrigger.animationDuration,
             curve: pageTrigger.animationCurve,
           ),
-          child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+          child:
+              components.leftTriggerBuilder?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
         final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
@@ -193,7 +171,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             duration: scrollTrigger.animationDuration,
             curve: scrollTrigger.animationCurve,
           ),
-          child: widget.topScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
+          child:
+              components.topTriggerBuilder?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         final bottomScrollTrigger = CursorNavigationTrigger(
@@ -203,7 +182,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             duration: scrollTrigger.animationDuration,
             curve: scrollTrigger.animationCurve,
           ),
-          child: widget.bottomScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
+          child: components.bottomTriggerBuilder?.call(viewPortHeight) ??
+              SizedBox(height: triggerHeight, width: pageWidth),
         );
 
         return Stack(

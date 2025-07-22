@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 
 import 'utilities.dart';
@@ -39,7 +38,6 @@ void main() {
   testWidgets('DayEventsWidget lays out events correctly', (tester) async {
     final calendarController = CalendarController<int>();
     final configuration = MultiDayBodyConfiguration();
-    final interaction = ValueNotifier(CalendarInteraction());
     // The range to display in the DayEventsWidget.
     final displayRange = start.asUtc.startOfDay.weekRange();
 
@@ -49,24 +47,24 @@ void main() {
     // Build the DayEventsWidget
     await tester.pumpWidget(
       wrapWithMaterialApp(
-        BodyProvider(
-          callbacks: null, // Use default callbacks
+        TestProvider(
+          calendarController: calendarController,
+          eventsController: eventsController,
           tileComponents: TileComponents<int>(
             tileBuilder: (event, tileRange) => Container(
               key: ValueKey(event.data!),
               child: Text(event.data.toString()),
             ),
           ),
-          interaction: interaction,
-          snapping: ValueNotifier(const CalendarSnapping()),
-          child: DayEventsWidget<int>(
-            eventsController: eventsController,
-            controller: calendarController,
-            configuration: configuration,
-            dayWidth: 100,
-            heightPerMinute: 1,
-            visibleDateTimeRange: displayRange,
-            timeOfDayRange: timeOfDayRange,
+          child: SizedBox(
+            width: 700,
+            child: DayEventsWidget<int>(
+              eventsController: eventsController,
+              controller: calendarController,
+              configuration: configuration,
+              visibleDateTimeRange: displayRange,
+              timeOfDayRange: timeOfDayRange,
+            ),
           ),
         ),
       ),

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The time indicator builder.
 ///
@@ -74,6 +74,20 @@ class TimeIndicator extends StatefulWidget {
       heightPerMinute: heightPerMinute,
       timelineWidth: timelineWidth,
       style: style,
+    );
+  }
+
+  static Widget fromContext<T>(
+    BuildContext context,
+    TimeOfDayRange timeOfDayRange,
+  ) {
+    final timeIndicatorStyle = context.components<T>()?.multiDayComponentStyles?.bodyStyles?.timeIndicatorStyle;
+    final components = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    return components.timeIndicator.call(
+      timeOfDayRange,
+      context.heightPerMinute,
+      0, // TODO: remove this
+      timeIndicatorStyle,
     );
   }
 

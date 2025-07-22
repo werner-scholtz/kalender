@@ -5,37 +5,19 @@ import 'package:kalender/kalender.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
-/// The [TimeIndicatorPositioner] calculates the position of a time indicator
+/// The [PositionedTimeIndicator] calculates the position of a time indicator
 /// based on the current page offset and positions it accordingly. It's designed
 /// to work with multi-day calendar views where the time indicator needs to
 /// track the current day across different pages.
 ///
 /// The widget listens to page offset changes and automatically repositions
 /// the time indicator to maintain proper alignment with the current view.
-class TimeIndicatorPositioner<T extends Object?> extends StatefulWidget {
+class PositionedTimeIndicator<T extends Object?> extends StatefulWidget {
   /// The [MultiDayViewController] that controls the calendar view.
   ///
   /// This controller provides access to the page offset and view configuration
   /// needed to calculate the time indicator position.
   final MultiDayViewController<T> viewController;
-
-  /// The widget to be positioned as the time indicator.
-  ///
-  /// This is typically a visual representation of the current time,
-  /// such as a line or marker that shows the current time of day.
-  final Widget child;
-
-  /// The width of a single day column in the calendar view.
-  ///
-  /// This value is used to calculate the precise positioning of the
-  /// time indicator within the day column.
-  final double dayWidth;
-
-  /// The total width of a single page in the calendar view.
-  ///
-  /// This represents the full width of the viewport and is used
-  /// to calculate page-relative positioning.
-  final double pageWidth;
 
   /// The initial page number to start from.
   final int initialPage;
@@ -43,26 +25,27 @@ class TimeIndicatorPositioner<T extends Object?> extends StatefulWidget {
   /// An optional override for the current time.
   final DateTime? dateOverride;
 
-  /// Creates a [TimeIndicatorPositioner].
-  const TimeIndicatorPositioner({
+  /// An optional child widget to display within the positioned indicator.
+  final Widget? childOverride;
+
+  /// Creates a [PositionedTimeIndicator].
+  const PositionedTimeIndicator({
     super.key,
     required this.viewController,
-    required this.child,
-    required this.dayWidth,
-    required this.pageWidth,
     required this.initialPage,
     this.dateOverride,
+    this.childOverride,
   });
 
   @override
-  State<TimeIndicatorPositioner<T>> createState() => _TimeIndicatorPositionerState<T>();
+  State<PositionedTimeIndicator<T>> createState() => _PositionedTimeIndicatorState<T>();
 }
 
-/// The state class for [TimeIndicatorPositioner].
+/// The state class for [PositionedTimeIndicator].
 ///
 /// This class manages the positioning logic and listens to page offset changes
 /// to keep the time indicator properly positioned relative to the current view.
-class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicatorPositioner<T>> {
+class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedTimeIndicator<T>> {
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController<T>? viewController;
 
@@ -97,7 +80,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
   /// This position is calculated based on the page offset and page width,
   /// determining where the time indicator should be positioned horizontally
   /// to align with the current day column.
-  double get left => (pageOffset * widget.pageWidth) + (todayIndex * widget.dayWidth);
+  double left(double pageWidth, double dayWidth) => (pageOffset * pageWidth) + (todayIndex * dayWidth);
 
   @override
   void initState() {
@@ -106,7 +89,7 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
   }
 
   @override
-  void didUpdateWidget(covariant TimeIndicatorPositioner<T> oldWidget) {
+  void didUpdateWidget(covariant PositionedTimeIndicator<T> oldWidget) {
     _setup();
     super.didUpdateWidget(oldWidget);
   }
@@ -185,15 +168,30 @@ class _TimeIndicatorPositionerState<T extends Object?> extends State<TimeIndicat
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      left: left,
-      right: widget.pageWidth - (left + widget.dayWidth),
-      top: 0,
-      bottom: 0,
-      // Hide the time indicator when it's completely off-screen (more than 1 page away)
-      child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
-          ? const SizedBox.shrink()
-          : widget.child,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        final dayWidth = pageWidth / widget.viewController.viewConfiguration.numberOfDays;
+        final left = this.left(pageWidth, dayWidth);
+        return Stack(
+          children: [
+            Positioned.fill(
+              left: left,
+              right: pageWidth - (left + dayWidth),
+              top: 0,
+              bottom: 0,
+              // Hide the time indicator when it's completely off-screen (more than 1 page away)
+              child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
+                  ? const SizedBox.shrink()
+                  : widget.childOverride ??
+                      TimeIndicator.fromContext<T>(
+                        context,
+                        widget.viewController.viewConfiguration.timeOfDayRange,
+                      ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

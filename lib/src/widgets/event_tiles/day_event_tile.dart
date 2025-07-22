@@ -33,114 +33,117 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: interaction,
-      builder: (context, interaction, child) {
-        late final topResizeDetector = ValueListenableBuilder(
-          valueListenable: selectedEvent,
-          builder: (context, value, child) {
-            if (!isMobileDevice) {
-              if (controller.internalFocus) return const SizedBox();
-            } else {
-              if (value != event) return const SizedBox();
-            }
+    /// TODO: CHeck  that removing interaction does not break anything.
+    // return ValueListenableBuilder(
+    //   valueListenable: interaction,
+    //   builder: (context, interaction, child) {
 
-            return Draggable<Resize<T>>(
-              key: topResizeDraggable,
-              data: resizeEvent(ResizeDirection.top),
-              feedback: const SizedBox(),
-              dragAnchorStrategy: pointerDragAnchorStrategy,
-              onDragStarted: selectEvent,
-              child: verticalResizeHandle ?? Container(color: Colors.transparent),
-            );
-          },
-        );
+    //   },
+    // );
 
-        late final bottomResizeDetector = ValueListenableBuilder(
-          valueListenable: selectedEvent,
-          builder: (context, value, child) {
-            if (!isMobileDevice) {
-              if (controller.internalFocus) return const SizedBox();
-            } else {
-              if (value != event) return const SizedBox();
-            }
+    late final topResizeDetector = ValueListenableBuilder(
+      valueListenable: selectedEvent,
+      builder: (context, value, child) {
+        if (!isMobileDevice) {
+          if (controller.internalFocus) return const SizedBox();
+        } else {
+          if (value != event) return const SizedBox();
+        }
 
-            return Draggable<Resize<T>>(
-              key: bottomResizeDraggable,
-              data: resizeEvent(ResizeDirection.bottom),
-              feedback: const SizedBox(),
-              dragAnchorStrategy: pointerDragAnchorStrategy,
-              onDragStarted: selectEvent,
-              child: verticalResizeHandle ?? Container(color: Colors.transparent),
-            );
-          },
-        );
-
-        late final feedback = ValueListenableBuilder(
-          valueListenable: feedbackWidgetSize,
-          builder: (context, value, child) {
-            final feedbackTile = feedbackTileBuilder?.call(event, value);
-            return feedbackTile ?? const SizedBox();
-          },
-        );
-
-        final tile = tileBuilder.call(event, localDateTimeRange);
-        final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
-        final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
-        late final draggable = isMobileDevice
-            ? LongPressDraggable<Reschedule<T>>(
-                key: rescheduleDraggable,
-                data: rescheduleEvent,
-                feedback: feedback,
-                childWhenDragging: tileWhenDragging,
-                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: selectEvent,
-                maxSimultaneousDrags: 1,
-                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-              )
-            : Draggable<Reschedule<T>>(
-                key: rescheduleDraggable,
-                data: rescheduleEvent,
-                feedback: feedback,
-                childWhenDragging: tileWhenDragging,
-                dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-                onDragStarted: selectEvent,
-                child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-              );
-
-        final tileWidget = GestureDetector(
-          onTap: onEventTapped != null
-              ? () {
-                  // Find the global position and size of the tile.
-                  final renderObject = context.findRenderObject()! as RenderBox;
-                  onEventTapped!.call(event, renderObject);
-                  onEventTappedWithDetail?.call(event, renderObject, DayDetail(dateTimeRange.start));
-                }
-              : null,
-          child: canReschedule ? draggable : tile,
-        );
-
-        final resizeHandles = tileComponents.verticalHandlePositioner?.call(
-              topResizeDetector,
-              bottomResizeDetector,
-              showStart,
-              showEnd,
-            ) ??
-            VerticalTileResizeHandlePositioner(
-              startResizeDetector: topResizeDetector,
-              endResizeDetector: bottomResizeDetector,
-              showStart: showStart,
-              showEnd: showEnd,
-            );
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            tileWidget,
-            if (interaction.allowResizing) Positioned.fill(child: resizeHandles),
-          ],
+        return Draggable<Resize<T>>(
+          key: topResizeDraggable,
+          data: resizeEvent(ResizeDirection.top),
+          feedback: const SizedBox(),
+          dragAnchorStrategy: pointerDragAnchorStrategy,
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? Container(color: Colors.transparent),
         );
       },
+    );
+
+    late final bottomResizeDetector = ValueListenableBuilder(
+      valueListenable: selectedEvent,
+      builder: (context, value, child) {
+        if (!isMobileDevice) {
+          if (controller.internalFocus) return const SizedBox();
+        } else {
+          if (value != event) return const SizedBox();
+        }
+
+        return Draggable<Resize<T>>(
+          key: bottomResizeDraggable,
+          data: resizeEvent(ResizeDirection.bottom),
+          feedback: const SizedBox(),
+          dragAnchorStrategy: pointerDragAnchorStrategy,
+          onDragStarted: selectEvent,
+          child: verticalResizeHandle ?? Container(color: Colors.transparent),
+        );
+      },
+    );
+
+    late final feedback = ValueListenableBuilder(
+      valueListenable: feedbackWidgetSize,
+      builder: (context, value, child) {
+        final feedbackTile = feedbackTileBuilder?.call(event, value);
+        return feedbackTile ?? const SizedBox();
+      },
+    );
+
+    final tile = tileBuilder.call(event, localDateTimeRange);
+    final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
+    final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
+    late final draggable = isMobileDevice
+        ? LongPressDraggable<Reschedule<T>>(
+            key: rescheduleDraggable,
+            data: rescheduleEvent,
+            feedback: feedback,
+            childWhenDragging: tileWhenDragging,
+            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+            onDragStarted: selectEvent,
+            maxSimultaneousDrags: 1,
+            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
+          )
+        : Draggable<Reschedule<T>>(
+            key: rescheduleDraggable,
+            data: rescheduleEvent,
+            feedback: feedback,
+            childWhenDragging: tileWhenDragging,
+            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
+            onDragStarted: selectEvent,
+            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
+          );
+
+    final tileWidget = GestureDetector(
+      onTap: onEventTapped != null
+          ? () {
+              // Find the global position and size of the tile.
+              final renderObject = context.findRenderObject()! as RenderBox;
+              onEventTapped!.call(event, renderObject);
+              onEventTappedWithDetail?.call(event, renderObject, DayDetail(dateTimeRange.start));
+            }
+          : null,
+      child: canReschedule ? draggable : tile,
+    );
+
+    final resizeHandles = tileComponents.verticalHandlePositioner?.call(
+          topResizeDetector,
+          bottomResizeDetector,
+          showStart,
+          showEnd,
+        ) ??
+        VerticalTileResizeHandlePositioner(
+          startResizeDetector: topResizeDetector,
+          endResizeDetector: bottomResizeDetector,
+          showStart: showStart,
+          showEnd: showEnd,
+        );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        tileWidget,
+        if (interaction.allowResizing) Positioned.fill(child: resizeHandles),
+      ],
     );
   }
 }

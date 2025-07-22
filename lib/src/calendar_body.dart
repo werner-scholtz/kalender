@@ -39,6 +39,9 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   /// The snapping that will be used by the [CalendarBody].
   final ValueNotifier<CalendarSnapping>? snapping;
 
+  /// The height per minute used by the [CalendarBody].
+  final ValueNotifier<double>? heightPerMinute;
+
   /// Creates a CalendarBody widget.
   ///
   /// This creates the correct body based on the [ViewController] inside the [CalendarController]
@@ -53,6 +56,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
     this.callbacks,
     this.interaction,
     this.snapping,
+    this.heightPerMinute,
     this.multiDayTileComponents,
     this.multiDayBodyConfiguration,
     this.monthTileComponents,
@@ -64,37 +68,40 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final viewController = provider.viewController;
+    final viewController = context.calendarController<T>().viewController;
     final callbacks = this.callbacks ?? provider.callbacks;
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
     final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
 
-    return switch (viewController) {
-      MultiDayViewController<T>() => BodyProvider<T>(
-          callbacks: callbacks,
-          tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          snapping: snapping,
-          child: MultiDayBody<T>(configuration: multiDayBodyConfiguration),
-        ),
-      MonthViewController<T>() => BodyProvider<T>(
-          callbacks: callbacks,
-          tileComponents: monthTileComponents ?? TileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          snapping: snapping,
-          child: MonthBody<T>(configuration: monthBodyConfiguration),
-        ),
-      ScheduleViewController<T>() => BodyProvider<T>(
-          callbacks: callbacks,
-          tileComponents: scheduleTileComponents ?? ScheduleTileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          snapping: snapping,
-          child: ScheduleBody<T>(configuration: scheduleBodyConfiguration),
-        ),
-      _ => throw ErrorHint(
-          'Unsupported ViewController type: ${viewController.runtimeType}. '
-          'Make sure to use the correct CalendarBody for the ViewController.',
-        ),
-    };
+    return Callbacks<T>(
+      callbacks: callbacks,
+      child: Interaction(
+        notifier: interaction,
+        child: switch (viewController) {
+          MultiDayViewController<T>() => TileComponentProvider<T>(
+              tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
+              child: HeightPerMinuteProvider(
+                notifier: viewController.heightPerMinute,
+                child: Snapping(
+                  notifier: snapping,
+                  child: MultiDayBody<T>(configuration: multiDayBodyConfiguration),
+                ),
+              ),
+            ),
+          MonthViewController<T>() => TileComponentProvider<T>(
+              tileComponents: monthTileComponents ?? TileComponents.defaultComponents<T>(),
+              child: MonthBody<T>(configuration: monthBodyConfiguration),
+            ),
+          ScheduleViewController<T>() => TileComponentProvider<T>(
+              tileComponents: scheduleTileComponents ?? ScheduleTileComponents.defaultComponents<T>(),
+              child: ScheduleBody<T>(configuration: scheduleBodyConfiguration),
+            ),
+          _ => throw ErrorHint(
+              'Unsupported ViewController type: ${viewController.runtimeType}. '
+              'Make sure to use the correct CalendarBody for the ViewController.',
+            ),
+        },
+      ),
+    );
   }
 }

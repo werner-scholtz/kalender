@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The time line builder.
 ///
@@ -102,9 +101,29 @@ class TimeLine extends StatelessWidget {
     );
   }
 
+
   static Key getTimeKey(int hour, int minute) {
     return Key('time-$hour-$minute');
   } 
+
+  /// Builds the time line widget based on the provided context.
+  static Widget fromContext<T>(
+    BuildContext context,
+    TimeOfDayRange timeOfDayRange,
+  ) {
+    final calendarController = context.calendarController<T>();
+    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final selectedEvent = calendarController.selectedEvent;
+    final timelineStyle = context.components<T>()?.multiDayComponentStyles?.bodyStyles?.timelineStyle;
+    final bodyComponents = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    return bodyComponents.timeline.call(
+      context.heightPerMinute,
+      timeOfDayRange,
+      timelineStyle,
+      selectedEvent,
+      viewController.visibleDateTimeRange,
+    );
+  }
 
   /// The [TextStyle] that will be used for the text.
   TextStyle textStyle(BuildContext context) => style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;

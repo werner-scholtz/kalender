@@ -39,35 +39,27 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
-    final viewController = provider.viewController;
+    final viewController = context.calendarController<T>().viewController;
     final callbacks = this.callbacks ?? provider.callbacks;
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
-    return switch (viewController) {
-      MultiDayViewController<T>() => HeaderProvider<T>(
-          callbacks: callbacks,
-          tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          child: MultiDayHeader<T>(
-            configuration: multiDayHeaderConfiguration,
+    return Callbacks(
+      callbacks: callbacks,
+      child: switch (viewController) {
+        MultiDayViewController<T>() => Interaction(
+            notifier: interaction,
+            child: TileComponentProvider(
+              tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
+              child: MultiDayHeader<T>(configuration: multiDayHeaderConfiguration),
+            ),
           ),
-        ),
-      MonthViewController<T>() => HeaderProvider<T>(
-          callbacks: callbacks,
-          tileComponents: TileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          child: MonthHeader<T>(),
-        ),
-      ScheduleViewController<T>() => HeaderProvider<T>(
-          callbacks: callbacks,
-          tileComponents: TileComponents.defaultComponents<T>(),
-          interaction: interaction,
-          child: ScheduleHeader<T>(),
-        ),
-      _ => throw ErrorHint(
-          'Unsupported ViewController type: ${viewController.runtimeType}. '
-          'Make sure to use the correct CalendarHeader for the ViewController.',
-        )
-    };
+        MonthViewController<T>() => MonthHeader<T>(),
+        ScheduleViewController<T>() => ScheduleHeader<T>(),
+        _ => throw ErrorHint(
+            'Unsupported ViewController type: ${viewController.runtimeType}. '
+            'Make sure to use the correct CalendarHeader for the ViewController.',
+          )
+      },
+    );
   }
 }
