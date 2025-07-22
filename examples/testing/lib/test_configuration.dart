@@ -35,7 +35,9 @@ class TestConfiguration {
   /// The calendar controller for the test.
   final calendarController = CalendarController<Event>();
 
-  static List<CalendarEvent<Event>> generate(List<TimeOfDayRange> timeOfDayRanges) {
+  static List<CalendarEvent<Event>> generate(
+    List<TimeOfDayRange> timeOfDayRanges,
+  ) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     // Loop through the test range and create events.
@@ -49,7 +51,8 @@ class TestConfiguration {
             ),
             data: Event(
               title: 'Event',
-              description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
+              description:
+                  '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
               color: Colors.primaries[date.day % Colors.primaries.length],
             ),
           ),

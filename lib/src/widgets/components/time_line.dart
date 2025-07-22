@@ -101,10 +101,9 @@ class TimeLine extends StatelessWidget {
     );
   }
 
-
   static Key getTimeKey(int hour, int minute) {
     return Key('time-$hour-$minute');
-  } 
+  }
 
   /// Builds the time line widget based on the provided context.
   static Widget fromContext<T>(

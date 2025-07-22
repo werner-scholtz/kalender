@@ -16,7 +16,9 @@ void main() {
         late TestConfiguration config;
         setUp(() {
           config = TestConfiguration(viewConfiguration: view.viewConfiguration);
-          config.eventsController.addEvents(TestConfiguration.generate(scenario.eventRanges));
+          config.eventsController.addEvents(
+            TestConfiguration.generate(scenario.eventRanges),
+          );
         });
 
         testWidgets('${scenario.name} Loading', (tester) async {
@@ -50,56 +52,66 @@ void main() {
 
           await binding.traceAction(() async {
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day - 7));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day - 7),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
             config.calendarController.animateToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day + 7));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day + 7),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day + 14));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day + 14),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
             config.calendarController.animateToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 250));
           }, reportKey: scenario.getReportKey(view, ReportKeys.navigation));
         });
 
-        testWidgets('${scenario.name} Scrolling MultiDay', skip: view != Views.week, (
-          tester,
-        ) async {
-          await tester.pumpWidget(MyApp(config: config));
-          await tester.pumpAndSettle(Duration(seconds: 1));
-          config.calendarController.jumpToDate(TestConfiguration.selectedDate);
-          await tester.pumpAndSettle(Duration(seconds: 1));
+        testWidgets(
+          '${scenario.name} Scrolling MultiDay',
+          skip: view != Views.week,
+          (tester) async {
+            await tester.pumpWidget(MyApp(config: config));
+            await tester.pumpAndSettle(Duration(seconds: 1));
+            config.calendarController.jumpToDate(
+              TestConfiguration.selectedDate,
+            );
+            await tester.pumpAndSettle(Duration(seconds: 1));
 
-          // 1. Profile loading events.
-          final eventBatches = <List<CalendarEvent<Event>>>[];
-          for (var range in scenario.eventRanges) {
-            final events = TestConfiguration.generate([range]);
-            eventBatches.add(events);
-          }
-
-          final scrollable = find.descendant(
-            of: find.byKey(MultiDayBody.singleChildScrollViewKey),
-            matching: find.byType(Scrollable).at(0),
-          );
-          final startFinder = find.byKey(TimeLine.getTimeKey(1, 0));
-          final endFinder = find.byKey(TimeLine.getTimeKey(23, 0));
-
-          // Profile scrolling.
-          // This gives a good indication of how scrolling affects performance.
-          await binding.traceAction(() async {
-            await tester.pumpAndSettle(Duration(milliseconds: 100));
-            for (var i = 0; i < 10; i++) {
-              await tester.scrollUpAndDown(
-                startTarget: startFinder,
-                endTarget: endFinder,
-                scrollable: scrollable,
-                scrollStep: 1,
-              );
-              await tester.pump(Duration(milliseconds: 10));
+            // 1. Profile loading events.
+            final eventBatches = <List<CalendarEvent<Event>>>[];
+            for (var range in scenario.eventRanges) {
+              final events = TestConfiguration.generate([range]);
+              eventBatches.add(events);
             }
-          }, reportKey: scenario.getReportKey(view, ReportKeys.scrolling));
-        });
+
+            final scrollable = find.descendant(
+              of: find.byKey(MultiDayBody.singleChildScrollViewKey),
+              matching: find.byType(Scrollable).at(0),
+            );
+            final startFinder = find.byKey(TimeLine.getTimeKey(1, 0));
+            final endFinder = find.byKey(TimeLine.getTimeKey(23, 0));
+
+            // Profile scrolling.
+            // This gives a good indication of how scrolling affects performance.
+            await binding.traceAction(() async {
+              await tester.pumpAndSettle(Duration(milliseconds: 100));
+              for (var i = 0; i < 10; i++) {
+                await tester.scrollUpAndDown(
+                  startTarget: startFinder,
+                  endTarget: endFinder,
+                  scrollable: scrollable,
+                  scrollStep: 1,
+                );
+                await tester.pump(Duration(milliseconds: 10));
+              }
+            }, reportKey: scenario.getReportKey(view, ReportKeys.scrolling));
+          },
+        );
       });
     }
   }

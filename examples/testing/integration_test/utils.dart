@@ -109,7 +109,10 @@ extension Test on WidgetTester {
     required Future<void> Function() test,
     required String reportKey,
   }) {
-    return binding.traceAction(() async => await test.call(), reportKey: reportKey);
+    return binding.traceAction(
+      () async => await test.call(),
+      reportKey: reportKey,
+    );
   }
 }
 
@@ -202,7 +205,6 @@ final timeOfDayRanges = [
   ),
 ];
 
-
 extension ViewUtils on Views {
   ViewConfiguration get viewConfiguration {
     switch (this) {
@@ -226,5 +228,6 @@ extension ViewUtils on Views {
 }
 
 extension ScenarioUtils on Scenario {
-  List<TimeOfDayRange> get eventRanges => timeOfDayRanges.take(numberOfEvents).toList();
+  List<TimeOfDayRange> get eventRanges =>
+      timeOfDayRanges.take(numberOfEvents).toList();
 }

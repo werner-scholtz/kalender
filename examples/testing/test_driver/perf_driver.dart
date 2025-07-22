@@ -30,7 +30,8 @@ Future<void> main() {
         final keys = [
           for (final scenario in Scenario.values)
             for (var view in Views.values)
-              for (var key in ReportKeys.values) scenario.getReportKey(view, key),
+              for (var key in ReportKeys.values)
+                scenario.getReportKey(view, key),
         ];
 
         print('\n=== Performance Profiling Summary ===');
@@ -43,13 +44,19 @@ Future<void> main() {
             continue;
           }
 
-          final timeline = driver.Timeline.fromJson(data[key] as Map<String, dynamic>);
+          final timeline = driver.Timeline.fromJson(
+            data[key] as Map<String, dynamic>,
+          );
           final timelineSummary = driver.TimelineSummary.summarize(timeline);
 
           // Extract key metrics
           final frameCount = timeline.events?.length ?? 0;
 
-          await timelineSummary.writeTimelineToFile(key, pretty: true, includeSummary: true);
+          await timelineSummary.writeTimelineToFile(
+            key,
+            pretty: true,
+            includeSummary: true,
+          );
 
           final metricsStr =
               '\n- Avg Build: ${timelineSummary.summaryJson['average_frame_build_time_millis']}ms'
