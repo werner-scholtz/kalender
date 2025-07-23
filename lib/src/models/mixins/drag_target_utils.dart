@@ -126,7 +126,7 @@ mixin DragTargetUtilities<T> {
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    context.feedbackWidgetSizeNotifier.value = Size.zero;
+    context.feedbackWidgetSizeNotifier<T>().value = Size.zero;
     controller.deselectEvent();
     callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }

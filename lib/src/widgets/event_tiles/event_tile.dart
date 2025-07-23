@@ -127,8 +127,16 @@ class EventReschedule<T extends Object?> extends EventModification<T> {
   Widget build(BuildContext context) {
     final controller = context.calendarController<T>();
     final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
-    late final feedback = feedbackTileBuilder?.call(event, context.feedbackWidgetSize) ?? const SizedBox();
     final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
+
+    late final feedback = ValueListenableBuilder(
+      valueListenable: context.feedbackWidgetSizeNotifier<T>(),
+      builder: (context, value, child) {
+        final feedbackTile = feedbackTileBuilder?.call(event, value);
+        return feedbackTile ?? const SizedBox();
+      },
+    );
+
     return isMobileDevice
         ? LongPressDraggable<Reschedule<T>>(
             data: rescheduleEvent,

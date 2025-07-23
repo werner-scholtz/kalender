@@ -166,17 +166,6 @@ class HeightPerMinuteProvider extends InheritedNotifier<ValueNotifier<double>> {
   }
 }
 
-class FeedbackWidgetSizeProvider extends InheritedNotifier<ValueNotifier<Size>> {
-  const FeedbackWidgetSizeProvider({super.key, required super.notifier, required super.child});
-
-  /// Gets the [FeedbackWidgetSizeProvider] of type [T] from the context.
-  static ValueNotifier<Size> of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<FeedbackWidgetSizeProvider>();
-    assert(result != null, 'No FeedbackWidgetSizeProvider found.');
-    return result!.notifier!;
-  }
-}
-
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Returns the [CalendarProvider] of type [T] from the context.
@@ -197,6 +186,9 @@ extension ProviderContext on BuildContext {
   /// Retrieve the [TileComponents] from the [TileComponentProvider].
   TileComponents<T> tileComponents<T extends Object?>() => TileComponentProvider.of<T>(this);
 
+  /// Retrieve the feedback widget size notifier from the [EventsController].
+  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController<T>().feedbackWidgetSize;
+
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);
 
@@ -211,10 +203,4 @@ extension ProviderContext on BuildContext {
 
   /// Retrieve the height per minute.
   double get heightPerMinute => HeightPerMinuteProvider.of(this);
-
-  ValueNotifier<Size> get feedbackWidgetSizeNotifier => FeedbackWidgetSizeProvider.of(this);
-  Size get feedbackWidgetSize {
-    final size = FeedbackWidgetSizeProvider.of(this);
-    return size.value;
-  }
 }

@@ -61,6 +61,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
           showStart: showStart,
           showEnd: showEnd,
         );
+        
     return Stack(
       fit: StackFit.expand,
       children: [

@@ -126,7 +126,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
             // Set the size of the feedback widget.
 
-            context.feedbackWidgetSizeNotifier.value = Size(dayWidth, eventHeight);
+            context.feedbackWidgetSizeNotifier<T>().value = Size(dayWidth, eventHeight);
             // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
             return true;

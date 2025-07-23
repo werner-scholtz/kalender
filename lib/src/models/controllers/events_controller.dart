@@ -7,6 +7,9 @@ import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 /// This class can be extended to create custom [EventsController]s.
 /// e.g. [DefaultEventsController]
 abstract class EventsController<T extends Object?> with ChangeNotifier {
+  /// A ValueNotifier that holds the size of the feedback widget.
+  final feedbackWidgetSize = ValueNotifier<Size>(Size.zero);
+
   /// The list of [CalendarEvent]s.
   Iterable<CalendarEvent<T>> get events;
 
