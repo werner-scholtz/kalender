@@ -55,7 +55,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   }
 }
 
-class DayEventsColumn<T> extends StatefulWidget {
+class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
@@ -72,7 +72,7 @@ class DayEventsColumn<T> extends StatefulWidget {
   State<DayEventsColumn<T>> createState() => _DayEventsColumnState<T>();
 }
 
-class _DayEventsColumnState<T> extends State<DayEventsColumn<T>> {
+class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>> {
   /// The events that are displayed on the day.
   List<CalendarEvent<T>> _events = [];
   EventsController<T> get _eventsController => widget.eventsController;
@@ -151,7 +151,7 @@ class _DayEventsColumnState<T> extends State<DayEventsColumn<T>> {
         Positioned.fill(child: eventsWidget),
         Positioned.fill(
           child: PassThroughPointer(
-            child: DayDropTargetColumn(
+            child: DayDropTargetColumn<T>(
               events: _events,
               eventsController: widget.eventsController,
               configuration: widget.configuration,

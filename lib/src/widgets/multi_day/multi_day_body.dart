@@ -18,7 +18,7 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 ///
 /// 2. The [DayDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
-class MultiDayBody<T> extends StatelessWidget {
+class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
