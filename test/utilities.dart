@@ -114,7 +114,7 @@ class TestProvider<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EventsControllerProvider<T>(
-      notifier: eventsController,
+      eventsController: eventsController,
       child: CalendarControllerProvider(
         notifier: calendarController,
         child: CalendarProvider<T>(

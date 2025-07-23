@@ -41,9 +41,6 @@ void main() {
     // The range to display in the DayEventsWidget.
     final displayRange = start.asUtc.startOfDay.weekRange();
 
-    /// The time of day range to display in the DayEventsWidget.
-    final timeOfDayRange = TimeOfDayRange.allDay();
-
     // Build the DayEventsWidget
     await tester.pumpWidget(
       wrapWithMaterialApp(
@@ -58,12 +55,10 @@ void main() {
           ),
           child: SizedBox(
             width: 700,
-            child: DayEventsWidget<int>(
-              eventsController: eventsController,
-              controller: calendarController,
+            child: MultiDayEventsRow<int>(
               configuration: configuration,
               visibleDateTimeRange: displayRange,
-              timeOfDayRange: timeOfDayRange,
+              viewConfiguration: MultiDayViewConfiguration.week(),
             ),
           ),
         ),

@@ -29,15 +29,22 @@ class CalendarProvider<T extends Object?> extends InheritedWidget {
   }
 }
 
-/// The [EventsControllerProvider] is used to provide the [EventsController] to the [CalendarView]'s descendants.
-class EventsControllerProvider<T extends Object?> extends InheritedNotifier<EventsController<T>> {
-  const EventsControllerProvider({super.key, required super.notifier, required super.child});
+class EventsControllerProvider<T> extends InheritedWidget {
+  /// The [EventsController] that will be used by the Calendar.
+  final EventsController<T> eventsController;
+
+  const EventsControllerProvider({super.key, required this.eventsController, required super.child});
+
+  @override
+  bool updateShouldNotify(covariant EventsControllerProvider<T> oldWidget) {
+    return eventsController != oldWidget.eventsController;
+  }
 
   /// Gets the [EventsControllerProvider] of type [T] from the context.
   static EventsController<T> of<T>(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider<T>>();
     assert(result != null, 'No EventControllerProvider of <$T> found.');
-    return result!.notifier!;
+    return result!.eventsController;
   }
 }
 
@@ -178,6 +185,9 @@ extension ProviderContext on BuildContext {
 
   /// Retrieve the [TileComponents] from the [TileComponentProvider].
   TileComponents<T> tileComponents<T extends Object?>() => TileComponentProvider.of<T>(this);
+
+  /// Retrieve the feedback widget size notifier from the [EventsController].
+  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController<T>().feedbackWidgetSize;
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);

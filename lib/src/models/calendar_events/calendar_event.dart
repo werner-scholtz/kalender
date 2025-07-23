@@ -92,4 +92,18 @@ class CalendarEvent<T extends Object?> {
         '\nend: $endAsUtc'
         '\ndata: ${data.toString()}';
   }
+
+  /// Check if the [CalendarEvent] is equal to another [CalendarEvent].
+  @override
+  bool operator ==(Object other) {
+    return other is CalendarEvent<T> &&
+        other.id == id &&
+        other._dateTimeRange == _dateTimeRange &&
+        other.data == data &&
+        other.canModify == canModify &&
+        other.interaction == interaction;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, _dateTimeRange, data, canModify, interaction);
 }

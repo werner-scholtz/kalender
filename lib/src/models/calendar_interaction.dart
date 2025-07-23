@@ -173,6 +173,17 @@ class EventInteraction {
       : allowStartResize = true,
         allowEndResize = true,
         allowRescheduling = true;
+
+  @override
+  operator ==(Object other) {
+    return other is EventInteraction &&
+        other.allowStartResize == allowStartResize &&
+        other.allowEndResize == allowEndResize &&
+        other.allowRescheduling == allowRescheduling;
+  }
+
+  @override
+  int get hashCode => Object.hash(allowStartResize, allowEndResize, allowRescheduling);
 }
 
 /// The [CalendarSnapping] class defines the snapping settings for the calendar.
