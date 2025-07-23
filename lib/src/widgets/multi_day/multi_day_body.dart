@@ -12,13 +12,13 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 ///
 /// The multi-day body has two big parts to it:
 /// 1. The content:
-///   - Static content such as [HourLines] and [_TimeLine].
+///   - Static content such as [HourLines] and [TimeLine].
 ///   - Dynamic content such as the [PageView] which displays:
-///     [DaySeparator], [DayDraggable], [DayEventsWidget] and the [TimeIndicator]
+///     [DaySeparator], [DayDraggable], [MultiDayEventsRow] and the [TimeIndicator]
 ///
 /// 2. The [DayDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
-class MultiDayBody<T extends Object?> extends StatelessWidget {
+class MultiDayBody<T> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? configuration;
 
@@ -108,7 +108,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                     return SizedBox(
                       height: pageHeight,
                       child: DayDragTarget<T>(
-                        controller: context.calendarController<T>(),
+                        controller: controller,
                         viewController: viewController,
                         configuration: configuration,
                         pageWidth: pageWidth,
@@ -129,6 +129,18 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 }
 
 class MultiDayPage<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+
+  /// The [MultiDayViewController] that will be used by the [MultiDayPage].
+  final MultiDayViewController<T> viewController;
+
+  /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayPage].
+  final MultiDayBodyConfiguration configuration;
+
+  /// The height of the page.
+  final double pageHeight;
+
+  /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
     required this.eventsController,
@@ -137,39 +149,30 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
     required this.pageHeight,
   });
 
-  final EventsController<T> eventsController;
-  final MultiDayViewController<T> viewController;
-  final MultiDayBodyConfiguration configuration;
-
-  final double pageHeight;
-
   /// The key used to identify the content of the [MultiDayBody].
-  static const contentKey = ValueKey('contentKey');
+  static const contentKey = Key('MultiDayPage-Content');
 
   @override
   State<MultiDayPage<T>> createState() => _MultiDayPageState<T>();
 }
 
 class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
-  EventsController<T> get eventsController => widget.eventsController;
-  MultiDayViewController<T> get controller => widget.viewController;
-  MultiDayViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
-  PageNavigationFunctions get pageNavigation => viewConfiguration.pageNavigationFunctions;
-  MultiDayBodyConfiguration get configuration => widget.configuration;
+  PageNavigationFunctions get _pageNavigation => widget.viewController.viewConfiguration.pageNavigationFunctions;
 
   @override
   void initState() {
     super.initState();
-    _updateVisibleEvents(controller.initialPage);
+    _updateVisibleEvents(widget.viewController.initialPage);
   }
 
+  /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index) {
-    final events = eventsController.eventsFromDateTimeRange(
-      pageNavigation.dateTimeRangeFromIndex(index),
+    final events = widget.eventsController.eventsFromDateTimeRange(
+      _pageNavigation.dateTimeRangeFromIndex(index),
       includeDayEvents: true,
-      includeMultiDayEvents: configuration.showMultiDayEvents,
+      includeMultiDayEvents: widget.configuration.showMultiDayEvents,
     );
-    controller.visibleEvents.value = events.toSet();
+    widget.viewController.visibleEvents.value = events.toSet();
   }
 
   @override
@@ -181,53 +184,57 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-
+        // Update the visible date time range based on the page index.
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
         if (widget.viewController.viewConfiguration.type == MultiDayViewType.freeScroll) {
-          final range = DateTimeRange(
-            start: visibleRange.start,
-            end: visibleRange.start.addDays(viewConfiguration.numberOfDays),
-          );
-          widget.viewController.visibleDateTimeRange.value = range;
+          final start = visibleRange.start;
+          final end = visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays);
+          widget.viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
         } else {
           widget.viewController.visibleDateTimeRange.value = visibleRange;
         }
 
+        // Update the visible events for the new page index.
         _updateVisibleEvents(index);
 
+        // Call the onPageChanged callback if it was provided.
         final callbacks = context.callbacks<T>();
         callbacks?.onPageChanged?.call(widget.viewController.visibleDateTimeRange.value.asLocal);
       },
       itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        // Calculate the visible date time range for the current page index.
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
 
         return Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
           children: [
+            // HourLines are positioned behind the events.
             Positioned.fill(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
-                  viewConfiguration.numberOfDays + 1,
+                  widget.viewController.viewConfiguration.numberOfDays + 1,
                   (_) => DaySeparator.fromContext<T>(context),
                 ),
               ),
             ),
+
+            // The draggable area for the creating events.
             Positioned.fill(
               child: DayDraggable<T>(
                 visibleDateTimeRange: visibleRange,
-                timeOfDayRange: viewConfiguration.timeOfDayRange,
+                timeOfDayRange: widget.viewController.viewConfiguration.timeOfDayRange,
                 pageHeight: widget.pageHeight,
               ),
             ),
+
+            // The events row that displays the events for the current page.
             Positioned.fill(
-              child: DayEventsWidget<T>(
-                eventsController: context.eventsController<T>(),
-                controller: context.calendarController<T>(),
+              child: MultiDayEventsRow<T>(
                 configuration: widget.configuration,
                 visibleDateTimeRange: visibleRange,
-                timeOfDayRange: viewConfiguration.timeOfDayRange,
+                viewConfiguration: widget.viewController.viewConfiguration,
               ),
             ),
           ],

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 /// This widget renders the tile widget and resize handles in a stack.
@@ -14,7 +11,6 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
 
   const MultiDayOverlayEventTile({
     super.key,
-    required super.controller,
     required super.callbacks,
     required super.tileComponents,
     required super.event,
@@ -25,32 +21,12 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
 
   @override
   Widget build(BuildContext context) {
-    late final feedback = feedbackTileBuilder?.call(event, context.feedbackWidgetSize) ?? const SizedBox();
-
     final tile = overlayTileBuilder.call(event, localDateTimeRange);
-    final isDragging = controller.selectedEventId == event.id;
-    late final draggableTile = isMobileDevice
-        ? LongPressDraggable<Reschedule<T>>(
-            data: rescheduleEvent,
-            feedback: feedback,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () {
-              selectEvent();
-              dismissOverlay();
-            },
-            maxSimultaneousDrags: 1,
-            child: isDragging ? const SizedBox.shrink() : tile,
-          )
-        : Draggable<Reschedule<T>>(
-            data: rescheduleEvent,
-            feedback: feedback,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () {
-              selectEvent();
-              dismissOverlay();
-            },
-            child: isDragging ? const SizedBox.shrink() : tile,
-          );
+    late final reschedule = EventReschedule<T>(
+      event: event,
+      tile: tile,
+      tileComponents: tileComponents,
+    );
 
     return GestureDetector(
       onTap: onEventTapped != null
@@ -61,7 +37,7 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
               onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
             }
           : null,
-      child: canReschedule ? draggableTile : tile,
+      child: canReschedule ? reschedule : tile,
     );
   }
 }

@@ -48,31 +48,36 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     final controller = context.calendarController<T>();
     final eventsController = context.eventsController<T>();
 
-    // Get the visible events from the events controller.
-    final visibleEvents = eventsController.eventsFromDateTimeRange(
-      visibleDateTimeRange,
-      includeDayEvents: showAllEvents,
-      includeMultiDayEvents: true,
-    );
+    return ListenableBuilder(
+      listenable: eventsController,
+      builder: (context, child) {
+        // Get the visible events from the events controller.
+        final visibleEvents = eventsController.eventsFromDateTimeRange(
+          visibleDateTimeRange,
+          includeDayEvents: showAllEvents,
+          includeMultiDayEvents: true,
+        );
 
-    // Add the events to the visible events notifier.
-    controller.visibleEvents.value = {
-      ...controller.visibleEvents.value,
-      ...visibleEvents,
-    };
+        // Add the events to the visible events notifier.
+        controller.visibleEvents.value = {
+          ...controller.visibleEvents.value,
+          ...visibleEvents,
+        };
 
-    return MultiDayEventLayoutWidget<T>(
-      events: visibleEvents.toList(),
-      eventsController: eventsController,
-      visibleDateTimeRange: visibleDateTimeRange,
-      showAllEvents: showAllEvents,
-      tileHeight: tileHeight,
-      maxNumberOfVerticalEvents: maxNumberOfRows,
-      generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
-      textDirection: Directionality.of(context),
-      multiDayOverlayBuilders: overlayBuilders,
-      multiDayOverlayStyles: overlayStyles,
-      eventPadding: eventPadding,
+        return MultiDayEventLayoutWidget<T>(
+          events: visibleEvents.toList(),
+          eventsController: eventsController,
+          visibleDateTimeRange: visibleDateTimeRange,
+          showAllEvents: showAllEvents,
+          tileHeight: tileHeight,
+          maxNumberOfVerticalEvents: maxNumberOfRows,
+          generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
+          textDirection: Directionality.of(context),
+          multiDayOverlayBuilders: overlayBuilders,
+          multiDayOverlayStyles: overlayStyles,
+          eventPadding: eventPadding,
+        );
+      },
     );
   }
 }
@@ -201,7 +206,6 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             padding: widget.eventPadding ?? const EdgeInsets.all(0),
             child: MultiDayEventTile<T>(
               event: event,
-              controller: context.calendarController<T>(),
               callbacks: context.callbacks<T>(),
               tileComponents: context.tileComponents<T>(),
               interaction: context.interaction,
@@ -303,13 +307,9 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
     return MultiDayOverlayEventTile<T>(
       event: event,
       dateTimeRange: dateTimeRange,
-
-      controller: context.calendarController<T>(),
       callbacks: context.callbacks<T>(),
       tileComponents: context.tileComponents<T>(),
       dismissOverlay: dismissOverlay,
-
-      /// TODO: check if this can be removed.
       interaction: context.interaction,
     );
   }

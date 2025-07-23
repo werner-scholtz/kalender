@@ -32,6 +32,8 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
 
   @override
   Widget build(BuildContext context) {
+    if (!context.interaction.allowEventCreation) return const SizedBox.shrink();
+
     var localPosition = Offset.zero;
 
     /// Check if this is affected by removing interaction.
@@ -42,32 +44,31 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
       child: Row(
         children: [
           for (final date in widget.visibleDateTimeRange.dates())
-            if (context.interaction.allowEventCreation)
-              Expanded(
-                child: GestureDetector(
-                  onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
-                  child: switch (context.interaction.createEventGesture) {
-                    CreateEventGesture.tap => Draggable(
-                        dragAnchorStrategy: pointerDragAnchorStrategy,
-                        onDragStarted: () => createNewEvent(date, localPosition),
-                        onDraggableCanceled: onDragFinished,
-                        onDragEnd: onDragFinished,
-                        data: Create(controllerId: controller.id),
-                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                        child: Container(color: Colors.transparent, height: widget.pageHeight),
-                      ),
-                    CreateEventGesture.longPress => LongPressDraggable(
-                        dragAnchorStrategy: pointerDragAnchorStrategy,
-                        onDragStarted: () => createNewEvent(date, localPosition),
-                        onDraggableCanceled: onDragFinished,
-                        onDragEnd: onDragFinished,
-                        data: Create(controllerId: controller.id),
-                        feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                        child: Container(color: Colors.transparent, height: widget.pageHeight),
-                      ),
-                  },
-                ),
+            Expanded(
+              child: GestureDetector(
+                onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
+                child: switch (context.interaction.createEventGesture) {
+                  CreateEventGesture.tap => Draggable(
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      data: Create(controllerId: controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, height: widget.pageHeight),
+                    ),
+                  CreateEventGesture.longPress => LongPressDraggable(
+                      dragAnchorStrategy: pointerDragAnchorStrategy,
+                      onDragStarted: () => createNewEvent(date, localPosition),
+                      onDraggableCanceled: onDragFinished,
+                      onDragEnd: onDragFinished,
+                      data: Create(controllerId: controller.id),
+                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                      child: Container(color: Colors.transparent, height: widget.pageHeight),
+                    ),
+                },
               ),
+            ),
         ],
       ),
     );

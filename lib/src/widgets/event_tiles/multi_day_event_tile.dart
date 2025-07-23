@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 /// This widget renders the tile widget and resize handles in a stack.
@@ -11,7 +8,6 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 class MultiDayEventTile<T extends Object?> extends EventTile<T> {
   const MultiDayEventTile({
     super.key,
-    required super.controller,
     required super.callbacks,
     required super.tileComponents,
     required super.event,
@@ -33,71 +29,26 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
 
   @override
   Widget build(BuildContext context) {
-    late final leftResize = ValueListenableBuilder(
-      valueListenable: selectedEvent,
-      builder: (context, value, child) {
-        if (value != null || controller.internalFocus) return const SizedBox();
-        return Draggable<Resize<T>>(
-          key: leftResizeDraggableKey(event.id),
-          data: resizeEvent(ResizeDirection.left),
-          feedback: const SizedBox(),
-          dragAnchorStrategy: pointerDragAnchorStrategy,
-          onDragStarted: selectEvent,
-          child: horizontalResizeHandle ?? Container(color: Colors.transparent),
-        );
-      },
+    late final leftResize = EventResize<T>(
+      key: MultiDayEventTile.leftResizeDraggableKey(event.id),
+      event: event,
+      tileComponents: tileComponents,
+      direction: ResizeDirection.left,
     );
 
-    late final rightResize = ValueListenableBuilder(
-      valueListenable: selectedEvent,
-      builder: (context, value, child) {
-        if (value != null || controller.internalFocus) return const SizedBox();
-        return Draggable<Resize<T>>(
-          key: rightResizeDraggableKey(event.id),
-          data: resizeEvent(ResizeDirection.right),
-          feedback: const SizedBox(),
-          dragAnchorStrategy: pointerDragAnchorStrategy,
-          onDragStarted: selectEvent,
-          child: horizontalResizeHandle ?? Container(color: Colors.transparent),
-        );
-      },
+    late final rightResize = EventResize<T>(
+      key: MultiDayEventTile.rightResizeDraggableKey(event.id),
+      event: event,
+      tileComponents: tileComponents,
+      direction: ResizeDirection.right,
     );
-    late final feedback = feedbackTileBuilder?.call(event, context.feedbackWidgetSize) ?? const SizedBox();
 
     final tile = tileBuilder.call(event, localDateTimeRange);
-    final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
-    final isDragging = controller.selectedEventId == event.id;
-    late final draggableTile = isMobileDevice
-        ? LongPressDraggable<Reschedule<T>>(
-            key: rescheduleDraggableKey(event.id),
-            data: rescheduleEvent,
-            feedback: feedback,
-            childWhenDragging: tileWhenDragging,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: selectEvent,
-            maxSimultaneousDrags: 1,
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-          )
-        : Draggable<Reschedule<T>>(
-            key: rescheduleDraggableKey(event.id),
-            data: rescheduleEvent,
-            feedback: feedback,
-            childWhenDragging: tileWhenDragging,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: selectEvent,
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-          );
-
-    final tileWidget = GestureDetector(
-      onTap: onEventTapped != null
-          ? () {
-              // Find the global position and size of the tile.
-              final renderObject = context.findRenderObject()! as RenderBox;
-              onEventTapped!.call(event, renderObject);
-              onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
-            }
-          : null,
-      child: canReschedule ? draggableTile : tile,
+    late final reschedule = EventReschedule<T>(
+      key: MultiDayEventTile.rescheduleDraggableKey(event.id),
+      event: event,
+      tileComponents: tileComponents,
+      tile: tile,
     );
 
     final resizeHandles = tileComponents.horizontalHandlePositioner?.call(
@@ -116,7 +67,17 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        tileWidget,
+        GestureDetector(
+          onTap: onEventTapped != null
+              ? () {
+                  // Find the global position and size of the tile.
+                  final renderObject = context.findRenderObject()! as RenderBox;
+                  onEventTapped!.call(event, renderObject);
+                  onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
+                }
+              : null,
+          child: canReschedule ? reschedule : tile,
+        ),
         Positioned.fill(child: resizeHandles),
       ],
     );
