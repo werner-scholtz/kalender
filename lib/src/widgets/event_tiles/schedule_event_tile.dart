@@ -25,6 +25,7 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
   Widget build(BuildContext context) {
     final tile = tileBuilder.call(event, localDateTimeRange);
     late final reschedule = EventReschedule<T>(
+      key: rescheduleDraggableKey(event.id),
       event: event,
       tile: tile,
       tileComponents: tileComponents,

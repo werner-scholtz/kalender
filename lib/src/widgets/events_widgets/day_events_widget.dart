@@ -5,7 +5,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-/// TODO: sort this out.
 
 /// This widget is renders all the event tiles that are visible on the provided dateTimeRange.
 ///
@@ -146,59 +145,130 @@ class _DayEventsColumnState<T> extends State<DayEventsColumn<T>> {
           .toList(),
     );
 
-    // TODO: investigate a more efficient way to do this.
-    // This can get computationally expensive when there a lot of events.
-    // Might be worth it to store the current layout instead of re-calculating every time.
-    final dropTargetWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().selectedEvent,
-      builder: (context, event, child) {
-        // If there is no event being dragged, return an empty widget.
-        if (event == null) return const SizedBox();
-        if (!event.dateTimeRangeAsUtc.overlaps(widget.date.dayRange)) return const SizedBox();
-        if (!widget.configuration.showMultiDayEvents && event.isMultiDayEvent) return const SizedBox();
-
-        final eventList = _events.toList();
-        // Find the index of the selected event.
-        final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
-        if (index != -1) {
-          // If it exists override it with the selectedEvent.
-          eventList[index] = event;
-        } else {
-          // Else add it at the start of the list.
-          eventList.insert(0, event);
-        }
-
-        final dropTarget = context.tileComponents<T>().dropTargetTile;
-
-        return CustomMultiChildLayout(
-          delegate: layoutStrategy.call(
-            eventList,
-            widget.date,
-            widget.viewConfiguration.timeOfDayRange,
-            context.heightPerMinute,
-            widget.configuration.minimumTileHeight,
-          ),
-          children: eventList.indexed.map(
-            (item) {
-              final event = item.$2;
-              final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
-
-              return LayoutId(
-                id: item.$1,
-                child: drawTile ? dropTarget.call(event) : const SizedBox(),
-              );
-            },
-          ).toList(),
-        );
-      },
-    );
-
     return Stack(
       fit: StackFit.expand,
       children: [
         Positioned.fill(child: eventsWidget),
-        Positioned.fill(child: PassThroughPointer(child: dropTargetWidget)),
+        Positioned.fill(
+          child: PassThroughPointer(
+            child: DayDropTargetColumn(
+              events: _events,
+              eventsController: widget.eventsController,
+              configuration: widget.configuration,
+              viewConfiguration: widget.viewConfiguration,
+              date: widget.date,
+              controller: controller,
+            ),
+          ),
+        ),
       ],
+    );
+  }
+}
+
+/// This widget is used to render the drop target for the day events.
+class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
+  final EventsController<T> eventsController;
+  final MultiDayViewConfiguration viewConfiguration;
+  final MultiDayBodyConfiguration configuration;
+  final DateTime date;
+  final List<CalendarEvent<T>> events;
+  final CalendarController<T> controller;
+  const DayDropTargetColumn({
+    super.key,
+    required this.events,
+    required this.eventsController,
+    required this.configuration,
+    required this.viewConfiguration,
+    required this.date,
+    required this.controller,
+  });
+
+  @override
+  State<DayDropTargetColumn<T>> createState() => _DayDropTargetColumnState<T>();
+}
+
+class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetColumn<T>> {
+  CalendarController<T> get controller => widget.controller;
+  CalendarEvent<T>? _selectedEvent;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.selectedEvent.addListener(_update);
+  }
+
+  @override
+  void dispose() {
+    controller.selectedEvent.removeListener(_update);
+    super.dispose();
+  }
+
+  void _update() {
+    final selectedEvent = controller.selectedEvent.value;
+    // This ensures that we do not rebuild the widget if the selected event is the same as the current one.
+    if (selectedEvent == _selectedEvent) return;
+
+    // If the selected event is null, we reset the state.
+    if (selectedEvent == null) {
+      setState(() => _selectedEvent = null);
+      return;
+    }
+
+    // If the selected event does not overlap with the current date.
+    if (!selectedEvent.dateTimeRangeAsUtc.overlaps(widget.date.dayRange)) {
+      // We need to check if the _selectedEvent is null, if it is not, we reset the state.
+      if (_selectedEvent != null) setState(() => _selectedEvent = null);
+      return;
+    }
+
+    // If the configuration does not allow multi-day events and the selected event is a multi-day event, we do not update the state.
+    if (!widget.configuration.showMultiDayEvents && selectedEvent.isMultiDayEvent) return;
+
+    setState(() => _selectedEvent = selectedEvent);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final layoutStrategy = widget.configuration.eventLayoutStrategy;
+    final controller = context.calendarController<T>();
+
+    // If there is no event being dragged, return an empty widget.
+    final event = _selectedEvent;
+    if (event == null) return const SizedBox();
+
+    final eventList = widget.events.toList();
+    // Find the index of the selected event.
+    final index = eventList.indexWhere((e) => e.id == controller.selectedEventId);
+    if (index != -1) {
+      // If it exists override it with the selectedEvent.
+      eventList[index] = event;
+    } else {
+      // Else add it at the start of the list.
+      eventList.insert(0, event);
+    }
+
+    final dropTarget = context.tileComponents<T>().dropTargetTile;
+
+    return CustomMultiChildLayout(
+      delegate: layoutStrategy.call(
+        eventList,
+        widget.date,
+        widget.viewConfiguration.timeOfDayRange,
+        context.heightPerMinute,
+        widget.configuration.minimumTileHeight,
+      ),
+      children: eventList.indexed.map(
+        (item) {
+          final event = item.$2;
+          final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
+
+          return LayoutId(
+            id: item.$1,
+            child: drawTile ? dropTarget.call(event) : const SizedBox(),
+          );
+        },
+      ).toList(),
     );
   }
 }

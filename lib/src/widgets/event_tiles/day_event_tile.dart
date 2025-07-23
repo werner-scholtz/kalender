@@ -56,12 +56,13 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
           showEnd,
         ) ??
         VerticalTileResizeHandlePositioner(
+          key: Key('DayEventTile-ResizeHandles-${event.id}'),
           startResizeDetector: topResizeDetector,
           endResizeDetector: bottomResizeDetector,
           showStart: showStart,
           showEnd: showEnd,
         );
-        
+
     return Stack(
       fit: StackFit.expand,
       children: [

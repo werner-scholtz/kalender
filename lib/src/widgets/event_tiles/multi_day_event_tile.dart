@@ -58,6 +58,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
           showEnd,
         ) ??
         HorizontalTileResizeHandlePositioner(
+          key: Key('MultiDayEventTile-ResizeHandles-${event.id}'),
           startResizeDetector: leftResize,
           endResizeDetector: rightResize,
           showStart: showStart,
