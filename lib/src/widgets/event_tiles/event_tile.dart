@@ -85,7 +85,6 @@ class EventResize<T extends Object?> extends StatelessWidget with EventModificat
   }
 }
 
-
 /// The [Reschedule] widget allows the user to reschedule an event by dragging it.
 class EventReschedule<T extends Object?> extends StatelessWidget with EventModification<T> {
   final Widget tile;
@@ -129,7 +128,6 @@ class EventReschedule<T extends Object?> extends StatelessWidget with EventModif
           );
   }
 }
-
 
 /// A widget that provides a feedback widget for event dragging.
 class FeedbackWidget<T extends Object?> extends StatefulWidget {
