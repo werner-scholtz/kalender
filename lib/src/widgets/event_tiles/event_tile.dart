@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/enumerations.dart';
-import 'package:kalender/src/models/calendar_callbacks.dart';
-import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
-import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/platform.dart' show isMobileDevice;
 
@@ -59,29 +54,76 @@ mixin EventModification<T extends Object?> {
   }
 }
 
-class EventResize<T extends Object?> extends StatelessWidget with EventModification<T> {
+class EventResize<T extends Object?> extends StatefulWidget {
   final ResizeDirection direction;
-  @override
   final CalendarEvent<T> event;
-
-  @override
   final TileComponents<T> tileComponents;
 
-  const EventResize({super.key, required this.event, required this.tileComponents, required this.direction});
+  const EventResize({
+    super.key,
+    required this.event,
+    required this.tileComponents,
+    required this.direction,
+  });
+
+  @override
+  State<EventResize<T>> createState() => _EventResizeState<T>();
+}
+
+class _EventResizeState<T extends Object?> extends State<EventResize<T>> with EventModification<T> {
+  CalendarController<T>? _controller;
+
+  @override
+  CalendarEvent<T> get event => widget.event;
+
+  @override
+  TileComponents<T> get tileComponents => widget.tileComponents;
+
+  bool _showHandle = isMobileDevice ? false : true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isMobileDevice) {
+        _controller = context.calendarController<T>();
+        _controller?.selectedEvent.addListener(listener);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller?.selectedEvent.removeListener(listener);
+    super.dispose();
+  }
+
+  void listener() {
+    final selectedEventId = _controller?.selectedEventId;
+    if (selectedEventId != event.id) {
+      setState(() => _showHandle = true);
+    } else {
+      setState(() => _showHandle = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final resizeHandle = direction == ResizeDirection.left || direction == ResizeDirection.right
-        ? horizontalResizeHandle
-        : verticalResizeHandle;
+    if (_showHandle) {
+      final resizeHandle = widget.direction == ResizeDirection.left || widget.direction == ResizeDirection.right
+          ? horizontalResizeHandle
+          : verticalResizeHandle;
 
-    return Draggable<Resize<T>>(
-      data: resizeEvent(direction),
-      feedback: const SizedBox(),
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      onDragStarted: () => selectEvent(context),
-      child: resizeHandle ?? Container(color: Colors.transparent),
-    );
+      return Draggable<Resize<T>>(
+        data: resizeEvent(widget.direction),
+        feedback: const SizedBox(),
+        dragAnchorStrategy: pointerDragAnchorStrategy,
+        onDragStarted: () => selectEvent(context),
+        child: resizeHandle ?? Container(color: Colors.transparent),
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 }
 

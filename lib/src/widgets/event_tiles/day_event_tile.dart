@@ -77,7 +77,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
               : null,
           child: canReschedule ? reschedule : tile,
         ),
-        if (interaction.allowResizing) Positioned.fill(child: resizeHandles),
+        Positioned.fill(child: resizeHandles),
       ],
     );
   }
