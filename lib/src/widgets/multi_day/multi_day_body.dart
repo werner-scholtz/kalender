@@ -162,8 +162,20 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   @override
   void initState() {
     super.initState();
-    _updateVisibleEvents(widget.viewController.initialPage);
+    _initialPage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.eventsController.addListener(_currentPage);
+    });
   }
+
+  @override
+  void dispose() {
+    widget.eventsController.removeListener(_currentPage);
+    super.dispose();
+  }
+
+  void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage);
+  void _currentPage() => _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0);
 
   /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index) {
