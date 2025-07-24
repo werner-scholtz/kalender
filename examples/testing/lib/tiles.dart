@@ -19,7 +19,7 @@ abstract class BaseEventTile extends StatelessWidget {
   bool get continuesAfter => event.dateTimeRange.end.isAfter(tileRange.end);
   bool get continuesBefore =>
       event.dateTimeRange.start.isBefore(tileRange.start);
-  String title(BuildContext context) => event.data?.title ?? "New Event";
+  String title(BuildContext context) => "${event.data?.title} (${event.id})";
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(8);
   BoxDecoration get decoration => BoxDecoration(
@@ -67,13 +67,20 @@ class MultiDayEventTile extends BaseEventTile {
   EdgeInsets get padding =>
       const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
 
+  static Key getKey(int id) => Key('MultiDayEventTile-$id');
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: getKey(event.id),
       decoration: decoration,
       child: Padding(
         padding: padding,
-        child: Text(title(context), style: TextStyle(color: textColor(color))),
+        child: Text(
+          title(context),
+          style: TextStyle(color: textColor(color)),
+          overflow: TextOverflow.fade,
+        ),
       ),
     );
   }

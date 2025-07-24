@@ -4,12 +4,16 @@ import 'package:testing/test_configuration.dart';
 import 'package:testing/tiles.dart';
 
 void main() {
-  runApp(const MyApp());
+  final config = TestConfiguration.week();
+  config.eventsController.addEvents(
+    TestConfiguration.generate(timeOfDayRanges.take(10).toList()),
+  );
+  runApp(MyApp(config: config));
 }
 
 class MyApp extends StatelessWidget {
-  final TestConfiguration? config;
-  const MyApp({super.key, this.config});
+  final TestConfiguration config;
+  const MyApp({super.key, required this.config});
 
   @override
   Widget build(BuildContext context) {

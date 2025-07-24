@@ -33,7 +33,9 @@ class TestConfiguration {
   final eventsController = DefaultEventsController<Event>();
 
   /// The calendar controller for the test.
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController<Event>(
+    initialDate: selectedDate,
+  );
 
   static List<CalendarEvent<Event>> generate(
     List<TimeOfDayRange> timeOfDayRanges,
@@ -71,3 +73,92 @@ class Event {
 
   Event({required this.title, required this.color, required this.description});
 }
+
+final timeOfDayRanges = [
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 5, minute: 0),
+    end: const TimeOfDay(hour: 6, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 5, minute: 30),
+    end: const TimeOfDay(hour: 6, minute: 15),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 6, minute: 0),
+    end: const TimeOfDay(hour: 8, minute: 15),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 8, minute: 0),
+    end: const TimeOfDay(hour: 9, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 8, minute: 30),
+    end: const TimeOfDay(hour: 10, minute: 0),
+  ),
+
+  /// 5
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 9, minute: 0),
+    end: const TimeOfDay(hour: 10, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 10, minute: 0),
+    end: const TimeOfDay(hour: 11, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 12, minute: 0),
+    end: const TimeOfDay(hour: 13, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 13, minute: 0),
+    end: const TimeOfDay(hour: 14, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 8, minute: 0),
+    end: const TimeOfDay(hour: 14, minute: 0),
+  ),
+
+  /// 5
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 14, minute: 0),
+    end: const TimeOfDay(hour: 15, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 14, minute: 30),
+    end: const TimeOfDay(hour: 15, minute: 30),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 15, minute: 0),
+    end: const TimeOfDay(hour: 16, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 16, minute: 0),
+    end: const TimeOfDay(hour: 17, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 8, minute: 0),
+    end: const TimeOfDay(hour: 17, minute: 0),
+  ),
+
+  /// 5
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 17, minute: 0),
+    end: const TimeOfDay(hour: 18, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 17, minute: 30),
+    end: const TimeOfDay(hour: 18, minute: 30),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 18, minute: 0),
+    end: const TimeOfDay(hour: 19, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 19, minute: 0),
+    end: const TimeOfDay(hour: 20, minute: 0),
+  ),
+  TimeOfDayRange(
+    start: const TimeOfDay(hour: 20, minute: 0),
+    end: const TimeOfDay(hour: 21, minute: 0),
+  ),
+];

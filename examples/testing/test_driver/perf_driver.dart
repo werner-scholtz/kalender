@@ -17,7 +17,7 @@ enum Scenario {
       '${name.toLowerCase()}-${view.name}-${key.name}';
 }
 
-enum ReportKeys { loadingEvents, navigation, scrolling }
+enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
 
 enum Views { week, month, schedule }
 
@@ -63,7 +63,35 @@ Future<void> main() {
               '\n- 99th Build: ${timelineSummary.summaryJson['99th_percentile_frame_build_time_millis']}ms'
               '\n- Avg Raster: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}\n';
 
-          summary[key] = timelineSummary.summaryJson;
+          summary[key] = {
+            'average_frame_build_time_millis':
+                timelineSummary.summaryJson['average_frame_build_time_millis'],
+            '90th_percentile_frame_build_time_millis': timelineSummary
+                .summaryJson['90th_percentile_frame_build_time_millis'],
+            '99th_percentile_frame_build_time_millis': timelineSummary
+                .summaryJson['99th_percentile_frame_build_time_millis'],
+            'worst_frame_build_time_millis':
+                timelineSummary.summaryJson['worst_frame_build_time_millis'],
+            'missed_frame_build_budget_count':
+                timelineSummary.summaryJson['missed_frame_build_budget_count'],
+            'average_frame_rasterizer_time_millis': timelineSummary
+                .summaryJson['average_frame_rasterizer_time_millis'],
+            'stddev_frame_rasterizer_time_millis': timelineSummary
+                .summaryJson['stddev_frame_rasterizer_time_millis'],
+            '90th_percentile_frame_rasterizer_time_millis': timelineSummary
+                .summaryJson['90th_percentile_frame_rasterizer_time_millis'],
+            '99th_percentile_frame_rasterizer_time_millis': timelineSummary
+                .summaryJson['99th_percentile_frame_rasterizer_time_millis'],
+            'worst_frame_rasterizer_time_millis': timelineSummary
+                .summaryJson['worst_frame_rasterizer_time_millis'],
+            'missed_frame_rasterizer_budget_count': timelineSummary
+                .summaryJson['missed_frame_rasterizer_budget_count'],
+            'frame_count': timelineSummary.summaryJson['frame_count'],
+            'frame_rasterizer_count':
+                timelineSummary.summaryJson['frame_rasterizer_count'],
+            'new_gen_gc_count': timelineSummary.summaryJson['new_gen_gc_count'],
+            'old_gen_gc_count': timelineSummary.summaryJson['old_gen_gc_count'],
+          };
 
           print('✅ Processed: $key ($frameCount events)$metricsStr');
         }
