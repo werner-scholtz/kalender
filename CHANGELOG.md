@@ -1,3 +1,6 @@
+## 0.11.0
+- feat: Added interaction (EventInteraction) property to calendar events for fine grained control. [#194](https://github.com/werner-scholtz/kalender/pull/194)
+
 ## 0.10.2
 - fix: DefaultEventsController ConcurrentModificationError. [#184](https://github.com/werner-scholtz/kalender/issues/184)
 
