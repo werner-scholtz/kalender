@@ -17,7 +17,9 @@ void main() {
         late TestConfiguration config;
         setUp(() {
           config = TestConfiguration(viewConfiguration: view.viewConfiguration);
-          config.eventsController.addEvents(TestConfiguration.generate(scenario.eventRanges));
+          config.eventsController.addEvents(
+            TestConfiguration.generate(scenario.eventRanges),
+          );
         });
 
         // 1. Profile loading events.
@@ -52,13 +54,19 @@ void main() {
 
           await binding.traceAction(() async {
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day - 7));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day - 7),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
             config.calendarController.animateToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day + 7));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day + 7),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
-            config.calendarController.animateToDate(current.copyWith(day: current.day + 14));
+            config.calendarController.animateToDate(
+              current.copyWith(day: current.day + 14),
+            );
             await tester.pumpAndSettle(Duration(milliseconds: 250));
             config.calendarController.animateToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 250));
@@ -66,7 +74,9 @@ void main() {
         });
 
         // 3. Profile scrolling.
-        testWidgets('${scenario.name} Scrolling', skip: view != Views.week, (tester) async {
+        testWidgets('${scenario.name} Scrolling', skip: view != Views.week, (
+          tester,
+        ) async {
           await tester.pumpWidget(MyApp(config: config));
           await tester.pumpAndSettle(Duration(milliseconds: 100));
           config.calendarController.jumpToDate(TestConfiguration.selectedDate);
@@ -82,9 +92,17 @@ void main() {
           await binding.traceAction(() async {
             await tester.pumpAndSettle(Duration(milliseconds: 100));
             for (var i = 0; i < 10; i++) {
-              await tester.scrollUntilVisible(startFinder, 250.0, scrollable: scrollable);
+              await tester.scrollUntilVisible(
+                startFinder,
+                250.0,
+                scrollable: scrollable,
+              );
               await tester.pump(Duration(milliseconds: 10));
-              await tester.scrollUntilVisible(endFinder, -250.0, scrollable: scrollable);
+              await tester.scrollUntilVisible(
+                endFinder,
+                -250.0,
+                scrollable: scrollable,
+              );
               await tester.pump(Duration(milliseconds: 10));
             }
           }, reportKey: scenario.getReportKey(view, ReportKeys.scrolling));
@@ -100,7 +118,8 @@ void main() {
           final topLeft = tester.getTopLeft(body) + const Offset(25, 25);
           final topRight = tester.getTopRight(body) + const Offset(-25, 25);
           final bottomLeft = tester.getBottomLeft(body) + const Offset(25, -25);
-          final bottomRight = tester.getBottomRight(body) - const Offset(25, 25);
+          final bottomRight =
+              tester.getBottomRight(body) - const Offset(25, 25);
 
           final tileFinder = find.byType(switch (view) {
             Views.week => EventTile,
@@ -110,15 +129,28 @@ void main() {
           final dragStart = tester.getCenter(tileFinder) + const Offset(-2, 0);
 
           await binding.traceAction(() async {
-            final dragGesture = await tester.startGesture(dragStart, pointer: 1);
+            final dragGesture = await tester.startGesture(
+              dragStart,
+              pointer: 1,
+            );
             await tester.pump(Duration(milliseconds: 100));
             await performSegmentedDrag(dragGesture, tester, dragStart, topLeft);
             await tester.pumpAndSettle();
             await performSegmentedDrag(dragGesture, tester, topLeft, topRight);
             await tester.pumpAndSettle();
-            await performSegmentedDrag(dragGesture, tester, topRight, bottomRight);
+            await performSegmentedDrag(
+              dragGesture,
+              tester,
+              topRight,
+              bottomRight,
+            );
             await tester.pumpAndSettle();
-            await performSegmentedDrag(dragGesture, tester, bottomRight, bottomLeft);
+            await performSegmentedDrag(
+              dragGesture,
+              tester,
+              bottomRight,
+              bottomLeft,
+            );
             await tester.pumpAndSettle();
             await performSegmentedDrag(dragGesture, tester, bottomLeft, center);
             await tester.pumpAndSettle();
@@ -126,9 +158,11 @@ void main() {
             await tester.pumpAndSettle(Duration(milliseconds: 100));
           }, reportKey: scenario.getReportKey(view, ReportKeys.rescheduling));
         });
-        
+
         // 5. Profile resizing.
-        testWidgets('${scenario.name} Resizing', skip: view == Views.schedule, (tester) async {
+        testWidgets('${scenario.name} Resizing', skip: view == Views.schedule, (
+          tester,
+        ) async {
           await tester.pumpWidget(MyApp(config: config));
           await tester.pumpAndSettle(Duration(seconds: 1));
 
@@ -148,7 +182,10 @@ void main() {
               };
 
           await binding.traceAction(() async {
-            final dragGesture = await tester.startGesture(dragStart, pointer: 1);
+            final dragGesture = await tester.startGesture(
+              dragStart,
+              pointer: 1,
+            );
             await tester.pump(Duration(milliseconds: 100));
             await performSegmentedDrag(
               dragGesture,

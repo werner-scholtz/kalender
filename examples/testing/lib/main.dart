@@ -5,8 +5,10 @@ import 'package:testing/tiles.dart';
 
 void main() {
   final config = TestConfiguration.week();
-  config.eventsController.addEvents(TestConfiguration.generate(timeOfDayRanges.take(10).toList()));
-  runApp( MyApp(config: config));
+  config.eventsController.addEvents(
+    TestConfiguration.generate(timeOfDayRanges.take(10).toList()),
+  );
+  runApp(MyApp(config: config));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Performance Profiling',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      ),
       home: Home(config: config),
     );
   }
@@ -33,7 +37,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late final TestConfiguration config = widget.config ?? TestConfiguration.week();
+  late final TestConfiguration config =
+      widget.config ?? TestConfiguration.week();
   EventsController<Event> get eventsController => config.eventsController;
   CalendarController<Event> get calendarController => config.calendarController;
 
@@ -46,11 +51,14 @@ class _HomeState extends State<Home> {
         viewConfiguration: config.viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) =>
+              calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
-        header: CalendarHeader<Event>(multiDayTileComponents: _multiDayTileComponents),
+        header: CalendarHeader<Event>(
+          multiDayTileComponents: _multiDayTileComponents,
+        ),
         body: CalendarBody<Event>(
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
