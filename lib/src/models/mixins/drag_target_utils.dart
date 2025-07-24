@@ -13,6 +13,10 @@ mixin DragTargetUtilities<T> {
   double get dayWidth;
   List<DateTime> get visibleDates;
   bool get multiDayDragTarget;
+  int get throttleMilliseconds => context.interaction.throttleMilliseconds;
+
+  /// The last timestamp when the [onMove] was called.
+  int _lastMoveTimestamp = 0;
 
   /// A copy of the event being created.
   CalendarEvent<T>? newEvent;
@@ -43,8 +47,17 @@ mixin DragTargetUtilities<T> {
     );
   }
 
-  /// Handle the [DragTarget.onMove].
+  /// Handle the [DragTarget.onMove] with throttling.
   void onMove(DragTargetDetails<Object?> details) {
+    // Throttle the move events to prevent excessive updates.
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
+    if (currentTime - _lastMoveTimestamp < throttleMilliseconds) return;
+    _lastMoveTimestamp = currentTime;
+    _processMove(details);
+  }
+
+  /// Handle the [DragTarget.onMove].
+  void _processMove(DragTargetDetails<Object?> details) {
     return _handleDragDetails<void>(
       details,
       onCreate: (controllerId) {
