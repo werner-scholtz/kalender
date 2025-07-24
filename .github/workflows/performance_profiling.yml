@@ -11,7 +11,7 @@ on:
 
 jobs:
   performance-profiling:
-    if: contains(github.event.pull_request.labels.*.name, 'profile')
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'profile')
     runs-on: ubuntu-latest
 
     env:
