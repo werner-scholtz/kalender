@@ -65,6 +65,13 @@ class CalendarInteraction {
   static const defaultCreateEventGesture = CreateEventGesture.tap;
   static const defaultMobileCreateEventGesture = CreateEventGesture.longPress;
 
+  /// The number of milliseconds to throttle the interaction events.
+  ///
+  /// This is used to prevent excessive updates during drag operations.
+  /// This can be adjusted based on the performance needs of the application.
+  final int throttleMilliseconds;
+  static const defaultThrottleMilliseconds = 16;
+
   /// Creates a new [CalendarInteraction] instance with the specified settings.
   ///
   /// All parameters are optional and default to the values defined in the class.
@@ -72,6 +79,7 @@ class CalendarInteraction {
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
     this.allowEventCreation = defaultAllowEventCreation,
+    this.throttleMilliseconds = defaultThrottleMilliseconds,
     CreateEventGesture? createEventGesture,
   }) : createEventGesture =
             createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture);
@@ -82,15 +90,15 @@ class CalendarInteraction {
     bool? allowResizing,
     bool? allowRescheduling,
     bool? allowEventCreation,
-    int? snapIntervalMinutes,
-    bool? snapToTimeIndicator,
-    bool? snapToOtherEvents,
-    Duration? snapRange,
+    int? throttleMilliseconds,
+    CreateEventGesture? createEventGesture,
   }) {
     return CalendarInteraction(
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       allowEventCreation: allowEventCreation ?? this.allowEventCreation,
+      throttleMilliseconds: throttleMilliseconds ?? this.throttleMilliseconds,
+      createEventGesture: createEventGesture ?? this.createEventGesture,
     );
   }
 
