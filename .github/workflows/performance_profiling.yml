@@ -67,7 +67,7 @@ jobs:
           retention-days: 30
 
       - name: Commit performance summary to branch
-        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # if: github.event_name == 'push' && github.ref == 'refs/heads/main' 
         run: |
           # Configure git
           git config --local user.email "action@github.com"
