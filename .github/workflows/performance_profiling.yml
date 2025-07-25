@@ -66,26 +66,104 @@ jobs:
             examples/testing/performance_summary.json
           retention-days: 30
 
+      - name: Download baseline performance data
+        if: github.event_name == 'pull_request'
+        run: |
+          # Try to download the latest performance summary from main branch
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o baseline_performance.json \
+               "https://api.github.com/repos/${{ github.repository }}/contents/performance_summary.json?ref=performance-results" \
+               || echo "No baseline performance data found"
+
+      - name: Compare performance and generate report
+        if: github.event_name == 'pull_request'
+        run: |
+          python3 .github/scripts/compare_performance.py \
+            --current examples/testing/performance_summary.json \
+            --baseline baseline_performance.json \
+            --output performance_report.md \
+            --verbose
+
+      - name: Comment PR with performance results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## 📊 Performance Test Results\n\n';
+
+            try {
+              if (fs.existsSync('performance_report.md')) {
+                const report = fs.readFileSync('performance_report.md', 'utf8');
+                comment += report;
+              } else {
+                comment += 'Performance profiling completed but no comparison data available.\n';
+              }
+              
+              comment += '\n---\n';
+              comment += `*Performance test run: ${context.runNumber}*\n`;
+              comment += `*Commit: ${context.sha.substring(0, 7)}*`;
+              
+              // Find existing performance comment and update it, or create new one
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const botComment = comments.find(comment => 
+                comment.user.type === 'Bot' && 
+                comment.body.includes('📊 Performance Test Results')
+              );
+              
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: comment
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: comment
+                });
+              }
+            } catch (error) {
+              console.error('Error posting comment:', error);
+              
+              // Fallback: post simple comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '📊 Performance profiling completed. Check the workflow artifacts for detailed results.'
+              });
+            }
+
       - name: Commit performance summary to branch
-        # if: github.event_name == 'push' && github.ref == 'refs/heads/main' 
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Fetch the performance-results branch
           git fetch origin performance-results:performance-results || echo "Branch doesn't exist yet"
-          
+
           # Switch to performance-results branch
           git checkout performance-results || git checkout --orphan performance-results
-          
+
           # Copy the performance summary with timestamp
-          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
-          cp examples/testing/performance_summary.json "performance_summary_${TIMESTAMP}.json"
-          
+          cp examples/testing/performance_summary.json "performance_summary.json"
+
           # Add and commit if file exists
           if [ -f "performance_summary_${TIMESTAMP}.json" ]; then
-            git add "performance_summary_${TIMESTAMP}.json"
+            git add "performance_summary.json"
             git commit -m "Performance summary for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
             git push origin performance-results
             echo "✅ Performance summary committed to performance-results branch"
