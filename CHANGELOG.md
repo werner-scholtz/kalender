@@ -1,5 +1,6 @@
 ## 0.11.0
 - feat: Added interaction (EventInteraction) property to calendar events for fine grained control. [#194](https://github.com/werner-scholtz/kalender/pull/194)
+- fix: Events rendered as overlapping under certain conditions when they are not overlapping. [#200](https://github.com/werner-scholtz/kalender/issues/200)
 
 ## 0.10.2
 - fix: DefaultEventsController ConcurrentModificationError. [#184](https://github.com/werner-scholtz/kalender/issues/184)
@@ -21,12 +22,8 @@
 
 ## 0.9.0
 
-### Features
-- Preserve visible date when switching between different views. [#165](https://github.com/werner-scholtz/kalender/issues/165)
-
-### Documentation
-
-- Updated `MonthBodyComponents` in readme to include all custom components. [#168](https://github.com/werner-scholtz/kalender/issues/168)
+- feat: preserve visible date when switching between different views. [#165](https://github.com/werner-scholtz/kalender/issues/165)
+- docs: updated `MonthBodyComponents` in readme to include all custom components. [#168](https://github.com/werner-scholtz/kalender/issues/168)
 
 ## 0.8.0
 
