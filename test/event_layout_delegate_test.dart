@@ -10,7 +10,7 @@ void main() {
   final events = [
     CalendarEvent(
       dateTimeRange: DateTimeRange(
-        start: date.copyWith(hour: 1,minute: 29),
+        start: date.copyWith(hour: 1, minute: 29),
         end: date.copyWith(hour: 1, minute: 30),
       ),
     ),
@@ -28,8 +28,6 @@ void main() {
   const width = 400.0;
 
   Key getKey(int index) => Key('event_$index');
-
-
 
   group('overlapLayoutStrategy', () {
     for (final heightPerMinute in heightPerMinutes) {
