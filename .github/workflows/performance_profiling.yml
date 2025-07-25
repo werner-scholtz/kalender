@@ -67,25 +67,24 @@ jobs:
           retention-days: 30
 
       - name: Commit performance summary to branch
-        # if: github.event_name == 'push' && github.ref == 'refs/heads/main' 
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Fetch the performance-results branch
           git fetch origin performance-results:performance-results || echo "Branch doesn't exist yet"
-          
+
           # Switch to performance-results branch
           git checkout performance-results || git checkout --orphan performance-results
-          
+
           # Copy the performance summary with timestamp
-          TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
-          cp examples/testing/performance_summary.json "performance_summary_${TIMESTAMP}.json"
-          
+          cp examples/testing/performance_summary.json "performance_summary.json"
+
           # Add and commit if file exists
           if [ -f "performance_summary_${TIMESTAMP}.json" ]; then
-            git add "performance_summary_${TIMESTAMP}.json"
+            git add "performance_summary.json"
             git commit -m "Performance summary for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
             git push origin performance-results
             echo "✅ Performance summary committed to performance-results branch"
