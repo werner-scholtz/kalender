@@ -91,6 +91,9 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+
+            let comment = '## 📊 Performance Test Results\n\n';
+
             try {
               if (fs.existsSync('performance_report.md')) {
                 const report = fs.readFileSync('performance_report.md', 'utf8');
