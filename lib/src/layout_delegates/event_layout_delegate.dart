@@ -142,6 +142,11 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
         bottom += overlap;
       }
 
+      // Round top and bottom to one decimal place.
+      // This is to prevent floating point errors from causing issues with the layout.
+      top = (top * 10).roundToDouble() / 10;
+      bottom = (bottom * 10).roundToDouble() / 10;
+
       layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
     }
 
@@ -164,7 +169,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
       if (horizontalGroups.any((group) => group.containsId(id))) continue;
 
       // Find the index of the group that overlaps with the layout data.
-      final groupIndex = horizontalGroups.indexWhere((group) => group.overlaps(top, bottom));
+      final groupIndex = horizontalGroups.indexWhere((group) {
+        return group.overlaps(top, bottom);
+      });
 
       if (groupIndex != -1) {
         final group = horizontalGroups.elementAt(groupIndex);
