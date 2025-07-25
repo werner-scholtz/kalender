@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Except 
+!README.md
+!*.json
+!.gitignore
