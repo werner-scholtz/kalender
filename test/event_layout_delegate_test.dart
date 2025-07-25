@@ -7,11 +7,20 @@ import 'utilities.dart';
 void main() {
   final date = DateTime.utc(2025);
   final events = [
+    CalendarEvent(
+      dateTimeRange: DateTimeRange(
+        start: date.copyWith(minute: 29),
+        end: date.copyWith(minute: 30),
+      ),
+    ),
+    CalendarEvent(
+      dateTimeRange: DateTimeRange(
+        start: date.copyWith(minute: 30),
+        end: date.copyWith(minute: 59, second: 59, microsecond: 999999),
+      ),
+    ),
     CalendarEvent(dateTimeRange: DateTimeRange(start: date.copyWith(hour: 1), end: date.copyWith(hour: 2))),
     CalendarEvent(dateTimeRange: DateTimeRange(start: date.copyWith(hour: 2), end: date.copyWith(hour: 3))),
-    CalendarEvent(dateTimeRange: DateTimeRange(start: date.copyWith(hour: 3), end: date.copyWith(hour: 4))),
-    CalendarEvent(dateTimeRange: DateTimeRange(start: date.copyWith(hour: 5), end: date.copyWith(hour: 6))),
-    CalendarEvent(dateTimeRange: DateTimeRange(start: date.copyWith(hour: 7), end: date.copyWith(hour: 8))),
   ];
 
   final heightPerMinutes = List.generate(100, (i) => 0.1 + i / 100);
