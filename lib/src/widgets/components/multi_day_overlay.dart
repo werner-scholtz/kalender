@@ -108,15 +108,32 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
     required this.style,
   });
 
-  /// Calculates the top and left position of the overlay.
-  (double top, double left) calculatePosition(
-    RenderBox portalRenderBox,
-    double headerHeight,
-    double width,
-  ) {
-    final multiDayEventsLayoutRenderBox = getMultiDayEventLayoutRenderBox();
+  /// Returns a [Key] for the overlay based on the date.
+  static Key getKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_${date.millisecondsSinceEpoch}');
+  }
 
-    // Get the size of the multi day events layout.
+  /// Returns a [Key] for the overlay card based on the date.
+  static Key getOverlayCardKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_card_${date.millisecondsSinceEpoch}');
+  }
+
+  /// Returns a [Key] for the close button based on the date.
+  static Key getCloseButtonKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_close_button_${date.millisecondsSinceEpoch}');
+  }
+
+  /// Calculates the top and left position of the overlay.
+  (double top, double left, double right) _calculatePosition(
+    BoxConstraints constraints,
+    double headerHeight,
+  ) {
+    final portalRenderBox = getOverlayPortalRenderBox();
+
+    final multiDayEventsLayoutRenderBox = getMultiDayEventLayoutRenderBox();
     final multiDayEventsLayoutSize = multiDayEventsLayoutRenderBox.size;
 
     // Get the position of the portal widget.
@@ -124,86 +141,130 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
     final portalPosition = portalRenderBox.localToGlobal(Offset.zero);
 
     // Calculate the left and top position of the overlay.
-    final top = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
-    final left = portalPosition.dx - (width / 2) + portalWidth / 2;
+    // Ensure the overlay does not go off the top of the screen.
+    var top = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
+    if (top < 0) top = 0;
 
-    return (top, left);
+    // Calculate the left position of the overlay.
+    // Ensure the overlay does not go off the left side of the screen.
+    final maxWidth = _determineWidth(constraints);
+    var left = portalPosition.dx - (maxWidth / 2) + portalWidth / 2;
+    if (left < 0) left = 0;
+
+    // Ensure the overlay does not go off the right side of the screen.
+    var width = maxWidth;
+    final right = left + width;
+    if (right > constraints.maxWidth) {
+      if (left > constraints.maxWidth - maxWidth) {
+        // If there is space on the left side, adjust the left position.
+        left = constraints.maxWidth - maxWidth;
+      } else {
+        // Otherwise, adjust the width to fit within the constraints.
+        width = constraints.maxWidth - left;
+      }
+    }
+
+    return (top, left, width);
+  }
+
+  /// Determines the width of the overlay based on the constraints.
+  double _determineWidth(BoxConstraints constraints) {
+    if (constraints.maxWidth < 300) {
+      return constraints.maxWidth;
+    } else {
+      return defaultWidth;
+    }
+  }
+
+  static const defaultWidth = 300.0;
+
+  /// Determines the height of the header based on the constraints.
+  double _determineHeaderHeight(BoxConstraints constraints) {
+    if (constraints.maxHeight < 80) {
+      return constraints.maxHeight;
+    } else {
+      return defaultHeaderHeight;
+    }
   }
 
   static const defaultHeaderHeight = 80.0;
-  static const defaultWidth = 300.0;
 
   @override
   Widget build(BuildContext context) {
-    const width = defaultWidth;
-    const headerHeight = defaultHeaderHeight;
-    final (top, left) = calculatePosition(getOverlayPortalRenderBox.call(), headerHeight, width);
     final textDirection = Directionality.of(context);
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: portalController.hide)),
-        Positioned(
-          top: top,
-          left: left,
-          width: width,
-          child: Card(
-            child: Column(
-              spacing: 8,
-              children: [
-                SizedBox(
-                  height: headerHeight,
-                  width: width,
-                  child: Padding(
-                    padding: style?.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: Text(
-                            style?.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
-                            style: style?.dayNameTextStyle,
-                          ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final headerHeight = _determineHeaderHeight(constraints);
+        final (top, left, width) = _calculatePosition(constraints, headerHeight);
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: portalController.hide)),
+            Positioned(
+              top: top,
+              left: left,
+              width: width,
+              child: Card(
+                key: getOverlayCardKey(date),
+                child: Column(
+                  spacing: 8,
+                  children: [
+                    SizedBox(
+                      height: headerHeight,
+                      width: width,
+                      child: Padding(
+                        padding: style?.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                style?.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
+                                style: style?.dayNameTextStyle,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: IconButton.filledTonal(
+                                onPressed: () {},
+                                icon: Text(date.day.toString(), style: style?.dateTextStyle),
+                              ),
+                            ),
+                            Align(
+                              alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
+                              child: IconButton.filledTonal(
+                                onPressed: portalController.hide,
+                                icon: style?.closeIcon ?? const Icon(Icons.close),
+                                key: MultiDayOverlay.getCloseButtonKey(date),
+                              ),
+                            ),
+                          ],
                         ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: IconButton.filledTonal(
-                            onPressed: () {},
-                            icon: Text(date.day.toString(), style: style?.dateTextStyle),
-                          ),
-                        ),
-                        Align(
-                          alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
-                          child: IconButton.filledTonal(
-                            onPressed: portalController.hide,
-                            icon: style?.closeIcon ?? const Icon(Icons.close),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: style?.eventsPadding ?? const EdgeInsets.all(4.0),
+                      child: ListBody(
+                        children: [
+                          for (final event in events)
+                            Padding(
+                              padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
+                              child: SizedBox(
+                                height: tileHeight,
+                                child: overlayTileBuilder(event, date.dayRange, portalController.hide),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: style?.eventsPadding ?? const EdgeInsets.all(4.0),
-                  child: ListBody(
-                    children: [
-                      for (final event in events)
-                        Padding(
-                          padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
-                          child: SizedBox(
-                            height: tileHeight,
-                            child: overlayTileBuilder(event, date.dayRange, portalController.hide),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

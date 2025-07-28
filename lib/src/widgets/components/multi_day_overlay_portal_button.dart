@@ -18,10 +18,13 @@ class MultiDayPortalOverlayButtonStyle {
   /// The padding of the text.
   final EdgeInsetsGeometry? textPadding;
 
+  /// The text overflow behavior.
+  final TextOverflow? textOverflow;
+
   /// A function that builds a string based on the number of hidden rows.
   final String Function(int numberOfHiddenRows)? stringBuilder;
 
-  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder});
+  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder, this.textOverflow});
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {
@@ -50,6 +53,12 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
     );
   }
 
+  /// Returns a [Key] for the button based on the date.
+  static Key getKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_portal_overlay_button_${date.millisecondsSinceEpoch}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -59,6 +68,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
         child: Text(
           style?.stringBuilder?.call(numberOfHiddenRows) ?? '$numberOfHiddenRows more',
           style: style?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+          overflow: style?.textOverflow ?? TextOverflow.ellipsis,
           key: textKey,
         ),
       ),

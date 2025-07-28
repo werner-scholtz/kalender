@@ -279,6 +279,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     overlayStyles: widget.multiDayOverlayStyles,
                   ) ??
                   MultiDayOverlayPortal<T>(
+                    key: MultiDayOverlayPortal.getKey(date),
                     date: date,
                     events: eventsForColumn,
                     numberOfHiddenRows: numberOfHiddenRows,
