@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
 
 import 'utilities.dart';
 
@@ -59,10 +60,9 @@ void main() {
         expect(find.byType(MultiDayOverlayPortal), findsNWidgets(3));
         expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(3));
 
+        // Check that the overlay always renders within the calendar view bounds.
         final visibleDates = calendarController.visibleDateTimeRangeUtc.value.dates();
-
         final datesToTest = [visibleDates[0], visibleDates[1], visibleDates[2]];
-
         for (final date in datesToTest) {
           final button = find.byKey(MultiDayPortalOverlayButton.getKey(date));
           expect(button, findsOne);
@@ -86,6 +86,28 @@ void main() {
           await tester.tap(find.byKey(MultiDayOverlay.getCloseButtonKey(date)));
           await tester.pumpAndSettle();
         }
+
+        // Check that the overlay dismisses correctly when dragging an event.
+        final overlay = find.byType(MultiDayOverlay);
+        expect(overlay, findsNothing);
+        final button = find.byKey(MultiDayPortalOverlayButton.getKey(datesToTest.first));
+        expect(button, findsOne);
+        await tester.tap(button);
+        await tester.pumpAndSettle();
+        expect(overlay, findsOne);
+
+        final event = find.byType(MultiDayOverlayEventTile).first;
+        expect(event, findsOne);
+
+        // Simulate a drag gesture on the event tile to dismiss the overlay.
+        final gesture = await tester.startGesture(tester.getCenter(event), pointer: 1);
+        await gesture.moveBy(const Offset(10, 0));
+        await tester.pumpAndSettle();
+
+        expect(overlay, findsNothing);
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(overlay, findsNothing);
       });
     }
   });

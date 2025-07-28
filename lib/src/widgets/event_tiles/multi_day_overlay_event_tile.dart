@@ -26,6 +26,7 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
       event: event,
       tile: tile,
       tileComponents: tileComponents,
+      dismissOverlay: dismissOverlay,
     );
 
     return GestureDetector(

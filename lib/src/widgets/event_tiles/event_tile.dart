@@ -130,13 +130,20 @@ class _EventResizeState<T extends Object?> extends State<EventResize<T>> with Ev
 /// The [Reschedule] widget allows the user to reschedule an event by dragging it.
 class EventReschedule<T extends Object?> extends StatelessWidget with EventModification<T> {
   final Widget tile;
+  final VoidCallback? dismissOverlay;
 
   @override
   final CalendarEvent<T> event;
   @override
   final TileComponents<T> tileComponents;
 
-  const EventReschedule({super.key, required this.event, required this.tileComponents, required this.tile});
+  const EventReschedule({
+    super.key,
+    required this.event,
+    required this.tileComponents,
+    required this.tile,
+    this.dismissOverlay,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +163,10 @@ class EventReschedule<T extends Object?> extends StatelessWidget with EventModif
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () => selectEvent(context),
+            onDragStarted: () {
+              dismissOverlay?.call();
+              selectEvent(context);
+            },
             maxSimultaneousDrags: 1,
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           )
@@ -165,7 +175,10 @@ class EventReschedule<T extends Object?> extends StatelessWidget with EventModif
             feedback: feedback,
             childWhenDragging: tileWhenDragging,
             dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () => selectEvent(context),
+            onDragStarted: () {
+              dismissOverlay?.call();
+              selectEvent(context);
+            },
             child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
           );
   }
