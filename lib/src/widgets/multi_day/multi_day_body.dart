@@ -246,7 +246,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
               child: MultiDayEventsRow<T>(
                 configuration: widget.configuration,
                 visibleDateTimeRange: visibleRange,
-                viewConfiguration: widget.viewController.viewConfiguration,
+                viewController: widget.viewController,
               ),
             ),
           ],

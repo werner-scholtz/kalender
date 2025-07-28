@@ -20,13 +20,13 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///         of the event being modified. See todo for a possible solution.
 class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   final MultiDayBodyConfiguration configuration;
-  final MultiDayViewConfiguration viewConfiguration;
   final DateTimeRange visibleDateTimeRange;
+  final MultiDayViewController<T> viewController;
   const MultiDayEventsRow({
     super.key,
     required this.configuration,
-    required this.viewConfiguration,
     required this.visibleDateTimeRange,
+    required this.viewController,
   });
 
   /// A key used to identify the day events widget.
@@ -42,10 +42,10 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
               padding: configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
               child: DayEventsColumn<T>(
                 key: columnKey(date),
-                viewConfiguration: viewConfiguration,
                 configuration: configuration,
                 date: date,
                 eventsController: context.eventsController<T>(),
+                viewController: viewController,
               ),
             ),
           ),
@@ -56,15 +56,16 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
 
 class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-  final MultiDayViewConfiguration viewConfiguration;
+
   final MultiDayBodyConfiguration configuration;
   final DateTime date;
+  final MultiDayViewController<T> viewController;
   const DayEventsColumn({
     super.key,
     required this.eventsController,
     required this.configuration,
-    required this.viewConfiguration,
     required this.date,
+    required this.viewController,
   });
 
   @override
@@ -75,6 +76,8 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   /// The events that are displayed on the day.
   List<CalendarEvent<T>> _events = [];
   EventsController<T> get _eventsController => widget.eventsController;
+  EventLayoutDelegateCache get cache => widget.viewController.cache;
+  MultiDayViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   @override
   void initState() {
@@ -111,6 +114,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       TimeOfDayRange.allDay(),
       0,
       widget.configuration.minimumTileHeight,
+      cache,
     ).sortEvents(events) as List<CalendarEvent<T>>;
   }
 
@@ -123,9 +127,10 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       delegate: layoutStrategy.call(
         _events,
         widget.date,
-        widget.viewConfiguration.timeOfDayRange,
+        viewConfiguration.timeOfDayRange,
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
+        cache,
       ),
       children: _events.indexed
           .map(
@@ -154,9 +159,10 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
               events: _events,
               eventsController: widget.eventsController,
               configuration: widget.configuration,
-              viewConfiguration: widget.viewConfiguration,
+              viewConfiguration: viewConfiguration,
               date: widget.date,
               controller: controller,
+              viewController: widget.viewController,
             ),
           ),
         ),
@@ -173,6 +179,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
   final DateTime date;
   final List<CalendarEvent<T>> events;
   final CalendarController<T> controller;
+  final MultiDayViewController<T> viewController;
   const DayDropTargetColumn({
     super.key,
     required this.events,
@@ -181,6 +188,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
     required this.viewConfiguration,
     required this.date,
     required this.controller,
+    required this.viewController,
   });
 
   @override
@@ -256,6 +264,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
         widget.viewConfiguration.timeOfDayRange,
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
+        widget.viewController.cache,
       ),
       children: eventList.indexed.map(
         (item) {

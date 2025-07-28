@@ -21,6 +21,7 @@ typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
+  EventLayoutDelegateCache? cache,
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
@@ -30,6 +31,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
+  EventLayoutDelegateCache? cache,
 ) {
   return OverlapLayoutDelegate<T>(
     events: events,
@@ -37,6 +39,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
     minimumTileHeight: minimumTileHeight,
+    layoutCache: cache ?? EventLayoutDelegateCache(),
   );
 }
 
@@ -47,6 +50,7 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
+  EventLayoutDelegateCache? cache,
 ) {
   return SideBySideLayoutDelegate<T>(
     events: events,
@@ -54,11 +58,42 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
     heightPerMinute: heightPerMinute,
     timeOfDayRange: timeOfDayRange,
     minimumTileHeight: minimumTileHeight,
+    layoutCache: cache ?? EventLayoutDelegateCache(),
   );
 }
 
+/// A cache for [EventLayoutDelegate]s.
+///
+/// This is used to cache some values that are recalculated often.
+/// What can/do we need to cache here ?
+///
+class EventLayoutDelegateCache {
+  final Map<String, Map<int, VerticalLayoutData>> _dateCache = {};
 
-// TODO: see if cache some of the values for performance.
+  /// Generates a cache key based on the [date], [heightPerMinute], and [timeRange].
+  String _generateCacheKey(DateTime date, double heightPerMinute, TimeOfDayRange timeRange) {
+    return '${date.millisecondsSinceEpoch}_${heightPerMinute}_${timeRange.hashCode}';
+  }
+
+  /// Caches the vertical layout data for the given [date], [heightPerMinute], and [timeOfDayRange].
+  Map<int, VerticalLayoutData>? getCache(DateTime date, double heightPerMinute, TimeOfDayRange timeOfDayRange) {
+    final key = _generateCacheKey(date, heightPerMinute, timeOfDayRange);
+    return _dateCache[key];
+  }
+
+  void setCache(DateTime date, double heightPerMinute, TimeOfDayRange timeRange, Map<int, VerticalLayoutData> cache) {
+    final key = _generateCacheKey(date, heightPerMinute, timeRange);
+    _dateCache[key] = cache;
+  }
+
+  void invalidateCache(DateTime date) {
+    _dateCache.removeWhere((key, _) => key.startsWith('${date.millisecondsSinceEpoch}'));
+  }
+
+  void clearAll() {
+    _dateCache.clear();
+  }
+}
 
 /// The base [MultiChildLayoutDelegate] class for laying out [CalendarEvent]s.
 ///
@@ -78,14 +113,26 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.date,
     required this.timeOfDayRange,
     required this.minimumTileHeight,
+    required this.layoutCache,
   });
+
+  /// The date for which the events are laid out.
+  final DateTime date;
+
+  /// The time of day range for which the events are laid out.
+  final TimeOfDayRange timeOfDayRange;
 
   /// The list of events that will be laid out. (The order of these events are the same as the widget's)
   final Iterable<CalendarEvent<T>> events;
-  final DateTime date;
-  final TimeOfDayRange timeOfDayRange;
+
+  /// The height per minute of the current view.
   final double heightPerMinute;
+
+  /// The minimum height of a tile.
   final double? minimumTileHeight;
+
+  /// The cache for the [EventLayoutDelegate].
+  final EventLayoutDelegateCache layoutCache;
 
   /// Sorts the [CalendarEvent]s.
   ///
@@ -127,33 +174,56 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [size] - The size of the widget.
   List<VerticalLayoutData> calculateVerticalLayoutData(Size size) {
     final numberOfChildren = events.length;
-    final layoutEvents = <VerticalLayoutData>[];
-    // Calculate the top and bottom of each event.
-    for (var i = 0; i < numberOfChildren; i++) {
-      final id = i;
-      final event = events.elementAt(i);
+    final currentCache = <int, VerticalLayoutData>{};
+    final cache = layoutCache.getCache(date, heightPerMinute, timeOfDayRange);
 
-      var top = calculateDistanceFromStart(event);
-      final height = calculateHeight(event);
-      var bottom = top + height;
-
-      final overlap = size.height - bottom;
-      // Check if the event is outside the bounds of the widget.
-      if (overlap.isNegative) {
-        // Update the top and bottom to fit within the bounds.
-        top += overlap;
-        bottom += overlap;
+    if (cache == null) {
+      // If there is no cache, calculate the layout data for each event.
+      for (var i = 0; i < numberOfChildren; i++) {
+        final id = i;
+        final event = events.elementAt(i);
+        final eventHash = event.hashCode;
+        currentCache[eventHash] = _calculateSingleEventLayout(id, size, event);
       }
+    } else {
+      // If there is a cache, use it to calculate the layout data for each event.
+      for (var i = 0; i < numberOfChildren; i++) {
+        final id = i;
+        final event = events.elementAt(i);
+        final eventHash = event.hashCode;
 
-      // Round top and bottom to one decimal place.
-      // This is to prevent floating point errors from causing issues with the layout.
-      top = (top * 10).roundToDouble() / 10;
-      bottom = (bottom * 10).roundToDouble() / 10;
-
-      layoutEvents.add(VerticalLayoutData(id: id, top: top, bottom: bottom));
+        final cached = cache[eventHash];
+        if (cached == null) {
+          currentCache[eventHash] = _calculateSingleEventLayout(id, size, event);
+        } else {
+          currentCache[eventHash] = cached.copyWith(id: id);
+        }
+      }
     }
 
-    return sortVerticalLayoutData(layoutEvents);
+    layoutCache.setCache(date, heightPerMinute, timeOfDayRange, currentCache);
+    return sortVerticalLayoutData(currentCache.values.toList());
+  }
+
+  VerticalLayoutData _calculateSingleEventLayout(int id, Size size, CalendarEvent<T> event) {
+    var top = calculateDistanceFromStart(event);
+    final height = calculateHeight(event);
+    var bottom = top + height;
+
+    final overlap = size.height - bottom;
+    // Check if the event is outside the bounds of the widget.
+    if (overlap.isNegative) {
+      // Update the top and bottom to fit within the bounds.
+      top += overlap;
+      bottom += overlap;
+    }
+
+    // Round top and bottom to one decimal place.
+    // This is to prevent floating point errors from causing issues with the layout.
+    top = (top * 10).roundToDouble() / 10;
+    bottom = (bottom * 10).roundToDouble() / 10;
+
+    return VerticalLayoutData(id: id, top: top, bottom: bottom);
   }
 
   /// Groups the [VerticalLayoutData] into horizontal groups.
@@ -205,6 +275,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.date,
     required super.timeOfDayRange,
     required super.minimumTileHeight,
+    required super.layoutCache,
   });
 
   @override
@@ -269,6 +340,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     required super.date,
     required super.timeOfDayRange,
     required super.minimumTileHeight,
+    required super.layoutCache,
   });
 
   @override
@@ -418,6 +490,11 @@ class VerticalLayoutData {
 
   @override
   String toString() => 'id: $id, top: $top, bottom: $bottom';
+
+  /// Creates a copy of this [VerticalLayoutData] with a new [id].
+  VerticalLayoutData copyWith({int? id}) {
+    return VerticalLayoutData(id: id ?? this.id, top: top, bottom: bottom);
+  }
 }
 
 /// This stores the final layout data of a single [CalendarEvent].
