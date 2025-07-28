@@ -57,6 +57,9 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   );
 }
 
+
+// TODO: see if cache some of the values for performance.
+
 /// The base [MultiChildLayoutDelegate] class for laying out [CalendarEvent]s.
 ///
 /// [EventLayoutDelegate]s are used to layout [CalendarEvent]s in  a [CustomMultiChildLayout].
