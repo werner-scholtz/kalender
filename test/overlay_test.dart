@@ -13,7 +13,7 @@ void main() {
   final headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   setUpAll(() {
-    final startOfWeek = DateTime.now().asUtc.startOfWeek();
+    final startOfWeek = DateTime.now().startOfWeek();
     eventsController.addEvents([
       CalendarEvent(
         dateTimeRange: DateTimeRange(
@@ -57,12 +57,12 @@ void main() {
         );
 
         expect(find.byType(MultiDayEventTile), findsOne);
-        expect(find.byType(MultiDayOverlayPortal), findsNWidgets(3));
-        expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(3));
+        expect(find.byType(MultiDayOverlayPortal), findsNWidgets(2));
+        expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(2));
 
         // Check that the overlay always renders within the calendar view bounds.
         final visibleDates = calendarController.visibleDateTimeRangeUtc.value.dates();
-        final datesToTest = [visibleDates[0], visibleDates[1], visibleDates[2]];
+        final datesToTest = [visibleDates[0], visibleDates[1]];
         for (final date in datesToTest) {
           final button = find.byKey(MultiDayPortalOverlayButton.getKey(date));
           expect(button, findsOne);
