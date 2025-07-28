@@ -38,7 +38,7 @@ void main() {
               width: width,
               height: 800,
               child: CustomMultiChildLayout(
-                delegate: overlapLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), heightPerMinute, null),
+                delegate: overlapLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), heightPerMinute, null, null),
                 children: List.generate(
                   events.length,
                   (index) => LayoutId(
@@ -70,7 +70,7 @@ void main() {
           SizedBox(
             width: width,
             child: CustomMultiChildLayout(
-              delegate: sideBySideLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), 0.7, null),
+              delegate: sideBySideLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), 0.7, null, null),
               children: List.generate(
                 events.length,
                 (index) => LayoutId(

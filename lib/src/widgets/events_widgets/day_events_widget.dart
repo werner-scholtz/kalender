@@ -14,10 +14,6 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///
 /// To render the event tiles it uses [CustomMultiChildLayout],
 /// along with a [overlapLayoutStrategy], [sideBySideLayoutStrategy] or custom strategy defined by the user.
-///
-/// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
-///         This is somewhat expensive computationally as it lays out all the events again to determine the position
-///         of the event being modified. See todo for a possible solution.
 class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   final MultiDayBodyConfiguration configuration;
   final DateTimeRange visibleDateTimeRange;

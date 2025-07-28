@@ -58,7 +58,7 @@ void main() {
             child: MultiDayEventsRow<int>(
               configuration: configuration,
               visibleDateTimeRange: displayRange,
-              viewConfiguration: MultiDayViewConfiguration.week(),
+              viewController: calendarController.viewController as MultiDayViewController<int>,
             ),
           ),
         ),
