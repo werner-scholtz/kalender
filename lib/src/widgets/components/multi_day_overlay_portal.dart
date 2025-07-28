@@ -61,6 +61,12 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
 
   @override
   State<MultiDayOverlayPortal<T>> createState() => _MultiDayOverlayPortalState<T>();
+
+  /// Returns a [Key] for the overlay portal based on the date.
+  static Key getKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_portal_${date.millisecondsSinceEpoch}');
+  }
 }
 
 class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverlayPortal<T>> {
@@ -99,6 +105,7 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
               style: widget.overlayStyles?.multiDayOverlayStyle,
             ) ??
             MultiDayOverlay<T>(
+              key: MultiDayOverlay.getKey(widget.date),
               date: widget.date,
               events: widget.events,
               tileHeight: widget.tileHeight,
@@ -115,6 +122,7 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
             widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
           ) ??
           MultiDayPortalOverlayButton(
+            key: MultiDayPortalOverlayButton.getKey(widget.date),
             portalController: _portalController,
             numberOfHiddenRows: widget.numberOfHiddenRows,
             style: widget.overlayStyles?.multiDayPortalOverlayButtonStyle,

@@ -1,6 +1,7 @@
 ## 0.11.0
 - feat: Added interaction (EventInteraction) property to calendar events for fine grained control. [#194](https://github.com/werner-scholtz/kalender/pull/194)
 - fix: Events rendered as overlapping under certain conditions when they are not overlapping. [#200](https://github.com/werner-scholtz/kalender/issues/200)
+- fix: Overlay positioning and dismiss behavior. [#203](https://github.com/werner-scholtz/kalender/issues/203)
 
 ## 0.10.2
 - fix: DefaultEventsController ConcurrentModificationError. [#184](https://github.com/werner-scholtz/kalender/issues/184)
