@@ -100,7 +100,7 @@ jobs:
             python3 compare_performance.py \
               --current performance_summary.json \
               --baseline baseline_performance.json \
-              --output performance_comparison_$(date +%Y%m%d_%H%M%S).md \
+              --output performance_comparison.md \
               --verbose
             
             # Clean up the temporary script
@@ -116,14 +116,14 @@ jobs:
             git add "performance_summary.json"
             
             # Add comparison report if it exists
-            if ls performance_comparison_*.md 1> /dev/null 2>&1; then
-              git add performance_comparison_*.md
+            if ls performance_comparison.md 1> /dev/null 2>&1; then
+              git add performance_comparison.md
               echo "📊 Added performance comparison report"
             fi
             
             # Create commit with meaningful message
             COMMIT_MSG="Performance data for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
-            if ls performance_comparison_*.md 1> /dev/null 2>&1; then
+            if ls performance_comparison.md 1> /dev/null 2>&1; then
               COMMIT_MSG="$COMMIT_MSG
 
           Includes performance comparison report"
