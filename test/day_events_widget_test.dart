@@ -37,6 +37,15 @@ void main() {
 
   testWidgets('DayEventsWidget lays out events correctly', (tester) async {
     final calendarController = CalendarController<int>();
+    final viewController = MultiDayViewController<int>(
+      viewConfiguration: MultiDayViewConfiguration.singleDay(),
+      visibleDateTimeRange: ValueNotifier<DateTimeRange>(
+        DateTimeRange(start: start.startOfDay, end: start.endOfDay),
+      ),
+      visibleEvents: ValueNotifier({}),
+    );
+    calendarController.attach(viewController);
+
     final configuration = MultiDayBodyConfiguration();
     // The range to display in the DayEventsWidget.
     final displayRange = start.asUtc.startOfDay.weekRange();
@@ -58,7 +67,7 @@ void main() {
             child: MultiDayEventsRow<int>(
               configuration: configuration,
               visibleDateTimeRange: displayRange,
-              viewConfiguration: MultiDayViewConfiguration.week(),
+              viewController: viewController,
             ),
           ),
         ),
