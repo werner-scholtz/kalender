@@ -38,7 +38,8 @@ void main() {
               width: width,
               height: 800,
               child: CustomMultiChildLayout(
-                delegate: overlapLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), heightPerMinute, null, null),
+                delegate:
+                    overlapLayoutStrategy(events, dateAsUtc, TimeOfDayRange.allDay(), heightPerMinute, null, null),
                 children: List.generate(
                   events.length,
                   (index) => LayoutId(
