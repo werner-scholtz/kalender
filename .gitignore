@@ -2,6 +2,6 @@
 *
 
 # Except 
-!README.md
+!*.md
 !*.json
 !.gitignore
