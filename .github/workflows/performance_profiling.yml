@@ -93,11 +93,18 @@ jobs:
           # Run performance comparison if we have a baseline
           if [ -s baseline_performance.json ] && [ "$(cat baseline_performance.json)" != "{}" ]; then
             echo "🔍 Running performance comparison..."
-            python3 .github/scripts/compare_performance.py \
+            
+            # Copy the comparison script from the original branch
+            git show ${{ github.sha }}:.github/scripts/compare_performance.py > compare_performance.py
+            
+            python3 compare_performance.py \
               --current performance_summary.json \
               --baseline baseline_performance.json \
               --output performance_comparison_$(date +%Y%m%d_%H%M%S).md \
               --verbose
+            
+            # Clean up the temporary script
+            rm compare_performance.py
             
             echo "✅ Performance comparison completed"
           else
