@@ -21,7 +21,6 @@ enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
 
 enum Views { week, month, schedule }
 
-const numberOfRuns = 3;
 
 Future<void> main() {
   return integrationDriver(
@@ -41,10 +40,9 @@ Future<void> main() {
         print('\nProcessing reports...\n');
 
         for (final key in keys) {
-          if (!data.containsKey(key)) {
-            continue;
-          }
-
+          print('Processing: $key');
+          if (!data.containsKey(key)) continue;
+          
           final timeline = driver.Timeline.fromJson(data[key] as Map<String, dynamic>);
           final timelineSummary = driver.TimelineSummary.summarize(timeline);
 
