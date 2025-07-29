@@ -79,18 +79,59 @@ jobs:
           # Switch to performance-results branch
           git checkout performance-results || git checkout --orphan performance-results
 
-          # Copy the performance summary
+          # Download existing performance summary as baseline (if it exists)
+          if git show HEAD:performance_summary.json > baseline_performance.json 2>/dev/null; then
+            echo "✅ Downloaded existing performance summary as baseline"
+          else
+            echo "ℹ️ No existing performance summary found - this will be the first baseline"
+            echo "{}" > baseline_performance.json
+          fi
+
+          # Copy the new performance summary
           cp examples/testing/performance_summary.json "performance_summary.json"
 
-          # Add and commit if file exists
+          # Run performance comparison if we have a baseline
+          if [ -s baseline_performance.json ] && [ "$(cat baseline_performance.json)" != "{}" ]; then
+            echo "🔍 Running performance comparison..."
+            python3 .github/scripts/compare_performance.py \
+              --current performance_summary.json \
+              --baseline baseline_performance.json \
+              --output performance_comparison_$(date +%Y%m%d_%H%M%S).md \
+              --verbose
+            
+            echo "✅ Performance comparison completed"
+          else
+            echo "ℹ️ Skipping comparison - no baseline data available"
+          fi
+
+          # Add and commit files
           if [ -f "performance_summary.json" ]; then
             git add "performance_summary.json"
-            git commit -m "Performance summary for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
+            
+            # Add comparison report if it exists
+            if ls performance_comparison_*.md 1> /dev/null 2>&1; then
+              git add performance_comparison_*.md
+              echo "📊 Added performance comparison report"
+            fi
+            
+            # Create commit with meaningful message
+            COMMIT_MSG="Performance data for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
+            if ls performance_comparison_*.md 1> /dev/null 2>&1; then
+              COMMIT_MSG="$COMMIT_MSG
+
+          Includes performance comparison report"
+            fi
+            
+            git commit -m "$COMMIT_MSG"
             git push origin performance-results
+            
             echo "✅ Performance summary committed to performance-results branch"
           else
             echo "❌ No performance summary file found"
           fi
+
+          # Clean up temporary files
+          rm -f baseline_performance.json
 
       - name: Download baseline performance data
         if: github.event_name == 'pull_request'

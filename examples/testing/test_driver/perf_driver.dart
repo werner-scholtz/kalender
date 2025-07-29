@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, constant_identifier_names
 
 import 'dart:convert';
 import 'dart:io';
@@ -7,8 +7,8 @@ import 'package:flutter_driver/flutter_driver.dart' as driver;
 import 'package:integration_test/integration_test_driver.dart';
 
 enum Scenario {
-  scenario1(10);
-  // scenario2(20);
+  One_Event_Per_Day(1),
+  Ten_Events_Per_Day(10);
 
   const Scenario(this.numberOfEvents);
   final int numberOfEvents;
@@ -21,6 +21,8 @@ enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
 
 enum Views { week, month, schedule }
 
+const numberOfRuns = 3;
+
 Future<void> main() {
   return integrationDriver(
     responseDataCallback: (data) async {
@@ -30,8 +32,7 @@ Future<void> main() {
         final keys = [
           for (final scenario in Scenario.values)
             for (var view in Views.values)
-              for (var key in ReportKeys.values)
-                scenario.getReportKey(view, key),
+              for (var key in ReportKeys.values) scenario.getReportKey(view, key),
         ];
 
         print('\n=== Performance Profiling Summary ===');
@@ -44,19 +45,13 @@ Future<void> main() {
             continue;
           }
 
-          final timeline = driver.Timeline.fromJson(
-            data[key] as Map<String, dynamic>,
-          );
+          final timeline = driver.Timeline.fromJson(data[key] as Map<String, dynamic>);
           final timelineSummary = driver.TimelineSummary.summarize(timeline);
 
           // Extract key metrics
           final frameCount = timeline.events?.length ?? 0;
 
-          await timelineSummary.writeTimelineToFile(
-            key,
-            pretty: true,
-            includeSummary: true,
-          );
+          await timelineSummary.writeTimelineToFile(key, pretty: true, includeSummary: true);
 
           final metricsStr =
               '\n- Avg Build: ${timelineSummary.summaryJson['average_frame_build_time_millis']}ms'
@@ -66,29 +61,28 @@ Future<void> main() {
           summary[key] = {
             'average_frame_build_time_millis':
                 timelineSummary.summaryJson['average_frame_build_time_millis'],
-            '90th_percentile_frame_build_time_millis': timelineSummary
-                .summaryJson['90th_percentile_frame_build_time_millis'],
-            '99th_percentile_frame_build_time_millis': timelineSummary
-                .summaryJson['99th_percentile_frame_build_time_millis'],
+            '90th_percentile_frame_build_time_millis':
+                timelineSummary.summaryJson['90th_percentile_frame_build_time_millis'],
+            '99th_percentile_frame_build_time_millis':
+                timelineSummary.summaryJson['99th_percentile_frame_build_time_millis'],
             'worst_frame_build_time_millis':
                 timelineSummary.summaryJson['worst_frame_build_time_millis'],
             'missed_frame_build_budget_count':
                 timelineSummary.summaryJson['missed_frame_build_budget_count'],
-            'average_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['average_frame_rasterizer_time_millis'],
-            'stddev_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['stddev_frame_rasterizer_time_millis'],
-            '90th_percentile_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['90th_percentile_frame_rasterizer_time_millis'],
-            '99th_percentile_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['99th_percentile_frame_rasterizer_time_millis'],
-            'worst_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['worst_frame_rasterizer_time_millis'],
-            'missed_frame_rasterizer_budget_count': timelineSummary
-                .summaryJson['missed_frame_rasterizer_budget_count'],
+            'average_frame_rasterizer_time_millis':
+                timelineSummary.summaryJson['average_frame_rasterizer_time_millis'],
+            'stddev_frame_rasterizer_time_millis':
+                timelineSummary.summaryJson['stddev_frame_rasterizer_time_millis'],
+            '90th_percentile_frame_rasterizer_time_millis':
+                timelineSummary.summaryJson['90th_percentile_frame_rasterizer_time_millis'],
+            '99th_percentile_frame_rasterizer_time_millis':
+                timelineSummary.summaryJson['99th_percentile_frame_rasterizer_time_millis'],
+            'worst_frame_rasterizer_time_millis':
+                timelineSummary.summaryJson['worst_frame_rasterizer_time_millis'],
+            'missed_frame_rasterizer_budget_count':
+                timelineSummary.summaryJson['missed_frame_rasterizer_budget_count'],
             'frame_count': timelineSummary.summaryJson['frame_count'],
-            'frame_rasterizer_count':
-                timelineSummary.summaryJson['frame_rasterizer_count'],
+            'frame_rasterizer_count': timelineSummary.summaryJson['frame_rasterizer_count'],
             'new_gen_gc_count': timelineSummary.summaryJson['new_gen_gc_count'],
             'old_gen_gc_count': timelineSummary.summaryJson['old_gen_gc_count'],
           };
