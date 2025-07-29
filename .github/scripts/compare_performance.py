@@ -76,12 +76,10 @@ def compare_scenarios(current, baseline):
                     minor_regressions.append(f"🟠 **{scenario}**: Frame build time increased by {change_pct:.1f}%")
                 elif change_pct < -10:
                     improvements.append(f"🟢 **{scenario}**: Frame build time improved by {abs(change_pct):.1f}%")
-    
-    # Start building the report with summary at the top
-    report = "## 📊 Performance Report\n\n"
+
     
     # Summary section at the top
-    report += "### 📋 Summary\n\n"
+    report = "## 📋 Summary\n\n"
     
     if critical_issues:
         report += "**⚠️ Critical Performance Issues:**\n"
@@ -196,6 +194,7 @@ def compare_scenarios(current, baseline):
     report += "</details>\n\n"
     
     return report
+
 def main():
     """Main function to run the performance comparison."""
     parser = argparse.ArgumentParser(description='Compare Flutter performance metrics')
