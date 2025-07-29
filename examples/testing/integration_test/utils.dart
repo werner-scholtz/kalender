@@ -33,8 +33,8 @@ Future<void> performSegmentedDrag(
   WidgetTester tester,
   Offset start,
   Offset end, {
-  int segmentCount = 5,
-  int segmentDurationMs = 100,
+  int segmentCount = 10,
+  int segmentDurationMs = 50,
   int pumpDurationMs = 20,
 }) async {
   for (int i = 1; i <= segmentCount; i++) {

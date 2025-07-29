@@ -13,25 +13,31 @@ enum Scenario {
   const Scenario(this.numberOfEvents);
   final int numberOfEvents;
 
-  String getReportKey(Views view, ReportKeys key) =>
-      '${name.toLowerCase()}-${view.name}-${key.name}';
+  String getReportKey(Views view, ReportKeys key, int run) =>
+      '${name.toLowerCase()}-${view.name}-${key.name}-$run';
+
+  static String baseKeyFromReportKey(String key) {
+    return key.split('-').take(3).join('-');
+  }
 }
 
 enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
 
 enum Views { week, month, schedule }
 
+const numberOfRuns = 3;
 
 Future<void> main() {
   return integrationDriver(
     responseDataCallback: (data) async {
-      final summary = <String, dynamic>{};
-
       if (data != null) {
+        final average = {};
+
         final keys = [
-          for (final scenario in Scenario.values)
-            for (var view in Views.values)
-              for (var key in ReportKeys.values) scenario.getReportKey(view, key),
+          for (var run = 1; run <= numberOfRuns; run++)
+            for (final scenario in Scenario.values)
+              for (var view in Views.values)
+                for (var key in ReportKeys.values) scenario.getReportKey(view, key, run),
         ];
 
         print('\n=== Performance Profiling Summary ===');
@@ -41,22 +47,34 @@ Future<void> main() {
 
         for (final key in keys) {
           print('Processing: $key');
-          if (!data.containsKey(key)) continue;
-          
+          if (!data.containsKey(key) || data[key] == null) {
+            print('❌ Missing data for key: $key');
+            continue;
+          }
+
+          print((data[key] as Map<String, dynamic>).length);
+
           final timeline = driver.Timeline.fromJson(data[key] as Map<String, dynamic>);
           final timelineSummary = driver.TimelineSummary.summarize(timeline);
-
-          // Extract key metrics
           final frameCount = timeline.events?.length ?? 0;
-
           await timelineSummary.writeTimelineToFile(key, pretty: true, includeSummary: true);
-
           final metricsStr =
               '\n- Avg Build: ${timelineSummary.summaryJson['average_frame_build_time_millis']}ms'
+              '\n- 90th Build: ${timelineSummary.summaryJson['90th_percentile_frame_build_time_millis']}ms'
               '\n- 99th Build: ${timelineSummary.summaryJson['99th_percentile_frame_build_time_millis']}ms'
-              '\n- Avg Raster: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}\n';
+              '\n- Worst Build: ${timelineSummary.summaryJson['worst_frame_build_time_millis']}ms'
+              '\n- Missed Build Budget: ${timelineSummary.summaryJson['missed_frame_build_budget_count']}'
+              '\n- Avg Rasterizer: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}ms'
+              '\n- 90th Rasterizer: ${timelineSummary.summaryJson['90th_percentile_frame_rasterizer_time_millis']}ms'
+              '\n- 99th Rasterizer: ${timelineSummary.summaryJson['99th_percentile_frame_rasterizer_time_millis']}ms'
+              '\n- Worst Rasterizer: ${timelineSummary.summaryJson['worst_frame_rasterizer_time_millis']}ms'
+              '\n- Missed Rasterizer Budget: ${timelineSummary.summaryJson['missed_frame_rasterizer_budget_count']}'
+              '\n- Frame Count: ${timelineSummary.summaryJson['frame_count']}'
+              '\n- Rasterizer Count: ${timelineSummary.summaryJson['frame_rasterizer_count']}'
+              '\n- New Gen GC Count: ${timelineSummary.summaryJson['new_gen_gc_count']}'
+              '\n- Old Gen GC Count: ${timelineSummary.summaryJson['old_gen_gc_count']}';
 
-          summary[key] = {
+          final summary = {
             'average_frame_build_time_millis':
                 timelineSummary.summaryJson['average_frame_build_time_millis'],
             '90th_percentile_frame_build_time_millis':
@@ -85,15 +103,36 @@ Future<void> main() {
             'old_gen_gc_count': timelineSummary.summaryJson['old_gen_gc_count'],
           };
 
+          final baseKey = Scenario.baseKeyFromReportKey(key);
+          var current = average[baseKey];
+
+          if (current != null) {
+            current = _calculateAverage(current, summary);
+          } else {
+            current = summary;
+          }
+
+          average[baseKey] = current;
+
           print('✅ Processed: $key ($frameCount events)$metricsStr');
         }
 
         final summaryFile = File('performance_summary.json');
         const encoder = JsonEncoder.withIndent('  ');
-        await summaryFile.writeAsString(encoder.convert(summary));
+        await summaryFile.writeAsString(encoder.convert(average));
       } else {
         print('❌ No profiling data received');
       }
     },
   );
+}
+
+Map<String, dynamic> _calculateAverage(Map<String, dynamic> a, Map<String, dynamic> b) {
+  final result = <String, dynamic>{};
+  a.forEach((key, value) {
+    if (b.containsKey(key) && value is num && b[key] is num) {
+      result[key] = (value + b[key]) / 2;
+    }
+  });
+  return result;
 }
