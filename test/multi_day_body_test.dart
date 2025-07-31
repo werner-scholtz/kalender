@@ -202,6 +202,50 @@ void main() {
       }
     });
 
+    group('Day Separator Tests', () {
+      final calendarController = CalendarController();
+
+      /// A list of different view configurations to test.
+      final viewConfigurations = [
+        MultiDayViewConfiguration.singleDay(),
+        MultiDayViewConfiguration.week(),
+        MultiDayViewConfiguration.workWeek(),
+        MultiDayViewConfiguration.freeScroll(numberOfDays: 2),
+        MultiDayViewConfiguration.freeScroll(numberOfDays: 3),
+      ];
+
+      for (final viewConfiguration in viewConfigurations) {
+        testWidgets('Day Separator - ${viewConfiguration.name}', (tester) async {
+          await tester.pumpWidget(
+            wrapWithMaterialApp(
+              CalendarView(
+                eventsController: eventsController,
+                calendarController: calendarController,
+                viewConfiguration: viewConfiguration,
+                callbacks: callbacks,
+                body: CalendarBody(
+                  multiDayTileComponents: components,
+                  monthTileComponents: components,
+                  scheduleTileComponents: scheduleComponents,
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+          final daySeparatorFinder = find.byType(DaySeparator);
+          final expectedNumber = viewConfiguration.type == MultiDayViewType.freeScroll
+              ? viewConfiguration.numberOfDays * 1
+              : viewConfiguration.numberOfDays + 1;
+          expect(
+            daySeparatorFinder,
+            findsNWidgets(expectedNumber),
+            reason: 'There should be $expectedNumber DaySeparators',
+          );
+        });
+      }
+    });
+
     group('PositionedTimeIndicator Tests', () {
       final now = DateTime.now();
       final start = now.startOfWeek();
