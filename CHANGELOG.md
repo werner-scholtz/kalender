@@ -1,3 +1,6 @@
+## 0.11.1
+- fix: Too many day separators in MultiDayView Free Scroll [#208](https://github.com/werner-scholtz/kalender/issues/208)
+
 ## 0.11.0
 - feat: Added interaction (EventInteraction) property to calendar events for fine grained control. [#194](https://github.com/werner-scholtz/kalender/pull/194)
 - fix: Events rendered as overlapping under certain conditions when they are not overlapping. [#200](https://github.com/werner-scholtz/kalender/issues/200)
