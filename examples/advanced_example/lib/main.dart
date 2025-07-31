@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
               prototypeTimeLine: PrototypeCustomTimeline.prototypeBuilder,
               hourLines: CustomHourLines.builder,
             ),
-
           ),
         ),
         callbacks: CalendarCallbacks(
