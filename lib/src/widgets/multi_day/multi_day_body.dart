@@ -187,6 +187,9 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
     widget.viewController.visibleEvents.value = events.toSet();
   }
 
+  int get _numberOfDays => widget.viewController.viewConfiguration.numberOfDays;
+  bool get _isFreeScroll => widget.viewController.viewConfiguration.type == MultiDayViewType.freeScroll;
+
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -198,7 +201,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
-        if (widget.viewController.viewConfiguration.type == MultiDayViewType.freeScroll) {
+        if (_isFreeScroll) {
           final start = visibleRange.start;
           final end = visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays);
           widget.viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
@@ -226,7 +229,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
-                  widget.viewController.viewConfiguration.numberOfDays + 1,
+                  _isFreeScroll ? 1 : _numberOfDays + 1,
                   (_) => DaySeparator.fromContext<T>(context),
                 ),
               ),
