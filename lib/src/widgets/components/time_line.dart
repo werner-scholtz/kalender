@@ -36,6 +36,7 @@ class TimelineStyle {
 
   /// The padding of the text.
   ///
+  /// TODO: remove this.
   /// * Recommendation only pad horizontal.
   final EdgeInsets? textPadding;
 
