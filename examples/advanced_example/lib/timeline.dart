@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// A widget that displays a list of times based on the [timeOfDayRange] and [heightPerMinute].
-class CustomTimeLine extends StatelessWidget {
+/// TODO: add this to package.
+class CustomTimeLine extends StatelessWidget with TimeOfDayUtils {
   /// The [TimeOfDayRange] that will be used to display the timeline.
   final TimeOfDayRange timeOfDayRange;
 
@@ -49,28 +49,19 @@ class CustomTimeLine extends StatelessWidget {
       style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
 
   /// The [TextDirection] that will be used for the text.
-  TextDirection textDirection(BuildContext context) =>
-      style?.textDirection ?? TextDirection.ltr;
+  TextDirection textDirection(BuildContext context) => style?.textDirection ?? TextDirection.ltr;
 
   /// The [EdgeInsets] that will be used for the text.
   EdgeInsets textPadding(BuildContext context) =>
-      style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
+      style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4, vertical: 24);
 
   /// The [Size] of the largest text.
-  Size largestTextSize(
-    BuildContext context,
-    TextStyle textStyle,
-    EdgeInsets padding,
-  ) {
+  Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = TimeOfDay(hour: 12, minute: 0);
-    final text =
-        style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+    final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
     final textSize = _textSize(text, textStyle);
     final paddingSize = Size(padding.horizontal, padding.vertical);
-    return Size(
-      textSize.width + paddingSize.width,
-      textSize.height + paddingSize.height,
-    );
+    return Size(textSize.width + paddingSize.width, textSize.height + paddingSize.height);
   }
 
   /// Returns the [Size] of the text.
@@ -87,21 +78,101 @@ class CustomTimeLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = this.textStyle(context);
+    final textDirection = this.textDirection(context);
     final textPadding = this.textPadding(context);
     final textSize = largestTextSize(context, textStyle, textPadding);
     final textHeight = textSize.height;
     final textWidth = textSize.width;
     final textXOffset = textHeight / 2;
 
-    print(heightPerMinute * timeOfDayRange.duration.inMinutes);
+    final itemHeight = textHeight + textPadding.vertical;
+
+    final segments = timeOfDayRange.splitIntoSegments(
+      numberOfSegments(timeOfDayRange, heightPerMinute, itemHeight),
+    );
+
+    final positionedTimes = segments.indexed.map((e) {
+      final (index, range) = e;
+
+      final height = range.duration.inMinutes * heightPerMinute;
+
+      final pos = index * height;
+
+      // Always skip the first item.
+      if (index == 0 || index == segments.length) return null;
+
+      // The time to display is the next hour.
+      final displayTime = range.start;
+      final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+
+      return Positioned(
+        top: pos - textXOffset,
+        child: Padding(
+          padding: textPadding,
+          child: Text(text, style: textStyle, textDirection: textDirection),
+        ),
+      );
+    });
+
+    final eventBeingDraggedTimes = ValueListenableBuilder(
+      valueListenable: visibleDateTimeRange,
+      builder: (context, visibleRange, child) {
+        return ValueListenableBuilder(
+          valueListenable: eventBeingDragged,
+          builder: (context, eventBeingDragged, child) {
+            // Ensure that there is a event being dragged.
+            if (eventBeingDragged == null) return const SizedBox();
+
+            // Ensure that the event is visible.
+            final eventRange = eventBeingDragged.dateTimeRangeAsUtc;
+            if (!eventRange.overlaps(visibleRange)) return const SizedBox();
+
+            final start = eventBeingDragged.startAsUtc;
+            final end = eventBeingDragged.endAsUtc;
+
+            // Calculate the top and bottom values.
+            final startTop =
+                start.difference(timeOfDayRange.start.toDateTime(start)).inMinutes *
+                heightPerMinute;
+            final endTop =
+                end.difference(timeOfDayRange.start.toDateTime(end)).inMinutes * heightPerMinute;
+
+            final startTime = TimeOfDay.fromDateTime(start);
+            final endTime = TimeOfDay.fromDateTime(end);
+            final startText = style?.stringBuilder?.call(startTime) ?? startTime.format(context);
+            final endText = style?.stringBuilder?.call(endTime) ?? endTime.format(context);
+
+            late final decoration = BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+            );
+
+            return Stack(
+              children: [
+                Positioned(
+                  top: startTop,
+                  child: Container(
+                    decoration: style?.startDecoration ?? decoration,
+                    child: Center(child: Text(startText)),
+                  ),
+                ),
+                Positioned(
+                  top: endTop,
+                  child: Container(
+                    decoration: style?.endDecoration ?? decoration,
+                    child: Center(child: Text(endText)),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
 
     return SizedBox(
       width: textWidth,
-      // child: Column(
-      //   children: List.generate(96, (index) {
-      //     return Text(index.toString());
-      //   }),
-      // ),
+      child: Stack(children: [...positionedTimes.nonNulls, eventBeingDraggedTimes]),
     );
   }
 }
@@ -137,11 +208,43 @@ class PrototypeCustomTimeline extends CustomTimeLine {
   Widget build(BuildContext context) {
     final textStyle = this.textStyle(context);
     final textPadding = this.textPadding(context);
-    final largestTextSize = this.largestTextSize(
-      context,
-      textStyle,
-      textPadding,
-    );
+    final largestTextSize = this.largestTextSize(context, textStyle, textPadding);
     return SizedBox(width: largestTextSize.width);
+  }
+}
+
+/// TODO: add this to package.
+extension TimeOfDayRangeExtensions on TimeOfDayRange {
+  /// Generates a list of [TimeOfDayRange] segments based on the provided [segmentLength] in minutes.
+  List<TimeOfDayRange> splitIntoSegments(int segmentLength) {
+    final segments = <TimeOfDayRange>[];
+    final startMinutes = start.hour * 60 + start.minute;
+    final endMinutes = end.hour * 60 + end.minute;
+    final totalMinutes = endMinutes - startMinutes;
+    final numOfSegments = (totalMinutes / segmentLength).floor();
+    for (var i = 0; i <= numOfSegments; i++) {
+      final startMinutes = i * segmentLength;
+      final start = TimeOfDay(hour: startMinutes ~/ 60, minute: startMinutes % 60);
+      final endMinutes = startMinutes + segmentLength - 1;
+      final end = TimeOfDay(hour: endMinutes ~/ 60, minute: endMinutes % 60);
+
+      segments.add(TimeOfDayRange(start: start, end: end));
+    }
+
+    return segments;
+  }
+}
+
+// TODO: figure out how this can be applied in the hourline builder as well.
+mixin TimeOfDayUtils {
+  int numberOfSegments(TimeOfDayRange timeOfDayRange, double heightPerMinute, double itemHeight) {
+    final totalHeight = timeOfDayRange.duration.inMinutes * heightPerMinute;
+    final totalItems = (totalHeight / itemHeight).ceil();
+    return switch (totalItems) {
+      < 12 => 60,
+      < 24 => 30,
+      < 48 => 15,
+      _ => 5,
+    };
   }
 }

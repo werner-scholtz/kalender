@@ -69,9 +69,14 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.provider<T>();
     final viewController = context.calendarController<T>().viewController;
+
     final callbacks = this.callbacks ?? provider.callbacks;
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
     final snapping = this.snapping ?? ValueNotifier(const CalendarSnapping());
+
+    if (heightPerMinute != null && viewController is MultiDayViewController<T>) {
+      viewController.heightPerMinute = heightPerMinute!;
+    }
 
     return Callbacks<T>(
       callbacks: callbacks,
