@@ -1,4 +1,5 @@
 import 'package:advanced_example/hourlines.dart';
+import 'package:advanced_example/layout_strategy.dart';
 import 'package:advanced_example/providers.dart';
 import 'package:advanced_example/tiles.dart';
 import 'package:advanced_example/timeline.dart';
@@ -86,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
               prototypeTimeLine: PrototypeCustomTimeline.prototypeBuilder,
               hourLines: CustomHourLines.builder,
             ),
-
           ),
         ),
         callbacks: CalendarCallbacks(
@@ -99,6 +99,19 @@ class _MyHomePageState extends State<MyHomePage> {
           multiDayTileComponents: tileComponents,
           monthTileComponents: multiDayTileComponents,
           scheduleTileComponents: scheduleTileComponents,
+          multiDayBodyConfiguration: MultiDayBodyConfiguration(
+            eventLayoutStrategy:
+                (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache) {
+                  return CustomSideBySideLayoutDelegate(
+                    events: events,
+                    heightPerMinute: heightPerMinute,
+                    date: date,
+                    timeOfDayRange: timeOfDayRange,
+                    minimumTileHeight: minimumTileHeight,
+                    layoutCache: cache ?? EventLayoutDelegateCache(),
+                  );
+                },
+          ),
         ),
       ),
     );
