@@ -40,6 +40,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 /// 1. **Sorting**:
 ///    - Events are sorted by duration in descending order.
 ///    - If two events have the same duration, they are sorted by start time in ascending order.
+///    - If an eventComparator is provided, it is used to sort the events instead.
 /// 2. **Row Assignment**:
 ///    - Each event is assigned to the first available row that does not overlap with other events.
 ///    - Overlaps are determined based on the columns (dates) the event spans.
@@ -50,6 +51,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
   // A list of dates that are visible in the current date range.
   final dates = visibleDateTimeRange.dates();
@@ -58,18 +60,21 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
 
   // Sort the events.
   final sortedEvents = events.toList()
-    ..sort((a, b) {
-      // Sort by duration (descending)
-      final comparison = b.duration.compareTo(a.duration);
-      if (comparison != 0) return comparison;
+    ..sort(
+      eventComparator ??
+          (a, b) {
+            // Sort by duration (descending)
+            final comparison = b.duration.compareTo(a.duration);
+            if (comparison != 0) return comparison;
 
-      final aStart = a.dateTimeRangeAsUtc.start;
-      final bRange = b.dateTimeRangeAsUtc;
-      final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
+            final aStart = a.dateTimeRangeAsUtc.start;
+            final bRange = b.dateTimeRangeAsUtc;
+            final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
-      // Sort by start time (ascending) if durations are equal
-      return aStart.compareTo(bStart);
-    });
+            // Sort by start time (ascending) if durations are equal
+            return aStart.compareTo(bStart);
+          },
+    );
 
   // A list containing the layout information for each event.
   final layoutInfo = <EventLayoutInformation>[];
