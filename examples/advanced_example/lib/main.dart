@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
             final person = _lastPerson;
             _lastPerson = people.firstWhere((p) => p != person, orElse: () => person);
             return event.copyWith(
-              data: Event(title: "New Event", person: people.last),
+              data: Event(title: "New Event", person: _lastPerson),
             );
           },
           onEventCreated: (event) => eventsController.addEvent(event),
@@ -140,10 +140,13 @@ class PeopleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        PrototypeCustomTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: people.map((person) => PersonWidget(person: person)).toList(growable: false),
+            children: people
+                .map((person) => Expanded(child: PersonWidget(person: person)))
+                .toList(growable: false),
           ),
         ),
       ],
