@@ -40,6 +40,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 /// 1. **Sorting**:
 ///    - Events are sorted by duration in descending order.
 ///    - If two events have the same duration, they are sorted by start time in ascending order.
+///    - If an eventComparator is provided, it is used to sort the events instead.
 /// 2. **Row Assignment**:
 ///    - Each event is assigned to the first available row that does not overlap with other events.
 ///    - Overlaps are determined based on the columns (dates) the event spans.
