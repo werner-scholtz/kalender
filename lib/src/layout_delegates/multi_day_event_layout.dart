@@ -19,7 +19,6 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
-  int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 });
 
 /// The default implementation of [GenerateMultiDayLayoutFrame].

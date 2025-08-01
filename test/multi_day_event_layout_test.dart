@@ -286,5 +286,160 @@ void main() {
         expect(text!.contains('1'), isTrue, reason: 'Button text should contain the number "1" but found: "$text"');
       });
     });
+
+    testWidgets('Sorting by starttime', (tester) async {
+      final events = [
+        CalendarEvent<int>(
+          dateTimeRange:
+              DateTimeRange(start: start.add(const Duration(hours: 6)), end: start.copyWith(day: start.day + 3)),
+          data: 1,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
+          data: 2,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange:
+              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 6))),
+          data: 3,
+        ),
+      ];
+      eventsController.addEvents(events);
+      int customComparator(CalendarEvent<int> a, CalendarEvent<int> b) {
+        return a.start.compareTo(b.start);
+      }
+
+      const tileHeight = 50.0;
+      const maxNumberOfVerticalEvents = 3;
+
+      await tester.pumpWidget(
+        wrapWithMaterialApp(
+          TestProvider(
+            calendarController: controller,
+            eventsController: eventsController,
+            tileComponents: tileComponents,
+            child: MultiDayEventLayoutWidget<int>(
+              events: eventsController.events.toList(),
+              eventsController: eventsController,
+              visibleDateTimeRange: visibleRange,
+              showAllEvents: true,
+              tileHeight: tileHeight,
+              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+              generateMultiDayLayoutFrame: ({required events, required textDirection, required visibleDateTimeRange}) =>
+                  defaultMultiDayFrameGenerator(
+                visibleDateTimeRange: visibleDateTimeRange,
+                events: events,
+                textDirection: textDirection,
+                eventComparator: customComparator,
+              ),
+              eventPadding: const EdgeInsets.all(0),
+              textDirection: TextDirection.ltr,
+              multiDayOverlayBuilders: null,
+              multiDayOverlayStyles: null,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify that the events are laid out correctly
+      expect(find.byKey(getKey(1)), findsOneWidget);
+      expect(find.byKey(getKey(2)), findsOneWidget);
+      expect(find.byKey(getKey(3)), findsOneWidget);
+
+      // Get positions of each event
+      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+
+      expect(pos2.dy, lessThan(pos3.dy));
+      expect(pos3.dy, lessThan(pos1.dy));
+    });
+
+    testWidgets('Sorting by endtime', (tester) async {
+      final events = [
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 12))),
+          data: 1,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 8))),
+          data: 2,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange:
+              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 4))),
+          data: 3,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange:
+              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 16))),
+          data: 4,
+        ),
+      ];
+      eventsController.addEvents(events);
+      int customComparator(CalendarEvent<int> a, CalendarEvent<int> b) {
+        return a.end.compareTo(b.end);
+      }
+
+      const tileHeight = 50.0;
+      const maxNumberOfVerticalEvents = 3;
+
+      await tester.pumpWidget(
+        wrapWithMaterialApp(
+          TestProvider(
+            calendarController: controller,
+            eventsController: eventsController,
+            tileComponents: tileComponents,
+            child: MultiDayEventLayoutWidget<int>(
+              events: eventsController.events.toList(),
+              eventsController: eventsController,
+              visibleDateTimeRange: visibleRange,
+              showAllEvents: true,
+              tileHeight: tileHeight,
+              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+              generateMultiDayLayoutFrame: ({required events, required textDirection, required visibleDateTimeRange}) =>
+                  defaultMultiDayFrameGenerator(
+                visibleDateTimeRange: visibleDateTimeRange,
+                events: events,
+                textDirection: textDirection,
+                eventComparator: customComparator,
+              ),
+              eventPadding: const EdgeInsets.all(0),
+              textDirection: TextDirection.ltr,
+              multiDayOverlayBuilders: null,
+              multiDayOverlayStyles: null,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify that the events are laid out correctly
+      expect(find.byKey(getKey(1)), findsOneWidget);
+      expect(find.byKey(getKey(2)), findsOneWidget);
+      expect(find.byKey(getKey(3)), findsOneWidget);
+      expect(find.byKey(getKey(4)), findsNothing);
+
+      final buttonFinder = find.byType(MultiDayPortalOverlayButton);
+      expect(buttonFinder, findsOneWidget);
+
+      final buttonTextFinder = find.byKey(MultiDayPortalOverlayButton.textKey);
+      buttonTextFinder.evaluate().forEach((element) {
+        final text = (element.widget as Text).data;
+        expect(text, isNotNull, reason: 'Button text should not be null');
+        expect(text!.contains('1'), isTrue, reason: 'Button text should contain the number "1" but found: "$text"');
+      });
+
+      // Get positions of each event
+      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+
+      expect(pos3.dy, lessThan(pos2.dy));
+      expect(pos2.dy, lessThan(pos1.dy));
+    });
   });
 }
