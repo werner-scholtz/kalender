@@ -3,6 +3,7 @@ import 'package:advanced_example/layout_strategy.dart';
 import 'package:advanced_example/providers.dart';
 import 'package:advanced_example/tiles.dart';
 import 'package:advanced_example/timeline.dart';
+import 'package:advanced_example/zoom.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' hide TimeLine, PrototypeTimeline;
 
@@ -13,8 +14,9 @@ void main() {
 /// Represents an event with a title and color.
 class Event {
   final String title;
+  final Person person;
   final Color color;
-  Event({required this.title, required this.color});
+  const Event({required this.title, this.color = Colors.blue, required this.person});
 
   @override
   String toString() => title;
@@ -73,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final calendarController = CalendarController<Event>();
   final viewConfiguration = MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2);
 
+  var _lastPerson = people.first;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,26 +95,37 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         callbacks: CalendarCallbacks(
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-          onEventCreate: (event) => event,
+          // Maybe we can add a parameter that allows you to determine where the new event is being created ?
+          // To determine which person the event is being created for.
+          onEventCreate: (event) {
+            final person = _lastPerson;
+            _lastPerson = people.firstWhere((p) => p != person, orElse: () => person);
+            return event.copyWith(
+              data: Event(title: "New Event", person: people.last),
+            );
+          },
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
         header: Column(children: [CalendarHeader<Event>(), const Divider(), const PeopleWidget()]),
-        body: CalendarBody<Event>(
-          multiDayTileComponents: tileComponents,
-          monthTileComponents: multiDayTileComponents,
-          scheduleTileComponents: scheduleTileComponents,
-          multiDayBodyConfiguration: MultiDayBodyConfiguration(
-            eventLayoutStrategy:
-                (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache) {
-                  return CustomSideBySideLayoutDelegate(
-                    events: events,
-                    heightPerMinute: heightPerMinute,
-                    date: date,
-                    timeOfDayRange: timeOfDayRange,
-                    minimumTileHeight: minimumTileHeight,
-                    layoutCache: cache ?? EventLayoutDelegateCache(),
-                  );
-                },
+        body: ZoomDetector(
+          child: CalendarBody<Event>(
+            heightPerMinute: context.heightPerMinuteNotifier,
+            multiDayTileComponents: tileComponents,
+            monthTileComponents: multiDayTileComponents,
+            scheduleTileComponents: scheduleTileComponents,
+            multiDayBodyConfiguration: MultiDayBodyConfiguration(
+              eventLayoutStrategy:
+                  (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache) {
+                    return CustomSideBySideLayoutDelegate(
+                      events: events,
+                      heightPerMinute: heightPerMinute,
+                      date: date,
+                      timeOfDayRange: timeOfDayRange,
+                      minimumTileHeight: minimumTileHeight,
+                      layoutCache: cache ?? EventLayoutDelegateCache(),
+                    );
+                  },
+            ),
           ),
         ),
       ),

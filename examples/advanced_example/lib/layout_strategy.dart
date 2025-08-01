@@ -1,26 +1,7 @@
+import 'package:advanced_example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// A [EventLayoutStrategy] that lays out the tiles side by side.
-EventLayoutDelegate customLayoutStrategy(
-  Iterable<CalendarEvent> events,
-  DateTime date,
-  TimeOfDayRange timeOfDayRange,
-  double heightPerMinute,
-  double? minimumTileHeight,
-  EventLayoutDelegateCache? cache,
-) {
-  return CustomSideBySideLayoutDelegate(
-    events: events,
-    date: date,
-    heightPerMinute: heightPerMinute,
-    timeOfDayRange: timeOfDayRange,
-    minimumTileHeight: minimumTileHeight,
-    layoutCache: cache ?? EventLayoutDelegateCache(),
-  );
-}
-
-/// The [CustomSideBySideLayoutDelegate] lays out [CalendarEvent]'s next to one another.
 class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   CustomSideBySideLayoutDelegate({
     required super.events,
@@ -48,9 +29,35 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
     // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData(size);
 
-    // Group the vertical layout data into horizontal groups.
-    final horizontalGroups = groupVerticalLayoutData(verticalLayoutData);
+    // Now split the events into the different people.
+    // Best would be to make this dynamic and not hardcoded.
+    final a = <VerticalLayoutData>[];
+    final b = <VerticalLayoutData>[];
+    for (var event in verticalLayoutData) {
+      final data = events.elementAt(event.id);
+      if (data.data is Event) {
+        if ((data.data as Event).person == people.first) {
+          a.add(event);
+        } else {
+          b.add(event);
+        }
+      }
+    }
 
+    // Group the vertical layout data into horizontal groups.
+    final horizontalA = groupVerticalLayoutData(a);
+    final horizontalB = groupVerticalLayoutData(b);
+
+    final sizeForPerson = Size(size.width / 2, size.height);
+    perFormLayoutForPerson(horizontalA, sizeForPerson, Offset.zero);
+    perFormLayoutForPerson(horizontalB, size, Offset(size.width / 2, 0));
+  }
+
+  void perFormLayoutForPerson(
+    List<HorizontalGroupData> horizontalGroups,
+    Size size,
+    Offset offset,
+  ) {
     for (var i = 0; i < horizontalGroups.length; i++) {
       final group = horizontalGroups.elementAt(i);
       final verticalLayoutData = group.verticalLayoutData
@@ -66,6 +73,7 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
 
       final tiles = <int, Offset>{};
       final tileWidths = <int, double>{};
+
       for (var i = 0; i < numberOfEvents; i++) {
         final data = verticalLayoutData.elementAt(i);
         final id = data.id;
@@ -76,12 +84,14 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         final lastOverlapLeft = overlapsLeft.lastOrNull;
 
         // Calculate the x offset of the tile.
-        final double tileXOffset; // = childWidth * overlapsLeft;
+        var tileXOffset;
         if (lastOverlapLeft != null) {
           tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {
           tileXOffset = childWidth * overlapsLeft.length;
         }
+
+        tileXOffset += offset.dx;
 
         // Find the overlaps to the right of the tile.
         final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
@@ -92,6 +102,8 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         if (overlapsRight.isEmpty) {
           tileWidth = size.width - tileXOffset;
         }
+
+        print("Tile width: $tileWidth, xOffset: $tileXOffset");
 
         // Layout the tile.
         layoutChild(id, BoxConstraints.tightFor(width: tileWidth, height: data.height));
