@@ -1,3 +1,6 @@
+## 0.11.2
+- fix: PageNavigationFunctions.indexFromDate [#211](https://github.com/werner-scholtz/kalender/issues/211)
+
 ## 0.11.1
 - fix: Too many day separators in MultiDayView Free Scroll [#208](https://github.com/werner-scholtz/kalender/issues/208)
 

@@ -138,7 +138,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
   @override
   int indexFromDate(DateTime date) {
     final startOfWeek = date.asUtc.startOfWeek(firstDayOfWeek: firstDayOfWeek);
-    if (startOfWeek == adjustedRange.start) return 0;
+    if (startOfWeek.isBefore(adjustedRange.start) || startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
     final index = range.dates().length / DateTime.daysPerWeek;
@@ -179,7 +179,7 @@ class WorkWeekPageFunctions extends PageNavigationFunctions {
   @override
   int indexFromDate(DateTime date) {
     final startOfWeek = date.asUtc.startOfWeek();
-    if (startOfWeek == adjustedRange.start) return 0;
+    if (startOfWeek.isBefore(adjustedRange.start) || startOfWeek == adjustedRange.start) return 0;
 
     final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
     final index = range.dates().length / DateTime.daysPerWeek;
@@ -250,7 +250,8 @@ class FreeScrollFunctions extends PageNavigationFunctions {
   @override
   int indexFromDate(DateTime date) {
     final dateAsUtc = date.asUtc.startOfDay;
-    return dateAsUtc.difference(adjustedRange.start).inDays;
+    if (dateAsUtc.isBefore(adjustedRange.start) || dateAsUtc == adjustedRange.start) return 0;
+    return dateAsUtc.difference(adjustedRange.start).inDays.clamp(0, numberOfPages);
   }
 
   @override
@@ -291,8 +292,11 @@ class MonthPageFunctions extends PageNavigationFunctions {
 
   @override
   int indexFromDate(DateTime date) {
+    final dateAsUtc = date.asUtc.startOfDay;
+    if (dateAsUtc.isBefore(adjustedRange.start) || dateAsUtc == adjustedRange.start) return 0;
+
     final dateTimeRange = DateTimeRange(start: adjustedRange.start, end: date.asUtc);
-    return dateTimeRange.monthDifference;
+    return dateTimeRange.monthDifference.clamp(0, numberOfPages);
   }
 
   /// Returns the number of rows that need to be displayed for the given [range].
