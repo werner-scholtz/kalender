@@ -705,17 +705,18 @@ The event order is handled by the strategy function. `defaultMultidayFrameGenera
 
 ```dart
 CalendarBody(
-      monthBodyConfiguration: MultiDayHeaderConfiguration(
-        generateMultiDayLayoutFrame: (
-                {required events,
-                required textDirection,
-                required visibleDateTimeRange}) =>
-            defaultMultiDayFrameGenerator(
-                eventComparator: (a, b) =>
-                    a.end.compareTo(b.end),
-                visibleDateTimeRange: visibleDateTimeRange,
-                events: events,
-                textDirection: textDirection),
-      ),
-    )
+  monthBodyConfiguration: MultiDayHeaderConfiguration(
+    generateMultiDayLayoutFrame: 
+    ({required events,
+      required textDirection,
+      required visibleDateTimeRange}) =>
+    defaultMultiDayFrameGenerator(
+        eventComparator: (a, b) =>
+            a.end.compareTo(b.end),
+        visibleDateTimeRange: visibleDateTimeRange,
+        events: events,
+        textDirection: textDirection
+    ),
+  ),
+)
 ```
