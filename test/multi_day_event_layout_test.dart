@@ -287,11 +287,17 @@ void main() {
       });
     });
 
-    testWidgets('Sorting by starttime', (tester) async {
+    testWidgets('Sorting by start time', (tester) async {
+      ///   24   25   26   27   28   29  30
+      ///   |-----2-------|
+      ///   |-3-|
+      ///   |----1--------|
+      ///   | +1 |
+      /// _______________________________
+      ///   |-4-|
       final events = [
         CalendarEvent<int>(
-          dateTimeRange:
-              DateTimeRange(start: start.add(const Duration(hours: 6)), end: start.copyWith(day: start.day + 3)),
+          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(day: start.day + 3)),
           data: 1,
         ),
         CalendarEvent<int>(
@@ -299,9 +305,12 @@ void main() {
           data: 2,
         ),
         CalendarEvent<int>(
-          dateTimeRange:
-              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 6))),
+          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
           data: 3,
+        ),
+        CalendarEvent<int>(
+          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
+          data: 4,
         ),
       ];
       eventsController.addEvents(events);
@@ -346,7 +355,17 @@ void main() {
       // Verify that the events are laid out correctly
       expect(find.byKey(getKey(1)), findsOneWidget);
       expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
+      expect(find.byKey(getKey(4)), findsNothing);
+
+      final buttonFinder = find.byType(MultiDayPortalOverlayButton);
+      expect(buttonFinder, findsOneWidget);
+
+      final buttonTextFinder = find.byKey(MultiDayPortalOverlayButton.textKey);
+      buttonTextFinder.evaluate().forEach((element) {
+        final text = (element.widget as Text).data;
+        expect(text, isNotNull, reason: 'Button text should not be null');
+        expect(text!.contains('1'), isTrue, reason: 'Button text should contain the number "1" but found: "$text"');
+      });
 
       // Get positions of each event
       final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
@@ -355,26 +374,48 @@ void main() {
 
       expect(pos2.dy, lessThan(pos3.dy));
       expect(pos3.dy, lessThan(pos1.dy));
+
+      // Ensure that the rects do not overlap
+      final rects = [
+        tester.getRect(find.byKey(getKey(1))),
+        tester.getRect(find.byKey(getKey(2))),
+        tester.getRect(find.byKey(getKey(3))),
+      ];
+
+      for (var i = 0; i < rects.length; i++) {
+        for (var j = i + 1; j < rects.length; j++) {
+          expect(
+            rects[i].overlaps(rects[j]),
+            isFalse,
+            reason: 'Rect ${i + 1} overlaps with Rect ${j + 1}',
+          );
+        }
+      }
     });
 
-    testWidgets('Sorting by endtime', (tester) async {
+    testWidgets('Sorting by end time', (tester) async {
+      ///   24   25   26   27   28   29  30
+      ///   |-3-|
+      ///   |-2-|
+      ///   |-1-|
+      ///   | +1 |
+      /// _______________________________
+      ///   |-4-|
       final events = [
         CalendarEvent<int>(
-          dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 12))),
+          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 12)),
           data: 1,
         ),
         CalendarEvent<int>(
-          dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 8))),
+          dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 8)),
           data: 2,
         ),
         CalendarEvent<int>(
-          dateTimeRange:
-              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 4))),
+          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
           data: 3,
         ),
         CalendarEvent<int>(
-          dateTimeRange:
-              DateTimeRange(start: start.add(const Duration(hours: 3)), end: start.add(const Duration(hours: 16))),
+          dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
           data: 4,
         ),
       ];
@@ -440,6 +481,23 @@ void main() {
 
       expect(pos3.dy, lessThan(pos2.dy));
       expect(pos2.dy, lessThan(pos1.dy));
+
+      // Ensure that the rects do not overlap
+      final rects = [
+        tester.getRect(find.byKey(getKey(1))),
+        tester.getRect(find.byKey(getKey(2))),
+        tester.getRect(find.byKey(getKey(3))),
+      ];
+
+      for (var i = 0; i < rects.length; i++) {
+        for (var j = i + 1; j < rects.length; j++) {
+          expect(
+            rects[i].overlaps(rects[j]),
+            isFalse,
+            reason: 'Rect ${i + 1} overlaps with Rect ${j + 1}',
+          );
+        }
+      }
     });
   });
 }
