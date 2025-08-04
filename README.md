@@ -700,3 +700,22 @@ By default, the package provides a layout strategy that:
 - Assigns each event to the first available row where it does not overlap with other events.
 - Calculates the width of each event tile based on the number of days it spans.
 - Updates the layout frame to reflect the current visible date range and event set.
+
+The event order is handled by the strategy function. `defaultMultidayFrameGenerator` sorts events by their duration and start date by default. To adjust the order, you can provide your own `eventComparator` function to `defaultMultiDayFrameGenerator`:
+
+```dart
+CalendarBody(
+      monthBodyConfiguration: MultiDayHeaderConfiguration(
+        generateMultiDayLayoutFrame: (
+                {required events,
+                required textDirection,
+                required visibleDateTimeRange}) =>
+            defaultMultiDayFrameGenerator(
+                eventComparator: (a, b) =>
+                    a.end.compareTo(b.end),
+                visibleDateTimeRange: visibleDateTimeRange,
+                events: events,
+                textDirection: textDirection),
+      ),
+    )
+```
