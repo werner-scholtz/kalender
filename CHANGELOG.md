@@ -1,8 +1,6 @@
-## 0.11.2
-- fix: PageNavigationFunctions.indexFromDate [#211](https://github.com/werner-scholtz/kalender/issues/211)
-
 ## 0.11.1
 - fix: Too many day separators in MultiDayView Free Scroll [#208](https://github.com/werner-scholtz/kalender/issues/208)
+- fix: PageNavigationFunctions.indexFromDate [#211](https://github.com/werner-scholtz/kalender/issues/211)
 
 ## 0.11.0
 - feat: Added interaction (EventInteraction) property to calendar events for fine grained control. [#194](https://github.com/werner-scholtz/kalender/pull/194)
