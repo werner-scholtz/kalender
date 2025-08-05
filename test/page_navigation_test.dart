@@ -53,9 +53,8 @@ void main() {
   testWithTimeZones(
     dates: datesToTest,
     body: (timezone, testDates) {
-      final testRange = DateTimeRange(start: DateTime(2020, 1, 1, 10), end: DateTime(2026));
-
       group('PageNavigationFunctions', () {
+        final testRange = DateTimeRange(start: DateTime(2020, 1, 1, 10), end: DateTime(2026));
         group('singleDay', () {
           final navigation = PageNavigationFunctions.singleDay(testRange);
           const numberOfPages = 2192;
@@ -332,6 +331,77 @@ void main() {
               });
             }
           });
+        });
+      });
+
+      group('Range starts after now', () {
+        final now = DateTime.now();
+        final range = DateTimeRange(start: now.copyWith(year: now.year + 1), end: now.copyWith(year: now.year + 2));
+
+        test('singleDay', () {
+          final functions = PageNavigationFunctions.singleDay(range);
+          expect(functions.indexFromDate(now), 0);
+        });
+
+        test('workWeek', () {
+          final functions = PageNavigationFunctions.workWeek(range);
+          expect(functions.indexFromDate(now), 0);
+        });
+
+        test('week', () {
+          final functions = PageNavigationFunctions.week(range, 1);
+          expect(functions.indexFromDate(now), 0);
+        });
+
+        test('custom', () {
+          final functions = PageNavigationFunctions.custom(range, 3);
+          expect(functions.indexFromDate(now), 0);
+        });
+
+        test('freeScroll', () {
+          final functions = PageNavigationFunctions.freeScroll(range);
+          expect(functions.indexFromDate(now), 0);
+        });
+
+        test('month', () {
+          final functions = MonthPageFunctions(originalRange: range, firstDayOfWeek: 1);
+          expect(functions.indexFromDate(now), 0);
+        });
+      });
+
+      group('Range starts before now', () {
+        final now = DateTime.now();
+        final range = DateTimeRange(start: now.copyWith(year: now.year - 2), end: now.copyWith(year: now.year - 1));
+
+        test('singleDay', () {
+          final functions = PageNavigationFunctions.singleDay(range);
+
+          expect(functions.indexFromDate(now), functions.numberOfPages);
+        });
+
+        test('workWeek', () {
+          final functions = PageNavigationFunctions.workWeek(range);
+          expect(functions.indexFromDate(now), functions.numberOfPages);
+        });
+
+        test('week', () {
+          final functions = PageNavigationFunctions.week(range, 1);
+          expect(functions.indexFromDate(now), functions.numberOfPages);
+        });
+
+        test('custom', () {
+          final functions = PageNavigationFunctions.custom(range, 3);
+          expect(functions.indexFromDate(now), functions.numberOfPages);
+        });
+
+        test('freeScroll', () {
+          final functions = PageNavigationFunctions.freeScroll(range);
+          expect(functions.indexFromDate(now), functions.numberOfPages);
+        });
+
+        test('month', () {
+          final functions = MonthPageFunctions(originalRange: range, firstDayOfWeek: 1);
+          expect(functions.indexFromDate(now), functions.numberOfPages);
         });
       });
     },
