@@ -1,3 +1,6 @@
+## 0.12.0
+- feat: Added `eventComparator` to `defaultMultiDayFrameGenerator` thanks to [captaingerhard](https://github.com/captaingerhard). [PR #210](https://github.com/werner-scholtz/kalender/pull/210)
+
 ## 0.11.1
 - fix: Too many day separators in MultiDayView Free Scroll [#208](https://github.com/werner-scholtz/kalender/issues/208)
 - fix: PageNavigationFunctions.indexFromDate [#211](https://github.com/werner-scholtz/kalender/issues/211)
