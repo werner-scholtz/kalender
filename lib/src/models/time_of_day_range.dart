@@ -59,34 +59,6 @@ class TimeOfDayRange {
     );
   }
 
-  /// Returns a list of [TimeOfDayRange] that represents the time [TimeOfDayRange] between hours.
-  ///
-  /// * The first item might not always be 1 hour long.
-  /// * The last item might not always be 1 hour long.
-  List<TimeOfDayRange> get hourRanges {
-    final ranges = <TimeOfDayRange>[];
-
-    for (var i = start.hour; i <= end.hour; i++) {
-      if (i == start.hour) {
-        final end = TimeOfDay(hour: i, minute: 59);
-        ranges.add(TimeOfDayRange(start: start, end: end));
-        continue;
-      }
-
-      if (i == end.hour) {
-        final start = TimeOfDay(hour: i, minute: 0);
-        ranges.add(TimeOfDayRange(start: start, end: end));
-        break;
-      }
-
-      ranges.add(
-        TimeOfDayRange.forHour(i),
-      );
-    }
-
-    return ranges;
-  }
-
   /// Generates a list of [TimeOfDayRange] segments from the current [TimeOfDayRange].
   ///
   /// The list of [TimeOfDayRange] is generated based on the provided [segmentLength] in minutes.

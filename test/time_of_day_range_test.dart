@@ -17,35 +17,6 @@ void main() {
       test('duration', () {
         expect(timeOfDayRange.duration, const Duration(hours: 2, minutes: 11));
       });
-
-      test('hourRanges', () {
-        final ranges = timeOfDayRange.hourRanges;
-        expect(ranges.length, 3);
-        expect(ranges[0].start, start);
-        expect(ranges[0].end, const TimeOfDay(hour: 10, minute: 59));
-        expect(ranges[1].start, const TimeOfDay(hour: 11, minute: 0));
-        expect(ranges[1].end, const TimeOfDay(hour: 11, minute: 59));
-        expect(ranges[2].start, const TimeOfDay(hour: 12, minute: 0));
-        expect(ranges[2].end, end);
-      });
-
-      final edgeCase = TimeOfDayRange(
-        start: const TimeOfDay(hour: 5, minute: 59),
-        end: const TimeOfDay(hour: 13, minute: 0),
-      );
-
-      test('hourRanges edge case', () {
-        final ranges = edgeCase.hourRanges;
-        expect(ranges.length, 9);
-        expect(ranges[0].start, const TimeOfDay(hour: 5, minute: 59));
-        expect(ranges[0].end, const TimeOfDay(hour: 5, minute: 59));
-        expect(ranges[1].start, const TimeOfDay(hour: 6, minute: 0));
-        expect(ranges[1].end, const TimeOfDay(hour: 6, minute: 59));
-        expect(ranges[7].start, const TimeOfDay(hour: 12, minute: 0));
-        expect(ranges[7].end, const TimeOfDay(hour: 12, minute: 59));
-        expect(ranges[8].start, const TimeOfDay(hour: 13, minute: 0));
-        expect(ranges[8].end, const TimeOfDay(hour: 13, minute: 0));
-      });
     });
 
     group('Constructors', () {
