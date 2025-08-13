@@ -56,6 +56,7 @@ class TimelineStyle {
   });
 }
 
+/// A mixin that provides utility methods for the [TimeLine] and [HourLines] widget.
 mixin TimeLineUtils {
   /// The style of the timeline.
   TimelineStyle? get timelineStyle;
@@ -83,7 +84,7 @@ mixin TimeLineUtils {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
-      textDirection: this.timelineStyle?.textDirection ?? TextDirection.ltr,
+      textDirection: timelineStyle?.textDirection ?? TextDirection.ltr,
     )..layout(minWidth: 0, maxWidth: double.infinity);
 
     return textPainter.size;

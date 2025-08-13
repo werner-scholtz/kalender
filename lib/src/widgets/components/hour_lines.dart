@@ -60,8 +60,18 @@ class HourLines extends StatelessWidget with TimeLineUtils {
     this.timelineStyle,
   });
 
-  static HourLines builder(double heightPerMinute, TimeOfDayRange timeOfDayRange, HourLinesStyle? style, TimelineStyle? timelineStyle) {
-    return HourLines(heightPerMinute: heightPerMinute, timeOfDayRange: timeOfDayRange, style: style, timelineStyle: timelineStyle);
+  static HourLines builder(
+    double heightPerMinute,
+    TimeOfDayRange timeOfDayRange,
+    HourLinesStyle? style,
+    TimelineStyle? timelineStyle,
+  ) {
+    return HourLines(
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      style: style,
+      timelineStyle: timelineStyle,
+    );
   }
 
   static Widget fromContext<T extends Object?>(
