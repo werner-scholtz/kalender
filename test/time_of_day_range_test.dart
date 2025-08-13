@@ -17,35 +17,6 @@ void main() {
       test('duration', () {
         expect(timeOfDayRange.duration, const Duration(hours: 2, minutes: 11));
       });
-
-      test('hourRanges', () {
-        final ranges = timeOfDayRange.hourRanges;
-        expect(ranges.length, 3);
-        expect(ranges[0].start, start);
-        expect(ranges[0].end, const TimeOfDay(hour: 10, minute: 59));
-        expect(ranges[1].start, const TimeOfDay(hour: 11, minute: 0));
-        expect(ranges[1].end, const TimeOfDay(hour: 11, minute: 59));
-        expect(ranges[2].start, const TimeOfDay(hour: 12, minute: 0));
-        expect(ranges[2].end, end);
-      });
-
-      final edgeCase = TimeOfDayRange(
-        start: const TimeOfDay(hour: 5, minute: 59),
-        end: const TimeOfDay(hour: 13, minute: 0),
-      );
-
-      test('hourRanges edge case', () {
-        final ranges = edgeCase.hourRanges;
-        expect(ranges.length, 9);
-        expect(ranges[0].start, const TimeOfDay(hour: 5, minute: 59));
-        expect(ranges[0].end, const TimeOfDay(hour: 5, minute: 59));
-        expect(ranges[1].start, const TimeOfDay(hour: 6, minute: 0));
-        expect(ranges[1].end, const TimeOfDay(hour: 6, minute: 59));
-        expect(ranges[7].start, const TimeOfDay(hour: 12, minute: 0));
-        expect(ranges[7].end, const TimeOfDay(hour: 12, minute: 59));
-        expect(ranges[8].start, const TimeOfDay(hour: 13, minute: 0));
-        expect(ranges[8].end, const TimeOfDay(hour: 13, minute: 0));
-      });
     });
 
     group('Constructors', () {
@@ -59,6 +30,102 @@ void main() {
         final hour = TimeOfDayRange.forHour(10);
         expect(hour.start, const TimeOfDay(hour: 10, minute: 0));
         expect(hour.end, const TimeOfDay(hour: 10, minute: 59));
+      });
+    });
+
+    group('splitIntoSegments', () {
+      test('perfect division', () {
+        final range = TimeOfDayRange(
+          start: const TimeOfDay(hour: 8, minute: 0),
+          end: const TimeOfDay(hour: 9, minute: 59),
+        );
+        final segments = range.splitIntoSegments(30);
+        expect(segments.length, 4);
+
+        expect(
+          segments[0],
+          TimeOfDayRange(start: const TimeOfDay(hour: 8, minute: 0), end: const TimeOfDay(hour: 8, minute: 29)),
+        );
+        expect(
+          segments[1],
+          TimeOfDayRange(start: const TimeOfDay(hour: 8, minute: 30), end: const TimeOfDay(hour: 8, minute: 59)),
+        );
+        expect(
+          segments[2],
+          TimeOfDayRange(start: const TimeOfDay(hour: 9, minute: 0), end: const TimeOfDay(hour: 9, minute: 29)),
+        );
+        expect(
+          segments[3],
+          TimeOfDayRange(start: const TimeOfDay(hour: 9, minute: 30), end: const TimeOfDay(hour: 9, minute: 59)),
+        );
+      });
+
+      test('last segment shorter', () {
+        final range = TimeOfDayRange(
+          start: const TimeOfDay(hour: 10, minute: 0),
+          end: const TimeOfDay(hour: 11, minute: 30),
+        );
+        final segments = range.splitIntoSegments(60);
+        expect(segments.length, 2);
+        expect(
+          segments[0],
+          TimeOfDayRange(start: const TimeOfDay(hour: 10, minute: 0), end: const TimeOfDay(hour: 10, minute: 59)),
+        );
+        expect(
+          segments[1],
+          TimeOfDayRange(start: const TimeOfDay(hour: 11, minute: 0), end: const TimeOfDay(hour: 11, minute: 30)),
+        );
+      });
+
+      test('range shorter than segment length', () {
+        final range = TimeOfDayRange(
+          start: const TimeOfDay(hour: 10, minute: 0),
+          end: const TimeOfDay(hour: 10, minute: 30),
+        );
+        final segments = range.splitIntoSegments(60);
+        expect(segments.length, 1);
+        expect(
+          segments[0],
+          TimeOfDayRange(start: const TimeOfDay(hour: 10, minute: 0), end: const TimeOfDay(hour: 10, minute: 30)),
+        );
+      });
+
+      test('single point in time range', () {
+        final range = TimeOfDayRange(
+          start: const TimeOfDay(hour: 10, minute: 0),
+          end: const TimeOfDay(hour: 10, minute: 0),
+        );
+        final segments = range.splitIntoSegments(30);
+        expect(segments.length, 1);
+        expect(
+          segments[0],
+          TimeOfDayRange(start: const TimeOfDay(hour: 10, minute: 0), end: const TimeOfDay(hour: 10, minute: 0)),
+        );
+      });
+
+      test('documentation example', () {
+        final range = TimeOfDayRange(
+          start: const TimeOfDay(hour: 10, minute: 0),
+          end: const TimeOfDay(hour: 11, minute: 30),
+        );
+        final segments = range.splitIntoSegments(30);
+        expect(segments.length, 4);
+        expect(
+          segments[0],
+          TimeOfDayRange(start: const TimeOfDay(hour: 10, minute: 0), end: const TimeOfDay(hour: 10, minute: 29)),
+        );
+        expect(
+          segments[1],
+          TimeOfDayRange(start: const TimeOfDay(hour: 10, minute: 30), end: const TimeOfDay(hour: 10, minute: 59)),
+        );
+        expect(
+          segments[2],
+          TimeOfDayRange(start: const TimeOfDay(hour: 11, minute: 0), end: const TimeOfDay(hour: 11, minute: 29)),
+        );
+        expect(
+          segments[3],
+          TimeOfDayRange(start: const TimeOfDay(hour: 11, minute: 30), end: const TimeOfDay(hour: 11, minute: 30)),
+        );
       });
     });
   });

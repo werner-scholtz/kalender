@@ -59,32 +59,50 @@ class TimeOfDayRange {
     );
   }
 
-  /// Returns a list of [TimeOfDayRange] that represents the time [TimeOfDayRange] between hours.
+  /// Generates a list of [TimeOfDayRange] segments from the current [TimeOfDayRange].
   ///
-  /// * The first item might not always be 1 hour long.
-  /// * The last item might not always be 1 hour long.
-  List<TimeOfDayRange> get hourRanges {
-    final ranges = <TimeOfDayRange>[];
+  /// The list of [TimeOfDayRange] is generated based on the provided [segmentLength] in minutes.
+  ///
+  /// The last segment might not be of the same length as [segmentLength].
+  ///
+  /// Example:
+  /// ```dart
+  /// final range = TimeOfDayRange(start: TimeOfDay(hour: 10, minute: 0), end: TimeOfDay(hour: 11, minute: 30));
+  /// final segments = range.splitIntoSegments(30);
+  /// print(segments);
+  /// ```
+  /// Output:
+  /// ```
+  /// [10:00 - 10:29, 10:30 - 10:59, 11:00 - 11:29, 11:30 - 11:30]
+  /// ```
+  ///
+  /// The segments are inclusive of the start and end times.
+  List<TimeOfDayRange> splitIntoSegments(int segmentLength) {
+    final segments = <TimeOfDayRange>[];
+    final rangeStartMinutes = start.hour * 60 + start.minute;
+    final rangeEndMinutes = end.hour * 60 + end.minute;
 
-    for (var i = start.hour; i <= end.hour; i++) {
-      if (i == start.hour) {
-        final end = TimeOfDay(hour: i, minute: 59);
-        ranges.add(TimeOfDayRange(start: start, end: end));
-        continue;
-      }
-
-      if (i == end.hour) {
-        final start = TimeOfDay(hour: i, minute: 0);
-        ranges.add(TimeOfDayRange(start: start, end: end));
-        break;
-      }
-
-      ranges.add(
-        TimeOfDayRange.forHour(i),
+    var currentMinutes = rangeStartMinutes;
+    while (currentMinutes <= rangeEndMinutes) {
+      final startOfSegment = TimeOfDay(
+        hour: currentMinutes ~/ 60,
+        minute: currentMinutes % 60,
       );
-    }
 
-    return ranges;
+      var endOfSegmentMinutes = currentMinutes + segmentLength - 1;
+      if (endOfSegmentMinutes > rangeEndMinutes) {
+        endOfSegmentMinutes = rangeEndMinutes;
+      }
+
+      final endOfSegment = TimeOfDay(
+        hour: endOfSegmentMinutes ~/ 60,
+        minute: endOfSegmentMinutes % 60,
+      );
+
+      segments.add(TimeOfDayRange(start: startOfSegment, end: endOfSegment));
+      currentMinutes += segmentLength;
+    }
+    return segments;
   }
 
   @override

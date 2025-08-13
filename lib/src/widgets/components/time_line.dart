@@ -35,8 +35,6 @@ class TimelineStyle {
   final TextDirection? textDirection;
 
   /// The padding of the text.
-  ///
-  /// * Recommendation only pad horizontal.
   final EdgeInsets? textPadding;
 
   /// The function that will be used to build the string.
@@ -58,8 +56,58 @@ class TimelineStyle {
   });
 }
 
+/// A mixin that provides utility methods for the [TimeLine] and [HourLines] widget.
+mixin TimeLineUtils {
+  /// The style of the timeline.
+  TimelineStyle? get timelineStyle;
+
+  /// The [TextStyle] that will be used for the text.
+  TextStyle textStyle(BuildContext context) => timelineStyle?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
+
+  /// The [TextDirection] that will be used for the text.
+  TextDirection textDirection(BuildContext context) => timelineStyle?.textDirection ?? TextDirection.ltr;
+
+  /// The [EdgeInsets] that will be used for the text.
+  EdgeInsets textPadding(BuildContext context) =>
+      timelineStyle?.textPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 36);
+
+  /// The [Size] of the largest text.
+  Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
+    const displayTime = TimeOfDay(hour: 23, minute: 59);
+    final text = timelineStyle?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+    final textSize = _textSize(text, textStyle);
+    return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
+  }
+
+  /// Returns the [Size] of the text.
+  Size _textSize(String text, TextStyle? style) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: timelineStyle?.textDirection ?? TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+
+    return textPainter.size;
+  }
+
+  /// Calculates the [Size] of the item based on the [textStyle] and [textPadding].
+  Size itemSize(BuildContext context) => largestTextSize(context, textStyle(context), textPadding(context));
+
+  /// Calculates the segments duration based on the [timeOfDayRange], [heightPerMinute], and [itemHeight].
+  int segmentDuration(TimeOfDayRange timeOfDayRange, double heightPerMinute, double itemHeight) {
+    final totalHeight = timeOfDayRange.duration.inMinutes * heightPerMinute;
+    final totalItems = (totalHeight / itemHeight).ceil();
+    return switch (totalItems) {
+      < 12 => 60,
+      < 24 => 30,
+      < 48 => 15,
+      _ => 5,
+    };
+  }
+}
+
 /// A widget that displays a list of times based on the [timeOfDayRange] and [heightPerMinute].
-class TimeLine extends StatelessWidget {
+class TimeLine extends StatelessWidget with TimeLineUtils {
   /// The [TimeOfDayRange] that will be used to display the timeline.
   final TimeOfDayRange timeOfDayRange;
 
@@ -85,6 +133,9 @@ class TimeLine extends StatelessWidget {
     required this.style,
   });
 
+  @override
+  TimelineStyle? get timelineStyle => style;
+
   static TimeLine builder(
     double heightPerMinute,
     TimeOfDayRange timeOfDayRange,
@@ -101,15 +152,11 @@ class TimeLine extends StatelessWidget {
     );
   }
 
-  static Key getTimeKey(int hour, int minute) {
-    return Key('time-$hour-$minute');
-  }
+  /// Returns a [Key] for the given time.
+  static Key getTimeKey(int hour, int minute) => Key('time-$hour-$minute');
 
   /// Builds the time line widget based on the provided context.
-  static Widget fromContext<T>(
-    BuildContext context,
-    TimeOfDayRange timeOfDayRange,
-  ) {
+  static Widget fromContext<T>(BuildContext context, TimeOfDayRange timeOfDayRange) {
     final calendarController = context.calendarController<T>();
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final selectedEvent = calendarController.selectedEvent;
@@ -124,104 +171,44 @@ class TimeLine extends StatelessWidget {
     );
   }
 
-  /// The [TextStyle] that will be used for the text.
-  TextStyle textStyle(BuildContext context) => style?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
-
-  /// The [TextDirection] that will be used for the text.
-  TextDirection textDirection(BuildContext context) => style?.textDirection ?? TextDirection.ltr;
-
-  /// The [EdgeInsets] that will be used for the text.
-  EdgeInsets textPadding(BuildContext context) => style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4);
-
-  /// The [Size] of the largest text.
-  Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
-    const displayTime = TimeOfDay(hour: 12, minute: 0);
-    final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
-    final textSize = _textSize(text, textStyle);
-    final paddingSize = Size(padding.horizontal, padding.vertical);
-    return Size(
-      textSize.width + paddingSize.width,
-      textSize.height + paddingSize.height,
-    );
-  }
-
-  /// Returns the [Size] of the text.
-  Size _textSize(String text, TextStyle? style) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: this.style?.textDirection ?? TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
-
-    return textPainter.size;
-  }
-
   @override
   Widget build(BuildContext context) {
     final textStyle = this.textStyle(context);
     final textDirection = this.textDirection(context);
     final textPadding = this.textPadding(context);
-    final textSize = largestTextSize(context, textStyle, textPadding);
-    final textHeight = textSize.height;
-    final textWidth = textSize.width;
-    final textXOffset = textHeight / 2;
+    final itemSize = this.itemSize(context);
+    final textXOffset = itemSize.height / 2;
+    final segmentDuration = this.segmentDuration(timeOfDayRange, heightPerMinute, itemSize.height);
+    final segments = timeOfDayRange.splitIntoSegments(segmentDuration);
+    final positionedTimes = segments.indexed.map((e) {
+      final (index, range) = e;
 
-    // This includes the last hour for which we do not want to display the time.
-    final hourRanges = timeOfDayRange.hourRanges;
-    var previousXPosition = 0.0;
+      final height = range.duration.inMinutes * heightPerMinute;
 
-    final positionedTimes = hourRanges.indexed.map(
-      (e) {
-        final index = e.$1;
-        final range = e.$2;
+      final pos = index * height;
 
-        // Calculate the height of the range.
-        final rangeHeight = heightPerMinute * range.duration.inMinutes;
-        // Calculate the position of the range.
-        final position = rangeHeight + previousXPosition;
-        // Update the previous position.
-        previousXPosition = position;
+      // Always skip the first item.
+      if (index == 0 || index == segments.length) return null;
 
-        // Check if the first time can be displayed.
-        if (index == 0) {
-          // Check if there is space to display the time.
-          final canDisplay = position - textXOffset >= 0;
-          if (!canDisplay) return null;
-        }
+      // The time to display is the next hour.
+      final displayTime = range.start;
+      final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
 
-        // Check if the second last time can be displayed.
-        if (index == hourRanges.length - 2) {
-          // Calculate the height of the next item.
-          final nextDuration = hourRanges[index + 1].duration.inMinutes;
-          final nextItemHeight = nextDuration * heightPerMinute;
-
-          // Check if there is space to display the time.
-          final canDisplay = nextItemHeight - textXOffset > 0;
-          if (!canDisplay) return null;
-        }
-
-        // Do not display the last time.
-        if (index == hourRanges.length - 1) return null;
-
-        // The time to display is the next hour.
-        final displayTime = TimeOfDay(hour: range.start.hour + 1, minute: 0);
-        final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
-
-        return Positioned(
-          top: position - textXOffset,
-          child: Padding(
-            padding: textPadding,
-            child: Text(
-              key: getTimeKey(displayTime.hour, displayTime.minute),
-              text,
-              style: textStyle,
-              textDirection: textDirection,
-            ),
+      return Positioned(
+        top: pos - textXOffset,
+        child: Padding(
+          padding: textPadding,
+          child: Text(
+            key: getTimeKey(displayTime.hour, displayTime.minute),
+            text,
+            style: textStyle,
+            textDirection: textDirection,
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
 
+    // TODO: Improve this.
     final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: visibleDateTimeRange,
       builder: (context, visibleRange, child) {
@@ -276,7 +263,7 @@ class TimeLine extends StatelessWidget {
     );
 
     return SizedBox(
-      width: textWidth,
+      width: itemSize.width,
       child: Stack(
         children: [
           ...positionedTimes.nonNulls.toList(),
