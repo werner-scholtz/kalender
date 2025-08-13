@@ -1,3 +1,7 @@
+## 0.xx.x
+- feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
+        Added TimeLine style to `HourLinesBuilder`.
+
 ## 0.12.0
 - feat: Added `eventComparator` to `defaultMultiDayFrameGenerator` thanks to [captaingerhard](https://github.com/captaingerhard). [PR #210](https://github.com/werner-scholtz/kalender/pull/210)
 
