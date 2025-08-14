@@ -2,7 +2,7 @@ import 'package:advanced_example/layout_strategy.dart';
 import 'package:advanced_example/tiles.dart';
 import 'package:advanced_example/zoom.dart';
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart' hide TimeLine, PrototypeTimeline;
+import 'package:kalender/kalender.dart';
 
 void main() {
   runApp(const MyApp());
@@ -71,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-          onEventCreate: (event) => event,
+          // For this example it is important to assign a person to the event.
+          onEventCreate: (event) => event.copyWith(
+            data: Event(title: 'title', color: Colors.blue, person: people[0]),
+          ),
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
         header: Column(children: [CalendarHeader<Event>(), const Divider(), const PeopleWidget()]),
@@ -91,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       timeOfDayRange: timeOfDayRange,
                       minimumTileHeight: minimumTileHeight,
                       layoutCache: cache ?? EventLayoutDelegateCache(),
+                      people: people,
                     );
                   },
             ),
@@ -108,10 +112,14 @@ class PeopleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        // Needed for proper spacing.
+        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: people.map((person) => PersonWidget(person: person)).toList(growable: false),
+            children: people
+                .map((person) => Expanded(child: PersonWidget(person: person)))
+                .toList(growable: false),
           ),
         ),
       ],

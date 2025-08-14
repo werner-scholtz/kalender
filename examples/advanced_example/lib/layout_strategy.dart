@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+  final List<Person> people;
+
   CustomSideBySideLayoutDelegate({
     required super.events,
     required super.heightPerMinute,
@@ -10,6 +12,7 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
     required super.timeOfDayRange,
     required super.minimumTileHeight,
     required super.layoutCache,
+    required this.people,
   });
 
   @override
@@ -31,26 +34,32 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
 
     // Now split the events into the different people.
     // Best would be to make this dynamic and not hardcoded.
-    final a = <VerticalLayoutData>[];
-    final b = <VerticalLayoutData>[];
+    final verticalData = <Person, List<VerticalLayoutData>>{};
     for (var event in verticalLayoutData) {
       final data = events.elementAt(event.id);
       if (data.data is Event) {
-        if ((data.data as Event).person == people.first) {
-          a.add(event);
-        } else {
-          b.add(event);
-        }
+        final person = (data.data as Event).person;
+        verticalData.putIfAbsent(person, () => []).add(event);
       }
     }
 
     // Group the vertical layout data into horizontal groups.
-    final horizontalA = groupVerticalLayoutData(a);
-    final horizontalB = groupVerticalLayoutData(b);
+    final horizontalGroups = <Person, List<HorizontalGroupData>>{};
+    for (var entry in verticalData.entries) {
+      final person = entry.key;
+      final data = entry.value;
+      final horizontalGroup = groupVerticalLayoutData(data);
+      horizontalGroups.putIfAbsent(person, () => horizontalGroup);
+    }
 
-    final sizeForPerson = Size(size.width / 2, size.height);
-    perFormLayoutForPerson(horizontalA, sizeForPerson, Offset.zero);
-    perFormLayoutForPerson(horizontalB, size, Offset(size.width / 2, 0));
+    print('Number of people: ${people.length}');
+    final sizeForPerson = Size(size.width / people.length, size.height);
+
+    for (final (i, person) in people.indexed) {
+      print('Layouting for $person');
+      final group = horizontalGroups[person] ?? [];
+      perFormLayoutForPerson(group, sizeForPerson, Offset(i * sizeForPerson.width, 0));
+    }
   }
 
   void perFormLayoutForPerson(
@@ -84,13 +93,12 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         final lastOverlapLeft = overlapsLeft.lastOrNull;
 
         // Calculate the x offset of the tile.
-        var tileXOffset;
+        double tileXOffset;
         if (lastOverlapLeft != null) {
           tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {
           tileXOffset = childWidth * overlapsLeft.length;
         }
-
         tileXOffset += offset.dx;
 
         // Find the overlaps to the right of the tile.
