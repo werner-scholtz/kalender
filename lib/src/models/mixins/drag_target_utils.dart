@@ -196,8 +196,7 @@ mixin DragTargetUtilities<T> {
     Offset cursorPosition, {
     Offset scrollOffset = Offset.zero,
   }) {
-    final cursorWithFeedbackWidget = cursorPosition + scrollOffset;
-    return dragTargetRenderBox.globalToLocal(cursorWithFeedbackWidget);
+    return dragTargetRenderBox.globalToLocal(cursorPosition) + scrollOffset;
   }
 
   /// Calculate the [DateTime] of the cursor.
