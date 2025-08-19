@@ -30,7 +30,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final headerConfiguration = this.configuration ?? MultiDayHeaderConfiguration<T>();
+    final headerConfiguration = configuration ?? MultiDayHeaderConfiguration<T>();
 
     return LayoutBuilder(
       builder: (context, constraints) {
