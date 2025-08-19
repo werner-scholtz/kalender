@@ -6,7 +6,7 @@
         - Deprecated `onMultiDayTapped`. (Use `onTappedWithDetail` instead).
         - Not providing `onEventTapped` and `onEventTappedWithDetail` will remove any internal gesture detectors for events, removing interference from GestureDetectors added to EventTile Builders.
         - TODO: Added mixins for EventTileBuilders that implement GestureDetectors.
-- fix: DayDragTarget calculateLocalCursorPosition, add scroll offset after converting to local coordinate space.
+- fix: DayDragTarget `calculateLocalCursorPosition`, add scroll offset after converting to local coordinate space.
 
 
 ## 0.12.0
