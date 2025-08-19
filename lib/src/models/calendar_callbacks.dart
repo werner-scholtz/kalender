@@ -6,25 +6,37 @@ import 'package:kalender/kalender.dart';
 /// - These callbacks are used to notify the parent widget of events that occur in the [CalendarView].
 class CalendarCallbacks<T extends Object?> {
   /// The callback for when an event is tapped.
-  ///
-  /// * Note: both [onEventTapped] and [onEventTappedWithDetail] are called when an event is tapped.
   final OnEventTapped<T>? onEventTapped;
 
-  /// The callback for when an event is tapped, with a list of touching events.
+  /// The callback for when an event is tapped, with details.
   ///
-  /// * Note: both [onEventTapped] and [onEventTappedWithDetail] are called when an event is tapped.
+  /// TODO: add example of finding touching events.
   final OnEventTappedWithDetail<T>? onEventTappedWithDetail;
 
+  /// Disable the [onEventTapped] and [onEventTappedWithDetail] callbacks.
+  ///
+  /// This is useful if you want to use your own gesture detector for event tiles.
+  /// See TODO: add link to event mixins.
+  final bool disableEventGestures;
+
   /// The callback for when an event is about to be created.
+  ///
+  /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
   final OnEventCreate<T>? onEventCreate;
 
   /// The callback for when an event is created.
+  ///
+  /// This is used by a [DragTarget] to notify that a new event has been created.
   final OnEventCreated<T>? onEventCreated;
 
   /// The callback for when an event is about to be changed.
+  ///
+  /// This is used by a [Draggable] or [LongPressDraggable] to notify that an event is about to be changed.
   final OnEventChange<T>? onEventChange;
 
   /// The callback for when an event is changed.
+  ///
+  /// This is used by a [DragTarget] to notify that an event has been changed.
   final OnEventChanged<T>? onEventChanged;
 
   /// The callback for when the calendar page is changed.
@@ -32,8 +44,13 @@ class CalendarCallbacks<T extends Object?> {
 
   /// The callback for when a user taps on the calendar.
   final OnTapped? onTapped;
+  final Function? onTappedWithDetails;
+
+  final Function? onLongPressed;
+  final Function? onLongPressedWithDetails;
 
   /// The callback for when a user taps on a multi-day calendar.
+  @Deprecated('Use onTapped or onLongPressed instead. ')
   final OnMultiDayTapped? onMultiDayTapped;
 
   /// Creates a set of callbacks for the [CalendarView].
@@ -46,7 +63,11 @@ class CalendarCallbacks<T extends Object?> {
     this.onEventCreated,
     this.onPageChanged,
     this.onTapped,
+    this.onTappedWithDetails,
+    this.onLongPressed,
+    this.onLongPressedWithDetails,
     this.onMultiDayTapped,
+    this.disableEventGestures = false,
   });
 
   CalendarCallbacks<T> copyWith({
@@ -92,15 +113,29 @@ typedef OnEventTappedWithDetail<T extends Object?> = void Function(
 
 abstract class TapDetail {
   const TapDetail();
+
+  /// Returns true if the detail is a [DayDetail].
+  bool get isDayDetail => this is DayDetail;
+
+  /// Returns true if the detail is a [MultiDayDetail].
+  bool get isMultiDayDetail => this is MultiDayDetail;
 }
 
+/// The detail for when a day is tapped.
 class DayDetail extends TapDetail {
+  /// The date that was tapped.
   final DateTime date;
+
+  /// Creates a new [DayDetail] with the given date.
   const DayDetail(this.date);
 }
 
+/// The detail for when a multi-day range is tapped.
 class MultiDayDetail extends TapDetail {
+  /// The date range that was tapped.
   final DateTimeRange dateTimeRange;
+
+  /// Creates a new [MultiDayDetail] with the given date range.
   const MultiDayDetail(this.dateTimeRange);
 }
 
