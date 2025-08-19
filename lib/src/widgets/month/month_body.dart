@@ -33,7 +33,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final bodyConfiguration = this.configuration ?? MultiDayHeaderConfiguration();
+    final bodyConfiguration = configuration ?? MultiDayHeaderConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;

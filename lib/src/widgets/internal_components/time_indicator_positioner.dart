@@ -103,7 +103,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
   /// Sets up the initial state of the time indicator positioner.
   void _setup() {
     viewController?.pageOffset.removeListener(_listener);
-    this.viewController = widget.viewController;
+    viewController = widget.viewController;
     viewController?.pageOffset.addListener(_listener);
     _setupDailyTimer();
     pageOffset = (todayPageNumber - widget.initialPage).toDouble();
