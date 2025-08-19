@@ -214,20 +214,20 @@ The calendar has a few useful callback functions, which can change how interacti
     },
 
     // Called when a page is changed.
-    //
-    // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
     onPageChanged: (visibleDateTimeRange) {},
 
     // Called when a calendar view is tapped.
     onTapped: (date) {},
     onTappedWithDetail: (detail) {
-      // Detail contains either a DateTime or DateTimeRange depending on the view that was tapped.
+      // Details contains an exact DateTime or DateTimeRange depending on the view that was tapped.
+      // Along with a renderBox of the gesture detector and local offset of the tap.
     },
 
     // Called when a calendar view is long pressed.
     onLongPressed: (date) {},
     onLongPressedWithDetail: (detail) {
-      // Detail contains either a DateTime or DateTimeRange depending on the view that was long pressed.
+      // Details contains an exact DateTime or DateTimeRange depending on the view that was long pressed.
+      // Along with a renderBox of the gesture detector and local offset of the longPress.
     },
   )
   ```
@@ -678,8 +678,6 @@ CalendarView(
   ),
 );
 ```
-
-
 
 ### Event layout
 
