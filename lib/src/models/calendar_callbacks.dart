@@ -48,7 +48,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnTapped? onTapped;
 
   /// The callback for when a user taps on the calendar with details.
-  /// TODO: Add a renderbox so the position of the tap can be determined.
+  ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetails? onTappedWithDetail;
 
@@ -56,7 +56,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnLongPressed? onLongPressed;
 
   /// The callback for when a user long presses on the calendar with details.
-  /// TODO: Add a renderbox so the position of the tap can be determined.
+  ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetails? onLongPressedWithDetail;
 
@@ -92,6 +92,9 @@ class CalendarCallbacks<T extends Object?> {
     OnEventChanged<T>? onEventChanged,
     OnPageChanged? onPageChanged,
     OnTapped? onTapped,
+    OnTappedWithDetails? onTappedWithDetail,
+    OnLongPressed? onLongPressed,
+    OnLongPressedWithDetails? onLongPressedWithDetail,
     OnMultiDayTapped? onMultiDayTapped,
   }) {
     return CalendarCallbacks<T>(
