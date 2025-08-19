@@ -1,4 +1,4 @@
-library kalender_extensions;
+library;
 
 export 'src/extensions/date_time.dart';
 export 'src/extensions/date_time_range.dart';

@@ -19,5 +19,6 @@ mixin NewDraggableWidget<T extends Object?> {
   }
 
   /// Deselect the new event.
+  // ignore: strict_top_level_inference
   void onDragFinished([_, __]) => controller.clearNewEvent();
 }
