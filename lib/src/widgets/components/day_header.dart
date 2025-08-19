@@ -58,9 +58,9 @@ class DayHeader extends StatelessWidget {
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [DayHeader].
   const DayHeader({super.key, required this.date, this.style});
-  static DayHeader builder(DateTime date, DayHeaderStyle? style) {
-    return DayHeader(date: date, style: style);
-  }
+
+  /// The default builder for the [DayHeader].
+  static DayHeader builder(DateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class DayHeader extends StatelessWidget {
       style?.numberStringBuilder?.call(date) ?? date.day.toString(),
       style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
     );
-    
+
     final button = date.isToday
         ? IconButton.filled(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
@@ -81,10 +81,7 @@ class DayHeader extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: style?.mainAxisAlignment ?? MainAxisAlignment.start,
-        children: [
-          button,
-          dayName,
-        ],
+        children: [button, dayName],
       ),
     );
   }
