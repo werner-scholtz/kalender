@@ -1,7 +1,8 @@
 ## 0.xx.x
 - feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
-        Added TimeLine style to `HourLinesBuilder`.
+- feat: Improved DayHeader and DayHeaderStyle. [PR #218](https://github.com/werner-scholtz/kalender/pull/218)
 - fix: DayDragTarget calculateLocalCursorPosition, add scroll offset after converting to local coordinate space. 
+
 
 ## 0.12.0
 - feat: Added `eventComparator` to `defaultMultiDayFrameGenerator` thanks to [captaingerhard](https://github.com/captaingerhard). [PR #210](https://github.com/werner-scholtz/kalender/pull/210)
