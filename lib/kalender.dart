@@ -1,6 +1,6 @@
 // ignore_for_file: directives_ordering
 
-library kalender;
+library;
 
 export 'package:kalender/src/calendar_body.dart';
 export 'package:kalender/src/calendar_header.dart';

@@ -266,7 +266,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       width: itemSize.width,
       child: Stack(
         children: [
-          ...positionedTimes.nonNulls.toList(),
+          ...positionedTimes.nonNulls,
           eventBeingDraggedTimes,
         ],
       ),
