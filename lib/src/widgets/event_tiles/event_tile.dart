@@ -34,8 +34,16 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   });
 
   DateTimeRange get localDateTimeRange => dateTimeRange.asLocal;
+
+  /// Check if the tile should notify taps.
+  bool get hasOnEventTapped => callbacks?.hasOnEventTapped ?? false;
+
+  /// The function that is called when the event is tapped.
   OnEventTapped<T>? get onEventTapped => callbacks?.onEventTapped;
+
+  /// The function that is called when the event is tapped with detail.
   OnEventTappedWithDetail<T>? get onEventTappedWithDetail => callbacks?.onEventTappedWithDetail;
+
   TileBuilder<T> get tileBuilder => tileComponents.tileBuilder;
   TileBuilder<T> get overlayTileBuilder => tileComponents.overlayTileBuilder ?? tileBuilder;
   bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);

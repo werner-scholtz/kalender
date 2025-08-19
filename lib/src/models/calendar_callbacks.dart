@@ -6,18 +6,18 @@ import 'package:kalender/kalender.dart';
 /// - These callbacks are used to notify the parent widget of events that occur in the [CalendarView].
 class CalendarCallbacks<T extends Object?> {
   /// The callback for when an event is tapped.
+  ///
+  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
+  /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
+  /// /// See TODO: add link to event mixins.
   final OnEventTapped<T>? onEventTapped;
 
   /// The callback for when an event is tapped, with details.
   ///
-  /// TODO: add example of finding touching events.
+  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
+  /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
+  /// /// See TODO: add link to event mixins.
   final OnEventTappedWithDetail<T>? onEventTappedWithDetail;
-
-  /// Disable the [onEventTapped] and [onEventTappedWithDetail] callbacks.
-  ///
-  /// This is useful if you want to use your own gesture detector for event tiles.
-  /// See TODO: add link to event mixins.
-  final bool disableEventGestures;
 
   /// The callback for when an event is about to be created.
   ///
@@ -52,6 +52,9 @@ class CalendarCallbacks<T extends Object?> {
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetails? onTappedWithDetails;
 
+  /// The callback for when a user long presses on the calendar.
+  final OnLongPressed? onLongPressed;
+
   /// The callback for when a user long presses on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
@@ -72,10 +75,14 @@ class CalendarCallbacks<T extends Object?> {
     this.onPageChanged,
     this.onTapped,
     this.onTappedWithDetails,
+    this.onLongPressed,
     this.onLongPressedWithDetails,
     this.onMultiDayTapped,
-    this.disableEventGestures = false,
   });
+
+  bool get hasOnEventTapped => onEventTapped != null || onEventTappedWithDetail != null;
+  bool get hasOnLongPressed => onLongPressed != null || onLongPressedWithDetails != null;
+  bool get hasOnTapped => onTapped != null || onTappedWithDetails != null;
 
   CalendarCallbacks<T> copyWith({
     OnEventTapped<T>? onEventTapped,
@@ -95,6 +102,10 @@ class CalendarCallbacks<T extends Object?> {
       onEventChanged: onEventChanged ?? this.onEventChanged,
       onPageChanged: onPageChanged ?? this.onPageChanged,
       onTapped: onTapped ?? this.onTapped,
+      onTappedWithDetails: onTappedWithDetails ?? this.onTappedWithDetails,
+      onLongPressed: onLongPressed ?? this.onLongPressed,
+      onLongPressedWithDetails: onLongPressedWithDetails ?? this.onLongPressedWithDetails,
+      // ignore: deprecated_member_use_from_same_package
       onMultiDayTapped: onMultiDayTapped ?? this.onMultiDayTapped,
     );
   }
@@ -144,16 +155,15 @@ typedef OnPageChanged = void Function(DateTimeRange dateTimeRange);
 
 /// The callback for when a user taps on an empty space in the calendar.
 ///
-/// [date] is the DateTime that was tapped. 
+/// [date] is the DateTime that was tapped.
 /// If you need more details, use [CalendarCallbacks.onTappedWithDetails].
 typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
 ///
-/// [date] is the DateTime that was tapped.
-/// [detail] is the details of the date that was tapped.
-/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnTappedWithDetails = void Function(DateTime date, TapDetail detail);
+/// [details] is the details of the date that was tapped.
+/// - The [details] can be a [DayDetail] or a [MultiDayDetail].
+typedef OnTappedWithDetails = void Function(TapDetail details);
 
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
@@ -163,10 +173,9 @@ typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
 ///
-/// [date] is the DateTime that was long pressed.
-/// [detail] is the details of the date that was long pressed.
-/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnLongPressedWithDetails = void Function(DateTime date, TapDetail detail);
+/// [details] is the details of the date that was long pressed.
+/// - The [details] can be a [DayDetail] or a [MultiDayDetail].
+typedef OnLongPressedWithDetails = void Function(TapDetail details);
 
 abstract class TapDetail {
   const TapDetail();

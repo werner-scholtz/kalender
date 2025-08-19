@@ -33,8 +33,11 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
             if (context.interaction.allowEventCreation)
               Expanded(
                 child: GestureDetector(
-                  onTapUp: (details) =>
-                      callbacks?.onMultiDayTapped?.call(calculateDateTimeRange(date, localPosition).asLocal),
+                  onTapUp: callbacks?.hasOnTapped == true ? (details) => _notifyTap(date, localPosition) : null,
+                  onLongPressEnd:
+                      callbacks?.hasOnLongPressed == true ? (details) => _notifyTap(date, localPosition) : null,
+                  // onTapUp: (details) =>
+                  //     callbacks?.onMultiDayTapped?.call(),
                   child: switch (context.interaction.createEventGesture) {
                     CreateEventGesture.tap => Draggable(
                         onDragStarted: () => createNewEvent(date, localPosition),
@@ -60,6 +63,13 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
         ],
       ),
     );
+  }
+
+  /// Notify the callbacks about the tap / longPress.
+  void _notifyTap(DateTime date, Offset localPosition) {
+    final range = calculateDateTimeRange(date, localPosition).asLocal;
+    callbacks?.onTapped?.call(range.start);
+    callbacks?.onTappedWithDetails?.call(MultiDayDetail(range));
   }
 
   /// Calculate the initial dateTimeRange of a new event.

@@ -46,7 +46,9 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
           for (final date in widget.visibleDateTimeRange.dates())
             Expanded(
               child: GestureDetector(
-                onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
+                onTapUp: callbacks?.hasOnTapped == true ? (details) => _notifyTap(date, localPosition) : null,
+                onLongPressEnd:
+                    callbacks?.hasOnLongPressed == true ? (details) => _notifyTap(date, localPosition) : null,
                 child: switch (context.interaction.createEventGesture) {
                   CreateEventGesture.tap => Draggable(
                       dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -72,6 +74,13 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
         ],
       ),
     );
+  }
+
+  /// Notify the callbacks about the tap / longPress.
+  void _notifyTap(DateTime date, Offset localPosition) {
+    final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
+    callbacks?.onLongPressed?.call(dateTime);
+    callbacks?.onLongPressedWithDetails?.call(DayDetail(dateTime));
   }
 
   /// Calculate the initial dateTimeRange of a new event.
