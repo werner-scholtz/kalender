@@ -75,7 +75,14 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
               // Find the global position and size of the tile.
               final renderObject = context.findRenderObject()! as RenderBox;
               onEventTapped!.call(event, renderObject);
-              onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
+
+              // TODO: We can probably remove the renderObject here ?
+              // TODO: return the correct localOffset.
+              onEventTappedWithDetail?.call(
+                event,
+                renderObject,
+                MultiDayDetail(dateTimeRange: dateTimeRange, renderBox: renderObject, localOffset: Offset.zero),
+              );
             },
             child: child,
           )

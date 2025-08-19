@@ -48,7 +48,7 @@ class CalendarCallbacks<T extends Object?> {
   final OnTapped? onTapped;
 
   /// The callback for when a user taps on the calendar with details.
-  ///
+  /// TODO: Add a renderbox so the position of the tap can be determined.
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetails? onTappedWithDetail;
 
@@ -56,12 +56,12 @@ class CalendarCallbacks<T extends Object?> {
   final OnLongPressed? onLongPressed;
 
   /// The callback for when a user long presses on the calendar with details.
-  ///
+  /// TODO: Add a renderbox so the position of the tap can be determined.
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetails? onLongPressedWithDetail;
 
   /// The callback for when a user taps on a multi-day calendar.
-  @Deprecated('Use onTapped or onLongPressed instead.')
+  @Deprecated('Use onTappedWithDetail or onLongPressedWithDetail instead.')
   final OnMultiDayTapped? onMultiDayTapped;
 
   /// Creates a set of callbacks for the [CalendarView].
@@ -115,6 +115,8 @@ class CalendarCallbacks<T extends Object?> {
 ///
 /// The [event] is the event that was tapped.
 /// The [renderBox] is the [RenderBox] of the event tile.
+///
+/// TODO: Remove renderBox in 1.0.0 as it is now included in the [OnEventTappedWithDetail].
 typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent<T> event, RenderBox renderBox);
 
 /// The callback for when an event is tapped.
@@ -123,6 +125,8 @@ typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent<T> event,
 /// The [renderBox] is the [RenderBox] of the event tile.
 /// The [detail] is the details of the date that was tapped.
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
+///
+/// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
 typedef OnEventTappedWithDetail<T extends Object?> = void Function(
   CalendarEvent<T> event,
   RenderBox renderBox,
@@ -161,9 +165,8 @@ typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
 ///
-/// [detail] is the details of the date that was tapped.
-/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnTappedWithDetails = void Function(TapDetail detail);
+/// [details] contains the details of the tap.
+typedef OnTappedWithDetails = void Function(TapDetail details);
 
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
@@ -173,12 +176,17 @@ typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
 ///
-/// [detail] is the details of the date that was long pressed.
-/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnLongPressedWithDetails = void Function(TapDetail detail);
+/// [details] contains the details of the tap.
+typedef OnLongPressedWithDetails = void Function(TapDetail details);
 
 abstract class TapDetail {
-  const TapDetail();
+  /// The render box of the gesture detector that was tapped.
+  final RenderBox renderBox;
+
+  /// The local offset of the tap.
+  final Offset localOffset;
+
+  const TapDetail({required this.renderBox, required this.localOffset});
 
   /// Returns true if the detail is a [DayDetail].
   bool get isDayDetail => this is DayDetail;
@@ -193,7 +201,7 @@ class DayDetail extends TapDetail {
   final DateTime date;
 
   /// Creates a new [DayDetail] with the given date.
-  const DayDetail(this.date);
+  const DayDetail({required this.date, required super.renderBox, required super.localOffset});
 }
 
 /// The detail for when a multi-day range is tapped.
@@ -202,10 +210,10 @@ class MultiDayDetail extends TapDetail {
   final DateTimeRange dateTimeRange;
 
   /// Creates a new [MultiDayDetail] with the given date range.
-  const MultiDayDetail(this.dateTimeRange);
+  const MultiDayDetail({required this.dateTimeRange, required super.renderBox, required super.localOffset});
 }
 
-/// TODO: Depricate in 1.0.0
+/// TODO: Remove in 1.0.0 as it is deprecated.
 /// The callback for when a user taps on an empty space in a multi-day calendar.
 ///
 /// [dateRange] is the range of dates that was tapped.
