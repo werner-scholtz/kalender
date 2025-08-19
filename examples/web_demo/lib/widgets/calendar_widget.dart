@@ -159,7 +159,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       MultiDayDetail detail => detail.dateTimeRange,
       _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
     };
-
     _eventsController.addEvent(CalendarEvent<Event>(dateTimeRange: range));
   }
 }
