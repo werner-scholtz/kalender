@@ -8,10 +8,19 @@ import 'package:kalender/src/platform.dart' show isMobileDevice;
 ///
 /// Event tiles are used to display events in the calendar.
 abstract class EventTile<T extends Object?> extends StatelessWidget {
+  /// The event to be displayed in the tile.
   final CalendarEvent<T> event;
+
+  /// The callbacks for the calendar.
   final CalendarCallbacks<T>? callbacks;
+
+  /// The components used to build the tile.
   final TileComponents<T> tileComponents;
+
+  /// The interaction state of the tile.
   final CalendarInteraction interaction;
+
+  /// The date time range for the tile.
   final DateTimeRange dateTimeRange;
 
   /// Creates a new [EventTile] widget.
