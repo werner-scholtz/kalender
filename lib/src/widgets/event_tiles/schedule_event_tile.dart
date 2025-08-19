@@ -34,17 +34,18 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
 
     if (hasOnEventTapped) {
       return GestureDetector(
-        onTap: () {
+        onTapUp: (details) {
           // Find the global position and size of the tile.
           final renderObject = context.findRenderObject()! as RenderBox;
           onEventTapped!.call(event, renderObject);
-
-          // TODO: We can probably remove the renderObject here ?
-          // TODO: return the correct localOffset.
           onEventTappedWithDetail?.call(
             event,
             renderObject,
-            MultiDayDetail(dateTimeRange: dateTimeRange, renderBox: renderObject, localOffset: Offset.zero),
+            MultiDayDetail(
+              dateTimeRange: dateTimeRange,
+              renderBox: renderObject,
+              localOffset: details.localPosition,
+            ),
           );
         },
         child: child,
