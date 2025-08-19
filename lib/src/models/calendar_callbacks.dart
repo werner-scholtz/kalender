@@ -187,7 +187,7 @@ abstract class TapDetail {
   bool get isMultiDayDetail => this is MultiDayDetail;
 }
 
-/// The detail for when a day is tapped.
+/// The detail for when the calendar is tapped.
 class DayDetail extends TapDetail {
   /// The date that was tapped.
   final DateTime date;
