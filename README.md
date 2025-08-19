@@ -220,13 +220,13 @@ The calendar has a few useful callback functions, which can change how interacti
 
     // Called when a calendar view is tapped.
     onTapped: (date) {},
-    onTappedWithDetails: (detail) {
+    onTappedWithDetail: (detail) {
       // Detail contains either a DateTime or DateTimeRange depending on the view that was tapped.
     },
 
     // Called when a calendar view is long pressed.
     onLongPressed: (date) {},
-    onLongPressedWithDetails: (detail) {
+    onLongPressedWithDetail: (detail) {
       // Detail contains either a DateTime or DateTimeRange depending on the view that was long pressed.
     },
   )

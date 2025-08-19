@@ -148,8 +148,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
       onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
       onEventCreated: (event) => _eventsController.addEvent(event),
-      onTappedWithDetails: _createEvent,
-      onLongPressedWithDetails: _createEvent,
+      onTappedWithDetail: _createEvent,
+      onLongPressedWithDetail: _createEvent,
     );
   }
 

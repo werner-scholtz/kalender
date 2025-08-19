@@ -69,7 +69,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   void _notifyTap(DateTime date, Offset localPosition) {
     final range = calculateDateTimeRange(date, localPosition).asLocal;
     callbacks?.onTapped?.call(range.start);
-    callbacks?.onTappedWithDetails?.call(MultiDayDetail(range));
+    callbacks?.onTappedWithDetail?.call(MultiDayDetail(range));
   }
 
   /// Calculate the initial dateTimeRange of a new event.

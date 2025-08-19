@@ -50,7 +50,7 @@ class CalendarCallbacks<T extends Object?> {
   /// The callback for when a user taps on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnTappedWithDetails? onTappedWithDetails;
+  final OnTappedWithDetails? onTappedWithDetail;
 
   /// The callback for when a user long presses on the calendar.
   final OnLongPressed? onLongPressed;
@@ -58,7 +58,7 @@ class CalendarCallbacks<T extends Object?> {
   /// The callback for when a user long presses on the calendar with details.
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
-  final OnLongPressedWithDetails? onLongPressedWithDetails;
+  final OnLongPressedWithDetails? onLongPressedWithDetail;
 
   /// The callback for when a user taps on a multi-day calendar.
   @Deprecated('Use onTapped or onLongPressed instead.')
@@ -74,15 +74,15 @@ class CalendarCallbacks<T extends Object?> {
     this.onEventCreated,
     this.onPageChanged,
     this.onTapped,
-    this.onTappedWithDetails,
+    this.onTappedWithDetail,
     this.onLongPressed,
-    this.onLongPressedWithDetails,
+    this.onLongPressedWithDetail,
     this.onMultiDayTapped,
   });
 
   bool get hasOnEventTapped => onEventTapped != null || onEventTappedWithDetail != null;
-  bool get hasOnLongPressed => onLongPressed != null || onLongPressedWithDetails != null;
-  bool get hasOnTapped => onTapped != null || onTappedWithDetails != null;
+  bool get hasOnLongPressed => onLongPressed != null || onLongPressedWithDetail != null;
+  bool get hasOnTapped => onTapped != null || onTappedWithDetail != null;
 
   CalendarCallbacks<T> copyWith({
     OnEventTapped<T>? onEventTapped,
@@ -102,9 +102,9 @@ class CalendarCallbacks<T extends Object?> {
       onEventChanged: onEventChanged ?? this.onEventChanged,
       onPageChanged: onPageChanged ?? this.onPageChanged,
       onTapped: onTapped ?? this.onTapped,
-      onTappedWithDetails: onTappedWithDetails ?? this.onTappedWithDetails,
+      onTappedWithDetail: onTappedWithDetail ?? this.onTappedWithDetail,
       onLongPressed: onLongPressed ?? this.onLongPressed,
-      onLongPressedWithDetails: onLongPressedWithDetails ?? this.onLongPressedWithDetails,
+      onLongPressedWithDetail: onLongPressedWithDetail ?? this.onLongPressedWithDetail,
       // ignore: deprecated_member_use_from_same_package
       onMultiDayTapped: onMultiDayTapped ?? this.onMultiDayTapped,
     );
@@ -156,7 +156,7 @@ typedef OnPageChanged = void Function(DateTimeRange dateTimeRange);
 /// The callback for when a user taps on an empty space in the calendar.
 ///
 /// [date] is the DateTime that was tapped.
-/// If you need more details, use [CalendarCallbacks.onTappedWithDetails].
+/// If you need more details, use [CalendarCallbacks.onTappedWithDetail].
 typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
@@ -168,7 +168,7 @@ typedef OnTappedWithDetails = void Function(TapDetail detail);
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
 /// [date] is the DateTime that was long pressed.
-/// If you need more details, use [CalendarCallbacks.onLongPressedWithDetails].
+/// If you need more details, use [CalendarCallbacks.onLongPressedWithDetail].
 typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
