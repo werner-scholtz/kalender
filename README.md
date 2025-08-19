@@ -218,15 +218,24 @@ The calendar has a few useful callback functions, which can change how interacti
     // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
     onPageChanged: (visibleDateTimeRange) {},
 
-    /// Called when a user taps on the calendar (Multiday body).
-    onTapped(date) {},
+    // Called when a calendar view is tapped.
+    onTapped: (date) {},
+    onTappedWithDetails: (detail) {
+      // Detail contains either a DateTime or DateTimeRange depending on the view that was tapped.
+    },
 
-    /// Called when a user taps on the calendar (Multiday header / Month body).
-    onMultiDayTapped(dateRange) {},
+    // Called when a calendar view is long pressed.
+    onLongPressed: (date) {},
+    onLongPressedWithDetails: (detail) {
+      // Detail contains either a DateTime or DateTimeRange depending on the view that was long pressed.
+    },
   )
   ```
   </summary>
 </details>
+
+If you want to use your own gesture detector for event tiles:
+TODO: Add Example.
 
 
 ### Header and Body

@@ -161,9 +161,9 @@ typedef OnTapped = void Function(DateTime date);
 
 /// The callback for when a user taps on an empty space in the calendar with details.
 ///
-/// [details] is the details of the date that was tapped.
-/// - The [details] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnTappedWithDetails = void Function(TapDetail details);
+/// [detail] is the details of the date that was tapped.
+/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
+typedef OnTappedWithDetails = void Function(TapDetail detail);
 
 /// The callback for when a user long presses on an empty space in the calendar.
 ///
@@ -173,9 +173,9 @@ typedef OnLongPressed = void Function(DateTime date);
 
 /// The callback for when a user long presses on an empty space in the calendar with details.
 ///
-/// [details] is the details of the date that was long pressed.
-/// - The [details] can be a [DayDetail] or a [MultiDayDetail].
-typedef OnLongPressedWithDetails = void Function(TapDetail details);
+/// [detail] is the details of the date that was long pressed.
+/// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
+typedef OnLongPressedWithDetails = void Function(TapDetail detail);
 
 abstract class TapDetail {
   const TapDetail();
