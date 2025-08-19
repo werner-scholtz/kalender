@@ -80,7 +80,7 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
   void _notifyTap(DateTime date, Offset localPosition) {
     final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
     callbacks?.onLongPressed?.call(dateTime);
-    callbacks?.onLongPressedWithDetails?.call(DayDetail(dateTime));
+    callbacks?.onLongPressedWithDetail?.call(DayDetail(dateTime));
   }
 
   /// Calculate the initial dateTimeRange of a new event.
