@@ -11,28 +11,46 @@ typedef DayHeaderBuilder = Widget Function(
   DayHeaderStyle? style,
 );
 
-/// The style of the [DayHeader].
+/// The styling class for the [DayHeader].
+///
+/// This class allows you to customize the appearance of the [DayHeader] widget.
+/// You can change the text style, the string displayed, the number text style, and the alignment.
 class DayHeaderStyle {
-  /// Creates a new [DayHeaderStyle].
-  const DayHeaderStyle({
-    this.textStyle,
-    this.stringBuilder,
-    this.numberTextStyle,
-  });
-
   /// The [TextStyle] used by the [DayHeader] widget to display the name of the day.
   final TextStyle? textStyle;
 
-  /// Use this function to customize the sting displayed by the [DayHeader].
-  final String Function(DateTime date)? stringBuilder;
-
   /// The [TextStyle] used by the [DayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
+
+  /// The main axis alignment of the [DayHeader].
+  final MainAxisAlignment? mainAxisAlignment;
+
+  /// Use this function to customize the string used for the day number.
+  ///
+  /// By default, the [DateTime.day] is used to get the day number.
+  final String Function(DateTime date)? numberStringBuilder;
+
+  /// Use this function to customize the sting displayed under the day number.
+  ///
+  /// By default, the [DateTimeExtensions.dayNameShortLocalized] is used to get the short name of the day in the current locale.
+  final String Function(DateTime date)? stringBuilder;
+
+  /// Creates a new [DayHeaderStyle].
+  const DayHeaderStyle({
+    this.textStyle,
+    this.numberTextStyle,
+    this.mainAxisAlignment,
+    this.numberStringBuilder,
+    this.stringBuilder,
+  });
 }
 
 /// A widget that displays the name of the day and the day number of the week.
 class DayHeader extends StatelessWidget {
+  /// The date that will be displayed in the [DayHeader].
   final DateTime date;
+
+  /// The style of the [DayHeader].
   final DayHeaderStyle? style;
 
   /// Create a new [DayHeader].
@@ -46,34 +64,28 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = Text(
+    final numberText = Text(
+      style?.numberStringBuilder?.call(date) ?? date.day.toString(),
+      style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
+    );
+    
+    final button = date.isToday
+        ? IconButton.filled(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
+        : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
+
+    final dayName = Text(
       style?.stringBuilder?.call(date) ?? date.dayNameShortLocalized(context.locale),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 
-    final button = date.isToday
-        ? IconButton.filled(
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style?.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          )
-        : IconButton(
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style?.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          );
-
-    return Column(
-      children: [
-        button,
-        text,
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: style?.mainAxisAlignment ?? MainAxisAlignment.start,
+        children: [
+          button,
+          dayName,
+        ],
+      ),
     );
   }
 }
