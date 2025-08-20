@@ -250,26 +250,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-class DayEventTile extends StatelessWidget {
-  final CalendarEvent<Event> event;
-  final DateTimeRange tileRange;
-  const DayEventTile({super.key, required this.event, required this.tileRange});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapUp: (details) {},
-      child: Card(
-        color: event.data?.color ?? Theme.of(context).colorScheme.primaryContainer,
-        child: Text(event.data?.title ?? ""),
-      ),
-    );
-  }
-}
-
-mixin EventTileMixin {
-  // TODO: Implement mixin for EventTileBuilders that provides usefull utils.
-  void getNearbyEvents() {}
-  void getDateFromPosition() {}
-}
