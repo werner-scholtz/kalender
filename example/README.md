@@ -24,6 +24,12 @@ Example showing how to use the package with riverpod.
 
 [Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/riverpod)
 
+### Advanced Example
+
+Example showing some of the more advanced things that can be done.
+
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/advanced_example)
+
 ### Web demo
 
 Example that shows how the web demo is implemented.
