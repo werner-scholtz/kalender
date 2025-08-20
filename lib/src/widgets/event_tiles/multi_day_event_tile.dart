@@ -50,6 +50,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
       tileComponents: tileComponents,
       tile: tile,
     );
+    final child = canReschedule ? reschedule : tile;
 
     final resizeHandles = tileComponents.horizontalHandlePositioner?.call(
           leftResize,
@@ -68,17 +69,26 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        GestureDetector(
-          onTap: onEventTapped != null
-              ? () {
-                  // Find the global position and size of the tile.
-                  final renderObject = context.findRenderObject()! as RenderBox;
-                  onEventTapped!.call(event, renderObject);
-                  onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
-                }
-              : null,
-          child: canReschedule ? reschedule : tile,
-        ),
+        if (hasOnEventTapped)
+          GestureDetector(
+            onTapUp: (details) {
+              // Find the global position and size of the tile.
+              final renderObject = context.findRenderObject()! as RenderBox;
+              onEventTapped!.call(event, renderObject);
+              onEventTappedWithDetail?.call(
+                event,
+                renderObject,
+                MultiDayDetail(
+                  dateTimeRange: dateTimeRange,
+                  renderBox: renderObject,
+                  localOffset: details.localPosition,
+                ),
+              );
+            },
+            child: child,
+          )
+        else
+          child,
         Positioned.fill(child: resizeHandles),
       ],
     );

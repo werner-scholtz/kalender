@@ -214,19 +214,134 @@ The calendar has a few useful callback functions, which can change how interacti
     },
 
     // Called when a page is changed.
-    //
-    // Alternatively you can listen to the [CalendarController.visibleDateTimeRange] for updates.
     onPageChanged: (visibleDateTimeRange) {},
 
-    /// Called when a user taps on the calendar (Multiday body).
-    onTapped(date) {},
+    // Called when a calendar view is tapped.
+    onTapped: (date) {},
+    onTappedWithDetail: (detail) {
+      // Details contains an exact DateTime or DateTimeRange depending on the view that was tapped.
+      // Along with a renderBox of the gesture detector and local offset of the tap.
+    },
 
-    /// Called when a user taps on the calendar (Multiday header / Month body).
-    onMultiDayTapped(dateRange) {},
+    // Called when a calendar view is long pressed.
+    onLongPressed: (date) {},
+    onLongPressedWithDetail: (detail) {
+      // Details contains an exact DateTime or DateTimeRange depending on the view that was long pressed.
+      // Along with a renderBox of the gesture detector and local offset of the longPress.
+    },
   )
   ```
   </summary>
 </details>
+
+### Event Tile Utilities
+
+The package provides utility mixins to help you build interactive custom event tiles with common functionality like position-to-time conversion and finding nearby events.
+
+For single-day or multi-day view event tiles, use the `DayEventTileUtils<T>` mixin:
+<details>
+  <summary>DayEventTileUtils</summary>
+
+  ```dart
+  class CustomDayEventTile extends StatelessWidget with DayEventTileUtils<MyEventData> {
+    @override
+    final CalendarEvent<MyEventData> event;
+    
+    @override
+    final DateTimeRange tileRange;
+    
+    const CustomDayEventTile({
+      super.key,
+      required this.event,
+      required this.tileRange,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+      return GestureDetector(
+        onTapUp: (details) {
+          // Get the exact time that was tapped within the event
+          final tappedTime = dateTimeFromPosition(context, details.localPosition);
+          print('Tapped at: $tappedTime');
+
+          // Find events that occur around the same time
+          final nearby = nearbyEvents(
+            context,
+            before: const Duration(minutes: 15),
+            after: const Duration(minutes: 15),
+          );
+
+          print('Found ${nearby.length} nearby events');
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: event.data?.color ?? Colors.blue,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.all(4),
+          child: Text(
+            event.data?.title ?? 'Event',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+  }
+  ```
+  </summary>
+</details>
+ 
+For event tiles that span multiple days (like in month view), use the `MultiDayEventTileUtils<T>` mixin:
+
+<details>
+  <summary>MultiDayEventTileUtils</summary>
+
+  ```dart
+  class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils<MyEventData> {
+    @override
+    final CalendarEvent<MyEventData> event;
+    
+    @override
+    final DateTimeRange tileRange;
+    
+    const CustomMultiDayEventTile({
+      super.key,
+      required this.event,
+      required this.tileRange,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+      return GestureDetector(
+        onTapUp: (details) {
+          // Get the specific date that was tapped within the multi-day event
+          final tappedDate = dateFromPosition(context, details.localPosition);
+          print('Tapped on date: ${tappedDate.toString()}');
+          
+          // Find other events on the same date range
+          final overlappingEvents = nearbyEvents(context);
+          print('Found ${overlappingEvents.length} overlapping events');
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: event.data?.color ?? Colors.green,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          child: Text(
+            event.data?.title ?? 'Multi-day Event',
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
+    }
+  }
+  ```
+  </summary>
+</details>
+
+
 
 
 ### Header and Body
@@ -249,6 +364,7 @@ The `CalendarBody` takes a `CalendarSnapping` ValueNotifier that allows you to c
 - snapToOtherEvents
 - snapRange
 - eventSnapStrategy
+
 
 Examples:
 <details>
@@ -669,8 +785,6 @@ CalendarView(
   ),
 );
 ```
-
-
 
 ### Event layout
 

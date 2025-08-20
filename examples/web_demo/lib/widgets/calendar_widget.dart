@@ -148,16 +148,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
       onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
       onEventCreated: (event) => _eventsController.addEvent(event),
-      onTapped: (date) {
-        final newEvent = CalendarEvent<Event>(
-          dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(minutes: 45))),
-        );
-        _eventsController.addEvent(newEvent);
-      },
-      onMultiDayTapped: (dateRange) {
-        final newEvent = CalendarEvent<Event>(dateTimeRange: dateRange);
-        _eventsController.addEvent(newEvent);
-      },
+      onTappedWithDetail: _createEvent,
+      onLongPressedWithDetail: _createEvent,
     );
+  }
+
+  void _createEvent(TapDetail detail) {
+    final range = switch (detail) {
+      DayDetail detail => DateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
+      MultiDayDetail detail => detail.dateTimeRange,
+      _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
+    };
+    _eventsController.addEvent(CalendarEvent<Event>(dateTimeRange: range));
   }
 }

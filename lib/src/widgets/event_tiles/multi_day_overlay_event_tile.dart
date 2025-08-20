@@ -28,17 +28,28 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
       tileComponents: tileComponents,
       dismissOverlay: dismissOverlay,
     );
+    final child = canReschedule ? reschedule : tile;
 
-    return GestureDetector(
-      onTap: onEventTapped != null
-          ? () {
-              // Find the global position and size of the tile.
-              final renderObject = context.findRenderObject()! as RenderBox;
-              onEventTapped!.call(event, renderObject);
-              onEventTappedWithDetail?.call(event, renderObject, MultiDayDetail(dateTimeRange));
-            }
-          : null,
-      child: canReschedule ? reschedule : tile,
-    );
+    if (hasOnEventTapped) {
+      return GestureDetector(
+        onTapUp: (details) {
+          // Find the global position and size of the tile.
+          final renderObject = context.findRenderObject()! as RenderBox;
+          onEventTapped!.call(event, renderObject);
+          onEventTappedWithDetail?.call(
+            event,
+            renderObject,
+            MultiDayDetail(
+              dateTimeRange: dateTimeRange,
+              renderBox: renderObject,
+              localOffset: details.localPosition,
+            ),
+          );
+        },
+        child: child,
+      );
+    } else {
+      return child;
+    }
   }
 }

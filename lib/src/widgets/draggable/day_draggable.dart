@@ -32,45 +32,75 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
 
   @override
   Widget build(BuildContext context) {
-    if (!context.interaction.allowEventCreation) return const SizedBox.shrink();
-
-    var localPosition = Offset.zero;
-
-    /// Check if this is affected by removing interaction.
     return Listener(
-      onPointerDown: (event) => localPosition = event.localPosition,
-      onPointerSignal: (event) => localPosition = event.localPosition,
-      onPointerMove: (event) => localPosition = event.localPosition,
       child: Row(
         children: [
           for (final date in widget.visibleDateTimeRange.dates())
             Expanded(
-              child: GestureDetector(
-                onTapUp: (details) => callbacks?.onTapped?.call(_calculateTimeAndDate(date, localPosition).asLocal),
-                child: switch (context.interaction.createEventGesture) {
-                  CreateEventGesture.tap => Draggable(
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      data: Create(controllerId: controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, height: widget.pageHeight),
+              child: Builder(
+                builder: (context) {
+                  var position = Offset.zero;
+
+                  return Listener(
+                    onPointerDown: (event) => position = event.localPosition,
+                    onPointerSignal: (event) => position = event.localPosition,
+                    onPointerMove: (event) => position = event.localPosition,
+                    child: GestureDetector(
+                      onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
+                      onLongPress:
+                          callbacks?.hasOnLongPressed == true ? () => _onLongPress(context, date, position) : null,
+                      child: context.interaction.allowEventCreation
+                          ? switch (context.interaction.createEventGesture) {
+                              CreateEventGesture.tap => Draggable(
+                                  dragAnchorStrategy: pointerDragAnchorStrategy,
+                                  onDragStarted: () => createNewEvent(date, position),
+                                  onDraggableCanceled: onDragFinished,
+                                  onDragEnd: onDragFinished,
+                                  data: Create(controllerId: controller.id),
+                                  feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                                  child: Container(color: Colors.transparent, height: widget.pageHeight),
+                                ),
+                              CreateEventGesture.longPress => LongPressDraggable(
+                                  dragAnchorStrategy: pointerDragAnchorStrategy,
+                                  onDragStarted: () => createNewEvent(date, position),
+                                  onDraggableCanceled: onDragFinished,
+                                  onDragEnd: onDragFinished,
+                                  data: Create(controllerId: controller.id),
+                                  feedback: Container(color: Colors.transparent, width: 1, height: 1),
+                                  child: Container(color: Colors.transparent, height: widget.pageHeight),
+                                ),
+                            }
+                          : null,
                     ),
-                  CreateEventGesture.longPress => LongPressDraggable(
-                      dragAnchorStrategy: pointerDragAnchorStrategy,
-                      onDragStarted: () => createNewEvent(date, localPosition),
-                      onDraggableCanceled: onDragFinished,
-                      onDragEnd: onDragFinished,
-                      data: Create(controllerId: controller.id),
-                      feedback: Container(color: Colors.transparent, width: 1, height: 1),
-                      child: Container(color: Colors.transparent, height: widget.pageHeight),
-                    ),
+                  );
                 },
               ),
             ),
         ],
       ),
+    );
+  }
+
+  /// Notify the callbacks about the tap / longPress.
+  void _onTap(BuildContext context, DateTime date, Offset localPosition) {
+    final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
+    callbacks?.onTapped?.call(dateTime);
+
+    if (callbacks?.onTappedWithDetail == null) return;
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onTappedWithDetail?.call(
+      DayDetail(renderBox: renderBox, localOffset: localPosition, date: dateTime),
+    );
+  }
+
+  void _onLongPress(BuildContext context, DateTime date, Offset position) {
+    final dateTime = _calculateTimeAndDate(date, position).asLocal;
+    callbacks?.onLongPressed?.call(dateTime);
+
+    if (callbacks?.onLongPressedWithDetail == null) return;
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onLongPressedWithDetail?.call(
+      DayDetail(date: dateTime, renderBox: renderBox, localOffset: position),
     );
   }
 
