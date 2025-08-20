@@ -8,12 +8,19 @@ import 'package:kalender/kalender.dart';
 class ZoomDetector extends StatelessWidget {
   final Widget child;
   final CalendarController controller;
-  const ZoomDetector({super.key, required this.child, required this.controller});
+  const ZoomDetector({
+    super.key,
+    required this.child,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return switch (defaultTargetPlatform) {
-      TargetPlatform.iOS || TargetPlatform.android => MobileZoomDetector(controller: controller, child: child),
+      TargetPlatform.iOS || TargetPlatform.android => MobileZoomDetector(
+        controller: controller,
+        child: child,
+      ),
       _ => DesktopZoomDetector(controller: controller, child: child),
     };
   }
@@ -44,10 +51,12 @@ mixin ZoomUtils {
   }
 
   /// The [ScrollController] of the calendar.
-  ScrollController? get scrollController => multiDayViewController?.scrollController;
+  ScrollController? get scrollController =>
+      multiDayViewController?.scrollController;
 
   /// The [ValueNotifier] that holds the height per minute of the calendar.
-  ValueNotifier<double>? get heightPerMinute => multiDayViewController?.heightPerMinute;
+  ValueNotifier<double>? get heightPerMinute =>
+      multiDayViewController?.heightPerMinute;
 
   /// The [ValueNotifier] that holds the state of the control key.
   ValueNotifier<bool> lock = ValueNotifier(false);
@@ -88,22 +97,26 @@ mixin ZoomUtils {
   }
 
   ScrollBehavior scrollBehavior(bool lock) {
-    return (lock ? const ScrollBehaviorNever() : const MaterialScrollBehavior()).copyWith(
-      scrollbars: false,
-    );
+    return (lock ? const ScrollBehaviorNever() : const MaterialScrollBehavior())
+        .copyWith(scrollbars: false);
   }
 }
 
 class DesktopZoomDetector extends StatefulWidget {
   final Widget child;
   final CalendarController controller;
-  const DesktopZoomDetector({super.key, required this.child, required this.controller});
+  const DesktopZoomDetector({
+    super.key,
+    required this.child,
+    required this.controller,
+  });
 
   @override
   State<DesktopZoomDetector> createState() => _DesktopZoomDetectorState();
 }
 
-class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtils {
+class _DesktopZoomDetectorState extends State<DesktopZoomDetector>
+    with ZoomUtils {
   @override
   CalendarController<Object?> get controller => widget.controller;
 
@@ -152,8 +165,10 @@ class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtil
       onPointerPanZoomEnd: (_) => lock.value = false,
       child: ValueListenableBuilder(
         valueListenable: lock,
-        builder: (context, value, _) =>
-            ScrollConfiguration(behavior: scrollBehavior(value), child: widget.child),
+        builder: (context, value, _) => ScrollConfiguration(
+          behavior: scrollBehavior(value),
+          child: widget.child,
+        ),
       ),
     );
   }
@@ -162,13 +177,18 @@ class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtil
 class MobileZoomDetector extends StatefulWidget {
   final Widget child;
   final CalendarController controller;
-  const MobileZoomDetector({super.key, required this.child, required this.controller});
+  const MobileZoomDetector({
+    super.key,
+    required this.child,
+    required this.controller,
+  });
 
   @override
   State<MobileZoomDetector> createState() => _MobileZoomDetectorState();
 }
 
-class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils {
+class _MobileZoomDetectorState extends State<MobileZoomDetector>
+    with ZoomUtils {
   @override
   CalendarController<Object?> get controller => widget.controller;
 
@@ -179,25 +199,24 @@ class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils 
     return RawGestureDetector(
       gestures: {
         AllowMultipleGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<AllowMultipleGestureRecognizer>(
-              AllowMultipleGestureRecognizer.new,
-              (instance) {
-                instance.onStart = (details) {
-                  yOffset = details.localFocalPoint.dy;
-                  _previousScale = 0;
-                  if (details.pointerCount <= 1) return;
-                };
-                instance.onUpdate = (details) {
-                  if (details.pointerCount <= 1) return;
-                  final height = heightPerMinute?.value;
-                  if (height == null) return;
-                  final delta = -(_previousScale - log(details.verticalScale));
-                  _previousScale = log(details.verticalScale);
-                  final newHeight = height + delta;
-                  update(height, newHeight);
-                };
-              },
-            ),
+            GestureRecognizerFactoryWithHandlers<
+              AllowMultipleGestureRecognizer
+            >(AllowMultipleGestureRecognizer.new, (instance) {
+              instance.onStart = (details) {
+                yOffset = details.localFocalPoint.dy;
+                _previousScale = 0;
+                if (details.pointerCount <= 1) return;
+              };
+              instance.onUpdate = (details) {
+                if (details.pointerCount <= 1) return;
+                final height = heightPerMinute?.value;
+                if (height == null) return;
+                final delta = -(_previousScale - log(details.verticalScale));
+                _previousScale = log(details.verticalScale);
+                final newHeight = height + delta;
+                update(height, newHeight);
+              };
+            }),
       },
       child: widget.child,
     );
@@ -208,7 +227,8 @@ class ScrollBehaviorNever extends ScrollBehavior {
   const ScrollBehaviorNever();
 
   @override
-  ScrollPhysics getScrollPhysics(BuildContext context) => const NeverScrollableScrollPhysics();
+  ScrollPhysics getScrollPhysics(BuildContext context) =>
+      const NeverScrollableScrollPhysics();
 }
 
 class ZoomIntent extends Intent {
