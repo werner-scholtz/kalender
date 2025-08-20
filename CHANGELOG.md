@@ -1,13 +1,13 @@
 ## 0.xx.x
 - feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
 - feat: Improved DayHeader and DayHeaderStyle. [PR #218](https://github.com/werner-scholtz/kalender/pull/218)
-- feat: Improved CalendarCallbacks. [#133](https://github.com/werner-scholtz/kalender/issues/133)
+- feat: Improved CalendarCallbacks. [#133](https://github.com/werner-scholtz/kalender/issues/133) / [#30](https://github.com/werner-scholtz/kalender/issues/30)
         - Added `onTappedWithDetail`, `onLongPressed` and `onLongPressedWithDetail` callbacks.
         - Deprecated `onMultiDayTapped`. (Use `onTappedWithDetail` instead).
-        - Not providing `onEventTapped` and `onEventTappedWithDetail` will remove any internal gesture detectors for events, removing interference from GestureDetectors added to EventTile Builders.
+        - Not providing `onEventTapped` and `onEventTappedWithDetail` will remove internal gesture detectors for events, removing interference for GestureDetectors added to EventTileBuilders.
         - Added mixins (`DayEventTileUtils` and `MultiDayEventTileUtils`) for EventTileBuilders that have their own gesture detectors.
+        - Added `onEventCreateWithDetail` as used in the new advanced example.
 - fix: DayDragTarget `calculateLocalCursorPosition`, add scroll offset after converting to local coordinate space.
-
 
 ## 0.12.0
 - feat: Added `eventComparator` to `defaultMultiDayFrameGenerator` thanks to [captaingerhard](https://github.com/captaingerhard). [PR #210](https://github.com/werner-scholtz/kalender/pull/210)

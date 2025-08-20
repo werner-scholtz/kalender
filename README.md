@@ -192,9 +192,14 @@ The calendar has a few useful callback functions, which can change how interacti
     // Called when an event is tapped.
     onEventTapped: (event, renderBox) {},
 
-    // Called when an event is about to be created.
+    // Called when an event is to be created.
     onEventCreate: (event) {
       // This allows you to modify the event before it is created.
+      return event.copyWith(data: data);
+    }
+
+    // Called when an event is to be created.
+    onEventCreateWithDetail: (event, detail) {
       return event.copyWith(data: data);
     }
     

@@ -53,7 +53,7 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
                           ? switch (context.interaction.createEventGesture) {
                               CreateEventGesture.tap => Draggable(
                                   dragAnchorStrategy: pointerDragAnchorStrategy,
-                                  onDragStarted: () => createNewEvent(date, position),
+                                  onDragStarted: () => createNewEvent(context, date, position),
                                   onDraggableCanceled: onDragFinished,
                                   onDragEnd: onDragFinished,
                                   data: Create(controllerId: controller.id),
@@ -62,7 +62,7 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
                                 ),
                               CreateEventGesture.longPress => LongPressDraggable(
                                   dragAnchorStrategy: pointerDragAnchorStrategy,
-                                  onDragStarted: () => createNewEvent(date, position),
+                                  onDragStarted: () => createNewEvent(context, date, position),
                                   onDraggableCanceled: onDragFinished,
                                   onDragEnd: onDragFinished,
                                   data: Create(controllerId: controller.id),
@@ -104,10 +104,6 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
     );
   }
 
-  /// Calculate the initial dateTimeRange of a new event.
-  ///
-  /// [date] is the date the draggable is located at.
-  /// [localPosition] is the last known position of the cursor.
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
@@ -136,5 +132,14 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
     );
 
     return snappedDateTime;
+  }
+
+  @override
+  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition) {
+    return DayDetail(
+      date: range.start,
+      renderBox: context.findRenderObject() as RenderBox,
+      localOffset: localPosition,
+    );
   }
 }

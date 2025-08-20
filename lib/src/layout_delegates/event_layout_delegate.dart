@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
@@ -257,6 +259,50 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     return horizontalGroups;
   }
 
+  /// Finds the longest chain of overlapping events using depth-first search.
+  ///
+  /// This method determines the maximum number of events that overlap at any given time,
+  /// which is used to calculate the optimal width for each event tile in side-by-side layouts.
+  ///
+  /// This algorithm can get expensive, so it should be used sparingly.
+  ///
+  /// [verticalLayoutData] - The collection of vertical layout data for all events.
+  ///
+  /// Returns the length of the longest chain of overlapping events.
+  int findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
+    // Early return if no events to process
+    if (verticalLayoutData.isEmpty) return 0;
+
+    final dataList = verticalLayoutData.toList();
+    // Key: event index, Value: longest chain starting from that event
+    final memo = <int, int>{};
+
+    int depthFirstSearch(int currentIndex, Set<int> visited) {
+      // If we've already calculated this, return cached result
+      if (memo.containsKey(currentIndex)) return memo[currentIndex]!;
+      var maxLength = 1;
+
+      // Check all other events to see if they overlap with current event
+      for (var i = 0; i < dataList.length; i++) {
+        // Skip if it's the same event, already visited, or doesn't overlap
+        if (i != currentIndex && !visited.contains(i) && dataList[currentIndex].overlaps(dataList[i])) {
+          final newVisited = Set<int>.from(visited)..add(i);
+          maxLength = max(maxLength, 1 + depthFirstSearch(i, newVisited));
+        }
+      }
+
+      memo[currentIndex] = maxLength;
+      return maxLength;
+    }
+
+    var maxChain = 1;
+    for (var i = 0; i < dataList.length; i++) {
+      maxChain = max(maxChain, depthFirstSearch(i, {i}));
+    }
+
+    return maxChain;
+  }
+
   @override
   bool shouldRelayout(covariant EventLayoutDelegate oldDelegate) {
     return oldDelegate.events != events ||
@@ -371,7 +417,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
         );
 
       final numberOfEvents = verticalLayoutData.length;
-      final longest = _findLongestChain(verticalLayoutData);
+      final longest = findLongestChain(verticalLayoutData);
       final childWidth = size.width / longest;
 
       final tiles = <int, Offset>{};
@@ -420,42 +466,6 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
         positionChild(tile.key, tile.value);
       }
     }
-  }
-
-  /// Finds the longest chain of overlapping events.
-  int _findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
-    var longest = <VerticalLayoutData>[];
-    final currentChain = <VerticalLayoutData>[verticalLayoutData.first];
-
-    void depthFirstSearch(VerticalLayoutData current, List<VerticalLayoutData> chain) {
-      chain.add(current);
-
-      var extended = false;
-      for (var data in verticalLayoutData) {
-        if (!chain.contains(data) && current.overlaps(data)) {
-          extended = true;
-          depthFirstSearch(data, chain);
-        }
-      }
-      if (!extended && chain.length > longest.length) {
-        longest = chain;
-      }
-    }
-
-    for (var data in verticalLayoutData) {
-      depthFirstSearch(data, []);
-    }
-
-    // Final comparison after loop
-    if (currentChain.length > longest.length) longest = currentChain;
-
-    var length = longest.length;
-    for (var i = 0; i < longest.length; i++) {
-      final current = longest[i];
-      final next = longest.elementAtOrNull(i + 1);
-      if (next != null && !current.overlaps(next)) length--;
-    }
-    return length;
   }
 }
 

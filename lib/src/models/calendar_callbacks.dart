@@ -22,7 +22,13 @@ class CalendarCallbacks<T extends Object?> {
   /// The callback for when an event is about to be created.
   ///
   /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
+  /// * If you provide [onEventCreateWithDetail] then that will be used instead.
   final OnEventCreate<T>? onEventCreate;
+
+  /// The callback for when an event is about to be created.
+  ///
+  /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
+  final OnEventCreateWithDetail<T>? onEventCreateWithDetail;
 
   /// The callback for when an event is created.
   ///
@@ -71,6 +77,7 @@ class CalendarCallbacks<T extends Object?> {
     this.onEventChange,
     this.onEventChanged,
     this.onEventCreate,
+    this.onEventCreateWithDetail,
     this.onEventCreated,
     this.onPageChanged,
     this.onTapped,
@@ -86,7 +93,9 @@ class CalendarCallbacks<T extends Object?> {
 
   CalendarCallbacks<T> copyWith({
     OnEventTapped<T>? onEventTapped,
+    OnEventTappedWithDetail<T>? onEventTappedWithDetail,
     OnEventCreate<T>? onEventCreate,
+    OnEventCreateWithDetail<T>? onEventCreateWithDetail,
     OnEventCreated<T>? onEventCreated,
     OnEventChange<T>? onEventChange,
     OnEventChanged<T>? onEventChanged,
@@ -100,6 +109,7 @@ class CalendarCallbacks<T extends Object?> {
     return CalendarCallbacks<T>(
       onEventTapped: onEventTapped ?? this.onEventTapped,
       onEventCreate: onEventCreate ?? this.onEventCreate,
+      onEventCreateWithDetail: onEventCreateWithDetail ?? this.onEventCreateWithDetail,
       onEventCreated: onEventCreated ?? this.onEventCreated,
       onEventChange: onEventChange ?? this.onEventChange,
       onEventChanged: onEventChanged ?? this.onEventChanged,
@@ -149,6 +159,15 @@ typedef OnEventChanged<T extends Object?> = void Function(CalendarEvent<T> event
 ///
 /// [event] is the event that will be created.
 typedef OnEventCreate<T extends Object?> = CalendarEvent<T>? Function(CalendarEvent<T> event);
+
+/// The call back for creating a new event with details.
+///
+/// [event] is the event that will be created.
+/// [detail] contains the details of the tap that created the event.
+typedef OnEventCreateWithDetail<T extends Object?> = CalendarEvent<T>? Function(
+  CalendarEvent<T> event,
+  TapDetail detail,
+);
 
 /// The callback for a new event has been created.
 ///

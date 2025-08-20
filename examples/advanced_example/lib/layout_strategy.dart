@@ -55,13 +55,11 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
     // Calculate the space available for each person.
     final space = Size(size.width / people.length, size.height);
 
-    debugPrint('Number of people: ${people.length}');
     for (final (i, person) in people.indexed) {
-      debugPrint('Performing layout for $person');
       final group = horizontalGroups[person] ?? [];
       final position = Offset(i * space.width, 0);
-      final groupRect = Rect.fromLTWH(position.dx, position.dy, space.width, space.height);
-      performGroupLayout(group, groupRect);
+      final rectForGroup = Rect.fromLTWH(position.dx, position.dy, space.width, space.height);
+      performGroupLayout(group, rectForGroup);
     }
   }
 
@@ -77,7 +75,7 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         );
 
       final numberOfEvents = verticalLayoutData.length;
-      final longest = _findLongestChain(verticalLayoutData);
+      final longest = findLongestChain(verticalLayoutData);
       final childWidth = rect.width / longest;
 
       final tiles = <int, Offset>{};
@@ -97,9 +95,9 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         if (lastOverlapLeft != null) {
           tileXOffset = tiles[lastOverlapLeft.id]!.dx + tileWidths[lastOverlapLeft.id]!;
         } else {
-          tileXOffset = childWidth * overlapsLeft.length;
+          // Use the left edge of the rectangle as a base if there are no overlaps to the left.
+          tileXOffset = rect.left + (childWidth * overlapsLeft.length);
         }
-        tileXOffset += rect.left;
 
         // Find the overlaps to the right of the tile.
         final tilesToRight = verticalLayoutData.getRange(i + 1, numberOfEvents);
@@ -108,7 +106,8 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         // Calculate the width of the tile.
         var tileWidth = childWidth;
         if (overlapsRight.isEmpty) {
-          tileWidth = rect.width - tileXOffset;
+          // If there are no overlaps to the right, use the remaining width of the rectangle.
+          tileWidth = rect.width - (tileXOffset - rect.left);
         }
 
         // Layout the tile.
@@ -122,41 +121,5 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
         positionChild(tile.key, tile.value);
       }
     }
-  }
-
-  /// Finds the longest chain of overlapping events.
-  int _findLongestChain(Iterable<VerticalLayoutData> verticalLayoutData) {
-    var longest = <VerticalLayoutData>[];
-    final currentChain = <VerticalLayoutData>[verticalLayoutData.first];
-
-    void depthFirstSearch(VerticalLayoutData current, List<VerticalLayoutData> chain) {
-      chain.add(current);
-
-      var extended = false;
-      for (var data in verticalLayoutData) {
-        if (!chain.contains(data) && current.overlaps(data)) {
-          extended = true;
-          depthFirstSearch(data, chain);
-        }
-      }
-      if (!extended && chain.length > longest.length) {
-        longest = chain;
-      }
-    }
-
-    for (var data in verticalLayoutData) {
-      depthFirstSearch(data, []);
-    }
-
-    // Final comparison after loop
-    if (currentChain.length > longest.length) longest = currentChain;
-
-    var length = longest.length;
-    for (var i = 0; i < longest.length; i++) {
-      final current = longest[i];
-      final next = longest.elementAtOrNull(i + 1);
-      if (next != null && !current.overlaps(next)) length--;
-    }
-    return length;
   }
 }

@@ -37,7 +37,7 @@ abstract class BaseEventTile extends StatelessWidget {
   const BaseEventTile({super.key, required this.event, required this.tileRange});
 
   static const defaultColor = Colors.blueGrey;
-  Color get color => event.data?.color ?? defaultColor;
+  Color get color => event.data?.person.color ?? defaultColor;
   Color textColor(Color color) => color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
   bool get continuesAfter => event.dateTimeRange.end.isAfter(tileRange.end);
@@ -148,7 +148,7 @@ class FeedbackTile extends StatelessWidget {
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(
-        color: (event.data?.color ?? BaseEventTile.defaultColor).withAlpha(150),
+        color: (event.data?.person.color ?? BaseEventTile.defaultColor).withAlpha(150),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );
@@ -166,7 +166,7 @@ class DropTargetTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: (event.data?.color ?? BaseEventTile.defaultColor), width: 2),
+        border: Border.all(color: (event.data?.person.color ?? BaseEventTile.defaultColor), width: 2),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );
@@ -184,7 +184,7 @@ class TileWhenDragging extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: (event.data?.color ?? BaseEventTile.defaultColor).withAlpha(20),
+        color: (event.data?.person.color ?? BaseEventTile.defaultColor).withAlpha(20),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );

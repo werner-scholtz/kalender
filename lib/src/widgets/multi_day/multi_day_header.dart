@@ -120,9 +120,12 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
             return Stack(
               children: [
-                Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
-                ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                Positioned.fill(child: multiDayDragTarget),
+                if (configuration.showTiles) ...[
+                  Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                  ConstrainedBox(constraints: constraints, child: multiDayEvents),
+                  Positioned.fill(child: multiDayDragTarget),
+                ] else
+                  ConstrainedBox(constraints: constraints, child: const SizedBox.shrink()),
               ],
             );
           },

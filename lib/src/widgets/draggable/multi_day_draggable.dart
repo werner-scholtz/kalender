@@ -38,7 +38,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
                     child: context.interaction.allowEventCreation
                         ? switch (context.interaction.createEventGesture) {
                             CreateEventGesture.tap => Draggable(
-                                onDragStarted: () => createNewEvent(date, position),
+                                onDragStarted: () => createNewEvent(context, date, position),
                                 onDraggableCanceled: onDragFinished,
                                 onDragEnd: onDragFinished,
                                 dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -47,7 +47,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
                                 child: Container(color: Colors.transparent),
                               ),
                             CreateEventGesture.longPress => LongPressDraggable(
-                                onDragStarted: () => createNewEvent(date, position),
+                                onDragStarted: () => createNewEvent(context, date, position),
                                 onDraggableCanceled: onDragFinished,
                                 onDragEnd: onDragFinished,
                                 dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -89,14 +89,19 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
     );
   }
 
-  /// Calculate the initial dateTimeRange of a new event.
-  ///
-  /// [date] is the date the draggable is located at.
-  /// [localPosition] is the last known position of the cursor.
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
     return DateTimeRange(start: start, end: end);
+  }
+
+  @override
+  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition) {
+    return MultiDayDetail(
+      dateTimeRange: range,
+      renderBox: context.findRenderObject() as RenderBox,
+      localOffset: localPosition,
+    );
   }
 }
