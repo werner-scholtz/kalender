@@ -5,7 +5,7 @@ library;
 export 'package:kalender/src/calendar_body.dart';
 export 'package:kalender/src/calendar_header.dart';
 
-/// Widgets - Views
+/// Widgets
 export 'package:kalender/src/calendar_view.dart';
 
 /// Enumerations
@@ -60,3 +60,6 @@ export 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 export 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 export 'package:kalender/src/widgets/schedule/schedule_body.dart';
 export 'package:kalender/src/widgets/schedule/schedule_header.dart';
+
+/// Utils
+export 'package:kalender/src/models/mixins/event_tile_utils.dart';
