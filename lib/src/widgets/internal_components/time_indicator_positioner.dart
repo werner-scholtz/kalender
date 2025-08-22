@@ -80,12 +80,23 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
   /// This position is calculated based on the page offset and page width,
   /// determining where the time indicator should be positioned horizontally
   /// to align with the current day column.
-  double left(double pageWidth, double dayWidth) => (pageOffset * pageWidth) + (todayIndex * dayWidth);
+  ///
+  /// This will adjust the calculated left position for RTL layouts.
+  double left(double pageWidth, double dayWidth) {
+    var left = (pageOffset * pageWidth) + (todayIndex * dayWidth);
+
+    if (Directionality.of(context) == TextDirection.rtl) {
+      // In RTL mode, we need to adjust the left position to account for the reversed layout.
+      left = pageWidth - (left + dayWidth);
+    }
+
+    return left;
+  }
 
   @override
   void initState() {
-    _setup();
     super.initState();
+    _setup();
   }
 
   @override
@@ -114,15 +125,14 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
   /// This ensures the time indicator position is updated in real-time
   /// as the user scrolls through different pages.
   void _listener() {
+    pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
+
     // If the time indicator is off-screen, we can skip the rebuild to improve performance.
     // We still need to rebuild if the time indicator is within the visibility threshold
     // to ensure it appears/disappears correctly when scrolling into and out of view.
     if (pageOffset < -_visibilityThreshold || pageOffset > _visibilityThreshold) return;
 
-    setState(() {
-      // Update the page offset.
-      pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
-    });
+    setState(() {});
   }
 
   /// Updates the today page number based on the current date.
@@ -172,12 +182,15 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;
         final dayWidth = pageWidth / widget.viewController.viewConfiguration.numberOfDays;
+
         final left = this.left(pageWidth, dayWidth);
+        final right = pageWidth - left - dayWidth;
+
         return Stack(
           children: [
             Positioned.fill(
               left: left,
-              right: pageWidth - (left + dayWidth),
+              right: right,
               top: 0,
               bottom: 0,
               // Hide the time indicator when it's completely off-screen (more than 1 page away)
