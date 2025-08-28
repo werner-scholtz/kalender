@@ -58,7 +58,6 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   // Check cache first if provided
   if (cache != null) {
     final cachedFrame = cache.getCache(visibleDateTimeRange);
-    print(cachedFrame == null ? 'No Cache' : 'Cache found');
     if (cachedFrame != null) return cachedFrame;
   }
 
