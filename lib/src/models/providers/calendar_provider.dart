@@ -154,13 +154,13 @@ class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
   }
 }
 
-/// The [HeightPerMinuteProvider] provides the height per minute to the widget tree.
-class HeightPerMinuteProvider extends InheritedNotifier<ValueNotifier<double>> {
-  const HeightPerMinuteProvider({super.key, required super.notifier, required super.child});
+/// The [HeightPerMinute] provides the height per minute to the widget tree.
+class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
+  const HeightPerMinute({super.key, required super.notifier, required super.child});
 
-  /// Gets the [HeightPerMinuteProvider] of type [T] from the context.
+  /// Gets the [HeightPerMinute] of type [T] from the context.
   static double of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<HeightPerMinuteProvider>();
+    final result = context.dependOnInheritedWidgetOfExactType<HeightPerMinute>();
     assert(result != null, 'No HeightPerMinuteProvider found.');
     return result!.notifier!.value;
   }
@@ -202,5 +202,5 @@ extension ProviderContext on BuildContext {
   ValueNotifier<CalendarSnapping> get snappingNotifier => Snapping.valueNotifier(this);
 
   /// Retrieve the height per minute.
-  double get heightPerMinute => HeightPerMinuteProvider.of(this);
+  double get heightPerMinute => HeightPerMinute.of(this);
 }

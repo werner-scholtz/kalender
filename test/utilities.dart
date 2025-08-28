@@ -124,7 +124,7 @@ class TestProvider<T> extends StatelessWidget {
             notifier: interaction ?? ValueNotifier(CalendarInteraction()),
             child: Snapping(
               notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
-              child: HeightPerMinuteProvider(
+              child: HeightPerMinute(
                 notifier: heightPerMinute ?? ValueNotifier(0.7),
                 child: Callbacks<T>(
                   callbacks: callbacks ?? CalendarCallbacks<T>(),

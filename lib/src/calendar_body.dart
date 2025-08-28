@@ -80,7 +80,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
         child: switch (viewController) {
           MultiDayViewController<T>() => TileComponentProvider<T>(
               tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
-              child: HeightPerMinuteProvider(
+              child: HeightPerMinute(
                 notifier: viewController.heightPerMinute,
                 child: Snapping(
                   notifier: snapping,
