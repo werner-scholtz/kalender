@@ -19,6 +19,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  MultiDayLayoutFrameCache<T>? cache,
 });
 
 /// The default implementation of [GenerateMultiDayLayoutFrame].
@@ -51,8 +52,16 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  MultiDayLayoutFrameCache<T>? cache,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
+  // Check cache first if provided
+  if (cache != null) {
+    final cachedFrame = cache.getCache(visibleDateTimeRange);
+    print(cachedFrame == null ? 'No Cache' : 'Cache found');
+    if (cachedFrame != null) return cachedFrame;
+  }
+
   // A list of dates that are visible in the current date range.
   final dates = visibleDateTimeRange.dates();
   // Take the text direction into account to determine the order of the dates.
@@ -177,13 +186,51 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
     rowInfo.update(rowToUse, (value) => [...value, layout], ifAbsent: () => [layout]);
   }
 
-  return MultiDayLayoutFrame(
+  final frame = MultiDayLayoutFrame(
     dateTimeRange: visibleDateTimeRange,
     layoutInfo: layoutInfo,
-    events: events,
+    events: sortedEvents,
     totalNumberOfRows: maxRow + 1,
     columnRowMap: columnRowMap,
   );
+
+  // Store in cache if provided
+  if (cache != null) {
+    cache.setCache(visibleDateTimeRange, frame);
+  }
+
+  return frame;
+}
+
+/// A cache for [MultiDayLayoutFrame]s.
+///
+/// This is used to cache layout frames that are recalculated often.
+class MultiDayLayoutFrameCache<T extends Object?> {
+  final Map<String, MultiDayLayoutFrame<T>> _cache = {};
+
+  /// Generates a cache key based on the parameters.
+  String _generateCacheKey(DateTimeRange visibleDateTimeRange) {
+    return visibleDateTimeRange.toString();
+  }
+
+  /// Gets the cached layout frame if it exists.
+  MultiDayLayoutFrame<T>? getCache(DateTimeRange visibleDateTimeRange) {
+    final key = _generateCacheKey(visibleDateTimeRange);
+    return _cache[key];
+  }
+
+  void setCache(DateTimeRange visibleDateTimeRange, MultiDayLayoutFrame<T> frame) {
+    final key = _generateCacheKey(visibleDateTimeRange);
+    _cache[key] = frame;
+  }
+
+  void removeCache(DateTimeRange visibleDateTimeRange) {
+    final key = _generateCacheKey(visibleDateTimeRange);
+    _cache.remove(key);
+  }
+
+  /// Clears all cached data.
+  void clearAll() => _cache.clear();
 }
 
 /// Frame containing all the data to layout the [CalendarEvent]s with [MultiDayLayout].

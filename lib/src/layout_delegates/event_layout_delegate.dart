@@ -88,13 +88,7 @@ class EventLayoutDelegateCache {
     _dateCache[key] = cache;
   }
 
-  void invalidateCache(DateTime date) {
-    _dateCache.removeWhere((key, _) => key.startsWith('${date.millisecondsSinceEpoch}'));
-  }
-
-  void clearAll() {
-    _dateCache.clear();
-  }
+  void clearAll() => _dateCache.clear();
 }
 
 /// The base [MultiChildLayoutDelegate] class for laying out [CalendarEvent]s.

@@ -120,6 +120,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     overlayBuilders: components.overlayBuilders ?? calendarComponents?.overlayBuilders,
                                     overlayStyles: styles?.overlayStyles ?? calendarComponents?.overlayStyles,
                                     eventPadding: bodyConfiguration.eventPadding,
+                                    multiDayCache: viewController.multiDayCache,
                                   );
                                 },
                               ),
