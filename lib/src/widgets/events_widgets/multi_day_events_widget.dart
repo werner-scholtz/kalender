@@ -25,6 +25,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
   final double tileHeight;
   final bool showAllEvents;
   final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
+  final MultiDayLayoutFrameCache<T> multiDayCache;
   final EdgeInsets? eventPadding;
   final OverlayBuilders<T>? overlayBuilders;
   final OverlayStyles? overlayStyles;
@@ -39,6 +40,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     required this.generateMultiDayLayoutFrame,
     required this.overlayBuilders,
     required this.overlayStyles,
+    required this.multiDayCache,
   });
 
   @override
@@ -72,6 +74,7 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
           tileHeight: tileHeight,
           maxNumberOfVerticalEvents: maxNumberOfRows,
           generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
+          multiDayCache: multiDayCache,
           textDirection: Directionality.of(context),
           multiDayOverlayBuilders: overlayBuilders,
           multiDayOverlayStyles: overlayStyles,
@@ -109,6 +112,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The function that generates the layout frame for the events.
   final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
 
+  /// The cache used for the multi-day event layout.
+  final MultiDayLayoutFrameCache<T> multiDayCache;
+
   /// The directionality of the widget.
   final TextDirection textDirection;
   const MultiDayEventLayoutWidget({
@@ -123,6 +129,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.textDirection,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
+    required this.multiDayCache,
     super.key,
   });
 
@@ -152,28 +159,38 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       visibleDateTimeRange: _dateTimeRange,
       events: widget.events,
       textDirection: widget.textDirection,
+      cache: widget.multiDayCache,
     );
   }
 
   @override
   void didUpdateWidget(covariant MultiDayEventLayoutWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final didUpdate = !oldWidget.events.equals(widget.events) ||
-        oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
+
+    final shouldUpdateCache = !oldWidget.events.equals(widget.events) ||
         oldWidget.generateMultiDayLayoutFrame != widget.generateMultiDayLayoutFrame ||
-        oldWidget.textDirection != widget.textDirection ||
+        oldWidget.textDirection != widget.textDirection;
+
+    final didUpdate = shouldUpdateCache ||
+        oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
         oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
-        oldWidget.showAllEvents != widget.showAllEvents;
+        oldWidget.showAllEvents != widget.showAllEvents ||
+        oldWidget.multiDayCache != widget.multiDayCache;
 
     if (didUpdate) {
       _dateTimeRange = widget.visibleDateTimeRange;
+
+      if (shouldUpdateCache) {
+        widget.multiDayCache.removeCache(_dateTimeRange);
+      }
 
       setState(() {
         _frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: _dateTimeRange,
           events: widget.events,
           textDirection: widget.textDirection,
+          cache: widget.multiDayCache,
         );
       });
     }

@@ -105,6 +105,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               eventPadding: configuration.eventPadding,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              multiDayCache: viewController.multiDayCache,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -192,6 +193,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               eventPadding: configuration.eventPadding,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              multiDayCache: viewController.multiDayCache,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -284,6 +286,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               eventPadding: configuration.eventPadding,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              multiDayCache: viewController.multiDayCache,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(

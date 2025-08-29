@@ -79,6 +79,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// TODO: this can be passed between ViewControllers, but for now it is created here.
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
 
+  /// The cache used for the multi-day event layout.
+  final MultiDayLayoutFrameCache<T> multiDayCache = MultiDayLayoutFrameCache<T>();
+
   void pageListener() {
     if (!headerController.hasClients) return;
     headerController.position.correctPixels(pageController.offset);
