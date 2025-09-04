@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The month grid builder.
 ///
@@ -30,6 +31,13 @@ class MonthGrid extends StatelessWidget {
   const MonthGrid({super.key, this.style, required this.numberOfRows});
   static MonthGrid builder(MonthGridStyle? style, int numberOfRows) {
     return MonthGrid(style: style, numberOfRows: numberOfRows);
+  }
+
+  static Widget fromContext<T extends Object?>(BuildContext context, int numberOfRows) {
+    final components = context.provider<T>().components;
+    final component = components?.monthComponents?.bodyComponents?.monthGridBuilder ?? MonthGrid.builder;
+    final style = components?.monthComponentStyles?.bodyStyles?.monthGridStyle;
+    return component.call(style, numberOfRows);
   }
 
   @override

@@ -43,6 +43,27 @@ class MonthBodyComponents<T extends Object?> {
     this.rightTriggerBuilder,
     this.overlayBuilders,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthBodyComponents<T> &&
+        other.monthGridBuilder == monthGridBuilder &&
+        other.monthDayHeaderBuilder == monthDayHeaderBuilder &&
+        other.leftTriggerBuilder == leftTriggerBuilder &&
+        other.rightTriggerBuilder == rightTriggerBuilder &&
+        other.overlayBuilders == overlayBuilders;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        monthGridBuilder,
+        monthDayHeaderBuilder,
+        leftTriggerBuilder,
+        rightTriggerBuilder,
+        overlayBuilders,
+      );
 }
 
 /// The component builders used by the [MonthHeader].

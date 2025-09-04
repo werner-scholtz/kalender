@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 /// The month day header builder.
 typedef MonthDayHeaderBuilder = Widget Function(
@@ -11,19 +12,27 @@ typedef MonthDayHeaderBuilder = Widget Function(
 class MonthDayHeaderStyle {
   /// Creates a new [MonthDayHeaderStyle].
   const MonthDayHeaderStyle({
-    this.textStyle,
     this.stringBuilder,
     this.numberTextStyle,
+    this.textPadding,
+    this.decoration,
+    this.todayDecoration,
   });
-
-  /// The [TextStyle] used by the [MonthDayHeader] widget to display the name of the day.
-  final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [MonthDayHeader].
   final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
+
+  /// The padding of the text inside the [MonthDayHeader].
+  final EdgeInsets? textPadding;
+
+  /// The decoration of the [MonthDayHeader].
+  final BoxDecoration? decoration;
+
+  /// The decoration of the [MonthDayHeader] when the date is today.
+  final BoxDecoration? todayDecoration;
 }
 
 /// A widget that displays the day number.
@@ -36,26 +45,31 @@ class MonthDayHeader extends StatelessWidget {
     return MonthDayHeader(date: date, style: style);
   }
 
+  static Widget fromContext<T extends Object?>(BuildContext context, DateTime date) {
+    final components = context.provider<T>().components;
+    final dayHeader = components?.monthComponents?.bodyComponents?.monthDayHeaderBuilder ?? MonthDayHeader.builder;
+    final style = components?.monthComponentStyles?.bodyStyles?.monthDayHeaderStyle;
+    return dayHeader(date, style);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final button = date.isToday
-        ? IconButton.filled(
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style?.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          )
-        : IconButton(
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style?.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          );
+    final text = date.day.toString();
 
-    return button;
+    final decoration = style?.decoration ??
+        BoxDecoration(
+          color: date.isToday
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.surfaceContainerLow,
+          shape: BoxShape.circle,
+        );
+
+    return DecoratedBox(
+      decoration: decoration,
+      child: Padding(
+        padding: style?.textPadding ?? const EdgeInsets.all(8.0),
+        child: Text(style: style?.numberTextStyle, textAlign: TextAlign.center, text),
+      ),
+    );
   }
 }

@@ -8,7 +8,6 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 /// This widget is used to display a month body.
 ///
 /// The month body's content:
-///   - Static content [MonthGrid].
 ///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayDraggable].
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
@@ -19,7 +18,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.provider<T>();
     final calendarController = context.calendarController<T>();
 
     assert(
@@ -35,122 +33,101 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final bodyConfiguration = configuration ?? MultiDayHeaderConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
-    final tileHeight = bodyConfiguration.tileHeight;
-
-    final calendarComponents = provider.components;
-    final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components = calendarComponents?.monthComponents?.bodyComponents ?? MonthBodyComponents<T>();
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final pageWidth = constraints.maxWidth;
-        final pageHeight = constraints.maxHeight;
-
-        // Calculate the width of a single day.
-        final dayWidth = pageWidth / DateTime.daysPerWeek;
-
-        return PageView.builder(
-          controller: viewController.pageController,
-          itemCount: pageNavigation.numberOfPages,
-          onPageChanged: (index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            viewController.visibleDateTimeRange.value = visibleRange;
-            context.callbacks<T>()?.onPageChanged?.call(visibleRange);
-          },
-          itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
-            final weekHeight = pageHeight / numberOfRows;
-
-            final multiDayEvents = List.generate(
-              numberOfRows,
-              (index) {
-                final visibleDateTimeRange = DateTimeRange(
-                  start: visibleRange.start.addDays(index * 7),
-                  end: visibleRange.start.addDays((index * 7) + 7),
-                );
-
-                final multiDayDragTarget = MultiDayDragTarget<T>(
-                  pageTriggerSetup: pageTriggerConfiguration,
-                  visibleDateTimeRange: visibleDateTimeRange,
-                  dayWidth: dayWidth,
-                  pageWidth: pageWidth,
-                  tileHeight: tileHeight,
-                  allowSingleDayEvents: true,
-                  leftPageTrigger: components.leftTriggerBuilder,
-                  rightPageTrigger: components.rightTriggerBuilder,
-                );
-
-                final draggable = MultiDayDraggable<T>(
-                  visibleDateTimeRange: visibleDateTimeRange,
-                );
-
-                final dates = List.generate(7, (index) {
-                  final date = visibleDateTimeRange.start.addDays(index);
-                  final monthDayHeaderStyle = styles?.monthDayHeaderStyle;
-                  final monthDayHeder = components.monthDayHeaderBuilder.call(date, monthDayHeaderStyle);
-                  return monthDayHeder;
-                });
-
-                return Expanded(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Positioned.fill(child: draggable),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: weekHeight,
-                        child: Column(
-                          children: [
-                            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: dates),
-                            Expanded(
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  // Subtract 1 to account for the extra widget at the bottom.
-                                  final maxNumberOfVerticalEvents = (constraints.maxHeight / tileHeight).floor() - 1;
-                                  return MultiDayEventWidget<T>(
-                                    visibleDateTimeRange: visibleDateTimeRange,
-                                    tileHeight: bodyConfiguration.tileHeight,
-                                    maxNumberOfRows: maxNumberOfVerticalEvents,
-                                    showAllEvents: true,
-                                    generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
-                                    overlayBuilders: components.overlayBuilders ?? calendarComponents?.overlayBuilders,
-                                    overlayStyles: styles?.overlayStyles ?? calendarComponents?.overlayStyles,
-                                    eventPadding: bodyConfiguration.eventPadding,
-                                    multiDayCache: viewController.multiDayCache,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+    return PageView.builder(
+      controller: viewController.pageController,
+      itemCount: pageNavigation.numberOfPages,
+      allowImplicitScrolling: true,
+      onPageChanged: (index) {
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        viewController.visibleDateTimeRange.value = visibleRange;
+        context.callbacks<T>()?.onPageChanged?.call(visibleRange);
+      },
+      itemBuilder: (context, index) {
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
+        return Stack(
+          children: [
+            Positioned.fill(child: MonthGrid.fromContext<T>(context, numberOfRows)),
+            Positioned.fill(
+              child: Column(
+                children: List.generate(
+                  numberOfRows,
+                  (index) {
+                    final start = visibleRange.start.addDays(index * 7);
+                    final visibleDateTimeRange = DateTimeRange(start: start, end: start.addDays(7));
+                    return Expanded(
+                      child: MonthWeek<T>(
+                        visibleDateTimeRange: visibleDateTimeRange,
+                        bodyConfiguration: bodyConfiguration,
                       ),
-                      Positioned.fill(child: multiDayDragTarget),
-                    ],
-                  ),
-                );
-              },
-            );
-
-            final monthGridStyle = styles?.monthGridStyle;
-            final monthGrid = components.monthGridBuilder.call(monthGridStyle, numberOfRows);
-
-            return SizedBox(
-              width: pageWidth,
-              height: pageHeight,
-              child: Stack(
-                children: [
-                  Positioned.fill(child: monthGrid),
-                  Positioned.fill(child: Column(children: multiDayEvents)),
-                ],
+                    );
+                  },
+                ),
               ),
-            );
-          },
+            ),
+          ],
         );
       },
+    );
+  }
+}
+
+class MonthWeek<T> extends StatelessWidget {
+  final DateTimeRange visibleDateTimeRange;
+  final MultiDayHeaderConfiguration<T> bodyConfiguration;
+  const MonthWeek({
+    super.key,
+    required this.visibleDateTimeRange,
+    required this.bodyConfiguration,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final components = context.components<T>();
+    final eventController = context.eventsController<T>();
+    return Stack(
+      children: [
+        Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleDateTimeRange)),
+        Positioned.fill(
+          child: Column(
+            children: [
+              WeekDayHeaders<T>(dates: visibleDateTimeRange.dates()),
+              MultiDayEventWidget(
+                eventsController: eventController,
+                visibleDateTimeRange: visibleDateTimeRange,
+                configuration: bodyConfiguration,
+                maxNumberOfRows: 1,
+                overlayBuilders:
+                    components?.monthComponents?.bodyComponents?.overlayBuilders ?? components?.overlayBuilders,
+                overlayStyles: components?.monthComponentStyles?.bodyStyles?.overlayStyles ?? components?.overlayStyles,
+              ),
+            ],
+          ),
+        ),
+        Positioned.fill(
+          child: MultiDayDragTarget<T>(
+            pageTriggerSetup: bodyConfiguration.pageTriggerConfiguration,
+            visibleDateTimeRange: visibleDateTimeRange,
+            tileHeight: bodyConfiguration.tileHeight,
+            allowSingleDayEvents: true,
+            leftPageTrigger: components?.monthComponents?.bodyComponents?.leftTriggerBuilder,
+            rightPageTrigger: components?.monthComponents?.bodyComponents?.rightTriggerBuilder,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class WeekDayHeaders<T> extends StatelessWidget {
+  final List<DateTime> dates;
+  const WeekDayHeaders({super.key, required this.dates});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: dates.map((date) => MonthDayHeader.fromContext<T>(context, date)).toList(),
     );
   }
 }
