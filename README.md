@@ -1,8 +1,12 @@
+<div style="padding:8px; display:inline-block; text-align:center;">
+  <img src="readme_assets/banner.png" width="80%" style="border-radius:6px; margin-top:8px;, margin-bottom:8px;" />
+</div>
+
+
+# Kalender
 This Flutter package offers a Calendar Widget featuring a Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar.
 
-## Web Demo
-
-Try it out [here](https://werner-scholtz.github.io/kalender/)
+Check the demo [here](https://werner-scholtz.github.io/kalender/)
 
 ## Features
 
@@ -18,14 +22,7 @@ Try it out [here](https://werner-scholtz.github.io/kalender/)
 ## Roadmap
 
 ### Features
-
-* **Directionality:** Right to Left directionality for default widgets.
 * **Views:** FreeScroll calender view.
-
-### Examples
-
-* **Event layout:** Examples of how to leverage this to achieve specific layouts.
-* **Repeating Events:** Repeating events that only have to be added once.
 
 ## Preview
 
