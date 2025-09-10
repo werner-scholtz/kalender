@@ -1,4 +1,4 @@
-## 0.xx.x
+## 0.13.0
 - feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
 - feat: Improved DayHeader and DayHeaderStyle. [PR #218](https://github.com/werner-scholtz/kalender/pull/218)
 - feat: Improved CalendarCallbacks. [#133](https://github.com/werner-scholtz/kalender/issues/133) / [#30](https://github.com/werner-scholtz/kalender/issues/30)
