@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/banner.png?raw=true" width="90%" style="border-radius:6px; margin-top:8px; margin-bottom:8px;" />
+  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/banner.png?raw=true" width="100%" style="border-radius:6px; margin-top:8px; margin-bottom:8px;" />
 </p>
 
 # Kalender
