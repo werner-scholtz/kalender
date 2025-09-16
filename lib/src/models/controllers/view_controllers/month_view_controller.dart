@@ -34,9 +34,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
-  /// The cache used for the multi-day event layout.
-  final MultiDayLayoutFrameCache<T> multiDayCache = MultiDayLayoutFrameCache<T>();
-
   @override
   Future<void> animateToDate(
     DateTime date, {
