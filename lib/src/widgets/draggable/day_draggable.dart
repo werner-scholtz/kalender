@@ -48,11 +48,15 @@ class DayEventDraggableWidgets<T extends Object?>
                     onDragEnd: onDragFinished,
                     data: Create(controllerId: controller.id),
                     feedback: Container(
-                        color: Colors.transparent, width: 1, height: 1),
+                      color: Colors.transparent,
+                      width: 1,
+                      height: 1,
+                    ),
                     child: Container(
-                        color: Colors.transparent,
-                        width: dayWidth,
-                        height: pageHeight),
+                      color: Colors.transparent,
+                      width: dayWidth,
+                      height: pageHeight,
+                    ),
                   ),
                 CreateEventGesture.longPress => LongPressDraggable(
                     delay: const Duration(milliseconds: 200),
@@ -62,11 +66,39 @@ class DayEventDraggableWidgets<T extends Object?>
                     onDragEnd: onDragFinished,
                     data: Create(controllerId: controller.id),
                     feedback: Container(
-                        color: Colors.transparent, width: 1, height: 1),
-                    child: Container(
+                      color: Colors.transparent,
+                      width: 1,
+                      height: 1,
+                    ),
+
+                    /// The child is wrapped with a [GestureDetector] to handle single taps
+                    /// for event creation. This works in conjunction with [LongPressDraggable]
+                    /// The GestureDetector is added to Flutter's gesture arena, which disambiguates between a tap and a long press.
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+
+                      /// This callback is triggered when a user lifts their finger after a brief tap.
+                      /// It creates a new event at the tapped location.
+                      onTapUp: (_) {
+                        final newDateTimeRange =
+                            calculateDateTimeRange(date, localPosition);
+
+                        final newEvent = CalendarEvent<T>(
+                          dateTimeRange: newDateTimeRange,
+                        );
+
+                        final finalEvent =
+                            callbacks?.onEventCreate?.call(newEvent) ??
+                                newEvent;
+
+                        callbacks?.onEventCreated?.call(finalEvent);
+                      },
+                      child: Container(
                         color: Colors.transparent,
                         width: dayWidth,
-                        height: pageHeight),
+                        height: pageHeight,
+                      ),
+                    ),
                   ),
               },
         ],
