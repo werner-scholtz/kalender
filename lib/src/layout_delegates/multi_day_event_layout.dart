@@ -209,7 +209,7 @@ class MultiDayLayoutFrameCache<T extends Object?> {
 
   /// Generates a cache key based on the parameters.
   String _generateCacheKey(DateTimeRange visibleDateTimeRange) {
-    return visibleDateTimeRange.toString();
+    return '${visibleDateTimeRange.start.toIso8601String()}_${visibleDateTimeRange.end.toIso8601String()}';
   }
 
   /// Gets the cached layout frame if it exists.
