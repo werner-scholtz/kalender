@@ -1,3 +1,6 @@
+## 0.13.1
+- fix: MultiDayLayoutFrameCache using `toString()` to generate map key. [#225](https://github.com/werner-scholtz/kalender/issues/225)
+
 ## 0.13.0
 - feat: Improved TimeLine and HourLines widgets. [#216](https://github.com/werner-scholtz/kalender/issues/30?issue=werner-scholtz%7Ckalender%7C216)
 - feat: Improved DayHeader and DayHeaderStyle. [PR #218](https://github.com/werner-scholtz/kalender/pull/218)
