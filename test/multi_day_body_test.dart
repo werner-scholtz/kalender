@@ -96,12 +96,12 @@ void main() {
           // Find the resize handles.
           final topResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.topResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandles.startResizeDraggableKey(eventId, Axis.vertical)),
           );
           expect(topResizeHandle, findsOneWidget, reason: 'Top resize handle should be rendered');
           final bottomResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.bottomResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId, Axis.vertical)),
           );
           expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should be rendered');
 

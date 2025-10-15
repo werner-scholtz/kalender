@@ -70,6 +70,11 @@ class CalendarEvent<T extends Object?> {
   /// The [DateTime]s that the [CalendarEvent] spans. This uses utc time.
   List<DateTime> get datesSpanned => dateTimeRangeAsUtc.dates();
 
+  /// Calculate the height of the event tile based on the duration and height per minute.I
+  static double calculateHeight(Duration duration, double heightPerMinute) {
+    return (duration.inSeconds / 60) * heightPerMinute;
+  }
+
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
     DateTimeRange? dateTimeRange,

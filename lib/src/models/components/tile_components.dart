@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart'
-    show CalendarEvent, ResizeHandlePositionerWidget, MultiDayBody, MonthBody, ScheduleBody;
+    show CalendarEvent, ResizeHandlePositionerWidget, MultiDayBody, MonthBody, ScheduleBody, ResizeHandles;
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/widgets/components/default_tile_components.dart';
 
 /// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
@@ -34,17 +35,22 @@ class TileComponents<T extends Object?> {
   /// The dragAnchorStrategy used by the [feedbackTileBuilder].
   final DragAnchorStrategy? dragAnchorStrategy;
 
-  /// The widget that positions the resize handles vertically.
-  final ResizeHandlePositioner? verticalHandlePositioner;
+  /// The builder for the resize handles.
+  final ResizeHandleBuilder? resizeHandleBuilder;
 
   /// The vertical resize handle.
   final Widget? verticalResizeHandle;
 
-  /// The widget that positions the resize handles horizontally.
-  final ResizeHandlePositioner? horizontalHandlePositioner;
-
   /// The horizontal resize handle.
   final Widget? horizontalResizeHandle;
+
+  /// The widget that positions the resize handles vertically.
+  @Deprecated('This will be removed in a future release. Use resizeHandleBuilder instead.')
+  final ResizeHandlePositioner? verticalHandlePositioner;
+
+  /// The widget that positions the resize handles horizontally.
+  @Deprecated('This will be removed in a future release. Use resizeHandleBuilder instead.')
+  final ResizeHandlePositioner? horizontalHandlePositioner;
 
   const TileComponents({
     required this.tileBuilder,
@@ -53,6 +59,7 @@ class TileComponents<T extends Object?> {
     this.feedbackTileBuilder,
     this.overlayTileBuilder,
     this.dragAnchorStrategy,
+    this.resizeHandleBuilder,
     this.verticalHandlePositioner,
     this.verticalResizeHandle,
     this.horizontalHandlePositioner,
@@ -149,6 +156,16 @@ typedef ResizeHandlePositioner = ResizeHandlePositionerWidget Function(
   Widget endResizeHandle,
   bool showStart,
   bool showEnd,
+);
+
+/// The widget that creates and positions the resize handles.
+typedef ResizeHandleBuilder<T extends Object?> = ResizeHandles Function(
+  CalendarEvent<T> event,
+  CalendarInteraction interaction,
+  TileComponents<T> tileComponents,
+  DateTimeRange dateTimeRange,
+  Axis axis,
+  double verticalLength,
 );
 
 /// The builder for the empty item.

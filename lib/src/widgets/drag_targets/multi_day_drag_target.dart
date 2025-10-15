@@ -13,8 +13,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
   final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
-  final double dayWidth;
-  final double pageWidth;
+
   final double tileHeight;
   final bool allowSingleDayEvents;
 
@@ -25,8 +24,6 @@ class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
     super.key,
     required this.pageTriggerSetup,
     required this.visibleDateTimeRange,
-    required this.dayWidth,
-    required this.pageWidth,
     required this.tileHeight,
     required this.allowSingleDayEvents,
     required this.leftPageTrigger,
@@ -42,8 +39,7 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   EventsController<T> get eventsController => context.eventsController<T>();
   @override
   CalendarController<T> get controller => context.calendarController<T>();
-  @override
-  double get dayWidth => widget.dayWidth;
+
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
   @override
@@ -56,8 +52,21 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.pageTriggerSetup;
 
-  double get pageWidth => widget.pageWidth;
+  // TODO: check that this updates when resizing the app.
+  @override
+  late double dayWidth;
+  late double pageWidth;
+
   double get tileHeight => widget.tileHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pageWidth = context.size?.width ?? 0;
+      dayWidth = pageWidth / visibleDates.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

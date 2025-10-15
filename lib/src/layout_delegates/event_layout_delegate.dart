@@ -142,7 +142,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
     final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
-    final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    final height = CalendarEvent.calculateHeight(durationOnDate, heightPerMinute);
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
     }
