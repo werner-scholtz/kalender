@@ -143,6 +143,21 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     return DragTarget(
       hitTestBehavior: HitTestBehavior.translucent,
       onWillAcceptWithDetails: (details) {
+        final correctType = DragTargetUtilities.handleDragDetails<bool, T>(
+          details,
+          onCreate: (controllerId) => true,
+          onResize: (event, direction) => true,
+          onReschedule: (event) => true,
+          onOther: () => false,
+        );
+
+        if (!correctType) {
+          debugPrint(
+            'VerticalDragTarget: cannot use details: $details because of unknown data type',
+          );
+          return false;
+        }
+
         // First test if the details can be accepted at all.
         final accepted = callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
             VerticalDragTarget.onWillAcceptWithDetails<T>(details, controller, bodyConfiguration);

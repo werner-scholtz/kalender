@@ -85,6 +85,21 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   Widget build(BuildContext context) {
     return DragTarget(
       onWillAcceptWithDetails: (details) {
+        final correctType = DragTargetUtilities.handleDragDetails<bool, T>(
+          details,
+          onCreate: (controllerId) => true,
+          onResize: (event, direction) => true,
+          onReschedule: (event) => true,
+          onOther: () => false,
+        );
+
+        if (!correctType) {
+          debugPrint(
+            'HorizontalDragTarget: cannot use details: $details because of unknown data type',
+          );
+          return false;
+        }
+
         // First test if the details can be accepted at all.
         final accepted =
             callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
