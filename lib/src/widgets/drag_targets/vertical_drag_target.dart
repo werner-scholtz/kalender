@@ -51,7 +51,7 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
     return DragTargetUtilities.handleDragDetails<bool, T>(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
-      onResize: (event, direction) => false,
+      onResize: (event, direction) => direction.vertical,
       onReschedule: (event) {
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;

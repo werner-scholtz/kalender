@@ -48,7 +48,7 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
     return DragTargetUtilities.handleDragDetails<bool, T>(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
-      onResize: (event, direction) => false,
+      onResize: (event, direction) => direction.horizontal,
       onReschedule: (event) {
         if (!configuration.allowSingleDayEvents && !event.isMultiDayEvent) return false;
 
