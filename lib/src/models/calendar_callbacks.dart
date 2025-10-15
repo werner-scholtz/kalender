@@ -66,6 +66,9 @@ class CalendarCallbacks<T extends Object?> {
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetails? onLongPressedWithDetail;
 
+  /// The callback for when a drag target is evaluating whether to accept a draggable.
+  final OnWillAcceptWithDetails? onWillAcceptWithDetails;
+
   /// The callback for when a user taps on a multi-day calendar.
   @Deprecated('Use onTappedWithDetail or onLongPressedWithDetail instead.')
   final OnMultiDayTapped? onMultiDayTapped;
@@ -84,6 +87,7 @@ class CalendarCallbacks<T extends Object?> {
     this.onTappedWithDetail,
     this.onLongPressed,
     this.onLongPressedWithDetail,
+    this.onWillAcceptWithDetails,
     this.onMultiDayTapped,
   });
 
@@ -200,6 +204,11 @@ typedef OnLongPressed = void Function(DateTime date);
 ///
 /// [details] contains the details of the tap.
 typedef OnLongPressedWithDetails = void Function(TapDetail details);
+
+/// The callback for when a drag target is evaluating whether to accept a draggable.
+///
+/// [details] contains the details of the drag operation.
+typedef OnWillAcceptWithDetails = bool Function(DragTargetDetails<dynamic> details);
 
 abstract class TapDetail {
   /// The render box of the gesture detector that was tapped.

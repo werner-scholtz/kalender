@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
@@ -38,6 +40,9 @@ mixin DragTargetUtilities<T> {
     required bool Function(CalendarEvent<T> event, ResizeDirection direction) onResize,
     required bool Function(CalendarEvent<T> event) onReschedule,
   }) {
+    final accept = callbacks?.onWillAcceptWithDetails?.call(details);
+    if (accept != null) return accept;
+
     return _handleDragDetails(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
