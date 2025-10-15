@@ -178,14 +178,14 @@ extension ProviderContext on BuildContext {
   CalendarController<T> calendarController<T extends Object?>() => CalendarControllerProvider.of<T>(this);
 
   // TODO: simplify passing around the calendar controller.
-  // MultiDayViewController<T> multiDayViewController<T extends Object?>() {
-  //   final controller = calendarController<T>();
-  //   assert(
-  //     controller.viewController is MultiDayViewController<T>,
-  //     'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
-  //   );
-  //   return controller.viewController as MultiDayViewController<T>;
-  // }
+  MultiDayViewController<T> multiDayViewController<T extends Object?>() {
+    final controller = calendarController<T>();
+    assert(
+      controller.viewController is MultiDayViewController<T>,
+      'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
+    );
+    return controller.viewController as MultiDayViewController<T>;
+  }
 
   // MonthViewController<T> monthViewController<T extends Object?>() {
   //   final controller = calendarController<T>();

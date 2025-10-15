@@ -69,20 +69,20 @@ void main() {
 
       expect(find.byType(MultiDayBody), findsOneWidget);
 
-      expect(find.byKey(DayEventTile.topResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(DayEventTile.bottomResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(dayEventID, Axis.vertical)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(dayEventID, Axis.vertical)), findsOneWidget);
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(dayEventID)), findsOneWidget);
 
-      expect(find.byKey(DayEventTile.topResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(DayEventTile.bottomResizeDraggableKey(customDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(customDayEventID, Axis.vertical)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(customDayEventID, Axis.vertical)), findsOneWidget);
       expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID, Axis.horizontal)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID, Axis.horizontal)), findsOneWidget);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID, Axis.horizontal)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID, Axis.horizontal)), findsOneWidget);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
     });
 
@@ -100,12 +100,12 @@ void main() {
 
       expect(find.byType(MonthBody), findsOneWidget);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID, Axis.horizontal)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID, Axis.horizontal)), findsOneWidget);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID, Axis.horizontal)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID, Axis.horizontal)), findsOneWidget);
       expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
     });
   });
