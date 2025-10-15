@@ -8,11 +8,11 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
-/// The [DayDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
-class DayDragTarget<T extends Object?> extends StatefulWidget {
+/// The [VerticalDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
+class VerticalDragTarget<T extends Object?> extends StatefulWidget {
   final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
-  final MultiDayBodyConfiguration configuration;
+  final VerticalConfiguration configuration;
 
   final double pageWidth;
   final double dayWidth;
@@ -20,8 +20,8 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
 
   final ValueNotifier<CalendarSnapping> snapping;
 
-  /// Creates a [DayDragTarget].
-  const DayDragTarget({
+  /// Creates a [VerticalDragTarget].
+  const VerticalDragTarget({
     super.key,
     required this.controller,
     required this.viewController,
@@ -33,10 +33,41 @@ class DayDragTarget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<DayDragTarget<T>> createState() => _DayDragTargetState<T>();
+  State<VerticalDragTarget<T>> createState() => _VerticalDragTargetState<T>();
+
+  /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
+  /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsVertical].
+  ///
+  /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
+  /// The checks performed for each are detailed in the respective sections below.
+  static bool onWillAcceptWithDetails<T>(
+    DragTargetDetails<Object?> details,
+    CalendarController<T> controller,
+    VerticalConfiguration configuration,
+  ) {
+    final viewController = controller.viewController as MultiDayViewController<T>;
+    final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
+    final showMultiDayEvents = configuration.showMultiDayEvents;
+
+    return DragTargetUtilities.handleDragDetails<bool, T>(
+      details,
+      onCreate: (controllerId) => controllerId == controller.id,
+      onResize: (event, direction) => false,
+      onReschedule: (event) {
+        // Check if the event will fit within the time of day range.
+        if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
+        // Check if the event is a multi day event.
+        if (!showMultiDayEvents && event.isMultiDayEvent) return false;
+
+        return true;
+      },
+      onOther: () => false,
+    );
+  }
 }
 
-class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> with SnapPoints, DragTargetUtilities<T> {
+class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarget<T>>
+    with SnapPoints, DragTargetUtilities<T> {
   @override
   EventsController<T> get eventsController => context.eventsController<T>();
 
@@ -59,7 +90,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   ScrollController get scrollController => viewController.scrollController;
   TimeOfDayRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
-  MultiDayBodyConfiguration get bodyConfiguration => widget.configuration;
+  VerticalConfiguration get bodyConfiguration => widget.configuration;
   bool get showMultiDayEvents => bodyConfiguration.showMultiDayEvents;
   PageTriggerConfiguration get pageTrigger => bodyConfiguration.pageTriggerConfiguration;
   ScrollTriggerConfiguration get scrollTrigger => bodyConfiguration.scrollTriggerConfiguration;
@@ -86,7 +117,7 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
   }
 
   @override
-  void didUpdateWidget(covariant DayDragTarget<T> oldWidget) {
+  void didUpdateWidget(covariant VerticalDragTarget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.snapping != widget.snapping) {
       oldWidget.snapping.removeListener(_updateSnapPoints);
@@ -113,25 +144,28 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
     return DragTarget(
       hitTestBehavior: HitTestBehavior.translucent,
       onWillAcceptWithDetails: (details) {
-        return onWillAcceptWithDetails(
+        // First test if the details can be accepted at all.
+        final accepted = callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
+            VerticalDragTarget.onWillAcceptWithDetails<T>(details, controller, bodyConfiguration);
+        if (!accepted) return accepted;
+
+        DragTargetUtilities.handleDragDetails<void, T>(
           details,
-          onResize: (event, direction) => direction.vertical,
+          onCreate: (controllerId) {},
+          onResize: (event, direction) {},
           onReschedule: (event) {
-            final eventDuration = event.duration;
-            // Check if the event will fit within the time of day range.
-            if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
-            // Check if the event is a multi day event.
-            if (!showMultiDayEvents && event.isMultiDayEvent) return false;
             // Calculate the size of the feedback widget.
+            final eventDuration = event.duration;
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
             // Set the size of the feedback widget.
-
             context.feedbackWidgetSizeNotifier<T>().value = Size(dayWidth, eventHeight);
             // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
-            return true;
           },
+          onOther: () {},
         );
+
+        return true;
       },
       onMove: onMove,
       onAcceptWithDetails: onAcceptWithDetails,
@@ -162,8 +196,8 @@ class _DayDragTargetState<T extends Object?> extends State<DayDragTarget<T>> wit
               components.leftTriggerBuilder?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
-        final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
-        final scrollAmount = scrollTrigger.scrollAmount.call(viewPortHeight);
+        final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
+        final scrollAmount = scrollTrigger.scrollAmount?.call(viewPortHeight) ?? viewPortHeight / 2.5;
         final topScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () => scrollController.animateTo(

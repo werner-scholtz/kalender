@@ -76,11 +76,10 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
   }
 }
 
-class MonthBodyConfiguration<T extends Object?> extends MultiDayHeaderConfiguration<T> {
+class MonthBodyConfiguration<T extends Object?> extends HorizontalConfiguration<T> {
   MonthBodyConfiguration({
     super.generateMultiDayLayoutFrame,
     super.pageTriggerConfiguration,
-    super.scrollTriggerConfiguration,
     super.tileHeight,
-  }) : super(showTiles: true, maximumNumberOfVerticalEvents: null);
+  }) : super(showTiles: true, maximumNumberOfVerticalEvents: null, allowSingleDayEvents: true);
 }

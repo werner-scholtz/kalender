@@ -119,7 +119,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
           child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
-        final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
+        final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
         final topScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () {

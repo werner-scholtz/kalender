@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
+import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
+import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
@@ -43,6 +45,144 @@ abstract class ViewConfiguration {
 
   /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
   DateTimeRange get originalDisplayRange => pageNavigationFunctions.originalRange;
+}
+
+/// The base class for all vertical views of the calendar.
+abstract class VerticalConfiguration {
+  /// Whether to show events that are longer than 1 day.
+  final bool showMultiDayEvents;
+
+  /// The horizontal padding between events and the edge of the day column.
+  ///
+  /// * Vertical values are ignored.
+  final EdgeInsets horizontalPadding;
+
+  /// The layout strategy used by the body to layout events.
+  final EventLayoutStrategy eventLayoutStrategy;
+
+  /// The [ScrollPhysics] used by the scrollable body.
+  final ScrollPhysics? scrollPhysics;
+
+  /// The [ScrollPhysics] used by the page view.
+  final ScrollPhysics? pageScrollPhysics;
+
+  /// The minimum height of the tile.
+  ///
+  /// Setting this value will force all tiles to have a minimum height of this value.
+  /// This is useful for displaying short events in a consistent way.
+  ///
+  /// * Note tiles will be expanded downwards except when the tile is at the bottom of the screen
+  ///   then they will be expanded upwards.
+  final double? minimumTileHeight;
+
+  /// The configuration for the page navigation triggers.
+  final PageTriggerConfiguration pageTriggerConfiguration;
+
+  /// The configuration for the scroll navigation triggers.
+  final ScrollTriggerConfiguration scrollTriggerConfiguration;
+
+  const VerticalConfiguration({
+    this.showMultiDayEvents = defaultShowMultiDayEvents,
+    this.horizontalPadding = defaultHorizontalPadding,
+    this.eventLayoutStrategy = defaultEventLayoutStrategy,
+    this.scrollPhysics,
+    this.pageScrollPhysics,
+    this.minimumTileHeight,
+    this.pageTriggerConfiguration = const PageTriggerConfiguration.defaultConfiguration(),
+    this.scrollTriggerConfiguration = const ScrollTriggerConfiguration.defaultConfiguration(),
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is VerticalConfiguration &&
+        other.showMultiDayEvents == showMultiDayEvents &&
+        other.horizontalPadding == horizontalPadding &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
+        other.eventLayoutStrategy == eventLayoutStrategy &&
+        other.scrollPhysics == scrollPhysics &&
+        other.pageScrollPhysics == pageScrollPhysics &&
+        other.minimumTileHeight == minimumTileHeight;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      showMultiDayEvents,
+      horizontalPadding,
+      pageTriggerConfiguration,
+      scrollTriggerConfiguration,
+      eventLayoutStrategy,
+      scrollPhysics,
+      pageScrollPhysics,
+      minimumTileHeight,
+    );
+  }
+}
+
+/// The base class for all horizontal views of the calendar.
+abstract class HorizontalConfiguration<T extends Object?> {
+  /// The height of the tiles.
+  final double tileHeight;
+
+  /// Whether to show event tiles.
+  final bool showTiles;
+
+  /// The function that generates the layout frame for the multi-day event.
+  ///
+  /// * see [defaultMultiDayFrameGenerator] for default implementation.
+  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
+
+  /// The maximum number of events that can be displayed vertically.
+  ///
+  /// If this is null, then there is no limit.
+  final int? maximumNumberOfVerticalEvents;
+
+  /// The padding used around events.
+  final EdgeInsets eventPadding;
+
+  /// Whether to display events shorter than 24 hours.
+  final bool allowSingleDayEvents;
+
+  /// The configuration for the page navigation triggers.
+  final PageTriggerConfiguration pageTriggerConfiguration;
+
+  const HorizontalConfiguration({
+    this.showTiles = defaultShowEventTiles,
+    this.tileHeight = defaultTileHeight,
+    this.generateMultiDayLayoutFrame,
+    this.maximumNumberOfVerticalEvents,
+    this.eventPadding = kDefaultMultiDayEventPadding,
+    required this.allowSingleDayEvents,
+    this.pageTriggerConfiguration = const PageTriggerConfiguration.defaultConfiguration(),
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is HorizontalConfiguration &&
+        other.tileHeight == tileHeight &&
+        other.showTiles == showTiles &&
+        other.pageTriggerConfiguration == pageTriggerConfiguration &&
+        other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
+        other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
+        other.eventPadding == eventPadding;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      tileHeight,
+      showTiles,
+      pageTriggerConfiguration,
+      generateMultiDayLayoutFrame,
+      maximumNumberOfVerticalEvents,
+      eventPadding,
+    );
+  }
 }
 
 // TODO: rename these to use `k` prefix

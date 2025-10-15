@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
+import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 
@@ -9,10 +9,10 @@ import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart
 ///
 /// The month body's content:
 ///   - Static content [MonthGrid].
-///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [MultiDayDragTarget], [MultiDayDraggable].
+///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget], [MultiDayDraggable].
 class MonthBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final MultiDayHeaderConfiguration<T>? configuration;
+  final HorizontalConfiguration<T>? configuration;
 
   /// Creates a new [MonthBody].
   const MonthBody({super.key, this.configuration});
@@ -33,7 +33,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final bodyConfiguration = configuration ?? MultiDayHeaderConfiguration();
+    final bodyConfiguration = configuration ?? MonthBodyConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
@@ -71,13 +71,13 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   end: visibleRange.start.addDays((index * 7) + 7),
                 );
 
-                final multiDayDragTarget = MultiDayDragTarget<T>(
+                final multiDayDragTarget = HorizontalDragTarget<T>(
                   pageTriggerSetup: pageTriggerConfiguration,
                   visibleDateTimeRange: visibleDateTimeRange,
                   dayWidth: dayWidth,
                   pageWidth: pageWidth,
                   tileHeight: tileHeight,
-                  allowSingleDayEvents: true,
+                  configuration: bodyConfiguration,
                   leftPageTrigger: components.leftTriggerBuilder,
                   rightPageTrigger: components.rightTriggerBuilder,
                 );

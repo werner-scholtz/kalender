@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
@@ -40,10 +38,7 @@ mixin DragTargetUtilities<T> {
     required bool Function(CalendarEvent<T> event, ResizeDirection direction) onResize,
     required bool Function(CalendarEvent<T> event) onReschedule,
   }) {
-    final accept = callbacks?.onWillAcceptWithDetails?.call(details);
-    if (accept != null) return accept;
-
-    return _handleDragDetails(
+    return handleDragDetails(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: onResize,
@@ -63,7 +58,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onMove].
   void _processMove(DragTargetDetails<Object?> details) {
-    return _handleDragDetails<void>(
+    return handleDragDetails<void, T>(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return;
@@ -102,7 +97,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onAcceptWithDetails].
   void onAcceptWithDetails(DragTargetDetails<Object?> details) {
-    final result = _handleDragDetails<UpdatedEvent<T>?>(
+    final result = handleDragDetails<UpdatedEvent<T>?, T>(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return null;
@@ -172,7 +167,7 @@ mixin DragTargetUtilities<T> {
   /// [onOther] - handle other types.
   ///
   /// Each handler function returns a value of type [K], which is the result of handling the data.
-  K _handleDragDetails<K extends Object?>(
+  static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
     required K Function(CalendarEvent<T> event, ResizeDirection direction) onResize,

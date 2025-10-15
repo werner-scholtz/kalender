@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/drag_targets/multi_day_drag_target.dart';
+import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
@@ -15,7 +15,7 @@ import 'package:kalender/src/widgets/internal_components/multi_day_header_layout
 /// All Header widgets make use of the [ExpandablePageView] which uses a [SizeReportingWidget]to set the the Height of the header, this is so they can resize dynamically.
 class MultiDayHeader<T extends Object?> extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderConfiguration<T>? configuration;
+  final HorizontalConfiguration<T>? configuration;
 
   /// Creates a new [MultiDayHeader].
   const MultiDayHeader({super.key, this.configuration});
@@ -61,7 +61,7 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 /// A header catered for displaying multi-day events for a single day body.
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
-  final MultiDayHeaderConfiguration<T> configuration;
+  final HorizontalConfiguration<T> configuration;
 
   const _SingleDayHeader({
     super.key,
@@ -108,13 +108,13 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               multiDayCache: viewController.multiDayCache,
             );
 
-            final multiDayDragTarget = MultiDayDragTarget<T>(
+            final multiDayDragTarget = HorizontalDragTarget<T>(
               pageTriggerSetup: configuration.pageTriggerConfiguration,
               visibleDateTimeRange: visibleRange,
               dayWidth: pageWidth,
               pageWidth: pageWidth,
               tileHeight: configuration.tileHeight,
-              allowSingleDayEvents: false,
+              configuration: configuration,
               leftPageTrigger: headerComponents.leftTriggerBuilder,
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
@@ -141,7 +141,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 /// A header catered for displaying multi-day events for a multi-day body.
 class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
-  final MultiDayHeaderConfiguration<T> configuration;
+  final HorizontalConfiguration<T> configuration;
 
   const _MultiDayHeader({
     super.key,
@@ -196,13 +196,13 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               multiDayCache: viewController.multiDayCache,
             );
 
-            final multiDayDragTarget = MultiDayDragTarget<T>(
+            final multiDayDragTarget = HorizontalDragTarget<T>(
               pageTriggerSetup: configuration.pageTriggerConfiguration,
               visibleDateTimeRange: visibleRange,
               dayWidth: dayWidth,
               pageWidth: pageWidth,
               tileHeight: configuration.tileHeight,
-              allowSingleDayEvents: false,
+              configuration: configuration,
               leftPageTrigger: headerComponents.leftTriggerBuilder,
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
@@ -232,7 +232,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 /// TODO: Fix and Ensure this works.
 class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
-  final MultiDayHeaderConfiguration<T> configuration;
+  final HorizontalConfiguration<T> configuration;
 
   const _FreeScrollHeader({
     super.key,
@@ -289,13 +289,13 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               multiDayCache: viewController.multiDayCache,
             );
 
-            final multiDayDragTarget = MultiDayDragTarget<T>(
+            final multiDayDragTarget = HorizontalDragTarget<T>(
               pageTriggerSetup: configuration.pageTriggerConfiguration,
               visibleDateTimeRange: visibleRange,
               dayWidth: dayWidth,
               pageWidth: pageWidth,
               tileHeight: configuration.tileHeight,
-              allowSingleDayEvents: false,
+              configuration: configuration,
               leftPageTrigger: headerComponents.leftTriggerBuilder,
               rightPageTrigger: headerComponents.rightTriggerBuilder,
             );
