@@ -48,7 +48,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
 
-    final configuration = this.configuration ?? MultiDayBodyConfiguration();
+    final configuration = this.configuration ?? const MultiDayBodyConfiguration();
 
     // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;

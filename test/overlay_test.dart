@@ -10,7 +10,7 @@ void main() {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
   final viewConfiguration = MultiDayViewConfiguration.week();
-  final headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
+  const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   setUpAll(() {
     final startOfWeek = DateTime.now().startOfWeek();
@@ -49,7 +49,7 @@ void main() {
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
-            header: CalendarHeader(
+            header: const CalendarHeader(
               multiDayHeaderConfiguration: headerConfiguration,
             ),
             body: const CalendarBody(),
