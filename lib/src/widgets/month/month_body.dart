@@ -100,6 +100,7 @@ class MonthWeek<T> extends StatelessWidget {
                 overlayBuilders:
                     components?.monthComponents?.bodyComponents?.overlayBuilders ?? components?.overlayBuilders,
                 overlayStyles: components?.monthComponentStyles?.bodyStyles?.overlayStyles ?? components?.overlayStyles,
+                includeDayEvents: true,
               ),
             ],
           ),

@@ -104,6 +104,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              includeDayEvents: false,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -186,6 +187,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              includeDayEvents: false,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(
@@ -274,6 +276,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
               overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              includeDayEvents: false,
             );
 
             final multiDayDragTarget = MultiDayDragTarget<T>(

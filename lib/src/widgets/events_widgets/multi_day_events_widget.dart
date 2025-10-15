@@ -27,6 +27,7 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   final OverlayStyles? overlayStyles;
   final MultiDayHeaderConfiguration<T> configuration;
   final int? maxNumberOfRows; // TODO: figure out what to do here.
+  final bool includeDayEvents;
 
   const MultiDayEventWidget({
     super.key,
@@ -36,6 +37,7 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
     required this.overlayBuilders,
     required this.overlayStyles,
     required this.configuration,
+    required this.includeDayEvents,
   });
 
   @override
@@ -62,7 +64,7 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
   void _update() {
     final visibleEvents = _eventsController.eventsFromDateTimeRange(
       widget.visibleDateTimeRange,
-      includeDayEvents: true,
+      includeDayEvents: widget.includeDayEvents,
       includeMultiDayEvents: true,
     );
 
