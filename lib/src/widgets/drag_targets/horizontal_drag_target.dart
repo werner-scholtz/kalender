@@ -50,7 +50,7 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.horizontal,
       onReschedule: (event) {
-        if (!configuration.allowSingleDayEvents) return false;
+        if (configuration.allowSingleDayEvents) return false;
 
         return true;
       },
@@ -189,6 +189,8 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final duration = event.dateTimeRangeAsUtc.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
+
+    print(newRange);
 
     // Update the event with the new start time.
     final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
