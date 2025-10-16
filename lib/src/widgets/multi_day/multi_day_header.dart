@@ -73,11 +73,11 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
+    final components = context.components<T>();
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
 
-    final dayHeaderStyle = componentStyles?.dayHeaderStyle;
+    final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleRange, child) {
@@ -103,8 +103,8 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+              overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
               multiDayCache: viewController.multiDayCache,
             );
 
@@ -153,11 +153,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
+    final components = context.components<T>();
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
 
-    final weekNumberStyle = componentStyles?.weekNumberStyle;
+    final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
@@ -177,9 +177,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
             final visibleDates = visibleRange.dates();
 
-            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
-              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
+              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, componentStyles.dayHeaderStyle);
               return SizedBox(width: dayWidth, child: dayHeader);
             }).toList();
 
@@ -191,8 +190,8 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+              overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
               multiDayCache: viewController.multiDayCache,
             );
 
@@ -244,15 +243,14 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
+    final components = context.components<T>();
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
 
-    final weekNumberStyle = componentStyles?.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
-        return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
+        return headerComponents.weekNumberBuilder.call(value, componentStyles.weekNumberStyle);
       },
     );
 
@@ -271,9 +269,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
             final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
             final visibleDates = visibleRange.dates();
 
-            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
             final dayHeaders = visibleDates.map((date) {
-              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
+              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, componentStyles.dayHeaderStyle);
               return SizedBox(width: dayWidth, child: dayHeader);
             }).toList();
 
@@ -284,8 +281,8 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
               generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
               eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
+              overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+              overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
               multiDayCache: viewController.multiDayCache,
             );
 

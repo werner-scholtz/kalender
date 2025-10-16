@@ -292,6 +292,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     numberOfHiddenRows: numberOfHiddenRows,
                     tileHeight: widget.tileHeight,
                     getMultiDayEventLayoutRenderBox: getRenderBox,
+                    overlayTileBuilder: _overlayEventTileBuilder,
                     overlayBuilders: widget.multiDayOverlayBuilders,
                     overlayStyles: widget.multiDayOverlayStyles,
                   ) ??

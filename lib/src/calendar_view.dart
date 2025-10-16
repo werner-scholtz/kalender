@@ -167,27 +167,29 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
 
     return LocaleProvider(
       locale: _locale,
-      child: CalendarProvider<T>(
+      child: Callbacks<T>(
         callbacks: widget.callbacks,
-        components: widget.components,
-        child: EventsControllerProvider<T>(
-          eventsController: widget.eventsController,
-          child: CalendarControllerProvider<T>(
-            notifier: widget.calendarController,
-            child: CustomMultiChildLayout(
-              delegate: CalendarLayoutDelegate(headerId, bodyId),
-              children: [
-                if (bodyId != null)
-                  LayoutId(
-                    id: bodyId,
-                    child: widget.body!,
-                  ),
-                if (headerId != null)
-                  LayoutId(
-                    id: headerId,
-                    child: widget.header!,
-                  ),
-              ],
+        child: Components<T>(
+          components: widget.components ?? CalendarComponents<T>(),
+          child: EventsControllerProvider<T>(
+            eventsController: widget.eventsController,
+            child: CalendarControllerProvider<T>(
+              notifier: widget.calendarController,
+              child: CustomMultiChildLayout(
+                delegate: CalendarLayoutDelegate(headerId, bodyId),
+                children: [
+                  if (bodyId != null)
+                    LayoutId(
+                      id: bodyId,
+                      child: widget.body!,
+                    ),
+                  if (headerId != null)
+                    LayoutId(
+                      id: headerId,
+                      child: widget.header!,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

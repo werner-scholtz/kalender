@@ -9,7 +9,6 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.provider<T>();
     final calendarController = context.calendarController<T>();
 
     assert(
@@ -18,14 +17,14 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
     );
 
     final viewController = calendarController.viewController as MonthViewController<T>;
-    final calendarComponents = provider.components;
-    final styles = calendarComponents?.monthComponentStyles?.headerStyles;
-    final components = calendarComponents?.monthComponents?.headerComponents ?? const MonthHeaderComponents();
+    final calendarComponents = context.components<T>();
+    final styles = calendarComponents.monthComponentStyles.headerStyles;
+    final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
-        final style = styles?.weekDayHeaderStyle;
+        final style = styles.weekDayHeaderStyle;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

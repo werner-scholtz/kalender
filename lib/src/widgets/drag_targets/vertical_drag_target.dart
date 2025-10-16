@@ -187,7 +187,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
-        final components = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+        final components = context.components<T>().multiDayComponents.bodyComponents;
 
         final triggerWidth = pageWidth / 50;
         final rightTrigger = CursorNavigationTrigger(
