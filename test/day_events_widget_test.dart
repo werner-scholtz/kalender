@@ -46,7 +46,7 @@ void main() {
     );
     calendarController.attach(viewController);
 
-    final configuration = MultiDayBodyConfiguration();
+    const configuration = MultiDayBodyConfiguration();
     // The range to display in the DayEventsWidget.
     final displayRange = start.asUtc.startOfDay.weekRange();
 

@@ -9,21 +9,24 @@ class PageTriggerConfiguration {
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOut,
     double Function(double pageWidth)? triggerWidth,
-  }) {
-    assert(
-      animationDuration <= triggerDelay,
-      'The animation duration must be less or equal to the page trigger delay.',
-    );
-  }
+  }) : assert(
+          animationDuration <= triggerDelay,
+          'The animation duration must be less or equal to the page trigger delay.',
+        );
+
+  const PageTriggerConfiguration.defaultConfiguration()
+      : triggerDelay = const Duration(milliseconds: 750),
+        animationDuration = const Duration(milliseconds: 300),
+        animationCurve = Curves.easeInOut;
 
   /// The widget that is rendered above the top page trigger.
-  Duration triggerDelay;
+  final Duration triggerDelay;
 
   /// The duration of the page animation.
-  Duration animationDuration;
+  final Duration animationDuration;
 
   /// The curve of the page animation.
-  Curve animationCurve;
+  final Curve animationCurve;
 
   /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
   PageTriggerConfiguration copyWith({
@@ -67,31 +70,34 @@ class ScrollTriggerConfiguration {
     this.triggerDelay = const Duration(milliseconds: 750),
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
-    double Function(double pageWidth)? triggerHeight,
-    double Function(double pageHeight)? scrollAmount,
-  }) {
-    assert(
-      animationDuration <= triggerDelay,
-      'The animation duration must be less or equal to the page trigger delay.',
-    );
-    this.triggerHeight = triggerHeight ?? (pageHeight) => pageHeight / 20;
-    this.scrollAmount = scrollAmount ?? (pageHeight) => pageHeight / 2.5;
-  }
+    this.triggerHeight,
+    this.scrollAmount,
+  }) : assert(
+          animationDuration <= triggerDelay,
+          'The animation duration must be less or equal to the page trigger delay.',
+        );
+
+  const ScrollTriggerConfiguration.defaultConfiguration()
+      : triggerDelay = const Duration(milliseconds: 750),
+        animationDuration = const Duration(milliseconds: 200),
+        animationCurve = Curves.easeInOut,
+        triggerHeight = null,
+        scrollAmount = null;
 
   /// The delay before the scroll trigger is activated.
-  Duration triggerDelay;
+  final Duration triggerDelay;
 
   /// The duration of the scroll animation.
-  Duration animationDuration;
+  final Duration animationDuration;
 
   /// The curve of the scroll animation.
-  Curve animationCurve;
+  final Curve animationCurve;
 
   /// Calculation used to determine the height of the trigger.
-  late double Function(double pageHeight) triggerHeight;
+  final double Function(double pageHeight)? triggerHeight;
 
   /// The delta used to scroll the view.
-  late double Function(double pageHeight) scrollAmount;
+  final double Function(double pageHeight)? scrollAmount;
 
   /// Creates a copy of this [ScrollTriggerConfiguration] but with the given fields replaced with the new values.
   ScrollTriggerConfiguration copyWith({

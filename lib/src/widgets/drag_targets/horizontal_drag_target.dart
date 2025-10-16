@@ -3,41 +3,63 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
 ///
-/// The [MultiDayDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
-class MultiDayDragTarget<T extends Object?> extends StatefulWidget {
+/// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
+class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
   final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
   final double dayWidth;
   final double pageWidth;
   final double tileHeight;
-  final bool allowSingleDayEvents;
+  final HorizontalConfiguration<T> configuration;
 
   final HorizontalTriggerWidgetBuilder? leftPageTrigger;
   final HorizontalTriggerWidgetBuilder? rightPageTrigger;
 
-  const MultiDayDragTarget({
+  const HorizontalDragTarget({
     super.key,
     required this.pageTriggerSetup,
     required this.visibleDateTimeRange,
     required this.dayWidth,
     required this.pageWidth,
     required this.tileHeight,
-    required this.allowSingleDayEvents,
+    required this.configuration,
     required this.leftPageTrigger,
     required this.rightPageTrigger,
   });
 
   @override
-  State<MultiDayDragTarget<T>> createState() => _MultiDayDragTargetState<T>();
+  State<HorizontalDragTarget<T>> createState() => _HorizontalDragTargetState<T>();
+
+  /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
+  /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsHorizontal].
+  ///
+  /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
+  /// The checks performed for each are detailed in the respective sections below.
+  static bool onWillAcceptWithDetails<T>(
+    DragTargetDetails<Object?> details,
+    CalendarController<T> controller,
+    HorizontalConfiguration configuration,
+  ) {
+    return DragTargetUtilities.handleDragDetails<bool, T>(
+      details,
+      onCreate: (controllerId) => controllerId == controller.id,
+      onResize: (event, direction) => direction.horizontal,
+      onReschedule: (event) {
+        if (!configuration.allowSingleDayEvents) return false;
+
+        return true;
+      },
+      onOther: () => false,
+    );
+  }
 }
 
-class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarget<T>> with DragTargetUtilities<T> {
+class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDragTarget<T>> with DragTargetUtilities<T> {
   @override
   EventsController<T> get eventsController => context.eventsController<T>();
   @override
@@ -63,11 +85,31 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   Widget build(BuildContext context) {
     return DragTarget(
       onWillAcceptWithDetails: (details) {
+        final correctType = DragTargetUtilities.handleDragDetails<bool, T>(
+          details,
+          onCreate: (controllerId) => true,
+          onResize: (event, direction) => true,
+          onReschedule: (event) => true,
+          onOther: () => false,
+        );
+
+        if (!correctType) {
+          debugPrint(
+            'HorizontalDragTarget: cannot use details: $details because of unknown data type',
+          );
+          return false;
+        }
+
+        // First test if the details can be accepted at all.
+        final accepted =
+            callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
+                HorizontalDragTarget.onWillAcceptWithDetails<T>(details, controller, widget.configuration);
+        if (!accepted) return accepted;
+
         return onWillAcceptWithDetails(
           details,
           onResize: (event, direction) => direction.horizontal,
           onReschedule: (event) {
-            if (!widget.allowSingleDayEvents && !event.isMultiDayEvent) return false;
             // Set the size of the feedback widget.
             context.feedbackWidgetSizeNotifier<T>().value =
                 Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
@@ -136,7 +178,14 @@ class _MultiDayDragTargetState<T extends Object?> extends State<MultiDayDragTarg
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final newStartTime = cursorDateTime;
+    final start = event.dateTimeRangeAsUtc.start;
+    final newStartTime = cursorDateTime.copyWith(
+      hour: start.hour,
+      minute: start.minute,
+      second: start.second,
+      millisecond: start.millisecond,
+      microsecond: start.microsecond,
+    );
     final duration = event.dateTimeRangeAsUtc.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);

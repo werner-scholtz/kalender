@@ -63,3 +63,4 @@ export 'package:kalender/src/widgets/schedule/schedule_header.dart';
 
 /// Utils
 export 'package:kalender/src/models/mixins/event_tile_utils.dart';
+export 'package:kalender/src/models/mixins/drag_target_utils.dart';

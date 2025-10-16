@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
-import 'package:kalender/src/widgets/drag_targets/day_drag_target.dart';
+import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
@@ -16,7 +16,7 @@ import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 ///   - Dynamic content such as the [PageView] which displays:
 ///     [DaySeparator], [DayDraggable], [MultiDayEventsRow] and the [TimeIndicator]
 ///
-/// 2. The [DayDragTarget]
+/// 2. The [VerticalDragTarget]
 ///    This is the drag target for all events that are being modified and how the calendar deals with rescheduling and resizing of events.
 class MultiDayBody<T extends Object?> extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
@@ -48,7 +48,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final timeOfDayRange = viewConfiguration.timeOfDayRange;
 
-    final configuration = this.configuration ?? MultiDayBodyConfiguration();
+    final configuration = this.configuration ?? const MultiDayBodyConfiguration();
 
     // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
@@ -107,7 +107,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
 
                     return SizedBox(
                       height: pageHeight,
-                      child: DayDragTarget<T>(
+                      child: VerticalDragTarget<T>(
                         controller: controller,
                         viewController: viewController,
                         configuration: configuration,

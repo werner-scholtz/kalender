@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -248,53 +247,20 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 }
 
 /// The configuration used by the [MultiDayBody].
-class MultiDayBodyConfiguration {
-  /// Whether to show events that are longer than 1 day.
-  final bool showMultiDayEvents;
-
-  /// The horizontal padding between events and the edge of the day.
-  ///
-  /// * Vertical values are ignored.
-  final EdgeInsets horizontalPadding;
-
-  /// The configuration for the page navigation triggers.
-  late final PageTriggerConfiguration pageTriggerConfiguration;
-
-  /// The configuration for the scroll navigation triggers.
-  late final ScrollTriggerConfiguration scrollTriggerConfiguration;
-
-  /// The layout strategy used by the body to layout events.
-  final EventLayoutStrategy eventLayoutStrategy;
-
-  /// The [ScrollPhysics] used by the scrollable body.
-  final ScrollPhysics? scrollPhysics;
-
-  /// The [ScrollPhysics] used by the page view.
-  final ScrollPhysics? pageScrollPhysics;
-
-  /// The minimum height of the tile.
-  ///
-  /// Setting this value will force all tiles to have a minimum height of this value.
-  /// This is useful for displaying short events in a consistent way.
-  ///
-  /// * Note tiles will be expanded downwards except when the tile is at the bottom of the screen
-  ///   then they will be expanded upwards.
-  final double? minimumTileHeight;
-
+///
+/// TODO: Depricate this in 1.0.0 and use [VerticalConfiguration] instead.
+class MultiDayBodyConfiguration extends VerticalConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
-  MultiDayBodyConfiguration({
-    this.showMultiDayEvents = defaultShowMultiDayEvents,
-    CalendarInteraction? calendarInteraction,
-    CalendarSnapping? calendarSnapping,
-    this.horizontalPadding = defaultHorizontalPadding,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
-    this.eventLayoutStrategy = defaultEventLayoutStrategy,
-    this.scrollPhysics,
-    this.pageScrollPhysics,
-    this.minimumTileHeight,
-  })  : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration(),
-        scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
+  const MultiDayBodyConfiguration({
+    super.showMultiDayEvents,
+    super.horizontalPadding,
+    super.eventLayoutStrategy,
+    super.scrollPhysics,
+    super.pageScrollPhysics,
+    super.minimumTileHeight,
+    super.pageTriggerConfiguration,
+    super.scrollTriggerConfiguration,
+  });
 
   /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
   MultiDayBodyConfiguration copyWith({
@@ -318,61 +284,10 @@ class MultiDayBodyConfiguration {
       minimumTileHeight: minimumTileHeight ?? this.minimumTileHeight,
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is MultiDayBodyConfiguration &&
-        other.showMultiDayEvents == showMultiDayEvents &&
-        other.horizontalPadding == horizontalPadding &&
-        other.pageTriggerConfiguration == pageTriggerConfiguration &&
-        other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
-        other.eventLayoutStrategy == eventLayoutStrategy &&
-        other.scrollPhysics == scrollPhysics &&
-        other.pageScrollPhysics == pageScrollPhysics &&
-        other.minimumTileHeight == minimumTileHeight;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      showMultiDayEvents,
-      horizontalPadding,
-      pageTriggerConfiguration,
-      scrollTriggerConfiguration,
-      eventLayoutStrategy,
-      scrollPhysics,
-      pageScrollPhysics,
-      minimumTileHeight,
-    );
-  }
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
-class MultiDayHeaderConfiguration<T extends Object?> {
-  /// The height of the tiles.
-  final double tileHeight;
-
-  /// Whether to show event tiles.
-  final bool showTiles;
-
-  /// The configuration for the page navigation triggers.
-  final PageTriggerConfiguration pageTriggerConfiguration;
-
-  /// The function that generates the layout frame for the multi-day event.
-  ///
-  /// * see [defaultMultiDayFrameGenerator] for default implementation.
-  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
-
-  /// The maximum number of events that can be displayed vertically.
-  ///
-  /// If this is null, then there is no limit.
-  final int? maximumNumberOfVerticalEvents;
-
-  /// The padding used around events.
-  final EdgeInsets eventPadding;
-
+class MultiDayHeaderConfiguration<T extends Object?> extends HorizontalConfiguration<T> {
   /// The layout strategy used to layout events.
   @Deprecated('''
 This method is deprecated and will be removed in a future release. 
@@ -381,16 +296,16 @@ Please use the `generateFrame` method instead.
   final MultiDayEventLayoutStrategy? eventLayoutStrategy;
 
   /// Creates a new [MultiDayHeaderConfiguration].
-  MultiDayHeaderConfiguration({
-    this.showTiles = defaultShowEventTiles,
-    this.tileHeight = defaultTileHeight,
-    this.generateMultiDayLayoutFrame,
-    this.maximumNumberOfVerticalEvents,
+  const MultiDayHeaderConfiguration({
+    super.showTiles = defaultShowEventTiles,
+    super.tileHeight = defaultTileHeight,
+    super.generateMultiDayLayoutFrame,
+    super.maximumNumberOfVerticalEvents,
+    super.eventPadding = kDefaultMultiDayEventPadding,
+    super.pageTriggerConfiguration,
+    super.allowSingleDayEvents = false,
     this.eventLayoutStrategy,
-    this.eventPadding = kDefaultMultiDayEventPadding,
-    PageTriggerConfiguration? pageTriggerConfiguration,
-    ScrollTriggerConfiguration? scrollTriggerConfiguration,
-  }) : pageTriggerConfiguration = pageTriggerConfiguration ?? PageTriggerConfiguration();
+  });
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   MultiDayHeaderConfiguration<T> copyWith({
@@ -400,6 +315,7 @@ Please use the `generateFrame` method instead.
     GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame,
     int? maximumNumberOfVerticalEvents,
     EdgeInsets? eventPadding,
+    bool? allowSingleDayEvents,
   }) {
     return MultiDayHeaderConfiguration(
       showTiles: showTiles ?? this.showTiles,
@@ -408,31 +324,7 @@ Please use the `generateFrame` method instead.
       generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
       maximumNumberOfVerticalEvents: maximumNumberOfVerticalEvents ?? this.maximumNumberOfVerticalEvents,
       eventPadding: eventPadding ?? this.eventPadding,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is MultiDayHeaderConfiguration &&
-        other.tileHeight == tileHeight &&
-        other.showTiles == showTiles &&
-        other.pageTriggerConfiguration == pageTriggerConfiguration &&
-        other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
-        other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
-        other.eventPadding == eventPadding;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      tileHeight,
-      showTiles,
-      pageTriggerConfiguration,
-      generateMultiDayLayoutFrame,
-      maximumNumberOfVerticalEvents,
-      eventPadding,
+      allowSingleDayEvents: allowSingleDayEvents ?? this.allowSingleDayEvents,
     );
   }
 }

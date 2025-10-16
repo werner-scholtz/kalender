@@ -228,6 +228,17 @@ The calendar has a few useful callback functions, which can change how interacti
       // Details contains an exact DateTime or DateTimeRange depending on the view that was long pressed.
       // Along with a renderBox of the gesture detector and local offset of the longPress.
     },
+
+    // The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view. (Day/Week)
+    onWillAcceptWithDetailsVertical: (details, controller, configuration) {
+      // See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
+      return true;
+    }
+    // The callback for when a drag target is evaluating whether to accept a draggable, on a horizontal view. (Month/Day Header)
+    onWillAcceptWithDetailsHorizontal: (details, controller, configuration) {
+      // See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
+      return true;
+    }
   )
   ```
   </summary>

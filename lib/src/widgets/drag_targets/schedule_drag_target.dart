@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/mixins/drag_target_utils.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart' show CursorNavigationTrigger;
 
@@ -119,7 +118,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
           child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
         );
 
-        final triggerHeight = scrollTrigger.triggerHeight.call(viewPortHeight);
+        final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
         final topScrollTrigger = CursorNavigationTrigger(
           triggerDelay: scrollTrigger.triggerDelay,
           onTrigger: () {

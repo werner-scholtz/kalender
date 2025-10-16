@@ -25,7 +25,7 @@ class CalendarConfiguration extends ChangeNotifier {
   ];
 
   /// The body configuration of the calendar.
-  final multiDayBodyConfigurationNotifier = ValueNotifier(MultiDayBodyConfiguration());
+  final multiDayBodyConfigurationNotifier = ValueNotifier(const MultiDayBodyConfiguration());
   MultiDayBodyConfiguration get multiDayBodyConfiguration => multiDayBodyConfigurationNotifier.value;
   set multiDayBodyConfiguration(MultiDayBodyConfiguration value) {
     if (multiDayBodyConfigurationNotifier.value == value) return;
@@ -34,7 +34,7 @@ class CalendarConfiguration extends ChangeNotifier {
   }
 
   /// The header configuration of the calendar.
-  final multiDayHeaderConfigurationNotifier = ValueNotifier(MultiDayHeaderConfiguration<Event>());
+  final multiDayHeaderConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration<Event>());
   MultiDayHeaderConfiguration<Event> get multiDayHeaderConfiguration => multiDayHeaderConfigurationNotifier.value;
   set multiDayHeaderConfiguration(MultiDayHeaderConfiguration<Event> value) {
     if (multiDayHeaderConfigurationNotifier.value == value) return;
@@ -43,7 +43,7 @@ class CalendarConfiguration extends ChangeNotifier {
   }
 
   /// The month body configuration of the calendar.
-  final monthBodyConfigurationNotifier = ValueNotifier(MultiDayHeaderConfiguration<Event>());
+  final monthBodyConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration<Event>());
   MultiDayHeaderConfiguration<Event> get monthBodyConfiguration => monthBodyConfigurationNotifier.value;
   set monthBodyConfiguration(MultiDayHeaderConfiguration<Event> value) {
     if (monthBodyConfigurationNotifier.value == value) return;

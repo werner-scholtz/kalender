@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
+import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
 /// The callbacks used by the [CalendarView].
 ///
@@ -66,6 +69,16 @@ class CalendarCallbacks<T extends Object?> {
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetails? onLongPressedWithDetail;
 
+  /// The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view.
+  ///
+  /// When overriding this please see [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
+  final OnWillAcceptWithDetailsVertical? onWillAcceptWithDetailsVertical;
+
+  /// The callback for when a drag target is evaluating whether to accept a draggable, on a horizontal view.
+  ///
+  /// When overriding this please see [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
+  final OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal;
+
   /// The callback for when a user taps on a multi-day calendar.
   @Deprecated('Use onTappedWithDetail or onLongPressedWithDetail instead.')
   final OnMultiDayTapped? onMultiDayTapped;
@@ -84,6 +97,8 @@ class CalendarCallbacks<T extends Object?> {
     this.onTappedWithDetail,
     this.onLongPressed,
     this.onLongPressedWithDetail,
+    this.onWillAcceptWithDetailsVertical,
+    this.onWillAcceptWithDetailsHorizontal,
     this.onMultiDayTapped,
   });
 
@@ -200,6 +215,34 @@ typedef OnLongPressed = void Function(DateTime date);
 ///
 /// [details] contains the details of the tap.
 typedef OnLongPressedWithDetails = void Function(TapDetail details);
+
+/// The callback for when a drag target is evaluating whether to accept a draggable.
+///
+/// [details] contains the details of the drag operation.
+/// [controller] is the controller of the calendar.
+/// [configuration] is the configuration of the vertical view.
+///
+/// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
+typedef OnWillAcceptWithDetailsVertical<T extends Object?> = bool Function(
+  DragTargetDetails<Object?> details,
+  CalendarController<T> controller,
+  VerticalConfiguration configuration,
+);
+
+/// The callback for when a drag target is evaluating whether to accept a draggable.
+///
+/// [details] contains the details of the drag operation.
+/// [controller] is the controller of the calendar.
+/// [configuration] is the configuration of the horizontal view.
+///
+/// By default the calendar will only accept draggables that are of type [Create], [Resize], or [Reschedule].
+///
+/// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
+typedef OnWillAcceptWithDetailsHorizontal<T extends Object?> = bool Function(
+  DragTargetDetails<Object?> details,
+  CalendarController<T> controller,
+  HorizontalConfiguration<T> configuration,
+);
 
 abstract class TapDetail {
   /// The render box of the gesture detector that was tapped.

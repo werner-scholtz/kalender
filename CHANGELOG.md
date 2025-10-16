@@ -1,3 +1,6 @@
+## 0.14.0
+- feat: Custom onWillAcceptWithDetails functions for DragTargets. [#213](https://github.com/werner-scholtz/kalender/issues/213)
+
 ## 0.13.1
 - fix: MultiDayLayoutFrameCache using `toString()` to generate map key. [#225](https://github.com/werner-scholtz/kalender/issues/225)
 
