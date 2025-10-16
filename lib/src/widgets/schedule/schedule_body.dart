@@ -162,9 +162,8 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   EventsController<T> get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => context.calendarController<T>();
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
-  ScheduleComponentStyles get styles =>
-      context.components<T>()?.scheduleComponentStyles ?? const ScheduleComponentStyles();
-  ScheduleComponents get components => context.components<T>()?.scheduleComponents ?? ScheduleComponents();
+  ScheduleComponentStyles get styles => context.components<T>().scheduleComponentStyles;
+  ScheduleComponents get components => context.components<T>().scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   /// Controller for programmatically scrolling to specific items in the list.

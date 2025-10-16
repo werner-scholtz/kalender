@@ -9,6 +9,7 @@ import 'package:kalender/kalender.dart';
 /// [numberOfHiddenRows] is the number of hidden rows.
 /// [tileHeight] is the height of the tile.
 /// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
+/// [overlayTileBuilder] is the builder for the overlay event tile.
 /// [overlayBuilders] is the builders for the overlay event tile.
 /// [overlayStyles] is the styles for the overlay event tile.
 typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
@@ -17,6 +18,7 @@ typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+  required MultiDayOverlayEventTileBuilder<T> overlayTileBuilder,
   required OverlayBuilders<T>? overlayBuilders,
   required OverlayStyles? overlayStyles,
 });
@@ -117,9 +119,9 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
             );
       },
       child: widget.overlayBuilders?.multiDayPortalOverlayButtonBuilder?.call(
-            _portalController,
-            widget.numberOfHiddenRows,
-            widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
+            portalController: _portalController,
+            numberOfHiddenRows: widget.numberOfHiddenRows,
+            style: widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
           ) ??
           MultiDayPortalOverlayButton(
             key: MultiDayPortalOverlayButton.getKey(widget.date),

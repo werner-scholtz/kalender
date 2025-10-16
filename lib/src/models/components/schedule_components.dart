@@ -9,7 +9,7 @@ class ScheduleComponents<T extends Object?> {
   /// A function that builds the highlight tile widget.
   final ScheduleTileHighlightBuilder scheduleTileHighlightBuilder;
 
-  ScheduleComponents({
+  const ScheduleComponents({
     this.leadingDateBuilder = ScheduleDate.builder,
     this.scheduleTileHighlightBuilder = ScheduleTileHighlight.builder,
   });

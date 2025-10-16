@@ -160,8 +160,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     final calendarController = context.calendarController<T>();
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final selectedEvent = calendarController.selectedEvent;
-    final timelineStyle = context.components<T>()?.multiDayComponentStyles?.bodyStyles?.timelineStyle;
-    final bodyComponents = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    final timelineStyle = context.components<T>().multiDayComponentStyles.bodyStyles.timelineStyle;
+    final bodyComponents = context.components<T>().multiDayComponents.bodyComponents;
     return bodyComponents.timeline.call(
       context.heightPerMinute,
       timeOfDayRange,

@@ -11,12 +11,15 @@ import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 /// A class containing styles for the [MultiDayBody] and [MultiDayHeader].
 class MultiDayComponentStyles {
   /// The styles of the default components used by the [MultiDayHeader].
-  final MultiDayHeaderComponentStyles? headerStyles;
+  final MultiDayHeaderComponentStyles headerStyles;
 
   /// The styles of the default components used by the [MultiDayBody].
-  final MultiDayBodyComponentStyles? bodyStyles;
+  final MultiDayBodyComponentStyles bodyStyles;
 
-  MultiDayComponentStyles({this.headerStyles, this.bodyStyles});
+  const MultiDayComponentStyles({
+    this.headerStyles = const MultiDayHeaderComponentStyles(),
+    this.bodyStyles = const MultiDayBodyComponentStyles(),
+  });
 }
 
 /// The styles of the default components used by the [MultiDayHeader].

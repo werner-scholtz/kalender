@@ -38,9 +38,8 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.provider<T>();
     final viewController = context.calendarController<T>().viewController;
-    final callbacks = this.callbacks ?? provider.callbacks;
+    final callbacks = this.callbacks ?? context.callbacks<T>();
     final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
 
     return Callbacks(
