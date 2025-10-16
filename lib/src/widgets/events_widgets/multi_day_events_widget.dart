@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -19,29 +20,55 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
-class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
+class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
+  final HorizontalConfiguration<T> configuration;
+  final EventsController<T> eventsController;
   final DateTimeRange visibleDateTimeRange;
-  final int? maxNumberOfRows;
-  final double tileHeight;
-  final bool showAllEvents;
-  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
-  final MultiDayLayoutFrameCache<T> multiDayCache;
-  final EdgeInsets? eventPadding;
+
   final OverlayBuilders<T>? overlayBuilders;
   final OverlayStyles? overlayStyles;
 
   const MultiDayEventWidget({
     super.key,
+    required this.eventsController,
     required this.visibleDateTimeRange,
-    required this.showAllEvents,
-    required this.tileHeight,
-    required this.maxNumberOfRows,
-    required this.eventPadding,
-    required this.generateMultiDayLayoutFrame,
     required this.overlayBuilders,
     required this.overlayStyles,
-    required this.multiDayCache,
+    required this.configuration,
   });
+
+  @override
+  State<MultiDayEventWidget<T>> createState() => _MultiDayEventWidgetState<T>();
+}
+
+class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWidget<T>> {
+  List<CalendarEvent<T>> _visibleEvents = [];
+  EventsController<T> get _eventsController => widget.eventsController;
+
+  @override
+  void initState() {
+    _update();
+    _eventsController.addListener(_update);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _eventsController.removeListener(_update);
+    super.dispose();
+  }
+
+  void _update() {
+    final visibleEvents = _eventsController.eventsFromDateTimeRange(
+      widget.visibleDateTimeRange,
+      includeDayEvents: true,
+      includeMultiDayEvents: true,
+    );
+
+    if (!listEquals(_visibleEvents, visibleEvents.toList())) {
+      setState(() => _visibleEvents = visibleEvents.toList());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,37 +77,23 @@ class MultiDayEventWidget<T extends Object?> extends StatelessWidget {
     final controller = context.calendarController<T>();
     final eventsController = context.eventsController<T>();
 
-    return ListenableBuilder(
-      listenable: eventsController,
-      builder: (context, child) {
-        // Get the visible events from the events controller.
-        final visibleEvents = eventsController.eventsFromDateTimeRange(
-          visibleDateTimeRange,
-          includeDayEvents: showAllEvents,
-          includeMultiDayEvents: true,
-        );
+    final showAllEvents = controller.viewController is MonthViewController<T>;
 
-        // Add the events to the visible events notifier.
-        controller.visibleEvents.value = {
-          ...controller.visibleEvents.value,
-          ...visibleEvents,
-        };
+    controller.visibleEvents.value = {...controller.visibleEvents.value, ..._visibleEvents};
 
-        return MultiDayEventLayoutWidget<T>(
-          events: visibleEvents.toList(),
-          eventsController: eventsController,
-          visibleDateTimeRange: visibleDateTimeRange,
-          showAllEvents: showAllEvents,
-          tileHeight: tileHeight,
-          maxNumberOfVerticalEvents: maxNumberOfRows,
-          generateMultiDayLayoutFrame: generateMultiDayLayoutFrame,
-          multiDayCache: multiDayCache,
-          textDirection: Directionality.of(context),
-          multiDayOverlayBuilders: overlayBuilders,
-          multiDayOverlayStyles: overlayStyles,
-          eventPadding: eventPadding,
-        );
-      },
+    return MultiDayEventLayoutWidget<T>(
+      events: _visibleEvents,
+      eventsController: eventsController,
+      visibleDateTimeRange: widget.visibleDateTimeRange,
+      showAllEvents: showAllEvents,
+      tileHeight: widget.configuration.tileHeight,
+      maxNumberOfVerticalEvents: widget.configuration.maximumNumberOfVerticalEvents, // TODO: Remove ?
+      generateMultiDayLayoutFrame: widget.configuration.generateMultiDayLayoutFrame,
+      multiDayCache: controller.viewController!.multiDayCache,
+      textDirection: Directionality.of(context),
+      multiDayOverlayBuilders: widget.overlayBuilders,
+      multiDayOverlayStyles: widget.overlayStyles,
+      eventPadding: widget.configuration.eventPadding,
     );
   }
 }

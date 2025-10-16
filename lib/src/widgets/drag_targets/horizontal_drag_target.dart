@@ -10,11 +10,8 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
-  final PageTriggerConfiguration pageTriggerSetup;
   final DateTimeRange visibleDateTimeRange;
-  final double dayWidth;
-  final double pageWidth;
-  final double tileHeight;
+
   final HorizontalConfiguration<T> configuration;
 
   final HorizontalTriggerWidgetBuilder? leftPageTrigger;
@@ -22,11 +19,7 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
 
   const HorizontalDragTarget({
     super.key,
-    required this.pageTriggerSetup,
     required this.visibleDateTimeRange,
-    required this.dayWidth,
-    required this.pageWidth,
-    required this.tileHeight,
     required this.configuration,
     required this.leftPageTrigger,
     required this.rightPageTrigger,
@@ -65,8 +58,6 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarController<T> get controller => context.calendarController<T>();
   @override
-  double get dayWidth => widget.dayWidth;
-  @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
   @override
   List<DateTime> get visibleDates => visibleDateTimeRange.dates();
@@ -76,10 +67,22 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   ViewController<T> get viewController => controller.viewController!;
   TileComponents<T> get tileComponents => context.tileComponents<T>();
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
-  PageTriggerConfiguration get pageTrigger => widget.pageTriggerSetup;
+  PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
 
-  double get pageWidth => widget.pageWidth;
-  double get tileHeight => widget.tileHeight;
+  double get tileHeight => widget.configuration.tileHeight;
+
+  @override
+  late double dayWidth;
+  late double pageWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pageWidth = context.size?.width ?? 0;
+      dayWidth = pageWidth / visibleDates.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
