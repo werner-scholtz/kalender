@@ -144,3 +144,15 @@ class TestProvider<T> extends StatelessWidget {
     );
   }
 }
+
+extension WidgetTesterUtils on WidgetTester {
+  // Helper function to hover over a tile.
+  Future<void> hoverOn(
+    Finder tile,
+    TestGesture gesture,
+  ) async {
+    await pump();
+    await gesture.moveTo(getCenter(tile));
+    await pumpAndSettle();
+  }
+}

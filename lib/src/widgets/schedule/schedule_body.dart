@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
-import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 /// A widget that displays events in a schedule/list format.

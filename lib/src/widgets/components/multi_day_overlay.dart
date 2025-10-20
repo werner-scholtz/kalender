@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 
-/// A function that returns a [MultiDayOverlayEventTile] for the multi-day overlay.
+/// A function that returns a [MultiDayOverlayTile] for the multi-day overlay.
 ///
 /// The [event] is the event that is being displayed.
 /// The [dateTimeRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
-typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayEventTile<T> Function(
+typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayTile<T> Function(
   CalendarEvent<T> event,
   DateTimeRange dateTimeRange,
   VoidCallback dismissOverlay,

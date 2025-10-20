@@ -16,6 +16,8 @@ DateTime defaultSnapStrategy(DateTime cursorDate, DateTime startOfDay, int snapI
 }
 
 /// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
+///
+/// TODO: Rename this to EventInteractionGesture.
 enum CreateEventGesture {
   /// Creates event on tap gesture.
   tap,
@@ -65,6 +67,14 @@ class CalendarInteraction {
   static const defaultCreateEventGesture = CreateEventGesture.tap;
   static const defaultMobileCreateEventGesture = CreateEventGesture.longPress;
 
+  /// The gesture used to modify an event.
+  ///
+  /// This gesture determines how users can modify existing events in the calendar.
+  /// It can be either a tap or a long press gesture.
+  final CreateEventGesture modifyEventGesture;
+  static const defaultModifyEventGesture = CreateEventGesture.tap;
+  static const defaultMobileModifyEventGesture = CreateEventGesture.longPress;
+
   /// The number of milliseconds to throttle the interaction events.
   ///
   /// This is used to prevent excessive updates during drag operations.
@@ -81,8 +91,11 @@ class CalendarInteraction {
     this.allowEventCreation = defaultAllowEventCreation,
     this.throttleMilliseconds = defaultThrottleMilliseconds,
     CreateEventGesture? createEventGesture,
-  }) : createEventGesture =
-            createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture);
+    CreateEventGesture? modifyEventGesture,
+  })  : createEventGesture =
+            createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
+        modifyEventGesture =
+            modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
   /// Creates a copy of this [CalendarInteraction] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.

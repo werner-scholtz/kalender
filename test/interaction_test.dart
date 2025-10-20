@@ -1,15 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
-import 'package:kalender/src/widgets/event_tiles/schedule_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 
 import 'utilities.dart';
 
 void main() {
-  // TODO: add tests that ensure EventInteraction and CalendarInteraction works as expected.
-
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController(initialDate: DateTime(2025));
   final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
@@ -25,7 +24,7 @@ void main() {
 
   setUpAll(() {
     dayEventID = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 23))),
+      CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 4))),
     );
     multiDayEventID = eventsController.addEvent(
       CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2))),
@@ -54,63 +53,94 @@ void main() {
     );
   });
 
-  group('CalendarInteraction', () {
-    testWidgets('MultiDayView', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        CalendarView(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: displayRange),
-          header: CalendarHeader(interaction: interaction),
-          body: CalendarBody(interaction: interaction),
+  testWidgets('MultiDayView test', (tester) async {
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: MultiDayViewConfiguration.singleDay(
+          displayRange: displayRange,
+          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
         ),
-      );
+        header: CalendarHeader(interaction: interaction),
+        body: CalendarBody(interaction: interaction),
+      ),
+    );
 
-      expect(find.byType(MultiDayBody), findsOneWidget);
+    expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody not found');
 
-      expect(find.byKey(DayEventTile.topResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(DayEventTile.bottomResizeDraggableKey(dayEventID)), findsOneWidget);
-      expect(find.byKey(DayEventTile.rescheduleDraggableKey(dayEventID)), findsOneWidget);
+    // Create a mouse gesture to hover over the event tile.
+    // This is needed because resize handles are only shown on hover for non-mobile devices.
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
 
-      expect(find.byKey(DayEventTile.topResizeDraggableKey(customDayEventID)), findsNothing);
-      expect(find.byKey(DayEventTile.bottomResizeDraggableKey(customDayEventID)), findsOneWidget);
-      expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
+    var tile = find.byKey(DayEventTile.tileKey(dayEventID));
+    expect(tile, findsOneWidget, reason: 'DayEventTile with id $dayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(DayEventTile.rescheduleDraggableKey(dayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(dayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(dayEventID)), findsOneWidget);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
+    tile = find.byKey(DayEventTile.tileKey(customDayEventID));
+    expect(tile, findsOneWidget, reason: 'Custom DayEventTile with id $customDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(customDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(customDayEventID)), findsOneWidget);
 
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-    });
+    tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
+    expect(tile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
 
-    testWidgets('MonthView', (tester) async {
-      await pumpAndSettleWithMaterialApp(
-        tester,
-        CalendarView(
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: displayRange),
-          header: CalendarHeader(interaction: interaction),
-          body: CalendarBody(interaction: interaction),
-        ),
-      );
-
-      expect(find.byType(MonthBody), findsOneWidget);
-
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(multiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
-
-      expect(find.byKey(MultiDayEventTile.leftResizeDraggableKey(customMultiDayEventID)), findsNothing);
-      expect(find.byKey(MultiDayEventTile.rightResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
-      expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
-    });
+    tile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
+    expect(tile, findsOneWidget, reason: 'Custom MultiDayEventTile with id $customMultiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+    expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
   });
 
-  testWidgets('ScheduleView', (tester) async {
+  testWidgets('MonthView test', (tester) async {
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: displayRange),
+        header: CalendarHeader(interaction: interaction),
+        body: CalendarBody(interaction: interaction),
+      ),
+    );
+
+    expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody not found');
+
+    // Create a mouse gesture to hover over the event tile.
+    // This is needed because resize handles are only shown on hover for non-mobile devices.
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+
+    var tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
+    expect(tile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
+
+    tile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
+    expect(tile, findsOneWidget, reason: 'Custom MultiDayEventTile with id $customMultiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID)), findsOneWidget);
+    expect(find.byKey(MultiDayEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
+  });
+
+  testWidgets('ScheduleView test', (tester) async {
     await pumpAndSettleWithMaterialApp(
       tester,
       CalendarView(
@@ -123,7 +153,25 @@ void main() {
     );
 
     expect(find.byType(ScheduleBody), findsOneWidget);
+
+    // Create a mouse gesture to hover over the event tile.
+    // This is needed because resize handles are only shown on hover for non-mobile devices.
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+
+    var tile = find.byKey(ScheduleEventTile.tileKey(multiDayEventID));
+    expect(tile, findsOneWidget, reason: 'ScheduleEventTile with id $multiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
     expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(multiDayEventID)), findsOneWidget);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsNothing);
+
+    tile = find.byKey(ScheduleEventTile.tileKey(customMultiDayEventID));
+    expect(tile, findsOneWidget, reason: 'Custom ScheduleEventTile with id $customMultiDayEventID not found');
+    await tester.hoverOn(tile, gesture);
+    expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
+    expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID)), findsNothing);
     expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
   });
 }

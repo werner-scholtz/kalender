@@ -1,7 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart' show DayEventTile;
+import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
 import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
 
 import 'utilities.dart';
@@ -89,19 +90,26 @@ void main() {
           await tester.pump();
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
+          // Create a mouse gesture to hover over the event tile.
+          // This is needed because resize handles are only shown on hover for non-mobile devices.
+          final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+          await gesture.addPointer(location: Offset.zero);
+          addTearDown(gesture.removePointer);
+
           // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
           // Find the resize handles.
+          await tester.hoverOn(dayEventTile, gesture);
           final topResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.topResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandles.startResizeDraggableKey(eventId)),
           );
           expect(topResizeHandle, findsOneWidget, reason: 'Top resize handle should be rendered');
           final bottomResizeHandle = find.descendant(
             of: dayEventTile,
-            matching: find.byKey(DayEventTile.bottomResizeDraggableKey(eventId)),
+            matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId)),
           );
           expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should be rendered');
 

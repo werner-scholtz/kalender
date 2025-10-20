@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
 
 /// A function type that generates a layout frame for multi-day events.
 ///
