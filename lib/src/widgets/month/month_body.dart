@@ -113,20 +113,11 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
                 dayHeaderBuilder: MonthDayHeader.fromContext<T>,
               ),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // Subtract 1 to account for the extra widget at the bottom.
-                    final maxNumberOfVerticalEvents = (constraints.maxHeight / configuration.tileHeight).floor() - 1;
-
-                    return MultiDayEventWidget<T>(
-                      visibleDateTimeRange: visibleDateTimeRange,
-                      configuration: configuration,
-                      overlayBuilders: components.overlayBuilders ?? monthComponents.bodyComponents.overlayBuilders,
-                      overlayStyles:
-                          components.overlayStyles ?? components.monthComponentStyles.bodyStyles.overlayStyles,
-                      maximumNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-                    );
-                  },
+                child: MultiDayEventWidget<T>(
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  configuration: configuration,
+                  overlayBuilders: components.overlayBuilders ?? monthComponents.bodyComponents.overlayBuilders,
+                  overlayStyles: components.overlayStyles ?? components.monthComponentStyles.bodyStyles.overlayStyles,
                 ),
               ),
             ],

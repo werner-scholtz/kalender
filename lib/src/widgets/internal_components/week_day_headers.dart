@@ -14,8 +14,8 @@ class WeekDayHeaders<T> extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: dates
               .map(
-                (date) => SizedBox(
-                  width: constraints.maxWidth / dates.length,
+                (date) => ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: constraints.maxWidth / dates.length),
                   child: dayHeaderBuilder.call(context, date),
                 ),
               )

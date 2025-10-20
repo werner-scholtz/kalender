@@ -42,8 +42,6 @@ void main() {
       ];
       eventsController.addEvents(events);
 
-      const maxNumberOfVerticalEvents = 2;
-
       await tester.pumpWidget(
         wrapWithMaterialApp(
           TestProvider(
@@ -53,12 +51,10 @@ void main() {
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
               visibleDateTimeRange: visibleRange,
-              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
-              multiDayCache: MultiDayLayoutFrameCache(),
-              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0),
+              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 2),
             ),
           ),
         ),
@@ -138,7 +134,6 @@ void main() {
 
       const tileHeight = 50.0;
       const dayWidth = 50.0;
-      const maxNumberOfVerticalEvents = 3;
 
       await tester.pumpWidget(
         wrapWithMaterialApp(
@@ -153,12 +148,10 @@ void main() {
               child: MultiDayEventLayoutWidget<int>(
                 events: eventsController.events.toList(),
                 visibleDateTimeRange: visibleRange,
-                maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
                 textDirection: TextDirection.ltr,
                 multiDayOverlayBuilders: null,
                 multiDayOverlayStyles: null,
-                multiDayCache: MultiDayLayoutFrameCache(),
-                configuration: const MultiDayHeaderConfiguration(),
+                configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 3),
               ),
             ),
           ),
@@ -235,8 +228,6 @@ void main() {
       ];
       eventsController.addEvents(events);
 
-      const maxNumberOfVerticalEvents = 2;
-
       await tester.pumpWidget(
         wrapWithMaterialApp(
           TestProvider(
@@ -246,12 +237,10 @@ void main() {
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
               visibleDateTimeRange: visibleRange,
-              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
-              multiDayCache: MultiDayLayoutFrameCache(),
-              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0),
+              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 2),
             ),
           ),
         ),
@@ -308,7 +297,6 @@ void main() {
       }
 
       const tileHeight = 50.0;
-      const maxNumberOfVerticalEvents = 3;
 
       await tester.pumpWidget(
         wrapWithMaterialApp(
@@ -319,8 +307,8 @@ void main() {
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
               visibleDateTimeRange: visibleRange,
-              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
               configuration: MultiDayHeaderConfiguration(
+                maximumNumberOfVerticalEvents: 3,
                 tileHeight: tileHeight,
                 generateMultiDayLayoutFrame: ({
                   required events,
@@ -340,7 +328,6 @@ void main() {
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
-              multiDayCache: MultiDayLayoutFrameCache(),
             ),
           ),
         ),
@@ -420,8 +407,6 @@ void main() {
         return a.end.compareTo(b.end);
       }
 
-      const maxNumberOfVerticalEvents = 3;
-
       await tester.pumpWidget(
         wrapWithMaterialApp(
           TestProvider(
@@ -431,9 +416,9 @@ void main() {
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
               visibleDateTimeRange: visibleRange,
-              maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
               configuration: MultiDayHeaderConfiguration(
                 tileHeight: 50.0,
+                maximumNumberOfVerticalEvents: 3,
                 generateMultiDayLayoutFrame: ({
                   required events,
                   required textDirection,
@@ -449,7 +434,6 @@ void main() {
                 ),
                 eventPadding: const EdgeInsets.all(0),
               ),
-              multiDayCache: MultiDayLayoutFrameCache(),
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,

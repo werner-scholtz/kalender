@@ -21,20 +21,25 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
 class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
+  /// The configuration that will be used to layout the multi-day events.
   final HorizontalConfiguration<T> configuration;
-  final DateTimeRange visibleDateTimeRange;
-  final int? maximumNumberOfVerticalEvents;
 
+  /// The range of dates that are visible.
+  final DateTimeRange visibleDateTimeRange;
+
+  /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders<T>? overlayBuilders;
+
+  /// The styles used for overlay widgets for multi-day events.
   final OverlayStyles? overlayStyles;
 
+  /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
     super.key,
     required this.visibleDateTimeRange,
     required this.overlayBuilders,
     required this.overlayStyles,
     required this.configuration,
-    this.maximumNumberOfVerticalEvents,
   });
 
   @override
@@ -42,27 +47,31 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWidget<T>> {
+  /// The events controller that provides the events.
   late EventsController<T> _eventsController;
+
+  /// The list of visible events.
   List<CalendarEvent<T>> _visibleEvents = [];
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _eventsController = context.eventsController<T>();
-      _update();
-      _eventsController.addListener(_update);
-    });
 
-    super.initState();
+      _updateEvents();
+      _eventsController.addListener(_updateEvents);
+    });
   }
 
   @override
   void dispose() {
-    _eventsController.removeListener(_update);
+    _eventsController.removeListener(_updateEvents);
     super.dispose();
   }
 
-  void _update() {
+  /// Updates the list of visible events if there are changes.
+  void _updateEvents() {
     final visibleEvents = _eventsController.eventsFromDateTimeRange(
       widget.visibleDateTimeRange,
       includeDayEvents: widget.configuration.allowSingleDayEvents,
@@ -70,21 +79,20 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
     );
 
     if (!listEquals(_visibleEvents, visibleEvents.toList())) {
+      // Update the state with the new visible events.
       setState(() => _visibleEvents = visibleEvents.toList());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: check if this needs to rebuild as often as it is currently.
+    // Update the visible events in the calendar controller.
     final controller = context.calendarController<T>();
     controller.visibleEvents.value = {...controller.visibleEvents.value, ..._visibleEvents};
 
     return MultiDayEventLayoutWidget<T>(
       events: _visibleEvents,
       visibleDateTimeRange: widget.visibleDateTimeRange,
-      maxNumberOfVerticalEvents: widget.maximumNumberOfVerticalEvents,
-      multiDayCache: controller.viewController!.multiDayCache,
       textDirection: Directionality.of(context),
       multiDayOverlayBuilders: widget.overlayBuilders,
       multiDayOverlayStyles: widget.overlayStyles,
@@ -100,34 +108,35 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
 /// that overlapping or adjacent events are properly aligned and do not overlap
 /// visually.
 ///
-/// This widget is used by month views and in day view headers, for  displaying multi-day activities.
+/// This widget is used by month views and in day view headers, for displaying multi-day activities.
 class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
+  /// The configuration that will be used to layout the multi-day events.
   final HorizontalConfiguration<T> configuration;
+
+  /// The range of dates that are visible.
   final DateTimeRange visibleDateTimeRange;
-  final int? maxNumberOfVerticalEvents;
-  final OverlayBuilders<T>? multiDayOverlayBuilders;
-  final OverlayStyles? multiDayOverlayStyles;
 
   /// The list of events that will be laid out.
   ///
   /// * Note: not all of these events will necessarily be visible,
-  ///         it depends on [maxNumberOfVerticalEvents].
   final List<CalendarEvent<T>> events;
-
-  /// The cache used for the multi-day event layout.
-  final MultiDayLayoutFrameCache<T> multiDayCache;
 
   /// The directionality of the widget.
   final TextDirection textDirection;
+
+  /// The builders used to create overlay widgets for multi-day events.
+  final OverlayBuilders<T>? multiDayOverlayBuilders;
+
+  /// The styles used for overlay widgets for multi-day events.
+  final OverlayStyles? multiDayOverlayStyles;
+
   const MultiDayEventLayoutWidget({
     required this.events,
     required this.visibleDateTimeRange,
     required this.configuration,
-    required this.maxNumberOfVerticalEvents,
     required this.textDirection,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
-    required this.multiDayCache,
     super.key,
   });
 
@@ -137,10 +146,16 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
 
 class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayEventLayoutWidget<T>> {
   /// The range of dates that the events will be laid out on.
-  late DateTimeRange _dateTimeRange;
+  late DateTimeRange _dateTimeRange = widget.visibleDateTimeRange;
+
+  /// The cache used to store layout frames for multi-day events.
+  MultiDayLayoutFrameCache<T>? get multiDayCache => context.calendarController<T>().viewController?.multiDayCache;
 
   /// The layout frame that contains all the data needed to display the events.
-  late MultiDayLayoutFrame<T> _frame;
+  MultiDayLayoutFrame<T>? _frame;
+
+  /// The size of the widget.
+  Size? _size;
 
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
@@ -149,19 +164,28 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
       widget.configuration.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
 
-  int? get maxNumberOfVerticalEvents =>
-      widget.maxNumberOfVerticalEvents ?? widget.configuration.maximumNumberOfVerticalEvents;
+  /// Returns the maximum number of vertical events that can be displayed.
+  int maxNumberOfRows(MultiDayLayoutFrame<T> frame) {
+    int? max;
+    final viewController = context.calendarController<T>().viewController;
+    if (viewController is MonthViewController && _size != null) {
+      // Subtract 1 to account for the extra widget at the bottom.
+      max = (_size!.height / widget.configuration.tileHeight).floor() - 1;
+    } else {
+      max = widget.configuration.maximumNumberOfVerticalEvents;
+    }
+
+    return max == null ? frame.totalNumberOfRows : min(frame.totalNumberOfRows, max);
+  }
 
   @override
   void initState() {
     super.initState();
-    _dateTimeRange = widget.visibleDateTimeRange;
-    _frame = generateMultiDayLayoutFrame(
-      visibleDateTimeRange: _dateTimeRange,
-      events: widget.events,
-      textDirection: widget.textDirection,
-      cache: widget.multiDayCache,
-    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _size = context.size;
+      _generateFrame();
+    });
   }
 
   @override
@@ -172,37 +196,38 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         oldWidget.configuration != widget.configuration ||
         oldWidget.textDirection != widget.textDirection;
 
-    final didUpdate = shouldUpdateCache ||
-        oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
-        oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
-        oldWidget.multiDayCache != widget.multiDayCache ||
-        oldWidget.configuration != widget.configuration;
+    final didUpdate = shouldUpdateCache || oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange;
 
     if (didUpdate) {
       _dateTimeRange = widget.visibleDateTimeRange;
 
       if (shouldUpdateCache) {
-        widget.multiDayCache.removeCache(_dateTimeRange);
+        multiDayCache?.removeCache(_dateTimeRange);
       }
 
-      setState(() {
-        _frame = generateMultiDayLayoutFrame(
-          visibleDateTimeRange: _dateTimeRange,
-          events: widget.events,
-          textDirection: widget.textDirection,
-          cache: widget.multiDayCache,
-        );
-      });
+      _generateFrame();
     }
+  }
+
+  /// Generates the layout frame for the events.
+  void _generateFrame() {
+    setState(() {
+      _frame = generateMultiDayLayoutFrame(
+        visibleDateTimeRange: _dateTimeRange,
+        events: widget.events,
+        textDirection: widget.textDirection,
+        cache: multiDayCache,
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final (events, layoutInfo) = _frame.visibleEvents(maxNumberOfVerticalEvents);
+    final frame = _frame;
+    if (frame == null) return const SizedBox.shrink();
 
-    final maxNumberOfRows = maxNumberOfVerticalEvents == null
-        ? _frame.totalNumberOfRows
-        : min(_frame.totalNumberOfRows, maxNumberOfVerticalEvents!);
+    final maxNumberOfRows = this.maxNumberOfRows(frame);
+    final (events, layoutInfo) = frame.visibleEvents(maxNumberOfRows);
 
     // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
@@ -277,13 +302,13 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             PassThroughPointer(child: dropTargetWidget),
           ],
         ),
-        if (_frame.totalNumberOfRows > maxNumberOfRows)
+        if (frame.totalNumberOfRows > maxNumberOfRows)
           Row(
-            children: _frame.columnRowMap.entries.map((entry) {
+            children: frame.columnRowMap.entries.map((entry) {
               final column = entry.key;
               final row = entry.value;
-              final date = _frame.dateFromColumn(column);
-              final eventsForColumn = _frame.eventsForColumn(column);
+              final date = frame.dateFromColumn(column);
+              final eventsForColumn = frame.eventsForColumn(column);
               late final numberOfHiddenRows = (row + 1) - maxNumberOfRows;
 
               late final overlayPortal = widget.multiDayOverlayBuilders?.multiDayOverlayPortalBuilder?.call(
