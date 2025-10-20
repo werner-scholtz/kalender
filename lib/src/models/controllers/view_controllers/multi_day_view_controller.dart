@@ -75,13 +75,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
-  /// The cache used by the event layout delegate.
-  /// TODO: this can be passed between ViewControllers, but for now it is created here.
-  final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
-
-  /// The cache used for the multi-day event layout.
-  final MultiDayLayoutFrameCache<T> multiDayCache = MultiDayLayoutFrameCache<T>();
-
   void pageListener() {
     if (!headerController.hasClients) return;
     headerController.position.correctPixels(pageController.offset);

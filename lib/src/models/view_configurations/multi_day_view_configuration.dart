@@ -303,7 +303,7 @@ Please use the `generateFrame` method instead.
     super.maximumNumberOfVerticalEvents,
     super.eventPadding = kDefaultMultiDayEventPadding,
     super.pageTriggerConfiguration,
-    super.allowSingleDayEvents = true,
+    super.allowSingleDayEvents = false,
     this.eventLayoutStrategy,
   });
 
