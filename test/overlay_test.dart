@@ -96,7 +96,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(overlay, findsOne);
 
-        final event = find.byType(MultiDayOverlayTile).first;
+        final event = find.byType(MultiDayOverlayEventTile).first;
         expect(event, findsOne);
 
         // Simulate a drag gesture on the event tile to dismiss the overlay.

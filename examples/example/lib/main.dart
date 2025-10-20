@@ -268,6 +268,7 @@ class DayEventTile extends StatelessWidget {
   }
 }
 
+// TODO: remove
 mixin EventTileMixin {
   // TODO: Implement mixin for EventTileBuilders that provides usefull utils.
   void getNearbyEvents() {}

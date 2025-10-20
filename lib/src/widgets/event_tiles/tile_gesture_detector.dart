@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
 

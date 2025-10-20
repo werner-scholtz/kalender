@@ -6,6 +6,7 @@ import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
 
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 
@@ -43,6 +44,8 @@ abstract class EventTile<T extends Object?> extends StatefulWidget {
   final DateTimeRange dateTimeRange;
 
   /// The function that is called when the overlay needs to be dismissed.
+  ///
+  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayOverlayEventTile]
   final VoidCallback? dismissOverlay;
 
   /// The axis along which the event can be resized.
