@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// The [CalendarProvider] is used to provide the [CalendarCallbacks] and [CalendarComponents] to the [CalendarView]'s descendants.
-class CalendarProvider<T extends Object?> extends InheritedWidget {
-  /// The [CalendarCallbacks] that will be used by the Calendar.
-  final CalendarCallbacks<T>? callbacks;
+/// The [Components] widget provides the [CalendarComponents] to the widget tree.
+class Components<T extends Object?> extends InheritedWidget {
+  /// The [CalendarComponents] that will be used by the Calendar.
+  final CalendarComponents<T> components;
 
-  /// Components used by the CalendarView.
-  final CalendarComponents<T>? components;
+  /// Creates a [Components] with the specified components.
+  const Components({super.key, required this.components, required super.child});
 
-  const CalendarProvider({required this.callbacks, required this.components, required super.child, super.key});
-
-  /// Finds the [CalendarProvider] of type [T] in the widget tree, or null if not found.
-  static CalendarProvider<T>? maybeOf<T>(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CalendarProvider<T>>();
-  }
-
-  /// Finds the [CalendarProvider] of type [T] in the widget tree, or throws an assertion error if not found.
-  static CalendarProvider<T> of<T>(BuildContext context) {
-    final result = maybeOf<T>(context);
-    assert(result != null, 'No CalendarProvider of <$T> found.');
-    return result!;
+  /// Gets the [Components] of type [T] from the context.
+  static CalendarComponents<T> of<T>(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<Components<T>>();
+    assert(result != null, 'No ComponentsProvider of <$T> found.');
+    return result!.components;
   }
 
   @override
-  bool updateShouldNotify(covariant CalendarProvider<T> oldWidget) {
-    return callbacks != oldWidget.callbacks || components != oldWidget.components;
+  bool updateShouldNotify(covariant Components<T> oldWidget) {
+    return components != oldWidget.components;
   }
 }
 
@@ -168,17 +161,14 @@ class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
 
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
-  /// Returns the [CalendarProvider] of type [T] from the context.
-  CalendarProvider<T> provider<T extends Object?>() => CalendarProvider.of<T>(this);
-
-  /// Retrieve the [EventsController] from the [CalendarProvider].
+  /// Retrieve the [EventsController].
   EventsController<T> eventsController<T extends Object?>() => EventsControllerProvider.of<T>(this);
 
-  /// Retrieve the [CalendarController] from the [CalendarProvider].
+  /// Retrieve the [CalendarController].
   CalendarController<T> calendarController<T extends Object?>() => CalendarControllerProvider.of<T>(this);
 
-  /// Retrieve the [CalendarComponents] from the [CalendarProvider].
-  CalendarComponents<T>? components<T extends Object?>() => provider<T>().components;
+  /// Retrieve the [CalendarComponents].
+  CalendarComponents<T> components<T extends Object?>() => Components.of<T>(this);
 
   /// Retrieve the [CalendarCallbacks] from the [Callbacks].
   CalendarCallbacks<T>? callbacks<T extends Object?>() => Callbacks.of<T>(this);

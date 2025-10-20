@@ -15,22 +15,22 @@ import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.
 /// Provide your own widgets with [multiDayComponents] and [monthComponents].
 class CalendarComponents<T extends Object?> {
   /// Components used to override the default month components
-  final MonthComponents<T>? monthComponents;
+  final MonthComponents<T> monthComponents;
 
   /// Styles used by the month view.
-  final MonthComponentStyles? monthComponentStyles;
+  final MonthComponentStyles monthComponentStyles;
 
   /// Components used to override the default multi day components.
-  final MultiDayComponents<T>? multiDayComponents;
+  final MultiDayComponents<T> multiDayComponents;
 
   /// Styles used by the multi day view.
-  final MultiDayComponentStyles? multiDayComponentStyles;
+  final MultiDayComponentStyles multiDayComponentStyles;
 
   /// Components used to override the default schedule components.
-  final ScheduleComponents<T>? scheduleComponents;
+  final ScheduleComponents<T> scheduleComponents;
 
   /// Styles used by the schedule view.
-  final ScheduleComponentStyles? scheduleComponentStyles;
+  final ScheduleComponentStyles scheduleComponentStyles;
 
   /// Default override for the overlay widgets.
   ///
@@ -43,12 +43,12 @@ class CalendarComponents<T extends Object?> {
   final OverlayStyles? overlayStyles;
 
   CalendarComponents({
-    this.monthComponents,
-    this.monthComponentStyles,
-    this.multiDayComponents,
-    this.multiDayComponentStyles,
-    this.scheduleComponents,
-    this.scheduleComponentStyles,
+    this.monthComponents = const MonthComponents(),
+    this.monthComponentStyles = const MonthComponentStyles(),
+    this.multiDayComponents = const MultiDayComponents(),
+    this.multiDayComponentStyles = const MultiDayComponentStyles(),
+    this.scheduleComponents = const ScheduleComponents(),
+    this.scheduleComponentStyles = const ScheduleComponentStyles(),
     this.overlayBuilders,
     this.overlayStyles,
   });
@@ -65,7 +65,7 @@ class OverlayBuilders<T extends Object?> {
   /// The builder for the multi day overlay portal button.
   final MultiDayPortalOverlayButtonBuilder? multiDayPortalOverlayButtonBuilder;
 
-  OverlayBuilders({
+  const OverlayBuilders({
     this.multiDayOverlayBuilder,
     this.multiDayOverlayPortalBuilder,
     this.multiDayPortalOverlayButtonBuilder,

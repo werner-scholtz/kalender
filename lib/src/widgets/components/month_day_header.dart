@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The month day header builder.
 typedef MonthDayHeaderBuilder = Widget Function(
@@ -34,6 +35,13 @@ class MonthDayHeader extends StatelessWidget {
   const MonthDayHeader({super.key, required this.date, this.style});
   static MonthDayHeader builder(DateTime date, MonthDayHeaderStyle? style) {
     return MonthDayHeader(date: date, style: style);
+  }
+
+  static Widget fromContext<T extends Object?>(BuildContext context, DateTime date) {
+    final components = context.components<T>();
+    final dayHeader = components.monthComponents.bodyComponents.monthDayHeaderBuilder;
+    final style = components.monthComponentStyles.bodyStyles.monthDayHeaderStyle;
+    return dayHeader(date, style);
   }
 
   @override

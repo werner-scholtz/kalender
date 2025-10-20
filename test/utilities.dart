@@ -117,22 +117,24 @@ class TestProvider<T> extends StatelessWidget {
       eventsController: eventsController,
       child: CalendarControllerProvider(
         notifier: calendarController,
-        child: CalendarProvider<T>(
+        child: Callbacks<T>(
           callbacks: null,
-          components: components,
-          child: Interaction(
-            notifier: interaction ?? ValueNotifier(CalendarInteraction()),
-            child: Snapping(
-              notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
-              child: HeightPerMinute(
-                notifier: heightPerMinute ?? ValueNotifier(0.7),
-                child: Callbacks<T>(
-                  callbacks: callbacks ?? CalendarCallbacks<T>(),
-                  child: TileComponentProvider<T>(
-                    tileComponents: tileComponents,
-                    child: LocaleProvider(
-                      locale: locale,
-                      child: child,
+          child: Components<T>(
+            components: components ?? CalendarComponents<T>(),
+            child: Interaction(
+              notifier: interaction ?? ValueNotifier(CalendarInteraction()),
+              child: Snapping(
+                notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
+                child: HeightPerMinute(
+                  notifier: heightPerMinute ?? ValueNotifier(0.7),
+                  child: Callbacks<T>(
+                    callbacks: callbacks ?? CalendarCallbacks<T>(),
+                    child: TileComponentProvider<T>(
+                      tileComponents: tileComponents,
+                      child: LocaleProvider(
+                        locale: locale,
+                        child: child,
+                      ),
                     ),
                   ),
                 ),

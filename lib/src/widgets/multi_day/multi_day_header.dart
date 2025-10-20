@@ -6,6 +6,7 @@ import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
+import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// The multi-day header decides which header to display the:
 /// - [_SingleDayHeader] this is used for a body that only displays a single day.
@@ -31,30 +32,30 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MultiDayViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? MultiDayHeaderConfiguration<T>();
+    final components = context.components<T>();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final header = switch (viewConfiguration.type) {
-          MultiDayViewType.freeScroll => _FreeScrollHeader<T>(
-              key: ValueKey(viewConfiguration.hashCode),
-              viewController: viewController,
-              configuration: headerConfiguration,
-            ),
-          MultiDayViewType.singleDay => _SingleDayHeader<T>(
-              key: ValueKey(viewConfiguration.hashCode),
-              viewController: viewController,
-              configuration: headerConfiguration,
-            ),
-          _ => _MultiDayHeader<T>(
-              key: ValueKey(viewConfiguration.hashCode),
-              viewController: viewController,
-              configuration: headerConfiguration,
-            )
-        };
+    final header = switch (viewConfiguration.type) {
+      MultiDayViewType.freeScroll => _FreeScrollHeader<T>(
+          key: ValueKey(viewConfiguration.hashCode),
+          viewController: viewController,
+          configuration: headerConfiguration,
+          components: components,
+        ),
+      MultiDayViewType.singleDay => _SingleDayHeader<T>(
+          key: ValueKey(viewConfiguration.hashCode),
+          viewController: viewController,
+          configuration: headerConfiguration,
+          components: components,
+        ),
+      _ => _MultiDayHeader<T>(
+          key: ValueKey(viewConfiguration.hashCode),
+          viewController: viewController,
+          configuration: headerConfiguration,
+          components: components,
+        )
+    };
 
-        return Column(children: [header]);
-      },
-    );
+    return Column(children: [header]);
   }
 }
 
@@ -62,22 +63,24 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
   final HorizontalConfiguration<T> configuration;
+  final CalendarComponents<T> components;
 
   const _SingleDayHeader({
     super.key,
     required this.configuration,
     required this.viewController,
+    required this.components,
   });
 
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
 
-    final dayHeaderStyle = componentStyles?.dayHeaderStyle;
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
+
+    final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleRange, child) {
@@ -85,56 +88,47 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final pageView = LayoutBuilder(
-      builder: (context, constraints) {
-        final pageWidth = constraints.maxWidth;
-        return ExpandablePageView(
-          controller: viewController.headerController,
-          itemCount: viewController.numberOfPages,
-          itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+    return MultiDayHeaderWidget<T>(
+      content: ExpandablePageView(
+        controller: viewController.headerController,
+        itemCount: viewController.numberOfPages,
+        itemBuilder: (context, index) {
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
 
-            // Minimum constraints for the multiDayEvents.
-            final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2, minWidth: pageWidth);
-            final multiDayEvents = MultiDayEventWidget<T>(
-              visibleDateTimeRange: visibleRange,
-              showAllEvents: false,
-              tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
-              eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
-              multiDayCache: viewController.multiDayCache,
-            );
+          // Minimum constraints for the multiDayEvents.
+          final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
 
-            final multiDayDragTarget = HorizontalDragTarget<T>(
-              pageTriggerSetup: configuration.pageTriggerConfiguration,
-              visibleDateTimeRange: visibleRange,
-              dayWidth: pageWidth,
-              pageWidth: pageWidth,
-              tileHeight: configuration.tileHeight,
-              configuration: configuration,
-              leftPageTrigger: headerComponents.leftTriggerBuilder,
-              rightPageTrigger: headerComponents.rightTriggerBuilder,
-            );
-
-            return Stack(
-              children: [
-                if (configuration.showTiles) ...[
-                  Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
-                  ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                  Positioned.fill(child: multiDayDragTarget),
-                ] else
-                  ConstrainedBox(constraints: constraints, child: const SizedBox.shrink()),
-              ],
-            );
-          },
-        );
-      },
+          return Stack(
+            children: [
+              if (configuration.showTiles) ...[
+                Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                ConstrainedBox(
+                  constraints: constraints,
+                  child: MultiDayEventWidget<T>(
+                    visibleDateTimeRange: visibleRange,
+                    configuration: configuration,
+                    multiDayCache: viewController.multiDayCache,
+                    maxNumberOfVerticalEvents: null,
+                    overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                    overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                  ),
+                ),
+                Positioned.fill(
+                  child: HorizontalDragTarget<T>(
+                    visibleDateTimeRange: visibleRange,
+                    configuration: configuration,
+                    leftPageTrigger: headerComponents.leftTriggerBuilder,
+                    rightPageTrigger: headerComponents.rightTriggerBuilder,
+                  ),
+                ),
+              ] else
+                ConstrainedBox(constraints: constraints, child: const SizedBox.shrink()),
+            ],
+          );
+        },
+      ),
+      leading: dayHeaderWidget,
     );
-
-    return MultiDayHeaderWidget<T>(content: pageView, leading: dayHeaderWidget);
   }
 }
 
@@ -142,22 +136,23 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
   final HorizontalConfiguration<T> configuration;
+  final CalendarComponents<T> components;
 
   const _MultiDayHeader({
     super.key,
     required this.configuration,
     required this.viewController,
+    required this.components,
   });
 
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
 
-    final weekNumberStyle = componentStyles?.weekNumberStyle;
+    final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
@@ -165,67 +160,51 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final pageView = LayoutBuilder(
-      builder: (context, constraints) {
-        final pageWidth = constraints.maxWidth;
-        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+    return MultiDayHeaderWidget<T>(
+      content: ExpandablePageView(
+        controller: viewController.headerController,
+        itemCount: viewController.numberOfPages,
+        itemBuilder: (context, index) {
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleDates = visibleRange.dates();
 
-        return ExpandablePageView(
-          controller: viewController.headerController,
-          itemCount: viewController.numberOfPages,
-          itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            final visibleDates = visibleRange.dates();
-
-            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
-            final dayHeaders = visibleDates.map((date) {
-              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
-              return SizedBox(width: dayWidth, child: dayHeader);
-            }).toList();
-
-            final constraints = BoxConstraints(minHeight: configuration.tileHeight, minWidth: pageWidth);
-            final multiDayEvents = MultiDayEventWidget<T>(
-              visibleDateTimeRange: visibleRange,
-              showAllEvents: false,
-              tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
-              eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
-              multiDayCache: viewController.multiDayCache,
-            );
-
-            final multiDayDragTarget = HorizontalDragTarget<T>(
-              pageTriggerSetup: configuration.pageTriggerConfiguration,
-              visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
-              pageWidth: pageWidth,
-              tileHeight: configuration.tileHeight,
-              configuration: configuration,
-              leftPageTrigger: headerComponents.leftTriggerBuilder,
-              rightPageTrigger: headerComponents.rightTriggerBuilder,
-            );
-
-            return Column(
-              children: [
-                Row(children: [...dayHeaders]),
-                if (configuration.showTiles)
-                  Stack(
-                    children: [
-                      Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
-                      ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                      Positioned.fill(child: multiDayDragTarget),
-                    ],
-                  ),
-              ],
-            );
-          },
-        );
-      },
+          return Column(
+            children: [
+              WeekDayHeaders<T>(
+                dates: visibleDates,
+                dayHeaderBuilder: DayHeader.fromContext<T>,
+              ),
+              if (configuration.showTiles)
+                Stack(
+                  children: [
+                    Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: configuration.tileHeight),
+                      child: MultiDayEventWidget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        multiDayCache: viewController.multiDayCache,
+                        maxNumberOfVerticalEvents: null,
+                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: HorizontalDragTarget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        leftPageTrigger: headerComponents.leftTriggerBuilder,
+                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          );
+        },
+      ),
+      leading: weekNumberWidget,
     );
-
-    return MultiDayHeaderWidget<T>(content: pageView, leading: weekNumberWidget);
   }
 }
 
@@ -233,22 +212,23 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   final MultiDayViewController<T> viewController;
   final HorizontalConfiguration<T> configuration;
+  final CalendarComponents<T> components;
 
   const _FreeScrollHeader({
     super.key,
     required this.viewController,
     required this.configuration,
+    required this.components,
   });
 
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
-    final components = context.provider<T>().components;
-    final headerComponents = components?.multiDayComponents?.headerComponents ?? MultiDayHeaderComponents<T>();
-    final componentStyles = components?.multiDayComponentStyles?.headerStyles;
+    final headerComponents = components.multiDayComponents.headerComponents;
+    final componentStyles = components.multiDayComponentStyles.headerStyles;
 
-    final weekNumberStyle = componentStyles?.weekNumberStyle;
+    final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, value, child) {
@@ -256,73 +236,53 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    final pageView = LayoutBuilder(
-      builder: (context, constraints) {
-        final pageWidth = constraints.maxWidth;
-        final dayWidth = pageWidth / viewConfiguration.numberOfDays;
+    return MultiDayHeaderWidget<T>(
+      /// TODO: figure out how to get multi-day events to work with FreeScroll.
+      ///
+      /// To do this the header would need to display a single page and not multiple. see viewport fraction.
+      content: ExpandablePageView(
+        controller: viewController.headerController,
+        itemCount: viewController.numberOfPages,
+        itemBuilder: (context, index) {
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleDates = visibleRange.dates();
 
-        /// TODO: figure out how to get multi-day events to work with FreeScroll.
-        ///
-        /// To do this the header would need to display a single page and not multiple. see viewport fraction.
-        return ExpandablePageView(
-          controller: viewController.headerController,
-          itemCount: viewController.numberOfPages,
-          itemBuilder: (context, index) {
-            final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-            final visibleDates = visibleRange.dates();
-
-            final dayHeaderStyle = componentStyles?.dayHeaderStyle;
-            final dayHeaders = visibleDates.map((date) {
-              final dayHeader = headerComponents.dayHeaderBuilder.call(date.asLocal, dayHeaderStyle);
-              return SizedBox(width: dayWidth, child: dayHeader);
-            }).toList();
-
-            final multiDayEvents = MultiDayEventWidget<T>(
-              visibleDateTimeRange: visibleRange,
-              showAllEvents: false,
-              tileHeight: configuration.tileHeight,
-              maxNumberOfRows: configuration.maximumNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: configuration.generateMultiDayLayoutFrame,
-              eventPadding: configuration.eventPadding,
-              overlayBuilders: headerComponents.overlayBuilders ?? components?.overlayBuilders,
-              overlayStyles: componentStyles?.overlayStyles ?? components?.overlayStyles,
-              multiDayCache: viewController.multiDayCache,
-            );
-
-            final multiDayDragTarget = HorizontalDragTarget<T>(
-              pageTriggerSetup: configuration.pageTriggerConfiguration,
-              visibleDateTimeRange: visibleRange,
-              dayWidth: dayWidth,
-              pageWidth: pageWidth,
-              tileHeight: configuration.tileHeight,
-              configuration: configuration,
-              leftPageTrigger: headerComponents.leftTriggerBuilder,
-              rightPageTrigger: headerComponents.rightTriggerBuilder,
-            );
-
-            final constraints = BoxConstraints(
-              minHeight: configuration.tileHeight,
-              minWidth: pageWidth,
-            );
-
-            return Column(
-              children: [
-                Row(children: [...dayHeaders]),
-                if (configuration.showTiles)
-                  Stack(
-                    children: [
-                      Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
-                      ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                      Positioned.fill(child: multiDayDragTarget),
-                    ],
-                  ),
-              ],
-            );
-          },
-        );
-      },
+          return Column(
+            children: [
+              WeekDayHeaders<T>(
+                dates: visibleDates,
+                dayHeaderBuilder: DayHeader.fromContext<T>,
+              ),
+              if (configuration.showTiles)
+                Stack(
+                  children: [
+                    Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: configuration.tileHeight),
+                      child: MultiDayEventWidget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        multiDayCache: viewController.multiDayCache,
+                        maxNumberOfVerticalEvents: null,
+                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: HorizontalDragTarget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        leftPageTrigger: headerComponents.leftTriggerBuilder,
+                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          );
+        },
+      ),
+      leading: weekNumberWidget,
     );
-
-    return MultiDayHeaderWidget<T>(content: pageView, leading: weekNumberWidget);
   }
 }

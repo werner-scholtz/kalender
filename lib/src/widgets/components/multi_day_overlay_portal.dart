@@ -17,6 +17,7 @@ typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
+  required MultiDayOverlayEventTileBuilder<T> overlayTileBuilder,
   required OverlayBuilders<T>? overlayBuilders,
   required OverlayStyles? overlayStyles,
 });
