@@ -1,34 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-// /// The [CalendarProvider] is used to provide the [CalendarCallbacks] and [CalendarComponents] to the [CalendarView]'s descendants.
-// class CalendarProvider<T extends Object?> extends InheritedWidget {
-//   /// The [CalendarCallbacks] that will be used by the Calendar.
-//   final CalendarCallbacks<T>? callbacks;
-
-//   /// Components used by the CalendarView.
-//   final CalendarComponents<T>? components;
-
-//   const CalendarProvider({required this.callbacks, required this.components, required super.child, super.key});
-
-//   /// Finds the [CalendarProvider] of type [T] in the widget tree, or null if not found.
-//   static CalendarProvider<T>? maybeOf<T>(BuildContext context) {
-//     return context.dependOnInheritedWidgetOfExactType<CalendarProvider<T>>();
-//   }
-
-//   /// Finds the [CalendarProvider] of type [T] in the widget tree, or throws an assertion error if not found.
-//   static CalendarProvider<T> of<T>(BuildContext context) {
-//     final result = maybeOf<T>(context);
-//     assert(result != null, 'No CalendarProvider of <$T> found.');
-//     return result!;
-//   }
-
-//   @override
-//   bool updateShouldNotify(covariant CalendarProvider<T> oldWidget) {
-//     return callbacks != oldWidget.callbacks || components != oldWidget.components;
-//   }
-// }
-
 /// The [Components] widget provides the [CalendarComponents] to the widget tree.
 class Components<T extends Object?> extends InheritedWidget {
   /// The [CalendarComponents] that will be used by the Calendar.
