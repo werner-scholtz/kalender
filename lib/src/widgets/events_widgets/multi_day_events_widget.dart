@@ -27,6 +27,12 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   /// The range of dates that are visible.
   final DateTimeRange visibleDateTimeRange;
 
+  /// The maximum number of vertical events that can be displayed.
+  final int? maxNumberOfVerticalEvents;
+
+  /// The cache used to store layout frames for multi-day events.
+  final MultiDayLayoutFrameCache<T>? multiDayCache;
+
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders<T>? overlayBuilders;
 
@@ -37,9 +43,11 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   const MultiDayEventWidget({
     super.key,
     required this.visibleDateTimeRange,
+    required this.multiDayCache,
+    required this.maxNumberOfVerticalEvents,
+    required this.configuration,
     required this.overlayBuilders,
     required this.overlayStyles,
-    required this.configuration,
   });
 
   @override
@@ -94,9 +102,11 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
       events: _visibleEvents,
       visibleDateTimeRange: widget.visibleDateTimeRange,
       textDirection: Directionality.of(context),
+      configuration: widget.configuration,
+      maxNumberOfVerticalEvents: widget.maxNumberOfVerticalEvents,
+      multiDayCache: widget.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
       multiDayOverlayStyles: widget.overlayStyles,
-      configuration: widget.configuration,
     );
   }
 }
@@ -124,6 +134,12 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The directionality of the widget.
   final TextDirection textDirection;
 
+  /// The maximum number of vertical events that can be displayed.
+  final int? maxNumberOfVerticalEvents;
+
+  /// The cache used to store layout frames for multi-day events.
+  final MultiDayLayoutFrameCache<T>? multiDayCache;
+
   /// The builders used to create overlay widgets for multi-day events.
   final OverlayBuilders<T>? multiDayOverlayBuilders;
 
@@ -135,6 +151,8 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.visibleDateTimeRange,
     required this.configuration,
     required this.textDirection,
+    required this.maxNumberOfVerticalEvents,
+    required this.multiDayCache,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
     super.key,
@@ -148,14 +166,8 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   /// The range of dates that the events will be laid out on.
   late DateTimeRange _dateTimeRange = widget.visibleDateTimeRange;
 
-  /// The cache used to store layout frames for multi-day events.
-  MultiDayLayoutFrameCache<T>? get multiDayCache => context.calendarController<T>().viewController?.multiDayCache;
-
   /// The layout frame that contains all the data needed to display the events.
   MultiDayLayoutFrame<T>? _frame;
-
-  /// The size of the widget.
-  Size? _size;
 
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
@@ -166,26 +178,19 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// Returns the maximum number of vertical events that can be displayed.
   int maxNumberOfRows(MultiDayLayoutFrame<T> frame) {
-    int? max;
-    final viewController = context.calendarController<T>().viewController;
-    if (viewController is MonthViewController && _size != null) {
-      // Subtract 1 to account for the extra widget at the bottom.
-      max = (_size!.height / widget.configuration.tileHeight).floor() - 1;
-    } else {
-      max = widget.configuration.maximumNumberOfVerticalEvents;
-    }
-
+    final max = widget.maxNumberOfVerticalEvents ?? widget.configuration.maximumNumberOfVerticalEvents;
     return max == null ? frame.totalNumberOfRows : min(frame.totalNumberOfRows, max);
   }
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _size = context.size;
-      _generateFrame();
-    });
+    _frame = generateMultiDayLayoutFrame(
+      visibleDateTimeRange: _dateTimeRange,
+      events: widget.events,
+      textDirection: widget.textDirection,
+      cache: widget.multiDayCache,
+    );
   }
 
   @override
@@ -202,23 +207,18 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       _dateTimeRange = widget.visibleDateTimeRange;
 
       if (shouldUpdateCache) {
-        multiDayCache?.removeCache(_dateTimeRange);
+        widget.multiDayCache?.removeCache(_dateTimeRange);
       }
 
-      _generateFrame();
+      setState(() {
+        _frame = generateMultiDayLayoutFrame(
+          visibleDateTimeRange: _dateTimeRange,
+          events: widget.events,
+          textDirection: widget.textDirection,
+          cache: widget.multiDayCache,
+        );
+      });
     }
-  }
-
-  /// Generates the layout frame for the events.
-  void _generateFrame() {
-    setState(() {
-      _frame = generateMultiDayLayoutFrame(
-        visibleDateTimeRange: _dateTimeRange,
-        events: widget.events,
-        textDirection: widget.textDirection,
-        cache: multiDayCache,
-      );
-    });
   }
 
   @override

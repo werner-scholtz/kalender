@@ -106,9 +106,11 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                   constraints: constraints,
                   child: MultiDayEventWidget<T>(
                     visibleDateTimeRange: visibleRange,
+                    configuration: configuration,
+                    multiDayCache: viewController.multiDayCache,
+                    maxNumberOfVerticalEvents: null,
                     overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
                     overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-                    configuration: configuration,
                   ),
                 ),
                 Positioned.fill(
@@ -180,9 +182,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget<T>(
                         visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        multiDayCache: viewController.multiDayCache,
+                        maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
                         overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-                        configuration: configuration,
                       ),
                     ),
                     Positioned.fill(
@@ -257,9 +261,11 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget<T>(
                         visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        multiDayCache: viewController.multiDayCache,
+                        maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
                         overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-                        configuration: configuration,
                       ),
                     ),
                     Positioned.fill(

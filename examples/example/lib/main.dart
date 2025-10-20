@@ -104,11 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         // Customize the components.
         components: CalendarComponents<Event>(
-          multiDayComponents: MultiDayComponents(),
-          multiDayComponentStyles: MultiDayComponentStyles(),
-          monthComponents: MonthComponents(),
-          monthComponentStyles: MonthComponentStyles(),
-          scheduleComponents: ScheduleComponents(),
+          multiDayComponents: const MultiDayComponents(),
+          multiDayComponentStyles: const MultiDayComponentStyles(),
+          monthComponents: const MonthComponents(),
+          monthComponentStyles: const MonthComponentStyles(),
+          scheduleComponents: const ScheduleComponents(),
           scheduleComponentStyles: const ScheduleComponentStyles(),
         ),
         // Style the header with a martial widget.
