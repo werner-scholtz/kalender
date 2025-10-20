@@ -8,29 +8,32 @@ import 'package:kalender/src/widgets/month/month_header.dart';
 /// A class containing styles for the [MonthBody] and [MonthHeader].
 class MonthComponentStyles {
   /// The styles of the default components used by the [MonthHeader].
-  final MonthBodyComponentStyles? bodyStyles;
+  final MonthBodyComponentStyles bodyStyles;
 
   /// The styles of the default components used by the [MonthBody].
-  final MonthHeaderComponentStyles? headerStyles;
+  final MonthHeaderComponentStyles headerStyles;
 
-  MonthComponentStyles({this.bodyStyles, this.headerStyles});
+  const MonthComponentStyles({
+    this.bodyStyles = const MonthBodyComponentStyles(),
+    this.headerStyles = const MonthHeaderComponentStyles(),
+  });
 }
 
 /// The styles of the default components used by the [MonthBody].
 class MonthBodyComponentStyles {
   /// The style of the month grid.
-  final MonthGridStyle? monthGridStyle;
+  final MonthGridStyle monthGridStyle;
 
   /// The style of the day header.
-  final MonthDayHeaderStyle? monthDayHeaderStyle;
+  final MonthDayHeaderStyle monthDayHeaderStyle;
 
   /// The styles of the overlay components.
   final OverlayStyles? overlayStyles;
 
   /// Creates a override(s) for the default styles used by the [MonthBody].
   const MonthBodyComponentStyles({
-    this.monthGridStyle,
-    this.monthDayHeaderStyle,
+    this.monthGridStyle = const MonthGridStyle(),
+    this.monthDayHeaderStyle = const MonthDayHeaderStyle(),
     this.overlayStyles,
   });
 }
@@ -38,8 +41,8 @@ class MonthBodyComponentStyles {
 /// The styles of the default components used by the [MonthHeader].
 class MonthHeaderComponentStyles {
   /// The style of the week day header.
-  final WeekDayHeaderStyle? weekDayHeaderStyle;
+  final WeekDayHeaderStyle weekDayHeaderStyle;
 
   /// Creates a override(s) for the default styles used by the [MonthHeader].
-  const MonthHeaderComponentStyles({this.weekDayHeaderStyle});
+  const MonthHeaderComponentStyles({this.weekDayHeaderStyle = const WeekDayHeaderStyle()});
 }

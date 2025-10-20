@@ -19,7 +19,6 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.provider<T>();
     final calendarController = context.calendarController<T>();
 
     assert(
@@ -38,9 +37,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final pageTriggerConfiguration = bodyConfiguration.pageTriggerConfiguration;
     final tileHeight = bodyConfiguration.tileHeight;
 
-    final calendarComponents = provider.components;
-    final styles = calendarComponents?.monthComponentStyles?.bodyStyles;
-    final components = calendarComponents?.monthComponents?.bodyComponents ?? MonthBodyComponents<T>();
+    final calendarComponents = context.components<T>();
+    final styles = calendarComponents.monthComponentStyles.bodyStyles;
+    final components = calendarComponents.monthComponents.bodyComponents;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -88,7 +87,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
                 final dates = List.generate(7, (index) {
                   final date = visibleDateTimeRange.start.addDays(index);
-                  final monthDayHeaderStyle = styles?.monthDayHeaderStyle;
+                  final monthDayHeaderStyle = styles.monthDayHeaderStyle;
                   final monthDayHeder = components.monthDayHeaderBuilder.call(date, monthDayHeaderStyle);
                   return monthDayHeder;
                 });
@@ -117,8 +116,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                                     maxNumberOfRows: maxNumberOfVerticalEvents,
                                     showAllEvents: true,
                                     generateMultiDayLayoutFrame: configuration?.generateMultiDayLayoutFrame,
-                                    overlayBuilders: components.overlayBuilders ?? calendarComponents?.overlayBuilders,
-                                    overlayStyles: styles?.overlayStyles ?? calendarComponents?.overlayStyles,
+                                    overlayBuilders: components.overlayBuilders ?? calendarComponents.overlayBuilders,
+                                    overlayStyles: styles.overlayStyles ?? calendarComponents.overlayStyles,
                                     eventPadding: bodyConfiguration.eventPadding,
                                     multiDayCache: viewController.multiDayCache,
                                   );
@@ -135,7 +134,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
               },
             );
 
-            final monthGridStyle = styles?.monthGridStyle;
+            final monthGridStyle = styles.monthGridStyle;
             final monthGrid = components.monthGridBuilder.call(monthGridStyle, numberOfRows);
 
             return SizedBox(

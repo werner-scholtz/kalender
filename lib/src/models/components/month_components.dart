@@ -8,12 +8,15 @@ import 'package:kalender/src/widgets/month/month_header.dart';
 /// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
 class MonthComponents<T extends Object?> {
   /// The component builders used by the [MonthBody].
-  final MonthBodyComponents<T>? bodyComponents;
+  final MonthBodyComponents<T> bodyComponents;
 
   /// The component builders used by the [MonthHeader].
-  final MonthHeaderComponents<T>? headerComponents;
+  final MonthHeaderComponents<T> headerComponents;
 
-  MonthComponents({this.bodyComponents, this.headerComponents});
+  const MonthComponents({
+    this.bodyComponents = const MonthBodyComponents(),
+    this.headerComponents = const MonthHeaderComponents(),
+  });
 }
 
 /// The component builders used by the [MonthBody].
@@ -41,7 +44,7 @@ class MonthBodyComponents<T extends Object?> {
     this.monthDayHeaderBuilder = MonthDayHeader.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
-    this.overlayBuilders,
+    this.overlayBuilders = const OverlayBuilders(),
   });
 }
 

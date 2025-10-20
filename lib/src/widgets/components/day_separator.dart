@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The day separator builder.
@@ -40,8 +39,8 @@ class DaySeparator extends StatelessWidget {
   }
 
   static Widget fromContext<T extends Object?>(BuildContext context) {
-    final daySeparatorStyle = context.components<T>()?.multiDayComponentStyles?.bodyStyles?.daySeparatorStyle;
-    final components = context.components<T>()?.multiDayComponents?.bodyComponents ?? MultiDayBodyComponents<T>();
+    final daySeparatorStyle = context.components<T>().multiDayComponentStyles.bodyStyles.daySeparatorStyle;
+    final components = context.components<T>().multiDayComponents.bodyComponents;
     return components.daySeparator.call(daySeparatorStyle);
   }
 

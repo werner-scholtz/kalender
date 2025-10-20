@@ -294,6 +294,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     getMultiDayEventLayoutRenderBox: getRenderBox,
                     overlayBuilders: widget.multiDayOverlayBuilders,
                     overlayStyles: widget.multiDayOverlayStyles,
+                    overlayTileBuilder: _overlayEventTileBuilder,
                   ) ??
                   MultiDayOverlayPortal<T>(
                     key: MultiDayOverlayPortal.getKey(date),
