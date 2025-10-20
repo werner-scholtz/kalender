@@ -22,19 +22,19 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///         of the event being modified. See todo for a possible solution.
 class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   final HorizontalConfiguration<T> configuration;
-  final EventsController<T> eventsController;
   final DateTimeRange visibleDateTimeRange;
+  final int? maximumNumberOfVerticalEvents;
 
   final OverlayBuilders<T>? overlayBuilders;
   final OverlayStyles? overlayStyles;
 
   const MultiDayEventWidget({
     super.key,
-    required this.eventsController,
     required this.visibleDateTimeRange,
     required this.overlayBuilders,
     required this.overlayStyles,
     required this.configuration,
+    this.maximumNumberOfVerticalEvents,
   });
 
   @override
@@ -42,13 +42,17 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWidget<T>> {
+  late EventsController<T> _eventsController;
   List<CalendarEvent<T>> _visibleEvents = [];
-  EventsController<T> get _eventsController => widget.eventsController;
 
   @override
   void initState() {
-    _update();
-    _eventsController.addListener(_update);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _eventsController = context.eventsController<T>();
+      _update();
+      _eventsController.addListener(_update);
+    });
+
     super.initState();
   }
 
@@ -73,27 +77,18 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
   @override
   Widget build(BuildContext context) {
     // TODO: check if this needs to rebuild as often as it is currently.
-
     final controller = context.calendarController<T>();
-    final eventsController = context.eventsController<T>();
-
-    final showAllEvents = controller.viewController is MonthViewController<T>;
-
     controller.visibleEvents.value = {...controller.visibleEvents.value, ..._visibleEvents};
 
     return MultiDayEventLayoutWidget<T>(
       events: _visibleEvents,
-      eventsController: eventsController,
       visibleDateTimeRange: widget.visibleDateTimeRange,
-      showAllEvents: showAllEvents,
-      tileHeight: widget.configuration.tileHeight,
-      maxNumberOfVerticalEvents: widget.configuration.maximumNumberOfVerticalEvents, // TODO: Remove ?
-      generateMultiDayLayoutFrame: widget.configuration.generateMultiDayLayoutFrame,
+      maxNumberOfVerticalEvents: widget.maximumNumberOfVerticalEvents,
       multiDayCache: controller.viewController!.multiDayCache,
       textDirection: Directionality.of(context),
       multiDayOverlayBuilders: widget.overlayBuilders,
       multiDayOverlayStyles: widget.overlayStyles,
-      eventPadding: widget.configuration.eventPadding,
+      configuration: widget.configuration,
     );
   }
 }
@@ -107,12 +102,9 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
 ///
 /// This widget is used by month views and in day view headers, for  displaying multi-day activities.
 class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
+  final HorizontalConfiguration<T> configuration;
   final DateTimeRange visibleDateTimeRange;
-  final bool showAllEvents;
-  final double tileHeight;
   final int? maxNumberOfVerticalEvents;
-  final EdgeInsets? eventPadding;
   final OverlayBuilders<T>? multiDayOverlayBuilders;
   final OverlayStyles? multiDayOverlayStyles;
 
@@ -122,9 +114,6 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   ///         it depends on [maxNumberOfVerticalEvents].
   final List<CalendarEvent<T>> events;
 
-  /// The function that generates the layout frame for the events.
-  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
-
   /// The cache used for the multi-day event layout.
   final MultiDayLayoutFrameCache<T> multiDayCache;
 
@@ -132,13 +121,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final TextDirection textDirection;
   const MultiDayEventLayoutWidget({
     required this.events,
-    required this.eventsController,
     required this.visibleDateTimeRange,
-    required this.showAllEvents,
-    required this.tileHeight,
+    required this.configuration,
     required this.maxNumberOfVerticalEvents,
-    required this.eventPadding,
-    required this.generateMultiDayLayoutFrame,
     required this.textDirection,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
@@ -162,7 +147,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// The function that generates the layout frame for the events.
   GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
-      widget.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
+      widget.configuration.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
+
+  int? get maxNumberOfVerticalEvents =>
+      widget.maxNumberOfVerticalEvents ?? widget.configuration.maximumNumberOfVerticalEvents;
 
   @override
   void initState() {
@@ -181,15 +169,14 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
     super.didUpdateWidget(oldWidget);
 
     final shouldUpdateCache = !oldWidget.events.equals(widget.events) ||
-        oldWidget.generateMultiDayLayoutFrame != widget.generateMultiDayLayoutFrame ||
+        oldWidget.configuration != widget.configuration ||
         oldWidget.textDirection != widget.textDirection;
 
     final didUpdate = shouldUpdateCache ||
         oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange ||
-        oldWidget.tileHeight != widget.tileHeight ||
         oldWidget.maxNumberOfVerticalEvents != widget.maxNumberOfVerticalEvents ||
-        oldWidget.showAllEvents != widget.showAllEvents ||
-        oldWidget.multiDayCache != widget.multiDayCache;
+        oldWidget.multiDayCache != widget.multiDayCache ||
+        oldWidget.configuration != widget.configuration;
 
     if (didUpdate) {
       _dateTimeRange = widget.visibleDateTimeRange;
@@ -211,11 +198,11 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   @override
   Widget build(BuildContext context) {
-    final (events, layoutInfo) = _frame.visibleEvents(widget.maxNumberOfVerticalEvents);
+    final (events, layoutInfo) = _frame.visibleEvents(maxNumberOfVerticalEvents);
 
-    final maxNumberOfRows = widget.maxNumberOfVerticalEvents == null
+    final maxNumberOfRows = maxNumberOfVerticalEvents == null
         ? _frame.totalNumberOfRows
-        : min(_frame.totalNumberOfRows, widget.maxNumberOfVerticalEvents!);
+        : min(_frame.totalNumberOfRows, maxNumberOfVerticalEvents!);
 
     // The multi-day events widget is used to display the events that span multiple days.
     final multiDayEventsWidget = CustomMultiChildLayout(
@@ -223,7 +210,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
         dateTimeRange: widget.visibleDateTimeRange,
         layoutInfo: layoutInfo,
         numberOfRows: maxNumberOfRows,
-        tileHeight: widget.tileHeight,
+        tileHeight: widget.configuration.tileHeight,
       ),
       children: events.map((item) {
         final event = item;
@@ -233,7 +220,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           id: id,
           key: MultiDayEventTile.tileKey(id),
           child: Padding(
-            padding: widget.eventPadding ?? const EdgeInsets.all(0),
+            padding: widget.configuration.eventPadding,
             child: MultiDayEventTile<T>(
               event: event,
               callbacks: context.callbacks<T>(),
@@ -251,7 +238,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       valueListenable: context.calendarController<T>().selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
-        if (!widget.showAllEvents && !event.isMultiDayEvent) return const SizedBox();
+        if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return const SizedBox();
         if (!event.dateTimeRangeAsUtc.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
         final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.visibleDateTimeRange,
@@ -264,14 +251,14 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
             dateTimeRange: widget.visibleDateTimeRange,
             layoutInfo: frame.layoutInfo,
             numberOfRows: frame.totalNumberOfRows,
-            tileHeight: widget.tileHeight,
+            tileHeight: widget.configuration.tileHeight,
           ),
           children: [
             LayoutId(
               id: event.id,
               child: event.id == -1 || event.id == context.calendarController<T>().selectedEventId
                   ? Padding(
-                      padding: widget.eventPadding ?? const EdgeInsets.all(0),
+                      padding: widget.configuration.eventPadding,
                       child: context.tileComponents<T>().dropTargetTile?.call(event) ?? const SizedBox(),
                     )
                   : const SizedBox(),
@@ -303,7 +290,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     date: date,
                     events: eventsForColumn,
                     numberOfHiddenRows: numberOfHiddenRows,
-                    tileHeight: widget.tileHeight,
+                    tileHeight: widget.configuration.tileHeight,
                     getMultiDayEventLayoutRenderBox: getRenderBox,
                     overlayTileBuilder: _overlayEventTileBuilder,
                     overlayBuilders: widget.multiDayOverlayBuilders,
@@ -314,7 +301,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     date: date,
                     events: eventsForColumn,
                     numberOfHiddenRows: numberOfHiddenRows,
-                    tileHeight: widget.tileHeight,
+                    tileHeight: widget.configuration.tileHeight,
                     getMultiDayEventLayoutRenderBox: getRenderBox,
                     overlayBuilders: widget.multiDayOverlayBuilders,
                     overlayStyles: widget.multiDayOverlayStyles,

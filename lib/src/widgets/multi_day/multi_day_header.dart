@@ -95,21 +95,6 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
         itemBuilder: (context, index) {
           final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
 
-          final multiDayEvents = MultiDayEventWidget<T>(
-            visibleDateTimeRange: visibleRange,
-            overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-            overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-            eventsController: context.eventsController<T>(),
-            configuration: configuration,
-          );
-
-          final multiDayDragTarget = HorizontalDragTarget<T>(
-            visibleDateTimeRange: visibleRange,
-            configuration: configuration,
-            leftPageTrigger: headerComponents.leftTriggerBuilder,
-            rightPageTrigger: headerComponents.rightTriggerBuilder,
-          );
-
           // Minimum constraints for the multiDayEvents.
           final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
 
@@ -117,8 +102,23 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
             children: [
               if (configuration.showTiles) ...[
                 Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
-                ConstrainedBox(constraints: constraints, child: multiDayEvents),
-                Positioned.fill(child: multiDayDragTarget),
+                ConstrainedBox(
+                  constraints: constraints,
+                  child: MultiDayEventWidget<T>(
+                    visibleDateTimeRange: visibleRange,
+                    overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                    overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                    configuration: configuration,
+                  ),
+                ),
+                Positioned.fill(
+                  child: HorizontalDragTarget<T>(
+                    visibleDateTimeRange: visibleRange,
+                    configuration: configuration,
+                    leftPageTrigger: headerComponents.leftTriggerBuilder,
+                    rightPageTrigger: headerComponents.rightTriggerBuilder,
+                  ),
+                ),
               ] else
                 ConstrainedBox(constraints: constraints, child: const SizedBox.shrink()),
             ],
@@ -166,33 +166,33 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
           final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
           final visibleDates = visibleRange.dates();
 
-          final multiDayEvents = MultiDayEventWidget<T>(
-            visibleDateTimeRange: visibleRange,
-            overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-            overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-            eventsController: context.eventsController<T>(),
-            configuration: configuration,
-          );
-
-          final multiDayDragTarget = HorizontalDragTarget<T>(
-            visibleDateTimeRange: visibleRange,
-            configuration: configuration,
-            leftPageTrigger: headerComponents.leftTriggerBuilder,
-            rightPageTrigger: headerComponents.rightTriggerBuilder,
-          );
-
           return Column(
             children: [
-              WeekDayHeaders<T>(dates: visibleDates),
+              WeekDayHeaders<T>(
+                dates: visibleDates,
+                dayHeaderBuilder: DayHeader.fromContext<T>,
+              ),
               if (configuration.showTiles)
                 Stack(
                   children: [
                     Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
-                      child: multiDayEvents,
+                      child: MultiDayEventWidget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                        configuration: configuration,
+                      ),
                     ),
-                    Positioned.fill(child: multiDayDragTarget),
+                    Positioned.fill(
+                      child: HorizontalDragTarget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        leftPageTrigger: headerComponents.leftTriggerBuilder,
+                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                      ),
+                    ),
                   ],
                 ),
             ],
@@ -243,31 +243,33 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
           final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
           final visibleDates = visibleRange.dates();
 
-          final multiDayEvents = MultiDayEventWidget<T>(
-            visibleDateTimeRange: visibleRange,
-            overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-            overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-            eventsController: context.eventsController<T>(),
-            configuration: configuration,
-          );
-
-          final multiDayDragTarget = HorizontalDragTarget<T>(
-            visibleDateTimeRange: visibleRange,
-            configuration: configuration,
-            leftPageTrigger: headerComponents.leftTriggerBuilder,
-            rightPageTrigger: headerComponents.rightTriggerBuilder,
-          );
-
           return Column(
             children: [
-              WeekDayHeaders<T>(dates: visibleDates),
+              WeekDayHeaders<T>(
+                dates: visibleDates,
+                dayHeaderBuilder: DayHeader.fromContext<T>,
+              ),
               if (configuration.showTiles)
                 Stack(
                   children: [
                     Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
                     ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: configuration.tileHeight), child: multiDayEvents),
-                    Positioned.fill(child: multiDayDragTarget),
+                      constraints: BoxConstraints(minHeight: configuration.tileHeight),
+                      child: MultiDayEventWidget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
+                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                        configuration: configuration,
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: HorizontalDragTarget<T>(
+                        visibleDateTimeRange: visibleRange,
+                        configuration: configuration,
+                        leftPageTrigger: headerComponents.leftTriggerBuilder,
+                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                      ),
+                    ),
                   ],
                 ),
             ],

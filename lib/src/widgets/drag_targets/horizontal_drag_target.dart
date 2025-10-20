@@ -83,6 +83,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   void _updateDimensions() {
+    if (!mounted) return;
     pageWidth = context.size?.width ?? 0;
     dayWidth = pageWidth / visibleDates.length;
   }

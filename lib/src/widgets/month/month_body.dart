@@ -27,13 +27,13 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    if (configuration is MonthBodyConfiguration<T>) {
+    if (this.configuration is MonthBodyConfiguration<T>) {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
     final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
-    final bodyConfiguration = configuration ?? MonthBodyConfiguration();
+    final configuration = this.configuration ?? MonthBodyConfiguration();
     final pageNavigation = viewConfiguration.pageNavigationFunctions;
 
     return PageView.builder(
@@ -63,7 +63,8 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                       child: MonthWeek<T>(
                         key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
                         visibleDateTimeRange: visibleDateTimeRange,
-                        bodyConfiguration: bodyConfiguration,
+                        configuration: configuration,
+                        viewController: viewController,
                       ),
                     );
                   },
@@ -82,12 +83,17 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
 class MonthWeek<T extends Object?> extends StatelessWidget {
   final DateTimeRange visibleDateTimeRange;
-  final HorizontalConfiguration<T> bodyConfiguration;
-  const MonthWeek({super.key, required this.visibleDateTimeRange, required this.bodyConfiguration});
+  final HorizontalConfiguration<T> configuration;
+  final ViewController<T> viewController;
+  const MonthWeek({
+    super.key,
+    required this.visibleDateTimeRange,
+    required this.configuration,
+    required this.viewController,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final eventsController = context.eventsController<T>();
     final components = context.components<T>();
     final monthComponents = components.monthComponents;
 
@@ -102,13 +108,26 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
         Positioned.fill(
           child: Column(
             children: [
-              WeekDayHeaders<T>(dates: visibleDateTimeRange.dates()),
-              MultiDayEventWidget<T>(
-                eventsController: eventsController,
-                visibleDateTimeRange: visibleDateTimeRange,
-                configuration: bodyConfiguration,
-                overlayBuilders: components.overlayBuilders ?? monthComponents.bodyComponents.overlayBuilders,
-                overlayStyles: components.overlayStyles ?? components.monthComponentStyles.bodyStyles.overlayStyles,
+              WeekDayHeaders<T>(
+                dates: visibleDateTimeRange.dates(),
+                dayHeaderBuilder: MonthDayHeader.fromContext<T>,
+              ),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Subtract 1 to account for the extra widget at the bottom.
+                    final maxNumberOfVerticalEvents = (constraints.maxHeight / configuration.tileHeight).floor() - 1;
+
+                    return MultiDayEventWidget<T>(
+                      visibleDateTimeRange: visibleDateTimeRange,
+                      configuration: configuration,
+                      overlayBuilders: components.overlayBuilders ?? monthComponents.bodyComponents.overlayBuilders,
+                      overlayStyles:
+                          components.overlayStyles ?? components.monthComponentStyles.bodyStyles.overlayStyles,
+                      maximumNumberOfVerticalEvents: maxNumberOfVerticalEvents,
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -116,7 +135,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
         Positioned.fill(
           child: HorizontalDragTarget<T>(
             visibleDateTimeRange: visibleDateTimeRange,
-            configuration: bodyConfiguration,
+            configuration: configuration,
             leftPageTrigger: components.monthComponents.bodyComponents.leftTriggerBuilder,
             rightPageTrigger: components.monthComponents.bodyComponents.rightTriggerBuilder,
           ),
@@ -125,5 +144,3 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
     );
   }
 }
-
-

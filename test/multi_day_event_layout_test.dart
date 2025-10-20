@@ -42,7 +42,6 @@ void main() {
       ];
       eventsController.addEvents(events);
 
-      const tileHeight = 50.0;
       const maxNumberOfVerticalEvents = 2;
 
       await tester.pumpWidget(
@@ -53,17 +52,13 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              showAllEvents: true,
-              tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-              eventPadding: const EdgeInsets.all(0),
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
               multiDayCache: MultiDayLayoutFrameCache(),
+              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0),
             ),
           ),
         ),
@@ -157,17 +152,13 @@ void main() {
               height: tileHeight * 3,
               child: MultiDayEventLayoutWidget<int>(
                 events: eventsController.events.toList(),
-                eventsController: eventsController,
                 visibleDateTimeRange: visibleRange,
-                showAllEvents: true,
-                tileHeight: tileHeight,
                 maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-                generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-                eventPadding: const EdgeInsets.all(0),
                 textDirection: TextDirection.ltr,
                 multiDayOverlayBuilders: null,
                 multiDayOverlayStyles: null,
                 multiDayCache: MultiDayLayoutFrameCache(),
+                configuration: const MultiDayHeaderConfiguration(),
               ),
             ),
           ),
@@ -244,7 +235,6 @@ void main() {
       ];
       eventsController.addEvents(events);
 
-      const tileHeight = 50.0;
       const maxNumberOfVerticalEvents = 2;
 
       await tester.pumpWidget(
@@ -255,17 +245,13 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              showAllEvents: true,
-              tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator<int>,
-              eventPadding: const EdgeInsets.all(0),
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
               multiDayCache: MultiDayLayoutFrameCache(),
+              configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0),
             ),
           ),
         ),
@@ -332,25 +318,25 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              showAllEvents: true,
-              tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: ({
-                required events,
-                required textDirection,
-                required visibleDateTimeRange,
-                cache,
-              }) =>
-                  defaultMultiDayFrameGenerator(
-                visibleDateTimeRange: visibleDateTimeRange,
-                events: events,
-                textDirection: textDirection,
-                cache: cache,
-                eventComparator: customComparator,
+              configuration: MultiDayHeaderConfiguration(
+                tileHeight: tileHeight,
+                generateMultiDayLayoutFrame: ({
+                  required events,
+                  required textDirection,
+                  required visibleDateTimeRange,
+                  cache,
+                }) =>
+                    defaultMultiDayFrameGenerator(
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  events: events,
+                  textDirection: textDirection,
+                  cache: cache,
+                  eventComparator: customComparator,
+                ),
+                eventPadding: const EdgeInsets.all(0),
               ),
-              eventPadding: const EdgeInsets.all(0),
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
@@ -434,7 +420,6 @@ void main() {
         return a.end.compareTo(b.end);
       }
 
-      const tileHeight = 50.0;
       const maxNumberOfVerticalEvents = 3;
 
       await tester.pumpWidget(
@@ -445,26 +430,26 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              eventsController: eventsController,
               visibleDateTimeRange: visibleRange,
-              showAllEvents: true,
-              tileHeight: tileHeight,
               maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
-              generateMultiDayLayoutFrame: ({
-                required events,
-                required textDirection,
-                required visibleDateTimeRange,
-                cache,
-              }) =>
-                  defaultMultiDayFrameGenerator(
-                visibleDateTimeRange: visibleDateTimeRange,
-                events: events,
-                textDirection: textDirection,
-                eventComparator: customComparator,
-                cache: cache,
+              configuration: MultiDayHeaderConfiguration(
+                tileHeight: 50.0,
+                generateMultiDayLayoutFrame: ({
+                  required events,
+                  required textDirection,
+                  required visibleDateTimeRange,
+                  cache,
+                }) =>
+                    defaultMultiDayFrameGenerator(
+                  visibleDateTimeRange: visibleDateTimeRange,
+                  events: events,
+                  textDirection: textDirection,
+                  eventComparator: customComparator,
+                  cache: cache,
+                ),
+                eventPadding: const EdgeInsets.all(0),
               ),
               multiDayCache: MultiDayLayoutFrameCache(),
-              eventPadding: const EdgeInsets.all(0),
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
