@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/event_tiles/day_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// This widget is renders all the event tiles that are visible on the provided dateTimeRange.
@@ -139,6 +139,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
                 tileComponents: context.tileComponents<T>(),
                 dateTimeRange: widget.date.dayRange,
                 interaction: context.interaction,
+                resizeAxis: Axis.vertical,
               ),
             ),
           )

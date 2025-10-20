@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 
 /// A function that returns a [MultiDayOverlayEventTile] for the multi-day overlay.
 ///

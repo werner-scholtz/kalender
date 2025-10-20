@@ -90,7 +90,7 @@ void main() {
             );
           });
 
-          // 3. Profile scrolling.
+          // // 3. Profile scrolling.
           testWidgets('${scenario.name} Scrolling', skip: view != Views.week, (
             tester,
           ) async {
@@ -220,6 +220,12 @@ void main() {
               }).first;
 
               final size = tester.getSize(tileFinder);
+
+              final gesture = await tester.createGesture();
+              await gesture.addPointer(location: Offset.zero);
+              addTearDown(gesture.removePointer);
+              await tester.pump();
+
               final dragStart =
                   tester.getCenter(tileFinder) +
                   switch (view) {
@@ -230,13 +236,11 @@ void main() {
 
               await binding.traceAction(
                 () async {
-                  final dragGesture = await tester.startGesture(
-                    dragStart,
-                    pointer: 1,
-                  );
-                  await tester.pumpAndSettle(Duration(milliseconds: 100));
+                  await gesture.moveTo(dragStart);
+                  await tester.pumpAndSettle(Duration(milliseconds: 200));
+                  await gesture.down(dragStart);
                   await performSegmentedDrag(
-                    dragGesture,
+                    gesture,
                     tester,
                     dragStart,
                     dragStart +
@@ -248,7 +252,7 @@ void main() {
                   );
                   await tester.pumpAndSettle();
 
-                  await dragGesture.up();
+                  await gesture.up();
                   await tester.pumpAndSettle(Duration(milliseconds: 100));
                 },
                 reportKey: scenario.getReportKey(

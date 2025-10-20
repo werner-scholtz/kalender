@@ -165,6 +165,18 @@ class _MyHomePageState extends State<MyHomePage> {
         decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
       ),
       dragAnchorStrategy: pointerDragAnchorStrategy,
+      verticalResizeHandle: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(150),
+          shape: BoxShape.circle,
+        ),
+      ),
+      horizontalResizeHandle: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(150),
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 
@@ -268,6 +280,7 @@ class DayEventTile extends StatelessWidget {
   }
 }
 
+// TODO: remove
 mixin EventTileMixin {
   // TODO: Implement mixin for EventTileBuilders that provides usefull utils.
   void getNearbyEvents() {}

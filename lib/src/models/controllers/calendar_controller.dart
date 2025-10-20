@@ -50,21 +50,21 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
   void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
-    selectedEvent.value = event;
     _selectedEventId = event.id;
     _internalFocus = internal;
+    selectedEvent.value = event;
   }
 
   void updateEvent(CalendarEvent<T> event, {bool internal = false}) {
-    selectedEvent.value = event;
     _internalFocus = internal;
+    selectedEvent.value = event;
   }
 
   /// Deselect the event.
   void deselectEvent() {
-    selectedEvent.value = null;
     _internalFocus = false;
     _selectedEventId = null;
+    selectedEvent.value = null;
   }
 
   bool isAttachedTo(ViewController viewController) {

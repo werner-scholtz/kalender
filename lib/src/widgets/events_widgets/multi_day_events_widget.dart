@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_event_tile.dart';
-import 'package:kalender/src/widgets/event_tiles/multi_day_overlay_event_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// This widget is used to display multi-day events.
@@ -227,6 +227,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
               tileComponents: context.tileComponents<T>(),
               interaction: context.interaction,
               dateTimeRange: widget.visibleDateTimeRange,
+              resizeAxis: Axis.horizontal,
             ),
           ),
         );

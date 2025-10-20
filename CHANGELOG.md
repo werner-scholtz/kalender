@@ -1,6 +1,11 @@
 ## 0.14.0
 - feat: Custom onWillAcceptWithDetails functions for DragTargets. [#213](https://github.com/werner-scholtz/kalender/issues/213)
 
+### Breaking Change
+- Resize Handles are now only rendered when the cursor is hovering on a tile or when a tile is selected on mobile.
+- Added a [ResizeHandles] abstract widget and [DefaultResizeHandles] widget that allows for more customization.
+- Replaced vertical/horizontal resize handle positioners from [TileComponents] with a single [ResizeHandlePositioner].
+
 ## 0.13.1
 - fix: MultiDayLayoutFrameCache using `toString()` to generate map key. [#225](https://github.com/werner-scholtz/kalender/issues/225)
 

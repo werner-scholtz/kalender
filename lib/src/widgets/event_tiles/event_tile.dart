@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/platform.dart' show isMobileDevice;
+import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
+import 'package:kalender/src/widgets/event_tiles/tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
+import 'package:kalender/src/widgets/event_tiles/tile_gesture_detector.dart';
 
-/// The base class for all event tiles.
+import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
+import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
+
+/// The function that is called when the event is tapped.
+typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
+
+/// Base class for all event tiles in the Kalender package.
 ///
-/// Event tiles are used to display events in the calendar.
-abstract class EventTile<T extends Object?> extends StatelessWidget {
+/// [EventTile] is the foundational widget for displaying calendar events across all view types
+/// (day, multi-day, month, and schedule views). It provides a unified interface for:
+/// - Rendering tile state widgets from [TileComponents].
+/// - Handling user interactions
+///   - [TileGestureDetector] for tap detection
+///   - [TileDraggable] for drag-and-drop rescheduling
+///   - [ResizeHandleWidget] for resizing events
+///
+/// The [EventTile] follows a composition pattern where different tile types extend this base class:
+/// - [DayEventTile] - For day and multi-day views with vertical resizing.
+/// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
+/// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
+abstract class EventTile<T extends Object?> extends StatefulWidget {
   /// The event to be displayed in the tile.
   final CalendarEvent<T> event;
 
@@ -23,7 +43,18 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
   /// The date time range for the tile.
   final DateTimeRange dateTimeRange;
 
-  /// Creates a new [EventTile] widget.
+  /// The function that is called when the overlay needs to be dismissed.
+  ///
+  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayOverlayEventTile]
+  final VoidCallback? dismissOverlay;
+
+  /// The axis along which the event can be resized.
+  ///
+  /// - [Axis.vertical] for day/multi-day views.
+  /// - [Axis.horizontal] for multi-day headers.
+  /// - null for views that do not support resizing.
+  final Axis? resizeAxis;
+
   const EventTile({
     super.key,
     required this.callbacks,
@@ -31,220 +62,73 @@ abstract class EventTile<T extends Object?> extends StatelessWidget {
     required this.event,
     required this.interaction,
     required this.dateTimeRange,
-  });
-
-  DateTimeRange get localDateTimeRange => dateTimeRange.asLocal;
-
-  /// Check if the tile should notify taps.
-  bool get hasOnEventTapped => callbacks?.hasOnEventTapped ?? false;
-
-  /// The function that is called when the event is tapped.
-  OnEventTapped<T>? get onEventTapped => callbacks?.onEventTapped;
-
-  /// The function that is called when the event is tapped with detail.
-  OnEventTappedWithDetail<T>? get onEventTappedWithDetail => callbacks?.onEventTappedWithDetail;
-
-  TileBuilder<T> get tileBuilder => tileComponents.tileBuilder;
-  TileBuilder<T> get overlayTileBuilder => tileComponents.overlayTileBuilder ?? tileBuilder;
-  bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
-  bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
-  bool get showStart => interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore;
-  bool get showEnd => interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter;
-  bool get canReschedule => interaction.allowRescheduling && event.interaction.allowRescheduling;
-}
-
-mixin EventModification<T extends Object?> {
-  CalendarEvent<T> get event;
-  TileComponents<T> get tileComponents;
-  DragAnchorStrategy? get dragAnchorStrategy => tileComponents.dragAnchorStrategy;
-  TileBuilder<T> get tileBuilder => tileComponents.tileBuilder;
-  TileBuilder<T> get overlayTileBuilder => tileComponents.overlayTileBuilder ?? tileBuilder;
-  TileWhenDraggingBuilder<T>? get tileWhenDraggingBuilder => tileComponents.tileWhenDraggingBuilder;
-  FeedbackTileBuilder<T>? get feedbackTileBuilder => tileComponents.feedbackTileBuilder;
-  Widget? get verticalResizeHandle => tileComponents.verticalResizeHandle;
-  Widget? get horizontalResizeHandle => tileComponents.horizontalResizeHandle;
-  Reschedule<T> get rescheduleEvent => Reschedule<T>(event: event);
-  Resize<T> resizeEvent(ResizeDirection direction) => Resize<T>(event: event, direction: direction);
-  void selectEvent(BuildContext context) {
-    context.calendarController<T>().selectEvent(event, internal: true);
-    context.callbacks<T>()?.onEventChange?.call(event);
-  }
-}
-
-class EventResize<T extends Object?> extends StatefulWidget {
-  final ResizeDirection direction;
-  final CalendarEvent<T> event;
-  final TileComponents<T> tileComponents;
-
-  const EventResize({
-    super.key,
-    required this.event,
-    required this.tileComponents,
-    required this.direction,
-  });
-
-  @override
-  State<EventResize<T>> createState() => _EventResizeState<T>();
-}
-
-class _EventResizeState<T extends Object?> extends State<EventResize<T>> with EventModification<T> {
-  CalendarController<T>? _controller;
-
-  @override
-  CalendarEvent<T> get event => widget.event;
-
-  @override
-  TileComponents<T> get tileComponents => widget.tileComponents;
-
-  bool _showHandle = isMobileDevice ? false : true;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isMobileDevice) {
-        _controller = context.calendarController<T>();
-        _controller?.selectedEvent.addListener(listener);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller?.selectedEvent.removeListener(listener);
-    super.dispose();
-  }
-
-  void listener() {
-    final selectedEventId = _controller?.selectedEventId;
-    if (selectedEventId != event.id) {
-      setState(() => _showHandle = true);
-    } else {
-      setState(() => _showHandle = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_showHandle) {
-      final resizeHandle = widget.direction == ResizeDirection.left || widget.direction == ResizeDirection.right
-          ? horizontalResizeHandle
-          : verticalResizeHandle;
-
-      return Draggable<Resize<T>>(
-        data: resizeEvent(widget.direction),
-        feedback: const SizedBox(),
-        dragAnchorStrategy: pointerDragAnchorStrategy,
-        onDragStarted: () => selectEvent(context),
-        child: resizeHandle ?? Container(color: Colors.transparent),
-      );
-    } else {
-      return const SizedBox();
-    }
-  }
-}
-
-/// The [Reschedule] widget allows the user to reschedule an event by dragging it.
-class EventReschedule<T extends Object?> extends StatelessWidget with EventModification<T> {
-  final Widget tile;
-  final VoidCallback? dismissOverlay;
-
-  @override
-  final CalendarEvent<T> event;
-  @override
-  final TileComponents<T> tileComponents;
-
-  const EventReschedule({
-    super.key,
-    required this.event,
-    required this.tileComponents,
-    required this.tile,
+    this.resizeAxis,
     this.dismissOverlay,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final controller = context.calendarController<T>();
-    final isDragging = controller.selectedEventId == event.id && controller.internalFocus;
-    final tileWhenDragging = tileWhenDraggingBuilder?.call(event);
+  State<EventTile<T>> createState() => EventTileState<T>();
 
-    late final feedback = FeedbackWidget(
-      event: event,
-      feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier<T>(),
-      feedbackTileBuilder: feedbackTileBuilder,
+  /// The function that is called when the event is tapped.
+  ///
+  /// Concrete implementations should override this to provide view-specific
+  /// tap handling, such as calling [CalendarCallbacks.onEventTapped] with
+  /// appropriate detail objects.
+  EventTileOnTapUp? get onTapUp;
+
+  /// A key used to identify the reschedule draggable.
+  ///
+  /// Each tile type provides a unique key pattern for testing and debugging.
+  Key get rescheduleKey;
+
+  /// A key used to identify the gesture detector.
+  ///
+  /// Each tile type provides a unique key pattern for testing and debugging.
+  Key get gestureKey;
+}
+
+class EventTileState<T extends Object?> extends State<EventTile<T>> {
+  /// Whether gesture detection is enabled based on the provided callbacks.
+  bool get enableGestureDetection =>
+      (widget.callbacks?.onEventTapped != null) || (widget.callbacks?.onEventTappedWithDetail != null);
+
+  @override
+  Widget build(BuildContext context) {
+    final draggable = TileDraggable<T>(
+      interaction: widget.interaction,
+      event: widget.event,
+      feedbackTileBuilder: widget.tileComponents.feedbackTileBuilder,
+      tileWhenDraggingBuilder: widget.tileComponents.tileWhenDraggingBuilder,
+      dragAnchorStrategy: widget.tileComponents.dragAnchorStrategy,
+      rescheduleDraggableKey: widget.rescheduleKey,
+      dismissOverlay: widget.dismissOverlay,
+      child: Tile<T>(
+        event: widget.event,
+        tileBuilder: widget.tileComponents.tileBuilder,
+        tileWhenDraggingBuilder: widget.tileComponents.tileWhenDraggingBuilder,
+        dateTimeRange: widget.dateTimeRange,
+      ),
     );
 
-    return isMobileDevice
-        ? LongPressDraggable<Reschedule<T>>(
-            data: rescheduleEvent,
-            feedback: feedback,
-            childWhenDragging: tileWhenDragging,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () {
-              dismissOverlay?.call();
-              selectEvent(context);
-            },
-            maxSimultaneousDrags: 1,
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-          )
-        : Draggable<Reschedule<T>>(
-            data: rescheduleEvent,
-            feedback: feedback,
-            childWhenDragging: tileWhenDragging,
-            dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
-            onDragStarted: () {
-              dismissOverlay?.call();
-              selectEvent(context);
-            },
-            child: isDragging && tileWhenDragging != null ? tileWhenDragging : tile,
-          );
-  }
-}
-
-/// A widget that provides a feedback widget for event dragging.
-class FeedbackWidget<T extends Object?> extends StatefulWidget {
-  final CalendarEvent<T> event;
-  final FeedbackTileBuilder<T>? feedbackTileBuilder;
-  final ValueNotifier<Size> feedbackWidgetSizeNotifier;
-  const FeedbackWidget({
-    super.key,
-    required this.event,
-    this.feedbackTileBuilder,
-    required this.feedbackWidgetSizeNotifier,
-  });
-
-  @override
-  State<FeedbackWidget<T>> createState() => _FeedbackWidgetState<T>();
-}
-
-class _FeedbackWidgetState<T extends Object?> extends State<FeedbackWidget<T>> {
-  Size _size = const Size(0, 0);
-
-  @override
-  void initState() {
-    super.initState();
-    _updateSize();
-    widget.feedbackWidgetSizeNotifier.addListener(_updateSize);
-  }
-
-  @override
-  void dispose() {
-    widget.feedbackWidgetSizeNotifier.removeListener(_updateSize);
-    super.dispose();
-  }
-
-  void _updateSize() {
-    if (!mounted) return;
-    if (widget.feedbackWidgetSizeNotifier.value == Size.zero) return;
-    if (widget.feedbackWidgetSizeNotifier.value == _size) return;
-
-    // Update the size only if it has changed.
-    setState(() => _size = widget.feedbackWidgetSizeNotifier.value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final feedbackTile = widget.feedbackTileBuilder?.call(widget.event, _size);
-    return feedbackTile ?? const SizedBox();
+    return TileGestureDetector(
+      gestureDetectorKey: widget.gestureKey,
+      onTapUp: enableGestureDetection ? widget.onTapUp : null,
+      child: (widget.resizeAxis == null)
+          ? draggable
+          : Stack(
+              children: [
+                Positioned.fill(child: draggable),
+                Positioned.fill(
+                  child: ResizeHandleWidget<T>(
+                    event: widget.event,
+                    interaction: widget.interaction,
+                    tileComponents: widget.tileComponents,
+                    dateTimeRange: widget.dateTimeRange,
+                    axis: widget.resizeAxis!,
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 }
