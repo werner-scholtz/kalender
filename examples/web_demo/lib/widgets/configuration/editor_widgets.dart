@@ -23,7 +23,7 @@ class DropDownEditor<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: DropdownMenu(
-        key: Key(context.localeTag),
+        key: Key(context.local.toLanguageTag()),
         menuHeight: 250,
         expandedInsets: const EdgeInsets.symmetric(horizontal: 8),
         label: Text(label),
@@ -47,12 +47,12 @@ class FirstDayOfWeekEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropDownEditor<int>(
-      key: Key(context.localeTag),
+      key: Key(context.local.toLanguageTag()),
       label: context.l10n.firstDayOfWeek,
       value: firstDayOfWeek,
       items: const [1, 2, 3, 4, 5, 6, 7],
       onChanged: (value) => onChanged(value),
-      itemToString: (value) => DateTime(2024, 1, value).dayNameLocalized(context.localeTag),
+      itemToString: (value) => DateTime(2024, 1, value).dayNameLocalized(context.local),
     );
   }
 }
@@ -118,7 +118,7 @@ class SnappingEditorWidget extends StatelessWidget {
             itemToString: (value) => context.l10n.minutesLabel(value),
           ),
           DropDownEditor<int>(
-            key: Key(context.localeTag),
+            key: Key(context.local.toLanguageTag()),
             label: context.l10n.snapRange,
             value: value.snapRange.inMinutes,
             items: const [1, 5, 10, 15, 30],

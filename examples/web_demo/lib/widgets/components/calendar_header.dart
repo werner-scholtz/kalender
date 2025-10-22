@@ -91,10 +91,10 @@ class HeaderDateButton extends StatelessWidget {
           // we need to check the second week of the visibleDateTimeRange to determine the month and year.
           final secondWeek = value.start.addDays(7);
           year = secondWeek.year;
-          month = secondWeek.monthNameLocalized(context.localeTag);
+          month = secondWeek.monthNameLocalized(context.local);
         } else {
           year = value.start.year;
-          month = value.start.monthNameLocalized(context.localeTag);
+          month = value.start.monthNameLocalized(context.local);
         }
 
         return FilledButton.tonal(

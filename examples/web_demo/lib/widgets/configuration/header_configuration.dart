@@ -59,7 +59,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
           itemToString: (value) => value != 0 ? value.toString() : context.l10n.unlimited,
         ),
         DropDownEditor<EdgeInsets>(
-          key: Key(context.localeTag),
+          key: Key(context.local.toLanguageTag()),
           label: context.l10n.eventPaddingLRTB,
           value: configuration.eventPadding,
           items: const [

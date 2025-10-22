@@ -57,13 +57,13 @@ class CalendarControllerProvider<T extends Object?> extends InheritedNotifier<Ca
 /// It does not have a type parameter so it can be used globally without type constraints.
 class LocaleProvider extends InheritedWidget {
   /// The locale used for internationalization.
-  final dynamic locale;
+  final Locale locale;
 
   /// Creates a [LocaleProvider] with the specified locale.
   const LocaleProvider({super.key, required this.locale, required super.child});
 
   /// Gets the [LocaleProvider] of type [T] from the context.
-  static dynamic of(BuildContext context) {
+  static Locale of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocaleProvider>();
     assert(result != null, 'No LocaleProvider found.');
     return result!.locale;
@@ -180,7 +180,7 @@ extension ProviderContext on BuildContext {
   ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController<T>().feedbackWidgetSize;
 
   /// Retrieve the locale.
-  dynamic get locale => LocaleProvider.of(this);
+  Locale get locale => LocaleProvider.of(this);
 
   /// Retrieve the [CalendarInteraction].
   CalendarInteraction get interaction => Interaction.of(this);

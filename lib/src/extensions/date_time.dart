@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl4x/datetime_format.dart';
+import 'package:intl4x/intl4x.dart' as i;
 
 /// Useful extensions for working with [DateTime] objects.
 extension DateTimeExtensions on DateTime {
@@ -39,8 +40,8 @@ extension DateTimeExtensions on DateTime {
   bool isSameDay(DateTime date) {
     final other = isUtc != date.isUtc
         ? isUtc
-            ? date.toUtc()
-            : date.toLocal()
+              ? date.toUtc()
+              : date.toLocal()
         : date;
     return year == other.year && month == other.month && day == other.day;
   }
@@ -449,7 +450,7 @@ extension DateTimeExtensions on DateTime {
   /// print(date.dayNameLocalized('fr')); // Output: "lundi"
   /// print(date.dayNameLocalized('es')); // Output: "lunes"
   /// ```
-  String dayNameLocalized([dynamic locale]) => DateFormat.EEEE(locale).format(this);
+  String dayNameLocalized(Locale? locale) => i.Intl(locale: locale?.toIntlLocale()).dateTimeFormat().d().format(this);
 
   /// Gets the abbreviated day name in a specific locale.
   ///
@@ -459,7 +460,8 @@ extension DateTimeExtensions on DateTime {
   /// print(date.dayNameShortLocalized('en')); // Output: "Mon"
   /// print(date.dayNameShortLocalized('fr')); // Output: "lun"
   /// ```
-  String dayNameShortLocalized([dynamic locale]) => DateFormat.E(locale).format(this);
+  String dayNameShortLocalized(Locale? locale) =>
+      i.Intl(locale: locale?.toIntlLocale()).dateTimeFormat().d(dateStyle: DateFormatStyle.short).format(this);
 
   /// Gets the month name in a specific locale.
   ///
@@ -470,7 +472,7 @@ extension DateTimeExtensions on DateTime {
   /// print(date.monthNameLocalized('fr')); // Output: "janvier"
   /// print(date.monthNameLocalized('es')); // Output: "enero"
   /// ```
-  String monthNameLocalized([dynamic locale]) => DateFormat.MMMM(locale).format(this);
+  String monthNameLocalized(Locale? locale) => i.Intl(locale: locale?.toIntlLocale()).dateTimeFormat().m().format(this);
 
   /// Gets the abbreviated month name in a specific locale.
   ///
@@ -480,7 +482,8 @@ extension DateTimeExtensions on DateTime {
   /// print(date.monthNameShortLocalized('en')); // Output: "Jan"
   /// print(date.monthNameShortLocalized('fr')); // Output: "janv."
   /// ```
-  String monthNameShortLocalized([dynamic locale]) => DateFormat.MMM(locale).format(this);
+  String monthNameShortLocalized([dynamic locale]) =>
+      i.Intl(locale: locale).dateTimeFormat().m(dateStyle: DateFormatStyle.short).format(this);
 
   /// Gets the month name in English (backwards compatibility).
   ///
@@ -488,20 +491,20 @@ extension DateTimeExtensions on DateTime {
   /// to use [monthName] or [monthNameLocalized] for better internationalization.
   @Deprecated('Use monthName or monthNameLocalized or monthNameShortLocalized instead.')
   String get monthNameEnglish => switch (month) {
-        1 => 'January',
-        2 => 'February',
-        3 => 'March',
-        4 => 'April',
-        5 => 'May',
-        6 => 'June',
-        7 => 'July',
-        8 => 'August',
-        9 => 'September',
-        10 => 'October',
-        11 => 'November',
-        12 => 'December',
-        _ => throw Exception('Invalid month'),
-      };
+    1 => 'January',
+    2 => 'February',
+    3 => 'March',
+    4 => 'April',
+    5 => 'May',
+    6 => 'June',
+    7 => 'July',
+    8 => 'August',
+    9 => 'September',
+    10 => 'October',
+    11 => 'November',
+    12 => 'December',
+    _ => throw Exception('Invalid month'),
+  };
 
   /// Gets the day name in English (backwards compatibility).
   ///
@@ -509,13 +512,17 @@ extension DateTimeExtensions on DateTime {
   /// to use [dayName] or [dayNameLocalized] for better internationalization.
   @Deprecated('Use dayName or dayNameLocalized or dayNameShortLocalized instead.')
   String get dayNameEnglish => switch (weekday) {
-        1 => 'Monday',
-        2 => 'Tuesday',
-        3 => 'Wednesday',
-        4 => 'Thursday',
-        5 => 'Friday',
-        6 => 'Saturday',
-        7 => 'Sunday',
-        _ => throw Exception('Invalid weekday'),
-      };
+    1 => 'Monday',
+    2 => 'Tuesday',
+    3 => 'Wednesday',
+    4 => 'Thursday',
+    5 => 'Friday',
+    6 => 'Saturday',
+    7 => 'Sunday',
+    _ => throw Exception('Invalid weekday'),
+  };
+}
+
+extension LocaleUtils on Locale {
+  i.Locale toIntlLocale() => i.Locale.parse(toLanguageTag());
 }
