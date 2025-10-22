@@ -4,6 +4,7 @@
 
 # Kalender
 This Flutter package offers a Calendar Widget featuring a Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual and behavioral aspects of the calendar. Check out the demo [here](https://werner-scholtz.github.io/kalender/)
+This package is still in development so changes to the API will most likely occur until version 1.0.0
 
 ## Features
 
@@ -230,13 +231,13 @@ The calendar has a few useful callback functions, which can change how interacti
     },
 
     // The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view. (Day/Week)
+    // See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
     onWillAcceptWithDetailsVertical: (details, controller, configuration) {
-      // See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
       return true;
     }
     // The callback for when a drag target is evaluating whether to accept a draggable, on a horizontal view. (Month/Day Header)
+    // See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
     onWillAcceptWithDetailsHorizontal: (details, controller, configuration) {
-      // See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
       return true;
     }
   )
