@@ -340,6 +340,7 @@ void main() {
         visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
+        location: null,
       );
 
       await expectLater(viewController.animateToDate(DateTime.now()), completes);
@@ -398,6 +399,7 @@ void main() {
         visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
+        location: null,
       );
 
       await expectLater(viewController.animateToDate(DateTime.now()), completes);

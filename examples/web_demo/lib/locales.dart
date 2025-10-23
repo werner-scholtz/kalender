@@ -9,3 +9,14 @@ List<Locale> supportedLocales = [
   // const Locale('pt', 'PT'),
   const Locale('af', 'ZA'),
 ];
+
+List<String> supportedLocations = [
+  'Africa/Johannesburg',
+  'America/New_York',
+  'America/Los_Angeles',
+  'Europe/London',
+  'Europe/Berlin',
+  'Europe/Paris',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+];

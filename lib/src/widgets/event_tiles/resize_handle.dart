@@ -127,6 +127,7 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
         widget.dateTimeRange,
         _size,
         widget.axis,
+        context.location,
       ),
     );
 

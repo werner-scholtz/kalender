@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/locales.dart';
-import 'package:web_demo/main.dart' show MyApp;
+import 'package:web_demo/providers.dart';
 
 class LocaleDropdown extends StatelessWidget {
   const LocaleDropdown({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final appState = MyApp.of(context)!;
-
     return DropdownMenu<Locale>(
-      initialSelection: appState.locale,
+      initialSelection: context.locale.value,
       dropdownMenuEntries: [
         ...supportedLocales.map(
           (locale) => DropdownMenuEntry<Locale>(
@@ -21,7 +19,7 @@ class LocaleDropdown extends StatelessWidget {
       ],
       onSelected: (value) {
         if (value == null) return;
-        appState.setLocale(value);
+        context.locale.value = value;
       },
     );
   }

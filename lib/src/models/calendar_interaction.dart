@@ -164,7 +164,7 @@ class EventInteraction {
   /// Creates a new [EventInteraction] instance with the specified settings.
   ///
   /// All parameters are optional and default to `true`, allowing all interactions.
-  EventInteraction({
+  const EventInteraction({
     this.allowStartResize = true,
     this.allowEndResize = true,
     this.allowRescheduling = true,
@@ -174,7 +174,7 @@ class EventInteraction {
   ///
   /// This constructor maintains backward compatibility by setting all interaction
   /// permissions based on a single boolean value.
-  EventInteraction.fromCanModify(bool canModify)
+  const EventInteraction.fromCanModify(bool canModify)
       : allowStartResize = canModify,
         allowEndResize = canModify,
         allowRescheduling = canModify;
@@ -182,7 +182,7 @@ class EventInteraction {
   /// Creates an [EventInteraction] that disables all interactions.
   ///
   /// This is equivalent to creating an instance with all parameters set to `false`.
-  EventInteraction.allowNone()
+  const EventInteraction.allowNone()
       : allowStartResize = false,
         allowEndResize = false,
         allowRescheduling = false;
@@ -190,7 +190,7 @@ class EventInteraction {
   /// Creates an [EventInteraction] that enables all interactions.
   ///
   /// This is equivalent to creating an instance with all parameters set to `true`.
-  EventInteraction.allowAll()
+  const EventInteraction.allowAll()
       : allowStartResize = true,
         allowEndResize = true,
         allowRescheduling = true;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/main.dart' show MyApp;
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/calendar_configuration.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
@@ -30,7 +30,6 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   final _configuration = CalendarConfiguration();
   final _controller = CalendarController<Event>();
-  EventsController<Event> get _eventsController => MyApp.eventsController(context);
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +47,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   return ZoomDetector(
                     controller: _controller,
                     child: CalendarView<Event>(
-                      locale: Localizations.localeOf(context).toLanguageTag(),
+                      location: context.location.value,
+                      locale: context.localeTag,
                       calendarController: _controller,
-                      eventsController: _eventsController,
+                      eventsController: context.eventsController,
                       viewConfiguration: _configuration.viewConfiguration,
                       callbacks: _callbacks,
                       header: Material(
@@ -147,7 +147,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return CalendarCallbacks<Event>(
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
       onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
-      onEventCreated: (event) => _eventsController.addEvent(event),
+      onEventCreated: (event) => context.eventsController.addEvent(event),
       onTappedWithDetail: _createEvent,
       onLongPressedWithDetail: _createEvent,
     );
@@ -159,6 +159,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       MultiDayDetail detail => detail.dateTimeRange,
       _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
     };
-    _eventsController.addEvent(CalendarEvent<Event>(dateTimeRange: range));
+    context.eventsController.addEvent(CalendarEvent<Event>(dateTimeRange: range));
   }
 }

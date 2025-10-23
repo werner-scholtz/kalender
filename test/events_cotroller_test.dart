@@ -67,6 +67,7 @@ void main() {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
                 range,
+                null,
                 includeMultiDayEvents: true,
                 includeDayEvents: false,
               );
@@ -79,6 +80,7 @@ void main() {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
                 range,
+                null,
                 includeMultiDayEvents: false,
                 includeDayEvents: true,
               );
@@ -91,6 +93,7 @@ void main() {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
                 range,
+                null,
                 includeMultiDayEvents: true,
                 includeDayEvents: true,
               );

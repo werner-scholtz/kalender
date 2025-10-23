@@ -118,8 +118,10 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
           onResize: (event, direction) => direction.horizontal,
           onReschedule: (event) {
             // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier<T>().value =
-                Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
+            context.feedbackWidgetSizeNotifier<T>().value = Size(
+              min(pageWidth, dayWidth * event.datesSpanned(context.location).length),
+              tileHeight,
+            );
 
             controller.selectEvent(event, internal: true);
             return true;
@@ -185,7 +187,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final start = event.dateTimeRangeAsUtc.start;
+    final start = event.dateTimeRangeAsUtc(context.location).start;
     final newStartTime = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,
@@ -193,7 +195,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
       millisecond: start.millisecond,
       microsecond: start.microsecond,
     );
-    final duration = event.dateTimeRangeAsUtc.duration;
+    final duration = event.dateTimeRangeAsUtc(context.location).duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
@@ -206,8 +208,10 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
     final range = switch (direction) {
-      ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorDateTime),
-      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorDateTime.endOfDay),
+      ResizeDirection.left =>
+        calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc(context.location), cursorDateTime),
+      ResizeDirection.right =>
+        calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc(context.location), cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
@@ -219,7 +223,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.dateTimeRangeAsUtc;
+    var range = newEvent!.dateTimeRangeAsUtc(context.location);
 
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {

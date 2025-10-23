@@ -7,6 +7,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     required this.visibleDateTimeRange,
     required this.visibleEvents,
     DateTime? initialDate,
+    required super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());

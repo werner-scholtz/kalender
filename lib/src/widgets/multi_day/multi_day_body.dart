@@ -7,6 +7,7 @@ import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
+import 'package:timezone/timezone.dart';
 
 /// This widget is used to display a multi-day body.
 ///
@@ -77,6 +78,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             viewController: viewController,
                             configuration: configuration,
                             pageHeight: pageHeight,
+                            location: context.location,
                           ),
                         ),
                         PositionedTimeIndicator<T>(
@@ -140,6 +142,8 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
   /// The height of the page.
   final double pageHeight;
 
+  final Location? location;
+
   /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
@@ -147,6 +151,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.configuration,
     required this.pageHeight,
+    required this.location,
   });
 
   /// The key used to identify the content of the [MultiDayBody].
@@ -181,6 +186,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   void _updateVisibleEvents(int index) {
     final events = widget.eventsController.eventsFromDateTimeRange(
       _pageNavigation.dateTimeRangeFromIndex(index),
+      widget.location,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
     );

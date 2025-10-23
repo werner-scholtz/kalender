@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
-import 'package:web_demo/utils.dart';
+import 'package:web_demo/providers.dart';
 
 class MultiDayBodyConfigurationWidget extends StatelessWidget {
   final CalendarConfiguration calendarConfiguration;

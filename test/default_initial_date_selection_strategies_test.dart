@@ -13,6 +13,7 @@ void main() {
       visibleDateTimeRange: dateTimeRange,
       visibleEvents: visibleEvents,
       initialDate: DateTime(2025, 1, 1),
+      location: null,
     );
 
     test('kDefaultToMonthly', () {
@@ -51,6 +52,7 @@ void main() {
       visibleDateTimeRange: dateTimeRange,
       visibleEvents: visibleEvents,
       initialDate: DateTime(2025, 1, 1),
+      location: null,
     );
 
     test('kDefaultToMonthly', () {
@@ -89,6 +91,7 @@ void main() {
       visibleDateTimeRange: dateTimeRange,
       visibleEvents: visibleEvents,
       initialDate: DateTime(2025, 1, 1),
+      location: null,
     );
 
     test('kDefaultToMonthly', () {

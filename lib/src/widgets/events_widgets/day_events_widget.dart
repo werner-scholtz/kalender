@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
+import 'package:timezone/timezone.dart';
 
 /// This widget is renders all the event tiles that are visible on the provided dateTimeRange.
 ///
@@ -42,6 +43,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
                 date: date,
                 eventsController: context.eventsController<T>(),
                 viewController: viewController,
+                location: context.location,
               ),
             ),
           ),
@@ -56,12 +58,14 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final MultiDayBodyConfiguration configuration;
   final DateTime date;
   final MultiDayViewController<T> viewController;
+  final Location? location;
   const DayEventsColumn({
     super.key,
     required this.eventsController,
     required this.configuration,
     required this.date,
     required this.viewController,
+    required this.location,
   });
 
   @override
@@ -92,6 +96,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
     final sortedEvents = _sort(
       _eventsController.eventsFromDateTimeRange(
         widget.date.dayRange,
+        null, // TODO: ADD LOCATION :D
         includeDayEvents: true,
         includeMultiDayEvents: widget.configuration.showMultiDayEvents,
       ),
@@ -111,6 +116,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       0,
       widget.configuration.minimumTileHeight,
       cache,
+      widget.location,
     ).sortEvents(events) as List<CalendarEvent<T>>;
   }
 
@@ -127,6 +133,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
         cache,
+        widget.location,
       ),
       children: _events.indexed
           .map(
@@ -160,6 +167,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
               date: widget.date,
               controller: controller,
               viewController: widget.viewController,
+              location: widget.location,
             ),
           ),
         ),
@@ -177,6 +185,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
   final List<CalendarEvent<T>> events;
   final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
+  final Location? location;
   const DayDropTargetColumn({
     super.key,
     required this.events,
@@ -186,6 +195,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
     required this.date,
     required this.controller,
     required this.viewController,
+    required this.location,
   });
 
   @override
@@ -220,7 +230,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
     }
 
     // If the selected event does not overlap with the current date.
-    if (!selectedEvent.dateTimeRangeAsUtc.overlaps(widget.date.dayRange)) {
+    if (!selectedEvent.dateTimeRangeAsUtc(widget.location).overlaps(widget.date.dayRange)) {
       // We need to check if the _selectedEvent is null, if it is not, we reset the state.
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;
@@ -262,6 +272,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
         widget.viewController.cache,
+        widget.location,
       ),
       children: eventList.indexed.map(
         (item) {

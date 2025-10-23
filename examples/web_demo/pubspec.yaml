@@ -37,6 +37,7 @@ dependencies:
 
   kalender:   
     path: ../../../kalender/
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:

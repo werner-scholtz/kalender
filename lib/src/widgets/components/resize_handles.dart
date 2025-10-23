@@ -6,6 +6,7 @@ import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
+import 'package:timezone/timezone.dart';
 
 /// The builder that positions the ResizeHandles.
 ///
@@ -22,6 +23,7 @@ typedef ResizeHandlePositioner<T extends Object?> = ResizeHandles<T> Function(
   DateTimeRange dateTimeRange,
   Size size,
   Axis axis,
+  Location? location,
 );
 
 /// The base class for the ResizeDetectorPositioner.
@@ -44,6 +46,9 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   /// The axis along which the resize handles are positioned.
   final Axis axis;
 
+  /// TODO: Document
+  final Location? location;
+
   const ResizeHandles({
     required this.event,
     required this.interaction,
@@ -51,6 +56,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
     required this.dateTimeRange,
     required this.size,
     required this.axis,
+    required this.location,
     super.key,
   });
 
@@ -62,6 +68,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
     DateTimeRange dateTimeRange,
     Size size,
     Axis axis,
+    Location? location,
   ) {
     return tileComponents.resizeHandlePositioner?.call(
           event,
@@ -70,6 +77,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
           dateTimeRange,
           size,
           axis,
+          location,
         ) ??
         DefaultResizeHandles<T>(
           event: event,
@@ -78,6 +86,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
           dateTimeRange: dateTimeRange,
           size: size,
           axis: axis,
+          location: location,
         );
   }
 
@@ -88,10 +97,10 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   bool get isVertical => axis == Axis.vertical;
 
   /// Whether the event continues before the current date range.
-  bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
+  bool get continuesBefore => event.startAsUtc(location).isBefore(dateTimeRange.start);
 
   /// Whether the event continues after the current date range.
-  bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
+  bool get continuesAfter => event.endAsUtc(location).isAfter(dateTimeRange.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
   bool get showStart => interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore;
@@ -143,6 +152,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
     required super.tileComponents,
     required super.dateTimeRange,
     required super.size,
+    required super.location,
     super.key,
   });
 

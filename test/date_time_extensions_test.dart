@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:kalender/kalender_extensions.dart';
-
+import 'package:timezone/data/latest.dart';
 import 'utilities.dart';
 
 Future<void> main() async {
@@ -675,4 +674,12 @@ Future<void> main() async {
       });
     },
   );
+
+  group('TZDateTime tests', () {
+    setUp(initializeTimeZones);
+    test('asLocal', () {});
+    test('asUtc', () {});
+
+    test('Waaaaaaaaaaaaaaaaaa', () {});
+  });
 }

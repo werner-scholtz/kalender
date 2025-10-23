@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
+import 'package:timezone/timezone.dart';
 
 export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';
@@ -12,6 +13,10 @@ export 'view_controllers/schedule_view_controller.dart';
 ///
 /// A view controller lets you control a calendar view.
 abstract class ViewController<T extends Object?> with CalendarNavigationFunctions<T> {
+  final Location? location;
+
+  ViewController({required this.location});
+  
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 

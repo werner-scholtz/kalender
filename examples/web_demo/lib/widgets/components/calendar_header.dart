@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:timezone/timezone.dart';
+import 'package:web_demo/locales.dart';
 import 'package:web_demo/models/event.dart';
-import 'package:web_demo/utils.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
 class NavigationHeader extends StatelessWidget {
@@ -19,54 +21,65 @@ class NavigationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locations = supportedLocations..add(DateTime.now().timeZoneName);
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        final dateButton = HeaderDateButton(controller: controller);
-        final todayButton = IconButton.filledTonal(
-          icon: const Icon(Icons.today),
-          onPressed: () => controller.animateToDate(DateTime.now()),
-        );
-
-        final showNavigationButtons = constraints.maxWidth > 500;
-        late final previousButton = IconButton.filledTonal(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => controller.animateToPreviousPage(),
-        );
-
-        late final nextButton = IconButton.filledTonal(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: () => controller.animateToNextPage(),
-        );
-
-        final width = min(150.0, constraints.maxWidth - 150.0);
-        final view = DropdownMenu(
-          dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-          width: width,
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(kMinInteractiveDimension),
-              borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
-            ),
-          ),
-          initialSelection: viewConfiguration,
-          onSelected: (value) {
-            if (value == null) return;
-            CalendarWidget.setViewConfiguration(context, value);
-          },
-        );
-
         return Row(
           spacing: 4.0,
           children: [
-            dateButton,
-            if (showNavigationButtons) ...[
-              previousButton,
-              nextButton,
+            HeaderDateButton(controller: controller),
+            if (constraints.maxWidth > 500) ...[
+              IconButton.filledTonal(
+                icon: const Icon(Icons.chevron_left),
+                onPressed: () => controller.animateToPreviousPage(),
+              ),
+              IconButton.filledTonal(
+                icon: const Icon(Icons.chevron_right),
+                onPressed: () => controller.animateToNextPage(),
+              ),
             ],
-            todayButton,
+            IconButton.filledTonal(
+              icon: const Icon(Icons.today),
+              onPressed: () => controller.animateToDate(DateTime.now()),
+            ),
             const Spacer(),
-            view,
+            DropdownMenu<String>(
+              dropdownMenuEntries: locations.map((e) => DropdownMenuEntry(value: e, label: e)).toList(),
+              width: min(150.0, constraints.maxWidth - 150.0),
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+                  borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
+                ),
+              ),
+              initialSelection: context.location.value?.name ?? DateTime.now().timeZoneName,
+              onSelected: (value) {
+                if (value == null) return;
+                if (value == DateTime.now().timeZoneName) {
+                  context.location.value = null;
+                  return;
+                }
+                context.location.value = getLocation(value);
+              },
+            ),
+            DropdownMenu(
+              dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+              width: min(150.0, constraints.maxWidth - 150.0),
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+                  borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
+                ),
+              ),
+              initialSelection: viewConfiguration,
+              onSelected: (value) {
+                if (value == null) return;
+                CalendarWidget.setViewConfiguration(context, value);
+              },
+            ),
           ],
         );
       },

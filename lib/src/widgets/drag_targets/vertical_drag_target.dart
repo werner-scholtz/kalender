@@ -135,7 +135,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   void _updateSnapPoints() {
     if (!snapToOtherEvents) return;
     clearSnapPoints();
-    addEventSnapPoints(controller.visibleEvents.value);
+    addEventSnapPoints(controller.visibleEvents.value, context.location);
   }
 
   @override
@@ -296,7 +296,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     }
 
     // Calculate the new dateTimeRange for the event.
-    final duration = event.dateTimeRangeAsUtc.duration;
+    final duration = event.dateTimeRangeAsUtc(context.location).duration;
     var end = start.add(duration);
 
     // Add now to the snap points.
@@ -345,8 +345,10 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (snapToTimeIndicator) removeSnapPoint(now);
 
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorSnapPoint),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorSnapPoint),
+      ResizeDirection.top =>
+        calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc(context.location), cursorSnapPoint),
+      ResizeDirection.bottom =>
+        calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc(context.location), cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
@@ -360,7 +362,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (event == null) return null;
 
     // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.dateTimeRangeAsUtc;
+    var range = newEvent!.dateTimeRangeAsUtc(context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
       range = DateTimeRange(start: range.start, end: cursorDateTime);

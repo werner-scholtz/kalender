@@ -83,7 +83,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
     /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
     for (final event in events) {
-      final overlaps = events.where((e) => e.datesSpanned.any(event.datesSpanned.contains));
+      final overlaps = events.where((e) => e.datesSpanned(null).any(event.datesSpanned(null).contains));
       maxOverlaps = max(maxOverlaps, overlaps.length);
     }
 
@@ -104,7 +104,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
     for (var i = 0; i < numberOfChildren; i++) {
       final event = events[i];
 
-      final eventDates = event.datesSpanned;
+      final eventDates = event.datesSpanned(null);
 
       // first visible date.
       final firstVisibleDate = eventDates.firstWhere(visibleDates.contains, orElse: () => eventDates.first);
@@ -137,7 +137,7 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
       // Find events that fill the same dates as the current event.
       final eventsAbove = tilePositions.keys
           .map((e) => events[e])
-          .where((eventAbove) => eventAbove.datesSpanned.any(event.datesSpanned.contains))
+          .where((eventAbove) => eventAbove.datesSpanned(null).any(event.datesSpanned(null).contains))
           .toList();
 
       var dy = 0.0;

@@ -131,9 +131,12 @@ class TestProvider<T> extends StatelessWidget {
                     callbacks: callbacks ?? CalendarCallbacks<T>(),
                     child: TileComponentProvider<T>(
                       tileComponents: tileComponents,
-                      child: LocaleProvider(
-                        locale: locale,
-                        child: child,
+                      child: LocationProvider(
+                        location: null,
+                        child: LocaleProvider(
+                          locale: locale,
+                          child: child,
+                        ),
                       ),
                     ),
                   ),

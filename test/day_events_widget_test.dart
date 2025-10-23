@@ -43,6 +43,7 @@ void main() {
         DateTimeRange(start: start.startOfDay, end: start.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
+      location: null,
     );
     calendarController.attach(viewController);
 

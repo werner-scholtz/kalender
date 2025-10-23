@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
-import 'package:web_demo/utils.dart';
+import 'package:web_demo/providers.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
   final CalendarEvent<Event> event;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
+import 'package:timezone/timezone.dart';
 
 /// TODO: consider a abstract class for CalendarEvent that needs to be implemented by users.
 ///
@@ -11,10 +12,13 @@ import 'package:kalender/kalender_extensions.dart';
 /// Any calculations done with the [_dateTimeRange] should be done in utc time and then converted back to local time.
 class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
-  T? data;
+  final T? data;
 
-  /// The [DateTimeRange] of the [CalendarEvent] stored in local time.
-  final DateTimeRange _dateTimeRange;
+  /// The start of the event as provided.
+  final DateTime start;
+
+  /// The end of the event as provided.
+  final DateTime end;
 
   /// Whether this [CalendarEvent] can be modified.
   /// *This will be deprecated in the future.
@@ -25,6 +29,9 @@ class CalendarEvent<T extends Object?> {
   ///
   /// * This will override the behavior from [canModify] property.
   final EventInteraction interaction;
+
+  /// The display range of the [CalendarEvent].
+  final DisplayDateTimeRange displayDateTimeRange;
 
   /// The id of the [CalendarEvent].
   /// Do not set this value manually as this is set by the [EventsController].
@@ -40,35 +47,27 @@ class CalendarEvent<T extends Object?> {
     this.data,
     this.canModify = true,
     EventInteraction? interaction,
-  })  : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange,
-        interaction = interaction ?? EventInteraction.fromCanModify(canModify);
+  })  : start = dateTimeRange.start,
+        end = dateTimeRange.end,
+        displayDateTimeRange = DisplayDateTimeRange.from(start: dateTimeRange.start, end: dateTimeRange.end),
+        interaction =
+            interaction ?? (canModify ? const EventInteraction.allowAll() : const EventInteraction.allowNone());
 
-  /// The [DateTimeRange] of the [CalendarEvent] in the local timezone.
-  DateTimeRange get dateTimeRange => _dateTimeRange;
+  /// The [DateTimeRange] of the [CalendarEvent] as provided.
+  DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
-  /// The start [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get start => _dateTimeRange.start;
-
-  /// The end [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get end => _dateTimeRange.end;
-
-  /// The [DateTimeRange] of the [CalendarEvent] in utc time.
-  DateTimeRange get dateTimeRangeAsUtc => _dateTimeRange.asUtc;
-
-  /// The start [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get startAsUtc => dateTimeRangeAsUtc.start;
-
-  /// The end [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get endAsUtc => dateTimeRangeAsUtc.end;
+  DateTimeRange dateTimeRangeAsUtc([Location? location]) => displayDateTimeRange.toLocal(location).asUtc;
+  DateTime startAsUtc([Location? location]) => displayDateTimeRange.startToLocal(location).asUtc;
+  DateTime endAsUtc([Location? location]) => displayDateTimeRange.endToLocal(location).asUtc;
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
-  Duration get duration => dateTimeRangeAsUtc.duration;
+  Duration get duration => displayDateTimeRange.duration;
 
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
   /// The [DateTime]s that the [CalendarEvent] spans. This uses utc time.
-  List<DateTime> get datesSpanned => dateTimeRangeAsUtc.dates();
+  List<DateTime> datesSpanned(Location? location) => displayDateTimeRange.toLocal(location).asUtc.dates();
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
@@ -88,8 +87,7 @@ class CalendarEvent<T extends Object?> {
   @override
   String toString() {
     return 'CalendarEvent<$T> ($id):'
-        '\nstart:  $startAsUtc'
-        '\nend: $endAsUtc'
+        '\nDisplayRange:  $displayDateTimeRange'
         '\ndata: ${data.toString()}';
   }
 
@@ -98,12 +96,82 @@ class CalendarEvent<T extends Object?> {
   bool operator ==(Object other) {
     return other is CalendarEvent<T> &&
         other.id == id &&
-        other._dateTimeRange == _dateTimeRange &&
+        other.start == start &&
+        other.end == end &&
         other.data == data &&
         other.canModify == canModify &&
         other.interaction == interaction;
   }
 
   @override
-  int get hashCode => Object.hash(id, _dateTimeRange, data, canModify, interaction);
+  int get hashCode => Object.hash(id, start, end, data, canModify, interaction);
+}
+
+/// A specialized [DateTimeRange] that ensures both start and end times are stored in UTC.
+///
+/// This class extends [DateTimeRange] and enforces that all date times are in UTC format.
+/// It provides utilities for working with time zones and converting between local and UTC times.
+///
+/// Example:
+/// ```dart
+/// final range = DisplayDateTimeRange(
+///   start: DateTime.utc(2024, 1, 1),
+///   end: DateTime.utc(2024, 1, 2),
+/// );
+/// ```
+///
+/// Use [DisplayDateTimeRange.from] to create an instance from non-UTC date times,
+/// which will automatically convert them to UTC while preserving the exact moment in time.
+class DisplayDateTimeRange extends DateTimeRange {
+  DisplayDateTimeRange({
+    required super.start,
+    required super.end,
+  }) : assert(start.isUtc && end.isUtc, 'Start and end date must be in UTC');
+
+  DisplayDateTimeRange.from({
+    required DateTime start,
+    required DateTime end,
+  }) : this(
+          start: DateTime.fromMicrosecondsSinceEpoch(start.microsecondsSinceEpoch, isUtc: true),
+          end: DateTime.fromMicrosecondsSinceEpoch(end.microsecondsSinceEpoch, isUtc: true),
+        );
+
+  /// The total duration of the [DisplayDateTimeRange].
+  ///
+  /// Because [start] and [end] are required to be in UTC, this calculation is safe.
+  @override
+  Duration get duration => end.difference(start);
+
+  /// TODO: Improve the documentation for the following methods. also add to string and equality.
+
+  /// Converts the [DisplayDateTimeRange] to a [DateTimeRange] in local time for the specified [location].
+  DateTimeRange toLocal(Location? location) {
+    if (location == null) {
+      return DateTimeRange(start: start.toLocal(), end: end.toLocal());
+    } else {
+      final localStart = TZDateTime.from(start, location);
+      final localEnd = TZDateTime.from(end, location);
+      return DateTimeRange(start: localStart, end: localEnd);
+    }
+  }
+
+  /// Converts the start time to local time for the specified [location].
+  DateTime startToLocal(Location? location) {
+    if (location == null) {
+      return start.toLocal();
+    } else {
+      final localStart = TZDateTime.from(start, location);
+      return localStart;
+    }
+  }
+
+  /// Converts the end time to local time for the specified [location].
+  DateTime endToLocal(Location? location) {
+    if (location == null) {
+      return end.toLocal();
+    } else {
+      final localEnd = TZDateTime.from(end, location);
+      return localEnd;
+    }
+  }
 }

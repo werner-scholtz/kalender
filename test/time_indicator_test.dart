@@ -26,6 +26,7 @@ void main() {
                       viewConfiguration: viewConfiguration,
                       visibleDateTimeRange: ValueNotifier(range),
                       visibleEvents: ValueNotifier(<CalendarEvent>{}),
+                      location: null,
                     ),
                     initialPage: 0,
                     dateOverride: date,

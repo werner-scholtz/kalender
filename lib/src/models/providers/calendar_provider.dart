@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:timezone/timezone.dart';
 
 /// The [Components] widget provides the [CalendarComponents] to the widget tree.
 class Components<T extends Object?> extends InheritedWidget {
@@ -72,6 +73,29 @@ class LocaleProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(covariant LocaleProvider oldWidget) {
     return locale != oldWidget.locale;
+  }
+}
+
+/// The [LocationProvider] is used to provide the [Location] for the calendar.
+/// 
+/// TODO: Check that the calendar updates correctly when the location changes.
+class LocationProvider extends InheritedWidget {
+  /// The location used by the calendar.
+  final Location? location;
+
+  /// Creates a [LocationProvider] with the specified location.
+  const LocationProvider({super.key, required this.location, required super.child});
+
+  /// Gets the [LocationProvider] from the context.
+  static Location? of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
+    assert(result != null, 'No LocationProvider found.');
+    return result!.location;
+  }
+
+  @override
+  bool updateShouldNotify(covariant LocationProvider oldWidget) {
+    return location != oldWidget.location;
   }
 }
 
@@ -181,6 +205,9 @@ extension ProviderContext on BuildContext {
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);
+
+  /// Retrieve the [Location] of the calendar.
+  Location? get location => LocationProvider.of(this);
 
   /// Retrieve the [CalendarInteraction].
   CalendarInteraction get interaction => Interaction.of(this);

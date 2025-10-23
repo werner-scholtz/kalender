@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:timezone/timezone.dart';
 
 /// A mixin that provides useful utilities for day-based event tiles.
 ///
@@ -63,8 +64,8 @@ mixin DayEventTileUtils<T extends Object?> {
   /// you only want the portion visible on the current day.
   ///
   /// Returns the event's time range intersected with the tile's date.
-  DateTimeRange get eventRangeOnDate {
-    return event.dateTimeRangeAsUtc.dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
+  DateTimeRange eventRangeOnDate([Location? location]) {
+    return event.dateTimeRangeAsUtc(location).dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -94,7 +95,7 @@ mixin DayEventTileUtils<T extends Object?> {
     bool includeSelf = false,
   }) {
     final eventsController = context.eventsController<T>();
-    final rangeOnDate = eventRangeOnDate;
+    final rangeOnDate = eventRangeOnDate(context.location);
     final range = DateTimeRange(
       start: rangeOnDate.start.subtract(before),
       end: rangeOnDate.end.add(after),
@@ -102,6 +103,7 @@ mixin DayEventTileUtils<T extends Object?> {
     final events = eventsController
         .eventsFromDateTimeRange(
           range,
+          null, // TODO: ADD LOCATION :D
           includeMultiDayEvents: includeMultiDayEvents,
         )
         .toList();
@@ -130,7 +132,7 @@ mixin DayEventTileUtils<T extends Object?> {
   /// ```
   DateTime dateTimeFromPosition(BuildContext context, Offset localPosition) {
     final minutes = (localPosition.dy / context.heightPerMinute).round();
-    final dateTime = eventRangeOnDate.start.add(Duration(minutes: minutes));
+    final dateTime = eventRangeOnDate(context.location).start.add(Duration(minutes: minutes));
     return dateTime.asLocal;
   }
 }
@@ -206,11 +208,13 @@ mixin MultiDayEventTileUtils<T extends Object?> {
     bool includeDayEvents = true,
     bool includeSelf = false,
   }) {
+    final location = context.location;
     final eventsController = context.eventsController<T>();
-    final range = event.dateTimeRangeAsUtc;
+    final range = event.dateTimeRangeAsUtc(location);
     final events = eventsController
         .eventsFromDateTimeRange(
           range,
+          location,
           includeMultiDayEvents: includeMultiDayEvents,
           includeDayEvents: includeDayEvents,
         )
@@ -240,8 +244,8 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
     final renderBox = context.findRenderObject() as RenderBox;
     final tileRangeAsUtc = tileRange.asUtc;
-    final start = event.dateTimeRangeAsUtc.start;
-    final end = event.dateTimeRangeAsUtc.end;
+    final start = event.dateTimeRangeAsUtc(context.location).start;
+    final end = event.dateTimeRangeAsUtc(context.location).end;
     final range = DateTimeRange(
       start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
       end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,

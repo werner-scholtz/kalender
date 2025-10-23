@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:timezone/timezone.dart';
 
 /// A function type that generates a layout frame for multi-day events.
 ///
@@ -52,6 +53,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
   MultiDayLayoutFrameCache<T>? cache,
+  Location? location,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
   // Check cache first if provided
@@ -74,8 +76,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
             final comparison = b.duration.compareTo(a.duration);
             if (comparison != 0) return comparison;
 
-            final aStart = a.dateTimeRangeAsUtc.start;
-            final bRange = b.dateTimeRangeAsUtc;
+            final aStart = a.dateTimeRangeAsUtc(location).start;
+            final bRange = b.dateTimeRangeAsUtc(location);
             final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
             // Sort by start time (ascending) if durations are equal
@@ -96,7 +98,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc;
+    final rangeAsUtc = event.dateTimeRangeAsUtc(location);
 
     // Create a range that rounds the start and end dates to the start and end of the day.
     final range = DateTimeRange(

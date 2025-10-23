@@ -41,9 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
       home: const MyHomePage(),
     );
   }
@@ -79,13 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
-              calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreateWithDetail: (event, detail) {
             if (detail is MultiDayDetail) {
-              throw Exception(
-                'MultiDayDetail is not supported in this example.',
-              );
+              throw Exception('MultiDayDetail is not supported in this example.');
             }
 
             final dayWidth = detail.renderBox.size.width;
@@ -120,9 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 8),
             CalendarHeader<Event>(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
-                showTiles: false,
-              ),
+              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false),
             ),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
@@ -144,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     heightPerMinute,
                     minimumTileHeight,
                     cache,
+                    location,
                   ) {
                     return CustomSideBySideLayoutDelegate(
                       events: events,
@@ -153,6 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       minimumTileHeight: minimumTileHeight,
                       layoutCache: cache ?? EventLayoutDelegateCache(),
                       people: people,
+                      location: location,
                     );
                   },
             ),
@@ -172,20 +167,14 @@ class PeopleWidget extends StatelessWidget {
     return Row(
       children: [
         // Needed for proper spacing.
-        PrototypeTimeline.prototypeBuilder(
-          0.7,
-          TimeOfDayRange.allDay(),
-          TimelineStyle(),
-        ),
+        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: people
-                  .map(
-                    (person) => Expanded(child: PersonWidget(person: person)),
-                  )
+                  .map((person) => Expanded(child: PersonWidget(person: person)))
                   .toList(growable: false),
             ),
           ),

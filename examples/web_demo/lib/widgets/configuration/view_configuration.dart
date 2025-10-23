@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
-import 'package:web_demo/utils.dart';
+import 'package:web_demo/providers.dart';
 
 class CalendarViewConfiguration extends StatelessWidget {
   final ViewConfiguration viewConfiguration;

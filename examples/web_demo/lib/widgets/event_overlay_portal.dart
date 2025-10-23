@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/main.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/event_overlay.dart';
 
 class EventOverlayPortal extends StatefulWidget {
@@ -27,8 +27,6 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
   /// The selected event and its render box.
   CalendarEvent<Event>? selectedEvent;
   RenderBox? selectedRenderBox;
-
-  EventsController get eventsController => MyApp.eventsController(context);
 
   void createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
     selectedEvent = event;
@@ -91,7 +89,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
                     height: height,
                     width: width,
                     onDismiss: controller.hide,
-                    eventsController: eventsController,
+                    eventsController: context.eventsController,
                   ),
                 ),
               ],
