@@ -7,62 +7,126 @@ import 'utilities.dart';
 void main() {
   testWithTimeZones(
     body: (timezone, testDates) {
-      final eventsController = DefaultEventsController();
+      late DefaultEventsController eventsController;
 
-      group('Test DefaultEventsController', () {
-        test('addEvent', () {
-          // Add multiple events to the controller
-          eventsController.addEvents(
-            testDates.map((date) {
-              final local = date.asLocal;
-              final range = DateTimeRange(start: local.startOfDay, end: local.endOfDay);
-              return CalendarEvent(dateTimeRange: range);
-            }).toList(),
-          );
+      setUp(() {
+        eventsController = DefaultEventsController();
+      });
 
-          expect(eventsController.events.length, testDates.length);
-
-          // Add single day events to the controller
-          eventsController.addEvents(
-            testDates.map(
-              (date) {
-                final local = date.asLocal.startOfDay;
-                final range = DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 2));
+      group('DefaultEventsController', () {
+        group('addEvent and addEvents', () {
+          test('adds multiple events correctly', () {
+            // Add multiple events to the controller
+            eventsController.addEvents(
+              testDates.map((date) {
+                final local = date.asLocal;
+                final range = DateTimeRange(start: local.startOfDay, end: local.endOfDay);
                 return CalendarEvent(dateTimeRange: range);
-              },
-            ).toList(),
-          );
+              }).toList(),
+            );
 
-          expect(eventsController.events.length, testDates.length * 2);
+            expect(eventsController.events.length, testDates.length);
+          });
 
-          // Add zero duration events (start of day) to the controller
-          eventsController.addEvents(
-            testDates.map(
-              (date) {
-                final local = date.asLocal.startOfDay;
-                final range = DateTimeRange(start: local, end: local);
-                return CalendarEvent(dateTimeRange: range);
-              },
-            ).toList(),
-          );
+          test('adds single day events correctly', () {
+            // Add single day events to the controller
+            eventsController.addEvents(
+              testDates.map(
+                (date) {
+                  final local = date.asLocal.startOfDay;
+                  final range = DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 2));
+                  return CalendarEvent(dateTimeRange: range);
+                },
+              ).toList(),
+            );
 
-          expect(eventsController.events.length, testDates.length * 3);
+            expect(eventsController.events.length, testDates.length);
+          });
 
-          // Add zero duration events (during the day) to the controller
-          eventsController.addEvents(
-            testDates.map(
-              (date) {
-                final local = date.asLocal.startOfDay;
-                final range = DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 1));
-                return CalendarEvent(dateTimeRange: range);
-              },
-            ).toList(),
-          );
+          test('adds zero duration events at start of day', () {
+            // Add zero duration events (start of day) to the controller
+            eventsController.addEvents(
+              testDates.map(
+                (date) {
+                  final local = date.asLocal.startOfDay;
+                  final range = DateTimeRange(start: local, end: local);
+                  return CalendarEvent(dateTimeRange: range);
+                },
+              ).toList(),
+            );
 
-          expect(eventsController.events.length, testDates.length * 4);
+            expect(eventsController.events.length, testDates.length);
+          });
+
+          test('adds zero duration events during the day', () {
+            // Add zero duration events (during the day) to the controller
+            eventsController.addEvents(
+              testDates.map(
+                (date) {
+                  final local = date.asLocal.startOfDay;
+                  final range = DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 1));
+                  return CalendarEvent(dateTimeRange: range);
+                },
+              ).toList(),
+            );
+
+            expect(eventsController.events.length, testDates.length);
+          });
+
+          test('accumulates events correctly when adding multiple times', () {
+            const totalSets = 4;
+            var expectedCount = 0;
+
+            for (int i = 0; i < totalSets; i++) {
+              eventsController.addEvents(
+                testDates.map((date) {
+                  final local = date.asLocal.startOfDay;
+                  final start = i == 0 ? local : local.copyWith(hour: i);
+                  final end = i == 0 ? local.endOfDay : local.copyWith(hour: i + 1);
+                  return CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: end));
+                }).toList(),
+              );
+              expectedCount += testDates.length;
+              expect(eventsController.events.length, expectedCount);
+            }
+          });
         });
         group('eventsFromDateTimeRange', () {
-          test('only includeMultiDayEvents', () {
+          setUp(() {
+            // Add test events for querying
+            eventsController.addEvents([
+              // Multi-day events
+              ...testDates.map((date) {
+                final local = date.asLocal;
+                return CalendarEvent(
+                  dateTimeRange: DateTimeRange(start: local.startOfDay, end: local.endOfDay),
+                );
+              }),
+              // Single hour events
+              ...testDates.map((date) {
+                final local = date.asLocal.startOfDay;
+                return CalendarEvent(
+                  dateTimeRange: DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 2)),
+                );
+              }),
+              // Zero duration events at start of day
+              ...testDates.map((date) {
+                final local = date.asLocal.startOfDay;
+                return CalendarEvent(
+                  dateTimeRange: DateTimeRange(start: local, end: local),
+                );
+              }),
+              // Zero duration events during the day
+              ...testDates.map((date) {
+                final local = date.asLocal.startOfDay;
+                return CalendarEvent(
+                  dateTimeRange: DateTimeRange(start: local.copyWith(hour: 1), end: local.copyWith(hour: 1)),
+                );
+              }),
+            ]);
+          });
+
+          test('returns only multi-day events when includeMultiDayEvents is true', () {
             for (final date in testDates) {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
@@ -72,10 +136,11 @@ void main() {
                 includeDayEvents: false,
               );
 
-              expect(events.length, 1);
+              expect(events.length, 1, reason: 'Should return exactly 1 multi-day event for $date');
             }
           });
-          test('only includeDayEvents', () {
+
+          test('returns only day events when includeDayEvents is true', () {
             for (final date in testDates) {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
@@ -85,10 +150,11 @@ void main() {
                 includeDayEvents: true,
               );
 
-              expect(events.length, 3);
+              expect(events.length, 3, reason: 'Should return exactly 3 day events for $date');
             }
           });
-          test('includeDayEvents & includeMultiDayEvents', () {
+
+          test('returns all events when both flags are true', () {
             for (final date in testDates) {
               final range = DateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
               final events = eventsController.eventsFromDateTimeRange(
@@ -98,60 +164,89 @@ void main() {
                 includeDayEvents: true,
               );
 
-              expect(events.length, 4);
+              expect(events.length, 4, reason: 'Should return all 4 events for $date');
             }
           });
         });
         group('removeEvent', () {
-          test('remove single event', () {
+          test('removes single event successfully', () {
+            final event = CalendarEvent(
+              dateTimeRange: DateTimeRange(
+                start: DateTime(2025, 1, 1, 10),
+                end: DateTime(2025, 1, 1, 11),
+              ),
+            );
+            eventsController.addEvent(event);
             final initialCount = eventsController.events.length;
-            final eventToRemove = eventsController.events.first;
 
-            eventsController.removeEvent(eventToRemove);
+            eventsController.removeEvent(event);
 
             expect(eventsController.events.length, initialCount - 1);
-            expect(eventsController.events.contains(eventToRemove), false);
+            expect(eventsController.events.contains(event), false);
           });
 
-          test('removing non-existent event', () {
+          test('throws assertion error when removing non-existent event', () {
             final initialCount = eventsController.events.length;
             final fakeEvent = CalendarEvent(
               dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
             );
 
-            try {
-              eventsController.removeEvent(fakeEvent);
-            } catch (e) {
-              expect(e, isA<AssertionError>());
-            }
+            expect(
+              () => eventsController.removeEvent(fakeEvent),
+              throwsA(isA<AssertionError>()),
+              reason: 'Should throw AssertionError when removing non-existent event',
+            );
 
             expect(eventsController.events.length, initialCount);
           });
         });
 
         group('removeEvents', () {
-          test('removes multiple events', () {
+          test('removes multiple events successfully', () {
+            final events = [
+              CalendarEvent(
+                dateTimeRange: DateTimeRange(
+                  start: DateTime(2025, 1, 1, 10),
+                  end: DateTime(2025, 1, 1, 11),
+                ),
+              ),
+              CalendarEvent(
+                dateTimeRange: DateTimeRange(
+                  start: DateTime(2025, 1, 2, 10),
+                  end: DateTime(2025, 1, 2, 11),
+                ),
+              ),
+            ];
+            eventsController.addEvents(events);
             final initialCount = eventsController.events.length;
-            final eventsToRemove = eventsController.events.take(2).toList();
-            eventsController.removeEvents(eventsToRemove);
+
+            eventsController.removeEvents(events);
+
             expect(eventsController.events.length, initialCount - 2);
-            for (final event in eventsToRemove) {
+            for (final event in events) {
               expect(eventsController.events.contains(event), false);
             }
           });
 
-          test('remove empty list', () {
+          test('handles empty list without errors', () {
             final initialCount = eventsController.events.length;
+
             eventsController.removeEvents([]);
+
             expect(eventsController.events.length, initialCount);
           });
         });
 
         group('removeById', () {
-          test('removes event by valid id', () {
+          test('removes event by valid id successfully', () {
+            final event = CalendarEvent(
+              dateTimeRange: DateTimeRange(
+                start: DateTime(2025, 1, 1, 10),
+                end: DateTime(2025, 1, 1, 11),
+              ),
+            );
+            final eventId = eventsController.addEvent(event);
             final initialCount = eventsController.events.length;
-            final eventToRemove = eventsController.events.first;
-            final eventId = eventToRemove.id;
 
             eventsController.removeById(eventId);
 
@@ -159,23 +254,47 @@ void main() {
             expect(eventsController.byId(eventId), null);
           });
 
-          test('removing by non-existent id does not affect other events', () {
+          test('throws assertion error when removing by non-existent id', () {
             final initialCount = eventsController.events.length;
             const nonExistentId = 99999;
 
-            try {
-              eventsController.removeById(nonExistentId);
-            } catch (e) {
-              expect(e, isA<AssertionError>());
-            }
+            expect(
+              () => eventsController.removeById(nonExistentId),
+              throwsA(isA<AssertionError>()),
+              reason: 'Should throw AssertionError when removing by non-existent id',
+            );
 
             expect(eventsController.events.length, initialCount);
           });
         });
 
         group('clearEvents', () {
-          test('removes all events', () {
+          test('removes all events successfully', () {
+            // Add some events first
+            eventsController.addEvents([
+              CalendarEvent(
+                dateTimeRange: DateTimeRange(
+                  start: DateTime(2025, 1, 1, 10),
+                  end: DateTime(2025, 1, 1, 11),
+                ),
+              ),
+              CalendarEvent(
+                dateTimeRange: DateTimeRange(
+                  start: DateTime(2025, 1, 2, 10),
+                  end: DateTime(2025, 1, 2, 11),
+                ),
+              ),
+            ]);
             expect(eventsController.events.isNotEmpty, true);
+
+            eventsController.clearEvents();
+
+            expect(eventsController.events.isEmpty, true);
+            expect(eventsController.events.length, 0);
+          });
+
+          test('works correctly when no events exist', () {
+            expect(eventsController.events.isEmpty, true);
 
             eventsController.clearEvents();
 
@@ -185,15 +304,14 @@ void main() {
         });
 
         group('updateEvent', () {
-          test('updates event with new data', () {
-            // Add a fresh event to update
+          test('updates event with new data successfully', () {
             final originalEvent = CalendarEvent(
               dateTimeRange: DateTimeRange(
                 start: DateTime(2025, 6, 1, 10),
                 end: DateTime(2025, 6, 1, 11),
               ),
             );
-            eventsController.addEvent(originalEvent);
+            final originalId = eventsController.addEvent(originalEvent);
 
             final updatedEvent = CalendarEvent(
               dateTimeRange: DateTimeRange(
@@ -208,16 +326,16 @@ void main() {
             );
 
             // The updated event should have the same id as the original
-            expect(updatedEvent.id, originalEvent.id);
+            expect(updatedEvent.id, originalId);
 
             // The updated event should be retrievable by id
-            final retrievedEvent = eventsController.byId(originalEvent.id);
+            final retrievedEvent = eventsController.byId(originalId);
             expect(retrievedEvent, isNotNull);
             expect(retrievedEvent!.dateTimeRange.start, DateTime(2025, 6, 1, 14));
             expect(retrievedEvent.dateTimeRange.end, DateTime(2025, 6, 1, 15));
           });
 
-          test('update preserves event id', () {
+          test('preserves event id after update', () {
             final originalEvent = CalendarEvent(
               dateTimeRange: DateTimeRange(
                 start: DateTime(2025, 6, 2, 10),
@@ -244,7 +362,7 @@ void main() {
         });
 
         group('byId', () {
-          test('retrieves event by valid id', () {
+          test('retrieves event by valid id successfully', () {
             final event = CalendarEvent(
               dateTimeRange: DateTimeRange(
                 start: DateTime(2025, 7, 1, 9),
@@ -262,6 +380,7 @@ void main() {
           test('returns null for non-existent id', () {
             const nonExistentId = 88888;
             final retrievedEvent = eventsController.byId(nonExistentId);
+
             expect(retrievedEvent, null);
           });
 
