@@ -1,3 +1,18 @@
+## 0.15.0
+- feat: Added timezone support, via the [timezone](https://pub.dev/packages/timezone) package.
+        A Location can now be passed to the CalendarView and events will be displayed for that location.
+
+### API Changes
+- **Breaking**: Renamed `DateMap` to `EventStore` in [`EventsController`](lib/src/models/controllers/events_controller.dart)
+  - Update your code if you have a custom `DateMap` or `EventsController` implementation: Replace references to `DateMap` with `EventStore`
+  - The functionality remains the same, only the name has changed for clarity.
+
+- **Breaking**: Added `location` parameter to:
+    - `EventLayoutStrategy`
+    - `GenerateMultiDayLayoutFrame`
+    - `ResizeHandlePositioner`
+
+
 ## 0.14.0
 - feat: Custom onWillAcceptWithDetails functions for DragTargets. [#213](https://github.com/werner-scholtz/kalender/issues/213)
 

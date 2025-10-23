@@ -8,6 +8,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
+import 'package:timezone/timezone.dart';
 
 /// This widget is used to display multi-day events.
 ///
@@ -108,6 +109,7 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
       multiDayCache: widget.multiDayCache,
       multiDayOverlayBuilders: widget.overlayBuilders,
       multiDayOverlayStyles: widget.overlayStyles,
+      location: context.location,
     );
   }
 }
@@ -147,6 +149,9 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The styles used for overlay widgets for multi-day events.
   final OverlayStyles? multiDayOverlayStyles;
 
+  /// The location of the calendar.
+  final Location? location;
+
   const MultiDayEventLayoutWidget({
     required this.events,
     required this.visibleDateTimeRange,
@@ -156,6 +161,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
     required this.multiDayCache,
     required this.multiDayOverlayBuilders,
     required this.multiDayOverlayStyles,
+    required this.location,
     super.key,
   });
 
@@ -191,6 +197,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       events: widget.events,
       textDirection: widget.textDirection,
       cache: widget.multiDayCache,
+      location: widget.location,
     );
   }
 
@@ -217,6 +224,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           events: widget.events,
           textDirection: widget.textDirection,
           cache: widget.multiDayCache,
+          location: widget.location,
         );
       });
     }
@@ -271,6 +279,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           visibleDateTimeRange: widget.visibleDateTimeRange,
           events: [event],
           textDirection: widget.textDirection,
+          location: context.location,
         );
 
         return CustomMultiChildLayout(

@@ -19,6 +19,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
 });
 
@@ -52,8 +53,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required DateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
-  Location? location,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
   // Check cache first if provided
