@@ -77,7 +77,7 @@ void main() {
             const totalSets = 4;
             var expectedCount = 0;
 
-            for (int i = 0; i < totalSets; i++) {
+            for (var i = 0; i < totalSets; i++) {
               eventsController.addEvents(
                 testDates.map((date) {
                   final local = date.asLocal.startOfDay;

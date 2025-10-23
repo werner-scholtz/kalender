@@ -374,7 +374,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
 /// - **Location Support**: Filter events by timezone/location
 /// - **ID Management**: Automatic assignment and lookup of unique event IDs
 ///
-/// The [EventStore] is typically used internally by [EventsController] implementations see [DefaultDateMap]
+/// The [EventStore] is typically used internally by [EventsController] implementations see [DefaultEventStore]
 /// and should not be accessed directly by application code. Instead, use the
 /// [EventsController] methods which delegate to the underlying [EventStore].
 ///

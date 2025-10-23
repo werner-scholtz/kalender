@@ -135,7 +135,7 @@ mixin DragTargetUtilities<T> {
     final originalEvent = result.$1;
     final updatedEvent = result.$2;
 
-    // TODO: updateEvent should be called only if onEventChanged is null....
+    // TODO: updateEvent should be called only if onEventChanged is null.... v1.0.0
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);

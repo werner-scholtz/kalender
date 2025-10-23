@@ -95,6 +95,7 @@ class CalendarEvent<T extends Object?> {
   ///
   /// This property controls whether users can drag, resize, or otherwise
   /// modify the event in calendar views. It provides more granular control
+  // ignore: deprecated_member_use_from_same_package
   /// than the deprecated [canModify] property.
   ///
   /// Example:

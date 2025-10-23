@@ -96,7 +96,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
     final sortedEvents = _sort(
       _eventsController.eventsFromDateTimeRange(
         widget.date.dayRange,
-        null, // TODO: ADD LOCATION :D
+        widget.location,
         includeDayEvents: true,
         includeMultiDayEvents: widget.configuration.showMultiDayEvents,
       ),

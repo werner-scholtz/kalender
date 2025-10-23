@@ -21,7 +21,7 @@ class CalendarBody<T extends Object?> extends StatelessWidget {
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
-  /// TODO: convert to MonthTileCompoenents.
+  /// TODO: convert to MonthTileComponents.
   final TileComponents<T>? monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].

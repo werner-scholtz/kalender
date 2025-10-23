@@ -12,14 +12,14 @@ class CalendarCallbacks<T extends Object?> {
   ///
   /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
   /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
-  /// /// See TODO: add link to event mixins.
+  /// See [DayEventTileUtils] and [MultiDayEventTileUtils] for more information.
   final OnEventTapped<T>? onEventTapped;
 
   /// The callback for when an event is tapped, with details.
   ///
   /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
   /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
-  /// /// See TODO: add link to event mixins.
+  /// See [DayEventTileUtils] and [MultiDayEventTileUtils] for more information.
   final OnEventTappedWithDetail<T>? onEventTappedWithDetail;
 
   /// The callback for when an event is about to be created.

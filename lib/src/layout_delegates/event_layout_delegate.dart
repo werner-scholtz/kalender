@@ -137,7 +137,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// The cache for the [EventLayoutDelegate].
   final EventLayoutDelegateCache layoutCache;
 
-  /// TODO:
+  /// The that this layout is being calculated for.
   final Location? location;
 
   /// Sorts the [CalendarEvent]s.

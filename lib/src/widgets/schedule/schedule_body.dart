@@ -5,6 +5,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/schedule_drag_target.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:timezone/timezone.dart';
 
 /// A widget that displays events in a schedule/list format.
 ///
@@ -42,6 +43,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         currentPage: 0,
         paginated: false,
         configuration: configuration,
+        location: context.location,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
       return PaginatedSchedule<T>(viewController: viewController, configuration: configuration);
@@ -99,6 +101,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,
+          location: context.location,
         );
       },
     );
@@ -136,6 +139,9 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   /// Whether this list is part of a paginated view.
   final bool paginated;
 
+  /// The timezone location of the calendar.
+  final Location? location;
+
   /// Creates a [SchedulePositionList].
   const SchedulePositionList({
     super.key,
@@ -145,6 +151,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.currentPage,
     required this.paginated,
     required this.configuration,
+    required this.location,
   });
 
   @override
@@ -250,10 +257,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      final events = eventsController.eventsFromDateTimeRange(
-        date.dayRange,
-        null, // TODO: ADD LOCATION :D
-      );
+      final events = eventsController.eventsFromDateTimeRange(date.dayRange, widget.location);
 
       if (events.isEmpty) {
         if (widget.paginated && !hasAddedMonth) {

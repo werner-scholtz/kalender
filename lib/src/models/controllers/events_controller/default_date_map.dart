@@ -52,14 +52,13 @@ typedef DateToEventIds = Map<DateTime, Set<int>>;
 /// ```
 typedef EventIdToEvent<T> = Map<int, CalendarEvent<T>>;
 
-/// TODO: What happens if a location that was not predefined is used ?
-/// The default class for storing [CalendarEvent]s.
-class DefaultDateMap<T> extends EventStore<T> {
+/// The default implementation of the [EventStore].
+class DefaultEventStore<T> extends EventStore<T> {
   @override
   final List<Location> locations;
 
-  /// Create a [DefaultDateMap] with optional predefined [locations].
-  DefaultDateMap({this.locations = const []}) {
+  /// Create a [DefaultEventStore] with optional predefined [locations].
+  DefaultEventStore({this.locations = const []}) {
     populateAllLocations();
   }
 

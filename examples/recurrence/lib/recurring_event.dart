@@ -17,7 +17,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
       dateTimeRange: event.dateTimeRangeAsUtc(),
       groupId: groupId,
       data: event.data,
-      canModify: event.canModify,
+      interaction: event.interaction,
     );
   }
 
@@ -33,7 +33,6 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
       data: data ?? this.data,
       dateTimeRange: dateTimeRange ?? dateTimeRangeAsUtc(),
       groupId: groupId,
-      canModify: canModify ?? this.canModify,
       interaction: interaction ?? this.interaction,
     );
   }

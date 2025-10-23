@@ -390,7 +390,6 @@ extension DateTimeExtensions on DateTime {
   /// ```
   DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
-  /// TODO: Proposal depend on the intl package so this can be removed.
   /// If we do start depending on the intl package, then we might as well
   /// look into allowing the calendar to display events for different timezones.
   /// This will open a lot of possibilities for the calendar package.

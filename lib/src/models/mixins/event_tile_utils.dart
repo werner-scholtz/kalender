@@ -103,7 +103,7 @@ mixin DayEventTileUtils<T extends Object?> {
     final events = eventsController
         .eventsFromDateTimeRange(
           range,
-          null, // TODO: ADD LOCATION :D
+          context.location,
           includeMultiDayEvents: includeMultiDayEvents,
         )
         .toList();

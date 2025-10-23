@@ -33,7 +33,7 @@ void main() {
     customDayEventID = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 23)),
-        interaction: EventInteraction(
+        interaction: const EventInteraction(
           allowEndResize: true,
           allowStartResize: false,
           allowRescheduling: false,
@@ -44,7 +44,7 @@ void main() {
     customMultiDayEventID = eventsController.addEvent(
       CalendarEvent(
         dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 2)),
-        interaction: EventInteraction(
+        interaction: const EventInteraction(
           allowEndResize: true,
           allowStartResize: false,
           allowRescheduling: false,
