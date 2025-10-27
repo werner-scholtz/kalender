@@ -61,14 +61,14 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller = context.calendarController<T>();
       _controller.selectedEvent.addListener(listener);
-      setState(() => _size = context.size ?? Size.zero);
+      if (mounted) setState(() => _size = context.size ?? Size.zero);
     });
   }
 
   @override
   void didUpdateWidget(covariant ResizeHandleWidget<T> oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() => _size = context.size ?? Size.zero);
+      if (mounted) setState(() => _size = context.size ?? Size.zero);
     });
     super.didUpdateWidget(oldWidget);
   }
@@ -87,12 +87,12 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
     if (isMobileDevice) {
       final selectedEvent = _controller.selectedEvent.value;
       if (selectedEvent != null && selectedEvent.id == widget.event.id) {
-        setState(() => _showHandles = true);
+        if (mounted) setState(() => _showHandles = true);
       } else {
-        setState(() => _showHandles = false);
+        if (mounted) setState(() => _showHandles = false);
       }
     } else if (_showHandles == true && _controller.internalFocus) {
-      setState(() => _showHandles = false);
+      if (mounted) setState(() => _showHandles = false);
     }
   }
 
@@ -100,19 +100,19 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
   void _onEnter(PointerEnterEvent event) {
     if (isMobileDevice) return;
     if (_controller.internalFocus == true) return;
-    if (_showHandles == false) setState(() => _showHandles = true);
+    if (_showHandles == false && mounted) setState(() => _showHandles = true);
   }
 
   /// [PointerExitEvent] handler to show/hide resize handles on non-mobile devices.
   void _onExit(PointerExitEvent event) {
     if (isMobileDevice) return;
-    if (_showHandles == true) setState(() => _showHandles = false);
+    if (_showHandles == true && mounted) setState(() => _showHandles = false);
   }
 
   /// [PointerHoverEvent] handler to show/hide resize handles on non-mobile devices.
   void _onHover(PointerHoverEvent event) {
     if (_controller.internalFocus == true) return;
-    if (_showHandles == false) setState(() => _showHandles = true);
+    if (_showHandles == false && mounted) setState(() => _showHandles = true);
   }
 
   @override

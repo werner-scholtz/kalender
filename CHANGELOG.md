@@ -1,3 +1,6 @@
+## 0.14.1
+- fix: Tile and ResizeHandleWidget rebuild issues.
+
 ## 0.14.0
 - feat: Custom onWillAcceptWithDetails functions for DragTargets. [#213](https://github.com/werner-scholtz/kalender/issues/213)
 

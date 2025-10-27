@@ -1,6 +1,6 @@
 name: kalender
 description: This Flutter package offers a Calendar Widget featuring Day, MultiDay, Month and Schedule views. Moreover, it empowers you to tailor the visual aspects of the calendar widget.
-version: 0.14.0
+version: 0.14.1
 repository: https://github.com/werner-scholtz/kalender.git
 topics: 
   - calendar
