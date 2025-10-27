@@ -42,7 +42,7 @@ class Tile<T extends Object?> extends StatefulWidget {
 /// and rebuilds the widget accordingly.
 class _TileState<T extends Object?> extends State<Tile<T>> {
   /// The calendar controller.
-  late CalendarController<T>? _controller;
+  CalendarController<T>? _controller;
 
   /// Whether the event is being dragged.
   bool _isDragging = false;
@@ -51,6 +51,7 @@ class _TileState<T extends Object?> extends State<Tile<T>> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       _controller = context.calendarController<T>();
       _controller?.selectedEvent.addListener(_listener);
     });
