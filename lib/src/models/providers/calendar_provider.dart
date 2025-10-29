@@ -77,25 +77,24 @@ class LocaleProvider extends InheritedWidget {
 }
 
 /// The [LocationProvider] is used to provide the [Location] for the calendar.
-/// 
+///
 /// TODO: Check that the calendar updates correctly when the location changes.
-class LocationProvider extends InheritedWidget {
-  /// The location used by the calendar.
-  final Location? location;
-
+class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
   /// Creates a [LocationProvider] with the specified location.
-  const LocationProvider({super.key, required this.location, required super.child});
+  const LocationProvider({super.key, required super.notifier, required super.child});
 
   /// Gets the [LocationProvider] from the context.
   static Location? of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
-    return result!.location;
+    return result!.notifier!.value;
   }
 
-  @override
-  bool updateShouldNotify(covariant LocationProvider oldWidget) {
-    return location != oldWidget.location;
+  /// Gets the [ValueNotifier<Location?>] from the context.
+  static ValueNotifier<Location?> ofNotifier(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
+    assert(result != null, 'No LocationProvider found.');
+    return result!.notifier!;
   }
 }
 
@@ -153,6 +152,8 @@ class Interaction extends InheritedNotifier<ValueNotifier<CalendarInteraction>> 
   }
 }
 
+/// TODO: merge [Snapping] and [HeightPerMinute] ?
+
 /// The [Snapping] widget provides the [CalendarSnapping] to the widget tree.
 class Snapping extends InheritedNotifier<ValueNotifier<CalendarSnapping>> {
   const Snapping({super.key, required super.notifier, required super.child});
@@ -208,6 +209,8 @@ extension ProviderContext on BuildContext {
 
   /// Retrieve the [Location] of the calendar.
   Location? get location => LocationProvider.of(this);
+  ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
+  bool get hasLocation => location != null;
 
   /// Retrieve the [CalendarInteraction].
   CalendarInteraction get interaction => Interaction.of(this);

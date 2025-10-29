@@ -60,7 +60,7 @@ class TileDraggable<T extends Object?> extends StatelessWidget {
     }(
       key: rescheduleDraggableKey,
       data: data,
-      feedback: FeedbackWidget(
+      feedback: FeedbackWidget( 
         event: event,
         feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier<T>(),
         feedbackTileBuilder: feedbackTileBuilder,

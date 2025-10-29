@@ -173,6 +173,8 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     );
   }
 
+  /// TODO: need to take timezone / location into account.
+  ///
   @override
   DateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
     // Calculate the relative cursor position.
@@ -195,12 +197,13 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
     // Get the date for the item index.
     final date = viewController.dateTimeFromIndex(itemIndex);
+    
     return date;
   }
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc(context.location);
+    final rangeAsUtc = event.utcDateTimeRange;
     // Set the highlighted date in the schedule view controller.
     widget.viewController.highlightedDateTimeRange.value = DateTimeRange(
       start: cursorDateTime,
@@ -214,12 +217,12 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     } else {
       // Calculate the new dateTimeRange for the event.
       final newStartTime = cursorDateTime;
-      final duration = event.dateTimeRangeAsUtc(context.location).duration;
+      final duration = event.utcDateTimeRange.duration;
       final endTime = newStartTime.add(duration);
       final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
       // Update the event with the new start time.
-      final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+      final updatedEvent = event.copyWith(dateTimeRange: newRange.toLocal());
       return updatedEvent;
     }
   }

@@ -4,6 +4,8 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
+// TODO: This also needs to take timezone / location into account.
+
 class MultiDayDraggable<T extends Object?> extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
   const MultiDayDraggable({super.key, required this.visibleDateTimeRange});
@@ -71,7 +73,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
     callbacks?.onTapped?.call(date);
 
     if (callbacks?.onTappedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, localPosition).asLocal;
+    final range = calculateDateTimeRange(date, localPosition);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: localPosition),
@@ -82,7 +84,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
     callbacks?.onLongPressed?.call(date);
 
     if (callbacks?.onLongPressedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, position).asLocal;
+    final range = calculateDateTimeRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: position),
@@ -91,9 +93,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
 
   @override
   DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
-    final start = date;
-    final end = start.endOfDay;
-    return DateTimeRange(start: start, end: end);
+    return DateTimeRange(start: date, end: date.addDays(1));
   }
 
   @override

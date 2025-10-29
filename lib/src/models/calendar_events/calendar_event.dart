@@ -116,7 +116,7 @@ class CalendarEvent<T extends Object?> {
   /// This ensures consistent time calculations across different timezones.
   /// Use [dateTimeRange] for the original time range or timezone-aware
   /// methods for location-specific operations.
-  final UtcDateTimeRange utcDateTimeRange;
+  final DateTimeRange utcDateTimeRange;
 
   /// The unique identifier for this event.
   ///
@@ -158,7 +158,7 @@ class CalendarEvent<T extends Object?> {
     EventInteraction? interaction,
   })  : start = dateTimeRange.start,
         end = dateTimeRange.end,
-        utcDateTimeRange = UtcDateTimeRange.from(start: dateTimeRange.start, end: dateTimeRange.end),
+        utcDateTimeRange = dateTimeRange.toUtc(),
         interaction =
             interaction ?? (canModify ? const EventInteraction.allowAll() : const EventInteraction.allowNone());
 
@@ -201,7 +201,7 @@ class CalendarEvent<T extends Object?> {
   /// // Returns UTC DateTimes: 14:00 UTC to 15:00 UTC
   /// // (same time values, but in UTC for safe calculations)
   /// ```
-  DateTimeRange dateTimeRangeAsUtc([Location? location]) => utcDateTimeRange.toLocal(location).asUtc;
+  // DateTimeRange dateTimeRangeAsUtc([Location? location]) => utcDateTimeRange.toLocal(location).asUtc;
 
   /// Returns the event's start time as a UTC DateTime with the same time value as the specified [location].
   ///
@@ -219,7 +219,7 @@ class CalendarEvent<T extends Object?> {
   /// final utcStart = event.startAsUtc(johannesburg);
   /// // Returns: 14:00 UTC (same time value, but as UTC for calculations)
   /// ```
-  DateTime startAsUtc([Location? location]) => utcDateTimeRange.startToLocal(location).asUtc;
+  // DateTime startAsUtc([Location? location]) => utcDateTimeRange.startToLocal(location).asUtc;
 
   /// Returns the event's end time as a UTC DateTime with the same time value as the specified [location].
   ///
@@ -237,7 +237,7 @@ class CalendarEvent<T extends Object?> {
   /// final utcEnd = event.endAsUtc(johannesburg);
   /// // Returns: 15:00 UTC (same time value, but as UTC for calculations)
   /// ```
-  DateTime endAsUtc([Location? location]) => utcDateTimeRange.endToLocal(location).asUtc;
+  // DateTime endAsUtc([Location? location]) => utcDateTimeRange.endToLocal(location).asUtc;
 
   /// Returns the calendar dates that this event spans when interpreted in the specified [location].
   ///
@@ -254,7 +254,8 @@ class CalendarEvent<T extends Object?> {
   /// final dates = event.datesSpanned(nyc);
   /// // Returns dates spanned by 23:00 UTC to 01:00 UTC (next day)
   /// ```
-  List<DateTime> datesSpanned(Location? location) => utcDateTimeRange.toLocal(location).asUtc.dates();
+  /// TODO: REMOVE?
+  List<DateTime> datesSpanned(Location? location) => utcDateTimeRange.forLocation(location).dates();
 
   /// Creates a copy of this event with optionally modified properties.
   ///
@@ -315,4 +316,3 @@ class CalendarEvent<T extends Object?> {
   // ignore: deprecated_member_use_from_same_package
   int get hashCode => Object.hash(id, start, end, data, canModify, interaction);
 }
-

@@ -132,7 +132,7 @@ class TestProvider<T> extends StatelessWidget {
                     child: TileComponentProvider<T>(
                       tileComponents: tileComponents,
                       child: LocationProvider(
-                        location: null,
+                        notifier: ValueNotifier(null),
                         child: LocaleProvider(
                           locale: locale,
                           child: child,

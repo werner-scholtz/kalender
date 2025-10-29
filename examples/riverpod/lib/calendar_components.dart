@@ -68,7 +68,7 @@ class CalendarToolBar extends ConsumerWidget {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: view.controller.visibleDateTimeRangeUtc,
+                  valueListenable: view.controller.visibleDateTimeRange,
                   builder: (context, value, child) {
                     final String month;
                     final int year;

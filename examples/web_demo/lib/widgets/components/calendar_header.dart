@@ -21,7 +21,10 @@ class NavigationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locations = supportedLocations..add(DateTime.now().timeZoneName);
+    final locations = supportedLocations;
+    if (!locations.contains(DateTime.now().timeZoneName)) {
+      locations.insert(0, DateTime.now().timeZoneName);
+    }
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {

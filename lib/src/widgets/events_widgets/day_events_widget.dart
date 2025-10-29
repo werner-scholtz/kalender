@@ -40,7 +40,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
               child: DayEventsColumn<T>(
                 key: columnKey(date),
                 configuration: configuration,
-                date: date,
+                dayRange: DateTimeRange(start: date, end: date.addDays(1)),
                 eventsController: context.eventsController<T>(),
                 viewController: viewController,
                 location: context.location,
@@ -54,16 +54,16 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
 
 class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-
   final MultiDayBodyConfiguration configuration;
-  final DateTime date;
+
+  final DateTimeRange dayRange;
   final MultiDayViewController<T> viewController;
   final Location? location;
   const DayEventsColumn({
     super.key,
     required this.eventsController,
     required this.configuration,
-    required this.date,
+    required this.dayRange,
     required this.viewController,
     required this.location,
   });
@@ -95,7 +95,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   void _update() {
     final sortedEvents = _sort(
       _eventsController.eventsFromDateTimeRange(
-        widget.date.dayRange,
+        widget.dayRange,
         widget.location,
         includeDayEvents: true,
         includeMultiDayEvents: widget.configuration.showMultiDayEvents,
@@ -107,11 +107,22 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
     }
   }
 
+  @override
+  void didUpdateWidget(covariant DayEventsColumn<T> oldWidget) {
+    if (widget.location != oldWidget.location) {
+      cache.clearAll();
+      _update();
+
+      // print('Updating DayEventsColumn for location change');
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   /// Sorts the events based on the layout strategy defined in the configuration.
   List<CalendarEvent<T>> _sort(Iterable<CalendarEvent<T>> events) {
     return widget.configuration.eventLayoutStrategy(
       [],
-      widget.date,
+      widget.dayRange.start,
       TimeOfDayRange.allDay(),
       0,
       widget.configuration.minimumTileHeight,
@@ -128,12 +139,12 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
     final eventsWidget = CustomMultiChildLayout(
       delegate: layoutStrategy.call(
         _events,
-        widget.date,
+        widget.dayRange.start,
         viewConfiguration.timeOfDayRange,
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
         cache,
-        widget.location,
+        context.location,
       ),
       children: _events.indexed
           .map(
@@ -144,7 +155,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
                 event: item.$2,
                 callbacks: context.callbacks<T>(),
                 tileComponents: context.tileComponents<T>(),
-                dateTimeRange: widget.date.dayRange,
+                dateTimeRange: widget.dayRange,
                 interaction: context.interaction,
                 resizeAxis: Axis.vertical,
               ),
@@ -164,10 +175,10 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
               eventsController: widget.eventsController,
               configuration: widget.configuration,
               viewConfiguration: viewConfiguration,
-              date: widget.date,
+              dateRange: widget.dayRange,
               controller: controller,
               viewController: widget.viewController,
-              location: widget.location,
+              location: context.location,
             ),
           ),
         ),
@@ -181,7 +192,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
-  final DateTime date;
+  final DateTimeRange dateRange;
   final List<CalendarEvent<T>> events;
   final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
@@ -192,7 +203,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
     required this.eventsController,
     required this.configuration,
     required this.viewConfiguration,
-    required this.date,
+    required this.dateRange,
     required this.controller,
     required this.viewController,
     required this.location,
@@ -230,7 +241,8 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
     }
 
     // If the selected event does not overlap with the current date.
-    if (!selectedEvent.dateTimeRangeAsUtc(widget.location).overlaps(widget.date.dayRange)) {
+
+    if (!selectedEvent.utcDateTimeRange.overlaps(widget.dateRange)) {
       // We need to check if the _selectedEvent is null, if it is not, we reset the state.
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;
@@ -240,6 +252,13 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
     if (!widget.configuration.showMultiDayEvents && selectedEvent.isMultiDayEvent) return;
 
     setState(() => _selectedEvent = selectedEvent);
+  }
+
+  @override
+  void didUpdateWidget(covariant DayDropTargetColumn<T> oldWidget) {
+    if (widget.location != oldWidget.location) _update();
+
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -267,7 +286,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
     return CustomMultiChildLayout(
       delegate: layoutStrategy.call(
         eventList,
-        widget.date,
+        widget.dateRange.start,
         widget.viewConfiguration.timeOfDayRange,
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:timezone/timezone.dart';
 
 /// The week number builder.
 ///
@@ -41,21 +43,26 @@ class WeekNumber extends StatelessWidget {
   /// The style used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;
 
-  const WeekNumber({super.key, required this.visibleDateTimeRange, this.weekNumberStyle});
-  static WeekNumber builder(DateTimeRange visibleDateTimeRange, WeekNumberStyle? weekNumberStyle) {
-    return WeekNumber(visibleDateTimeRange: visibleDateTimeRange, weekNumberStyle: weekNumberStyle);
-  }
+  WeekNumber.builder(this.visibleDateTimeRange, this.weekNumberStyle, {super.key}) : assert(visibleDateTimeRange.isUtc);
 
   @override
   Widget build(BuildContext context) {
     final tooltip = weekNumberStyle?.tooltip ?? 'Week Number';
-
     final visualDensity = weekNumberStyle?.visualDensity ?? VisualDensity.compact;
-
     final textStyle = weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
 
-    final (start, end) = visibleDateTimeRange.weekNumbers;
-    final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
+    /// TODO: Figure out how to handle the timezone issues here.
+
+    final start = context.hasLocation
+        ? TZDateTime.from(visibleDateTimeRange.start, context.location!)
+        : visibleDateTimeRange.start.toLocal();
+
+    final end = context.hasLocation
+        ? TZDateTime.from(visibleDateTimeRange.end, context.location!)
+        : visibleDateTimeRange.end.toLocal();
+
+    final (startNumber, endNumber) = DateTimeRange(start: start, end: end).weekNumbers;
+    final weekNumber = startNumber.toString() + ((endNumber == null) ? '' : ' - $endNumber');
 
     final padding = weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
 

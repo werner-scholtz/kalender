@@ -239,7 +239,6 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     selectedDate: $selectedDate
     initialDateSelectionStrategy: $initialDateSelectionStrategy
     timeOfDayRange: $timeOfDayRange
-    displayRange: $displayRange
     numberOfDays: $numberOfDays
     firstDayOfWeek: $firstDayOfWeek
     pageNavigationFunctions: $pageNavigationFunctions''';

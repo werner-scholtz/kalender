@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/utc_date_time.dart';
+import 'package:kalender/src/models/utc_date_time_range.dart';
 import 'package:timezone/timezone.dart';
 
 /// A function type that generates a layout frame for multi-day events.
@@ -57,6 +59,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   MultiDayLayoutFrameCache<T>? cache,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
+  assert(visibleDateTimeRange.isUtc, 'visibleDateTimeRange must be in UTC');
+
   // Check cache first if provided
   if (cache != null) {
     final cachedFrame = cache.getCache(visibleDateTimeRange);
@@ -67,6 +71,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   final dates = visibleDateTimeRange.dates();
   // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
+  // print(visibleDates);
 
   // Sort the events.
   final sortedEvents = events.toList()
@@ -77,8 +82,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
             final comparison = b.duration.compareTo(a.duration);
             if (comparison != 0) return comparison;
 
-            final aStart = a.dateTimeRangeAsUtc(location).start;
-            final bRange = b.dateTimeRangeAsUtc(location);
+            final aStart = a.utcDateTimeRange.start;
+            final bRange = b.utcDateTimeRange;
             final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
             // Sort by start time (ascending) if durations are equal
@@ -99,22 +104,25 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc(location);
+    // final localRange = event.utcDateTimeRange.forLocation(location);
+    // print('Local Range: $localRange');
+    // final start = localRange.start.startOfDay;
+    // // If the end date is the start of the day, we use the start of the day otherwise
+    // // we use the end of the day so that the day is included.
+    // final end = localRange.end == localRange.end.startOfDay ? localRange.end.startOfDay : localRange.end.endOfDay;
 
-    // Create a range that rounds the start and end dates to the start and end of the day.
-    final range = DateTimeRange(
-      start: rangeAsUtc.start,
-      // If the end date is the start of the day, we use the start of the day otherwise
-      // we use the end of the day so that the day is included.
-      end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
-    );
+    // // Create a range that rounds the start and end dates to the start and end of the day.
+    // final range = DateTimeRange(start: start, end: end);
+    // print('Final Range: $range');
+
+    final range = event.utcDateTimeRange;
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];
     // Take the text direction into account so that the columns are in the correct order.
     final dates = textDirection == TextDirection.ltr ? range.dates() : range.dates().reversed.toList();
     for (final date in dates) {
-      final index = visibleDates.indexOf(date);
+      final index = visibleDates.indexOf(date.toUtc());
 
       // If the date is not in the visible dates, we skip it.
       if (index == -1) continue;

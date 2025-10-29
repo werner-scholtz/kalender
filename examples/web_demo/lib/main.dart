@@ -110,6 +110,7 @@ class _MyAppState extends State<MyApp> {
 
   /// Generate a list of events for the demo.
   List<CalendarEvent<Event>> _generateEvents() {
+    return [];
     final now = DateTime.now();
     const numOfEvents = 1000;
     return List.generate(numOfEvents, (index) {

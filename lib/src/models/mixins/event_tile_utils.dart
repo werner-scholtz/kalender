@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/utc_date_time_range.dart';
 import 'package:timezone/timezone.dart';
 
 /// A mixin that provides useful utilities for day-based event tiles.
@@ -65,7 +66,7 @@ mixin DayEventTileUtils<T extends Object?> {
   ///
   /// Returns the event's time range intersected with the tile's date.
   DateTimeRange eventRangeOnDate([Location? location]) {
-    return event.dateTimeRangeAsUtc(location).dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
+    return tileRange.dateTimeRangeDuring(event.utcDateTimeRange)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -100,6 +101,8 @@ mixin DayEventTileUtils<T extends Object?> {
       start: rangeOnDate.start.subtract(before),
       end: rangeOnDate.end.add(after),
     );
+
+    assert(range.isUtc);
     final events = eventsController
         .eventsFromDateTimeRange(
           range,
@@ -133,7 +136,7 @@ mixin DayEventTileUtils<T extends Object?> {
   DateTime dateTimeFromPosition(BuildContext context, Offset localPosition) {
     final minutes = (localPosition.dy / context.heightPerMinute).round();
     final dateTime = eventRangeOnDate(context.location).start.add(Duration(minutes: minutes));
-    return dateTime.asLocal;
+    return dateTime;
   }
 }
 
@@ -210,10 +213,10 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   }) {
     final location = context.location;
     final eventsController = context.eventsController<T>();
-    final range = event.dateTimeRangeAsUtc(location);
+
     final events = eventsController
         .eventsFromDateTimeRange(
-          range,
+          event.utcDateTimeRange,
           location,
           includeMultiDayEvents: includeMultiDayEvents,
           includeDayEvents: includeDayEvents,
@@ -243,16 +246,17 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   /// ```
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
     final renderBox = context.findRenderObject() as RenderBox;
-    final tileRangeAsUtc = tileRange.asUtc;
-    final start = event.dateTimeRangeAsUtc(context.location).start;
-    final end = event.dateTimeRangeAsUtc(context.location).end;
+    final utcTileRange = tileRange.toUtc();
+    final start = event.utcDateTimeRange.start;
+    final end = event.utcDateTimeRange.end;
     final range = DateTimeRange(
-      start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
-      end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,
+      start: start.isBefore(utcTileRange.start) ? utcTileRange.start : start,
+      end: end.isAfter(utcTileRange.end) ? utcTileRange.end : end,
     );
     final numberOfDays = range.dates().length;
     final dateClicked = localPosition.dx ~/ (renderBox.size.width / numberOfDays);
-    final date = range.start.copyWith(day: range.start.day + dateClicked).startOfDay.asLocal;
+    // TODO: This toLocal needs to be converted to toLocal(Location)
+    final date = range.start.copyWith(day: range.start.day + dateClicked).startOfDay.toLocal();
     return date;
   }
 }

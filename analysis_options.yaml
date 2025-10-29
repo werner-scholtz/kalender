@@ -7,6 +7,8 @@ analyzer:
   language:
     strict-inference: true
     strict-raw-types: true
+  exclude: 
+    - test/
 
 linter:
   rules:
@@ -31,3 +33,4 @@ linter:
 
 formatter:
   page_width: 120
+

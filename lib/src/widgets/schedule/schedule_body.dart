@@ -39,7 +39,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
       return SchedulePositionList<T>(
         eventsController: context.eventsController<T>(),
         viewController: viewController,
-        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
+        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.dateTimeRange,
         currentPage: 0,
         paginated: false,
         configuration: configuration,
@@ -87,17 +87,19 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
     return PageView.builder(
       // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
-      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
-        final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
+        final range = widget.viewController.viewConfiguration.pageNavigationFunctions
+            .dateTimeRangeFromIndex(value, context.location);
         context.callbacks<T>()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
           eventsController: context.eventsController<T>(),
           viewController: widget.viewController,
-          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
+          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions
+              .dateTimeRangeFromIndex(index, context.location),
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,
@@ -250,6 +252,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   ///
   /// TODO: Performance optimization needed for large event collections.
   void _generateMap() {
+    // TODO: This DateTimeRange should be the adjusted range from PageNavigationFunctions.
     // Get the range of dates from the view configuration.
     final dates = widget.dateTimeRange.dates();
     viewController.clear();
@@ -257,7 +260,10 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      final events = eventsController.eventsFromDateTimeRange(date.dayRange, widget.location);
+      final events = eventsController.eventsFromDateTimeRange(
+        DateTimeRange(start: date, end: date.add(const Duration(hours: 1))),
+        widget.location,
+      );
 
       if (events.isEmpty) {
         if (widget.paginated && !hasAddedMonth) {
@@ -354,19 +360,20 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             final item = viewController.item(index);
             final date = viewController.dateTimeFromIndex(index)!;
 
-            late final leading = components.leadingDateBuilder.call(date.asLocal, styles.scheduleDateStyle);
+            late final leading =
+                components.leadingDateBuilder.call(date.forLocation(context.location), styles.scheduleDateStyle);
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             late final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
             if (item is MonthItem) {
               final locale = context.locale;
-              return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
+              return tileComponents.monthItemBuilder?.call(date.forLocation(context.location).monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 leading: leading,
-                title: tileComponents.emptyItemBuilder?.call(date.asLocal.dayRange),
+                title: tileComponents.emptyItemBuilder?.call(date.forLocation(context.location).dayRange),
               );
               return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
             } else if (item is EventItem) {
@@ -380,7 +387,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   event: event,
-                  dateTimeRange: date.dayRange,
+                  dateTimeRange: widget.dateTimeRange,
                   interaction: context.interaction,
                 ),
               );

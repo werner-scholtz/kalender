@@ -73,7 +73,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController<T> _viewController;
   late dynamic _locale = widget.locale;
-  late Location? _location = widget.location;
+  late final _location = ValueNotifier<Location?>(widget.location);
 
   @override
   void initState() {
@@ -87,6 +87,8 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
   @override
   void didUpdateWidget(covariant CalendarView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    _location.value = widget.location;
 
     // If the view configuration has changed, recreate the view controller.
     if (widget.viewConfiguration != oldWidget.viewConfiguration) {
@@ -106,11 +108,10 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       });
     }
 
-    if (_locale != widget.locale || _location != widget.location) {
+    if (_locale != widget.locale) {
       // Update the locale if it has changed.
       setState(() {
         _locale = widget.locale;
-        _location = widget.location;
       });
     }
   }
@@ -136,14 +137,14 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController<T>(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
           location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
           location: widget.location,
@@ -151,14 +152,14 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController<T>(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
               initialDate: initialDate ?? widget.calendarController.initialDate,
               location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.visibleDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
               initialDate: initialDate ?? widget.calendarController.initialDate,
               location: widget.location,
@@ -174,7 +175,7 @@ class _CalendarViewState<T> extends State<CalendarView<T>> {
     final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
 
     return LocationProvider(
-      location: _location,
+      notifier: _location,
       child: LocaleProvider(
         locale: _locale,
         child: Callbacks<T>(

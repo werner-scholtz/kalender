@@ -22,7 +22,7 @@ class NavigationHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ValueListenableBuilder(
-            valueListenable: controller.visibleDateTimeRangeUtc,
+            valueListenable: controller.visibleDateTimeRange,
             builder: (context, value, child) {
               final String month;
               final int year;

@@ -59,6 +59,8 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
   /// The events controller that provides the events.
   late EventsController<T> _eventsController;
 
+  late ValueNotifier<Location?> _location;
+
   /// The list of visible events.
   List<CalendarEvent<T>> _visibleEvents = [];
 
@@ -67,15 +69,17 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _eventsController = context.eventsController<T>();
-
+      _location = context.locationNotifier;
       _updateEvents();
       _eventsController.addListener(_updateEvents);
+      _location.addListener(_updateEvents);
     });
   }
 
   @override
   void dispose() {
     _eventsController.removeListener(_updateEvents);
+    _location.removeListener(_updateEvents);
     super.dispose();
   }
 
@@ -207,7 +211,8 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
     final shouldUpdateCache = !oldWidget.events.equals(widget.events) ||
         oldWidget.configuration != widget.configuration ||
-        oldWidget.textDirection != widget.textDirection;
+        oldWidget.textDirection != widget.textDirection ||
+        oldWidget.location != widget.location;
 
     final didUpdate = shouldUpdateCache || oldWidget.visibleDateTimeRange != widget.visibleDateTimeRange;
 
@@ -274,12 +279,12 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return const SizedBox();
-        if (!event.dateTimeRangeAsUtc(context.location).overlaps(widget.visibleDateTimeRange)) return const SizedBox();
+        if (!event.utcDateTimeRange.overlaps(widget.visibleDateTimeRange)) return const SizedBox();
         final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.visibleDateTimeRange,
           events: [event],
           textDirection: widget.textDirection,
-          location: context.location,
+          location: widget.location,
         );
 
         return CustomMultiChildLayout(

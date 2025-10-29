@@ -13,10 +13,10 @@ List<Locale> supportedLocales = [
 List<String> supportedLocations = [
   'Africa/Johannesburg',
   'America/New_York',
-  'America/Los_Angeles',
-  'Europe/London',
+  // 'America/Los_Angeles',
+  // 'Europe/London',
   'Europe/Berlin',
-  'Europe/Paris',
-  'Asia/Tokyo',
+  // 'Europe/Paris',
+  // 'Asia/Tokyo',
   'Asia/Shanghai',
 ];

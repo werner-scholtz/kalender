@@ -37,13 +37,12 @@ class WeekDayHeader extends StatelessWidget {
   /// The style used by the [WeekDayHeader].
   final WeekDayHeaderStyle? style;
 
-  const WeekDayHeader({super.key, required this.date, this.style});
-  static WeekDayHeader builder(DateTime date, WeekDayHeaderStyle? style) {
-    return WeekDayHeader(date: date, style: style);
-  }
+  WeekDayHeader.builder(this.date, this.style, {super.key})
+      : assert(date.isUtc);
 
   @override
   Widget build(BuildContext context) {
+    final date = this.date.toLocal();
     final padding = style?.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.bodySmall;
     final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);

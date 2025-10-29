@@ -35,7 +35,7 @@ typedef LocationDateIdMap = Map<String, DateToEventIds>;
 ///   DateTime.utc(2024, 1, 16): {103, 105},
 /// }
 /// ```
-typedef DateToEventIds = Map<DateTime, Set<int>>;
+typedef DateToEventIds = Map<String, Set<int>>;
 
 /// Maps unique event IDs to their corresponding [CalendarEvent] instances.
 ///
@@ -86,6 +86,10 @@ class DefaultEventStore<T> extends EventStore<T> {
   @override
   CalendarEvent<T>? byId(int id) => idEvent[id];
 
+  /// Convert a [DateTime] to a key string.
+  /// TODO: check that [TZDateTime] works the same as [DateTime] for this.
+  String toKey(DateTime date) => '${date.year}-${date.month}-${date.day}';
+
   /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
   void clear() {
@@ -134,7 +138,7 @@ class DefaultEventStore<T> extends EventStore<T> {
       final dates = event.datesSpanned(location);
       for (final date in dates) {
         locationDateIdMap[locationString]!.update(
-          date,
+          toKey(date),
           (value) => value..remove(id),
         );
       }
@@ -163,12 +167,14 @@ class DefaultEventStore<T> extends EventStore<T> {
     // If the location does not exist, populate it.
     if (!hasLocation) populateLocation(location);
 
-    final days = dateTimeRange.dates();
+    final days = dateTimeRange.forLocation(location).dates();
+
     final eventIds = <int>{};
     for (final day in days) {
       final locationString = location?.name ?? defaultLocation;
       final dateIds = locationDateIdMap[locationString]!;
-      eventIds.addAll(dateIds[day] ?? {});
+
+      eventIds.addAll(dateIds[toKey(day)] ?? {});
     }
     return eventIds;
   }
@@ -216,13 +222,18 @@ class DefaultEventStore<T> extends EventStore<T> {
     final id = event.id;
     idEvent[id] = event;
 
+    /// TODO: FOX UP.
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-      final dates = event.datesSpanned(location);
 
+      final locationDates = event.utcDateTimeRange.forLocation(location);
+
+      final dates = locationDates.dates();
+      
       for (final date in dates) {
+        print(toKey(date));
         locationDateIdMap[locationString]!.update(
-          date,
+          toKey(date),
           (value) => value..add(id),
           ifAbsent: () => {id},
         );
@@ -233,11 +244,11 @@ class DefaultEventStore<T> extends EventStore<T> {
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
   void _addEventToLocation(Location? location, CalendarEvent<T> event) {
     final locationString = location?.name ?? defaultLocation;
-    final dates = event.datesSpanned(location);
+    final dates = event.utcDateTimeRange.forLocation(location).dates();
 
     for (final date in dates) {
       locationDateIdMap[locationString]!.update(
-        date,
+        toKey(date),
         (value) => value..add(event.id),
         ifAbsent: () => {event.id},
       );

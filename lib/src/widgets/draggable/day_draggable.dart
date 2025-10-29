@@ -40,7 +40,6 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
               child: Builder(
                 builder: (context) {
                   var position = Offset.zero;
-
                   return Listener(
                     onPointerDown: (event) => position = event.localPosition,
                     onPointerSignal: (event) => position = event.localPosition,
@@ -81,9 +80,11 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
     );
   }
 
+// TODO: This also needs to take timezone / location into account.
+
   /// Notify the callbacks about the tap / longPress.
   void _onTap(BuildContext context, DateTime date, Offset localPosition) {
-    final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
+    final dateTime = _calculateTimeAndDate(date, localPosition);
     callbacks?.onTapped?.call(dateTime);
 
     if (callbacks?.onTappedWithDetail == null) return;
@@ -94,7 +95,7 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
   }
 
   void _onLongPress(BuildContext context, DateTime date, Offset position) {
-    final dateTime = _calculateTimeAndDate(date, position).asLocal;
+    final dateTime = _calculateTimeAndDate(date, position).forLocation(context.location);
     callbacks?.onLongPressed?.call(dateTime);
 
     if (callbacks?.onLongPressedWithDetail == null) return;
@@ -118,8 +119,8 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
-    // Calculate the start of the day.
-    final startOfDay = widget.timeOfDayRange.start.toDateTime(date);
+    // find the start of the date in the local timezone.
+    final startOfDay = widget.timeOfDayRange.start.toDateTime(date.forLocation(context.location)).toUtc();
 
     // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);
@@ -130,6 +131,8 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
       startOfDay,
       context.snapping.snapIntervalMinutes,
     );
+
+    assert(snappedDateTime.isUtc, 'The calculated DateTime should be in UTC format.');
 
     return snappedDateTime;
   }

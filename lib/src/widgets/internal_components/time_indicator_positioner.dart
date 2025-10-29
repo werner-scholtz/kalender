@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
@@ -93,15 +94,17 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
     return left;
   }
 
+  bool hasSetup = false;
+
   @override
   void initState() {
     super.initState();
-    _setup();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setup());
   }
 
   @override
   void didUpdateWidget(covariant PositionedTimeIndicator<T> oldWidget) {
-    _setup();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setup());
     super.didUpdateWidget(oldWidget);
   }
 
@@ -116,8 +119,12 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
     viewController?.pageOffset.removeListener(_listener);
     viewController = widget.viewController;
     viewController?.pageOffset.addListener(_listener);
+
+    /// TODO: This is problematic since we need context for location.
     _setupDailyTimer();
     pageOffset = (todayPageNumber - widget.initialPage).toDouble();
+
+    setState(() => hasSetup = true);
   }
 
   /// Listener callback that triggers a rebuild when the page offset changes.
@@ -137,10 +144,10 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
 
   /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
-    final now = (widget.dateOverride?.asUtc.startOfDay) ?? DateTime.now().asUtc.startOfDay;
+    final now = (widget.dateOverride?.startOfDay) ?? DateTime.now().startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageNavigationFunctions;
-    todayPageNumber = pageNavigation.indexFromDate(DateTime.now().asUtc);
-    final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber);
+    todayPageNumber = pageNavigation.indexFromDate(DateTime.now(), context.location);
+    final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber, context.location);
     todayIndex = range.dates().indexOf(now);
   }
 
@@ -178,6 +185,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
 
   @override
   Widget build(BuildContext context) {
+    if (!hasSetup) return const SizedBox.shrink();
     return LayoutBuilder(
       builder: (context, constraints) {
         final pageWidth = constraints.maxWidth;

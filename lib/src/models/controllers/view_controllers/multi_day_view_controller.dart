@@ -10,17 +10,17 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     required super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now(), location);
 
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
-    numberOfPages = pageNavigationFunctions.numberOfPages;
+    numberOfPages = pageNavigationFunctions.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
 
-    final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+    final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
       visibleDateTimeRange.value = DateTimeRange(
@@ -28,7 +28,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
         end: range.start.addDays(viewConfiguration.numberOfDays),
       );
     } else {
-      visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+      visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
     }
 
     // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
@@ -92,7 +92,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     Curve? curve,
   }) {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
     // Animate to that page.
     return pageController.animateToPage(
       pageNumber,
@@ -134,7 +134,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     bool centerEvent = true,
   }) async {
     final DateTime date;
-    final eventCenter = event.startAsUtc(location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
+    final eventCenter = event.start.add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = eventCenter.subtract(duration);
@@ -142,8 +142,8 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
-    if (target.isSameDay(event.startAsUtc(location))) {
-      date = target.asLocal;
+    if (target.isSameDay(event.start)) {
+      date = target;
     } else {
       date = event.start;
     }
@@ -175,7 +175,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
     jumpToPage(pageNumber);
   }
 

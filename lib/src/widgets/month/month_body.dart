@@ -38,14 +38,20 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     return PageView.builder(
       controller: viewController.pageController,
-      itemCount: pageNavigation.numberOfPages,
+      itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         viewController.visibleDateTimeRange.value = visibleRange;
         context.callbacks<T>()?.onPageChanged?.call(visibleRange);
       },
       itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        /// TODO: What can we do about this ?
+        final visibleRangeA = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final visibleRangeLocal = visibleRangeA.forLocation(context.location);
+        final visibleRange = DateTimeRange(
+          start: visibleRangeLocal.start.startOfDay,
+          end: visibleRangeLocal.end.endOfDay,
+        ).toUtc();
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
 
         return Stack(
@@ -96,6 +102,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
   Widget build(BuildContext context) {
     final components = context.components<T>();
     final monthComponents = components.monthComponents;
+    assert(visibleDateTimeRange.isUtc, 'The visibleDateTimeRange must be in UTC.');
 
     return Stack(
       children: [

@@ -165,6 +165,8 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     );
   }
 
+  /// TODO: need to take timezone / location into account.
+
   @override
   DateTime? calculateCursorDateTime(
     Offset offset, {
@@ -187,7 +189,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final start = event.dateTimeRangeAsUtc(context.location).start;
+    final start = event.utcDateTimeRange.start;
     final newStartTime = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,
@@ -195,12 +197,13 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
       millisecond: start.millisecond,
       microsecond: start.microsecond,
     );
-    final duration = event.dateTimeRangeAsUtc(context.location).duration;
+    final duration = event.utcDateTimeRange.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
+    // TODO: This should probably be a utc range.
     // Update the event with the new start time.
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(context.location));
 
     return updatedEvent;
   }
@@ -208,14 +211,13 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
     final range = switch (direction) {
-      ResizeDirection.left =>
-        calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc(context.location), cursorDateTime),
-      ResizeDirection.right =>
-        calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc(context.location), cursorDateTime.endOfDay),
+      ResizeDirection.left => calculateDateTimeRangeFromStart(event.utcDateTimeRange, cursorDateTime),
+      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.utcDateTimeRange, cursorDateTime),
       _ => null
     };
     if (range == null) return null;
-    return event.copyWith(dateTimeRange: range.asLocal);
+    // TODO: This should probably be a utc range.
+    return event.copyWith(dateTimeRange: range.forLocation(context.location));
   }
 
   @override
@@ -223,15 +225,16 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.dateTimeRangeAsUtc(context.location);
+    var range = newEvent!.utcDateTimeRange.forLocation(context.location);
 
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {
-      range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
+      range = DateTimeRange(start: range.start.startOfDay.toUtc(), end: cursorDateTime.endOfDay.toUtc());
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
+      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay.toUtc());
     }
 
-    return event.copyWith(dateTimeRange: range.asLocal);
+    // TODO: This should probably be a utc range.
+    return event.copyWith(dateTimeRange: range.forLocation(context.location));
   }
 }

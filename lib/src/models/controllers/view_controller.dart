@@ -13,10 +13,11 @@ export 'view_controllers/schedule_view_controller.dart';
 ///
 /// A view controller lets you control a calendar view.
 abstract class ViewController<T extends Object?> with CalendarNavigationFunctions<T> {
-  final Location? location;
+  /// The location of the current view.
+  Location? location;
 
   ViewController({required this.location});
-  
+
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
 

@@ -28,7 +28,7 @@ mixin SnapPoints {
   void addEventSnapPoints(Set<CalendarEvent> events, [Location? location]) {
     // Add the start and end of each event to the snap points.
     for (final event in events) {
-      _snapPoints.addAll([event.startAsUtc(location), event.endAsUtc(location)]);
+      _snapPoints.addAll([event.start, event.end]);
     }
   }
 

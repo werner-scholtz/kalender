@@ -84,7 +84,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: viewController.visibleDateTimeRange,
       builder: (context, visibleRange, child) {
-        return headerComponents.dayHeaderBuilder.call(visibleRange.start.asLocal, dayHeaderStyle);
+        return headerComponents.dayHeaderBuilder.call(visibleRange.start, dayHeaderStyle);
       },
     );
 
@@ -93,7 +93,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
 
           // Minimum constraints for the multiDayEvents.
           final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
@@ -165,13 +165,12 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-          final visibleDates = visibleRange.dates();
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
 
           return Column(
             children: [
               WeekDayHeaders<T>(
-                dates: visibleDates,
+                dates: visibleRange.dates(),
                 dayHeaderBuilder: DayHeader.fromContext<T>,
               ),
               if (configuration.showTiles)
@@ -244,7 +243,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
           final visibleDates = visibleRange.dates();
 
           return Column(

@@ -6,6 +6,7 @@ import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
+import 'package:timezone/timezone.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
@@ -13,7 +14,7 @@ export 'package:kalender/kalender_extensions.dart';
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
 abstract class ViewConfiguration {
-  const ViewConfiguration({
+  ViewConfiguration({
     required this.name,
     this.selectedDate,
     this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
@@ -38,13 +39,8 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageNavigationFunctions get pageNavigationFunctions;
 
-  /// The [DateTimeRange] that can be displayed by the calendar.
-  /// * This is the range that is adjusted by the [pageNavigationFunctions].
-  ///   Which means that it is in UTC.
-  DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
-
-  /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
-  DateTimeRange get originalDisplayRange => pageNavigationFunctions.originalRange;
+  /// The UTC [DateTimeRange] that can be displayed by the calendar.
+  DateTimeRange get displayRange => pageNavigationFunctions.dateTimeRange;
 }
 
 /// The base class for all vertical views of the calendar.

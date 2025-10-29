@@ -321,7 +321,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
       (event) {
         // If the event is a zero duration event at the start of the day, we should check for touching.
         final touching = _checkTouching(event);
-        return event.dateTimeRangeAsUtc(location).overlaps(dateTimeRange, touching: touching);
+        return event.utcDateTimeRange.overlaps(dateTimeRange, touching: touching);
       },
     );
   }
@@ -335,7 +335,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     return events.where((event) {
       // If the event is not a multi day event, return false.
       if (!event.isMultiDayEvent) return false;
-      return event.dateTimeRangeAsUtc(location).overlaps(dateTimeRange);
+      return event.utcDateTimeRange.overlaps(dateTimeRange);
     });
   }
 
@@ -352,7 +352,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
       // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event);
 
-      return event.dateTimeRangeAsUtc(location).overlaps(dateTimeRange, touching: touching);
+      return event.utcDateTimeRange.overlaps(dateTimeRange, touching: touching);
     });
   }
 

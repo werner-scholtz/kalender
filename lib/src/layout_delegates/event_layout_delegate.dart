@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
+import 'package:kalender/src/models/utc_date_time.dart';
+import 'package:kalender/src/models/utc_date_time_range.dart';
 import 'package:timezone/timezone.dart';
 
 export 'package:kalender/kalender_extensions.dart';
@@ -38,6 +40,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   EventLayoutDelegateCache? cache,
   Location? location,
 ) {
+  assert(date.isUtc, 'Date must be in UTC');
   return OverlapLayoutDelegate<T>(
     events: events,
     date: date,
@@ -59,6 +62,7 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   EventLayoutDelegateCache? cache,
   Location? location,
 ) {
+  assert(date.isUtc, 'Date must be in UTC');
   return SideBySideLayoutDelegate<T>(
     events: events,
     date: date,
@@ -117,9 +121,9 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.minimumTileHeight,
     required this.layoutCache,
     required this.location,
-  });
+  }) : assert(date.isUtc, 'Date must be in UTC');
 
-  /// The date for which the events are laid out.
+  /// The date for which the events are laid out, in UTC.
   final DateTime date;
 
   /// The time of day range for which the events are laid out.
@@ -146,13 +150,16 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// Override this method to provide custom sorting.
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events);
 
+  /// The date range for the current [date].
+  DateTimeRange get dateRange => DateTimeRange(start: date, end: date.addDays(1));
+
   /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
   ///
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
-    final durationOnDate = event.dateTimeRangeAsUtc(location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
-    final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    final durationDuring = dateRange.dateTimeRangeDuring(event.utcDateTimeRange)?.duration ?? Duration.zero;
+    final height = ((durationDuring.inSeconds / 60) * heightPerMinute);
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
     }
@@ -165,9 +172,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent<T> event) {
-    final eventStart = event.dateTimeRangeAsUtc(location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
-    final dateStart = timeOfDayRange.start.toDateTime(date);
-    return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
+    final dateStart = timeOfDayRange.start.toDateTime(date.forLocation(location)).toUtc();
+    return (event.utcDateTimeRange.start.difference(dateStart).inMinutes * heightPerMinute);
   }
 
   /// This is used to sort the vertical layout data after calculation.
@@ -313,7 +319,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
         oldDelegate.heightPerMinute != heightPerMinute ||
         oldDelegate.timeOfDayRange != timeOfDayRange ||
         oldDelegate.date != date ||
-        oldDelegate.minimumTileHeight != minimumTileHeight;
+        oldDelegate.minimumTileHeight != minimumTileHeight ||
+        oldDelegate.location != location;
   }
 }
 
@@ -334,7 +341,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
       ..sort(
-        (a, b) => b.duration.compareTo(a.duration) == 0 ? b.startAsUtc(location).compareTo(a.startAsUtc(location)) : 0,
+        (a, b) => b.duration.compareTo(a.duration) == 0 ? b.start.compareTo(a.start) : 0,
       );
   }
 

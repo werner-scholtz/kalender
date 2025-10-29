@@ -57,12 +57,10 @@ class DayHeader extends StatelessWidget {
   ///
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [DayHeader].
-  const DayHeader({super.key, required this.date, this.style});
-
-  /// The default builder for the [DayHeader].
-  static DayHeader builder(DateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
+  DayHeader.builder(this.date, this.style, {super.key}) : assert(date.isUtc);
 
   static Widget fromContext<T>(BuildContext context, DateTime date) {
+    assert(date.isUtc);
     final dayHeaderBuilder = context.components<T>().multiDayComponents.headerComponents.dayHeaderBuilder;
     final dayHeaderStyle = context.components<T>().multiDayComponentStyles.headerStyles.dayHeaderStyle;
     return dayHeaderBuilder.call(date, dayHeaderStyle);
@@ -70,6 +68,8 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final date = this.date.toLocal();
+
     final numberText = Text(
       style?.numberStringBuilder?.call(date) ?? date.day.toString(),
       style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,

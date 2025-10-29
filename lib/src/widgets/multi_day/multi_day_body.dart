@@ -117,6 +117,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                         dayWidth: dayWidth,
                         viewPortHeight: pageHeight,
                         snapping: context.snappingNotifier,
+                        location: context.location,
                       ),
                     );
                   },
@@ -185,7 +186,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index) {
     final events = widget.eventsController.eventsFromDateTimeRange(
-      _pageNavigation.dateTimeRangeFromIndex(index),
+      _pageNavigation.dateTimeRangeFromIndex(index, widget.location),
       widget.location,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
@@ -206,7 +207,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, widget.location);
         if (_isFreeScroll) {
           final start = visibleRange.start;
           final end = visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays);
@@ -220,11 +221,13 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
 
         // Call the onPageChanged callback if it was provided.
         final callbacks = context.callbacks<T>();
-        callbacks?.onPageChanged?.call(widget.viewController.visibleDateTimeRange.value.asLocal);
+        callbacks?.onPageChanged?.call(widget.viewController.visibleDateTimeRange.value);
       },
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, widget.location);
+
+        // print(visibleRange);
 
         return Stack(
           key: MultiDayPage.contentKey,

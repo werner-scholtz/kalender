@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions/date_time.dart';
+import 'package:timezone/timezone.dart';
 
 /// An extension on the [DateTimeRange] class that provides helpful methods.
 extension DateTimeRangeExtensions on DateTimeRange {
   /// Check if both the [start] and [end] times are in utc.
   bool get isUtc => start.isUtc && end.isUtc;
 
-  /// Converts the [start] and [end] times to utc.
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// converted to UTC.  The original [DateTimeRange] is not modified.
-  DateTimeRange toUtc() => DateTimeRange(start: start.toUtc(), end: end.toUtc());
-
   /// Converts the [start] and [end] times to local time.
   ///
   /// This method returns a new [DateTimeRange] with the [start] and [end] times
   /// converted to local time.  The original [DateTimeRange] is not modified.
   DateTimeRange toLocal() => DateTimeRange(start: start.toLocal(), end: end.toLocal());
+
+  DateTimeRange toUtc() => DateTimeRange(start: start.toUtc(), end: end.toUtc());
 
   /// The difference in months between the [start] and [end] dates of this range.
   ///
@@ -118,7 +115,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
     );
 
     // Start with the beginning of the start date.
-    final dates = [start.startOfDay];
+    final dates = [start];
 
     // Handle the case where the start and end dates are the same.
     if (start.isSameDay(end)) return dates;
@@ -144,51 +141,17 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return dates;
   }
 
-  /// Returns a [DateTimeRange] representing the portion of this [DateTimeRange]
-  /// that falls on the given [date], or `null` if the [date] is not within this range.
-  ///
-  /// This method calculates the intersection of this [DateTimeRange] with the
-  /// specified [date].  It handles cases where the [date] is the same as the
-  /// start or end of the range, or if it falls within the range.  If the [date]
-  /// is outside the range, it returns `null`.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 31));
-  /// final date = DateTime(2024, 1, 15);
-  /// final rangeOnDate = range.dateTimeRangeOnDate(date);
-  /// print(rangeOnDate?.start); // Output: 2024-01-15 00:00:00.000
-  /// print(rangeOnDate?.end);   // Output: 2024-01-16 00:00:00.000
-  ///
-  /// final dateOutsideRange = DateTime(2024, 2, 1);
-  /// final rangeOnDateOutside = range.dateTimeRangeOnDate(dateOutsideRange);
-  /// print(rangeOnDateOutside); // Output: null
-  ///
-  /// final range2 = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2));
-  /// final date2 = DateTime(2024, 1, 1);
-  /// final rangeOnDate2 = range2.dateTimeRangeOnDate(date2);
-  /// print(rangeOnDate2?.start); // Output: 2024-01-01 00:00:00.000
-  /// print(rangeOnDate2?.end);   // Output: 2024-01-02 00:00:00.000
-  /// ```
-  DateTimeRange? dateTimeRangeOnDate(DateTime date) {
-    // Adjust the start and end times to the beginning and end of the day.
-    final range = DateTimeRange(start: start.startOfDay, end: end.endOfDay);
+  /// TODO: Document
+  DateTimeRange? dateTimeRangeDuring(DateTimeRange range) {
+    // Check if the given range is outside this range. If so, return null.
+    if (!range.start.isWithin(this) && !range.end.isWithin(this)) return null;
 
-    // Check if the given date is outside the range. If so, return null.
-    if (!date.isWithin(range, includeStart: true)) return null;
+    // find the start time.
+    final startDateTime = range.start.isBefore(start) ? start : range.start;
+    // find the end time.
+    final endDateTime = range.end.isAfter(end) ? end : range.end;
 
-    // Check if the start and end dates are the same day. If so, the entire range is on that day.
-    if (start.isSameDay(end)) return this;
-
-    // Check if the given date is the same as the start date.
-    if (date.isSameDay(start)) return DateTimeRange(start: start, end: start.endOfDay);
-
-    // Check if the given date is the same as the end date.
-    if (date.isSameDay(end)) return DateTimeRange(start: end.startOfDay, end: end);
-
-    // If none of the above conditions are met, the date must be within the range
-    // but not the start or end date.
-    return DateTimeRange(start: date.startOfDay, end: date.endOfDay);
+    return DateTimeRange(start: startDateTime, end: endDateTime);
   }
 
   /// Checks if this [DateTimeRange] overlaps with another [DateTimeRange].
@@ -230,51 +193,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return startTouching || endTouching;
   }
 
-  /// Returns a [DateTimeRange] shifted by the given number of [numberOfDays].
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// shifted by the given [numberOfDays].  The [numberOfDays] can be positive or negative,
-  /// and the new range will be adjusted accordingly.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-  /// final shiftedRange = range.shiftByDays(5);
-  /// print(shiftedRange.start); // Output: 2024-01-06 00:00:00.000
-  /// print(shiftedRange.end);   // Output: 2024-01-15 00:00:00.000
-  /// ```
-  DateTimeRange shiftByDays(int numberOfDays) {
-    return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
-  }
-
-  /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// as UTC values without converting them.  The original [DateTimeRange] is not modified.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-  /// final utcRange = range.asUtc;
-  /// print(utcRange.start); // Output: 2024-01-01 00:00:00.000Z
-  /// print(utcRange.end);   // Output: 2024-01-10 00:00:00.000Z
-  /// ```
-  DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);
-
-  /// Returns a [DateTimeRange] with the [DateTime]s as local values without converting them.
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// as local values without converting them.  The original [DateTimeRange] is not modified.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-  /// final localRange = range.asLocal;
-  /// print(localRange.start); // Output: 2024-01-01 00:00:00.000
-  /// print(localRange.end);   // Output: 2024-01-10 00:00:00.000
-  /// ```
-  DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
-
   /// Returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
   ///
   /// This method returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
@@ -304,4 +222,92 @@ extension DateTimeRangeExtensions on DateTimeRange {
         ? DateTime.utc(dominant.key.$1, dominant.key.$2, 1)
         : DateTime(dominant.key.$1, dominant.key.$2, 1);
   }
+
+  /// Converts this UTC range to a local [DateTimeRange] for the specified [location].
+  ///
+  /// If [location] is `null`, converts to the system's local timezone.
+  /// If [location] is provided, converts to that specific timezone using
+  /// the [timezone package](https://pub.dev/packages/timezone).
+  ///
+  /// This method is essential for displaying times to users in their
+  /// preferred timezone while maintaining UTC storage internally.
+  ///
+  /// Parameters:
+  /// - [location]: Target timezone location, or `null` for system timezone
+  ///
+  /// Returns a new [DateTimeRange] with times converted to the target timezone.
+  ///
+  /// Example:
+  /// ```dart
+  /// final utcRange = UtcDateTimeRange(
+  ///   start: DateTime.utc(2024, 1, 15, 15, 0), // 3 PM UTC
+  ///   end: DateTime.utc(2024, 1, 15, 16, 0),   // 4 PM UTC
+  /// );
+  ///
+  /// // Convert to system timezone
+  /// final localRange = utcRange.toLocal(null);
+  ///
+  /// // Convert to New York timezone
+  /// final nyLocation = getLocation('America/New_York');
+  /// final nyRange = utcRange.toLocal(nyLocation);
+  /// // Start: 10 AM EST, End: 11 AM EST (UTC-5)
+  /// ```
+  DateTimeRange forLocation(Location? location) {
+    if (location == null) {
+      return DateTimeRange(start: start.toLocal(), end: end.toLocal());
+    } else {
+      return DateTimeRange<TZDateTime>(
+        start: TZDateTime.from(start, location),
+        end: TZDateTime.from(end, location),
+      );
+    }
+  }
+
+  // /// Converts the start time to local time for the specified [location].
+  // ///
+  // /// If [location] is `null`, converts to the system's local timezone.
+  // /// Otherwise, converts to the specified timezone.
+  // ///
+  // /// Example:
+  // /// ```dart
+  // /// final utcRange = UtcDateTimeRange(
+  // ///   start: DateTime.utc(2024, 1, 15, 15, 0),
+  // ///   end: DateTime.utc(2024, 1, 15, 16, 0),
+  // /// );
+  // ///
+  // /// final tokyoLocation = getLocation('Asia/Tokyo');
+  // /// final localStart = utcRange.startToLocal(tokyoLocation);
+  // /// // Returns: 2024-01-16 00:00 (UTC+9)
+  // /// ```
+  // DateTime startForLocation(Location? location) {
+  //   if (location == null) {
+  //     return start.toLocal();
+  //   } else {
+  //     return TZDateTime.from(start, location);
+  //   }
+  // }
+
+  // /// Converts the end time to local time for the specified [location].
+  // ///
+  // /// If [location] is `null`, converts to the system's local timezone.
+  // /// Otherwise, converts to the specified timezone.
+  // ///
+  // /// Example:
+  // /// ```dart
+  // /// final utcRange = UtcDateTimeRange(
+  // ///   start: DateTime.utc(2024, 1, 15, 15, 0),
+  // ///   end: DateTime.utc(2024, 1, 15, 16, 0),
+  // /// );
+  // ///
+  // /// final londonLocation = getLocation('Europe/London');
+  // /// final localEnd = utcRange.endToLocal(londonLocation);
+  // /// // Returns: 2024-01-15 16:00 (UTC+0 in winter)
+  // /// ```
+  // DateTime endForLocation(Location? location) {
+  //   if (location == null) {
+  //     return end.toLocal();
+  //   } else {
+  //     return TZDateTime.from(end, location);
+  //   }
+  // }
 }

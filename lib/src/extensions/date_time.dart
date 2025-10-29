@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart';
 
 /// Useful extensions for working with [DateTime] objects.
 extension DateTimeExtensions on DateTime {
+  DateTime _returnType(DateTime dateTime) {
+    if (this is TZDateTime) {
+      final location = (this as TZDateTime).location;
+      return TZDateTime(
+        location,
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        dateTime.hour,
+        dateTime.minute,
+        dateTime.second,
+        dateTime.millisecond,
+        dateTime.microsecond,
+      );
+    } else {
+      return dateTime;
+    }
+  }
+
   /// Check if the [DateTime] is today in the current time zone.
   ///
   /// This method compares the year, month, and day of this [DateTime] object
@@ -20,6 +40,7 @@ extension DateTimeExtensions on DateTime {
   /// final otherDate = DateTime(2024, 1, 1);
   /// print(otherDate.isToday); // Output: false (if not called on Jan 1, 2024)
   /// ```
+  /// TODO: this becomes a bit more complicated :D with timezones
   bool get isToday => isSameDay(DateTime.now());
 
   /// Checks if the [DateTime] is the same day as the calling object.
@@ -36,6 +57,7 @@ extension DateTimeExtensions on DateTime {
   /// print(date.isSameDay(DateTime(2024, 1, 15))); // Output: true
   /// print(date.isSameDay(DateTime(2024, 1, 16))); // Output: false
   /// ```
+  /// TODO: Add location
   bool isSameDay(DateTime date) {
     final other = isUtc != date.isUtc
         ? isUtc
@@ -64,7 +86,9 @@ extension DateTimeExtensions on DateTime {
   /// print(start); // Output: 2024-01-15 00:00:00.000Z
   /// ```
   DateTime get startOfDay {
-    return copyWith(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+    return _returnType(
+      copyWith(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0),
+    );
   }
 
   /// Gets the end of the date. (aka the start of the next day).
@@ -85,7 +109,7 @@ extension DateTimeExtensions on DateTime {
   /// final end = date.endOfDay;
   /// print(end); // Output: 2024-01-16 00:00:00.000Z
   /// ```
-  DateTime get endOfDay => startOfDay.copyWith(day: day + 1);
+  DateTime get endOfDay => _returnType(startOfDay.copyWith(day: day + 1));
 
   /// Gets the [DateTimeRange] representing the entire day in which this
   /// [DateTime] falls.
@@ -101,7 +125,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-16 00:00:00.000
   /// ```
-  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
+  DateTimeRange get dayRange => DateTimeRange(start: _returnType(startOfDay), end: _returnType(endOfDay));
 
   /// Gets the start of the month.
   ///
@@ -114,7 +138,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfMonth;
   /// print(start); // Output: 2024-01-01 00:00:00.000
   /// ```
-  DateTime get startOfMonth => (isUtc ? DateTime.utc : DateTime.new)(year, month);
+  DateTime get startOfMonth => _returnType((isUtc ? DateTime.utc : DateTime.new)(year, month));
 
   /// Gets the end of the month. (aka start of the next month)
   ///
@@ -246,7 +270,14 @@ extension DateTimeExtensions on DateTime {
     // Calculate the number of days to subtract to reach the start of the week.
     // If the current weekday is less than the first day of the week, add 7 to wrap around to the previous week.
     final daysToSubtract = (weekday < firstDayOfWeek ? 7 : 0) + weekday - firstDayOfWeek;
-    return subtractDays(daysToSubtract).startOfDay;
+    final startOfWeek = subtractDays(daysToSubtract).startOfDay;
+
+    if (this is TZDateTime) {
+      final location = (this as TZDateTime).location;
+      return TZDateTime(location, startOfWeek.year, startOfWeek.month, startOfWeek.day);
+    } else {
+      return startOfWeek;
+    }
   }
 
   /// Gets the end of the week.
@@ -375,7 +406,7 @@ extension DateTimeExtensions on DateTime {
   /// final utcDate = date.asUtc;
   /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
   /// ```
-  DateTime get asUtc => DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+  // DateTime get asUtc => DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// Returns a [DateTime] as a local value without converting it.
   ///
@@ -388,7 +419,7 @@ extension DateTimeExtensions on DateTime {
   /// final localDate = date.asLocal;
   /// print(localDate); // Output: 2024-01-15 10:30:00.000
   /// ```
-  DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+  // DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// If we do start depending on the intl package, then we might as well
   /// look into allowing the calendar to display events for different timezones.
@@ -408,13 +439,13 @@ extension DateTimeExtensions on DateTime {
     // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
     if (woy == 0) {
       // The 28th of December is always in the last week of the year
-      return DateTime(year - 1, 12, 28).weekNumber;
+      return copyWith(year: year - 1, month: 12, day: 28).weekNumber;
     }
 
     // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
     if (woy == 53 &&
-        DateTime(year, 1, 1).weekday != DateTime.thursday &&
-        DateTime(year, 12, 31).weekday != DateTime.thursday) {
+        copyWith(year: year, month: 1, day: 1).weekday != DateTime.thursday &&
+        copyWith(year: year, month: 12, day: 31).weekday != DateTime.thursday) {
       return 1;
     }
 
@@ -517,4 +548,13 @@ extension DateTimeExtensions on DateTime {
         7 => 'Sunday',
         _ => throw Exception('Invalid weekday'),
       };
+
+  /// TODO: DOCUMENTATION
+  DateTime forLocation(Location? location) {
+    if (location == null) {
+      return toLocal();
+    } else {
+      return TZDateTime.from(this, location);
+    }
+  }
 }
