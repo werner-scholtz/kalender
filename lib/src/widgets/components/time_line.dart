@@ -219,7 +219,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             if (eventBeingDragged == null) return const SizedBox();
 
             // Ensure that the event is visible.
-            final eventRange = eventBeingDragged.dateTimeRangeAsUtc;
+            final eventRange = eventBeingDragged.internalDateTimeRange;
             if (!eventRange.overlaps(visibleRange)) return const SizedBox();
 
             final start = eventBeingDragged.startAsUtc;

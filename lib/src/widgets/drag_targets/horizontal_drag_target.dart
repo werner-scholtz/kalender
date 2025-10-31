@@ -185,7 +185,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final start = event.dateTimeRangeAsUtc.start;
+    final start = event.internalDateTimeRange.start;
     final newStartTime = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,
@@ -193,7 +193,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
       millisecond: start.millisecond,
       microsecond: start.microsecond,
     );
-    final duration = event.dateTimeRangeAsUtc.duration;
+    final duration = event.internalDateTimeRange.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
@@ -206,8 +206,8 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
     final range = switch (direction) {
-      ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorDateTime),
-      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorDateTime.endOfDay),
+      ResizeDirection.left => calculateDateTimeRangeFromStart(event.internalDateTimeRange, cursorDateTime),
+      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.internalDateTimeRange, cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
@@ -219,7 +219,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.dateTimeRangeAsUtc;
+    var range = newEvent!.internalDateTimeRange;
 
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {

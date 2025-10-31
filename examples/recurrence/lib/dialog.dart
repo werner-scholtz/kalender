@@ -12,7 +12,7 @@ class RecurrenceDialog extends StatefulWidget {
 
 class _RecurrenceDialogState extends State<RecurrenceDialog> {
   RecurrenceType type = RecurrenceType.none;
-  late DateTimeRange dateTimeRange = widget.event.dateTimeRangeAsUtc;
+  late DateTimeRange dateTimeRange = widget.event.internalDateTimeRange;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +27,14 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
             spacing: 8,
             children: [
               Icon(Icons.play_arrow),
-              Text(formatDate(widget.event.dateTimeRangeAsUtc.start)),
+              Text(formatDate(widget.event.internalDateTimeRange.start)),
             ],
           ),
           Row(
             spacing: 8,
             children: [
               Icon(Icons.stop),
-              Text(formatDate(widget.event.dateTimeRangeAsUtc.end)),
+              Text(formatDate(widget.event.internalDateTimeRange.end)),
             ],
           ),
           DropdownMenu<RecurrenceType>(
@@ -75,7 +75,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
           FilledButton(
             onPressed: () {
               final recurrence = Recurrence.fromDateTimeRange(
-                eventRange: widget.event.dateTimeRangeAsUtc,
+                eventRange: widget.event.internalDateTimeRange,
                 recurrenceRange: dateTimeRange,
                 type: type,
               );

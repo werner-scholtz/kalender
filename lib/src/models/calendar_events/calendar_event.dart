@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/internal_date_time.dart';
 
 /// TODO: consider a abstract class for CalendarEvent that needs to be implemented by users.
 ///
@@ -13,8 +14,8 @@ class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
   T? data;
 
-  /// The [DateTimeRange] of the [CalendarEvent] stored in local time.
-  final DateTimeRange _dateTimeRange;
+  /// The [InternalDateTimeRange] of the [CalendarEvent].
+  final InternalDateTimeRange internalDateTimeRange;
 
   /// Whether this [CalendarEvent] can be modified.
   /// *This will be deprecated in the future.
@@ -40,35 +41,32 @@ class CalendarEvent<T extends Object?> {
     this.data,
     this.canModify = true,
     EventInteraction? interaction,
-  })  : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange,
+  })  : internalDateTimeRange = InternalDateTimeRange.from(dateTimeRange),
         interaction = interaction ?? EventInteraction.fromCanModify(canModify);
 
-  /// The [DateTimeRange] of the [CalendarEvent] in the local timezone.
-  DateTimeRange get dateTimeRange => _dateTimeRange;
+  /// The [DateTimeRange] of the [CalendarEvent].
+  DateTimeRange get dateTimeRange => internalDateTimeRange.originalDateTimeRange;
 
   /// The start [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get start => _dateTimeRange.start;
+  DateTime get start => dateTimeRange.start;
 
   /// The end [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get end => _dateTimeRange.end;
-
-  /// The [DateTimeRange] of the [CalendarEvent] in utc time.
-  DateTimeRange get dateTimeRangeAsUtc => _dateTimeRange.asUtc;
+  DateTime get end => dateTimeRange.end;
 
   /// The start [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get startAsUtc => dateTimeRangeAsUtc.start;
+  DateTime get startAsUtc => internalDateTimeRange.start;
 
   /// The end [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get endAsUtc => dateTimeRangeAsUtc.end;
+  DateTime get endAsUtc => internalDateTimeRange.end;
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
-  Duration get duration => dateTimeRangeAsUtc.duration;
+  Duration get duration => internalDateTimeRange.duration;
 
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
   /// The [DateTime]s that the [CalendarEvent] spans. This uses utc time.
-  List<DateTime> get datesSpanned => dateTimeRangeAsUtc.dates();
+  List<DateTime> get datesSpanned => internalDateTimeRange.dates();
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
@@ -98,12 +96,12 @@ class CalendarEvent<T extends Object?> {
   bool operator ==(Object other) {
     return other is CalendarEvent<T> &&
         other.id == id &&
-        other._dateTimeRange == _dateTimeRange &&
+        other.internalDateTimeRange == internalDateTimeRange &&
         other.data == data &&
         other.canModify == canModify &&
         other.interaction == interaction;
   }
 
   @override
-  int get hashCode => Object.hash(id, _dateTimeRange, data, canModify, interaction);
+  int get hashCode => Object.hash(id, internalDateTimeRange, data, canModify, interaction);
 }
