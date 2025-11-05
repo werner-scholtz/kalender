@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
+import 'package:timezone/timezone.dart';
 
 /// TODO: these will also need to be refactored to work with TZDateTime and Locations.
 
@@ -12,266 +13,263 @@ import 'package:kalender/src/models/view_configurations/view_configuration.dart'
 ///           This is because the calculations are done in UTC.
 ///
 abstract class PageNavigationFunctions {
-  PageNavigationFunctions() {
-    assert(numberOfPages > 0);
-    assert(adjustedRange.isUtc);
-  }
+  final DateTimeRange dateTimeRange;
+  PageNavigationFunctions({required this.dateTimeRange});
 
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.singleDay].
   factory PageNavigationFunctions.singleDay(DateTimeRange dateTimeRange) {
-    return DayPageFunctions(originalRange: dateTimeRange);
+    return DayPageFunctions(dateTimeRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a week [MultiDayViewConfiguration.week].
   factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
-    return WeekPageFunctions(originalRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
+    return WeekPageFunctions.week(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
   /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
   factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
-    return WorkWeekPageFunctions(originalRange: dateTimeRange);
+    return WeekPageFunctions.workWeek(dateTimeRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a custom [MultiDayViewConfiguration.custom].
   factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
-    return CustomPageFunctions(originalRange: dateTimeRange, numberOfDays: numberOfDays);
+    return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
   /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
   factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
-    return FreeScrollFunctions(originalRange: dateTimeRange);
+    return FreeScrollFunctions(dateTimeRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.continuous].
   factory PageNavigationFunctions.scheduleContinuous(DateTimeRange dateTimeRange) {
-    return ContinuousSchedulePageFunctions(originalRange: dateTimeRange);
+    return ContinuousSchedulePageFunctions(dateTimeRange: dateTimeRange);
   }
 
   /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.paginated].
   factory PageNavigationFunctions.schedulePaginated(DateTimeRange dateTimeRange) {
-    return PaginatedSchedulePageFunctions(originalRange: dateTimeRange);
+    return PaginatedSchedulePageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// TODO: refactor so it takes a Location parameter.
-  ///  this should also return a [InternalDateTimeRange] as that is what will be used internally.
   /// Calculates the VisibleDateRange from the [index].
   ///
   /// [index] is the page index.
-  ///
-  /// The returned [DateTimeRange] will be constructed in UTC, as that is how the calculations are done.
-  /// To convert this to the local timezone, use the [DateTimeRangeExtensions.asLocal] getter.
-  DateTimeRange dateTimeRangeFromIndex(int index);
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location);
 
-  // TODO: refactor so it takes a Location parameter.
   /// Calculates the page index of the [date].
   ///
   /// The returned index should be clamped between 0 and the number of pages.
-  int indexFromDate(DateTime date);
+  int indexFromDate(DateTime date, Location? location);
 
-  // TODO: refactor so it takes a Location parameter.
   /// The number of pages that can be displayed.
-  int get numberOfPages;
+  int numberOfPages(Location? location);
 
-  // TODO: this will also need a location.
-  /// A callback that adjusts the range to allow for an even number of pages.
+  /// The adjusted [DateTimeRange] for a specific location.
   ///
-  /// This should return a new [DateTimeRange] (utc) that is adjusted to allow
-  /// the range to be split into an even number of pages.
-  DateTimeRange get adjustedRange;
+  /// This range is intended to be used for calculations only.
+  InternalDateTimeRange internalRange(Location? location);
 
-  // This can be a final parameter.
-  /// The original range that was passed to the [PageNavigationFunctions].
-  DateTimeRange get originalRange;
-
-  // TODO: refactor so it takes a Location parameter.
   /// Returns the [DateTimeRange] that is displayed for the given [date].
-  DateTimeRange dateTimeRangeFromDate(DateTime date) {
-    final index = indexFromDate(date);
-    return dateTimeRangeFromIndex(index);
+  InternalDateTimeRange dateTimeRangeFromDate(InternalDateTime date, Location? location) {
+    final index = indexFromDate(date, location);
+    final range = dateTimeRangeFromIndex(index, location);
+    assert(range.isUtc);
+    return range;
   }
 }
 
 class DayPageFunctions extends PageNavigationFunctions {
-  DayPageFunctions({
-    required this.originalRange,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfDay,
-          end: originalRange.end.asUtc.startOfDay,
-        );
+  DayPageFunctions({required super.dateTimeRange});
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
     // Add the index to the start date to get the date to display.
-    return adjustedRange.start.addDays(index).dayRange;
+    final start = internalRange.start.add(Duration(days: index));
+    final end = start.add(const Duration(days: 1));
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  int indexFromDate(DateTime date) {
-    // Create a new date with the same year, month, and day, but in UTC.
-    final dateAsUtc = date.asUtc.startOfDay;
-
-    // Calculate the difference in days between the start date and the given date.
-    return dateAsUtc.difference(adjustedRange.start).inDays.clamp(0, numberOfPages);
+  int indexFromDate(DateTime date, Location? location) {
+    final startOfDate = date.forLocation(location).asUtc;
+    final startOfRange = internalRange(location).start;
+    // Calculate the difference in days between the two dates.
+    final days = startOfDate.difference(startOfRange).inDays;
+    return days.clamp(0, numberOfPages(location));
   }
 
   @override
-  late final int numberOfPages = adjustedRange.dates().length;
+  int numberOfPages(Location? location) {
+    final range = internalRange(location);
+    return range.end.difference(range.start).inDays;
+  }
 
   @override
-  final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location);
+    final start = localRange.start.startOfDay;
+    final end = localRange.end.endOfDay;
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }
 
 class WeekPageFunctions extends PageNavigationFunctions {
   /// The value to shift the start of week by to get the first day of the week.
   final int firstDayOfWeek;
 
+  /// The number of days to display in a week view. Usually 7.
+  final int daysToDisplay;
+
   WeekPageFunctions({
-    required this.originalRange,
+    required super.dateTimeRange,
     required this.firstDayOfWeek,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfWeek(firstDayOfWeek: firstDayOfWeek),
-          end: originalRange.end.asUtc.endOfWeek(firstDayOfWeek: firstDayOfWeek),
-        );
+    required this.daysToDisplay,
+  });
+
+  WeekPageFunctions.week({
+    required super.dateTimeRange,
+    required this.firstDayOfWeek,
+  }) : daysToDisplay = DateTime.daysPerWeek;
+
+  WeekPageFunctions.workWeek({required super.dateTimeRange})
+      : firstDayOfWeek = DateTime.monday,
+        daysToDisplay = 5;
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
-    return DateTime.utc(
-      adjustedRange.start.year,
-      adjustedRange.start.month,
-      adjustedRange.start.day + (index * DateTime.daysPerWeek),
-    ).weekRange(firstDayOfWeek: firstDayOfWeek);
-  }
-
-  @override
-  int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek(firstDayOfWeek: firstDayOfWeek);
-    if (startOfWeek.isBefore(adjustedRange.start) || startOfWeek == adjustedRange.start) return 0;
-
-    final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
-    final index = range.dates().length / DateTime.daysPerWeek;
-
-    assert(index == index.round());
-    return index.round().clamp(0, numberOfPages);
-  }
-
-  @override
-  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
-
-  @override
-  final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
-}
-
-class WorkWeekPageFunctions extends PageNavigationFunctions {
-  WorkWeekPageFunctions({
-    required this.originalRange,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfWeek(),
-          end: originalRange.end.asUtc.endOfWeek(),
-        );
-
-  @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
-    final date = DateTime.utc(
-      adjustedRange.start.year,
-      adjustedRange.start.month,
-      adjustedRange.start.day + (index * DateTime.daysPerWeek),
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
+    final start = internalRange.start.copyWith(
+      day: internalRange.start.day + (index * DateTime.daysPerWeek),
     );
+    final end = start.add(Duration(days: daysToDisplay));
 
-    return date.workWeekRange;
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  int indexFromDate(DateTime date) {
-    final startOfWeek = date.asUtc.startOfWeek();
-    if (startOfWeek.isBefore(adjustedRange.start) || startOfWeek == adjustedRange.start) return 0;
+  int indexFromDate(DateTime date, Location? location) {
+    date = date.forLocation(location).asUtc;
+    final internalStartOfWeek = date.startOfWeek(firstDayOfWeek: firstDayOfWeek);
+    final internalRange = this.internalRange(location);
 
-    final range = DateTimeRange(start: adjustedRange.start, end: startOfWeek);
+    // If the date provided start of week is before or equal to the adjusted range start, return 0.
+    if (internalStartOfWeek.isBefore(internalRange.start) || internalStartOfWeek == internalRange.start) return 0;
+    final range = DateTimeRange(start: internalRange.start, end: internalStartOfWeek);
     final index = range.dates().length / DateTime.daysPerWeek;
 
-    assert(index == index.round());
-    return index.round().clamp(0, numberOfPages);
+    if (index.round() != index) {
+      debugPrint('Warning: index is not an integer: $index');
+    }
+
+    return index.round().clamp(0, numberOfPages(location));
   }
 
   @override
-  late final int numberOfPages = ((adjustedRange.dates().length / DateTime.daysPerWeek) - 1).round();
+  int numberOfPages(Location? location) {
+    final internalRange = this.internalRange(location);
+    final numberOfPages = internalRange.end.difference(internalRange.start).inDays / DateTime.daysPerWeek;
+    if (numberOfPages.round() != numberOfPages) {
+      debugPrint('Warning: numberOfPages is not an integer: $numberOfPages');
+    }
+    return (numberOfPages - 1).round();
+  }
 
   @override
-  late final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location);
+    final start = localRange.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
+    final end = localRange.end.endOfWeek(firstDayOfWeek: firstDayOfWeek);
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }
 
 class CustomPageFunctions extends PageNavigationFunctions {
   /// The number of days in each page.
-  late final int numberOfDays;
+  final int numberOfDays;
 
   CustomPageFunctions({
-    required this.originalRange,
+    required super.dateTimeRange,
     required this.numberOfDays,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfDay,
-          end: originalRange.end.asUtc.startOfDay,
-        );
+  });
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
-    return DateTime.utc(
-      adjustedRange.start.year,
-      adjustedRange.start.month,
-      adjustedRange.start.day + (index * numberOfDays),
-    ).customDateTimeRange(numberOfDays);
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
+    final start = internalRange.start.add(Duration(days: index * numberOfDays));
+    final end = start.add(Duration(days: numberOfDays));
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  int indexFromDate(DateTime date) {
-    final dateUtc = date.startOfDay.asUtc;
-    final index = (dateUtc.difference(adjustedRange.start).inDays ~/ numberOfDays);
-    return index.clamp(0, numberOfPages);
+  int indexFromDate(DateTime date, Location? location) {
+    date = date.forLocation(location).asUtc;
+    final startOfDateUtc = date.startOfDay;
+    final internalRange = this.internalRange(location);
+    final index = startOfDateUtc.difference(internalRange.start).inDays ~/ numberOfDays;
+    return index.clamp(0, numberOfPages(location));
   }
 
   @override
-  late final int numberOfPages = (adjustedRange.dates().length ~/ numberOfDays);
+  int numberOfPages(Location? location) {
+    // TODO: Check this logic
+    final internalRange = this.internalRange(location);
+    return (internalRange.end.difference(internalRange.start).inDays ~/ numberOfDays);
+  }
 
   @override
-  late final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location);
+    final start = localRange.start.startOfDay;
+    final end = localRange.end.endOfDay;
+    final numberOfDaysInRange = end.difference(start).inDays;
+    final extraDays = numberOfDaysInRange % numberOfDays;
+    if (extraDays == 0) {
+      return InternalDateTimeRange(start: start, end: end);
+    } else {
+      final adjustedEnd = end.add(Duration(days: numberOfDays - extraDays));
+      return InternalDateTimeRange(start: start, end: adjustedEnd);
+    }
+  }
 }
 
+/// TODO: see if this can be removed and replaced with [DayPageFunctions].
 class FreeScrollFunctions extends PageNavigationFunctions {
   FreeScrollFunctions({
-    required this.originalRange,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfDay,
-          end: originalRange.end.asUtc.startOfDay,
-        );
+    required super.dateTimeRange,
+  });
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) => adjustedRange.start.addDays(index).dayRange;
-
-  @override
-  int indexFromDate(DateTime date) {
-    final dateAsUtc = date.asUtc.startOfDay;
-    if (dateAsUtc.isBefore(adjustedRange.start) || dateAsUtc == adjustedRange.start) return 0;
-    return dateAsUtc.difference(adjustedRange.start).inDays.clamp(0, numberOfPages);
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
+    // Add the index to the start date to get the date to display.
+    final start = internalRange.start.add(Duration(days: index));
+    final end = start.add(const Duration(days: 1));
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  late final int numberOfPages = adjustedRange.dates().length;
+  int indexFromDate(DateTime date, Location? location) {
+    final startOfDate = date.forLocation(location).asUtc;
+    final startOfRange = internalRange(location).start;
+    // Calculate the difference in days between the two dates.
+    final days = startOfDate.difference(startOfRange).inDays;
+    return days.clamp(0, numberOfPages(location));
+  }
 
   @override
-  late final DateTimeRange adjustedRange;
+  int numberOfPages(Location? location) {
+    final range = internalRange(location);
+    return range.end.difference(range.start).inDays;
+  }
 
   @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location);
+    final start = localRange.start.startOfDay;
+    final end = localRange.end.endOfDay;
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }
 
 class MonthPageFunctions extends PageNavigationFunctions {
@@ -279,34 +277,36 @@ class MonthPageFunctions extends PageNavigationFunctions {
   final int firstDayOfWeek;
 
   MonthPageFunctions({
-    required this.originalRange,
+    required super.dateTimeRange,
     required this.firstDayOfWeek,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfDay,
-          end: originalRange.end.asUtc.startOfDay,
-        );
+  });
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
-    final range = DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
-    var rangeStart = range.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
-    if (rangeStart.isAfter(range.start)) rangeStart = rangeStart.subtractDays(7);
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
+    final internalStart = internalRange.start;
+    final startOfMonth = internalStart.copyWith(month: internalStart.month + index);
 
-    var rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * numberOfRows);
-    if (rangeEnd.isBefore(range.end)) {
-      rangeEnd = rangeStart.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
-    }
+    var start = startOfMonth.startOfWeek(firstDayOfWeek: firstDayOfWeek);
+    if (start.isAfter(startOfMonth)) start = start.subtractDays(7);
 
-    return DateTimeRange(start: rangeStart, end: rangeEnd);
+    var end = start.addDays(DateTime.daysPerWeek * numberOfRows);
+    if (end.isBefore(startOfMonth.endOfMonth)) end = start.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
+
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  int indexFromDate(DateTime date) {
-    final dateAsUtc = date.asUtc.startOfDay;
-    if (dateAsUtc.isBefore(adjustedRange.start) || dateAsUtc == adjustedRange.start) return 0;
+  int indexFromDate(DateTime date, Location? location) {
+    date = date.forLocation(location).startOfDay.asUtc;
+    final internalRange = this.internalRange(location);
 
-    final dateTimeRange = DateTimeRange(start: adjustedRange.start, end: date.asUtc);
-    return dateTimeRange.monthDifference.clamp(0, numberOfPages);
+    // TODO: Check if this is needed.
+    // final dateAsUtc = date.startOfDay;
+    // if (dateAsUtc.isBefore(adjustedRange.start) || dateAsUtc == adjustedRange.start) return 0;
+
+    final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
+    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
   }
 
   /// Returns the number of rows that need to be displayed for the given [range].
@@ -315,64 +315,75 @@ class MonthPageFunctions extends PageNavigationFunctions {
   }
 
   @override
-  late final int numberOfPages = adjustedRange.monthDifference;
+  int numberOfPages(Location? location) {
+    final internalRange = this.internalRange(location);
+    return internalRange.monthDifference;
+  }
 
   @override
-  late final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location).asUtc;
+    final start = localRange.start.startOfMonth;
+    final end = localRange.end.endOfMonth;
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }
 
 class ContinuousSchedulePageFunctions extends PageNavigationFunctions {
   ContinuousSchedulePageFunctions({
-    required this.originalRange,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfDay,
-          end: originalRange.end.asUtc.endOfDay,
-        );
+    required super.dateTimeRange,
+  });
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) => adjustedRange;
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) => internalRange(location);
 
   @override
-  int indexFromDate(DateTime date) => 0;
+  int indexFromDate(DateTime date, Location? location) => 0;
 
   @override
-  late final int numberOfPages = 1;
+  int numberOfPages(Location? location) => 1;
 
   @override
-  late final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location).asUtc;
+    final start = localRange.start.startOfDay;
+    final end = localRange.end.endOfDay;
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }
 
 class PaginatedSchedulePageFunctions extends PageNavigationFunctions {
   PaginatedSchedulePageFunctions({
-    required this.originalRange,
-  }) : adjustedRange = DateTimeRange(
-          start: originalRange.start.asUtc.startOfMonth,
-          end: originalRange.end.asUtc.endOfMonth,
-        );
+    required super.dateTimeRange,
+  });
 
   @override
-  DateTimeRange dateTimeRangeFromIndex(int index) {
-    return DateTime.utc(adjustedRange.start.year, adjustedRange.start.month + index, 1).monthRange;
+  InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
+    final internalRange = this.internalRange(location);
+    final start = DateTime(internalRange.start.year, internalRange.start.month + index, 1).endOfMonth;
+    final end = start.endOfMonth;
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  int indexFromDate(DateTime date) {
-    final dateTimeRange = DateTimeRange(start: adjustedRange.start, end: date.asUtc);
-    return dateTimeRange.monthDifference;
+  int indexFromDate(DateTime date, Location? location) {
+    date = date.forLocation(location).asUtc;
+    final internalRange = this.internalRange(location);
+    final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
+    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
   }
 
   @override
-  late final int numberOfPages = adjustedRange.monthDifference;
+  int numberOfPages(Location? location) {
+    final internalRange = this.internalRange(location);
+    return internalRange.monthDifference;
+  }
 
   @override
-  late final DateTimeRange adjustedRange;
-
-  @override
-  final DateTimeRange originalRange;
+  InternalDateTimeRange internalRange(Location? location) {
+    final localRange = dateTimeRange.forLocation(location).asUtc;
+    final start = localRange.start.startOfMonth;
+    final end = localRange.end.endOfMonth;
+    return InternalDateTimeRange(start: start, end: end);
+  }
 }

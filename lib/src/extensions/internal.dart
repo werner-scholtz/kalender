@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timezone/timezone.dart';
 
 /// The idea is to refactor these extensions so they work with TZDateTime and Locations.
 
@@ -28,9 +29,18 @@ extension InternalDateTimeExtensions on DateTime {
   /// print(localDate); // Output: 2024-01-15 10:30:00.000
   /// ```
   DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+
+  /// TODO: DOCUMENTATION
+  DateTime forLocation(Location? location) {
+    if (location == null) {
+      return toLocal();
+    } else {
+      return TZDateTime.from(this, location);
+    }
+  }
 }
 
-extension InternalDateTimeRangeExtensions on DateTimeRange {
+extension InternalDateTimeRangeExtensions on DateTimeRange<DateTime> {
   /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
   ///
   /// This method returns a new [DateTimeRange] with the [start] and [end] times
@@ -58,10 +68,87 @@ extension InternalDateTimeRangeExtensions on DateTimeRange {
   /// print(localRange.end);   // Output: 2024-01-10 00:00:00.000
   /// ```
   DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
+
+  /// Converts this UTC range to a local [DateTimeRange] for the specified [location].
+  ///
+  /// If [location] is `null`, converts to the system's local timezone.
+  /// If [location] is provided, converts to that specific timezone using
+  /// the [timezone package](https://pub.dev/packages/timezone).
+  ///
+  /// This method is essential for displaying times to users in their
+  /// preferred timezone while maintaining UTC storage internally.
+  ///
+  /// Parameters:
+  /// - [location]: Target timezone location, or `null` for system timezone
+  ///
+  /// Returns a new [DateTimeRange] with times converted to the target timezone.
+  ///
+  /// Example:
+  /// ```dart
+  /// final utcRange = UtcDateTimeRange(
+  ///   start: DateTime.utc(2024, 1, 15, 15, 0), // 3 PM UTC
+  ///   end: DateTime.utc(2024, 1, 15, 16, 0),   // 4 PM UTC
+  /// );
+  ///
+  /// // Convert to system timezone
+  /// final localRange = utcRange.toLocal(null);
+  ///
+  /// // Convert to New York timezone
+  /// final nyLocation = getLocation('America/New_York');
+  /// final nyRange = utcRange.toLocal(nyLocation);
+  /// // Start: 10 AM EST, End: 11 AM EST (UTC-5)
+  /// ```
+  DateTimeRange forLocation(Location? location) {
+    if (location == null) {
+      return DateTimeRange(start: start.toLocal(), end: end.toLocal());
+    } else {
+      return DateTimeRange<TZDateTime>(
+        start: TZDateTime.from(start, location),
+        end: TZDateTime.from(end, location),
+      );
+    }
+  }
 }
 
 /// This is a DateTime class used for internal display purposes only.
-class InternalDateTime {}
+class InternalDateTime extends DateTime {
+  InternalDateTime(
+    int year, [
+    int month = 1,
+    int day = 1,
+    int hour = 0,
+    int minute = 0,
+    int second = 0,
+    int millisecond = 0,
+    int microsecond = 0,
+  ]) : super.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+
+  InternalDateTime.fromDateTime(DateTime dateTime)
+      : super.utc(
+          dateTime.year,
+          dateTime.month,
+          dateTime.day,
+          dateTime.hour,
+          dateTime.minute,
+          dateTime.second,
+          dateTime.millisecond,
+          dateTime.microsecond,
+        );
+}
 
 /// This is a DateTimeRange class used for internal display purposes only.
-class InternalDateTimeRange {}
+class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
+  InternalDateTimeRange({
+    required DateTime start,
+    required DateTime end,
+  }) : super(
+          start: InternalDateTime.fromDateTime(start),
+          end: InternalDateTime.fromDateTime(end),
+        );
+
+  InternalDateTimeRange.fromDateTimeRange(DateTimeRange dateTimeRange)
+      : super(
+          start: InternalDateTime.fromDateTime(dateTimeRange.start),
+          end: InternalDateTime.fromDateTime(dateTimeRange.end),
+        );
+}

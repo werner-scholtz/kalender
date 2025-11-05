@@ -8,6 +8,7 @@ export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';
 export 'view_controllers/schedule_view_controller.dart';
 
+// TODO: this will need a location parameter to handle time zones.
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
