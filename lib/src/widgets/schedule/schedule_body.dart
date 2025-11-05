@@ -134,7 +134,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final ScheduleBodyConfiguration configuration;
 
   /// The date range to display in this list.
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// The current page index (used in paginated views).
   final int currentPage;

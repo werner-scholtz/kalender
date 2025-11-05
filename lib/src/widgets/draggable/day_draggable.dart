@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 /// - These draggable widgets are used to create new events.
 ///
 class DayDraggable<T extends Object?> extends StatefulWidget {
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange visibleDateTimeRange;
   final TimeOfDayRange timeOfDayRange;
   final double pageHeight;
 

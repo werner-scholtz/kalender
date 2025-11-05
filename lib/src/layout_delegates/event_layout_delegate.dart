@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
 
@@ -19,7 +20,7 @@ export 'package:kalender/src/models/time_of_day_range.dart';
 ///
 typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
@@ -29,7 +30,7 @@ typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
 EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
@@ -48,7 +49,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
 /// A [EventLayoutStrategy] that lays out the tiles side by side.
 EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
@@ -113,7 +114,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   });
 
   /// The date for which the events are laid out.
-  final DateTime date;
+  final InternalDateTime date;
 
   /// The time of day range for which the events are laid out.
   final TimeOfDayRange timeOfDayRange;

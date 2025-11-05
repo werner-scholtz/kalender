@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
@@ -16,7 +17,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// along with a [overlapLayoutStrategy], [sideBySideLayoutStrategy] or custom strategy defined by the user.
 class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   final MultiDayBodyConfiguration configuration;
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange visibleDateTimeRange;
   final MultiDayViewController<T> viewController;
   const MultiDayEventsRow({
     super.key,
@@ -39,7 +40,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
               child: DayEventsColumn<T>(
                 key: columnKey(date),
                 configuration: configuration,
-                date: date,
+                date: InternalDateTime.fromDateTime(date),
                 eventsController: context.eventsController<T>(),
                 viewController: viewController,
               ),
@@ -54,7 +55,7 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
 
   final MultiDayBodyConfiguration configuration;
-  final DateTime date;
+  final InternalDateTime date;
   final MultiDayViewController<T> viewController;
   const DayEventsColumn({
     super.key,
@@ -173,7 +174,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
-  final DateTime date;
+  final InternalDateTime date;
   final List<CalendarEvent<T>> events;
   final CalendarController<T> controller;
   final MultiDayViewController<T> viewController;
