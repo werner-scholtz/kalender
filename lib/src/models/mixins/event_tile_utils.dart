@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A mixin that provides useful utilities for day-based event tiles.

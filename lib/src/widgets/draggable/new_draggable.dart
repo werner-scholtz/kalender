@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 mixin NewDraggableWidget<T extends Object?> {
   CalendarController<T> get controller;

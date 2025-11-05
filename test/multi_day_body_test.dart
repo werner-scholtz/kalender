@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
 import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 

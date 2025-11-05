@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';

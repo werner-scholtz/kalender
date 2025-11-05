@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// The positioned timeline widget is used to display the timeline in the [MultiDayBody].
 ///

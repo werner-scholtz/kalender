@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// TODO: consider a abstract class for CalendarEvent that needs to be implemented by users.
 ///
