@@ -39,7 +39,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
       return SchedulePositionList<T>(
         eventsController: context.eventsController<T>(),
         viewController: viewController,
-        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
+        // TODO: this might cause rebuilds.
+        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.internalRange(context.location),
         currentPage: 0,
         paginated: false,
         configuration: configuration,
@@ -86,17 +87,21 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
     return PageView.builder(
       // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
-      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
-        final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
+        // TODO: Should be fine.
+        final range = widget.viewController.viewConfiguration.pageNavigationFunctions
+            .dateTimeRangeFromIndex(value, context.location);
         context.callbacks<T>()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
           eventsController: context.eventsController<T>(),
           viewController: widget.viewController,
-          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
+          // TODO: Might cause unnecessary rebuilds.
+          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions
+              .dateTimeRangeFromIndex(index, context.location),
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,

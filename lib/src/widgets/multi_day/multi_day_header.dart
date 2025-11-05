@@ -94,7 +94,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
 
           // Minimum constraints for the multiDayEvents.
           final constraints = BoxConstraints(minHeight: configuration.tileHeight * 2);
@@ -166,7 +166,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
           final visibleDates = visibleRange.dates();
 
           return Column(
@@ -245,7 +245,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
           final visibleDates = visibleRange.dates();
 
           return Column(

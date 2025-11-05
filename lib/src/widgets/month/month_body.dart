@@ -38,14 +38,14 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
     return PageView.builder(
       controller: viewController.pageController,
-      itemCount: pageNavigation.numberOfPages,
+      itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         viewController.visibleDateTimeRange.value = visibleRange;
         context.callbacks<T>()?.onPageChanged?.call(visibleRange);
       },
       itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
 
         return Stack(

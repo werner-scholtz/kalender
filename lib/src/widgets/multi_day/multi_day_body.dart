@@ -181,7 +181,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index) {
     final events = widget.eventsController.eventsFromDateTimeRange(
-      _pageNavigation.dateTimeRangeFromIndex(index),
+      _pageNavigation.dateTimeRangeFromIndex(index, context.location),
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
     );
@@ -201,7 +201,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
         if (_isFreeScroll) {
           final start = visibleRange.start;
           final end = visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays);
@@ -219,7 +219,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       },
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
 
         return Stack(
           key: MultiDayPage.contentKey,
