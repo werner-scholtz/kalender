@@ -83,8 +83,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
     }
   }
 
-
-
   /// TODO: check this extension it seems a but iffy.
   /// Generates a list of [DateTime] objects representing the dates within this [DateTimeRange].
   ///

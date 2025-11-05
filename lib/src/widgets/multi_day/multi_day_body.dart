@@ -226,7 +226,6 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, widget.location);
-        print('MultiDayPage: visibleRange for page $index: $visibleRange');
 
         return Stack(
           key: MultiDayPage.contentKey,

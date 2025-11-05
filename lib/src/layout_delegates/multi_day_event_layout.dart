@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'package:timezone/timezone.dart';
 
 /// A function type that generates a layout frame for multi-day events.
@@ -102,10 +103,12 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
+    final localRange = event.utcDateTimeRange.forLocation(location);
     final range = DateTimeRange(
-      start: event.utcDateTimeRange.start.startOfDay,
-      end: event.utcDateTimeRange.end.endOfDay,
-    );
+      start: localRange.start.startOfDay,
+      end: localRange.end,
+    ).asUtc;
+    print('Range for event ${event.id}: $range');
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];

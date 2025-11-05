@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
@@ -204,7 +205,6 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
-    // TODO: This should probably be a utc range.
     // Update the event with the new start time.
     final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(context.location));
 
@@ -228,16 +228,14 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.utcDateTimeRange.forLocation(context.location);
-
+    var range = newEvent!.utcDateTimeRange.forLocation(context.location).asUtc;
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {
-      range = DateTimeRange(start: range.start.startOfDay.toUtc(), end: cursorDateTime.endOfDay.toUtc());
+      range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay.toUtc());
+      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
     }
 
-    // TODO: This should probably be a utc range.
-    return event.copyWith(dateTimeRange: range.forLocation(context.location));
+    return event.copyWith(dateTimeRange: range.asLocalForLocation(context.location));
   }
 }
