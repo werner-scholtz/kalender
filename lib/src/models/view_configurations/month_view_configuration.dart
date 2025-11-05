@@ -39,7 +39,7 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.eventLayoutStrategy,
   }) : pageNavigationFunctions = MonthPageFunctions(
-          originalRange: displayRange ?? DateTime.now().yearRange,
+          dateTimeRange: displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek: firstDayOfWeek,
         );
 
@@ -56,7 +56,7 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       eventLayoutStrategy: null,
-      displayRange: pageNavigationFunctions.originalRange,
+      displayRange: pageNavigationFunctions.dateTimeRange,
     );
   }
 

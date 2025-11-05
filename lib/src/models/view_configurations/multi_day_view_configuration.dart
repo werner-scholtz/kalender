@@ -150,7 +150,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     final selectedDate0 = selectedDate ?? this.selectedDate;
     final initialDateSelectionStrategy0 = initialDateSelectionStrategy ?? this.initialDateSelectionStrategy;
     final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
-    final displayRange0 = displayRange ?? this.displayRange;
+    final displayRange0 = displayRange ?? originalDisplayRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
     final initialTimeOfDay0 = initialTimeOfDay ?? this.initialTimeOfDay;
 
@@ -212,7 +212,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.selectedDate == selectedDate &&
         other.initialDateSelectionStrategy == initialDateSelectionStrategy &&
         other.timeOfDayRange == timeOfDayRange &&
-        other.displayRange == displayRange &&
+        other.originalDisplayRange == originalDisplayRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
         other.pageNavigationFunctions == pageNavigationFunctions;
@@ -225,7 +225,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       selectedDate,
       initialDateSelectionStrategy,
       timeOfDayRange,
-      displayRange,
+      originalDisplayRange,
       numberOfDays,
       firstDayOfWeek,
       pageNavigationFunctions,
@@ -239,7 +239,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     selectedDate: $selectedDate
     initialDateSelectionStrategy: $initialDateSelectionStrategy
     timeOfDayRange: $timeOfDayRange
-    displayRange: $displayRange
+    displayRange: $originalDisplayRange
     numberOfDays: $numberOfDays
     firstDayOfWeek: $firstDayOfWeek
     pageNavigationFunctions: $pageNavigationFunctions''';

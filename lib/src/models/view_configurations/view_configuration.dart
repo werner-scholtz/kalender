@@ -38,13 +38,8 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageNavigationFunctions get pageNavigationFunctions;
 
-  /// The [DateTimeRange] that can be displayed by the calendar.
-  /// * This is the range that is adjusted by the [pageNavigationFunctions].
-  ///   Which means that it is in UTC.
-  DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
-
   /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
-  DateTimeRange get originalDisplayRange => pageNavigationFunctions.originalRange;
+  DateTimeRange get originalDisplayRange => pageNavigationFunctions.dateTimeRange;
 }
 
 /// The base class for all vertical views of the calendar.
