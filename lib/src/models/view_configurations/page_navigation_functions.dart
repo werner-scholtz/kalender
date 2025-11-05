@@ -3,6 +3,8 @@ import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
+/// TODO: these will also need to be refactored to work with TZDateTime and Locations.
+
 /// A class that contains functions to navigate between pages in a view, where applicable.
 ///
 /// **Note:** Any functions that return a [DateTime] will return a date in UTC timezone.
@@ -50,6 +52,8 @@ abstract class PageNavigationFunctions {
     return PaginatedSchedulePageFunctions(originalRange: dateTimeRange);
   }
 
+  /// TODO: refactor so it takes a Location parameter.
+  ///  this should also return a [InternalDateTimeRange] as that is what will be used internally.
   /// Calculates the VisibleDateRange from the [index].
   ///
   /// [index] is the page index.
@@ -58,23 +62,28 @@ abstract class PageNavigationFunctions {
   /// To convert this to the local timezone, use the [DateTimeRangeExtensions.asLocal] getter.
   DateTimeRange dateTimeRangeFromIndex(int index);
 
+  // TODO: refactor so it takes a Location parameter.
   /// Calculates the page index of the [date].
   ///
   /// The returned index should be clamped between 0 and the number of pages.
   int indexFromDate(DateTime date);
 
+  // TODO: refactor so it takes a Location parameter.
   /// The number of pages that can be displayed.
   int get numberOfPages;
 
+  // TODO: this will also need a location.
   /// A callback that adjusts the range to allow for an even number of pages.
   ///
   /// This should return a new [DateTimeRange] (utc) that is adjusted to allow
   /// the range to be split into an even number of pages.
   DateTimeRange get adjustedRange;
 
+  // This can be a final parameter.
   /// The original range that was passed to the [PageNavigationFunctions].
   DateTimeRange get originalRange;
 
+  // TODO: refactor so it takes a Location parameter.
   /// Returns the [DateTimeRange] that is displayed for the given [date].
   DateTimeRange dateTimeRangeFromDate(DateTime date) {
     final index = indexFromDate(date);
