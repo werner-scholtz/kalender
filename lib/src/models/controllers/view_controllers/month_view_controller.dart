@@ -7,12 +7,13 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     required this.visibleDateTimeRange,
     required this.visibleEvents,
     DateTime? initialDate,
+    super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now(), location);
     pageController = PageController(initialPage: initialPage);
-    numberOfPages = pageNavigationFunctions.numberOfPages;
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+    numberOfPages = pageNavigationFunctions.numberOfPages(location);
+    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
     visibleEvents.value = {};
   }
 
@@ -41,7 +42,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     Curve? curve,
   }) async {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
 
     // Animate to that page.
     await pageController.animateToPage(
@@ -99,9 +100,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      date,
-    );
+    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
     jumpToPage(pageNumber);
   }
 

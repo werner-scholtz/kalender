@@ -20,13 +20,14 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   final DateTime initialDate;
 
   ScheduleViewController({
+    super.location,
     required this.viewConfiguration,
     required this.visibleDateTimeRange,
     required this.visibleEvents,
     required this.initialDate,
   }) {
-    currentPage = viewConfiguration.pageNavigationFunctions.indexFromDate(initialDate);
-    final numberOfPages = viewConfiguration.pageNavigationFunctions.numberOfPages;
+    currentPage = viewConfiguration.pageNavigationFunctions.indexFromDate(initialDate, location);
+    final numberOfPages = viewConfiguration.pageNavigationFunctions.numberOfPages(location);
     populateMaps(numberOfPages);
   }
 
@@ -98,6 +99,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
 
 class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
   ContinuousScheduleViewController({
+    super.location,
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
@@ -182,13 +184,14 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
 class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
   PaginatedScheduleViewController({
+    super.location,
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(currentPage);
+    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }
@@ -209,7 +212,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
     final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc, location);
     await _animateToPage(pageIndex, duration: duration, curve: curve);
 
     final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
@@ -225,7 +228,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Curve? scrollCurve,
   }) async {
     final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
     final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
@@ -242,7 +245,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     bool centerEvent = true,
   }) async {
     final date = event.startAsUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
     final index = indexFromDateTime(date) ?? closestIndex(date);
@@ -270,7 +273,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
   @override
   Future<void> jumpToDate(DateTime date) async {
     final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc, location);
 
     // Since jump to page does not build the page immediately,
     // and I'm currently unaware of a way to reliably wait for the page to be built,
