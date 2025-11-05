@@ -13,6 +13,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// converted to local time.  The original [DateTimeRange] is not modified.
   DateTimeRange toLocal() => DateTimeRange(start: start.toLocal(), end: end.toLocal());
 
+  /// Converts the [start] and [end] times to UTC.
   DateTimeRange toUtc() => DateTimeRange(start: start.toUtc(), end: end.toUtc());
 
   /// The difference in months between the [start] and [end] dates of this range.
@@ -82,6 +83,9 @@ extension DateTimeRangeExtensions on DateTimeRange {
     }
   }
 
+
+
+  /// TODO: check this extension it seems a but iffy.
   /// Generates a list of [DateTime] objects representing the dates within this [DateTimeRange].
   ///
   /// The [inclusive] parameter controls whether the end date is included in the list. (The function will always return at least one date)
@@ -144,7 +148,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// TODO: Document
   DateTimeRange? dateTimeRangeDuring(DateTimeRange range) {
     // Check if the given range is outside this range. If so, return null.
-    if (!range.start.isWithin(this) && !range.end.isWithin(this)) return null;
+    if ((!range.start.isWithin(this) && !range.end.isWithin(this))) return null;
 
     // find the start time.
     final startDateTime = range.start.isBefore(start) ? start : range.start;
@@ -253,6 +257,7 @@ extension DateTimeRangeExtensions on DateTimeRange {
   /// // Start: 10 AM EST, End: 11 AM EST (UTC-5)
   /// ```
   DateTimeRange forLocation(Location? location) {
+    assert(isUtc, 'The DateTimeRange must be in UTC to convert to a specific location. Current isUtc: $isUtc');
     if (location == null) {
       return DateTimeRange(start: start.toLocal(), end: end.toLocal());
     } else {

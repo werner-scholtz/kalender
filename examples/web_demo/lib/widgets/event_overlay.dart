@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
+import 'package:web_demo/timezone/stub.dart';
 
 class EventOverlayCard extends StatefulWidget {
   final CalendarEvent<Event> event;
@@ -105,7 +106,10 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                     setState(() => event = updatedEvent);
                   },
                   child: Text(
-                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(event.start), alwaysUse24HourFormat: use24),
+                    locale.formatTimeOfDay(
+                      TimeOfDay.fromDateTime(event.utcDateTimeRange.start),
+                      alwaysUse24HourFormat: use24,
+                    ),
                   ),
                 ),
               ),
@@ -138,9 +142,16 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                     setState(() => event = updatedEvent);
                   },
                   child: Text(
-                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(event.end), alwaysUse24HourFormat: use24),
+                    locale.formatTimeOfDay(
+                      TimeOfDay.fromDateTime(event.utcDateTimeRange.end),
+                      alwaysUse24HourFormat: use24,
+                    ),
                   ),
                 ),
+              ),
+              DateTimeInLocation(
+                dateTimeRange: event.utcDateTimeRange,
+                location: context.appSettings.location.value ?? getLocation('UTC'),
               ),
               const Spacer(),
               FilledButton.tonal(
@@ -170,5 +181,31 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
       context: context,
       initialTime: TimeOfDay.fromDateTime(date),
     );
+  }
+}
+
+class DateTimeInLocation extends StatelessWidget {
+  final DateTimeRange dateTimeRange;
+  final Location location;
+  DateTimeInLocation({super.key, required this.location, required this.dateTimeRange}) : assert(dateTimeRange.isUtc);
+
+  @override
+  Widget build(BuildContext context) {
+    final rangeForLocation = dateTimeRange.forLocation(location);
+    final start = rangeForLocation.start;
+    final end = rangeForLocation.end;
+
+    final startDate = "${start.year}-${start.month.toString().padLeft(2, '0')}-${start.day.toString().padLeft(2, '0')}";
+    final endDate = "${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}";
+    final startTime = "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}";
+    final endTime = "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}";
+    return Column(
+      children: [
+        Text('In location: ${location.name}'),
+        Text('Start: $startDate $startTime'),
+        Text('End: $endDate $endTime'),
+      ],
+    );
+    
   }
 }

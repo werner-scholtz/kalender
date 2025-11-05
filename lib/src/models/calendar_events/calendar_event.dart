@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:kalender/src/models/utc_date_time_range.dart';
-import 'package:timezone/timezone.dart';
+
+/// TODO: Re-Document xD.
 
 /// A calendar event that can be displayed and managed by calendar views.
 ///
@@ -53,7 +53,6 @@ import 'package:timezone/timezone.dart';
 /// See also:
 /// - [EventsController] for managing collections of events
 /// - [EventInteraction] for configuring user interaction permissions
-/// - [UtcDateTimeRange] for timezone-aware time ranges
 class CalendarEvent<T extends Object?> {
   /// The optional data associated with this event.
   ///
@@ -69,18 +68,6 @@ class CalendarEvent<T extends Object?> {
   /// );
   /// ```
   final T? data;
-
-  /// The start time of the event as originally provided.
-  ///
-  /// This preserves the original timezone information from when the
-  /// event was created. For UTC calculations, use [startAsUtc] instead.
-  final DateTime start;
-
-  /// The end time of the event as originally provided.
-  ///
-  /// This preserves the original timezone information from when the
-  /// event was created. For UTC calculations, use [endAsUtc] instead.
-  final DateTime end;
 
   /// Whether this event can be modified through user interactions.
   ///
@@ -112,10 +99,6 @@ class CalendarEvent<T extends Object?> {
   final EventInteraction interaction;
 
   /// The internal time range representation stored in UTC.
-  ///
-  /// This ensures consistent time calculations across different timezones.
-  /// Use [dateTimeRange] for the original time range or timezone-aware
-  /// methods for location-specific operations.
   final DateTimeRange utcDateTimeRange;
 
   /// The unique identifier for this event.
@@ -156,27 +139,15 @@ class CalendarEvent<T extends Object?> {
     this.data,
     this.canModify = true,
     EventInteraction? interaction,
-  })  : start = dateTimeRange.start,
-        end = dateTimeRange.end,
-        utcDateTimeRange = dateTimeRange.toUtc(),
+  })  : utcDateTimeRange = dateTimeRange.toUtc(),
         interaction =
             interaction ?? (canModify ? const EventInteraction.allowAll() : const EventInteraction.allowNone());
 
-  /// The time range of this event as originally provided.
-  ///
-  /// This returns a [DateTimeRange] using the original [start] and [end] times,
-  /// preserving any timezone information from when the event was created.
-  ///
-  /// For UTC calculations or timezone-specific operations, use [dateTimeRangeAsUtc]
-  /// or the timezone-aware helper methods instead.
-  DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
-
-  /// The total duration of this event.
-  ///
-  /// This calculation is performed using UTC times to ensure accuracy
-  /// across timezone boundaries and daylight saving time transitions.
+  DateTime get start => utcDateTimeRange.start;
+  DateTime get end => utcDateTimeRange.end;
   Duration get duration => utcDateTimeRange.duration;
 
+  /// TODO: Check if this makes sense logically, especially when dst comes into play.
   /// Whether this event spans more than one calendar day.
   ///
   /// Returns `true` if the event duration is greater than 24 hours.
@@ -184,95 +155,6 @@ class CalendarEvent<T extends Object?> {
   /// events differently from single-day events.
   bool get isMultiDayEvent => duration.inDays > 0;
 
-  /// Returns the event's time range as UTC DateTimes with the same time values as the specified [location].
-  ///
-  /// This method interprets the event's original [start] and [end] times as if they
-  /// were in the given [location], then creates UTC DateTimes with those same time values.
-  /// This ensures all calculations are performed in UTC while preserving the intended
-  /// local time representation.
-  ///
-  /// If [location] is null, uses the system's local timezone.
-  ///
-  /// Example:
-  /// ```dart
-  /// // Event created with: 14:00 to 15:00
-  /// final tokyo = getLocation('Asia/Tokyo');
-  /// final utcRange = event.dateTimeRangeAsUtc(tokyo);
-  /// // Returns UTC DateTimes: 14:00 UTC to 15:00 UTC
-  /// // (same time values, but in UTC for safe calculations)
-  /// ```
-  // DateTimeRange dateTimeRangeAsUtc([Location? location]) => utcDateTimeRange.toLocal(location).asUtc;
-
-  /// Returns the event's start time as a UTC DateTime with the same time value as the specified [location].
-  ///
-  /// This method interprets the event's original [start] time as if it were in the
-  /// given [location], then creates a UTC DateTime with that same time value.
-  /// This ensures calculations are performed in UTC while preserving the intended
-  /// local time representation.
-  ///
-  /// If [location] is null, uses the system's local timezone.
-  ///
-  /// Example:
-  /// ```dart
-  /// // Event start: 14:00 (naive DateTime)
-  /// final johannesburg = getLocation('Africa/Johannesburg');
-  /// final utcStart = event.startAsUtc(johannesburg);
-  /// // Returns: 14:00 UTC (same time value, but as UTC for calculations)
-  /// ```
-  // DateTime startAsUtc([Location? location]) => utcDateTimeRange.startToLocal(location).asUtc;
-
-  /// Returns the event's end time as a UTC DateTime with the same time value as the specified [location].
-  ///
-  /// This method interprets the event's original [end] time as if it were in the
-  /// given [location], then creates a UTC DateTime with that same time value.
-  /// This ensures calculations are performed in UTC while preserving the intended
-  /// local time representation.
-  ///
-  /// If [location] is null, uses the system's local timezone.
-  ///
-  /// Example:
-  /// ```dart
-  /// // Event end: 15:00 (naive DateTime)
-  /// final johannesburg = getLocation('Africa/Johannesburg');
-  /// final utcEnd = event.endAsUtc(johannesburg);
-  /// // Returns: 15:00 UTC (same time value, but as UTC for calculations)
-  /// ```
-  // DateTime endAsUtc([Location? location]) => utcDateTimeRange.endToLocal(location).asUtc;
-
-  /// Returns the calendar dates that this event spans when interpreted in the specified [location].
-  ///
-  /// This method interprets the event's time range as occurring in the given [location],
-  /// then returns the calendar dates (at midnight UTC) that the event spans using
-  /// UTC DateTimes with preserved time values for consistent calculations.
-  ///
-  /// If [location] is null, uses the system's local timezone.
-  ///
-  /// Example:
-  /// ```dart
-  /// // Event: 23:00 to 25:00 (next day 01:00) in naive DateTimes
-  /// final nyc = getLocation('America/New_York');
-  /// final dates = event.datesSpanned(nyc);
-  /// // Returns dates spanned by 23:00 UTC to 01:00 UTC (next day)
-  /// ```
-  /// TODO: REMOVE?
-  List<DateTime> datesSpanned(Location? location) => utcDateTimeRange.forLocation(location).dates();
-
-  /// Creates a copy of this event with optionally modified properties.
-  ///
-  /// This method preserves the original event's properties except for those
-  /// explicitly provided. The event ID is not copied and will be reassigned
-  /// if the new event is added to a controller.
-  ///
-  /// Example:
-  /// ```dart
-  /// final updatedEvent = originalEvent.copyWith(
-  ///   data: 'Updated Meeting Title',
-  ///   dateTimeRange: DateTimeRange(
-  ///     start: originalEvent.start.add(Duration(hours: 1)),
-  ///     end: originalEvent.end.add(Duration(hours: 1)),
-  ///   ),
-  /// );
-  /// ```
   CalendarEvent<T> copyWith({
     DateTimeRange? dateTimeRange,
     T? data,
@@ -281,7 +163,7 @@ class CalendarEvent<T extends Object?> {
   }) {
     return CalendarEvent<T>(
       data: data ?? this.data,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      dateTimeRange: dateTimeRange ?? this.utcDateTimeRange,
       // ignore: deprecated_member_use_from_same_package
       canModify: canModify ?? this.canModify,
       interaction: interaction ?? this.interaction,
@@ -304,8 +186,7 @@ class CalendarEvent<T extends Object?> {
   bool operator ==(Object other) {
     return other is CalendarEvent<T> &&
         other.id == id &&
-        other.start == start &&
-        other.end == end &&
+        other.utcDateTimeRange == utcDateTimeRange &&
         other.data == data &&
         // ignore: deprecated_member_use_from_same_package
         other.canModify == canModify &&
@@ -314,5 +195,5 @@ class CalendarEvent<T extends Object?> {
 
   @override
   // ignore: deprecated_member_use_from_same_package
-  int get hashCode => Object.hash(id, start, end, data, canModify, interaction);
+  int get hashCode => Object.hash(id, utcDateTimeRange, data, canModify, interaction);
 }

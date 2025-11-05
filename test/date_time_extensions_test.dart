@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'utilities.dart';
 
 Future<void> main() async {
@@ -641,6 +642,7 @@ Future<void> main() async {
         });
       });
 
+      
       group('asUtc', () {
         test('asUtc', () {
           final date = DateTime(2024, 1, 15, 10, 30);

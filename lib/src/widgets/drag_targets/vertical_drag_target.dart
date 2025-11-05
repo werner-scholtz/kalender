@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 import 'package:timezone/timezone.dart';
+
+/// TODO: Revisit snap points.
 
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
@@ -19,6 +22,7 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
   final double viewPortHeight;
 
   final ValueNotifier<CalendarSnapping> snapping;
+  // TODO: remove this can probably be obtained from the controller or context.
   final Location? location;
 
   /// Creates a [VerticalDragTarget].
@@ -248,8 +252,6 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     );
   }
 
-  /// TODO: need to take timezone / location into account.
-
   @override
   DateTime? calculateCursorDateTime(
     Offset offset, {
@@ -265,11 +267,10 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
         : visibleDates.elementAtOrNull(visibleDates.length - cursorDateIndex - 1);
-
     if (date == null) return null;
 
     // Calculate the start of the day.
-    final startOfDate = timeOfDayRange.start.toDateTime(date.forLocation(context.location)).toUtc();
+    final startOfDate = timeOfDayRange.start.toDateTime(date);
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
@@ -298,6 +299,8 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
       }
     }
 
+    // TODO: Snap points not working right.
+
     // Calculate the new dateTimeRange for the event.
     final duration = event.utcDateTimeRange.duration;
     var end = start.add(duration);
@@ -324,7 +327,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
     // Update the event with the new range.
     final newRange = DateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.toLocal());
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocalForLocation(widget.location));
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -339,7 +342,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (!direction.vertical) return null;
 
     // Add now to the snap points.
-    late final now = DateTime.now().toUtc();
+    late final now = DateTime.now().asUtc;
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
@@ -347,14 +350,15 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
+    final rangeAsUtc = event.utcDateTimeRange.forLocation(context.location).asUtc;
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.utcDateTimeRange, cursorSnapPoint),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.utcDateTimeRange, cursorSnapPoint),
+      ResizeDirection.top => calculateDateTimeRangeFromStart(rangeAsUtc, cursorSnapPoint),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(rangeAsUtc, cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange);
+    return event.copyWith(dateTimeRange: dateTimeRange.asLocalForLocation(widget.location));
   }
 
   @override
@@ -363,14 +367,16 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (event == null) return null;
 
     // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.utcDateTimeRange;
+    var rangeAsUtc = newEvent!.utcDateTimeRange.forLocation(widget.location).asUtc;
 
-    if (cursorDateTime.isAfter(range.start)) {
-      range = DateTimeRange(start: range.start, end: cursorDateTime);
-    } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start);
+    if (cursorDateTime.isAfter(rangeAsUtc.start)) {
+      rangeAsUtc = DateTimeRange(start: rangeAsUtc.start, end: cursorDateTime);
+    } else if (cursorDateTime.isBefore(rangeAsUtc.start)) {
+      rangeAsUtc = DateTimeRange(start: cursorDateTime, end: rangeAsUtc.start);
     }
 
-    return event.copyWith(dateTimeRange: range);
+    // Convert the range to local time.
+    final localRange = rangeAsUtc.asLocalForLocation(widget.location);
+    return event.copyWith(dateTimeRange: localRange);
   }
 }

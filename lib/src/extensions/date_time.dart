@@ -125,7 +125,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-16 00:00:00.000
   /// ```
-  DateTimeRange get dayRange => DateTimeRange(start: _returnType(startOfDay), end: _returnType(endOfDay));
+  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
 
   /// Gets the start of the month.
   ///
@@ -152,7 +152,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfMonth;
   /// print(start); // Output: 2024-01-01 00:00:00.000
   /// ```
-  DateTime get endOfMonth => (isUtc ? DateTime.utc : DateTime.new)(year, month + 1);
+  DateTime get endOfMonth => _returnType((isUtc ? DateTime.utc : DateTime.new)(year, month + 1));
 
   /// Gets a [DateTimeRange] representing the entire month in which this [DateTime] occurs.
   ///
@@ -179,7 +179,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.startOfYear;
   /// print(start); // Output: 2024-01-01 00:00:00.000
   /// ```
-  DateTime get startOfYear => (isUtc ? DateTime.utc : DateTime.new)(year);
+  DateTime get startOfYear => _returnType((isUtc ? DateTime.utc : DateTime.new)(year));
 
   /// Gets the end of the year. (aka start of the next year)
   ///
@@ -192,7 +192,7 @@ extension DateTimeExtensions on DateTime {
   /// final start = date.endOfYear;
   /// print(start); // Output: 2025-01-01 00:00:00.000
   /// ```
-  DateTime get endOfYear => (isUtc ? DateTime.utc : DateTime.new)(year + 1);
+  DateTime get endOfYear => _returnType((isUtc ? DateTime.utc : DateTime.new)(year + 1));
 
   /// Gets a [DateTimeRange] representing the entire year in which this [DateTime] occurs.
   ///
@@ -272,12 +272,7 @@ extension DateTimeExtensions on DateTime {
     final daysToSubtract = (weekday < firstDayOfWeek ? 7 : 0) + weekday - firstDayOfWeek;
     final startOfWeek = subtractDays(daysToSubtract).startOfDay;
 
-    if (this is TZDateTime) {
-      final location = (this as TZDateTime).location;
-      return TZDateTime(location, startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    } else {
-      return startOfWeek;
-    }
+    return _returnType(startOfWeek);
   }
 
   /// Gets the end of the week.
@@ -349,15 +344,17 @@ extension DateTimeExtensions on DateTime {
   /// print(newDate); // Output: 2024-01-20 10:30:00.000
   /// ```
   DateTime addDays(int days) {
-    return copyWith(
-      year: year,
-      month: month,
-      day: day + days,
-      hour: hour,
-      minute: minute,
-      second: second,
-      millisecond: millisecond,
-      microsecond: microsecond,
+    return _returnType(
+      copyWith(
+        year: year,
+        month: month,
+        day: day + days,
+        hour: hour,
+        minute: minute,
+        second: second,
+        millisecond: millisecond,
+        microsecond: microsecond,
+      ),
     );
   }
 

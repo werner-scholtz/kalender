@@ -117,9 +117,12 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
           details,
           onResize: (event, direction) => direction.horizontal,
           onReschedule: (event) {
+            // TODO: check this.
+            final days = event.utcDateTimeRange.forLocation(context.location).dates().length;
+
             // Set the size of the feedback widget.
             context.feedbackWidgetSizeNotifier<T>().value = Size(
-              min(pageWidth, dayWidth * event.datesSpanned(context.location).length),
+              min(pageWidth, dayWidth * days),
               tileHeight,
             );
 

@@ -110,20 +110,30 @@ class _MyAppState extends State<MyApp> {
 
   /// Generate a list of events for the demo.
   List<CalendarEvent<Event>> _generateEvents() {
-    return [];
-    final now = DateTime.now();
-    const numOfEvents = 1000;
-    return List.generate(numOfEvents, (index) {
-      final start = now.add(Duration(days: index - (numOfEvents ~/ 2)));
-      final end = start.add(Duration(hours: Random().nextInt(3) + 1));
-      return CalendarEvent(
+    final start = DateTime.utc(2025, 11, 5, 20);
+    final end = DateTime.utc(2025, 11, 6, 6);
+    return [
+      CalendarEvent(
         data: Event(
-          title: 'Event $index',
+          title: 'Event',
           color: Colors.blue,
         ),
         dateTimeRange: DateTimeRange(start: start, end: end),
-      );
-    });
+      )
+    ];
+    // final now = DateTime.now();
+    // const numOfEvents = 1000;
+    // return List.generate(numOfEvents, (index) {
+    //   final start = now.add(Duration(days: index - (numOfEvents ~/ 2)));
+    //   final end = start.add(Duration(hours: Random().nextInt(3) + 1));
+    //   return CalendarEvent(
+    //     data: Event(
+    //       title: 'Event $index',
+    //       color: Colors.blue,
+    //     ),
+    //     dateTimeRange: DateTimeRange(start: start, end: end),
+    //   );
+    // });
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'package:timezone/timezone.dart';
 
 /// A mixin that adds snap points to a class.
@@ -28,7 +29,7 @@ mixin SnapPoints {
   void addEventSnapPoints(Set<CalendarEvent> events, [Location? location]) {
     // Add the start and end of each event to the snap points.
     for (final event in events) {
-      _snapPoints.addAll([event.start, event.end]);
+      _snapPoints.addAll([event.start.forLocation(location).asUtc, event.end.forLocation(location).asUtc]);
     }
   }
 

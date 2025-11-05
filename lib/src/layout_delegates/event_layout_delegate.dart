@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
-import 'package:kalender/src/models/utc_date_time.dart';
-import 'package:kalender/src/models/utc_date_time_range.dart';
 import 'package:timezone/timezone.dart';
 
 export 'package:kalender/kalender_extensions.dart';
@@ -158,7 +157,10 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
-    final durationDuring = dateRange.dateTimeRangeDuring(event.utcDateTimeRange)?.duration ?? Duration.zero;
+    // TODO: document
+    // TODO: this should maybe be a helper.
+    final rangeForLocation = event.utcDateTimeRange.forLocation(location).asUtc;
+    final durationDuring = dateRange.dateTimeRangeDuring(rangeForLocation)?.duration ?? Duration.zero;
     final height = ((durationDuring.inSeconds / 60) * heightPerMinute);
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
@@ -172,8 +174,17 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent<T> event) {
-    final dateStart = timeOfDayRange.start.toDateTime(date.forLocation(location)).toUtc();
-    return (event.utcDateTimeRange.start.difference(dateStart).inMinutes * heightPerMinute);
+    // TODO: document
+    // TODO: this should maybe be a helper.
+    final rangeForLocation = event.utcDateTimeRange.forLocation(location).asUtc;
+    final rangeOnDate = dateRange.dateTimeRangeDuring(rangeForLocation);
+    if (rangeOnDate == null) {
+      debugPrint('The event ${event.id} does not occur on the date $date');
+      return 0.0;
+    }
+
+    final dateStart = timeOfDayRange.start.toDateTime(date);
+    return (rangeOnDate.start.difference(dateStart).inMinutes * heightPerMinute);
   }
 
   /// This is used to sort the vertical layout data after calculation.

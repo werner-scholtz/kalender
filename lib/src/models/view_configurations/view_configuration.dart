@@ -6,7 +6,6 @@ import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
-import 'package:timezone/timezone.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 

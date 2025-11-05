@@ -128,14 +128,14 @@ class DefaultEventStore<T> extends EventStore<T> {
   }
 
   @override
-  void removeEvent(CalendarEvent event) {
+  void removeEvent(CalendarEvent<T> event) {
     final id = event.id;
     assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
     idEvent.remove(id);
 
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-      final dates = event.datesSpanned(location);
+      final dates = getEventDates(event, location);
       for (final date in dates) {
         locationDateIdMap[locationString]!.update(
           toKey(date),
@@ -222,30 +222,17 @@ class DefaultEventStore<T> extends EventStore<T> {
     final id = event.id;
     idEvent[id] = event;
 
-    /// TODO: FOX UP.
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-
-      final locationDates = event.utcDateTimeRange.forLocation(location);
-
-      final dates = locationDates.dates();
-      
-      for (final date in dates) {
-        print(toKey(date));
-        locationDateIdMap[locationString]!.update(
-          toKey(date),
-          (value) => value..add(id),
-          ifAbsent: () => {id},
-        );
-      }
+      _addEventToLocation(location, event);
     }
   }
 
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
   void _addEventToLocation(Location? location, CalendarEvent<T> event) {
+    // TODO: Fix this up.
     final locationString = location?.name ?? defaultLocation;
-    final dates = event.utcDateTimeRange.forLocation(location).dates();
-
+    final dates = getEventDates(event, location);
     for (final date in dates) {
       locationDateIdMap[locationString]!.update(
         toKey(date),
@@ -253,5 +240,13 @@ class DefaultEventStore<T> extends EventStore<T> {
         ifAbsent: () => {event.id},
       );
     }
+  }
+
+  /// TODO: maybe make this a helper.
+  List<DateTime> getEventDates(CalendarEvent<T> event, Location? location) {
+    final locationRange = event.utcDateTimeRange.forLocation(location);
+    final range = DateTimeRange(start: locationRange.start.startOfDay, end: locationRange.end.endOfDay);
+    final dates = range.dates();
+    return dates;
   }
 }

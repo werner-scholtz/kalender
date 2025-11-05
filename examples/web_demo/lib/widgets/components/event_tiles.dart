@@ -16,8 +16,8 @@ abstract class BaseEventTile extends StatelessWidget {
   Color get color => event.data?.color ?? defaultColor;
   Color textColor(Color color) => color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
-  bool get continuesAfter => event.dateTimeRange.end.isAfter(tileRange.end);
-  bool get continuesBefore => event.dateTimeRange.start.isBefore(tileRange.start);
+  bool get continuesAfter => event.end.isAfter(tileRange.end);
+  bool get continuesBefore => event.start.isBefore(tileRange.start);
   String title(BuildContext context) => event.data?.title ?? context.l10n.newEvent;
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(8);

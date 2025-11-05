@@ -55,7 +55,6 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
 class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
   final MultiDayBodyConfiguration configuration;
-
   final DateTimeRange dayRange;
   final MultiDayViewController<T> viewController;
   final Location? location;
@@ -134,6 +133,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   @override
   Widget build(BuildContext context) {
     final controller = context.calendarController<T>();
+    print(' Building DayEventsColumn for ${widget.dayRange.start}, ${_events.length} events');
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     final eventsWidget = CustomMultiChildLayout(
