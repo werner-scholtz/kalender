@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// A function type that generates a layout frame for multi-day events.
 ///
@@ -15,7 +16,7 @@ import 'package:kalender/kalender.dart';
 /// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
 /// - [textDirection]: The text direction (LTR or RTL) for the layout.
 typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
-  required DateTimeRange visibleDateTimeRange,
+  required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
   MultiDayLayoutFrameCache<T>? cache,
@@ -48,7 +49,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
 MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
-  required DateTimeRange visibleDateTimeRange,
+  required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
   MultiDayLayoutFrameCache<T>? cache,
@@ -237,7 +238,7 @@ class MultiDayLayoutFrame<T> {
   /// The range of dates that this frame is for.
   ///
   /// ex. 1 Week (7 days).
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// The sorted events for this frame that will be used to generate [MultiDayEventTile]s.
   final List<CalendarEvent<T>> events;
@@ -260,7 +261,7 @@ class MultiDayLayoutFrame<T> {
   });
 
   /// Returns the date for the given column index.
-  DateTime dateFromColumn(int column) => dateTimeRange.start.addDays(column);
+  InternalDateTime dateFromColumn(int column) => InternalDateTime.fromDateTime(dateTimeRange.start.addDays(column));
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///

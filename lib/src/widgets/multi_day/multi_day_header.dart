@@ -105,11 +105,11 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           return Stack(
             children: [
               if (configuration.showTiles) ...[
-                Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
                 ConstrainedBox(
                   constraints: constraints,
                   child: MultiDayEventWidget<T>(
-                    visibleDateTimeRange: visibleRange,
+                    internalDateTimeRange: visibleRange,
                     configuration: configuration,
                     multiDayCache: viewController.multiDayCache,
                     maxNumberOfVerticalEvents: null,
@@ -185,11 +185,11 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
               if (configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                    Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget<T>(
-                        visibleDateTimeRange: visibleRange,
+                        internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
@@ -268,11 +268,11 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
               if (configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable<T>(visibleDateTimeRange: visibleRange)),
+                    Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget<T>(
-                        visibleDateTimeRange: visibleRange,
+                        internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,

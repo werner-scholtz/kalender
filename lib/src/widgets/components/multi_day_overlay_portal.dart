@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///
@@ -25,7 +26,7 @@ typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
 /// A widget that manages the overlay portal for a single day.
 class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   /// The date for which the widget is created.
-  final DateTime date;
+  final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
   final List<CalendarEvent<T>> events;

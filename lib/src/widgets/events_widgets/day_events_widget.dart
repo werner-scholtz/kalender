@@ -138,7 +138,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
                 event: item.$2,
                 callbacks: context.callbacks<T>(),
                 tileComponents: context.tileComponents<T>(),
-                dateTimeRange: widget.date.dayRange,
+                dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
                 interaction: context.interaction,
                 resizeAxis: Axis.vertical,
               ),

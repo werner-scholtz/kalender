@@ -19,7 +19,7 @@ void main() {
 
     final start = DateTime(2025, 3, 24);
     final end = DateTime(2025, 3, 31);
-    final visibleRange = DateTimeRange(start: start.asUtc, end: end.asUtc);
+    final visibleRange = InternalDateTimeRange(start: start.asUtc, end: end.asUtc);
 
     ValueKey<int> getKey(int data) => ValueKey(data);
 
@@ -51,7 +51,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
@@ -150,7 +150,7 @@ void main() {
               height: tileHeight * 3,
               child: MultiDayEventLayoutWidget<int>(
                 events: eventsController.events.toList(),
-                visibleDateTimeRange: visibleRange,
+                internalDateTimeRange: visibleRange,
                 textDirection: TextDirection.ltr,
                 multiDayOverlayBuilders: null,
                 multiDayOverlayStyles: null,
@@ -241,7 +241,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
@@ -313,7 +313,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
                 maximumNumberOfVerticalEvents: 3,
                 tileHeight: tileHeight,
@@ -424,7 +424,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
                 tileHeight: 50.0,
                 maximumNumberOfVerticalEvents: 3,

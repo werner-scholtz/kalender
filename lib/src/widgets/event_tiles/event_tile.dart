@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -40,8 +41,8 @@ abstract class EventTile<T extends Object?> extends StatefulWidget {
   /// The interaction state of the tile.
   final CalendarInteraction interaction;
 
-  /// The date time range for the tile.
-  final DateTimeRange dateTimeRange;
+  /// The internal date time range that the event spans.
+  final InternalDateTimeRange dateTimeRange;
 
   /// The function that is called when the overlay needs to be dismissed.
   ///
