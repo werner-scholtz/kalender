@@ -74,8 +74,9 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   @override
   CalendarController<T> get controller => widget.controller;
 
+  // TODO: check if this is right, and null check does not break anything.
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();
+  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();

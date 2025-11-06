@@ -16,14 +16,18 @@ class MonthHeader<T extends Object?> extends StatelessWidget {
       'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
     );
 
-    final viewController = calendarController.viewController as MonthViewController<T>;
+    // final viewController = calendarController.viewController as MonthViewController<T>;
     final calendarComponents = context.components<T>();
     final styles = calendarComponents.monthComponentStyles.headerStyles;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
-      valueListenable: viewController.visibleDateTimeRange,
+      valueListenable: calendarController.visibleDateTimeRange,
       builder: (context, visibleDateTimeRange, child) {
+        if (visibleDateTimeRange == null) {
+          debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');
+          return const SizedBox.shrink();
+        }
         final style = styles.weekDayHeaderStyle;
 
         return Row(

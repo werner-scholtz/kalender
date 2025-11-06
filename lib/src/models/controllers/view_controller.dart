@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:timezone/timezone.dart';
 
@@ -17,13 +18,15 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   /// The location of the current view.
   Location? location;
 
-  ViewController({this.location});
+  /// TODO: Docs.
+  /// The [DateTimeRange] that is currently visible.
+  final ValueNotifier<InternalDateTimeRange?> visibleDateTimeRange;
+
+  // TODO: fix
+  ViewController({this.location, required this.visibleDateTimeRange});
 
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
-
-  /// The [DateTimeRange] that is currently visible.
-  ValueNotifier<DateTimeRange> get visibleDateTimeRange;
 
   /// The [CalendarEvent]s that are currently visible.
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEvents;

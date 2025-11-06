@@ -11,9 +11,6 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   final ScheduleViewConfiguration viewConfiguration;
 
   @override
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   /// The initial date to display in the schedule view.
@@ -22,7 +19,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   ScheduleViewController({
     super.location,
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
     required this.initialDate,
   }) {

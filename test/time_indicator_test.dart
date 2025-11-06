@@ -25,7 +25,7 @@ void main() {
                   PositionedTimeIndicator(
                     viewController: MultiDayViewController(
                       viewConfiguration: viewConfiguration,
-                      visibleDateTimeRange: ValueNotifier(range),
+                      visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
                       visibleEvents: ValueNotifier(<CalendarEvent>{}),
                     ),
                     initialPage: 0,

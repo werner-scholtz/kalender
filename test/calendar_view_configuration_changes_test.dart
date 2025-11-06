@@ -50,7 +50,7 @@ void main() {
 
         // Verify that the selectedDate was used
         final visibleRange = calendarController.visibleDateTimeRange.value;
-        expect(visibleRange.start.startOfDay, equals(selectedDate.startOfDay));
+        expect(visibleRange!.start.startOfDay, equals(selectedDate.startOfDay));
       });
 
       testWidgets('should prioritize selectedDate over initial date selection strategy', (tester) async {
@@ -92,7 +92,7 @@ void main() {
 
         // Verify that selectedDate was used, not the strategy result
         final visibleRange = calendarController.visibleDateTimeRange.value;
-        expect(visibleRange.start.startOfDay, equals(selectedDate.startOfDay));
+        expect(visibleRange!.start.startOfDay, equals(selectedDate.startOfDay));
       });
     });
 
@@ -140,8 +140,8 @@ void main() {
 
         // Verify that the strategy was used (monthly to daily transition)
         final visibleRangeAfterChange = calendarController.visibleDateTimeRange.value;
-        final expectedDate = visibleRangeBeforeChange.dominantMonthDate;
-        expect(visibleRangeAfterChange.start.startOfDay, equals(expectedDate.startOfDay));
+        final expectedDate = visibleRangeBeforeChange!.dominantMonthDate;
+        expect(visibleRangeAfterChange!.start.startOfDay, equals(expectedDate.startOfDay));
       });
 
       testWidgets('should use custom initial date selection strategy', (tester) async {
@@ -181,7 +181,7 @@ void main() {
 
         // Verify that the custom strategy was used
         final visibleRange = calendarController.visibleDateTimeRange.value;
-        expect(visibleRange.start.startOfDay, equals(_fixedDate.startOfDay));
+        expect(visibleRange!.start.startOfDay, equals(_fixedDate.startOfDay));
       });
     });
 
@@ -230,7 +230,7 @@ void main() {
 
         // Verify that the week view starts at the beginning of the month range
         final weekVisibleRange = calendarController.visibleDateTimeRange.value;
-        expect(weekVisibleRange.start.startOfDay, equals(monthVisibleRange.start.startOfDay));
+        expect(weekVisibleRange!.start.startOfDay, equals(monthVisibleRange!.start.startOfDay));
       });
 
       testWidgets('should handle week to daily transition correctly', (tester) async {
@@ -277,7 +277,7 @@ void main() {
 
         // Verify that the daily view starts at the beginning of the week
         final dailyVisibleRange = calendarController.visibleDateTimeRange.value;
-        expect(dailyVisibleRange.start.startOfDay, equals(weekVisibleRange.start.startOfDay));
+        expect(dailyVisibleRange!.start.startOfDay, equals(weekVisibleRange!.start.startOfDay));
       });
 
       testWidgets('should handle daily to month transition correctly', (tester) async {
@@ -325,11 +325,12 @@ void main() {
 
         // Verify that the month view shows the correct month
         final monthVisibleRange = calendarController.visibleDateTimeRange.value;
-        expect(monthVisibleRange.dominantMonthDate.year, equals(specificDay.year));
+        expect(monthVisibleRange!.dominantMonthDate.year, equals(specificDay.year));
         expect(monthVisibleRange.dominantMonthDate.month, equals(specificDay.month));
         expect(monthVisibleRange.dominantMonthDate.day, equals(1));
       });
 
+      /// TODO: figureout what is breaking here.
       testWidgets('should handle schedule to daily transition correctly', (tester) async {
         final scheduleConfig = ScheduleViewConfiguration.continuous(name: 'Schedule View', displayRange: calendarRange);
         final calendarView = CalendarView(
@@ -365,7 +366,7 @@ void main() {
 
         // Verify that the daily view starts at the schedule start date
         final dailyVisibleRange = calendarController.visibleDateTimeRange.value;
-        expect(dailyVisibleRange.start.startOfDay, equals(scheduleVisibleRange.start.startOfDay));
+        expect(dailyVisibleRange!.start.startOfDay, equals(scheduleVisibleRange!.start.startOfDay));
       });
     });
 

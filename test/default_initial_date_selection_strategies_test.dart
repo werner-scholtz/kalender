@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 void main() {
   group('ViewConfiguration from Month', () {
     final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(DateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
+    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
     final visibleEvents = ValueNotifier(<CalendarEvent>{});
     final monthViewConfiguration = MonthViewConfiguration.singleMonth(displayRange: calendarRange);
     final viewController = MonthViewController(
@@ -43,7 +44,7 @@ void main() {
 
   group('ViewConfiguration from week', () {
     final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(DateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
+    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
     final visibleEvents = ValueNotifier(<CalendarEvent>{});
     final weekViewConfiguration = MultiDayViewConfiguration.week(displayRange: calendarRange);
     final viewController = MultiDayViewController(
@@ -81,7 +82,7 @@ void main() {
 
   group('ViewConfiguration from day', () {
     final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(DateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
+    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
     final visibleEvents = ValueNotifier(<CalendarEvent>{});
     final weekViewConfiguration = MultiDayViewConfiguration.singleDay(displayRange: calendarRange);
     final viewController = MultiDayViewController(

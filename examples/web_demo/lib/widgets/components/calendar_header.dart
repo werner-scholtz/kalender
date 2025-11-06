@@ -83,6 +83,7 @@ class HeaderDateButton extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller.visibleDateTimeRange,
       builder: (context, value, child) {
+        if (value == null) return const SizedBox.shrink();
         final String month;
         final int year;
 
@@ -99,7 +100,8 @@ class HeaderDateButton extends StatelessWidget {
 
         return FilledButton.tonal(
           onPressed: () async {
-            final displayRange = controller.viewController?.viewConfiguration.displayRange;
+            // TODO: update to use correct display range for location.
+            final displayRange = controller.viewController?.viewConfiguration.dateTimeRange;
             if (displayRange == null) return;
             final selectedDate = await showDatePicker(
               context: context,

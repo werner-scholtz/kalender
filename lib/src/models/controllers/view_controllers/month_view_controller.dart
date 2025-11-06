@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
     DateTime? initialDate,
     super.location,
@@ -28,9 +28,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   /// The page controller used by the view.
   late final PageController pageController;
-
-  @override
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;

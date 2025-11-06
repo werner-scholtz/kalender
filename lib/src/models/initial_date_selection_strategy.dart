@@ -12,7 +12,7 @@ DateTime kDefaultToMonthly({
   required ViewConfiguration newViewConfiguration,
 }) {
   final oldConfig = oldViewController.viewConfiguration;
-  final oldRange = oldViewController.visibleDateTimeRange.value;
+  final oldRange = oldViewController.visibleDateTimeRange.value!;
   switch (oldConfig) {
     case MonthViewConfiguration _:
       return oldRange.dominantMonthDate;
@@ -31,7 +31,7 @@ DateTime kDefaultToWeekly({
   required ViewConfiguration newViewConfiguration,
 }) {
   final oldConfig = oldViewController.viewConfiguration;
-  final oldRange = oldViewController.visibleDateTimeRange.value;
+  final oldRange = oldViewController.visibleDateTimeRange.value!;
   switch (oldConfig) {
     case MonthViewConfiguration _:
       return oldRange.start;
@@ -54,7 +54,7 @@ DateTime kDefaultToDaily({
   required ViewConfiguration newViewConfiguration,
 }) {
   final oldConfig = oldViewController.viewConfiguration;
-  final oldRange = oldViewController.visibleDateTimeRange.value;
+  final oldRange = oldViewController.visibleDateTimeRange.value!;
   switch (oldConfig) {
     case MonthViewConfiguration _:
       return oldRange.dominantMonthDate;
@@ -92,7 +92,7 @@ DateTime kDefaultToSchedule({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
-  final oldRange = oldViewController.visibleDateTimeRange.value;
+  final oldRange = oldViewController.visibleDateTimeRange.value!;
   return oldRange.start;
 }
 

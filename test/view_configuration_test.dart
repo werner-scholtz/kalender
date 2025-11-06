@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 import 'utilities.dart';
 
@@ -337,7 +338,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
       );
@@ -395,7 +396,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
       );
@@ -488,7 +489,7 @@ extension ViewControllerUtilities on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.start.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+      event.start.isWithin(controller.visibleDateTimeRange.value!, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );
@@ -507,7 +508,7 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
     // Check if the visible range start is the same as the dateTime.
     expect(
-      controller.visibleDateTimeRange.value.start,
+      controller.visibleDateTimeRange.value!.start,
       dateTime,
       reason: 'Calling the $function should set the change the visible range start to $dateTime',
     );
@@ -534,7 +535,7 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
 
     expect(
-      dateTime.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+      dateTime.isWithin(controller.visibleDateTimeRange.value!, includeEnd: true),
       isTrue,
       reason: 'Calling the $function should include the $dateTime date in the visible range, '
           'which is ${controller.visibleDateTimeRange.value}',

@@ -89,6 +89,7 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
   @override
   void initState() {
     super.initState();
+    // Create the initial view controller.
     _viewController = _createViewController();
 
     // Attach the view controller when the widget is initialized.
@@ -120,10 +121,11 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
             newViewConfiguration: widget.viewConfiguration,
           );
 
+      // Create the new view controller.
       _viewController = _createViewController(initialDate: initialDate);
       // Dispose the old view controller if it exists.
       widget.calendarController.viewController?.dispose();
-
+      // Attach the new view controller.
       widget.calendarController.attach(_viewController);
     }
 
@@ -153,14 +155,14 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController<T>(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
           location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate ?? widget.calendarController.initialDate,
           location: widget.location,
@@ -168,14 +170,14 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController<T>(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
               initialDate: initialDate ?? widget.calendarController.initialDate,
               location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
               initialDate: initialDate ?? widget.calendarController.initialDate,
               location: widget.location,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/calendar_view.dart';
 import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
+import 'package:timezone/timezone.dart';
 
 /// The [CalendarController] is used to controller a single [CalendarView].
 /// It provides some useful functions for navigating the [CalendarView].
@@ -16,9 +16,7 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
   CalendarController({DateTime? initialDate})
       : initialDate = initialDate ?? DateTime.now(),
-        id = DateTime.now().millisecondsSinceEpoch {
-    visibleDateTimeRangeUtc.addListener(() => visibleDateTimeRange.value = visibleDateTimeRangeUtc.value.asLocal);
-  }
+        id = DateTime.now().millisecondsSinceEpoch;
 
   /// This controllers id.
   final int id;
@@ -30,9 +28,18 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   ViewController<T>? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
-  /// The [DateTimeRange] that is currently visible.
-  late final visibleDateTimeRangeUtc = ValueNotifier<DateTimeRange>(initialDate.asUtc.dayRange);
-  late final visibleDateTimeRange = ValueNotifier<DateTimeRange>(visibleDateTimeRangeUtc.value.asLocal);
+  /// The internal [InternalDateTimeRange] that is currently visible.
+  ///
+  /// See [InternalDateTimeRange] for more information.
+  late final _internalDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
+  ValueNotifier<InternalDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
+  void setInternalDateTimeRange(InternalDateTimeRange range, Location? location) {
+    _internalDateTimeRange.value = range;
+    visibleDateTimeRange.value = range.forLocation(location);
+  }
+
+  /// The [DateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
+  final visibleDateTimeRange = ValueNotifier<DateTimeRange<DateTime>?>(null);
 
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});
@@ -77,6 +84,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     if (isAttached) detach();
 
     _viewController = viewController;
+    setInternalDateTimeRange(viewController.visibleDateTimeRange.value!, viewController.location);
     notifyListeners();
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
@@ -83,9 +82,13 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
     final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: viewController.visibleDateTimeRange,
-      builder: (context, visibleRange, child) {
-        return headerComponents.dayHeaderBuilder.call(visibleRange.start.asLocal, dayHeaderStyle);
+      valueListenable: context.calendarController<T>().visibleDateTimeRange,
+      builder: (context, value, child) {
+        if (value == null) {
+          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
+          return const SizedBox.shrink();
+        }
+        return headerComponents.dayHeaderBuilder.call(value.start, dayHeaderStyle);
       },
     );
 
@@ -155,8 +158,12 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: viewController.visibleDateTimeRange,
+      valueListenable: context.calendarController<T>().visibleDateTimeRange,
       builder: (context, value, child) {
+        if (value == null) {
+          debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
+          return const SizedBox.shrink();
+        }
         return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
       },
     );
@@ -231,8 +238,12 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: viewController.visibleDateTimeRange,
+      valueListenable: context.calendarController<T>().visibleDateTimeRange,
       builder: (context, value, child) {
+        if (value == null) {
+          debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');
+          return const SizedBox.shrink();
+        }
         return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
       },
     );

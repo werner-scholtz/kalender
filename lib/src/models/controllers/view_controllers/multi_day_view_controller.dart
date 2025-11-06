@@ -5,7 +5,7 @@ import 'package:kalender/src/extensions/internal.dart';
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
     DateTime? initialDate,
     super.location,
@@ -24,12 +24,12 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
-      visibleDateTimeRange.value = DateTimeRange(
+      visibleDateTimeRange.value = InternalDateTimeRange(
         start: range.start,
         end: range.start.addDays(viewConfiguration.numberOfDays),
       );
     } else {
-      visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
+      visibleDateTimeRange.value = range;
     }
 
     // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
@@ -71,8 +71,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// This is a value notifier that updates when the page is scrolled.
   ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
 
-  @override
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
 
   @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;

@@ -38,8 +38,11 @@ abstract class ViewConfiguration {
   /// The functions for navigating the [PageView].
   PageNavigationFunctions get pageNavigationFunctions;
 
-  /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
-  DateTimeRange get originalDisplayRange => pageNavigationFunctions.dateTimeRange;
+  /// The [DateTimeRange] that the calendar can display.
+  ///
+  /// This might be different depending on the location of the calendar view.
+  /// to get the exact range for a location, use: [PageNavigationFunctions.displayRangeForLocation]
+  DateTimeRange get dateTimeRange => pageNavigationFunctions.dateTimeRange;
 }
 
 /// The base class for all vertical views of the calendar.

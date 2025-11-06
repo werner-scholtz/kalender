@@ -324,7 +324,10 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
+        calendarController.setInternalDateTimeRange(
+          InternalDateTimeRange(start: start, end: end),
+          context.location,
+        );
       }
 
       // Update the visible events based on the current item positions.

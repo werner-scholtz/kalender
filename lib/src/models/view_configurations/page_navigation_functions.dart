@@ -76,6 +76,14 @@ abstract class PageNavigationFunctions {
     assert(range.isUtc);
     return range;
   }
+
+  DateTimeRange displayRangeForLocation(Location? location) {
+    final internalRange = this.internalRange(location);
+
+    // TODO: This logic needs to be checked.
+    return DateTimeRange(
+        start: internalRange.start.forLocation(location), end: internalRange.end.forLocation(location));
+  }
 }
 
 class DayPageFunctions extends PageNavigationFunctions {
