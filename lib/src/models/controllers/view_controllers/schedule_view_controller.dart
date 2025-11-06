@@ -132,7 +132,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final dateAsUtc = event.startAsUtc.startOfDay;
+    final dateAsUtc = event.internalStart.startOfDay;
     return animateToDate(dateAsUtc, duration: scrollDuration, curve: scrollCurve);
   }
 
@@ -241,7 +241,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.startAsUtc.startOfDay;
+    final date = event.internalStart.startOfDay;
     final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 

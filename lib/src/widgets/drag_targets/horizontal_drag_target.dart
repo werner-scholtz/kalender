@@ -186,7 +186,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final start = event.dateTimeRangeAsUtc.start;
+    final start = event.internalStart;
     final newStartTime = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,
@@ -194,7 +194,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
       millisecond: start.millisecond,
       microsecond: start.microsecond,
     );
-    final duration = event.dateTimeRangeAsUtc.duration;
+    final duration = event.duration;
     final endTime = newStartTime.add(duration);
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
@@ -206,9 +206,10 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
 
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+    final internalRange = event.internalRange;
     final range = switch (direction) {
-      ResizeDirection.left => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorDateTime),
-      ResizeDirection.right => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorDateTime.endOfDay),
+      ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
+      ResizeDirection.right => calculateDateTimeRangeFromEnd(internalRange, cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
@@ -220,13 +221,14 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    var range = newEvent!.dateTimeRangeAsUtc;
+    /// TODO: this requires some extra work.
+    var range = newEvent!.internalRange;
 
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {
-      range = DateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
+      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
+      range = InternalDateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
     }
 
     return event.copyWith(dateTimeRange: range.asLocal);

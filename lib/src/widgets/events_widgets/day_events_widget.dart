@@ -221,7 +221,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
     }
 
     // If the selected event does not overlap with the current date.
-    if (!selectedEvent.dateTimeRangeAsUtc.overlaps(widget.date.dayRange)) {
+    if (!selectedEvent.internalRange.overlaps(widget.date.dayRange)) {
       // We need to check if the _selectedEvent is null, if it is not, we reset the state.
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;

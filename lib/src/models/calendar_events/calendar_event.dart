@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/extensions/internal.dart';
 
-/// TODO: consider a abstract class for CalendarEvent that needs to be implemented by users.
+/// TODO: Redo documentation.
 ///
 /// A class representing a object that can be displayed by the calendar.
 ///
@@ -14,8 +14,11 @@ class CalendarEvent<T extends Object?> {
   /// The data of the [CalendarEvent].
   T? data;
 
-  /// The [DateTimeRange] of the [CalendarEvent] stored in local time.
-  final DateTimeRange _dateTimeRange;
+  /// The start [DateTime] of the [CalendarEvent].
+  final DateTime start;
+
+  /// The end [DateTime] of the [CalendarEvent].
+  final DateTime end;
 
   /// Whether this [CalendarEvent] can be modified.
   /// *This will be deprecated in the future.
@@ -27,6 +30,7 @@ class CalendarEvent<T extends Object?> {
   /// * This will override the behavior from [canModify] property.
   final EventInteraction interaction;
 
+  // TODO: make this final in 1.0.0 and use special copyWith to set id.
   /// The id of the [CalendarEvent].
   /// Do not set this value manually as this is set by the [EventsController].
   int _id = -1;
@@ -41,35 +45,25 @@ class CalendarEvent<T extends Object?> {
     this.data,
     this.canModify = true,
     EventInteraction? interaction,
-  })  : _dateTimeRange = dateTimeRange.isUtc ? dateTimeRange.toLocal() : dateTimeRange,
+  })  : start = dateTimeRange.start.toUtc(),
+        end = dateTimeRange.end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(canModify);
 
-  /// The [DateTimeRange] of the [CalendarEvent] in the local timezone.
-  DateTimeRange get dateTimeRange => _dateTimeRange;
+  /// The [DateTimeRange] of the [CalendarEvent].
+  DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
-  /// The start [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get start => _dateTimeRange.start;
-
-  /// The end [DateTime] of the [CalendarEvent] in the local timezone.
-  DateTime get end => _dateTimeRange.end;
-
-  /// The [DateTimeRange] of the [CalendarEvent] in utc time.
-  DateTimeRange get dateTimeRangeAsUtc => _dateTimeRange.asUtc;
-
-  /// The start [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get startAsUtc => dateTimeRangeAsUtc.start;
-
-  /// The end [DateTime] of the [CalendarEvent] in utc time.
-  DateTime get endAsUtc => dateTimeRangeAsUtc.end;
+  InternalDateTime get internalStart => InternalDateTime.fromDateTime(start);
+  InternalDateTime get internalEnd => InternalDateTime.fromDateTime(end);
+  InternalDateTimeRange get internalRange => InternalDateTimeRange(start: internalStart, end: internalEnd);
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
-  Duration get duration => dateTimeRangeAsUtc.duration;
+  Duration get duration => dateTimeRange.toUtc().duration;
 
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
   /// The [DateTime]s that the [CalendarEvent] spans. This uses utc time.
-  List<DateTime> get datesSpanned => dateTimeRangeAsUtc.dates();
+  List<DateTime> get datesSpanned => internalRange.dates();
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({
@@ -80,7 +74,7 @@ class CalendarEvent<T extends Object?> {
   }) {
     return CalendarEvent<T>(
       data: data ?? this.data,
-      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       canModify: canModify ?? this.canModify,
       interaction: interaction ?? this.interaction,
     );
@@ -89,8 +83,8 @@ class CalendarEvent<T extends Object?> {
   @override
   String toString() {
     return 'CalendarEvent<$T> ($id):'
-        '\nstart:  $startAsUtc'
-        '\nend: $endAsUtc'
+        '\nstart:  $start'
+        '\nend: $end'
         '\ndata: ${data.toString()}';
   }
 
@@ -99,12 +93,13 @@ class CalendarEvent<T extends Object?> {
   bool operator ==(Object other) {
     return other is CalendarEvent<T> &&
         other.id == id &&
-        other._dateTimeRange == _dateTimeRange &&
+        other.start == start &&
+        other.end == end &&
         other.data == data &&
         other.canModify == canModify &&
         other.interaction == interaction;
   }
 
   @override
-  int get hashCode => Object.hash(id, _dateTimeRange, data, canModify, interaction);
+  int get hashCode => Object.hash(id, start, end, data, canModify, interaction);
 }

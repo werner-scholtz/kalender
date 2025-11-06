@@ -88,10 +88,10 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   bool get isVertical => axis == Axis.vertical;
 
   /// Whether the event continues before the current date range.
-  bool get continuesBefore => event.startAsUtc.isBefore(dateTimeRange.start);
+  bool get continuesBefore => event.internalStart.isBefore(dateTimeRange.start);
 
   /// Whether the event continues after the current date range.
-  bool get continuesAfter => event.endAsUtc.isAfter(dateTimeRange.end);
+  bool get continuesAfter => event.internalEnd.isAfter(dateTimeRange.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
   bool get showStart => interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore;

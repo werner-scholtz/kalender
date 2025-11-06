@@ -75,8 +75,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
             final comparison = b.duration.compareTo(a.duration);
             if (comparison != 0) return comparison;
 
-            final aStart = a.dateTimeRangeAsUtc.start;
-            final bRange = b.dateTimeRangeAsUtc;
+            final aStart = a.internalStart;
+            final bRange = b.internalRange;
             final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
             // Sort by start time (ascending) if durations are equal
@@ -97,7 +97,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc;
+    final rangeAsUtc = event.internalRange;
 
     // Create a range that rounds the start and end dates to the start and end of the day.
     final range = DateTimeRange(
