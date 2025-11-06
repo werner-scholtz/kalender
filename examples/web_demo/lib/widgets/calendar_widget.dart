@@ -3,6 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/main.dart' show MyApp;
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/calendar_configuration.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
@@ -48,6 +49,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   return ZoomDetector(
                     controller: _controller,
                     child: CalendarView<Event>(
+                      location: context.location.value,
                       locale: Localizations.localeOf(context).toLanguageTag(),
                       calendarController: _controller,
                       eventsController: _eventsController,

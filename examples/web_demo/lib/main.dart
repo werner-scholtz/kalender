@@ -15,13 +15,21 @@ import 'package:web_demo/widgets/theme_button.dart';
 import 'package:web_demo/widgets/view_type_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'timezone/stub.dart'
+    if (dart.library.html) 'timezone/browser.dart'
+    if (dart.library.io) 'timezone/standalone.dart';
+
 void main() async {
   await initializeDateFormatting();
+  await initializeTimeZonePackage();
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  /// TODO: redo to use providers.
   static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
 
   /// Returns the [EventsController] of the app.

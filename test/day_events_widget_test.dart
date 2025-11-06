@@ -67,7 +67,7 @@ void main() {
             width: 700,
             child: MultiDayEventsRow<int>(
               configuration: configuration,
-              visibleDateTimeRange: InternalDateTimeRange.fromDateTimeRange(displayRange),
+              internalRange: InternalDateTimeRange.fromDateTimeRange(displayRange),
               viewController: viewController,
             ),
           ),

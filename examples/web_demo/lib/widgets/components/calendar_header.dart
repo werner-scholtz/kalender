@@ -2,7 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:timezone/timezone.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
+import 'package:web_demo/timezones.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
@@ -56,6 +59,26 @@ class NavigationHeader extends StatelessWidget {
           },
         );
 
+        final location = DropdownMenu<Location?>(
+          initialSelection: context.location.value,
+          dropdownMenuEntries: [
+            DropdownMenuEntry(
+              value: null,
+              label: DateTime.now().timeZoneName,
+            ),
+            ...supportedLocations.map(
+              (location) => DropdownMenuEntry<Location>(
+                value: getLocation(location),
+                label: location,
+              ),
+            ),
+          ],
+          onSelected: (value) {
+            if (value == null) return;
+            context.location.value = value;
+          },
+        );
+
         return Row(
           spacing: 4.0,
           children: [
@@ -66,6 +89,7 @@ class NavigationHeader extends StatelessWidget {
             ],
             todayButton,
             const Spacer(),
+            location,
             view,
           ],
         );

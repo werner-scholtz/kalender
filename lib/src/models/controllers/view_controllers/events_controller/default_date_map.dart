@@ -80,7 +80,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   String toKey(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
   /// Create a [DefaultDateMap] with optional predefined [locations].
-  DefaultDateMap({this.locations = const []}) {
+  DefaultDateMap({required this.locations}) {
     populateAllLocations();
   }
 

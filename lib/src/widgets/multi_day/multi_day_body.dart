@@ -249,7 +249,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
             Positioned.fill(
               child: MultiDayEventsRow<T>(
                 configuration: widget.configuration,
-                visibleDateTimeRange: visibleRange,
+                internalRange: visibleRange,
                 viewController: widget.viewController,
               ),
             ),
