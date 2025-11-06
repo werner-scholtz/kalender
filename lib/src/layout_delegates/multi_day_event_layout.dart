@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions/internal.dart';
+import 'package:timezone/timezone.dart';
 
 /// A function type that generates a layout frame for multi-day events.
 ///
@@ -19,6 +20,7 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
   required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
 });
 
@@ -52,6 +54,7 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
@@ -75,8 +78,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
             final comparison = b.duration.compareTo(a.duration);
             if (comparison != 0) return comparison;
 
-            final aStart = a.internalStart;
-            final bRange = b.internalRange;
+            final aStart = a.internalStart(location);
+            final bRange = b.internalRange(location);
             final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
             // Sort by start time (ascending) if durations are equal
@@ -97,14 +100,15 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
-    final rangeAsUtc = event.internalRange;
+    final internalRange = event.internalRange(location);
 
     // Create a range that rounds the start and end dates to the start and end of the day.
     final range = DateTimeRange(
-      start: rangeAsUtc.start,
+      start: internalRange.start,
       // If the end date is the start of the day, we use the start of the day otherwise
       // we use the end of the day so that the day is included.
-      end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
+      end:
+          internalRange.end == internalRange.end.startOfDay ? internalRange.end.startOfDay : internalRange.end.endOfDay,
     );
 
     // Find all the columns that the event will appear on.

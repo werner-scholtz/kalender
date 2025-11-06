@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/extensions/internal.dart';
+import 'package:timezone/timezone.dart';
 
 /// TODO: Redo documentation.
 ///
@@ -52,9 +53,11 @@ class CalendarEvent<T extends Object?> {
   /// The [DateTimeRange] of the [CalendarEvent].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
-  InternalDateTime get internalStart => InternalDateTime.fromDateTime(start);
-  InternalDateTime get internalEnd => InternalDateTime.fromDateTime(end);
-  InternalDateTimeRange get internalRange => InternalDateTimeRange(start: internalStart, end: internalEnd);
+  InternalDateTime internalStart(Location? location) => InternalDateTime.fromDateTime(start.forLocation(location));
+  InternalDateTime internalEnd(Location? location) => InternalDateTime.fromDateTime(end.forLocation(location));
+  InternalDateTimeRange internalRange(Location? location) {
+    return InternalDateTimeRange(start: internalStart(location), end: internalEnd(location));
+  }
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
   Duration get duration => dateTimeRange.toUtc().duration;
@@ -62,8 +65,9 @@ class CalendarEvent<T extends Object?> {
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
-  /// The [DateTime]s that the [CalendarEvent] spans. This uses utc time.
-  List<DateTime> get datesSpanned => internalRange.dates();
+  /// TODO: This must return internal date times.
+  /// The [DateTime]s that the [CalendarEvent] spans.
+  List<DateTime> datesSpanned(Location? location) => internalRange(location).dates();
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent<T> copyWith({

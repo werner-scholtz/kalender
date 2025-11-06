@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
 /// Signature for the strategy that determines how multi-day events are laid out.
@@ -83,8 +80,8 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
     /// For single days this seems to work fine, but for multi-day events it does not.
     var maxOverlaps = 0;
     for (final event in events) {
-      final overlaps = events.where((e) => e.datesSpanned.any(event.datesSpanned.contains));
-      maxOverlaps = max(maxOverlaps, overlaps.length);
+      // final overlaps = events.where((e) => e.datesSpanned.any(event.datesSpanned.contains));
+      // maxOverlaps = max(maxOverlaps, overlaps.length);
     }
 
     return Size(constraints.maxWidth, maxOverlaps * multiDayTileHeight + multiDayTileHeight);
@@ -92,66 +89,66 @@ class DefaultMultiDayLayoutDelegate<T> extends MultiDayEventLayoutDelegate<T> {
 
   @override
   void performLayout(Size size) {
-    final numberOfChildren = events.length;
-    final visibleDates = dateTimeRange.dates();
+    // final numberOfChildren = events.length;
+    // final visibleDates = dateTimeRange.dates();
 
-    final dayWidth = size.width / visibleDates.length;
+    // final dayWidth = size.width / visibleDates.length;
 
-    final tileSizes = <int, Size>{};
-    final tileDx = <int, double>{};
+    // final tileSizes = <int, Size>{};
+    // final tileDx = <int, double>{};
 
-    // Loop through each event.
-    for (var i = 0; i < numberOfChildren; i++) {
-      final event = events[i];
+    // // Loop through each event.
+    // for (var i = 0; i < numberOfChildren; i++) {
+    //   final event = events[i];
 
-      final eventDates = event.datesSpanned;
+    //   final eventDates = event.datesSpanned;
 
-      // first visible date.
-      final firstVisibleDate = eventDates.firstWhere(visibleDates.contains, orElse: () => eventDates.first);
+    //   // first visible date.
+    //   final firstVisibleDate = eventDates.firstWhere(visibleDates.contains, orElse: () => eventDates.first);
 
-      // last visible date.
-      final lastVisibleDate = eventDates.lastWhere(visibleDates.contains, orElse: () => eventDates.last);
+    //   // last visible date.
+    //   final lastVisibleDate = eventDates.lastWhere(visibleDates.contains, orElse: () => eventDates.last);
 
-      final visibleEventDates = eventDates.getRange(
-        eventDates.indexOf(firstVisibleDate),
-        eventDates.indexOf(lastVisibleDate) + 1,
-      );
+    //   final visibleEventDates = eventDates.getRange(
+    //     eventDates.indexOf(firstVisibleDate),
+    //     eventDates.indexOf(lastVisibleDate) + 1,
+    //   );
 
-      final indexOfFirstVisibleDate = visibleDates.indexOf(visibleEventDates.first.startOfDay);
+    //   final indexOfFirstVisibleDate = visibleDates.indexOf(visibleEventDates.first.startOfDay);
 
-      final dx = (indexOfFirstVisibleDate * dayWidth).roundToDouble();
-      tileDx[i] = dx;
-      // Calculate the width of the tile.
-      final tileWidth = ((visibleEventDates.length) * dayWidth).roundToDouble();
+    //   final dx = (indexOfFirstVisibleDate * dayWidth).roundToDouble();
+    //   tileDx[i] = dx;
+    //   // Calculate the width of the tile.
+    //   final tileWidth = ((visibleEventDates.length) * dayWidth).roundToDouble();
 
-      // Layout the tile.
-      final childSize = layoutChild(i, BoxConstraints.tightFor(width: tileWidth, height: multiDayTileHeight));
+    //   // Layout the tile.
+    //   final childSize = layoutChild(i, BoxConstraints.tightFor(width: tileWidth, height: multiDayTileHeight));
 
-      tileSizes[i] = childSize;
-    }
+    //   tileSizes[i] = childSize;
+    // }
 
-    final tilePositions = <int, Offset>{};
-    for (var id = 0; id < numberOfChildren; id++) {
-      final event = events[id];
+    // final tilePositions = <int, Offset>{};
+    // for (var id = 0; id < numberOfChildren; id++) {
+    //   final event = events[id];
 
-      // Find events that fill the same dates as the current event.
-      final eventsAbove = tilePositions.keys
-          .map((e) => events[e])
-          .where((eventAbove) => eventAbove.datesSpanned.any(event.datesSpanned.contains))
-          .toList();
+    //   // Find events that fill the same dates as the current event.
+    //   final eventsAbove = tilePositions.keys
+    //       .map((e) => events[e])
+    //       .where((eventAbove) => eventAbove.datesSpanned.any(event.datesSpanned.contains))
+    //       .toList();
 
-      var dy = 0.0;
-      if (eventsAbove.isNotEmpty) {
-        final eventAboveID = events.indexOf(eventsAbove.last);
-        dy = tilePositions[eventAboveID]!.dy + multiDayTileHeight;
-      }
+    //   var dy = 0.0;
+    //   if (eventsAbove.isNotEmpty) {
+    //     final eventAboveID = events.indexOf(eventsAbove.last);
+    //     dy = tilePositions[eventAboveID]!.dy + multiDayTileHeight;
+    //   }
 
-      final dx = textDirection == TextDirection.ltr ? tileDx[id]! : size.width - tileDx[id]! - tileSizes[id]!.width;
-      tilePositions[id] = Offset(dx, dy.roundToDouble());
-    }
+    //   final dx = textDirection == TextDirection.ltr ? tileDx[id]! : size.width - tileDx[id]! - tileSizes[id]!.width;
+    //   tilePositions[id] = Offset(dx, dy.roundToDouble());
+    // }
 
-    for (var id = 0; id < numberOfChildren; id++) {
-      positionChild(id, tilePositions[id]!);
-    }
+    // for (var id = 0; id < numberOfChildren; id++) {
+    //   positionChild(id, tilePositions[id]!);
+    // }
   }
 }

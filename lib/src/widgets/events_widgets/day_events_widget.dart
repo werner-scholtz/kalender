@@ -5,6 +5,7 @@ import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
+import 'package:timezone/timezone.dart';
 
 /// This widget is renders all the event tiles that are visible on the provided dateTimeRange.
 ///
@@ -51,18 +52,20 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   }
 }
 
+/// TODO: This needs to be simplified a bit.
 class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final EventsController<T> eventsController;
-
   final MultiDayBodyConfiguration configuration;
   final InternalDateTime date;
   final MultiDayViewController<T> viewController;
+  final Location location;
   const DayEventsColumn({
     super.key,
     required this.eventsController,
     required this.configuration,
     required this.date,
     required this.viewController,
+    required this.location,
   });
 
   @override
@@ -92,9 +95,10 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   void _update() {
     final sortedEvents = _sort(
       _eventsController.eventsFromDateTimeRange(
-        widget.date.dayRange,
+        InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
         includeDayEvents: true,
         includeMultiDayEvents: widget.configuration.showMultiDayEvents,
+        location: widget.location,
       ),
     );
 
@@ -112,6 +116,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       0,
       widget.configuration.minimumTileHeight,
       cache,
+      widget.location,
     ).sortEvents(events) as List<CalendarEvent<T>>;
   }
 
@@ -128,6 +133,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
         cache,
+        widget.location,
       ),
       children: _events.indexed
           .map(

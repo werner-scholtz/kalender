@@ -4,8 +4,10 @@ import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
+import 'package:timezone/timezone.dart';
 
 /// The builder that positions the ResizeHandles.
 ///
@@ -88,16 +90,18 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   bool get isVertical => axis == Axis.vertical;
 
   /// Whether the event continues before the current date range.
-  bool get continuesBefore => event.internalStart.isBefore(dateTimeRange.start);
+  bool continuesBefore(Location? location) => event.internalStart(location).isBefore(dateTimeRange.start);
 
   /// Whether the event continues after the current date range.
-  bool get continuesAfter => event.internalEnd.isAfter(dateTimeRange.end);
+  bool continuesAfter(Location? location) => event.internalEnd(location).isAfter(dateTimeRange.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool get showStart => interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore;
+  bool showStart(Location? location) =>
+      interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore(location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool get showEnd => interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter;
+  bool showEnd(Location? location) =>
+      interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location);
 
   /// The interaction settings for this event.
   EventInteraction get eventInteraction => event.interaction;
@@ -148,7 +152,8 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
 
   @override
   Widget build(BuildContext context) {
-    if (!showStart && !showEnd) {
+    final location = context.location;
+    if (!showStart(location) && !showEnd(location)) {
       // If neither handle should be shown, return an empty widget.
       return const SizedBox();
     }
@@ -171,7 +176,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (!hideStart && showStart)
+        if (!hideStart && showStart(location))
           isVertical
               ? Positioned(
                   top: 0,
@@ -188,7 +193,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
                   width: handleLength,
                   child: startResizeDetector,
                 ),
-        if (showEnd)
+        if (showEnd(location))
           isVertical
               ? Positioned(
                   bottom: 0,

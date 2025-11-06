@@ -187,6 +187,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       _pageNavigation.dateTimeRangeFromIndex(index, location),
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
+      location: location,
     );
     widget.viewController.visibleEvents.value = events.toSet();
   }

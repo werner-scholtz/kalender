@@ -133,7 +133,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     bool centerEvent = true,
   }) async {
     final DateTime date;
-    final eventCenter = event.internalStart.add(Duration(minutes: event.duration.inMinutes ~/ 2));
+    final eventCenter = event.internalStart(location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = eventCenter.subtract(duration);
@@ -141,7 +141,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
-    if (target.isSameDay(event.internalStart)) {
+    if (target.isSameDay(event.internalStart(location))) {
       date = target.asLocal;
     } else {
       date = event.start;

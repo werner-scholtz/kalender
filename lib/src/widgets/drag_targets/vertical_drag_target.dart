@@ -137,7 +137,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   void _updateSnapPoints() {
     if (!snapToOtherEvents) return;
     clearSnapPoints();
-    addEventSnapPoints(controller.visibleEvents.value);
+    addEventSnapPoints(controller.visibleEvents.value, context.location);
   }
 
   @override
@@ -346,13 +346,14 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
+    final internalRange = event.internalRange(context.location);
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.internalRange, cursorSnapPoint),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.internalRange, cursorSnapPoint),
+      ResizeDirection.top => calculateDateTimeRangeFromStart(internalRange, cursorSnapPoint),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(internalRange, cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
-
+// TODO: this as local needs to be investigated.
     return event.copyWith(dateTimeRange: dateTimeRange.asLocal);
   }
 
@@ -362,14 +363,14 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (event == null) return null;
 
     // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.internalRange;
+    var range = newEvent!.internalRange(context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
       range = InternalDateTimeRange(start: range.start, end: cursorDateTime);
     } else if (cursorDateTime.isBefore(range.start)) {
       range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
     }
-
+// TODO: this as local needs to be investigated.
     return event.copyWith(dateTimeRange: range.asLocal);
   }
 }

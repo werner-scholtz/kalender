@@ -120,7 +120,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
           onReschedule: (event) {
             // Set the size of the feedback widget.
             context.feedbackWidgetSizeNotifier<T>().value =
-                Size(min(pageWidth, dayWidth * event.datesSpanned.length), tileHeight);
+                Size(min(pageWidth, dayWidth * event.datesSpanned(context.location).length), tileHeight);
 
             controller.selectEvent(event, internal: true);
             return true;
@@ -186,7 +186,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
     // Calculate the new dateTimeRange for the event.
-    final start = event.internalStart;
+    final start = event.internalStart(context.location);
     final newStartTime = cursorDateTime.copyWith(
       hour: start.hour,
       minute: start.minute,
@@ -199,6 +199,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
     // Update the event with the new start time.
+    // TODO: this as local needs to be investigated.
     final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
 
     return updatedEvent;
@@ -206,13 +207,14 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
 
   @override
   CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
-    final internalRange = event.internalRange;
+    final internalRange = event.internalRange(context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
       ResizeDirection.right => calculateDateTimeRangeFromEnd(internalRange, cursorDateTime.endOfDay),
       _ => null
     };
     if (range == null) return null;
+    // TODO: this as local needs to be investigated.
     return event.copyWith(dateTimeRange: range.asLocal);
   }
 
@@ -221,8 +223,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    /// TODO: this requires some extra work.
-    var range = newEvent!.internalRange;
+    var range = newEvent!.internalRange(context.location);
 
     if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
         cursorDateTime.isAfter(range.start)) {
@@ -231,6 +232,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
       range = InternalDateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
     }
 
+    // TODO: this as local needs to be investigated.
     return event.copyWith(dateTimeRange: range.asLocal);
   }
 }
