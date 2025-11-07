@@ -67,16 +67,6 @@ class CalendarView<T extends Object?> extends StatefulWidget {
 
   @override
   State<CalendarView<T>> createState() => CalendarViewState<T>();
-
-  /// TODO: remove ?
-  /// Finds the [CalendarViewState] of type [T] in the widget tree.
-  static CalendarViewState<T> of<T extends Object?>(BuildContext context) {
-    final state = context.findAncestorStateOfType<CalendarViewState<T>>();
-    if (state == null) {
-      throw ErrorHint('No CalendarViewState found in the widget tree.');
-    }
-    return state;
-  }
 }
 
 class CalendarViewState<T> extends State<CalendarView<T>> {

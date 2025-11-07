@@ -106,11 +106,11 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
   }
 
   @override
-  DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
     final snapInterval = context.snapping.snapIntervalMinutes;
     final end = start.copyWith(minute: start.minute + snapInterval);
-    return DateTimeRange(start: start, end: end);
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
@@ -136,9 +136,9 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
   }
 
   @override
-  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition) {
+  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
     return DayDetail(
-      date: range.start,
+      date: range.start.forLocation(context.location),
       renderBox: context.findRenderObject() as RenderBox,
       localOffset: localPosition,
     );

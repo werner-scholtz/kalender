@@ -91,16 +91,16 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   }
 
   @override
-  DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
-    return DateTimeRange(start: start, end: end);
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition) {
+  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
     return MultiDayDetail(
-      dateTimeRange: range,
+      dateTimeRange: range.forLocation(context.location),
       renderBox: context.findRenderObject() as RenderBox,
       localOffset: localPosition,
     );

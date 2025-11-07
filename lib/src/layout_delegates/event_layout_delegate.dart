@@ -341,7 +341,6 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
 
   @override
   void performLayout(Size size) {
-    print(location);
     // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData(size);
 

@@ -123,6 +123,14 @@ class InternalDateTime extends DateTime {
           dateTime.millisecond,
           dateTime.microsecond,
         );
+
+  DateTime forLocation(Location? location) {
+    if (location == null) {
+      return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+    } else {
+      return TZDateTime(location, year, month, day, hour, minute, second, millisecond, microsecond);
+    }
+  }
 }
 
 /// This is a DateTimeRange class used for internal display purposes only.
@@ -140,4 +148,8 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
           start: InternalDateTime.fromDateTime(dateTimeRange.start),
           end: InternalDateTime.fromDateTime(dateTimeRange.end),
         );
+
+  DateTimeRange forLocation(Location? location) {
+    return DateTimeRange(start: start.forLocation(location), end: end.forLocation(location));
+  }
 }

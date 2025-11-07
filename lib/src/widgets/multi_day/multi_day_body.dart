@@ -143,6 +143,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
   final double pageHeight;
 
   final Location? initialLocation;
+
   /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
@@ -179,7 +180,8 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   }
 
   void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage, widget.initialLocation);
-  void _currentPage() => _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0, context.location);
+  void _currentPage() =>
+      _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0, context.location);
 
   /// Updates the visible events for the given page index.
   void _updateVisibleEvents(int index, Location? location) {
@@ -197,6 +199,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: when switching location the current page is sometimes not correct.
     return PageView.builder(
       padEnds: false,
       key: ValueKey(widget.viewController.viewConfiguration.hashCode),
@@ -206,7 +209,11 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
-        final range = _isFreeScroll ? InternalDateTimeRange(start: visibleRange.start, end: visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays)) : visibleRange;
+        final range = _isFreeScroll
+            ? InternalDateTimeRange(
+                start: visibleRange.start,
+                end: visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays))
+            : visibleRange;
         final controller = context.calendarController<T>();
         controller.setInternalDateTimeRange(range, context.location);
 
