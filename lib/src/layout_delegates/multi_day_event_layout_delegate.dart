@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
+
+/// TODO: Remove this file.
+
 /// Signature for the strategy that determines how multi-day events are laid out.
 @Deprecated('''
 This method is deprecated and will be removed in a future release.

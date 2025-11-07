@@ -314,7 +314,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
         oldDelegate.heightPerMinute != heightPerMinute ||
         oldDelegate.timeOfDayRange != timeOfDayRange ||
         oldDelegate.date != date ||
-        oldDelegate.minimumTileHeight != minimumTileHeight;
+        oldDelegate.minimumTileHeight != minimumTileHeight ||
+        oldDelegate.location != location;
   }
 }
 
@@ -334,11 +335,13 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort((a, b) => b.duration.compareTo(a.duration) == 0 ? b.internalStart(location).compareTo(a.internalStart(location)) : 0);
+      ..sort((a, b) =>
+          b.duration.compareTo(a.duration) == 0 ? b.internalStart(location).compareTo(a.internalStart(location)) : 0);
   }
 
   @override
   void performLayout(Size size) {
+    print(location);
     // Calculate the vertical layout data.
     final verticalLayoutData = calculateVerticalLayoutData(size);
 

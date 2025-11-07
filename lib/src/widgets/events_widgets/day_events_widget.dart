@@ -127,6 +127,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       ),
     );
 
+
     if (!listEquals(sortedEvents, _events)) {
       setState(() => _events = sortedEvents);
     }
@@ -158,7 +159,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
         context.heightPerMinute,
         widget.configuration.minimumTileHeight,
         widget.cache,
-        widget.location,
+        context.location,
       ),
       children: _events.indexed
           .map(
