@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/widgets/calendar_widget.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
 import 'package:web_demo/utils.dart';
 
@@ -47,9 +47,8 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
         if (showFirstDay)
           FirstDayOfWeekEditor(
             firstDayOfWeek: viewConfiguration.firstDayOfWeek,
-            onChanged: (value) => CalendarWidget.setViewConfiguration(
-              context,
-              viewConfiguration.copyWith(firstDayOfWeek: value),
+            onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+              firstDayOfWeek: value,
             ),
           ),
         if (showNumberOfDays)
@@ -57,9 +56,8 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
             label: context.l10n.numberOfDays,
             value: viewConfiguration.numberOfDays,
             items: List.generate(7, (index) => index + 1),
-            onChanged: (value) => CalendarWidget.setViewConfiguration(
-              context,
-              viewConfiguration.copyWith(numberOfDays: value),
+            onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+              numberOfDays: value,
             ),
             itemToString: (value) => value.toString(),
           ),
@@ -73,9 +71,8 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
                   viewConfiguration.timeOfDayRange.end.hour,
                   (index) => TimeOfDay(hour: index, minute: 0),
                 ),
-                onChanged: (value) => CalendarWidget.setViewConfiguration(
-                  context,
-                  viewConfiguration.copyWith(initialTimeOfDay: value),
+                onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+                  initialTimeOfDay: value,
                 ),
                 itemToString: (value) => '${value.hour}:${value.minute < 10 ? '00' : value.minute}',
               ),
@@ -96,9 +93,8 @@ class MultiDayViewConfigurationWidget extends StatelessWidget {
                     return TimeOfDay(hour: value, minute: minute);
                   },
                 ),
-                onChanged: (value) => CalendarWidget.setViewConfiguration(
-                  context,
-                  viewConfiguration.copyWith(initialTimeOfDay: value),
+                onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+                  initialTimeOfDay: value,
                 ),
                 itemToString: (value) => '${value.hour}:${value.minute < 10 ? '00' : value.minute}',
               ),
@@ -122,9 +118,8 @@ class MonthViewConfigurationWidget extends StatelessWidget {
       children: [
         FirstDayOfWeekEditor(
           firstDayOfWeek: viewConfiguration.firstDayOfWeek,
-          onChanged: (value) => CalendarWidget.setViewConfiguration(
-            context,
-            viewConfiguration.copyWith(firstDayOfWeek: value),
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            firstDayOfWeek: value,
           ),
         ),
       ],

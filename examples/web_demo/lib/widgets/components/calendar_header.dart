@@ -5,9 +5,8 @@ import 'package:kalender/kalender.dart';
 import 'package:timezone/timezone.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
-import 'package:web_demo/timezones.dart';
+import 'package:web_demo/locations.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/calendar_widget.dart';
 
 class NavigationHeader extends StatelessWidget {
   final CalendarController<Event> controller;
@@ -55,11 +54,13 @@ class NavigationHeader extends StatelessWidget {
           initialSelection: viewConfiguration,
           onSelected: (value) {
             if (value == null) return;
-            CalendarWidget.setViewConfiguration(context, value);
+            context.configuration.viewConfiguration = value;
           },
         );
 
+        // TODO: How can this be fit on a mobile screen?
         final location = DropdownMenu<Location?>(
+          width: width,
           initialSelection: context.location.value,
           dropdownMenuEntries: [
             DropdownMenuEntry(
@@ -73,6 +74,13 @@ class NavigationHeader extends StatelessWidget {
               ),
             ),
           ],
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+              borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
+            ),
+          ),
           onSelected: (value) {
             if (value == null) return;
             context.location.value = value;

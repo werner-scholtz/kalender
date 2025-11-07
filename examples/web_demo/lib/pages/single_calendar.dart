@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/calendar_widget.dart';
 
 class SingleCalendarView extends StatelessWidget {
@@ -7,6 +6,6 @@ class SingleCalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConfigurationProvider(child: LocationProvider(child: const CalendarWidget()));
+    return const Calendar();
   }
 }
