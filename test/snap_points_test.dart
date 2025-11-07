@@ -16,7 +16,7 @@ void main() {
     ];
 
     test('addEventSnapPoints', () {
-      points.addEventSnapPoints(testEvents.toSet());
+      points.addEventSnapPoints(testEvents.toSet(), null);
       expect(points.snapPoints.length, 6);
       expect(points.snapPoints[0], DateTime.utc(2024, 1, 1, 10));
       expect(points.snapPoints[1], DateTime.utc(2024, 1, 1, 11));

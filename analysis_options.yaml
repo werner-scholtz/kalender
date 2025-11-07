@@ -12,6 +12,7 @@ analyzer:
     - examples/example/
     - examples/recurrence/
     - examples/riverpod/
+    - examples/advanced_example/
 
 linter:
   rules:

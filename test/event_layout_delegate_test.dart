@@ -46,6 +46,7 @@ void main() {
                   heightPerMinute,
                   null,
                   null,
+                  null,
                 ),
                 children: List.generate(
                   events.length,
@@ -83,6 +84,7 @@ void main() {
                 InternalDateTime.fromDateTime(dateAsUtc),
                 TimeOfDayRange.allDay(),
                 0.7,
+                null,
                 null,
                 null,
               ),
