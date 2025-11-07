@@ -112,6 +112,19 @@ extension InternalDateTimeRangeExtensions on DateTimeRange<DateTime> {
 
 /// This is a DateTime class used for internal display purposes only.
 class InternalDateTime extends DateTime {
+  /// Creates a [InternalDateTime] instance.
+  InternalDateTime(
+    int year, [
+    int month = 1,
+    int day = 1,
+    int hour = 0,
+    int minute = 0,
+    int second = 0,
+    int millisecond = 0,
+    int microsecond = 0,
+  ]) : super.utc(year, month, day, hour, minute, second, millisecond, microsecond);
+
+  /// Creates a [InternalDateTime] from an existing [DateTime].
   InternalDateTime.fromDateTime(DateTime dateTime)
       : super.utc(
           dateTime.year,
@@ -124,6 +137,7 @@ class InternalDateTime extends DateTime {
           dateTime.microsecond,
         );
 
+  /// Converts this [InternalDateTime] to a [DateTime] for the specified [location].
   DateTime forLocation(Location? location) {
     if (location == null) {
       return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
@@ -135,20 +149,20 @@ class InternalDateTime extends DateTime {
 
 /// This is a DateTimeRange class used for internal display purposes only.
 class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
+  /// Creates a [InternalDateTimeRange] instance.
   InternalDateTimeRange({
     required DateTime start,
     required DateTime end,
-  }) : super(
-          start: InternalDateTime.fromDateTime(start),
-          end: InternalDateTime.fromDateTime(end),
-        );
+  }) : super(start: InternalDateTime.fromDateTime(start), end: InternalDateTime.fromDateTime(end));
 
+  /// Creates a [InternalDateTimeRange] from an existing [DateTimeRange].
   InternalDateTimeRange.fromDateTimeRange(DateTimeRange dateTimeRange)
       : super(
           start: InternalDateTime.fromDateTime(dateTimeRange.start),
           end: InternalDateTime.fromDateTime(dateTimeRange.end),
         );
 
+  /// Converts this [InternalDateTimeRange] to a [DateTimeRange] for the specified [location].
   DateTimeRange forLocation(Location? location) {
     return DateTimeRange(start: start.forLocation(location), end: end.forLocation(location));
   }

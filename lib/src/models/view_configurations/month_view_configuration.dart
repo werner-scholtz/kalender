@@ -5,7 +5,7 @@ import 'package:kalender/src/models/view_configurations/page_index_calculator.da
 
 class MonthViewConfiguration extends ViewConfiguration {
   @override
-  final MonthPageFunctions pageIndexCalculator;
+  final MonthIndexCalculator pageIndexCalculator;
 
   /// The first day of the week.
   final int firstDayOfWeek;
@@ -28,7 +28,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
-  }) : pageIndexCalculator = MonthPageFunctions(
+  }) : pageIndexCalculator = MonthIndexCalculator(
           dateTimeRange: displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek: firstDayOfWeek,
         );
