@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
-import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -196,6 +195,3 @@ const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showToday;
-
-@Deprecated('This will be removed in the future. Use `generateMultiDayLayoutFrame` instead.')
-const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

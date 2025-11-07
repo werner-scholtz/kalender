@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
-import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
@@ -288,13 +287,6 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
 class MultiDayHeaderConfiguration<T extends Object?> extends HorizontalConfiguration<T> {
-  /// The layout strategy used to layout events.
-  @Deprecated('''
-This method is deprecated and will be removed in a future release. 
-Please use the `generateFrame` method instead.
-''')
-  final MultiDayEventLayoutStrategy? eventLayoutStrategy;
-
   /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayHeaderConfiguration({
     super.showTiles = defaultShowEventTiles,
@@ -304,7 +296,6 @@ Please use the `generateFrame` method instead.
     super.eventPadding = kDefaultMultiDayEventPadding,
     super.pageTriggerConfiguration,
     super.allowSingleDayEvents = false,
-    this.eventLayoutStrategy,
   });
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.

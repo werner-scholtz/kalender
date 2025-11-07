@@ -257,8 +257,10 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
     for (final date in dates) {
       // TODO: this location needs to be passed down properly.
-      final events = eventsController.eventsFromDateTimeRange(InternalDateTimeRange.fromDateTimeRange(date.dayRange),
-          location: null);
+      final events = eventsController.eventsFromDateTimeRange(
+        InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+        location: null,
+      );
 
       if (events.isEmpty) {
         if (widget.paginated && !hasAddedMonth) {
