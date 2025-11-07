@@ -75,7 +75,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     final headerComponents = components.multiDayComponents.headerComponents;
     final componentStyles = components.multiDayComponentStyles.headerStyles;
@@ -152,7 +152,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final componentStyles = components.multiDayComponentStyles.headerStyles;
 
@@ -232,7 +232,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewConfiguration = viewController.viewConfiguration;
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final componentStyles = components.multiDayComponentStyles.headerStyles;
 

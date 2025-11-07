@@ -40,7 +40,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         eventsController: context.eventsController<T>(),
         viewController: viewController,
         // TODO: this might cause rebuilds.
-        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.internalRange(context.location),
+        dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
         currentPage: 0,
         paginated: false,
         configuration: configuration,
@@ -87,11 +87,11 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
     return PageView.builder(
       // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
-      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages(context.location),
+      itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
         // TODO: Should be fine.
-        final range = widget.viewController.viewConfiguration.pageNavigationFunctions
+        final range = widget.viewController.viewConfiguration.pageIndexCalculator
             .dateTimeRangeFromIndex(value, context.location);
         context.callbacks<T>()?.onPageChanged?.call(range);
       },
@@ -100,7 +100,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           eventsController: context.eventsController<T>(),
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
-          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions
+          dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
               .dateTimeRangeFromIndex(index, context.location),
           currentPage: index,
           paginated: true,

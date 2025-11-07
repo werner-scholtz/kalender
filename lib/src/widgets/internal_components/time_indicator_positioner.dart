@@ -139,7 +139,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
   /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
     final now = (widget.dateOverride?.asUtc.startOfDay) ?? DateTime.now().asUtc.startOfDay;
-    final pageNavigation = widget.viewController.viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
     todayPageNumber = pageNavigation.indexFromDate(DateTime.now().asUtc, widget.viewController.location);
     final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber, widget.viewController.location);
     todayIndex = range.dates().indexOf(now);

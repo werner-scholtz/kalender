@@ -3,7 +3,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 
 enum MultiDayViewType {
@@ -20,7 +20,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   final MultiDayViewType type;
 
   @override
-  final PageNavigationFunctions pageNavigationFunctions;
+  final PageIndexCalculator pageIndexCalculator;
 
   /// The [TimeOfDayRange] that can be displayed by [MultiDayBody] widgets using this configuration.
   final TimeOfDayRange timeOfDayRange;
@@ -46,7 +46,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.timeOfDayRange,
     required this.numberOfDays,
     required this.firstDayOfWeek,
-    required this.pageNavigationFunctions,
+    required this.pageIndexCalculator,
     required this.type,
     required this.initialTimeOfDay,
     required this.initialHeightPerMinute,
@@ -69,7 +69,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
-        pageNavigationFunctions = PageNavigationFunctions.singleDay(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
@@ -84,7 +84,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.week,
-        pageNavigationFunctions = PageNavigationFunctions.week(
+        pageIndexCalculator = PageIndexCalculator.week(
           displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek,
         );
@@ -102,7 +102,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
-        pageNavigationFunctions = PageNavigationFunctions.workWeek(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.workWeek(displayRange ?? DateTime.now().yearRange);
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -117,8 +117,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.custom,
-        pageNavigationFunctions =
-            PageNavigationFunctions.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
+        pageIndexCalculator =
+            PageIndexCalculator.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
 
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
   MultiDayViewConfiguration.freeScroll({
@@ -133,7 +133,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
-        pageNavigationFunctions = PageNavigationFunctions.freeScroll(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? DateTime.now().yearRange);
 
   MultiDayViewConfiguration copyWith({
     String? name,
@@ -214,7 +214,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.dateTimeRange == dateTimeRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
-        other.pageNavigationFunctions == pageNavigationFunctions;
+        other.pageIndexCalculator == pageIndexCalculator;
   }
 
   @override
@@ -227,7 +227,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       dateTimeRange,
       numberOfDays,
       firstDayOfWeek,
-      pageNavigationFunctions,
+      pageIndexCalculator,
     );
   }
 
@@ -241,7 +241,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     displayRange: $dateTimeRange
     numberOfDays: $numberOfDays
     firstDayOfWeek: $firstDayOfWeek
-    pageNavigationFunctions: $pageNavigationFunctions''';
+    pageNavigationFunctions: $pageIndexCalculator''';
   }
 }
 

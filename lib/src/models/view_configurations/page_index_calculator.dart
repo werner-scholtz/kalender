@@ -6,48 +6,66 @@ import 'package:timezone/timezone.dart';
 
 /// TODO: these will also need to be refactored to work with TZDateTime and Locations.
 
-/// A class that contains functions to navigate between pages in a view, where applicable.
+/// Calculates page indices and date ranges for paginated calendar views.
 ///
-/// **Note:** Any functions that return a [DateTime] will return a date in UTC timezone.
-///           To convert this to the local timezone, use the [DateTimeExtensions.asLocal] getter.
-///           This is because the calculations are done in UTC.
+/// This class provides the logic to translate between dates and page indices
+/// for different view types (day, week, month, schedule). It handles:
+/// - Converting dates to page indices for navigation
+/// - Calculating the date range displayed on a specific page
+/// - Determining the total number of pages available
+/// - Managing timezone-adjusted date ranges for calculations
 ///
-abstract class PageNavigationFunctions {
+/// Each view type (single day, week, month, etc.) has its own implementation
+/// that defines how dates map to pages based on the view's structure.
+///
+/// **Note:** Internal calculations are performed in UTC. Use [InternalDateTime.forLocation]
+/// to convert results to the appropriate timezone.
+abstract class PageIndexCalculator {
+  /// The overall date range that this calculator operates within.
+  ///
+  /// This is provided by the user and defines the bounds for navigation and display.
+  /// Note these bounds are not hard limits; the calendar may adjust them in certain circumstances.
+  /// - The week view may extend the range to ensure full weeks are displayed.
+  /// - The month view may adjust to show complete months.
+  ///
+  /// see [internalRange] for the adjusted range used in calculations.
   final DateTimeRange dateTimeRange;
-  PageNavigationFunctions({required this.dateTimeRange});
 
-  /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.singleDay].
-  factory PageNavigationFunctions.singleDay(DateTimeRange dateTimeRange) {
+  /// Creates a [PageIndexCalculator] with the given [dateTimeRange].
+  const PageIndexCalculator({required this.dateTimeRange});
+
+  /// Creates a [PageIndexCalculator] for a single day [MultiDayViewConfiguration.singleDay].
+  factory PageIndexCalculator.singleDay(DateTimeRange dateTimeRange) {
     return DayPageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a week [MultiDayViewConfiguration.week].
-  factory PageNavigationFunctions.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
+  /// Creates a [PageIndexCalculator] for a week [MultiDayViewConfiguration.week].
+  factory PageIndexCalculator.week(DateTimeRange dateTimeRange, int firstDayOfWeek) {
     return WeekPageFunctions.week(dateTimeRange: dateTimeRange, firstDayOfWeek: firstDayOfWeek);
   }
 
-  /// Creates a [PageNavigationFunctions] for a work week [MultiDayViewConfiguration.workWeek].
-  factory PageNavigationFunctions.workWeek(DateTimeRange dateTimeRange) {
+  /// Creates a [PageIndexCalculator] for a work week [MultiDayViewConfiguration.workWeek].
+  factory PageIndexCalculator.workWeek(DateTimeRange dateTimeRange) {
     return WeekPageFunctions.workWeek(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a custom [MultiDayViewConfiguration.custom].
-  factory PageNavigationFunctions.custom(DateTimeRange dateTimeRange, int numberOfDays) {
+  /// Creates a [PageIndexCalculator] for a custom [MultiDayViewConfiguration.custom].
+  factory PageIndexCalculator.custom(DateTimeRange dateTimeRange, int numberOfDays) {
     return CustomPageFunctions(dateTimeRange: dateTimeRange, numberOfDays: numberOfDays);
   }
 
-  /// Creates a [PageNavigationFunctions] for a single day [MultiDayViewConfiguration.freeScroll].
-  factory PageNavigationFunctions.freeScroll(DateTimeRange dateTimeRange) {
+  /// Creates a [PageIndexCalculator] for a single day [MultiDayViewConfiguration.freeScroll].
+  factory PageIndexCalculator.freeScroll(DateTimeRange dateTimeRange) {
     return FreeScrollFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.continuous].
-  factory PageNavigationFunctions.scheduleContinuous(DateTimeRange dateTimeRange) {
+  /// Creates a [PageIndexCalculator] for a schedule [ScheduleViewConfiguration.continuous].
+  factory PageIndexCalculator.scheduleContinuous(DateTimeRange dateTimeRange) {
     return ContinuousSchedulePageFunctions(dateTimeRange: dateTimeRange);
   }
 
-  /// Creates a [PageNavigationFunctions] for a schedule [ScheduleViewConfiguration.paginated].
-  factory PageNavigationFunctions.schedulePaginated(DateTimeRange dateTimeRange) {
+  /// Creates a [PageIndexCalculator] for a schedule [ScheduleViewConfiguration.paginated].
+  factory PageIndexCalculator.schedulePaginated(DateTimeRange dateTimeRange) {
     return PaginatedSchedulePageFunctions(dateTimeRange: dateTimeRange);
   }
 
@@ -77,16 +95,19 @@ abstract class PageNavigationFunctions {
     return range;
   }
 
+  /// Returns the [DateTimeRange] that the calendar can display for the given [location].
   DateTimeRange displayRangeForLocation(Location? location) {
     final internalRange = this.internalRange(location);
 
     // TODO: This logic needs to be checked.
     return DateTimeRange(
-        start: internalRange.start.forLocation(location), end: internalRange.end.forLocation(location));
+      start: internalRange.start.forLocation(location),
+      end: internalRange.end.forLocation(location),
+    );
   }
 }
 
-class DayPageFunctions extends PageNavigationFunctions {
+class DayPageFunctions extends PageIndexCalculator {
   DayPageFunctions({required super.dateTimeRange});
 
   @override
@@ -122,7 +143,7 @@ class DayPageFunctions extends PageNavigationFunctions {
   }
 }
 
-class WeekPageFunctions extends PageNavigationFunctions {
+class WeekPageFunctions extends PageIndexCalculator {
   /// The value to shift the start of week by to get the first day of the week.
   final int firstDayOfWeek;
 
@@ -192,7 +213,7 @@ class WeekPageFunctions extends PageNavigationFunctions {
   }
 }
 
-class CustomPageFunctions extends PageNavigationFunctions {
+class CustomPageFunctions extends PageIndexCalculator {
   /// The number of days in each page.
   final int numberOfDays;
 
@@ -242,7 +263,7 @@ class CustomPageFunctions extends PageNavigationFunctions {
 }
 
 /// TODO: see if this can be removed and replaced with [DayPageFunctions].
-class FreeScrollFunctions extends PageNavigationFunctions {
+class FreeScrollFunctions extends PageIndexCalculator {
   FreeScrollFunctions({
     required super.dateTimeRange,
   });
@@ -280,7 +301,7 @@ class FreeScrollFunctions extends PageNavigationFunctions {
   }
 }
 
-class MonthPageFunctions extends PageNavigationFunctions {
+class MonthPageFunctions extends PageIndexCalculator {
   static const numberOfRows = 5;
   final int firstDayOfWeek;
 
@@ -337,7 +358,7 @@ class MonthPageFunctions extends PageNavigationFunctions {
   }
 }
 
-class ContinuousSchedulePageFunctions extends PageNavigationFunctions {
+class ContinuousSchedulePageFunctions extends PageIndexCalculator {
   ContinuousSchedulePageFunctions({
     required super.dateTimeRange,
   });
@@ -360,7 +381,7 @@ class ContinuousSchedulePageFunctions extends PageNavigationFunctions {
   }
 }
 
-class PaginatedSchedulePageFunctions extends PageNavigationFunctions {
+class PaginatedSchedulePageFunctions extends PageIndexCalculator {
   PaginatedSchedulePageFunctions({
     required super.dateTimeRange,
   });

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 
 class MonthViewConfiguration extends ViewConfiguration {
   @override
-  final MonthPageFunctions pageNavigationFunctions;
+  final MonthPageFunctions pageIndexCalculator;
 
   /// The first day of the week.
   final int firstDayOfWeek;
@@ -15,7 +15,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.selectedDate,
     super.initialDateSelectionStrategy,
     required this.firstDayOfWeek,
-    required this.pageNavigationFunctions,
+    required this.pageIndexCalculator,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be a valid week day number\n'
@@ -28,7 +28,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
-  }) : pageNavigationFunctions = MonthPageFunctions(
+  }) : pageIndexCalculator = MonthPageFunctions(
           dateTimeRange: displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek: firstDayOfWeek,
         );
@@ -45,7 +45,7 @@ class MonthViewConfiguration extends ViewConfiguration {
       selectedDate: selectedDate ?? this.selectedDate,
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      displayRange: pageNavigationFunctions.dateTimeRange,
+      displayRange: pageIndexCalculator.dateTimeRange,
     );
   }
 
@@ -55,13 +55,13 @@ class MonthViewConfiguration extends ViewConfiguration {
 
     return other is MonthViewConfiguration &&
         other.selectedDate == selectedDate &&
-        other.pageNavigationFunctions == pageNavigationFunctions &&
+        other.pageIndexCalculator == pageIndexCalculator &&
         other.firstDayOfWeek == firstDayOfWeek;
   }
 
   @override
   int get hashCode {
-    return Object.hash(selectedDate, pageNavigationFunctions, firstDayOfWeek);
+    return Object.hash(selectedDate, pageIndexCalculator, firstDayOfWeek);
   }
 }
 

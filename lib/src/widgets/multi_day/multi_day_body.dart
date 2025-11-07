@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
@@ -162,7 +162,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
-  PageNavigationFunctions get _pageNavigation => widget.viewController.viewConfiguration.pageNavigationFunctions;
+  PageIndexCalculator get _pageNavigation => widget.viewController.viewConfiguration.pageIndexCalculator;
 
   @override
   void initState() {

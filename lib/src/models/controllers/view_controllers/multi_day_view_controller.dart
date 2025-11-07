@@ -10,7 +10,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     DateTime? initialDate,
     super.location,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
+    final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
     initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now(), location);
 
     final type = viewConfiguration.type;
@@ -91,7 +91,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     Curve? curve,
   }) {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     // Animate to that page.
     return pageController.animateToPage(
       pageNumber,
@@ -174,7 +174,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date, location);
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     jumpToPage(pageNumber);
   }
 

@@ -35,7 +35,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final configuration = this.configuration ?? MonthBodyConfiguration();
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     return PageView.builder(
       controller: viewController.pageController,

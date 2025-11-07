@@ -3,7 +3,7 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
 export 'package:kalender/kalender_extensions.dart';
@@ -35,13 +35,13 @@ abstract class ViewConfiguration {
   final InitialDateSelectionStrategy initialDateSelectionStrategy;
 
   /// The functions for navigating the [PageView].
-  PageNavigationFunctions get pageNavigationFunctions;
+  PageIndexCalculator get pageIndexCalculator;
 
   /// The [DateTimeRange] that the calendar can display.
   ///
   /// This might be different depending on the location of the calendar view.
-  /// to get the exact range for a location, use: [PageNavigationFunctions.displayRangeForLocation]
-  DateTimeRange get dateTimeRange => pageNavigationFunctions.dateTimeRange;
+  /// to get the exact range for a location, use: [PageIndexCalculator.displayRangeForLocation]
+  DateTimeRange get dateTimeRange => pageIndexCalculator.dateTimeRange;
 }
 
 /// The base class for all vertical views of the calendar.
