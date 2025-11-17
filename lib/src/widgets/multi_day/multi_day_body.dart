@@ -79,6 +79,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             viewController: viewController,
                             configuration: configuration,
                             pageHeight: pageHeight,
+                            location: context.location,
                           ),
                         ),
                         PositionedTimeIndicator<T>(
@@ -142,7 +143,8 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
   /// The height of the page.
   final double pageHeight;
 
-  final Location? initialLocation;
+  /// The initial location used to calculate the visible events.
+  final Location? location;
 
   /// Creates a new [MultiDayPage].
   const MultiDayPage({
@@ -151,7 +153,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.configuration,
     required this.pageHeight,
-    this.initialLocation,
+    required this.location,
   });
 
   /// The key used to identify the content of the [MultiDayBody].
@@ -162,6 +164,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
+  /// TODO: figure out the exact rebuilds needed here ....
   PageIndexCalculator get _pageNavigation => widget.viewController.viewConfiguration.pageIndexCalculator;
 
   @override
@@ -174,12 +177,20 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant MultiDayPage<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.location != widget.location) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     widget.eventsController.removeListener(_currentPage);
     super.dispose();
   }
 
-  void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage, widget.initialLocation);
+  void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage, widget.location);
   void _currentPage() =>
       _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0, context.location);
 
@@ -202,7 +213,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
     // TODO: when switching location the current page is sometimes not correct.
     return PageView.builder(
       padEnds: false,
-      key: ValueKey(widget.viewController.viewConfiguration.hashCode),
+      key: ValueKey(widget.viewController.viewConfiguration.hashCode + widget.location.hashCode),
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
