@@ -56,7 +56,7 @@ void main() {
       // It should clamp to the first visible date
       final stateWithMixin = state as dynamic;
       final calculatedDate = stateWithMixin.calculateCursorDateTime(negativeXOffset);
-      
+
       // Should return a valid date (the first visible date) instead of null
       expect(calculatedDate, isNotNull, reason: 'Should handle negative cursor position by clamping to first day');
     });
@@ -134,10 +134,10 @@ void main() {
       // Test multiple positions from negative (timeline) to positive (first day)
       final positions = [
         globalPosition.dx - 100, // Far left (timeline)
-        globalPosition.dx - 50,  // Timeline
-        globalPosition.dx - 10,  // Edge of timeline
-        globalPosition.dx + 10,  // First day
-        globalPosition.dx + 50,  // First day
+        globalPosition.dx - 50, // Timeline
+        globalPosition.dx - 10, // Edge of timeline
+        globalPosition.dx + 10, // First day
+        globalPosition.dx + 50, // First day
       ];
 
       DateTime? previousDate;
@@ -145,13 +145,17 @@ void main() {
         final offset = Offset(xPos, globalPosition.dy + 100);
         final calculatedDate = stateWithMixin.calculateCursorDateTime(offset);
 
-        expect(calculatedDate, isNotNull, 
+        expect(
+          calculatedDate,
+          isNotNull,
           reason: 'All positions should return valid dates (xPos: $xPos)',
         );
 
         // All negative positions should map to the same date (first visible date)
         if (previousDate != null && xPos < globalPosition.dx) {
-          expect(calculatedDate!.day, equals(previousDate.day),
+          expect(
+            calculatedDate!.day,
+            equals(previousDate.day),
             reason: 'Timeline positions should consistently map to first day',
           );
         }
@@ -204,7 +208,9 @@ void main() {
       final calculatedDate = stateWithMixin.calculateCursorDateTime(negativeXOffset);
 
       // Should return a valid date instead of null
-      expect(calculatedDate, isNotNull, 
+      expect(
+        calculatedDate,
+        isNotNull,
         reason: 'Should handle negative cursor position by clamping to first date',
       );
     });
@@ -239,7 +245,9 @@ void main() {
       final calculatedDate = stateWithMixin.calculateCursorDateTime(farRightOffset);
 
       // Should clamp to last visible date
-      expect(calculatedDate, isNotNull, 
+      expect(
+        calculatedDate,
+        isNotNull,
         reason: 'Should handle far right position by clamping to last date',
       );
     });
@@ -287,10 +295,12 @@ void main() {
 
       // Simulate dragging over the timeline area (negative X)
       final timelineOffset = Offset(globalPosition.dx - 30, globalPosition.dy + 200);
-      
+
       // This should NOT return null - it should return the first visible day
       final dateOverTimeline = stateWithMixin.calculateCursorDateTime(timelineOffset);
-      expect(dateOverTimeline, isNotNull, 
+      expect(
+        dateOverTimeline,
+        isNotNull,
         reason: 'Cursor over timeline should calculate to first visible day, not null',
       );
 
@@ -350,4 +360,3 @@ void main() {
     });
   });
 }
-
