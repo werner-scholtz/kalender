@@ -146,12 +146,14 @@ void main() {
         final calculatedDate = stateWithMixin.calculateCursorDateTime(offset);
 
         expect(calculatedDate, isNotNull, 
-          reason: 'All positions should return valid dates (xPos: $xPos)');
+          reason: 'All positions should return valid dates (xPos: $xPos)',
+        );
 
         // All negative positions should map to the same date (first visible date)
         if (previousDate != null && xPos < globalPosition.dx) {
           expect(calculatedDate!.day, equals(previousDate.day),
-            reason: 'Timeline positions should consistently map to first day');
+            reason: 'Timeline positions should consistently map to first day',
+          );
         }
         previousDate = calculatedDate;
       }
@@ -203,7 +205,8 @@ void main() {
 
       // Should return a valid date instead of null
       expect(calculatedDate, isNotNull, 
-        reason: 'Should handle negative cursor position by clamping to first date');
+        reason: 'Should handle negative cursor position by clamping to first date',
+      );
     });
 
     testWidgets('should handle cursor far beyond visible dates', (tester) async {
@@ -237,7 +240,8 @@ void main() {
 
       // Should clamp to last visible date
       expect(calculatedDate, isNotNull, 
-        reason: 'Should handle far right position by clamping to last date');
+        reason: 'Should handle far right position by clamping to last date',
+      );
     });
   });
 
@@ -287,7 +291,8 @@ void main() {
       // This should NOT return null - it should return the first visible day
       final dateOverTimeline = stateWithMixin.calculateCursorDateTime(timelineOffset);
       expect(dateOverTimeline, isNotNull, 
-        reason: 'Cursor over timeline should calculate to first visible day, not null');
+        reason: 'Cursor over timeline should calculate to first visible day, not null',
+      );
 
       // Verify the calculated date is valid and corresponds to a visible date
       // Note: The week view starts on the previous week if Jan 1 is not the first day of the week
