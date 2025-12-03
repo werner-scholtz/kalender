@@ -172,8 +172,8 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
-    if (cursorDateIndex < 0) return null;
+    // Clamp the index to valid bounds to handle cursor positions over edge areas.
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
 
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)

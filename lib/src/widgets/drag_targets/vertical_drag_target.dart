@@ -255,8 +255,8 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (localCursorPosition == null) return null;
 
     // Calculate only the date of the cursor from the local cursor position.
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
-    if (cursorDateIndex < 0) return null;
+    // Clamp the index to valid bounds to handle cursor positions over the timeline area.
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
 
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
