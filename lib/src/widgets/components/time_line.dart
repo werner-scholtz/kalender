@@ -218,6 +218,10 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             // Ensure that there is a event being dragged.
             if (eventBeingDragged == null) return const SizedBox();
 
+            // Multi-day events belong in the header, not the body.
+            // Don't show timeline tooltips for them.
+            if (eventBeingDragged.isMultiDayEvent) return const SizedBox();
+
             // Ensure that the event is visible.
             final eventRange = eventBeingDragged.dateTimeRangeAsUtc;
             if (!eventRange.overlaps(visibleRange)) return const SizedBox();
