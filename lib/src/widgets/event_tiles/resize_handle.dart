@@ -46,8 +46,8 @@ class ResizeHandleWidget<T extends Object?> extends StatefulWidget {
 /// This state listens to the calendar controller to show or hide the resize handles
 /// based on user interaction.
 class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidget<T>> {
-  /// The calendar controller.
-  late CalendarController<T> _controller;
+  /// The calendar controller (nullable to handle dispose before initialization).
+  CalendarController<T>? _controller;
 
   /// Whether to show the resize handles.
   bool _showHandles = false;
@@ -59,9 +59,10 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       _controller = context.calendarController<T>();
-      _controller.selectedEvent.addListener(listener);
-      if (mounted) setState(() => _size = context.size ?? Size.zero);
+      _controller?.selectedEvent.addListener(listener);
+      setState(() => _size = context.size ?? Size.zero);
     });
   }
 
@@ -75,7 +76,7 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
 
   @override
   void dispose() {
-    _controller.selectedEvent.removeListener(listener);
+    _controller?.selectedEvent.removeListener(listener);
     super.dispose();
   }
 
@@ -84,14 +85,17 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
   /// This listener updates the visibility of the resize handles based on whether the current event
   /// is selected and the device type.
   void listener() {
+    final controller = _controller;
+    if (controller == null) return;
+
     if (isMobileDevice) {
-      final selectedEvent = _controller.selectedEvent.value;
+      final selectedEvent = controller.selectedEvent.value;
       if (selectedEvent != null && selectedEvent.id == widget.event.id) {
         if (mounted) setState(() => _showHandles = true);
       } else {
         if (mounted) setState(() => _showHandles = false);
       }
-    } else if (_showHandles == true && _controller.internalFocus) {
+    } else if (_showHandles == true && controller.internalFocus) {
       if (mounted) setState(() => _showHandles = false);
     }
   }
@@ -99,7 +103,7 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
   /// [PointerEnterEvent] handler to show/hide resize handles on non-mobile devices.
   void _onEnter(PointerEnterEvent event) {
     if (isMobileDevice) return;
-    if (_controller.internalFocus == true) return;
+    if (_controller?.internalFocus == true) return;
     if (_showHandles == false && mounted) setState(() => _showHandles = true);
   }
 
@@ -111,7 +115,7 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
 
   /// [PointerHoverEvent] handler to show/hide resize handles on non-mobile devices.
   void _onHover(PointerHoverEvent event) {
-    if (_controller.internalFocus == true) return;
+    if (_controller?.internalFocus == true) return;
     if (_showHandles == false && mounted) setState(() => _showHandles = true);
   }
 
