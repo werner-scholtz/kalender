@@ -91,8 +91,8 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
         // TODO: Should be fine.
-        final range = widget.viewController.viewConfiguration.pageIndexCalculator
-            .dateTimeRangeFromIndex(value, context.location);
+        final range =
+            widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
         context.callbacks<T>()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
@@ -328,10 +328,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        calendarController.setInternalDateTimeRange(
-          InternalDateTimeRange(start: start, end: end),
-          context.location,
-        );
+        calendarController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.

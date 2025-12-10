@@ -5,7 +5,6 @@ import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
 import 'package:kalender/src/models/mixins/new_event.dart';
-import 'package:timezone/timezone.dart';
 
 /// The [CalendarController] is used to controller a single [CalendarView].
 /// It provides some useful functions for navigating the [CalendarView].
@@ -14,12 +13,12 @@ import 'package:timezone/timezone.dart';
 /// And detaches itself by calling [detach].
 ///
 class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
-  CalendarController() : id = DateTime.now().millisecondsSinceEpoch;
+  CalendarController() : id = DateTime.now().millisecondsSinceEpoch {
+    _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
+  }
 
   /// This controllers id.
   final int id;
-
-  // late final DateTime initialDate;
 
   /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
   ViewController<T>? _viewController;
@@ -31,9 +30,9 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   /// See [InternalDateTimeRange] for more information.
   late final _internalDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
   ValueNotifier<InternalDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
-  void setInternalDateTimeRange(InternalDateTimeRange range, Location? location) {
-    _internalDateTimeRange.value = range;
-    visibleDateTimeRange.value = range.forLocation(location);
+  void _updateVisibleDateTimeRange() {
+    final newRange = _internalDateTimeRange.value?.forLocation(_viewController?.location);
+    visibleDateTimeRange.value = newRange;
   }
 
   /// The [DateTimeRange] that is currently visible for the current location of the calendar this controller is attached to.
@@ -82,10 +81,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     if (isAttached) detach();
 
     _viewController = viewController;
-    final visibleRange = viewController.visibleDateTimeRange.value;
-    if (visibleRange != null) {
-      setInternalDateTimeRange(visibleRange, viewController.location);
-    }
+    final visibleRange = viewController.visibleDateTimeRange.value!;
+    _internalDateTimeRange.value = visibleRange;
+    final newRange = visibleRange.forLocation(viewController.location);
+    visibleDateTimeRange.value = null;
+    visibleDateTimeRange.value = newRange;
 
     notifyListeners();
   }
@@ -177,5 +177,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   @override
   String toString() {
     return runtimeType.toString();
+  }
+
+  @override
+  void dispose() {
+    _internalDateTimeRange.removeListener(_updateVisibleDateTimeRange);
+    super.dispose();
   }
 }

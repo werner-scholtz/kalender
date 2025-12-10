@@ -227,7 +227,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
               )
             : visibleRange;
         final controller = context.calendarController<T>();
-        controller.setInternalDateTimeRange(range, context.location);
+        controller.internalDateTimeRange.value = range;
 
         // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);

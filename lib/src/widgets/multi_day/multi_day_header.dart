@@ -82,7 +82,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
     final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().visibleDateTimeRange,
+      valueListenable: context.calendarController<T>().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -158,7 +158,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().visibleDateTimeRange,
+      valueListenable: context.calendarController<T>().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -238,7 +238,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().visibleDateTimeRange,
+      valueListenable: context.calendarController<T>().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');

@@ -122,6 +122,7 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
       _viewController = _createViewController(initialDate: initialDate);
       // Dispose the old view controller if it exists.
       widget.calendarController.viewController?.dispose();
+
       // Attach the new view controller.
       widget.calendarController.attach(_viewController);
     }

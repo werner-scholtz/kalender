@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// The week number builder.
 ///
 /// The [visibleDateTimeRange] is the range of dates that the week number will be displayed for.
 /// The [style] is used to style the week number.
 typedef WeekNumberBuilder = Widget Function(
-  DateTimeRange visibleDateTimeRange,
+  InternalDateTimeRange visibleDateTimeRange,
   WeekNumberStyle? style,
 );
 
@@ -36,24 +37,18 @@ class WeekNumberStyle {
 /// A widget that displays the week number.
 class WeekNumber extends StatelessWidget {
   /// The range of dates that the week number will be displayed for.
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange visibleDateTimeRange;
 
   /// The style used by the [WeekNumber].
   final WeekNumberStyle? weekNumberStyle;
 
   const WeekNumber({super.key, required this.visibleDateTimeRange, this.weekNumberStyle});
-  static WeekNumber builder(DateTimeRange visibleDateTimeRange, WeekNumberStyle? weekNumberStyle) {
+  static WeekNumber builder(InternalDateTimeRange visibleDateTimeRange, WeekNumberStyle? weekNumberStyle) {
     return WeekNumber(visibleDateTimeRange: visibleDateTimeRange, weekNumberStyle: weekNumberStyle);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tooltip = weekNumberStyle?.tooltip ?? 'Week Number';
-
-    final visualDensity = weekNumberStyle?.visualDensity ?? VisualDensity.compact;
-
-    final textStyle = weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium;
-
     final (start, end) = visibleDateTimeRange.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
@@ -63,12 +58,12 @@ class WeekNumber extends StatelessWidget {
       child: Padding(
         padding: padding,
         child: IconButton.filledTonal(
-          tooltip: tooltip,
+          tooltip: weekNumberStyle?.tooltip ?? 'Week Number',
           onPressed: null,
-          visualDensity: visualDensity,
+          visualDensity: weekNumberStyle?.visualDensity ?? VisualDensity.compact,
           icon: Text(
             weekNumber,
-            style: textStyle,
+            style: weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       ),

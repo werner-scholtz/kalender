@@ -43,7 +43,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       onPageChanged: (index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final controller = context.calendarController<T>();
-        controller.setInternalDateTimeRange(visibleRange, context.location);
+        controller.internalDateTimeRange.value = visibleRange;
         context.callbacks<T>()?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {

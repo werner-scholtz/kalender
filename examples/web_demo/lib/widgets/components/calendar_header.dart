@@ -82,7 +82,6 @@ class NavigationHeader extends StatelessWidget {
             ),
           ),
           onSelected: (value) {
-            if (value == null) return;
             context.location.value = value;
           },
         );
