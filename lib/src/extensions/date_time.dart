@@ -223,6 +223,9 @@ extension DateTimeExtensions on DateTime {
     }
   }
 
+  // TODO: Document
+  bool get isStartOfDay => hour == 0 && minute == 0 && second == 0 && millisecond == 0 && microsecond == 0;
+
   /// Gets the start of the week.
   ///
   /// The start of the week is determined by [firstDayOfWeek] parameter, it defaults to [DateTime.monday].

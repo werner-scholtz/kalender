@@ -8,7 +8,7 @@ import 'utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController(initialDate: DateTime(2025));
+  final calendarController = CalendarController();
   final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
   final interaction = ValueNotifier(
     CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true),

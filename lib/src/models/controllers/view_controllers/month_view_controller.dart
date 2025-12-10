@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
     required super.visibleDateTimeRange,
     required this.visibleEvents,
-    DateTime? initialDate,
+    InternalDateTime? initialDate,
     super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now(), location);
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.timestamp(), location);
     pageController = PageController(initialPage: initialPage);
     numberOfPages = pageNavigationFunctions.numberOfPages(location);
     visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);

@@ -212,8 +212,8 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   Widget build(BuildContext context) {
     // TODO: when switching location the current page is sometimes not correct.
     return PageView.builder(
-      padEnds: false,
       key: ValueKey(widget.viewController.viewConfiguration.hashCode + widget.location.hashCode),
+      padEnds: false,
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
@@ -239,7 +239,6 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
-
         return Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,

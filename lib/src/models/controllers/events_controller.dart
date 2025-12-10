@@ -126,7 +126,7 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
     return events.where(
       (event) {
         // If the event is a zero duration event at the start of the day, we should check for touching.
-        final touching = _checkTouching(event);
+        final touching = _checkTouching(event, location);
         return event.internalRange(location).overlaps(dateTimeRange, touching: touching);
       },
     );
@@ -156,14 +156,25 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
       if (event.isMultiDayEvent) return false;
 
       // If the event is a zero duration event at the start of the day, we should check for touching.
-      final touching = _checkTouching(event);
+      final touching = _checkTouching(event, location);
 
       return event.internalRange(location).overlaps(dateTimeRange, touching: touching);
     });
   }
 
   /// Check if the event is touching the start of the day, and that is a zero duration event.
-  bool _checkTouching(CalendarEvent event) => event.start == event.end && event.start == event.start.startOfDay;
+  bool _checkTouching(CalendarEvent event, Location? location) {
+    final internalStart = event.internalStart(location);
+    final internalEnd = event.internalEnd(location);
+
+    return internalStart == internalEnd &&
+        internalStart ==
+            InternalDateTime(
+              internalStart.year,
+              internalStart.month,
+              internalStart.day,
+            );
+  }
 }
 
 /// A class that maps [CalendarEvent]s to dates.

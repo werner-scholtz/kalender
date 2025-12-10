@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions/internal.dart';
+import 'package:timezone/timezone.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
@@ -138,9 +139,13 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
 
   /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
+    // TODO: This is wrong ?
     final now = (widget.dateOverride?.asUtc.startOfDay) ?? DateTime.now().asUtc.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
-    todayPageNumber = pageNavigation.indexFromDate(DateTime.now().asUtc, widget.viewController.location);
+    final today = InternalDateTime.fromDateTime(
+      widget.viewController.location == null ? DateTime.now() : TZDateTime.now(widget.viewController.location!),
+    );
+    todayPageNumber = pageNavigation.indexFromDate(today, widget.viewController.location);
     final range = pageNavigation.dateTimeRangeFromIndex(todayPageNumber, widget.viewController.location);
     todayIndex = range.dates().indexOf(now);
   }

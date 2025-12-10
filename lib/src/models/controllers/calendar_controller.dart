@@ -14,14 +14,12 @@ import 'package:timezone/timezone.dart';
 /// And detaches itself by calling [detach].
 ///
 class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
-  CalendarController({DateTime? initialDate})
-      : initialDate = initialDate ?? DateTime.now(),
-        id = DateTime.now().millisecondsSinceEpoch;
+  CalendarController() : id = DateTime.now().millisecondsSinceEpoch;
 
   /// This controllers id.
   final int id;
 
-  late final DateTime initialDate;
+  // late final DateTime initialDate;
 
   /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
   ViewController<T>? _viewController;

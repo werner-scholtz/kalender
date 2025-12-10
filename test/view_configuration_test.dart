@@ -50,7 +50,7 @@ void main() {
   final displayRange = DateTimeRange(start: start, end: end);
 
   // The initial date for the calendar controller.
-  final initialDate = DateTime(2025, 1, 1);
+  final initialDate = InternalDateTime(2025, 1, 1);
 
   /// What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
   final eventMapItems = List.generate(
@@ -73,7 +73,7 @@ void main() {
   final middleEvent = eventsController.byId(eventsMap[initialDate]!)!;
   final eventsToTest = [firstEvent, lastEvent, middleEvent];
 
-  final controller = CalendarController(initialDate: initialDate);
+  final controller = CalendarController();
   final jumpToDate = controller.jumpToDate;
   final animateToDate = controller.animateToDate;
   final animateToDateTime = controller.animateToDateTime;

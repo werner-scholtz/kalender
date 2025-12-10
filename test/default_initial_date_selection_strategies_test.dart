@@ -2,121 +2,138 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions/internal.dart';
+import 'package:timezone/data/latest_10y.dart';
+import 'package:timezone/standalone.dart';
+import 'package:timezone/timezone.dart';
+
+final locationsToTest = [
+  'UTC',
+  'Africa/Johannesburg',
+  'America/New_York',
+  'Europe/London',
+  'Australia/Sydney',
+];
 
 void main() {
-  group('ViewConfiguration from Month', () {
-    final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
+  initializeTimeZones();
+  final locations = locationsToTest.map(getLocation).toList();
+  for (final location in locations) {
+    final range = DateTimeRange(start: TZDateTime(location, 2025), end: TZDateTime(location, 2026));
+    final visibleRange = InternalDateTimeRange(start: InternalDateTime(2025), end: InternalDateTime(2025, 2));
     final visibleEvents = ValueNotifier(<CalendarEvent>{});
-    final monthViewConfiguration = MonthViewConfiguration.singleMonth(displayRange: calendarRange);
-    final viewController = MonthViewController(
-      viewConfiguration: monthViewConfiguration,
-      visibleDateTimeRange: dateTimeRange,
-      visibleEvents: visibleEvents,
-      initialDate: DateTime(2025, 1, 1),
-    );
 
-    test('kDefaultToMonthly', () {
-      final initialDate = kDefaultToMonthly(
-        oldViewController: viewController,
-        newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: calendarRange),
+    group('ViewConfiguration from Month for $location', () {
+      final viewController = MonthViewController(
+        viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
+        visibleDateTimeRange: ValueNotifier(visibleRange),
+        visibleEvents: visibleEvents,
+        initialDate: InternalDateTime(2025, 1, 1),
       );
 
-      expect(initialDate, DateTime.utc(2025, 1, 1));
+      test('kDefaultToMonthly', () {
+        final initialDate = kDefaultToMonthly(
+          oldViewController: viewController,
+          newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
+        );
+        final expected = InternalDateTime(2025, 1, 1);
+        expect(
+          initialDate,
+          expected,
+          reason: 'Monthly to Monthly expected $expected but got $initialDate\n',
+        );
+      });
+
+      test('kDefaultToWeekly', () {
+        final initialDate = kDefaultToWeekly(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+        );
+        final expected = InternalDateTime(2024, 12, 30);
+        expect(initialDate, expected, reason: 'Monthly to Weekly expected $expected but got $initialDate\n');
+      });
+
+      test('kDefaultToDaily', () {
+        final initialDate = kDefaultToDaily(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
+        );
+        final expected = InternalDateTime(2025, 1, 1);
+        expect(initialDate, expected, reason: 'Monthly to Daily expected $expected but got $initialDate\n');
+      });
     });
-    test('kDefaultToWeekly', () {
-      final initialDate = kDefaultToWeekly(
-        oldViewController: viewController,
-        newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: calendarRange),
+
+    group('ViewConfiguration from week for $location', () {
+      final viewController = MultiDayViewController(
+        viewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+        visibleDateTimeRange: ValueNotifier(visibleRange),
+        visibleEvents: visibleEvents,
+        initialDate: InternalDateTime(2025, 1, 1),
       );
 
-      expect(initialDate, DateTime.utc(2024, 12, 30));
+      test('kDefaultToMonthly', () {
+        final initialDate = kDefaultToMonthly(
+          oldViewController: viewController,
+          newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
+        );
+
+        final expected = InternalDateTime(2024, 12, 30);
+        expect(initialDate, expected, reason: 'Weekly to Monthly expected $expected but got $initialDate\n');
+      });
+      test('kDefaultToWeekly', () {
+        final initialDate = kDefaultToWeekly(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+        );
+
+        final expected = InternalDateTime(2024, 12, 30);
+        expect(initialDate, expected, reason: 'Weekly to Weekly expected $expected but got $initialDate\n');
+      });
+
+      test('kDefaultToDaily', () {
+        final initialDate = kDefaultToDaily(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
+        );
+        final expected = InternalDateTime(2024, 12, 30);
+        expect(initialDate, expected, reason: 'Weekly to Daily expected $expected but got $initialDate\n');
+      });
     });
-    test('kDefaultToDaily', () {
-      final initialDate = kDefaultToDaily(
-        oldViewController: viewController,
-        newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: calendarRange),
+
+    group('ViewConfiguration from day for $location', () {
+      final viewController = MultiDayViewController(
+        viewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
+        visibleDateTimeRange: ValueNotifier(visibleRange),
+        visibleEvents: visibleEvents,
+        initialDate: InternalDateTime(2025, 1, 1),
       );
 
-      expect(initialDate, DateTime.utc(2025, 1, 1));
+      test('kDefaultToMonthly', () {
+        final initialDate = kDefaultToMonthly(
+          oldViewController: viewController,
+          newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: range),
+        );
+
+        final expected = InternalDateTime(2025, 1, 1);
+        expect(initialDate, expected, reason: 'Daily to Monthly expected $expected but got $initialDate\n');
+      });
+      test('kDefaultToWeekly', () {
+        final initialDate = kDefaultToWeekly(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.week(displayRange: range),
+        );
+        final expected = InternalDateTime(2025, 1, 1);
+        expect(initialDate, expected, reason: 'Daily to Weekly expected $expected but got $initialDate\n');
+      });
+
+      test('kDefaultToDaily', () {
+        final initialDate = kDefaultToDaily(
+          oldViewController: viewController,
+          newViewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: range),
+        );
+
+        final expected = InternalDateTime(2025, 1, 1);
+        expect(initialDate, expected, reason: 'Daily to Daily expected $expected but got $initialDate\n');
+      });
     });
-  });
-
-  group('ViewConfiguration from week', () {
-    final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
-    final visibleEvents = ValueNotifier(<CalendarEvent>{});
-    final weekViewConfiguration = MultiDayViewConfiguration.week(displayRange: calendarRange);
-    final viewController = MultiDayViewController(
-      viewConfiguration: weekViewConfiguration,
-      visibleDateTimeRange: dateTimeRange,
-      visibleEvents: visibleEvents,
-      initialDate: DateTime(2025, 1, 1),
-    );
-
-    test('kDefaultToMonthly', () {
-      final initialDate = kDefaultToMonthly(
-        oldViewController: viewController,
-        newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2024, 12, 30));
-    });
-    test('kDefaultToWeekly', () {
-      final initialDate = kDefaultToWeekly(
-        oldViewController: viewController,
-        newViewConfiguration: MultiDayViewConfiguration.week(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2024, 12, 30));
-    });
-    test('kDefaultToDaily', () {
-      final initialDate = kDefaultToDaily(
-        oldViewController: viewController,
-        newViewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2024, 12, 30));
-    });
-  });
-
-  group('ViewConfiguration from day', () {
-    final calendarRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-    final dateTimeRange = ValueNotifier(InternalDateTimeRange(start: DateTime(2025), end: DateTime(2025, 2)));
-    final visibleEvents = ValueNotifier(<CalendarEvent>{});
-    final weekViewConfiguration = MultiDayViewConfiguration.singleDay(displayRange: calendarRange);
-    final viewController = MultiDayViewController(
-      viewConfiguration: weekViewConfiguration,
-      visibleDateTimeRange: dateTimeRange,
-      visibleEvents: visibleEvents,
-      initialDate: DateTime(2025, 1, 1),
-    );
-
-    test('kDefaultToMonthly', () {
-      final initialDate = kDefaultToMonthly(
-        oldViewController: viewController,
-        newViewConfiguration: MonthViewConfiguration.singleMonth(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2025, 1, 1));
-    });
-
-    test('kDefaultToWeekly', () {
-      final initialDate = kDefaultToWeekly(
-        oldViewController: viewController,
-        newViewConfiguration: MultiDayViewConfiguration.week(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2025, 1, 1));
-    });
-
-    test('kDefaultToDaily', () {
-      final initialDate = kDefaultToDaily(
-        oldViewController: viewController,
-        newViewConfiguration: MultiDayViewConfiguration.singleDay(displayRange: calendarRange),
-      );
-
-      expect(initialDate, DateTime.utc(2025, 1, 1));
-    });
-  });
+  }
 }

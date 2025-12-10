@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 import 'utilities.dart';
 
@@ -12,7 +13,7 @@ void main() {
 
     setUp(() {
       eventsController = DefaultEventsController();
-      calendarController = CalendarController(initialDate: DateTime(2024, 6, 15));
+      calendarController = CalendarController();
       calendarRange = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
     });
 
@@ -180,8 +181,8 @@ void main() {
         );
 
         // Verify that the custom strategy was used
-        final visibleRange = calendarController.visibleDateTimeRange.value;
-        expect(visibleRange!.start.startOfDay, equals(_fixedDate.startOfDay));
+        final visibleRange = calendarController.internalDateTimeRange.value;
+        expect(visibleRange!.start.startOfDay, equals(_fixedDate));
       });
     });
 
@@ -324,7 +325,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Verify that the month view shows the correct month
-        final monthVisibleRange = calendarController.visibleDateTimeRange.value;
+        final monthVisibleRange = calendarController.internalDateTimeRange.value;
         expect(monthVisibleRange!.dominantMonthDate.year, equals(specificDay.year));
         expect(monthVisibleRange.dominantMonthDate.month, equals(specificDay.month));
         expect(monthVisibleRange.dominantMonthDate.day, equals(1));
@@ -347,7 +348,7 @@ void main() {
         calendarController.jumpToDate(specificDate);
         await tester.pumpAndSettle();
 
-        final scheduleVisibleRange = calendarController.visibleDateTimeRange.value;
+        final scheduleVisibleRange = calendarController.internalDateTimeRange.value;
 
         // Transition to daily view
         final dailyConfig = MultiDayViewConfiguration.singleDay(
@@ -365,7 +366,7 @@ void main() {
         );
 
         // Verify that the daily view starts at the schedule start date
-        final dailyVisibleRange = calendarController.visibleDateTimeRange.value;
+        final dailyVisibleRange = calendarController.internalDateTimeRange.value;
         expect(dailyVisibleRange!.start.startOfDay, equals(scheduleVisibleRange!.start.startOfDay));
       });
     });
@@ -497,11 +498,11 @@ void main() {
   });
 }
 
-DateTime _alwaysReturnJanuaryStrategy({
+InternalDateTime _alwaysReturnJanuaryStrategy({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
   return _fixedDate;
 }
 
-final _fixedDate = DateTime(2024, 1, 1);
+final _fixedDate = InternalDateTime(2024, 1, 1);

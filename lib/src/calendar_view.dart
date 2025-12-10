@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:timezone/timezone.dart';
@@ -80,7 +81,12 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
   void initState() {
     super.initState();
     // Create the initial view controller.
-    _viewController = _createViewController();
+    late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
+    final selected = widget.location == null
+        ? widget.viewConfiguration.selectedDate
+        : widget.viewConfiguration.selectedDate?.forLocation(widget.location);
+    final initialDate = InternalDateTime.fromDateTime(selected ?? now);
+    _viewController = _createViewController(initialDate: initialDate);
 
     // Attach the view controller when the widget is initialized.
     widget.calendarController.attach(_viewController);
@@ -105,11 +111,12 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
       // Use selectedDate if available, otherwise use the initial date selection strategy
-      final initialDate = widget.viewConfiguration.selectedDate ??
-          widget.viewConfiguration.initialDateSelectionStrategy(
-            oldViewController: _viewController,
-            newViewConfiguration: widget.viewConfiguration,
-          );
+      final initialDate = widget.viewConfiguration.selectedDate != null
+          ? InternalDateTime.fromDateTime(widget.viewConfiguration.selectedDate!)
+          : widget.viewConfiguration.initialDateSelectionStrategy(
+              oldViewController: _viewController,
+              newViewConfiguration: widget.viewConfiguration,
+            );
 
       // Create the new view controller.
       _viewController = _createViewController(initialDate: initialDate);
@@ -139,22 +146,23 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
   }
 
   /// Create the [ViewController] based on the [ViewConfiguration].
-  ViewController<T> _createViewController({DateTime? initialDate}) {
+  ViewController<T> _createViewController({required InternalDateTime initialDate}) {
     final viewConfiguration = widget.viewConfiguration;
+    widget.viewConfiguration.selectedDate;
 
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController<T>(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
           visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: initialDate ?? widget.calendarController.initialDate,
+          initialDate: initialDate,
           location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
           visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: initialDate ?? widget.calendarController.initialDate,
+          initialDate: initialDate,
           location: widget.location,
         ),
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
@@ -162,14 +170,14 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
               viewConfiguration: viewConfiguration,
               visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: initialDate ?? widget.calendarController.initialDate,
+              initialDate: initialDate,
               location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
               visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: initialDate ?? widget.calendarController.initialDate,
+              initialDate: initialDate,
               location: widget.location,
             ),
         },

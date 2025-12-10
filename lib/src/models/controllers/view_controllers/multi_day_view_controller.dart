@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/extensions/internal.dart';
+import 'package:timezone/timezone.dart';
 
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
     required this.viewConfiguration,
     required super.visibleDateTimeRange,
     required this.visibleEvents,
-    DateTime? initialDate,
+    InternalDateTime? initialDate,
     super.location,
   }) {
     final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now(), location);
-
+    final now = InternalDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? now, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
@@ -71,7 +72,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// This is a value notifier that updates when the page is scrolled.
   ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
 
-
   @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
@@ -89,7 +89,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     DateTime date, {
     Duration? duration,
     Curve? curve,
-  }) {
+  }) async {
     // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     // Animate to that page.

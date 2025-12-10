@@ -1,13 +1,14 @@
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/extensions/internal.dart';
 
 /// Strategy typedef for determining the initial date when transitioning between view configurations
-typedef InitialDateSelectionStrategy = DateTime Function({
+typedef InitialDateSelectionStrategy = InternalDateTime Function({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 });
 
 /// Default implementation for transitioning to Monthly view
-DateTime kDefaultToMonthly({
+InternalDateTime kDefaultToMonthly({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
@@ -15,18 +16,18 @@ DateTime kDefaultToMonthly({
   final oldRange = oldViewController.visibleDateTimeRange.value!;
   switch (oldConfig) {
     case MonthViewConfiguration _:
-      return oldRange.dominantMonthDate;
+      return InternalDateTime.fromDateTime(oldRange.dominantMonthDate);
     case MultiDayViewConfiguration _:
       return oldRange.start;
     case ScheduleViewConfiguration _:
       return oldRange.start;
     default:
-      return oldRange.dominantMonthDate;
+      return InternalDateTime.fromDateTime(oldRange.dominantMonthDate);
   }
 }
 
 /// Default implementation for transitioning to Weekly view
-DateTime kDefaultToWeekly({
+InternalDateTime kDefaultToWeekly({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
@@ -49,7 +50,7 @@ DateTime kDefaultToWeekly({
 }
 
 /// Default implementation for transitioning to Daily view
-DateTime kDefaultToDaily({
+InternalDateTime kDefaultToDaily({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
@@ -57,7 +58,7 @@ DateTime kDefaultToDaily({
   final oldRange = oldViewController.visibleDateTimeRange.value!;
   switch (oldConfig) {
     case MonthViewConfiguration _:
-      return oldRange.dominantMonthDate;
+      return InternalDateTime.fromDateTime(oldRange.dominantMonthDate);
     case final MultiDayViewConfiguration multiDayConfig:
       final viewType = _getMultiDayViewType(multiDayConfig);
       return switch (viewType) {
@@ -88,7 +89,7 @@ enum _MultiDayViewType {
 }
 
 /// Default implementation for transitioning to Schedule view
-DateTime kDefaultToSchedule({
+InternalDateTime kDefaultToSchedule({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {
@@ -97,7 +98,7 @@ DateTime kDefaultToSchedule({
 }
 
 /// General default strategy that routes to appropriate specific strategies
-DateTime kDefaultInitialDateSelectionStrategy({
+InternalDateTime kDefaultInitialDateSelectionStrategy({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
 }) {

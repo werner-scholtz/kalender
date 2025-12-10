@@ -219,6 +219,7 @@ void main() {
           internalRange,
           InternalDateTimeRange(start: InternalDateTime(2020), end: InternalDateTime(2021)),
         );
+        expect(true, true);
       });
     });
 

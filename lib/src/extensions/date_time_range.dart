@@ -247,8 +247,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
   }
 
-
-
   /// Returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
   ///
   /// This method returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
