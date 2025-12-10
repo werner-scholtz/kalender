@@ -37,11 +37,13 @@ void main() {
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          selectedDate: start,
         ),
         MultiDayViewConfiguration.week(
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          selectedDate: start,
         ),
         MultiDayViewConfiguration.week(
           firstDayOfWeek: DateTime.monday,
@@ -52,6 +54,7 @@ void main() {
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          selectedDate: start,
         ),
       ];
 
