@@ -82,7 +82,11 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     if (isAttached) detach();
 
     _viewController = viewController;
-    setInternalDateTimeRange(viewController.visibleDateTimeRange.value!, viewController.location);
+    final visibleRange = viewController.visibleDateTimeRange.value;
+    if (visibleRange != null) {
+      setInternalDateTimeRange(visibleRange, viewController.location);
+    }
+
     notifyListeners();
   }
 

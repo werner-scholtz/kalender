@@ -21,6 +21,7 @@ abstract class ViewConfiguration {
   /// The name of the [ViewConfiguration].
   final String name;
 
+  // TODO(werner): rename to initialDateTime.
   /// The selected date to start the view from.
   ///
   /// If this is provided, it will take precedence over the initial date selection strategy.

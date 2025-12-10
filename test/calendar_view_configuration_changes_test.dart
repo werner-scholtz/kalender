@@ -331,10 +331,11 @@ void main() {
         expect(monthVisibleRange.dominantMonthDate.day, equals(1));
       });
 
-      /// TODO: figureout what is breaking here.
       testWidgets('should handle schedule to daily transition correctly', (tester) async {
+        final calendarViewKey = GlobalKey();
         final scheduleConfig = ScheduleViewConfiguration.continuous(name: 'Schedule View', displayRange: calendarRange);
         final calendarView = CalendarView(
+          key: calendarViewKey,
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: scheduleConfig,
@@ -342,6 +343,9 @@ void main() {
         );
 
         await pumpAndSettleWithMaterialApp(tester, calendarView);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ScheduleBody), findsOneWidget);
 
         // Set up a specific date in schedule view
         final specificDate = DateTime(2024, 7, 20);
@@ -359,6 +363,7 @@ void main() {
         await pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
+            key: calendarViewKey,
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: dailyConfig,
