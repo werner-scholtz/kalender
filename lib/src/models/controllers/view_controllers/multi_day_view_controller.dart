@@ -92,6 +92,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   }) async {
     // Calculate the pageNumber of the date.
     final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
+
     // Animate to that page.
     return pageController.animateToPage(
       pageNumber,
