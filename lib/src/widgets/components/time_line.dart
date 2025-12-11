@@ -34,6 +34,12 @@ class TimelineStyle {
   /// The text direction of the text.
   final TextDirection? textDirection;
 
+  /// The text align of the text.
+  final TextAlign? textAlign;
+
+  /// The text overflow of the text.
+  final TextOverflow? textOverflow;
+
   /// The padding of the text.
   final EdgeInsets? textPadding;
 
@@ -49,6 +55,8 @@ class TimelineStyle {
   const TimelineStyle({
     this.textStyle,
     this.textDirection,
+    this.textAlign,
+    this.textOverflow,
     this.stringBuilder,
     this.textPadding,
     this.startDecoration,
@@ -203,6 +211,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             text,
             style: textStyle,
             textDirection: textDirection,
+            textAlign: style?.textAlign,
+            overflow: style?.textOverflow,
           ),
         ),
       );
