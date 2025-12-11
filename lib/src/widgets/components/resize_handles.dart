@@ -90,17 +90,17 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   bool get isVertical => axis == Axis.vertical;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore(Location? location) => event.internalStart(location).isBefore(dateTimeRange.start);
+  bool continuesBefore([Location? location]) => event.internalStart(location).isBefore(dateTimeRange.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter(Location? location) => event.internalEnd(location).isAfter(dateTimeRange.end);
+  bool continuesAfter([Location? location]) => event.internalEnd(location).isAfter(dateTimeRange.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool showStart(Location? location) =>
+  bool showStart([Location? location]) =>
       interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore(location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool showEnd(Location? location) =>
+  bool showEnd([Location? location]) =>
       interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location);
 
   /// The interaction settings for this event.
