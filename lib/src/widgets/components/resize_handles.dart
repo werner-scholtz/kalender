@@ -90,18 +90,18 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   bool get isVertical => axis == Axis.vertical;
 
   /// Whether the event continues before the current date range.
-  bool continuesBefore([Location? location]) => event.internalStart(location).isBefore(dateTimeRange.start);
+  bool continuesBefore({Location? location}) => event.internalStart(location: location).isBefore(dateTimeRange.start);
 
   /// Whether the event continues after the current date range.
-  bool continuesAfter([Location? location]) => event.internalEnd(location).isAfter(dateTimeRange.end);
+  bool continuesAfter({Location? location}) => event.internalEnd(location: location).isAfter(dateTimeRange.end);
 
   /// Whether to show the start resize handle, based on interaction settings and event continuation.
-  bool showStart([Location? location]) =>
-      interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore(location);
+  bool showStart({Location? location}) =>
+      interaction.allowResizing && event.interaction.allowStartResize && !continuesBefore(location: location);
 
   /// Whether to show the end resize handle, based on interaction settings and event continuation.
-  bool showEnd([Location? location]) =>
-      interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location);
+  bool showEnd({Location? location}) =>
+      interaction.allowResizing && event.interaction.allowEndResize && !continuesAfter(location: location);
 
   /// The interaction settings for this event.
   EventInteraction get eventInteraction => event.interaction;
@@ -153,7 +153,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
   @override
   Widget build(BuildContext context) {
     final location = context.location;
-    if (!showStart(location) && !showEnd(location)) {
+    if (!showStart(location: location) && !showEnd(location: location)) {
       // If neither handle should be shown, return an empty widget.
       return const SizedBox();
     }
@@ -176,7 +176,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (!hideStart && showStart(location))
+        if (!hideStart && showStart(location: location))
           isVertical
               ? Positioned(
                   top: 0,
@@ -193,7 +193,7 @@ class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
                   width: handleLength,
                   child: startResizeDetector,
                 ),
-        if (showEnd(location))
+        if (showEnd(location: location))
           isVertical
               ? Positioned(
                   bottom: 0,

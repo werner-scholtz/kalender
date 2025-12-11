@@ -66,7 +66,7 @@ mixin DayEventTileUtils<T extends Object?> {
   /// Returns the event's time range intersected with the tile's date.
   DateTimeRange get eventRangeOnDate {
     // TODO: Get the location somehow.
-    return event.internalRange(null).dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
+    return event.internalRange().dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -96,7 +96,7 @@ mixin DayEventTileUtils<T extends Object?> {
     bool includeSelf = false,
   }) {
     final eventsController = context.eventsController<T>();
-    final eventRangeOnDate = event.internalRange(context.location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
+    final eventRangeOnDate = event.internalRange(location: context.location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
     final range = InternalDateTimeRange(
       start: eventRangeOnDate.start.subtract(before),
       end: eventRangeOnDate.end.add(after),
@@ -206,7 +206,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
     bool includeSelf = false,
   }) {
     final eventsController = context.eventsController<T>();
-    final range = event.internalRange(context.location);
+    final range = event.internalRange(location: context.location);
     final events = eventsController
         .eventsFromDateTimeRange(
           range,
@@ -241,8 +241,8 @@ mixin MultiDayEventTileUtils<T extends Object?> {
     // TODO: ensure this works as expected.
     final renderBox = context.findRenderObject() as RenderBox;
     final tileRangeAsUtc = tileRange.asUtc;
-    final start = event.internalStart(context.location);
-    final end = event.internalEnd(context.location);
+    final start = event.internalStart(location: context.location);
+    final end = event.internalEnd(location: context.location);
     final range = DateTimeRange(
       start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
       end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,

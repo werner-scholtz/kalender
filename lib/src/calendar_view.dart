@@ -149,7 +149,6 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
   /// Create the [ViewController] based on the [ViewConfiguration].
   ViewController<T> _createViewController({required InternalDateTime initialDate}) {
     final viewConfiguration = widget.viewConfiguration;
-    widget.viewConfiguration.selectedDate;
 
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController<T>(

@@ -278,7 +278,9 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return const SizedBox();
-        if (!event.internalRange(context.location).overlaps(widget.internalDateTimeRange)) return const SizedBox();
+        if (!event.internalRange(location: context.location).overlaps(widget.internalDateTimeRange)) {
+          return const SizedBox();
+        }
         final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.internalDateTimeRange,
           events: [event],

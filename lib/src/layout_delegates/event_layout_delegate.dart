@@ -152,7 +152,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
-    final durationOnDate = event.internalRange(location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
+    final durationOnDate = event.internalRange(location: location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
     final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
@@ -166,7 +166,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent<T> event) {
-    final eventStart = event.internalRange(location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
+    final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     final dateStart = timeOfDayRange.start.toDateTime(date);
     return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
   }
@@ -336,7 +336,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
       ..sort((a, b) =>
-          b.duration.compareTo(a.duration) == 0 ? b.internalStart(location).compareTo(a.internalStart(location)) : 0);
+          b.duration.compareTo(a.duration) == 0 ? b.internalStart(location: location).compareTo(a.internalStart(location: location)) : 0);
   }
 
   @override

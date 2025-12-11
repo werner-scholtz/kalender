@@ -1,8 +1,8 @@
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
-import 'package:timezone/timezone.dart';
+
+export 'package:timezone/timezone.dart';
 
 /// Maps timezone location names to their respective date-to-event-ID indexes.
 ///
@@ -132,7 +132,7 @@ class DefaultDateMap<T> extends DateMap<T> {
 
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-      final dates = event.internalRange(location).dates();
+      final dates = event.internalRange(location: location).dates();
       for (final date in dates) {
         locationDateIdMap[locationString]!.update(
           toKey(date),
@@ -235,7 +235,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
   void _addEventToLocation(Location? location, CalendarEvent<T> event) {
     final locationString = location?.name ?? defaultLocation;
-    final dates = event.internalRange(location).dates();
+    final dates = event.internalRange(location: location).dates();
     for (final date in dates) {
       locationDateIdMap[locationString]!.update(
         toKey(date),

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -102,6 +101,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     required super.visibleEvents,
     required super.initialDate,
   }) {
+    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
   }
 
@@ -132,7 +132,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return animateToDate(event.internalStart(location).asUtc.startOfDay, duration: scrollDuration, curve: scrollCurve);
+    return animateToDate(event.internalStart(location: location).asUtc.startOfDay, duration: scrollDuration, curve: scrollCurve);
   }
 
   @override
@@ -186,8 +186,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(currentPage, location);
+    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }
@@ -240,7 +239,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.internalStart(location).asUtc.startOfDay;
+    final date = event.internalStart(location: location).asUtc.startOfDay;
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
