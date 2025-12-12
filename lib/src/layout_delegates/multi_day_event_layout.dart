@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
-import 'package:timezone/timezone.dart';
 
 /// A function type that generates a layout frame for multi-day events.
 ///

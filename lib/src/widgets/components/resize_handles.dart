@@ -7,7 +7,6 @@ import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
-import 'package:timezone/timezone.dart';
 
 /// The builder that positions the ResizeHandles.
 ///

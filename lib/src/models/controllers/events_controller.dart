@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:timezone/timezone.dart';
 
 export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_date_map.dart';
 export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_events_controller.dart';

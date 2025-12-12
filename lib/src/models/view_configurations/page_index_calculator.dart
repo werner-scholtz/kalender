@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
-import 'package:timezone/timezone.dart';
 
 /// TODO: these will also need to be refactored to work with TZDateTime and Locations.
 

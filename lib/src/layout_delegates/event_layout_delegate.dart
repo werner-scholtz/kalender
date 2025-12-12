@@ -2,10 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/time_of_day_range.dart';
-import 'package:timezone/timezone.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
@@ -335,8 +333,11 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort((a, b) =>
-          b.duration.compareTo(a.duration) == 0 ? b.internalStart(location: location).compareTo(a.internalStart(location: location)) : 0);
+      ..sort(
+        (a, b) => b.duration.compareTo(a.duration) == 0
+            ? b.internalStart(location: location).compareTo(a.internalStart(location: location))
+            : 0,
+      );
   }
 
   @override

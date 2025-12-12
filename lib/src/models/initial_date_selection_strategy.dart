@@ -1,5 +1,4 @@
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 
 /// Strategy typedef for determining the initial date when transitioning between view configurations
 typedef InitialDateSelectionStrategy = InternalDateTime Function({

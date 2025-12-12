@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 
 /// A function that returns a [MultiDayOverlayPortal].
 ///

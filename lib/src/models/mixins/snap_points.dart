@@ -1,5 +1,5 @@
+// import 'package:kalender/kalender.dart';
 import 'package:kalender/kalender.dart';
-import 'package:timezone/timezone.dart';
 
 /// A mixin that adds snap points to a class.
 mixin SnapPoints {

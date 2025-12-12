@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:timezone/timezone.dart';
 
 /// The [Components] widget provides the [CalendarComponents] to the widget tree.
 class Components<T extends Object?> extends InheritedWidget {

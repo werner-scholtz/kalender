@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:timezone/timezone.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
 

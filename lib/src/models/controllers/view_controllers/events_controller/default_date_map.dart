@@ -2,8 +2,6 @@ import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 
-export 'package:timezone/timezone.dart';
-
 /// Maps timezone location names to their respective date-to-event-ID indexes.
 ///
 /// Each location (timezone) maintains its own mapping of dates to event IDs,

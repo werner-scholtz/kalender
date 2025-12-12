@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:timezone/data/latest_10y.dart';
-import 'package:timezone/standalone.dart';
-import 'package:timezone/timezone.dart';
 
 final locationsToTest = [
   'Africa/Johannesburg',

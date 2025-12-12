@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({

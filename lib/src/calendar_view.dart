@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/layout_delegates/calendar_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:timezone/timezone.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.

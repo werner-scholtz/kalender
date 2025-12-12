@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';
-import 'package:timezone/timezone.dart';
 
 export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';

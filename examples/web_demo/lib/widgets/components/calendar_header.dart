@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:timezone/timezone.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
 import 'package:web_demo/locations.dart';

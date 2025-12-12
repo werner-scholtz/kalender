@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart';
 
+export 'package:timezone/timezone.dart';
+
 /// The idea is to refactor these extensions so they work with TZDateTime and Locations.
 
 extension InternalDateTimeExtensions on DateTime {

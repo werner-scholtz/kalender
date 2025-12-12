@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';

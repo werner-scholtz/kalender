@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
-import 'package:timezone/timezone.dart';
 
 /// TODO: Redo documentation.
 ///
