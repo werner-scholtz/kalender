@@ -121,7 +121,7 @@ class DayIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    final startOfDate = date.forLocation(location).asUtc;
+    final startOfDate = date.forLocation(location: location).asUtc;
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
@@ -235,7 +235,7 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    final startOfDate = date.forLocation(location).asUtc;
+    final startOfDate = date.forLocation(location: location).asUtc;
     final startOfDateUtc = startOfDate.startOfDay;
     final internalRange = this.internalRange(location);
     final index = startOfDateUtc.difference(internalRange.start).inDays ~/ numberOfDays;
@@ -280,7 +280,7 @@ class FreeScrollFunctions extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    final startOfDate = date.forLocation(location).asUtc;
+    final startOfDate = date.forLocation(location: location).asUtc;
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
@@ -330,7 +330,7 @@ class MonthIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    date = date.forLocation(location).startOfDay.asUtc;
+    date = date.forLocation(location: location).startOfDay.asUtc;
     final internalRange = this.internalRange(location);
     final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
@@ -394,7 +394,7 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    date = date.forLocation(location).asUtc;
+    date = date.forLocation(location: location).asUtc;
     final internalRange = this.internalRange(location);
     final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));

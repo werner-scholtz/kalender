@@ -107,7 +107,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.forLocation(location).asUtc.startOfDay;
+    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
     final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
@@ -132,7 +132,8 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    return animateToDate(event.internalStart(location: location).asUtc.startOfDay, duration: scrollDuration, curve: scrollCurve);
+    return animateToDate(event.internalStart(location: location).asUtc.startOfDay,
+        duration: scrollDuration, curve: scrollCurve);
   }
 
   @override
@@ -167,7 +168,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   @override
   void jumpToDate(DateTime date) {
     if (!hasInitialized) return;
-    date = date.forLocation(location).asUtc.startOfDay;
+    date = date.forLocation(location: location).asUtc.startOfDay;
     final index = indexFromDateTime(date) ?? closestIndex(date);
     itemScrollController!.jumpTo(index: index);
   }
@@ -206,7 +207,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.forLocation(location).asUtc.startOfDay;
+    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
     await _animateToPage(pageIndex, duration: duration, curve: curve);
 
@@ -222,7 +223,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    final dateAsUtc = date.forLocation(location).asUtc.startOfDay;
+    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
@@ -267,7 +268,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> jumpToDate(DateTime date) async {
-    final dateAsUtc = date.forLocation(location).asUtc.startOfDay;
+    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
 
     // Since jump to page does not build the page immediately,

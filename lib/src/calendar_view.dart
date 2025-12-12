@@ -82,7 +82,7 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
     final selected = widget.location == null
         ? widget.viewConfiguration.selectedDate
-        : widget.viewConfiguration.selectedDate?.forLocation(widget.location);
+        : widget.viewConfiguration.selectedDate?.forLocation(location: widget.location);
     final initialDate = InternalDateTime.fromDateTime(selected ?? now);
     _viewController = _createViewController(initialDate: initialDate);
 

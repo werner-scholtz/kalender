@@ -33,7 +33,7 @@ extension InternalDateTimeExtensions on DateTime {
   DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// TODO: DOCUMENTATION
-  DateTime forLocation(Location? location) {
+  DateTime forLocation({Location? location}) {
     if (location == null) {
       return toLocal();
     } else {
