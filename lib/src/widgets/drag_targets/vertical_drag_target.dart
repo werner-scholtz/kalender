@@ -296,7 +296,6 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
       }
     }
 
-
     // Calculate the new dateTimeRange for the event.
     final duration = event.duration;
     var end = start.add(duration);
@@ -323,7 +322,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
     // Update the event with the new range.
     final newRange = InternalDateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(context.location));
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(location: context.location));
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -354,7 +353,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange.forLocation(context.location));
+    return event.copyWith(dateTimeRange: dateTimeRange.forLocation(location: context.location));
   }
 
   @override
@@ -371,6 +370,6 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
       range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: range.forLocation(context.location));
+    return event.copyWith(dateTimeRange: range.forLocation(location: context.location));
   }
 }

@@ -31,7 +31,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   late final _internalDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
   ValueNotifier<InternalDateTimeRange?> get internalDateTimeRange => _internalDateTimeRange;
   void _updateVisibleDateTimeRange() {
-    final newRange = _internalDateTimeRange.value?.forLocation(_viewController?.location);
+    final newRange = _internalDateTimeRange.value?.forLocation(location: _viewController?.location);
     visibleDateTimeRange.value = newRange;
   }
 
@@ -83,7 +83,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
     _viewController = viewController;
     final visibleRange = viewController.visibleDateTimeRange.value!;
     _internalDateTimeRange.value = visibleRange;
-    final newRange = visibleRange.forLocation(viewController.location);
+    final newRange = visibleRange.forLocation(location: viewController.location);
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;
 

@@ -70,7 +70,7 @@ void main() {
   // Test animating to specific events.
   final firstEvent = eventsController.byId(eventsMap[start]!)!;
   final lastEvent = eventsController.byId(eventsMap[lastDisplayDate]!)!;
-  final middleEvent = eventsController.byId(eventsMap[initialDate.forLocation(null)]!)!;
+  final middleEvent = eventsController.byId(eventsMap[initialDate.forLocation()]!)!;
   final eventsToTest = [firstEvent, lastEvent, middleEvent];
 
   final controller = CalendarController();

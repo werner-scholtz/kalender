@@ -99,7 +99,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   @override
   TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
     return MultiDayDetail(
-      dateTimeRange: range.forLocation(context.location),
+      dateTimeRange: range.forLocation(location: context.location),
       renderBox: context.findRenderObject() as RenderBox,
       localOffset: localPosition,
     );

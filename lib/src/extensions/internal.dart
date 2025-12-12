@@ -100,7 +100,7 @@ extension InternalDateTimeRangeExtensions on DateTimeRange<DateTime> {
   /// final nyRange = utcRange.toLocal(nyLocation);
   /// // Start: 10 AM EST, End: 11 AM EST (UTC-5)
   /// ```
-  DateTimeRange forLocation(Location? location) {
+  DateTimeRange forLocation({Location? location}) {
     if (location == null) {
       return DateTimeRange(start: start.toLocal(), end: end.toLocal());
     } else {
@@ -140,7 +140,7 @@ class InternalDateTime extends DateTime {
         );
 
   /// Converts this [InternalDateTime] to a [DateTime] for the specified [location].
-  DateTime forLocation(Location? location) {
+  DateTime forLocation({Location? location}) {
     if (location == null) {
       return DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
     } else {
@@ -165,7 +165,7 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
         );
 
   /// Converts this [InternalDateTimeRange] to a [DateTimeRange] for the specified [location].
-  DateTimeRange forLocation(Location? location) {
-    return DateTimeRange(start: start.forLocation(location), end: end.forLocation(location));
+  DateTimeRange forLocation({Location? location}) {
+    return DateTimeRange(start: start.forLocation(location: location), end: end.forLocation(location: location));
   }
 }

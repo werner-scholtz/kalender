@@ -137,7 +137,7 @@ class _DayDraggableState<T extends Object?> extends State<DayDraggable<T>> with 
   @override
   TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
     return DayDetail(
-      date: range.start.forLocation(context.location),
+      date: range.start.forLocation(location: context.location),
       renderBox: context.findRenderObject() as RenderBox,
       localOffset: localPosition,
     );
