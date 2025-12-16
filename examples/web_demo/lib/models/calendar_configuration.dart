@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 
@@ -12,16 +13,22 @@ class CalendarConfiguration extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The display range of the calendar.
+  final _displayRange = DateTimeRange(
+    start: DateTime(2018),
+    end: DateTime(DateTime.now().year + 10),
+  );
+
   /// The available view configurations of the calendar.
-  final viewConfigurations = [
-    MultiDayViewConfiguration.singleDay(),
-    MultiDayViewConfiguration.week(),
-    MultiDayViewConfiguration.workWeek(),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, name: "Custom 3 Days"),
-    MonthViewConfiguration.singleMonth(),
-    ScheduleViewConfiguration.continuous(name: "Schedule"),
-    ScheduleViewConfiguration.paginated(name: "Paginated Schedule"),
-    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)"),
+  late final viewConfigurations = [
+    MultiDayViewConfiguration.singleDay(displayRange: _displayRange),
+    MultiDayViewConfiguration.week(displayRange: _displayRange),
+    MultiDayViewConfiguration.workWeek(displayRange: _displayRange),
+    MultiDayViewConfiguration.custom(numberOfDays: 3, name: "Custom 3 Days", displayRange: _displayRange),
+    MonthViewConfiguration.singleMonth(displayRange: _displayRange),
+    ScheduleViewConfiguration.continuous(name: "Schedule", displayRange: _displayRange),
+    ScheduleViewConfiguration.paginated(name: "Paginated Schedule", displayRange: _displayRange),
+    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)", displayRange: _displayRange),
   ];
 
   /// The body configuration of the calendar.
