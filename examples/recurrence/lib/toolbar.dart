@@ -17,24 +17,29 @@ class CalendarToolBar extends StatelessWidget {
             child: Row(
               children: [
                 ValueListenableBuilder(
-                  valueListenable: calendarController.visibleDateTimeRangeUtc,
+                  valueListenable: calendarController.internalDateTimeRange,
                   builder: (context, value, child) {
+                    if (value == null) return const SizedBox.shrink();
+
                     final String month;
                     final int year;
 
                     if (calendarController.viewController?.viewConfiguration is MonthViewConfiguration) {
+                      final dominantMonthDate = value.dominantMonthDate;
                       // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
                       // we need to check the second week of the visibleDateTimeRange to determine the month and year.
-                      final secondWeek = value.start.addDays(7);
-                      year = secondWeek.year;
-                      month = secondWeek.monthNameLocalized();
+                      year = dominantMonthDate.year;
+                      month = dominantMonthDate.monthNameLocalized();
                     } else {
                       year = value.start.year;
                       month = value.start.monthNameLocalized();
                     }
+
                     return FilledButton.tonal(
                       onPressed: () {},
-                      style: FilledButton.styleFrom(minimumSize: const Size(160, kMinInteractiveDimension)),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(150, kMinInteractiveDimension),
+                      ),
                       child: Text('$month $year'),
                     );
                   },

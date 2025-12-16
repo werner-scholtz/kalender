@@ -40,8 +40,6 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// If not provided, a default locale be used.
   final dynamic locale;
 
-  /// TODO: Add documentation and update readme.
-
   /// The location of the calendar view. (from the timezone package)
   ///
   /// If not provided, the default location will be used.
@@ -142,6 +140,14 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     super.activate();
     // Reattach the view controller when the widget is reactivated.
     widget.calendarController.attach(_viewController);
+  }
+
+  @override
+  void dispose() {
+    // Dispose the view controller when the widget is disposed.
+    widget.calendarController.viewController?.dispose();
+    _location.dispose();
+    super.dispose();
   }
 
   /// Create the [ViewController] based on the [ViewConfiguration].

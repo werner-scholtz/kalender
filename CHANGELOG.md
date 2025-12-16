@@ -1,3 +1,22 @@
+## 0.15.0
+- feat: Added timezone support.
+        
+### Breaking Changes
+
+- Added InternalDateTime and InternalDateTimeRange classes accessible through `kalender/extensions.dart`.
+- Moved `asUtc` and `asLocal` extensions to InternalDateTime.
+- `EventLayoutStrategy` now takes a `InternalDateTime` instead of a DateTime.
+- `GenerateMultiDayLayoutFrame` now takes a `InternalDateTimeRange` instead of a DateTime.
+- `CalendarEvent` stores start and end times in utc format.
+- Removed initial date from `CalendarController`  this is now set in the `ViewConfiguration` of the `CalendarWidget`. ****
+- Replaced `visibleDateTimeRangeUtc` valueNotifier in the `CalendarController` with a nullable `internalDateTimeRange`. (`visibleDateTimeRange` is remains the same).
+- The `EventsController.eventsFromDateTimeRange` now uses `InternalDateTimeRange` and takes a nullable `Location` from the timezone package.
+- Changes to the `DefaultDateMap` to accommodate different timezones, any custom implementations will need to be updated.
+- `EventTileUtils` mixin was also updated to use the new internal date time classes.
+- `PageNavigationFunctions` was renamed to `PageIndexCalculator` and updated to use internal date time classes.
+- Multiple default components where updated to use the new internal date time classes instead of date time classes.
+
+
 ## 0.14.2
 - fix: Tile and ResizeHandleWidget rebuild issues.
 

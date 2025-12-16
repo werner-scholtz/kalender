@@ -7,12 +7,6 @@ analyzer:
   language:
     strict-inference: true
     strict-raw-types: true
-  exclude:
-    - examples/demo/
-    - examples/example/
-    - examples/recurrence/
-    - examples/riverpod/
-    - examples/advanced_example/
 
 linter:
   rules:
