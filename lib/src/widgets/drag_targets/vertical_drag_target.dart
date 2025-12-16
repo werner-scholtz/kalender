@@ -46,17 +46,18 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
   ) {
     final viewController = controller.viewController as MultiDayViewController<T>;
     final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
-    final showMultiDayEvents = configuration.showMultiDayEvents;
 
     return DragTargetUtilities.handleDragDetails<bool, T>(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.vertical,
       onReschedule: (event) {
+        // Multi-day events belong in the header, not the body.
+        // They should be rescheduled via HorizontalDragTarget, not VerticalDragTarget.
+        if (event.isMultiDayEvent) return false;
+
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
-        // Check if the event is a multi day event.
-        if (!showMultiDayEvents && event.isMultiDayEvent) return false;
 
         return true;
       },
@@ -256,8 +257,8 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (localCursorPosition == null) return null;
 
     // Calculate only the date of the cursor from the local cursor position.
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
-    if (cursorDateIndex < 0) return null;
+    // Clamp the index to valid bounds to handle cursor positions over the timeline area.
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
 
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
@@ -280,6 +281,10 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+    // Multi-day events belong in the header, not the body.
+    // Return null to prevent updating the selection while dragging over this area.
+    if (event.isMultiDayEvent) return null;
+
     DateTime start;
 
     if (timeOfDayRange.isAllDay) {

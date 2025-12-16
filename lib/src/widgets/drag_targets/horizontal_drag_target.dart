@@ -42,7 +42,12 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
       details,
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.horizontal,
-      onReschedule: (event) => true,
+      onReschedule: (event) {
+        // If the configuration does not allow single-day events (e.g., multi-day header),
+        // reject single-day events. They belong in the body, not the header.
+        if (!configuration.allowSingleDayEvents && !event.isMultiDayEvent) return false;
+        return true;
+      },
       onOther: () => false,
     );
   }
@@ -172,8 +177,8 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
 
-    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor();
-    if (cursorDateIndex < 0) return null;
+    // Clamp the index to valid bounds to handle cursor positions over edge areas.
+    final cursorDateIndex = (localCursorPosition.dx / dayWidth).floor().clamp(0, visibleDates.length - 1);
 
     final date = Directionality.of(context) == TextDirection.ltr
         ? visibleDates.elementAtOrNull(cursorDateIndex)
@@ -184,6 +189,10 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+    // If the configuration does not allow single-day events (e.g., multi-day header),
+    // return null to prevent updating the selection while dragging over this area.
+    if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return null;
+
     // Calculate the new dateTimeRange for the event.
     final start = event.internalStart(location: context.location);
     final newStartTime = cursorDateTime.copyWith(

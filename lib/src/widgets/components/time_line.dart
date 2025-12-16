@@ -35,6 +35,12 @@ class TimelineStyle {
   /// The text direction of the text.
   final TextDirection? textDirection;
 
+  /// The text align of the text.
+  final TextAlign? textAlign;
+
+  /// The text overflow of the text.
+  final TextOverflow? textOverflow;
+
   /// The padding of the text.
   final EdgeInsets? textPadding;
 
@@ -50,6 +56,8 @@ class TimelineStyle {
   const TimelineStyle({
     this.textStyle,
     this.textDirection,
+    this.textAlign,
+    this.textOverflow,
     this.stringBuilder,
     this.textPadding,
     this.startDecoration,
@@ -203,6 +211,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             text,
             style: textStyle,
             textDirection: textDirection,
+            textAlign: style?.textAlign,
+            overflow: style?.textOverflow,
           ),
         ),
       );
@@ -218,6 +228,10 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
           builder: (context, eventBeingDragged, child) {
             // Ensure that there is a event being dragged.
             if (eventBeingDragged == null) return const SizedBox();
+
+            // Multi-day events belong in the header, not the body.
+            // Don't show timeline tooltips for them.
+            if (eventBeingDragged.isMultiDayEvent) return const SizedBox();
 
             // Ensure that the event is visible.
             final eventRange = eventBeingDragged.internalRange(location: context.location);
