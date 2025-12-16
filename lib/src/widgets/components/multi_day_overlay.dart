@@ -252,7 +252,11 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
                               padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
                               child: SizedBox(
                                 height: tileHeight,
-                                child: overlayTileBuilder(event, InternalDateTimeRange.fromDateTimeRange(date.dayRange), portalController.hide),
+                                child: overlayTileBuilder(
+                                  event,
+                                  InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                  portalController.hide,
+                                ),
                               ),
                             ),
                         ],

@@ -5,7 +5,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
-
 /// This widget renders a [DayEventsColumn] for each day in the [internalRange].
 class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   /// The configuration for the multi-day body.
@@ -125,7 +124,6 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
         location: widget.location,
       ),
     );
-
 
     if (!listEquals(sortedEvents, _events)) {
       setState(() => _events = sortedEvents);

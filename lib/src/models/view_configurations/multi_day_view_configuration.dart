@@ -117,8 +117,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.custom,
-        pageIndexCalculator =
-            PageIndexCalculator.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
+        pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
 
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
   MultiDayViewConfiguration.freeScroll({
