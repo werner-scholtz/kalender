@@ -12,7 +12,7 @@ void main() {
   group('VerticalDragTarget Edge Cases', () {
     testWidgets('should handle negative cursor position (over timeline)', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a test event
@@ -63,7 +63,7 @@ void main() {
 
     testWidgets('should handle cursor position far beyond last visible date', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a test event
@@ -108,7 +108,7 @@ void main() {
 
     testWidgets('should smoothly handle transition from timeline to first day', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       await pumpAndSettleWithMaterialApp(
@@ -167,7 +167,7 @@ void main() {
   group('HorizontalDragTarget Edge Cases', () {
     testWidgets('should handle negative cursor position in month view', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a multi-day test event
@@ -217,7 +217,7 @@ void main() {
 
     testWidgets('should handle cursor far beyond visible dates', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       await pumpAndSettleWithMaterialApp(
@@ -256,7 +256,7 @@ void main() {
   group('Drag Target Behavior During Active Drag', () {
     testWidgets('event should not get stuck when dragged over timeline', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a test event
@@ -314,7 +314,7 @@ void main() {
   group('Edge Case Regression Tests', () {
     testWidgets('zero-width dayWidth should not cause division errors', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       await pumpAndSettleWithMaterialApp(
@@ -339,7 +339,7 @@ void main() {
 
     testWidgets('empty visible dates list should be handled gracefully', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       await pumpAndSettleWithMaterialApp(

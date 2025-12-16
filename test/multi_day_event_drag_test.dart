@@ -15,7 +15,7 @@ void main() {
   group('Multi-Day Event Drag in VerticalDragTarget', () {
     testWidgets('multi-day event should be rejected when dragged in body', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add an all-day event (midnight to midnight = 24 hours)
@@ -55,7 +55,7 @@ void main() {
 
       // Verify it's a multi-day event
       expect(originalEvent.isMultiDayEvent, isTrue);
-      expect(originalEvent.datesSpanned.length, equals(1)); // Just Jan 2
+      expect(originalEvent.datesSpanned().length, equals(1)); // Just Jan 2
 
       // Simulate rescheduling - cursor at 2:30 PM on Jan 5
       final cursorDateTime = DateTime.utc(2025, 1, 5, 14, 30);
@@ -67,7 +67,7 @@ void main() {
 
     testWidgets('single-day event should use cursor time when dragged in body', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a single-day event (2 hours)
@@ -111,9 +111,9 @@ void main() {
       final rescheduled = rescheduledEvent as CalendarEvent;
 
       // Single-day events should use the cursor time (snapped)
-      expect(rescheduled.startAsUtc.day, equals(5));
+      expect(rescheduled.internalStart().day, equals(5));
       // The exact time depends on snapping, but should be around 14:30
-      expect(rescheduled.startAsUtc.hour, greaterThanOrEqualTo(14));
+      expect(rescheduled.internalStart().hour, greaterThanOrEqualTo(14));
 
       // Duration should be preserved (2 hours)
       expect(rescheduled.duration.inHours, equals(2));
@@ -121,7 +121,7 @@ void main() {
 
     testWidgets('multi-day event spanning 3 days should be rejected when dragged in body', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a 3-day event
@@ -156,7 +156,7 @@ void main() {
 
       // Verify original spans 3 dates
       expect(originalEvent.isMultiDayEvent, isTrue);
-      expect(originalEvent.datesSpanned.length, equals(3)); // Jan 2, 3, 4
+      expect(originalEvent.datesSpanned().length, equals(3)); // Jan 2, 3, 4
 
       // Simulate rescheduling - cursor at 3:45 PM on Jan 10
       final cursorDateTime = DateTime.utc(2025, 1, 10, 15, 45);
@@ -168,7 +168,7 @@ void main() {
 
     testWidgets('multi-day event starting at non-midnight should be rejected when dragged in body', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a multi-day event that starts at 8:00 AM (not midnight)
@@ -255,8 +255,8 @@ void main() {
           end: DateTime(2025, 1, 6, 0, 0),
         ),
       );
-      expect(event.datesSpanned.length, equals(1));
-      expect(event.datesSpanned.first.day, equals(5));
+      expect(event.datesSpanned().length, equals(1));
+      expect(event.datesSpanned().first.day, equals(5));
     });
 
     test('48-hour event starting at midnight should span 2 dates', () {
@@ -266,7 +266,7 @@ void main() {
           end: DateTime(2025, 1, 7, 0, 0),
         ),
       );
-      expect(event.datesSpanned.length, equals(2));
+      expect(event.datesSpanned().length, equals(2));
     });
 
     test('event from 2pm to 2pm next day should span 2 dates', () {
@@ -277,7 +277,7 @@ void main() {
         ),
       );
       // This spans Jan 5 and Jan 6
-      expect(event.datesSpanned.length, equals(2));
+      expect(event.datesSpanned().length, equals(2));
     });
   });
 
@@ -285,7 +285,7 @@ void main() {
     group('VerticalDragTarget rejects multi-day events', () {
       testWidgets('should reject multi-day event in onWillAcceptWithDetails', (tester) async {
         final eventsController = DefaultEventsController();
-        final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+        final calendarController = CalendarController();
         final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
         await pumpAndSettleWithMaterialApp(
@@ -328,7 +328,7 @@ void main() {
 
       testWidgets('should accept single-day event in onWillAcceptWithDetails', (tester) async {
         final eventsController = DefaultEventsController();
-        final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+        final calendarController = CalendarController();
         final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
         await pumpAndSettleWithMaterialApp(
@@ -372,7 +372,7 @@ void main() {
 
     group('HorizontalDragTarget rejects single-day events in header', () {
       test('should reject single-day event in header configuration', () {
-        final controller = CalendarController<Object?>(initialDate: DateTime(2025, 1, 1));
+        final controller = CalendarController<Object?>();
 
         // Create a single-day event
         final singleDayEvent = CalendarEvent<Object?>(
@@ -402,7 +402,7 @@ void main() {
       });
 
       test('should accept multi-day event in header configuration', () {
-        final controller = CalendarController<Object?>(initialDate: DateTime(2025, 1, 1));
+        final controller = CalendarController<Object?>();
 
         // Create a multi-day event
         final multiDayEvent = CalendarEvent<Object?>(
@@ -431,7 +431,7 @@ void main() {
       });
 
       test('should accept single-day event in month body configuration', () {
-        final controller = CalendarController<Object?>(initialDate: DateTime(2025, 1, 1));
+        final controller = CalendarController<Object?>();
 
         // Create a single-day event
         final singleDayEvent = CalendarEvent<Object?>(
@@ -465,7 +465,7 @@ void main() {
   group('rescheduleEvent returns null for invalid event types', () {
     testWidgets('VerticalDragTarget.rescheduleEvent returns null for multi-day events', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a multi-day event
@@ -510,7 +510,7 @@ void main() {
 
     testWidgets('VerticalDragTarget.rescheduleEvent returns event for single-day events', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a single-day event
@@ -555,7 +555,7 @@ void main() {
 
     testWidgets('HorizontalDragTarget.rescheduleEvent returns null for single-day events in header', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a single-day event
@@ -605,7 +605,7 @@ void main() {
 
     testWidgets('HorizontalDragTarget.rescheduleEvent returns event for multi-day events in header', (tester) async {
       final eventsController = DefaultEventsController();
-      final calendarController = CalendarController(initialDate: DateTime(2025, 1, 1));
+      final calendarController = CalendarController();
       final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
 
       // Add a multi-day event
