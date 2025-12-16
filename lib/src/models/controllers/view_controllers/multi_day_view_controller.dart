@@ -9,18 +9,18 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     InternalDateTime? initialDate,
     super.location,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
+    final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
     final now = InternalDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? now, location);
+    initialPage = pageIndexCalculator.indexFromDate(initialDate ?? now, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
-    numberOfPages = pageNavigationFunctions.numberOfPages(location);
+    numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
 
-    final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
+    final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
       visibleDateTimeRange.value = InternalDateTimeRange(

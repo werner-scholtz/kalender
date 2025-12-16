@@ -5,6 +5,7 @@ import 'package:kalender/src/models/view_configurations/page_index_calculator.da
 import 'package:timezone/data/latest_10y.dart';
 
 final locationsToTest = [
+  'UTC',
   'Africa/Johannesburg',
   'America/New_York',
   'Europe/London',

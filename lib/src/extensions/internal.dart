@@ -34,11 +34,16 @@ extension InternalDateTimeExtensions on DateTime {
 
   /// TODO: DOCUMENTATION
   DateTime forLocation({Location? location}) {
-    if (location == null) {
-      return toLocal();
-    } else {
-      return TZDateTime.from(this, location);
-    }
+    final isInternal = this is InternalDateTime;
+    final hasLocation = location != null;
+
+    return isInternal
+        ? hasLocation
+            ? TZDateTime(location, year, month, day, hour, minute, second, millisecond, microsecond)
+            : DateTime(year, month, day, hour, minute, second, millisecond, microsecond)
+        : hasLocation
+            ? TZDateTime.from(this, location)
+            : toLocal();
   }
 }
 
