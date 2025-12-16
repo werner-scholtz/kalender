@@ -50,6 +50,8 @@ class EmptyItem extends ListItem {}
 ///   - Add items to a page with [addItemForPage].
 ///   - Query for item indices, dates, or month boundaries as needed.
 mixin ScheduleMap {
+  Location? get location;
+
   /// A map of all the pageIndexes to the IndexItems.
   final _indexedIndexItems = <int, IndexItem>{};
 
@@ -108,13 +110,14 @@ mixin ScheduleMap {
   }
 
   int? indexFromDateTimeForPage(int pageIndex, DateTime date) {
-    assert(date.isUtc, 'Date must be in UTC.');
+    date = date.forLocation(location: location).asUtc.startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     return dateTimeFirstItemIndex[date];
   }
 
   /// Find the index closest to the given date.
   int closestIndexForPage(int pageIndex, DateTime date) {
+    date = date.forLocation(location: location).asUtc.startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     if (dateTimeFirstItemIndex.isEmpty) return 0;
 

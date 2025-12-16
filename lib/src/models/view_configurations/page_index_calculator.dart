@@ -394,7 +394,7 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    date = date.forLocation(location: location).asUtc;
+    date = date.forLocation(location: location).asUtc.startOfDay;
     final internalRange = this.internalRange(location);
     final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));

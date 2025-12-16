@@ -60,7 +60,7 @@ class CalendarEvent<T extends Object?> {
   }
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
-  Duration get duration => dateTimeRange.toUtc().duration;
+  Duration get duration => dateTimeRange.duration;
 
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;

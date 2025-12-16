@@ -34,7 +34,7 @@ void main() {
         // Add multiple events to the controller (multi-day)
         eventsController.addEvents(
           datesToTest.map((date) {
-            final range = DateTimeRange(start: date.startOfDay, end: date.endOfDay);
+            final range = DateTimeRange(start: date.startOfDay, end: date.startOfDay.add(const Duration(days: 1)));
             return CalendarEvent(dateTimeRange: range);
           }).toList(),
         );
@@ -98,7 +98,7 @@ void main() {
               location: null,
             );
 
-            expect(events.length, 3);
+            expect(events.length, 3, reason: 'Failed for date: $date in location: ${location.name}');
           }
         });
 
@@ -112,7 +112,7 @@ void main() {
               location: null,
             );
 
-            expect(events.length, 4);
+            expect(events.length, 4, reason: 'Failed for date: $date in location: ${location.name}');
           }
         });
       });

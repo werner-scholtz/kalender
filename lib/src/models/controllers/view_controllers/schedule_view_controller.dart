@@ -107,8 +107,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
 
@@ -133,7 +132,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     bool centerEvent = true,
   }) async {
     return animateToDate(
-      event.internalStart(location: location).asUtc.startOfDay,
+      event.start,
       duration: scrollDuration,
       curve: scrollCurve,
     );
@@ -171,7 +170,6 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   @override
   void jumpToDate(DateTime date) {
     if (!hasInitialized) return;
-    date = date.forLocation(location: location).asUtc.startOfDay;
     final index = indexFromDateTime(date) ?? closestIndex(date);
     itemScrollController!.jumpTo(index: index);
   }
@@ -210,11 +208,10 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: duration, curve: curve);
 
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
 
@@ -226,11 +223,9 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
-
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: scrollDuration, curve: scrollCurve);
   }
 
@@ -243,7 +238,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.internalStart(location: location).asUtc.startOfDay;
+    final date = event.start;
     final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
@@ -271,14 +266,13 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> jumpToDate(DateTime date) async {
-    final dateAsUtc = date.forLocation(location: location).asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(dateAsUtc, location);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
     // Since jump to page does not build the page immediately,
     // and I'm currently unaware of a way to reliably wait for the page to be built,
     // I will just be using _animateToPage with hardcoded values for now.
     await _animateToPage(pageIndex, duration: const Duration(milliseconds: 100), curve: Curves.linear);
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     await _animateToIndex(index, duration: const Duration(milliseconds: 100), curve: Curves.linear);
   }
 
