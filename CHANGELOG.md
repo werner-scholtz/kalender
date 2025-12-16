@@ -1,3 +1,9 @@
+## 0.14.3
+- feat: Made TextAlign and TextOverflow configurable for TimelineStyle. [PR #242](https://github.com/werner-scholtz/kalender/pull/242) Thanks to [quaaantumdev](https://github.com/quaaantumdev)
+- fix: Various issues while dragging events on multi-day view. [PR #240](https://github.com/werner-scholtz/kalender/pull/240) Thanks to [redninjacat](https://github.com/redninjacat).
+- fix: Drag and drop issues. [PR #238](https://github.com/werner-scholtz/kalender/pull/238) Thanks to [redninjacat](https://github.com/redninjacat).
+- fix: erroneous warning in month_body [PR #237](https://github.com/werner-scholtz/kalender/pull/237) Thanks to [redninjacat](https://github.com/redninjacat).
+
 ## 0.14.2
 - fix: Tile and ResizeHandleWidget rebuild issues.
 
