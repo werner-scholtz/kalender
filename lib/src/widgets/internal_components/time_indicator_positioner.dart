@@ -189,8 +189,6 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
         final left = this.left(pageWidth, dayWidth);
         final right = pageWidth - left - dayWidth;
 
-        print('PositionedTimeIndicator: pageOffset=$pageOffset, left=$left, right=$right');
-
         return Stack(
           children: [
             Positioned.fill(
