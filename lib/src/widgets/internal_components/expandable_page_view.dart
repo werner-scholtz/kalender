@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:linked_pageview/linked_pageview.dart';
 
 /// Thanks to https://gist.github.com/andrzejchm for https://gist.github.com/andrzejchm/02c1728b6f31a69fde2fb4e10b636060
 /// Modified to fit the needs of the calendar header.
 class ExpandablePageView extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext context, int index) itemBuilder;
-  final PageController controller;
+  final LinkedPageController controller;
 
   const ExpandablePageView({
     super.key,
@@ -51,12 +52,11 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       tween: Tween<double>(begin: _heights.first, end: _currentHeight),
       duration: const Duration(milliseconds: 100),
       builder: (context, value, child) => SizedBox(height: value, child: child),
-      child: PageView.builder(
+      child: LinkedPageView.builder(
         padEnds: false,
         controller: widget.controller,
         itemCount: widget.itemCount,
         itemBuilder: _itemBuilder,
-        physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }
@@ -132,6 +132,7 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
   void _notifySize() {
     final context = _widgetKey.currentContext;
     if (context == null) return;
+    if (context is Element && context.dirty) return;
     final size = context.size;
 
     // Notify the parent widget if the size has changed.
