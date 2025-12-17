@@ -12,9 +12,7 @@ void main() {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
   final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
-  final interaction = ValueNotifier(
-    CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true),
-  );
+  final interaction = CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true);
 
   late int dayEventID;
   late int multiDayEventID;

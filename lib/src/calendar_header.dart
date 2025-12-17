@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-class CalendarHeader<T extends Object?> extends StatelessWidget {
+class CalendarHeader<T extends Object?> extends StatefulWidget {
   /// The callbacks used by the [CalendarBody].
   ///
   /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
@@ -17,7 +17,7 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   final TileComponents<T>? multiDayTileComponents;
 
   /// The interaction notifier used by the [MultiDayHeader].
-  final ValueNotifier<CalendarInteraction>? interaction;
+  final CalendarInteraction? interaction;
 
   /// Month
 
@@ -37,19 +37,48 @@ class CalendarHeader<T extends Object?> extends StatelessWidget {
   });
 
   @override
+  State<CalendarHeader<T>> createState() => _CalendarHeaderState<T>();
+}
+
+class _CalendarHeaderState<T extends Object?> extends State<CalendarHeader<T>> {
+  late CalendarCallbacks? _callbacks;
+  late ValueNotifier<CalendarInteraction> _interaction;
+
+  @override
+  void initState() {
+    super.initState();
+    _callbacks = widget.callbacks;
+    _interaction = ValueNotifier(widget.interaction ?? CalendarInteraction());
+  }
+
+  @override
+  void didUpdateWidget(covariant CalendarHeader<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.callbacks != widget.callbacks) {
+      _callbacks = widget.callbacks;
+    }
+    if (oldWidget.interaction != widget.interaction) {
+      _interaction.value = widget.interaction ?? CalendarInteraction();
+    }
+  }
+
+  @override
+  void dispose() {
+    _interaction.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewController = context.calendarController<T>().viewController;
-    final callbacks = this.callbacks ?? context.callbacks<T>();
-    final interaction = this.interaction ?? ValueNotifier(CalendarInteraction());
-
     return Callbacks(
-      callbacks: callbacks,
+      callbacks: _callbacks ?? context.callbacks<T>(),
       child: switch (viewController) {
         MultiDayViewController<T>() => Interaction(
-            notifier: interaction,
+            notifier: _interaction,
             child: TileComponentProvider(
-              tileComponents: multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
-              child: MultiDayHeader<T>(configuration: multiDayHeaderConfiguration),
+              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
+              child: MultiDayHeader<T>(configuration: widget.multiDayHeaderConfiguration),
             ),
           ),
         MonthViewController<T>() => MonthHeader<T>(),
