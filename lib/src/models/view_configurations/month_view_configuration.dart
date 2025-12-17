@@ -12,7 +12,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
   MonthViewConfiguration({
     required super.name,
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy,
     required this.firstDayOfWeek,
     required this.pageIndexCalculator,
@@ -24,7 +24,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -42,7 +42,7 @@ class MonthViewConfiguration extends ViewConfiguration {
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
-      selectedDate: selectedDate ?? this.selectedDate,
+      initialDateTime: initialDateTime ?? this.initialDateTime,
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       displayRange: pageIndexCalculator.dateTimeRange,
@@ -54,14 +54,14 @@ class MonthViewConfiguration extends ViewConfiguration {
     if (identical(this, other)) return true;
 
     return other is MonthViewConfiguration &&
-        other.selectedDate == selectedDate &&
+        other.initialDateTime == initialDateTime &&
         other.pageIndexCalculator == pageIndexCalculator &&
         other.firstDayOfWeek == firstDayOfWeek;
   }
 
   @override
   int get hashCode {
-    return Object.hash(selectedDate, pageIndexCalculator, firstDayOfWeek);
+    return Object.hash(initialDateTime, pageIndexCalculator, firstDayOfWeek);
   }
 }
 

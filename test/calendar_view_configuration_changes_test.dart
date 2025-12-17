@@ -34,7 +34,7 @@ void main() {
         // Change to daily view with specific selectedDate
         final selectedDate = DateTime(2024, 8, 20);
         final dailyConfig = MultiDayViewConfiguration.singleDay(
-          selectedDate: selectedDate,
+          initialDateTime: selectedDate,
           displayRange: calendarRange,
         );
 
@@ -75,7 +75,7 @@ void main() {
         final selectedDate = DateTime(2024, 12, 25);
         final dailyConfig = MultiDayViewConfiguration.singleDay(
           name: 'Day View',
-          selectedDate: selectedDate,
+          initialDateTime: selectedDate,
           initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
           displayRange: calendarRange,
         );

@@ -79,8 +79,8 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     // Create the initial view controller.
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
     final selected = widget.location == null
-        ? widget.viewConfiguration.selectedDate
-        : widget.viewConfiguration.selectedDate?.forLocation(location: widget.location);
+        ? widget.viewConfiguration.initialDateTime
+        : widget.viewConfiguration.initialDateTime?.forLocation(location: widget.location);
     final initialDate = InternalDateTime.fromDateTime(selected ?? now);
     _viewController = _createViewController(initialDate: initialDate);
 
@@ -107,8 +107,8 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
       // Use selectedDate if available, otherwise use the initial date selection strategy
-      final initialDate = widget.viewConfiguration.selectedDate != null
-          ? InternalDateTime.fromDateTime(widget.viewConfiguration.selectedDate!)
+      final initialDate = widget.viewConfiguration.initialDateTime != null
+          ? InternalDateTime.fromDateTime(widget.viewConfiguration.initialDateTime!)
           : widget.viewConfiguration.initialDateSelectionStrategy(
               oldViewController: _viewController,
               newViewConfiguration: widget.viewConfiguration,

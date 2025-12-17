@@ -62,7 +62,7 @@ void main() {
         viewConfiguration: MultiDayViewConfiguration.singleDay(
           displayRange: displayRange,
           initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
-          selectedDate: DateTime(2025, 1, 1),
+          initialDateTime: DateTime(2025, 1, 1),
         ),
         header: CalendarHeader(interaction: interaction),
         body: CalendarBody(interaction: interaction),
@@ -112,7 +112,10 @@ void main() {
       CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
-        viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: displayRange, selectedDate: DateTime(2025)),
+        viewConfiguration: MonthViewConfiguration.singleMonth(
+          displayRange: displayRange,
+          initialDateTime: DateTime(2025),
+        ),
         header: CalendarHeader(interaction: interaction),
         body: CalendarBody(interaction: interaction),
       ),

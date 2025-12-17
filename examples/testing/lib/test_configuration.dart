@@ -9,22 +9,22 @@ class TestConfiguration {
   TestConfiguration.week()
     : viewConfiguration = MultiDayViewConfiguration.week(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
   TestConfiguration.month()
     : viewConfiguration = MonthViewConfiguration.singleMonth(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
   TestConfiguration.schedule()
     : viewConfiguration = ScheduleViewConfiguration.continuous(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
-  static final selectedDate = DateTime(2024, 6, 1);
+  static final initialDateTime = DateTime(2024, 6, 1);
   static final start = DateTime(2024, 1, 1);
   static final end = DateTime(2024, 12, 31);
   static DateTimeRange get testRange => DateTimeRange(start: start, end: end);

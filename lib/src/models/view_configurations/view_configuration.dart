@@ -14,7 +14,7 @@ export 'package:kalender/kalender_extensions.dart';
 abstract class ViewConfiguration {
   const ViewConfiguration({
     required this.name,
-    this.selectedDate,
+    this.initialDateTime,
     this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
   });
 
@@ -26,7 +26,7 @@ abstract class ViewConfiguration {
   ///
   /// If this is provided, it will take precedence over the initial date selection strategy.
   /// When null, the view will use the initialDateSelectionStrategy for transition behavior.
-  final DateTime? selectedDate;
+  final DateTime? initialDateTime;
 
   /// The strategy used for determining initial date when transitioning between view configurations.
   ///
