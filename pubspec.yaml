@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: '>=0.17.0 <0.22.2'
+  linked_pageview: ^1.1.5
   scrollable_positioned_list: ^0.3.8
   timezone: ^0.10.1
   universal_platform: ^1.1.0

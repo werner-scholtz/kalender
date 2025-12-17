@@ -7,6 +7,7 @@ import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
+import 'package:linked_pageview/linked_pageview.dart';
 
 /// This widget is used to display a multi-day body.
 ///
@@ -209,7 +210,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   @override
   Widget build(BuildContext context) {
     // TODO: when switching location the current page is sometimes not correct.
-    return PageView.builder(
+    return LinkedPageView.builder(
       key: ValueKey(widget.viewController.viewConfiguration.hashCode + widget.location.hashCode),
       padEnds: false,
       controller: widget.viewController.pageController,

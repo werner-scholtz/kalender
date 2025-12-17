@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:linked_pageview/linked_pageview.dart';
 
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
@@ -15,8 +16,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
-    pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
-    headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
+    pageController = _controllerGroup.create(viewportFraction: viewPortFraction, initialPage: initialPage);
+    headerController = _controllerGroup.create(viewportFraction: viewPortFraction, initialPage: initialPage);
+
     numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
 
@@ -54,11 +56,14 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   /// The number of pages in the view.
   late final int numberOfPages;
 
+  /// The linked page controller group used to link the header and body controllers.
+  final _controllerGroup = LinkedPageControllerGroup();
+
   /// The page controller used by the view.
-  late final PageController pageController;
+  late final LinkedPageController pageController;
 
   /// The page controller used by the header. (Linked to [pageController])
-  late final PageController headerController;
+  late final LinkedPageController headerController;
 
   /// The scroll controller used by the view.
   late ScrollController scrollController;
