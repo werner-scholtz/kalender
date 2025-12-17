@@ -16,6 +16,7 @@
 - `PageNavigationFunctions` was renamed to `PageIndexCalculator` and updated to use internal date time classes.
 - Multiple default components where updated to use the new internal date time classes instead of date time classes.
 - ViewConfiguration renamed `selectedDate` to `initialDateTime`.
+- CalendarHeader and CalendarBody no longer take ValueNotifiers and will instead create and dispose ValueNotifiers created from values passed to them.
 
 ## 0.14.3
 - feat: Made TextAlign and TextOverflow configurable for TimelineStyle. [PR #242](https://github.com/werner-scholtz/kalender/pull/242) Thanks to [quaaantumdev](https://github.com/quaaantumdev)
