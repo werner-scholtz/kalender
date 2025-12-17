@@ -42,7 +42,7 @@ class MonthViewConfiguration extends ViewConfiguration {
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
-      initialDateTime: initialDateTime ?? this.initialDateTime,
+      initialDateTime: initialDateTime ?? initialDateTime,
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       displayRange: pageIndexCalculator.dateTimeRange,
