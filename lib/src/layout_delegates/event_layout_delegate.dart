@@ -19,21 +19,23 @@ export 'package:kalender/src/models/time_of_day_range.dart';
 ///
 typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
   EventLayoutDelegateCache? cache,
+  Location? location,
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
 EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
   EventLayoutDelegateCache? cache,
+  Location? location,
 ) {
   return OverlapLayoutDelegate<T>(
     events: events,
@@ -42,17 +44,19 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
     timeOfDayRange: timeOfDayRange,
     minimumTileHeight: minimumTileHeight,
     layoutCache: cache ?? EventLayoutDelegateCache(),
+    location: location,
   );
 }
 
 /// A [EventLayoutStrategy] that lays out the tiles side by side.
 EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   Iterable<CalendarEvent<T>> events,
-  DateTime date,
+  InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
   double? minimumTileHeight,
   EventLayoutDelegateCache? cache,
+  Location? location,
 ) {
   return SideBySideLayoutDelegate<T>(
     events: events,
@@ -61,6 +65,7 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
     timeOfDayRange: timeOfDayRange,
     minimumTileHeight: minimumTileHeight,
     layoutCache: cache ?? EventLayoutDelegateCache(),
+    location: location,
   );
 }
 
@@ -107,13 +112,17 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
     required this.events,
     required this.heightPerMinute,
     required this.date,
+    required this.location,
     required this.timeOfDayRange,
     required this.minimumTileHeight,
     required this.layoutCache,
   });
 
   /// The date for which the events are laid out.
-  final DateTime date;
+  final InternalDateTime date;
+
+  /// The location for which the events are laid out.
+  final Location? location;
 
   /// The time of day range for which the events are laid out.
   final TimeOfDayRange timeOfDayRange;
@@ -141,7 +150,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent<T> event) {
-    final durationOnDate = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
+    final durationOnDate = event.internalRange(location: location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
     final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
@@ -155,7 +164,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
   ///
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent<T> event) {
-    final eventStart = event.dateTimeRangeAsUtc.dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
+    final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     final dateStart = timeOfDayRange.start.toDateTime(date);
     return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
   }
@@ -303,7 +312,8 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
         oldDelegate.heightPerMinute != heightPerMinute ||
         oldDelegate.timeOfDayRange != timeOfDayRange ||
         oldDelegate.date != date ||
-        oldDelegate.minimumTileHeight != minimumTileHeight;
+        oldDelegate.minimumTileHeight != minimumTileHeight ||
+        oldDelegate.location != location;
   }
 }
 
@@ -313,6 +323,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
     required super.events,
     required super.heightPerMinute,
     required super.date,
+    required super.location,
     required super.timeOfDayRange,
     required super.minimumTileHeight,
     required super.layoutCache,
@@ -322,7 +333,11 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
   List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) {
     return events.toList()
       ..sort((a, b) => b.duration.compareTo(a.duration))
-      ..sort((a, b) => b.duration.compareTo(a.duration) == 0 ? b.startAsUtc.compareTo(a.startAsUtc) : 0);
+      ..sort(
+        (a, b) => b.duration.compareTo(a.duration) == 0
+            ? b.internalStart(location: location).compareTo(a.internalStart(location: location))
+            : 0,
+      );
   }
 
   @override
@@ -378,6 +393,7 @@ class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T>
     required super.events,
     required super.heightPerMinute,
     required super.date,
+    required super.location,
     required super.timeOfDayRange,
     required super.minimumTileHeight,
     required super.layoutCache,

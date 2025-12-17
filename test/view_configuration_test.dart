@@ -49,9 +49,11 @@ void main() {
   final displayRange = DateTimeRange(start: start, end: end);
 
   // The initial date for the calendar controller.
-  final initialDate = DateTime(2025, 1, 1);
+  final initialDate = InternalDateTime(2025, 1, 1);
+  final startDate = InternalDateTime.fromDateTime(start);
+  final endDate = InternalDateTime.fromDateTime(lastDisplayDate);
 
-  /// What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
+  // What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
   final eventMapItems = List.generate(
     displayRange.dates().length,
     (i) {
@@ -60,7 +62,6 @@ void main() {
       final value = eventsController.addEvent(
         CalendarEvent(dateTimeRange: DateTimeRange(start: key, end: end)),
       );
-
       return MapEntry<DateTime, int>(key, value);
     },
   );
@@ -69,10 +70,10 @@ void main() {
   // Test animating to specific events.
   final firstEvent = eventsController.byId(eventsMap[start]!)!;
   final lastEvent = eventsController.byId(eventsMap[lastDisplayDate]!)!;
-  final middleEvent = eventsController.byId(eventsMap[initialDate]!)!;
+  final middleEvent = eventsController.byId(eventsMap[initialDate.forLocation()]!)!;
   final eventsToTest = [firstEvent, lastEvent, middleEvent];
 
-  final controller = CalendarController(initialDate: initialDate);
+  final controller = CalendarController();
   final jumpToDate = controller.jumpToDate;
   final animateToDate = controller.animateToDate;
   final animateToDateTime = controller.animateToDateTime;
@@ -81,6 +82,7 @@ void main() {
   group('MultiDayViewConfiguration', () {
     testWidgets('singleDay', (tester) async {
       final viewConfiguration = MultiDayViewConfiguration.singleDay(displayRange: displayRange);
+
       await tester.pumpCalendarView(
         controller: controller,
         viewConfiguration: viewConfiguration,
@@ -94,14 +96,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -134,14 +136,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -175,14 +177,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -216,14 +218,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -263,14 +265,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -306,14 +308,14 @@ void main() {
         // How fortunate that 2024 starts on a Monday.
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -337,7 +339,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = ContinuousScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
       );
@@ -365,14 +367,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -395,7 +397,7 @@ void main() {
       final viewConfiguration = ScheduleViewConfiguration.continuous(displayRange: displayRange);
       final viewController = PaginatedScheduleViewController(
         viewConfiguration: viewConfiguration,
-        visibleDateTimeRange: ValueNotifier<DateTimeRange>(displayRange),
+        visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(displayRange)),
         visibleEvents: ValueNotifier<Set<CalendarEvent>>({}),
         initialDate: initialDate,
       );
@@ -423,14 +425,14 @@ void main() {
       for (final function in repeatableFunctions) {
         await tester.testDateFunctionExact(
           controller: controller,
-          dateTime: start,
+          dateTime: startDate,
           function: function,
           event: firstEvent,
         );
 
         await tester.testDateFunctionCallWithin(
           controller: controller,
-          dateTime: lastDisplayDate,
+          dateTime: endDate,
           function: function,
           event: lastEvent,
         );
@@ -488,7 +490,7 @@ extension ViewControllerUtilities on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.start.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+      event.start.isWithin(controller.visibleDateTimeRange.value!, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );
@@ -497,7 +499,7 @@ extension ViewControllerUtilities on WidgetTester {
   /// Test that a function call changes the visible range start of the [CalendarController] to the given dateTime.
   Future<void> testDateFunctionExact({
     required CalendarController controller,
-    required DateTime dateTime,
+    required InternalDateTime dateTime,
     required void Function(DateTime dateTime) function,
     CalendarEvent? event,
   }) async {
@@ -507,7 +509,7 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
     // Check if the visible range start is the same as the dateTime.
     expect(
-      controller.visibleDateTimeRange.value.start,
+      controller.internalDateTimeRange.value!.start,
       dateTime,
       reason: 'Calling the $function should set the change the visible range start to $dateTime',
     );
@@ -525,7 +527,7 @@ extension ViewControllerUtilities on WidgetTester {
   /// Test that a function call includes the given dateTime in the visible range of the [CalendarController].
   Future<void> testDateFunctionCallWithin({
     required CalendarController controller,
-    required DateTime dateTime,
+    required InternalDateTime dateTime,
     required void Function(DateTime dateTime) function,
     CalendarEvent? event,
   }) async {
@@ -534,10 +536,10 @@ extension ViewControllerUtilities on WidgetTester {
     await pumpAndSettle();
 
     expect(
-      dateTime.isWithin(controller.visibleDateTimeRange.value, includeEnd: true),
+      dateTime.isWithin(controller.internalDateTimeRange.value!, includeEnd: true),
       isTrue,
       reason: 'Calling the $function should include the $dateTime date in the visible range, '
-          'which is ${controller.visibleDateTimeRange.value}',
+          'which is ${controller.internalDateTimeRange.value}',
     );
 
     // If an event is provided, check if it is visible.

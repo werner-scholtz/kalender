@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 
 /// The type of the schedule view.
 enum ScheduleViewType {
@@ -25,35 +25,35 @@ enum EmptyDayBehavior {
 
 class ScheduleViewConfiguration extends ViewConfiguration {
   @override
-  final PageNavigationFunctions pageNavigationFunctions;
+  final PageIndexCalculator pageIndexCalculator;
 
   /// The type of the schedule view.
   final ScheduleViewType viewType;
 
   ScheduleViewConfiguration({
     required super.name,
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy,
     required this.viewType,
-    required this.pageNavigationFunctions,
+    required this.pageIndexCalculator,
   });
 
   /// Creates a continuous [ScheduleViewConfiguration].
   ScheduleViewConfiguration.continuous({
     super.name = 'Schedule (continuous)',
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
-  })  : pageNavigationFunctions = PageNavigationFunctions.scheduleContinuous(displayRange ?? DateTime.now().yearRange),
+  })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.continuous;
 
   /// Creates a paginated [ScheduleViewConfiguration].
   ScheduleViewConfiguration.paginated({
     super.name = 'Schedule (paginated)',
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
-  })  : pageNavigationFunctions = PageNavigationFunctions.schedulePaginated(displayRange ?? DateTime.now().yearRange),
+  })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? DateTime.now().yearRange),
         viewType = ScheduleViewType.paginated;
 }
 

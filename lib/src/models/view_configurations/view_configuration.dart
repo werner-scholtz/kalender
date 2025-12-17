@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
-import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
 import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
 export 'package:kalender/kalender_extensions.dart';
@@ -15,18 +14,19 @@ export 'package:kalender/kalender_extensions.dart';
 abstract class ViewConfiguration {
   const ViewConfiguration({
     required this.name,
-    this.selectedDate,
+    this.initialDateTime,
     this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
   });
 
   /// The name of the [ViewConfiguration].
   final String name;
 
+  // TODO(werner): rename to initialDateTime.
   /// The selected date to start the view from.
   ///
   /// If this is provided, it will take precedence over the initial date selection strategy.
   /// When null, the view will use the initialDateSelectionStrategy for transition behavior.
-  final DateTime? selectedDate;
+  final DateTime? initialDateTime;
 
   /// The strategy used for determining initial date when transitioning between view configurations.
   ///
@@ -36,15 +36,13 @@ abstract class ViewConfiguration {
   final InitialDateSelectionStrategy initialDateSelectionStrategy;
 
   /// The functions for navigating the [PageView].
-  PageNavigationFunctions get pageNavigationFunctions;
+  PageIndexCalculator get pageIndexCalculator;
 
-  /// The [DateTimeRange] that can be displayed by the calendar.
-  /// * This is the range that is adjusted by the [pageNavigationFunctions].
-  ///   Which means that it is in UTC.
-  DateTimeRange get displayRange => pageNavigationFunctions.adjustedRange;
-
-  /// The original [DateTimeRange] that was used to create the [PageNavigationFunctions].
-  DateTimeRange get originalDisplayRange => pageNavigationFunctions.originalRange;
+  /// The [DateTimeRange] that the calendar can display.
+  ///
+  /// This might be different depending on the location of the calendar view.
+  /// to get the exact range for a location, use: [PageIndexCalculator.displayRangeForLocation]
+  DateTimeRange get dateTimeRange => pageIndexCalculator.dateTimeRange;
 }
 
 /// The base class for all vertical views of the calendar.
@@ -198,6 +196,3 @@ const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showToday;
-
-@Deprecated('This will be removed in the future. Use `generateMultiDayLayoutFrame` instead.')
-const defaultMultiDayEventLayoutStrategy = defaultMultiDayLayoutStrategy;

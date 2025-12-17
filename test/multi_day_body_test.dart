@@ -28,7 +28,7 @@ void main() {
       final start = DateTime(2025, 3, 24);
       final end = DateTime(2025, 3, 31);
       final dateTimeRange = DateTimeRange(start: start, end: end);
-      final calendarController = CalendarController(initialDate: start);
+      final calendarController = CalendarController();
 
       /// A list of different view configurations to test.
       final viewConfigurations = [
@@ -36,11 +36,13 @@ void main() {
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          initialDateTime: start,
         ),
         MultiDayViewConfiguration.week(
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          initialDateTime: start,
         ),
         MultiDayViewConfiguration.week(
           firstDayOfWeek: DateTime.monday,
@@ -51,6 +53,7 @@ void main() {
           initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
           initialHeightPerMinute: 1,
           displayRange: dateTimeRange,
+          initialDateTime: start,
         ),
       ];
 

@@ -200,7 +200,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
   @override
   CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc;
+    final rangeAsUtc = event.internalRange(location: context.location);
     // Set the highlighted date in the schedule view controller.
     widget.viewController.highlightedDateTimeRange.value = DateTimeRange(
       start: cursorDateTime,
@@ -214,11 +214,12 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
     } else {
       // Calculate the new dateTimeRange for the event.
       final newStartTime = cursorDateTime;
-      final duration = event.dateTimeRangeAsUtc.duration;
+      final duration = event.duration;
       final endTime = newStartTime.add(duration);
       final newRange = DateTimeRange(start: newStartTime, end: endTime);
 
       // Update the event with the new start time.
+      // TODO: this as local needs to be investigated.
       final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
       return updatedEvent;
     }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
+export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_date_map.dart';
+export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_events_controller.dart';
+
 /// The [EventsController] is used to manage [CalendarEvent]s.
 ///
 /// This class can be extended to create custom [EventsController]s.
@@ -13,8 +16,12 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// The list of [CalendarEvent]s.
   Iterable<CalendarEvent<T>> get events;
 
+  /// TODO: rename to EventStore.
   /// A Map of dates and event ids.
   DateMap<T> get dateMap;
+
+  /// Predefined locations from the [timezone](https://pub.dev/packages/timezone) package for optimizations.
+  List<Location> get locations;
 
   /// Adds an [CalendarEvent] to the [EventsController].
   ///
@@ -89,19 +96,20 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
   /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   Iterable<CalendarEvent<T>> eventsFromDateTimeRange(
-    DateTimeRange dateTimeRange, {
+    InternalDateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
+    required Location? location,
   }) {
-    final eventIds = dateMap.eventIdsFromDateTimeRange(dateTimeRange);
+    final eventIds = dateMap.eventIdsFromDateTimeRange(dateTimeRange, location);
     final events = eventIds.map((id) => dateMap.byId(id)).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
-      return _allEventsFromDateTimeRange(events, dateTimeRange);
+      return _allEventsFromDateTimeRange(events, dateTimeRange, location);
     } else if (includeMultiDayEvents) {
-      return _multiDayEventsFromDateTimeRange(events, dateTimeRange);
+      return _multiDayEventsFromDateTimeRange(events, dateTimeRange, location);
     } else if (includeDayEvents) {
-      return _dayEventsFromDateTimeRange(events, dateTimeRange);
+      return _dayEventsFromDateTimeRange(events, dateTimeRange, location);
     } else {
       return [];
     }
@@ -110,13 +118,14 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// Finds all the [CalendarEvent]s that occur during the [dateTimeRange].
   Iterable<CalendarEvent<T>> _allEventsFromDateTimeRange(
     Iterable<CalendarEvent<T>> events,
-    DateTimeRange dateTimeRange,
+    InternalDateTimeRange dateTimeRange,
+    Location? location,
   ) {
     return events.where(
       (event) {
         // If the event is a zero duration event at the start of the day, we should check for touching.
-        final touching = _checkTouching(event);
-        return event.dateTimeRangeAsUtc.overlaps(dateTimeRange, touching: touching);
+        final touching = _checkTouching(event, location);
+        return event.internalRange(location: location).overlaps(dateTimeRange, touching: touching);
       },
     );
   }
@@ -124,42 +133,46 @@ abstract class EventsController<T extends Object?> with ChangeNotifier {
   /// Finds the [CalendarEvent]s longer than 1 day that occur during the [dateTimeRange].
   Iterable<CalendarEvent<T>> _multiDayEventsFromDateTimeRange(
     Iterable<CalendarEvent<T>> events,
-    DateTimeRange dateTimeRange,
+    InternalDateTimeRange dateTimeRange,
+    Location? location,
   ) {
     return events.where((event) {
       // If the event is not a multi day event, return false.
       if (!event.isMultiDayEvent) return false;
-      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange);
+      return event.internalRange(location: location).overlaps(dateTimeRange);
     });
   }
 
   /// Finds the [CalendarEvent]s that are shorter than 1 day that occur during the [dateTimeRange].
   Iterable<CalendarEvent<T>> _dayEventsFromDateTimeRange(
     Iterable<CalendarEvent<T>> events,
-    DateTimeRange dateTimeRange,
+    InternalDateTimeRange dateTimeRange,
+    Location? location,
   ) {
     return events.where((event) {
       // If the event is a multi day event, return false.
       if (event.isMultiDayEvent) return false;
 
       // If the event is a zero duration event at the start of the day, we should check for touching.
-      final touching = _checkTouching(event);
+      final touching = _checkTouching(event, location);
 
-      return event.dateTimeRangeAsUtc.overlaps(dateTimeRange, touching: touching);
+      return event.internalRange(location: location).overlaps(dateTimeRange, touching: touching);
     });
   }
 
   /// Check if the event is touching the start of the day, and that is a zero duration event.
-  bool _checkTouching(CalendarEvent event) => event.start == event.end && event.start == event.start.startOfDay;
-}
+  bool _checkTouching(CalendarEvent event, Location? location) {
+    final internalStart = event.internalStart(location: location);
+    final internalEnd = event.internalEnd(location: location);
 
-/// The default [EventsController] for managing [CalendarEvent]s.
-class DefaultEventsController<T extends Object?> extends EventsController<T> {
-  @override
-  final dateMap = DefaultDateMap<T>();
-
-  @override
-  Iterable<CalendarEvent<T>> get events => dateMap.events;
+    return internalStart == internalEnd &&
+        internalStart ==
+            InternalDateTime(
+              internalStart.year,
+              internalStart.month,
+              internalStart.day,
+            );
+  }
 }
 
 /// A class that maps [CalendarEvent]s to dates.
@@ -191,113 +204,10 @@ abstract class DateMap<T> {
   /// Clear all events.
   void clear();
 
-  /// Retrieve a [Set] of event id's from the map that occur during the [dateTimeRange].
-  Set<int> eventIdsFromDateTimeRange(DateTimeRange dateTimeRange);
-}
-
-/// The default class for storing [CalendarEvent]s.
-class DefaultDateMap<T> extends DateMap<T> {
-  /// Map of the [DateTime] and event ids.
+  /// Retrieves the IDs of events that occur during the specified [dateTimeRange].
   ///
-  /// The [DateTime] is the date.
-  /// The [Set] of [int] is the ids of the events.
-  final Map<DateTime, Set<int>> dateIds = {};
-
-  /// A Map containing all events.
-  final idEvent = <int, CalendarEvent<T>>{};
-
-  @override
-  Iterable<CalendarEvent<T>> get events => idEvent.values;
-
-  int _lastId = 0;
-  int get _nextId {
-    _lastId++;
-    return _lastId;
-  }
-
-  @override
-  CalendarEvent<T>? byId(int id) => idEvent[id];
-
-  /// Clear the [dateIds].
-  @override
-  void clear() {
-    dateIds.clear();
-    idEvent.clear();
-  }
-
-  @override
-  int addNewEvent(CalendarEvent<T> event) {
-    final eventWithId = assignId(event);
-    _addEvent(eventWithId);
-    return eventWithId.id;
-  }
-
-  @override
-  void removeById(int id) {
-    final event = idEvent[id];
-    assert(event != null, 'The event with id $id cannot be removed as it does not exist in the map.');
-    if (event == null) return;
-    removeEvent(event);
-  }
-
-  @override
-  void removeEvent(CalendarEvent event) {
-    final id = event.id;
-    assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
-    idEvent.remove(id);
-
-    final dates = event.datesSpanned;
-    for (final date in dates) {
-      dateIds.update(
-        date,
-        (value) => value..remove(id),
-      );
-    }
-  }
-
-  @override
-  void removeEvents(List<CalendarEvent<T>> events) => events.forEach(removeEvent);
-
-  @override
-  void updateEvent(CalendarEvent<T> event, CalendarEvent<T> updatedEvent) {
-    removeEvent(event);
-    _addEvent(updatedEvent);
-  }
-
-  @override
-  void removeWhere(bool Function(int key, CalendarEvent<T> element) test) {
-    return idEvent.removeWhere((key, event) => test(key, event));
-  }
-
-  @override
-  Set<int> eventIdsFromDateTimeRange(DateTimeRange dateTimeRange) {
-    assert(dateTimeRange.isUtc, 'The DateTimeRange must be in UTC.');
-    final days = dateTimeRange.dates();
-    final eventIds = <int>{};
-    for (final day in days) {
-      eventIds.addAll(dateIds[day] ?? {});
-    }
-    return eventIds;
-  }
-
-  /// Assign and id to an event.
-  CalendarEvent<T> assignId(CalendarEvent<T> event) {
-    assert(event.id == -1, 'The id of the event must not be set manually.');
-    event.id = _nextId;
-    return event;
-  }
-
-  /// Add an [event] to the map.
-  void _addEvent(CalendarEvent<T> event) {
-    final id = event.id;
-    idEvent[id] = event;
-    final dates = event.datesSpanned;
-    for (final date in dates) {
-      dateIds.update(
-        date,
-        (value) => value..add(id),
-        ifAbsent: () => {id},
-      );
-    }
-  }
+  /// Parameters:
+  /// - [dateTimeRange]: The internal date time range to search for events.
+  /// - [location]: The location for which to retrieve the event IDs.
+  Set<int> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location);
 }

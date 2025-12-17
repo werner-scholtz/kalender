@@ -18,7 +18,7 @@ void main() {
 
     final start = DateTime(2025, 3, 24);
     final end = DateTime(2025, 3, 31);
-    final visibleRange = DateTimeRange(start: start.asUtc, end: end.asUtc);
+    final visibleRange = InternalDateTimeRange(start: start.asUtc, end: end.asUtc);
 
     ValueKey<int> getKey(int data) => ValueKey(data);
 
@@ -50,13 +50,14 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
               configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 2),
               maxNumberOfVerticalEvents: null,
               multiDayCache: null,
+              location: null,
             ),
           ),
         ),
@@ -149,13 +150,14 @@ void main() {
               height: tileHeight * 3,
               child: MultiDayEventLayoutWidget<int>(
                 events: eventsController.events.toList(),
-                visibleDateTimeRange: visibleRange,
+                internalDateTimeRange: visibleRange,
                 textDirection: TextDirection.ltr,
                 multiDayOverlayBuilders: null,
                 multiDayOverlayStyles: null,
                 configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 3),
                 maxNumberOfVerticalEvents: null,
                 multiDayCache: null,
+                location: null,
               ),
             ),
           ),
@@ -240,13 +242,14 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
               multiDayOverlayBuilders: null,
               multiDayOverlayStyles: null,
               configuration: const MultiDayHeaderConfiguration(tileHeight: 50.0, maximumNumberOfVerticalEvents: 2),
               maxNumberOfVerticalEvents: null,
               multiDayCache: null,
+              location: null,
             ),
           ),
         ),
@@ -312,7 +315,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
                 maximumNumberOfVerticalEvents: 3,
                 tileHeight: tileHeight,
@@ -320,6 +323,7 @@ void main() {
                   required events,
                   required textDirection,
                   required visibleDateTimeRange,
+                  required location,
                   cache,
                 }) =>
                     defaultMultiDayFrameGenerator(
@@ -327,6 +331,7 @@ void main() {
                   events: events,
                   textDirection: textDirection,
                   cache: cache,
+                  location: location,
                   eventComparator: customComparator,
                 ),
                 eventPadding: const EdgeInsets.all(0),
@@ -336,6 +341,7 @@ void main() {
               multiDayOverlayStyles: null,
               maxNumberOfVerticalEvents: null,
               multiDayCache: null,
+              location: null,
             ),
           ),
         ),
@@ -423,7 +429,7 @@ void main() {
             tileComponents: tileComponents,
             child: MultiDayEventLayoutWidget<int>(
               events: eventsController.events.toList(),
-              visibleDateTimeRange: visibleRange,
+              internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
                 tileHeight: 50.0,
                 maximumNumberOfVerticalEvents: 3,
@@ -431,6 +437,7 @@ void main() {
                   required events,
                   required textDirection,
                   required visibleDateTimeRange,
+                  required location,
                   cache,
                 }) =>
                     defaultMultiDayFrameGenerator(
@@ -439,6 +446,7 @@ void main() {
                   textDirection: textDirection,
                   eventComparator: customComparator,
                   cache: cache,
+                  location: location,
                 ),
                 eventPadding: const EdgeInsets.all(0),
               ),
@@ -447,6 +455,7 @@ void main() {
               multiDayOverlayStyles: null,
               maxNumberOfVerticalEvents: null,
               multiDayCache: null,
+              location: null,
             ),
           ),
         ),

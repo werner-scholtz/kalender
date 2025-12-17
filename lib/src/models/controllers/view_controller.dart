@@ -8,15 +8,23 @@ export 'view_controllers/month_view_controller.dart';
 export 'view_controllers/multi_day_view_controller.dart';
 export 'view_controllers/schedule_view_controller.dart';
 
+// TODO: this will need a location parameter to handle time zones.
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
 abstract class ViewController<T extends Object?> with CalendarNavigationFunctions<T> {
+  /// The location of the current view.
+  Location? location;
+
+  /// TODO: Docs.
+  /// The [DateTimeRange] that is currently visible.
+  final ValueNotifier<InternalDateTimeRange?> visibleDateTimeRange;
+
+  // TODO: fix
+  ViewController({this.location, required this.visibleDateTimeRange});
+
   /// The view configuration that will be used by the controller.
   ViewConfiguration get viewConfiguration;
-
-  /// The [DateTimeRange] that is currently visible.
-  ValueNotifier<DateTimeRange> get visibleDateTimeRange;
 
   /// The [CalendarEvent]s that are currently visible.
   ValueNotifier<Set<CalendarEvent<T>>> get visibleEvents;

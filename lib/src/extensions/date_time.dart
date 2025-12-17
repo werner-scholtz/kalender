@@ -223,6 +223,9 @@ extension DateTimeExtensions on DateTime {
     }
   }
 
+  // TODO: Document
+  bool get isStartOfDay => hour == 0 && minute == 0 && second == 0 && millisecond == 0 && microsecond == 0;
+
   /// Gets the start of the week.
   ///
   /// The start of the week is determined by [firstDayOfWeek] parameter, it defaults to [DateTime.monday].
@@ -363,32 +366,6 @@ extension DateTimeExtensions on DateTime {
     final end = numberOfDays.isNegative ? this : addDays(numberOfDays);
     return DateTimeRange(start: start, end: end);
   }
-
-  /// Returns a [DateTime] as a UTC value without converting it.
-  ///
-  /// This method returns a new [DateTime] object with the same date and time
-  /// as the original, but with the time zone set to UTC.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final utcDate = date.asUtc;
-  /// print(utcDate); // Output: 2024-01-15 10:30:00.000Z
-  /// ```
-  DateTime get asUtc => DateTime.utc(year, month, day, hour, minute, second, millisecond, microsecond);
-
-  /// Returns a [DateTime] as a local value without converting it.
-  ///
-  /// This method returns a new [DateTime] object with the same date and time
-  /// as the original, but with the time zone set to the local time zone.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final localDate = date.asLocal;
-  /// print(localDate); // Output: 2024-01-15 10:30:00.000
-  /// ```
-  DateTime get asLocal => DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
   /// TODO: Proposal depend on the intl package so this can be removed.
   /// If we do start depending on the intl package, then we might as well

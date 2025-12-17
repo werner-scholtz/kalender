@@ -39,8 +39,8 @@ void main() {
     final calendarController = CalendarController<int>();
     final viewController = MultiDayViewController<int>(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
-      visibleDateTimeRange: ValueNotifier<DateTimeRange>(
-        DateTimeRange(start: start.startOfDay, end: start.endOfDay),
+      visibleDateTimeRange: ValueNotifier(
+        InternalDateTimeRange(start: start.startOfDay, end: start.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
     );
@@ -66,7 +66,7 @@ void main() {
             width: 700,
             child: MultiDayEventsRow<int>(
               configuration: configuration,
-              visibleDateTimeRange: displayRange,
+              internalRange: InternalDateTimeRange.fromDateTimeRange(displayRange),
               viewController: viewController,
             ),
           ),

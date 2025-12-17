@@ -34,18 +34,19 @@ class MonthBody<T extends Object?> extends StatelessWidget {
     final viewController = calendarController.viewController as MonthViewController<T>;
     final viewConfiguration = viewController.viewConfiguration;
     final configuration = this.configuration ?? MonthBodyConfiguration();
-    final pageNavigation = viewConfiguration.pageNavigationFunctions;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     return PageView.builder(
       controller: viewController.pageController,
-      itemCount: pageNavigation.numberOfPages,
+      itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
-        viewController.visibleDateTimeRange.value = visibleRange;
-        context.callbacks<T>()?.onPageChanged?.call(visibleRange);
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final controller = context.calendarController<T>();
+        controller.internalDateTimeRange.value = visibleRange;
+        context.callbacks<T>()?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
-        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index);
+        final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
 
         return Stack(
@@ -57,12 +58,12 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                   numberOfRows,
                   (index) {
                     final start = visibleRange.start.addDays(index * 7);
-                    final visibleDateTimeRange = DateTimeRange(start: start, end: start.addDays(7));
+                    final visibleDateTimeRange = InternalDateTimeRange(start: start, end: start.addDays(7));
 
                     return Expanded(
                       child: MonthWeek<T>(
                         key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
-                        visibleDateTimeRange: visibleDateTimeRange,
+                        internalRange: visibleDateTimeRange,
                         configuration: configuration,
                         viewController: viewController,
                       ),
@@ -82,12 +83,12 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 ///
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
 class MonthWeek<T extends Object?> extends StatelessWidget {
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange internalRange;
   final HorizontalConfiguration<T> configuration;
   final ViewController<T> viewController;
   const MonthWeek({
     super.key,
-    required this.visibleDateTimeRange,
+    required this.internalRange,
     required this.configuration,
     required this.viewController,
   });
@@ -101,15 +102,15 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
       children: [
         Positioned.fill(
           child: MultiDayDraggable<T>(
-            key: ValueKey('MultiDayDraggable-${visibleDateTimeRange.start.toIso8601String()}'),
-            visibleDateTimeRange: visibleDateTimeRange,
+            key: ValueKey('MultiDayDraggable-${internalRange.start.toIso8601String()}'),
+            internalRange: internalRange,
           ),
         ),
         Positioned.fill(
           child: Column(
             children: [
               WeekDayHeaders<T>(
-                dates: visibleDateTimeRange.dates(),
+                dates: internalRange.dates(),
                 dayHeaderBuilder: MonthDayHeader.fromContext<T>,
               ),
               Expanded(
@@ -119,7 +120,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
                     final maxNumberOfVerticalEvents = (constraints.maxHeight / configuration.tileHeight).floor() - 1;
 
                     return MultiDayEventWidget<T>(
-                      visibleDateTimeRange: visibleDateTimeRange,
+                      internalDateTimeRange: internalRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
                       multiDayCache: viewController.multiDayCache,
@@ -135,7 +136,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
         ),
         Positioned.fill(
           child: HorizontalDragTarget<T>(
-            visibleDateTimeRange: visibleDateTimeRange,
+            visibleDateTimeRange: internalRange,
             configuration: configuration,
             leftPageTrigger: components.monthComponents.bodyComponents.leftTriggerBuilder,
             rightPageTrigger: components.monthComponents.bodyComponents.rightTriggerBuilder,

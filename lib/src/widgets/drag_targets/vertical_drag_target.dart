@@ -74,8 +74,9 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   @override
   CalendarController<T> get controller => widget.controller;
 
+  // TODO: check if this is right, and null check does not break anything.
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value.dates();
+  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
@@ -136,7 +137,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   void _updateSnapPoints() {
     if (!snapToOtherEvents) return;
     clearSnapPoints();
-    addEventSnapPoints(controller.visibleEvents.value);
+    addEventSnapPoints(controller.visibleEvents.value, context.location);
   }
 
   @override
@@ -301,7 +302,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     }
 
     // Calculate the new dateTimeRange for the event.
-    final duration = event.dateTimeRangeAsUtc.duration;
+    final duration = event.duration;
     var end = start.add(duration);
 
     // Add now to the snap points.
@@ -325,8 +326,8 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     }
 
     // Update the event with the new range.
-    final newRange = DateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+    final newRange = InternalDateTimeRange(start: start, end: end);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(location: context.location));
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -349,14 +350,15 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
+    final internalRange = event.internalRange(location: context.location);
     final dateTimeRange = switch (direction) {
-      ResizeDirection.top => calculateDateTimeRangeFromStart(event.dateTimeRangeAsUtc, cursorSnapPoint),
-      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(event.dateTimeRangeAsUtc, cursorSnapPoint),
+      ResizeDirection.top => calculateDateTimeRangeFromStart(internalRange, cursorSnapPoint),
+      ResizeDirection.bottom => calculateDateTimeRangeFromEnd(internalRange, cursorSnapPoint),
       _ => null
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange.asLocal);
+    return event.copyWith(dateTimeRange: dateTimeRange.forLocation(location: context.location));
   }
 
   @override
@@ -365,14 +367,14 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (event == null) return null;
 
     // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
-    var range = newEvent!.dateTimeRangeAsUtc;
+    var range = newEvent!.internalRange(location: context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
-      range = DateTimeRange(start: range.start, end: cursorDateTime);
+      range = InternalDateTimeRange(start: range.start, end: cursorDateTime);
     } else if (cursorDateTime.isBefore(range.start)) {
-      range = DateTimeRange(start: cursorDateTime, end: range.start);
+      range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: range.asLocal);
+    return event.copyWith(dateTimeRange: range.forLocation(location: context.location));
   }
 }

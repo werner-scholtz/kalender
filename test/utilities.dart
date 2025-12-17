@@ -96,6 +96,7 @@ class TestProvider<T> extends StatelessWidget {
   final ValueNotifier<CalendarSnapping>? snapping;
   final ValueNotifier<double>? heightPerMinute;
   final dynamic locale;
+  final Location? location;
 
   const TestProvider({
     super.key,
@@ -109,6 +110,7 @@ class TestProvider<T> extends StatelessWidget {
     this.snapping,
     this.heightPerMinute,
     this.locale,
+    this.location,
   });
 
   @override
@@ -133,7 +135,10 @@ class TestProvider<T> extends StatelessWidget {
                       tileComponents: tileComponents,
                       child: LocaleProvider(
                         locale: locale,
-                        child: child,
+                        child: LocationProvider(
+                          notifier: ValueNotifier(location),
+                          child: child,
+                        ),
                       ),
                     ),
                   ),

@@ -40,13 +40,17 @@ class CalendarView<T extends Object?> extends StatefulWidget {
   /// If not provided, a default locale be used.
   final dynamic locale;
 
+  /// The location of the calendar view. (from the timezone package)
+  ///
+  /// If not provided, the default location will be used.
+  final Location? location;
+
   /// Creates a [CalendarView] widget.
   ///
   /// This widget creates a [ViewController] based on the [viewConfiguration].
   /// It then attaches the [ViewController] to the [calendarController].
   const CalendarView({
     super.key,
-    this.locale,
     required this.eventsController,
     required this.calendarController,
     required this.viewConfiguration,
@@ -54,60 +58,73 @@ class CalendarView<T extends Object?> extends StatefulWidget {
     this.components,
     this.header,
     this.body,
+    this.locale,
+    this.location,
   });
 
   @override
   State<CalendarView<T>> createState() => CalendarViewState<T>();
-
-  /// Finds the [CalendarViewState] of type [T] in the widget tree.
-  static CalendarViewState<T> of<T extends Object?>(BuildContext context) {
-    final state = context.findAncestorStateOfType<CalendarViewState<T>>();
-    if (state == null) {
-      throw ErrorHint('No CalendarViewState found in the widget tree.');
-    }
-    return state;
-  }
 }
 
 class CalendarViewState<T> extends State<CalendarView<T>> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController<T> _viewController;
+  // TODO: update this to be a valueNotifier.
   late dynamic _locale = widget.locale;
+  late final _location = ValueNotifier<Location?>(widget.location);
 
   @override
   void initState() {
     super.initState();
-    _viewController = _createViewController();
+    // Create the initial view controller.
+    late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
+    final selected = widget.location == null
+        ? widget.viewConfiguration.initialDateTime
+        : widget.viewConfiguration.initialDateTime?.forLocation(location: widget.location);
+    final initialDate = InternalDateTime.fromDateTime(selected ?? now);
+    _viewController = _createViewController(initialDate: initialDate);
 
     // Attach the view controller when the widget is initialized.
     widget.calendarController.attach(_viewController);
   }
 
+  /// TODO: This needs to be improved on.
   @override
   void didUpdateWidget(covariant CalendarView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // If the view configuration has changed, recreate the view controller.
-    if (widget.viewConfiguration != oldWidget.viewConfiguration) {
-      setState(() {
-        // Use selectedDate if available, otherwise use the initial date selection strategy
-        final initialDate = widget.viewConfiguration.selectedDate ??
-            widget.viewConfiguration.initialDateSelectionStrategy(
+    final didChangeLocale = _locale != widget.locale;
+    if (didChangeLocale) {
+      _locale = widget.locale;
+    }
+
+    final didChangeLocation = widget.location != oldWidget.location;
+    if (didChangeLocation) {
+      _location.value = widget.location;
+    }
+
+    final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
+    // If the view configuration has changed or location, recreate the view controller.
+    if (didChangeViewConfiguration || didChangeLocation) {
+      // Use selectedDate if available, otherwise use the initial date selection strategy
+      final initialDate = widget.viewConfiguration.initialDateTime != null
+          ? InternalDateTime.fromDateTime(widget.viewConfiguration.initialDateTime!)
+          : widget.viewConfiguration.initialDateSelectionStrategy(
               oldViewController: _viewController,
               newViewConfiguration: widget.viewConfiguration,
             );
 
-        _viewController = _createViewController(initialDate: initialDate);
-        // Dispose the old view controller if it exists.
-        widget.calendarController.viewController?.dispose();
+      // Create the new view controller.
+      _viewController = _createViewController(initialDate: initialDate);
+      // Dispose the old view controller if it exists.
+      widget.calendarController.viewController?.dispose();
 
-        widget.calendarController.attach(_viewController);
-      });
+      // Attach the new view controller.
+      widget.calendarController.attach(_viewController);
     }
 
-    if (_locale != widget.locale) {
-      // Update the locale if it has changed.
-      setState(() => _locale = widget.locale);
+    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale) {
+      setState(() {});
     }
   }
 
@@ -125,35 +142,47 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     widget.calendarController.attach(_viewController);
   }
 
+  @override
+  void dispose() {
+    // Dispose the view controller when the widget is disposed.
+    widget.calendarController.viewController?.dispose();
+    _location.dispose();
+    super.dispose();
+  }
+
   /// Create the [ViewController] based on the [ViewConfiguration].
-  ViewController<T> _createViewController({DateTime? initialDate}) {
+  ViewController<T> _createViewController({required InternalDateTime initialDate}) {
     final viewConfiguration = widget.viewConfiguration;
 
     return switch (viewConfiguration.runtimeType) {
       const (MultiDayViewConfiguration) => MultiDayViewController<T>(
           viewConfiguration: viewConfiguration as MultiDayViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: initialDate ?? widget.calendarController.initialDate,
+          initialDate: initialDate,
+          location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController<T>(
           viewConfiguration: viewConfiguration as MonthViewConfiguration,
-          visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+          visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
-          initialDate: initialDate ?? widget.calendarController.initialDate,
+          initialDate: initialDate,
+          location: widget.location,
         ),
       const (ScheduleViewConfiguration) => switch ((viewConfiguration as ScheduleViewConfiguration).viewType) {
           ScheduleViewType.continuous => ContinuousScheduleViewController<T>(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: initialDate ?? widget.calendarController.initialDate,
+              initialDate: initialDate,
+              location: widget.location,
             ),
           ScheduleViewType.paginated => PaginatedScheduleViewController(
               viewConfiguration: viewConfiguration,
-              visibleDateTimeRange: widget.calendarController.visibleDateTimeRangeUtc,
+              visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
               visibleEvents: widget.calendarController.visibleEvents,
-              initialDate: initialDate ?? widget.calendarController.initialDate,
+              initialDate: initialDate,
+              location: widget.location,
             ),
         },
       _ => throw ErrorHint('Unsupported ViewConfiguration'),
@@ -165,30 +194,33 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     final bodyId = widget.body == null ? null : CalendarLayoutDelegate.body;
     final headerId = widget.header == null ? null : CalendarLayoutDelegate.header;
 
-    return LocaleProvider(
-      locale: _locale,
-      child: Callbacks<T>(
-        callbacks: widget.callbacks,
-        child: Components<T>(
-          components: widget.components ?? CalendarComponents<T>(),
-          child: EventsControllerProvider<T>(
-            eventsController: widget.eventsController,
-            child: CalendarControllerProvider<T>(
-              notifier: widget.calendarController,
-              child: CustomMultiChildLayout(
-                delegate: CalendarLayoutDelegate(headerId, bodyId),
-                children: [
-                  if (bodyId != null)
-                    LayoutId(
-                      id: bodyId,
-                      child: widget.body!,
-                    ),
-                  if (headerId != null)
-                    LayoutId(
-                      id: headerId,
-                      child: widget.header!,
-                    ),
-                ],
+    return LocationProvider(
+      notifier: _location,
+      child: LocaleProvider(
+        locale: _locale,
+        child: Callbacks<T>(
+          callbacks: widget.callbacks,
+          child: Components<T>(
+            components: widget.components ?? CalendarComponents<T>(),
+            child: EventsControllerProvider<T>(
+              eventsController: widget.eventsController,
+              child: CalendarControllerProvider<T>(
+                notifier: widget.calendarController,
+                child: CustomMultiChildLayout(
+                  delegate: CalendarLayoutDelegate(headerId, bodyId),
+                  children: [
+                    if (bodyId != null)
+                      LayoutId(
+                        id: bodyId,
+                        child: widget.body!,
+                      ),
+                    if (headerId != null)
+                      LayoutId(
+                        id: headerId,
+                        child: widget.header!,
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

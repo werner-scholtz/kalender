@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/layout_delegates/multi_day_event_layout_delegate.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 
 class MonthViewConfiguration extends ViewConfiguration {
   @override
-  final MonthPageFunctions pageNavigationFunctions;
+  final MonthIndexCalculator pageIndexCalculator;
 
   /// The first day of the week.
   final int firstDayOfWeek;
 
-  /// The layout strategy used by the [MultiDayHeader] to layout events.
-  @Deprecated('''
-This method is deprecated and will be removed in a future release. 
-Please use the `generateFrame` method in the `MonthBodyConfiguration` configuration instead.
-''')
-  final MultiDayEventLayoutStrategy<Object?>? eventLayoutStrategy;
-
   MonthViewConfiguration({
     required super.name,
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy,
     required this.firstDayOfWeek,
-    required this.pageNavigationFunctions,
-    required this.eventLayoutStrategy,
+    required this.pageIndexCalculator,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be a valid week day number\n'
@@ -33,13 +24,12 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
 
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
-    super.selectedDate,
+    super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToMonthly,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
-    this.eventLayoutStrategy,
-  }) : pageNavigationFunctions = MonthPageFunctions(
-          originalRange: displayRange ?? DateTime.now().yearRange,
+  }) : pageIndexCalculator = MonthIndexCalculator(
+          dateTimeRange: displayRange ?? DateTime.now().yearRange,
           firstDayOfWeek: firstDayOfWeek,
         );
 
@@ -52,11 +42,10 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
-      selectedDate: selectedDate ?? this.selectedDate,
+      initialDateTime: initialDateTime ?? initialDateTime,
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
-      eventLayoutStrategy: null,
-      displayRange: pageNavigationFunctions.originalRange,
+      displayRange: pageIndexCalculator.dateTimeRange,
     );
   }
 
@@ -65,14 +54,14 @@ Please use the `generateFrame` method in the `MonthBodyConfiguration` configurat
     if (identical(this, other)) return true;
 
     return other is MonthViewConfiguration &&
-        other.selectedDate == selectedDate &&
-        other.pageNavigationFunctions == pageNavigationFunctions &&
+        other.initialDateTime == initialDateTime &&
+        other.pageIndexCalculator == pageIndexCalculator &&
         other.firstDayOfWeek == firstDayOfWeek;
   }
 
   @override
   int get hashCode {
-    return Object.hash(selectedDate, pageNavigationFunctions, firstDayOfWeek);
+    return Object.hash(initialDateTime, pageIndexCalculator, firstDayOfWeek);
   }
 }
 

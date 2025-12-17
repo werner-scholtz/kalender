@@ -16,6 +16,7 @@ This package is still in development so changes to the API will most likely occu
 * **Appearance:** Customize the default components or provide custom builders. [find out more](#general-components)
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 * **Locale:** Provide a locale for the desired language. [find out more](#locale)
+* **Location:** Provide a location from the [timezone](https://pub.dev/packages/timezone) package [find out more](#location)
 
 ## Roadmap
 
@@ -100,6 +101,8 @@ Widget build(BuildContext context) {
 The Kalender package supports three main calendar views (by default), each tailored for different scheduling needs. You can switch between these views by providing the appropriate `ViewConfiguration` to the `CalendarView` widget.
 
 When the `CalenderView` switches between different `ViewConfiguration`s it uses the `initialDateSelectionStrategy` function defined in the view configuration object, to determine which day(s) should be visible.
+
+All `ViewConfigurations` take a display range which specifies the range the calendar can display, they can also take a date time which is used to determine the initial visible range of the calendar view.
 
 ### MultiDay View
 Displays one or more days with time on the vertical axis, ideal for detailed scheduling (e.g., day, week, or custom ranges).
@@ -796,6 +799,49 @@ CalendarView(
   ),
 );
 ```
+
+### Location
+The `CalendarView` has a `location` property that accepts a `Location` object from the [timezone](https://pub.dev/packages/timezone) package. If unspecified, the default system location is used. Changing the location of the calendar will adjust the start/end times of events to match the specified timezone.
+
+#### Setup 
+
+See [timezone](https://pub.dev/packages/timezone) setup instructions for different platforms, the [web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) provides and example of how to set this up.
+
+#### Using Location
+
+To set a specific timezone for your calendar:
+
+```dart
+import 'package:timezone/timezone.dart' as tz;
+
+CalendarView(
+  location: tz.getLocation('America/New_York'),
+  eventsController: eventsController,
+  calendarController: calendarController,
+  viewConfiguration: viewConfiguration,
+  // ... other properties
+)
+```
+
+#### EventsController with Locations
+
+The [`DefaultEventsController`](lib/src/models/controllers/view_controllers/events_controller/default_events_controller.dart) can be initialized with multiple locations for efficient event querying across timezones. (Recommended you do this if possible).
+
+```dart
+final eventsController = DefaultEventsController<Event>(
+  locations: [
+    tz.getLocation('America/New_York'),
+    tz.getLocation('Europe/London'),
+    tz.getLocation('Asia/Tokyo'),
+  ],
+);
+```
+
+#### Important Notes
+
+- All events are stored internally in UTC and converted to the specified location when displayed
+- Changing the location will automatically update the visible date/time ranges
+- Available location identifiers can be found in the [IANA Time Zone Database](https://www.iana.org/time-zones)
 
 ### Event layout
 

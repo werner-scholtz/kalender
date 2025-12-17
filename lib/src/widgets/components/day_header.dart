@@ -7,7 +7,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The [date] is the date that the header will be displayed for.
 /// The [style] is used to style the day header.
 typedef DayHeaderBuilder = Widget Function(
-  DateTime date,
+  InternalDateTime date,
   DayHeaderStyle? style,
 );
 
@@ -48,7 +48,7 @@ class DayHeaderStyle {
 /// A widget that displays the name of the day and the day number of the week.
 class DayHeader extends StatelessWidget {
   /// The date that will be displayed in the [DayHeader].
-  final DateTime date;
+  final InternalDateTime date;
 
   /// The style of the [DayHeader].
   final DayHeaderStyle? style;
@@ -60,9 +60,9 @@ class DayHeader extends StatelessWidget {
   const DayHeader({super.key, required this.date, this.style});
 
   /// The default builder for the [DayHeader].
-  static DayHeader builder(DateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
+  static DayHeader builder(InternalDateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
 
-  static Widget fromContext<T>(BuildContext context, DateTime date) {
+  static Widget fromContext<T>(BuildContext context, InternalDateTime date) {
     final dayHeaderBuilder = context.components<T>().multiDayComponents.headerComponents.dayHeaderBuilder;
     final dayHeaderStyle = context.components<T>().multiDayComponentStyles.headerStyles.dayHeaderStyle;
     return dayHeaderBuilder.call(date, dayHeaderStyle);

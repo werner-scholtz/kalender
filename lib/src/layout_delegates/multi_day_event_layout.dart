@@ -15,9 +15,10 @@ import 'package:kalender/kalender.dart';
 /// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
 /// - [textDirection]: The text direction (LTR or RTL) for the layout.
 typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
-  required DateTimeRange visibleDateTimeRange,
+  required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
 });
 
@@ -48,9 +49,10 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
 MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
-  required DateTimeRange visibleDateTimeRange,
+  required InternalDateTimeRange visibleDateTimeRange,
   required List<CalendarEvent<T>> events,
   required TextDirection textDirection,
+  required Location? location,
   MultiDayLayoutFrameCache<T>? cache,
   int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
 }) {
@@ -74,8 +76,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
             final comparison = b.duration.compareTo(a.duration);
             if (comparison != 0) return comparison;
 
-            final aStart = a.dateTimeRangeAsUtc.start;
-            final bRange = b.dateTimeRangeAsUtc;
+            final aStart = a.internalStart(location: location);
+            final bRange = b.internalRange(location: location);
             final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
 
             // Sort by start time (ascending) if durations are equal
@@ -96,14 +98,15 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
   };
 
   for (final event in sortedEvents) {
-    final rangeAsUtc = event.dateTimeRangeAsUtc;
+    final internalRange = event.internalRange(location: location);
 
     // Create a range that rounds the start and end dates to the start and end of the day.
     final range = DateTimeRange(
-      start: rangeAsUtc.start,
+      start: internalRange.start,
       // If the end date is the start of the day, we use the start of the day otherwise
       // we use the end of the day so that the day is included.
-      end: rangeAsUtc.end == rangeAsUtc.end.startOfDay ? rangeAsUtc.end.startOfDay : rangeAsUtc.end.endOfDay,
+      end:
+          internalRange.end == internalRange.end.startOfDay ? internalRange.end.startOfDay : internalRange.end.endOfDay,
     );
 
     // Find all the columns that the event will appear on.
@@ -237,7 +240,7 @@ class MultiDayLayoutFrame<T> {
   /// The range of dates that this frame is for.
   ///
   /// ex. 1 Week (7 days).
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// The sorted events for this frame that will be used to generate [MultiDayEventTile]s.
   final List<CalendarEvent<T>> events;
@@ -260,7 +263,7 @@ class MultiDayLayoutFrame<T> {
   });
 
   /// Returns the date for the given column index.
-  DateTime dateFromColumn(int column) => dateTimeRange.start.addDays(column);
+  InternalDateTime dateFromColumn(int column) => InternalDateTime.fromDateTime(dateTimeRange.start.addDays(column));
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///

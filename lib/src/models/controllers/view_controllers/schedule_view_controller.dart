@@ -10,22 +10,20 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   final ScheduleViewConfiguration viewConfiguration;
 
   @override
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   /// The initial date to display in the schedule view.
-  final DateTime initialDate;
+  final InternalDateTime initialDate;
 
   ScheduleViewController({
+    super.location,
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
     required this.initialDate,
   }) {
-    currentPage = viewConfiguration.pageNavigationFunctions.indexFromDate(initialDate);
-    final numberOfPages = viewConfiguration.pageNavigationFunctions.numberOfPages;
+    currentPage = viewConfiguration.pageIndexCalculator.indexFromDate(initialDate, location);
+    final numberOfPages = viewConfiguration.pageIndexCalculator.numberOfPages(location);
     populateMaps(numberOfPages);
   }
 
@@ -97,18 +95,19 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
 
 class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
   ContinuousScheduleViewController({
+    super.location,
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
+    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
   }
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.asUtc.startOfDay;
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
 
@@ -132,8 +131,11 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final dateAsUtc = event.startAsUtc.startOfDay;
-    return animateToDate(dateAsUtc, duration: scrollDuration, curve: scrollCurve);
+    return animateToDate(
+      event.start,
+      duration: scrollDuration,
+      curve: scrollCurve,
+    );
   }
 
   @override
@@ -168,8 +170,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   @override
   void jumpToDate(DateTime date) {
     if (!hasInitialized) return;
-    final dateAsUtc = date.asUtc.startOfDay;
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     itemScrollController!.jumpTo(index: index);
   }
 
@@ -181,13 +182,13 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
 class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
   PaginatedScheduleViewController({
+    super.location,
     required super.viewConfiguration,
     required super.visibleDateTimeRange,
     required super.visibleEvents,
     required super.initialDate,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(currentPage);
+    visibleDateTimeRange.value = viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(currentPage, location);
     visibleEvents.value = {};
     pageController = PageController(initialPage: currentPage);
   }
@@ -207,11 +208,10 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToDate(DateTime date, {Duration? duration, Curve? curve}) async {
-    final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: duration, curve: curve);
 
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: duration, curve: curve);
   }
 
@@ -223,11 +223,9 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Duration? scrollDuration,
     Curve? scrollCurve,
   }) async {
-    final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
-
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     return _animateToIndex(index, duration: scrollDuration, curve: scrollCurve);
   }
 
@@ -240,8 +238,8 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
     Curve? scrollCurve,
     bool centerEvent = true,
   }) async {
-    final date = event.startAsUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final date = event.start;
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     await _animateToPage(pageIndex, duration: pageDuration, curve: pageCurve);
 
     final index = indexFromDateTime(date) ?? closestIndex(date);
@@ -268,14 +266,13 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> jumpToDate(DateTime date) async {
-    final dateAsUtc = date.asUtc.startOfDay;
-    final pageIndex = viewConfiguration.pageNavigationFunctions.indexFromDate(dateAsUtc);
+    final pageIndex = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
     // Since jump to page does not build the page immediately,
     // and I'm currently unaware of a way to reliably wait for the page to be built,
     // I will just be using _animateToPage with hardcoded values for now.
     await _animateToPage(pageIndex, duration: const Duration(milliseconds: 100), curve: Curves.linear);
-    final index = indexFromDateTime(dateAsUtc) ?? closestIndex(dateAsUtc);
+    final index = indexFromDateTime(date) ?? closestIndex(date);
     await _animateToIndex(index, duration: const Duration(milliseconds: 100), curve: Curves.linear);
   }
 

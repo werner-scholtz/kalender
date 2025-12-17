@@ -8,7 +8,7 @@ import 'utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController(initialDate: DateTime(2025));
+  final calendarController = CalendarController();
   final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
   final interaction = ValueNotifier(
     CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true),
@@ -36,6 +36,7 @@ void main() {
           viewConfiguration: MultiDayViewConfiguration.singleDay(
             displayRange: displayRange,
             initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialDateTime: DateTime(2025, 1, 1),
           ),
           callbacks: CalendarCallbacks(
             onTapped: (date) => onTapped = date,
@@ -118,7 +119,10 @@ void main() {
         CalendarView(
           eventsController: eventsController,
           calendarController: calendarController,
-          viewConfiguration: MonthViewConfiguration.singleMonth(displayRange: displayRange),
+          viewConfiguration: MonthViewConfiguration.singleMonth(
+            displayRange: displayRange,
+            initialDateTime: DateTime(2025, 1, 1),
+          ),
           callbacks: CalendarCallbacks(
             onTapped: (date) => onTapped = date,
             onTappedWithDetail: (details) => onTappedWithDetail = details,

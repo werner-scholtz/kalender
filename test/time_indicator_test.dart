@@ -6,14 +6,14 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'utilities.dart';
 
 void main() {
-  group('CalendarView Configuration Changes', () {
+  group('TimeIndicatorPositioner', () {
     final key = UniqueKey();
-    final now = DateTime.now().asUtc.startOfWeek();
+    final now = DateTime.now().startOfWeek();
     final range = DateTimeRange(start: now, end: now.endOfWeek());
     final viewConfiguration = MultiDayViewConfiguration.week(displayRange: range);
 
-    for (final (index, date) in range.dates().indexed) {
-      testWidgets('TimeIndicatorPositioner for date index: ($index)', (tester) async {
+    for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
+      testWidgets('for date index: ($index)', (tester) async {
         await tester.pumpWidget(
           wrapWithMaterialApp(
             SizedBox(
@@ -24,7 +24,7 @@ void main() {
                   PositionedTimeIndicator(
                     viewController: MultiDayViewController(
                       viewConfiguration: viewConfiguration,
-                      visibleDateTimeRange: ValueNotifier(range),
+                      visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
                       visibleEvents: ValueNotifier(<CalendarEvent>{}),
                     ),
                     initialPage: 0,

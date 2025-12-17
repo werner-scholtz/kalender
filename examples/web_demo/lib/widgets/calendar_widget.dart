@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/main.dart' show MyApp;
-import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/calendar_configuration.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
@@ -10,26 +10,29 @@ import 'package:web_demo/widgets/event_overlay_portal.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/zoom.dart';
 
+class Calendar extends StatelessWidget {
+  const Calendar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ControllerProvider(
+      child: ConfigurationProvider(
+        child: LocationProvider(
+          child: const CalendarWidget(),
+        ),
+      ),
+    );
+  }
+}
+
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
-
-  static _CalendarWidgetState? _of(BuildContext context) {
-    return context.findAncestorStateOfType<_CalendarWidgetState>();
-  }
-
-  static void setViewConfiguration(BuildContext context, ViewConfiguration value) {
-    final state = _of(context);
-    if (state == null) throw Exception('SingleCalendarViewState not found in context');
-    state._configuration.viewConfiguration = value;
-  }
 
   @override
   State<CalendarWidget> createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  final _configuration = CalendarConfiguration();
-  final _controller = CalendarController<Event>();
   EventsController<Event> get _eventsController => MyApp.eventsController(context);
 
   @override
@@ -42,58 +45,54 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           children: [
             Expanded(
               flex: 3,
-              child: ListenableBuilder(
-                listenable: _configuration,
-                builder: (context, child) {
-                  return ZoomDetector(
-                    controller: _controller,
-                    child: CalendarView<Event>(
-                      locale: Localizations.localeOf(context).toLanguageTag(),
-                      calendarController: _controller,
-                      eventsController: _eventsController,
-                      viewConfiguration: _configuration.viewConfiguration,
-                      callbacks: _callbacks,
-                      header: Material(
-                        color: Theme.of(context).colorScheme.surface,
-                        surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-                        elevation: 2,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: NavigationHeader(
-                                controller: _controller,
-                                viewConfigurations: _configuration.viewConfigurations,
-                                viewConfiguration: _configuration.viewConfiguration,
-                              ),
-                            ),
-                            if (_configuration.showHeader)
-                              CalendarHeader<Event>(
-                                multiDayTileComponents: _multiDayTileComponents,
-                                multiDayHeaderConfiguration: _configuration.multiDayHeaderConfiguration,
-                                interaction: _configuration.interactionHeader,
-                              ),
-                          ],
+              child: ZoomDetector(
+                controller: context.controller,
+                child: CalendarView<Event>(
+                  location: context.location.value,
+                  locale: Localizations.localeOf(context).toLanguageTag(),
+                  calendarController: context.controller,
+                  eventsController: _eventsController,
+                  viewConfiguration: context.configuration.viewConfiguration,
+                  callbacks: _callbacks,
+                  header: Material(
+                    color: Theme.of(context).colorScheme.surface,
+                    surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: NavigationHeader(
+                            controller: context.controller,
+                            viewConfigurations: context.configuration.viewConfigurations,
+                            viewConfiguration: context.configuration.viewConfiguration,
+                          ),
                         ),
-                      ),
-                      body: CalendarBody<Event>(
-                        multiDayTileComponents: _tileComponents,
-                        monthTileComponents: _multiDayTileComponents,
-                        multiDayBodyConfiguration: _configuration.multiDayBodyConfiguration,
-                        monthBodyConfiguration: _configuration.monthBodyConfiguration,
-                        scheduleTileComponents: _scheduleTileComponents,
-                        interaction: _configuration.interactionBody,
-                        snapping: _configuration.snapping,
-                      ),
+                        if (context.configuration.showHeader)
+                          CalendarHeader<Event>(
+                            multiDayTileComponents: _multiDayTileComponents,
+                            multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
+                            interaction: context.configuration.interactionHeader,
+                          ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                  body: CalendarBody<Event>(
+                    multiDayTileComponents: _tileComponents,
+                    monthTileComponents: _multiDayTileComponents,
+                    multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
+                    monthBodyConfiguration: context.configuration.monthBodyConfiguration,
+                    scheduleTileComponents: _scheduleTileComponents,
+                    interaction: context.configuration.interactionBody,
+                    snapping: context.configuration.snapping,
+                  ),
+                ),
               ),
             ),
             if (canShowCustomize)
               Expanded(
                 flex: 1,
-                child: CalendarConfigurationWidget(configuration: _configuration),
+                child: CalendarConfigurationWidget(configuration: context.configuration),
               ),
           ],
         );

@@ -10,7 +10,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.da
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayEventTile<T> Function(
   CalendarEvent<T> event,
-  DateTimeRange dateTimeRange,
+  InternalDateTimeRange internalRange,
   VoidCallback dismissOverlay,
 );
 
@@ -73,7 +73,7 @@ class MultiDayOverlayStyle {
 
 class MultiDayOverlay<T extends Object?> extends StatelessWidget {
   /// The date for which the widget is created.
-  final DateTime date;
+  final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
   final List<CalendarEvent<T>> events;
@@ -252,7 +252,11 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
                               padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
                               child: SizedBox(
                                 height: tileHeight,
-                                child: overlayTileBuilder(event, date.dayRange, portalController.hide),
+                                child: overlayTileBuilder(
+                                  event,
+                                  InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                  portalController.hide,
+                                ),
                               ),
                             ),
                         ],

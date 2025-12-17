@@ -58,7 +58,7 @@ void main() {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
-            final current = TestConfiguration.selectedDate;
+            final current = TestConfiguration.initialDateTime;
             config.calendarController.jumpToDate(current);
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
@@ -97,7 +97,7 @@ void main() {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
             config.calendarController.jumpToDate(
-              TestConfiguration.selectedDate,
+              TestConfiguration.initialDateTime,
             );
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 

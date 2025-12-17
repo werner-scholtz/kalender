@@ -9,22 +9,22 @@ class TestConfiguration {
   TestConfiguration.week()
     : viewConfiguration = MultiDayViewConfiguration.week(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
   TestConfiguration.month()
     : viewConfiguration = MonthViewConfiguration.singleMonth(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
   TestConfiguration.schedule()
     : viewConfiguration = ScheduleViewConfiguration.continuous(
         displayRange: testRange,
-        selectedDate: selectedDate,
+        initialDateTime: initialDateTime,
       );
 
-  static final selectedDate = DateTime(2024, 6, 1);
+  static final initialDateTime = DateTime(2024, 6, 1);
   static final start = DateTime(2024, 1, 1);
   static final end = DateTime(2024, 12, 31);
   static DateTimeRange get testRange => DateTimeRange(start: start, end: end);
@@ -33,13 +33,9 @@ class TestConfiguration {
   final eventsController = DefaultEventsController<Event>();
 
   /// The calendar controller for the test.
-  final calendarController = CalendarController<Event>(
-    initialDate: selectedDate,
-  );
+  final calendarController = CalendarController<Event>();
 
-  static List<CalendarEvent<Event>> generate(
-    List<TimeOfDayRange> timeOfDayRanges,
-  ) {
+  static List<CalendarEvent<Event>> generate(List<TimeOfDayRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     // Loop through the test range and create events.
@@ -53,8 +49,7 @@ class TestConfiguration {
             ),
             data: Event(
               title: 'Event',
-              description:
-                  '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
+              description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
               color: Colors.primaries[date.day % Colors.primaries.length],
             ),
           ),

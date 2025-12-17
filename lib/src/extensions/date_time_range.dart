@@ -247,34 +247,6 @@ extension DateTimeRangeExtensions on DateTimeRange {
     return DateTimeRange(start: start.addDays(numberOfDays), end: end.addDays(numberOfDays));
   }
 
-  /// Returns a [DateTimeRange] with the [DateTime]s as UTC values without converting them.
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// as UTC values without converting them.  The original [DateTimeRange] is not modified.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-  /// final utcRange = range.asUtc;
-  /// print(utcRange.start); // Output: 2024-01-01 00:00:00.000Z
-  /// print(utcRange.end);   // Output: 2024-01-10 00:00:00.000Z
-  /// ```
-  DateTimeRange get asUtc => DateTimeRange(start: start.asUtc, end: end.asUtc);
-
-  /// Returns a [DateTimeRange] with the [DateTime]s as local values without converting them.
-  ///
-  /// This method returns a new [DateTimeRange] with the [start] and [end] times
-  /// as local values without converting them.  The original [DateTimeRange] is not modified.
-  ///
-  /// Example:
-  /// ```dart
-  /// final range = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 10));
-  /// final localRange = range.asLocal;
-  /// print(localRange.start); // Output: 2024-01-01 00:00:00.000
-  /// print(localRange.end);   // Output: 2024-01-10 00:00:00.000
-  /// ```
-  DateTimeRange get asLocal => DateTimeRange(start: start.asLocal, end: end.asLocal);
-
   /// Returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].
   ///
   /// This method returns the [DateTime] that has the most days in the [dates] of this [DateTimeRange].

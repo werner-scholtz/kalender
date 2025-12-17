@@ -5,8 +5,8 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/draggable/new_draggable.dart';
 
 class MultiDayDraggable<T extends Object?> extends StatefulWidget {
-  final DateTimeRange visibleDateTimeRange;
-  const MultiDayDraggable({super.key, required this.visibleDateTimeRange});
+  final InternalDateTimeRange internalRange;
+  const MultiDayDraggable({super.key, required this.internalRange});
   @override
   State<MultiDayDraggable<T>> createState() => _MultiDayDraggableState<T>();
 }
@@ -22,7 +22,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final date in widget.visibleDateTimeRange.dates())
+        for (final date in widget.internalRange.dates())
           Expanded(
             child: Builder(
               builder: (context) {
@@ -90,16 +90,16 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   }
 
   @override
-  DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
-    return DateTimeRange(start: start, end: end);
+    return InternalDateTimeRange(start: start, end: end);
   }
 
   @override
-  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition) {
+  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition) {
     return MultiDayDetail(
-      dateTimeRange: range,
+      dateTimeRange: range.forLocation(location: context.location),
       renderBox: context.findRenderObject() as RenderBox,
       localOffset: localPosition,
     );

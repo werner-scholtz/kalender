@@ -75,6 +75,28 @@ class LocaleProvider extends InheritedWidget {
   }
 }
 
+/// The [LocationProvider] is used to provide the [Location] for the calendar.
+///
+/// TODO: Check that the calendar updates correctly when the location changes.
+class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
+  /// Creates a [LocationProvider] with the specified location.
+  const LocationProvider({super.key, required super.notifier, required super.child});
+
+  /// Gets the [LocationProvider] from the context.
+  static Location? of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
+    assert(result != null, 'No LocationProvider found.');
+    return result!.notifier!.value;
+  }
+
+  /// Gets the [ValueNotifier<Location?>] from the context.
+  static ValueNotifier<Location?> ofNotifier(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
+    assert(result != null, 'No LocationProvider found.');
+    return result!.notifier!;
+  }
+}
+
 /// The [Callbacks] widget provides the [CalendarCallbacks] to the widget tree.
 class Callbacks<T extends Object?> extends InheritedWidget {
   /// The [CalendarCallbacks] that will be used by the Calendar.
@@ -193,4 +215,9 @@ extension ProviderContext on BuildContext {
 
   /// Retrieve the height per minute.
   double get heightPerMinute => HeightPerMinute.of(this);
+
+  /// Retrieve the [Location] of the calendar.
+  Location? get location => LocationProvider.of(this);
+  ValueNotifier<Location?> get locationNotifier => LocationProvider.ofNotifier(this);
+  bool get hasLocation => location != null;
 }

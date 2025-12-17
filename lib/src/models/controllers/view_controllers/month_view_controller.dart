@@ -4,15 +4,16 @@ import 'package:kalender/kalender.dart';
 class MonthViewController<T extends Object?> extends ViewController<T> {
   MonthViewController({
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
-    DateTime? initialDate,
+    InternalDateTime? initialDate,
+    super.location,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
+    final pageNavigationFunctions = viewConfiguration.pageIndexCalculator;
+    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.timestamp(), location);
     pageController = PageController(initialPage: initialPage);
-    numberOfPages = pageNavigationFunctions.numberOfPages;
-    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+    numberOfPages = pageNavigationFunctions.numberOfPages(location);
+    visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage, location);
     visibleEvents.value = {};
   }
 
@@ -29,9 +30,6 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   late final PageController pageController;
 
   @override
-  late final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  @override
   late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   @override
@@ -41,7 +39,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
     Curve? curve,
   }) async {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
 
     // Animate to that page.
     await pageController.animateToPage(
@@ -99,9 +97,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(
-      date,
-    );
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     jumpToPage(pageNumber);
   }
 

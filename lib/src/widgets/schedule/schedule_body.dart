@@ -38,7 +38,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
       return SchedulePositionList<T>(
         eventsController: context.eventsController<T>(),
         viewController: viewController,
-        dateTimeRange: viewController.viewConfiguration.pageNavigationFunctions.adjustedRange,
+        // TODO: this might cause rebuilds.
+        dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
         currentPage: 0,
         paginated: false,
         configuration: configuration,
@@ -85,17 +86,21 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
     return PageView.builder(
       // key: ValueKey(widget.viewController.hashCode),
       controller: widget.viewController.pageController,
-      itemCount: widget.viewController.viewConfiguration.pageNavigationFunctions.numberOfPages,
+      itemCount: widget.viewController.viewConfiguration.pageIndexCalculator.numberOfPages(context.location),
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (value) {
-        final range = widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(value);
+        // TODO: Should be fine.
+        final range =
+            widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
         context.callbacks<T>()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
           eventsController: context.eventsController<T>(),
           viewController: widget.viewController,
-          dateTimeRange: widget.viewController.viewConfiguration.pageNavigationFunctions.dateTimeRangeFromIndex(index),
+          // TODO: Might cause unnecessary rebuilds.
+          dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
+              .dateTimeRangeFromIndex(index, context.location),
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,
@@ -128,7 +133,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   final ScheduleBodyConfiguration configuration;
 
   /// The date range to display in this list.
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// The current page index (used in paginated views).
   final int currentPage;
@@ -250,7 +255,11 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     var hasAddedMonth = false;
 
     for (final date in dates) {
-      final events = eventsController.eventsFromDateTimeRange(date.dayRange);
+      // TODO: this location needs to be passed down properly.
+      final events = eventsController.eventsFromDateTimeRange(
+        InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+        location: null,
+      );
 
       if (events.isEmpty) {
         if (widget.paginated && !hasAddedMonth) {
@@ -318,7 +327,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       final start = viewController.dateTimeFromIndex(first);
       final end = viewController.dateTimeFromIndex(last);
       if (start != null && end != null) {
-        viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
+        calendarController.internalDateTimeRange.value = InternalDateTimeRange(start: start, end: end);
       }
 
       // Update the visible events based on the current item positions.
@@ -373,7 +382,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   event: event,
-                  dateTimeRange: date.dayRange,
+                  dateTimeRange: InternalDateTimeRange.fromDateTimeRange(date.dayRange),
                   interaction: context.interaction,
                 ),
               );

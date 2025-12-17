@@ -54,17 +54,17 @@ extension ViewUtils on Views {
       case Views.week:
         return MultiDayViewConfiguration.week(
           displayRange: TestConfiguration.testRange,
-          selectedDate: TestConfiguration.selectedDate,
+          initialDateTime: TestConfiguration.initialDateTime,
         );
       case Views.month:
         return MonthViewConfiguration.singleMonth(
           displayRange: TestConfiguration.testRange,
-          selectedDate: TestConfiguration.selectedDate,
+          initialDateTime: TestConfiguration.initialDateTime,
         );
       case Views.schedule:
         return ScheduleViewConfiguration.continuous(
           displayRange: TestConfiguration.testRange,
-          selectedDate: TestConfiguration.selectedDate,
+          initialDateTime: TestConfiguration.initialDateTime,
         );
     }
   }

@@ -3,8 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
+import 'package:web_demo/locations.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/calendar_widget.dart';
 
 class NavigationHeader extends StatelessWidget {
   final CalendarController<Event> controller;
@@ -52,7 +53,35 @@ class NavigationHeader extends StatelessWidget {
           initialSelection: viewConfiguration,
           onSelected: (value) {
             if (value == null) return;
-            CalendarWidget.setViewConfiguration(context, value);
+            context.configuration.viewConfiguration = value;
+          },
+        );
+
+        // TODO: How can this be fit on a mobile screen?
+        final location = DropdownMenu<Location?>(
+          width: width,
+          initialSelection: context.location.value,
+          dropdownMenuEntries: [
+            DropdownMenuEntry(
+              value: null,
+              label: DateTime.now().timeZoneName,
+            ),
+            ...supportedLocations.map(
+              (location) => DropdownMenuEntry<Location>(
+                value: getLocation(location),
+                label: location,
+              ),
+            ),
+          ],
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(kMinInteractiveDimension)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(kMinInteractiveDimension),
+              borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.outline),
+            ),
+          ),
+          onSelected: (value) {
+            context.location.value = value;
           },
         );
 
@@ -66,6 +95,7 @@ class NavigationHeader extends StatelessWidget {
             ],
             todayButton,
             const Spacer(),
+            location,
             view,
           ],
         );
@@ -83,6 +113,7 @@ class HeaderDateButton extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller.visibleDateTimeRange,
       builder: (context, value, child) {
+        if (value == null) return const SizedBox.shrink();
         final String month;
         final int year;
 
@@ -99,7 +130,8 @@ class HeaderDateButton extends StatelessWidget {
 
         return FilledButton.tonal(
           onPressed: () async {
-            final displayRange = controller.viewController?.viewConfiguration.displayRange;
+            // TODO: update to use correct display range for location.
+            final displayRange = controller.viewController?.viewConfiguration.dateTimeRange;
             if (displayRange == null) return;
             final selectedDate = await showDatePicker(
               context: context,

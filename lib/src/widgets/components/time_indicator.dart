@@ -8,13 +8,12 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 ///
 /// The [timeOfDayRange] is the range of time that the time indicator will be displayed for.
 /// The [heightPerMinute] is the height of each minute.
-/// The [timelineWidth] is the width of the timeline.
 /// The [style] is used to style the time indicator.
 typedef TimeIndicatorBuilder = Widget Function(
   TimeOfDayRange timeOfDayRange,
   double heightPerMinute,
-  double timelineWidth,
   TimeIndicatorStyle? style,
+  Location? location,
 );
 
 /// The style of the [TimeIndicator] widget.
@@ -48,35 +47,36 @@ class TimeIndicator extends StatefulWidget {
   /// The height per minute.
   final double heightPerMinute;
 
-  /// The width of the timeline.
-  final double timelineWidth;
-
   /// The style of the time indicator.
   final TimeIndicatorStyle? style;
+
+  /// The location to use for the time indicator.
+  final Location? location;
 
   /// Creates a new [TimeIndicator] widget.
   const TimeIndicator({
     super.key,
     required this.timeOfDayRange,
     required this.heightPerMinute,
-    required this.timelineWidth,
+    required this.location,
     this.style,
   });
 
   static TimeIndicator builder(
     TimeOfDayRange timeOfDayRange,
     double heightPerMinute,
-    double timelineWidth,
     TimeIndicatorStyle? style,
+    Location? location,
   ) {
     return TimeIndicator(
       timeOfDayRange: timeOfDayRange,
       heightPerMinute: heightPerMinute,
-      timelineWidth: timelineWidth,
+      location: location,
       style: style,
     );
   }
 
+  /// Creates a [TimeIndicator] from the [BuildContext].
   static Widget fromContext<T>(
     BuildContext context,
     TimeOfDayRange timeOfDayRange,
@@ -86,8 +86,8 @@ class TimeIndicator extends StatefulWidget {
     return components.timeIndicator.call(
       timeOfDayRange,
       context.heightPerMinute,
-      0, // TODO: remove this
       timeIndicatorStyle,
+      context.location,
     );
   }
 
@@ -96,43 +96,23 @@ class TimeIndicator extends StatefulWidget {
 }
 
 class _TimeIndicatorState extends State<TimeIndicator> {
+  /// The timer that updates the time indicator every 10 seconds.
   late final Timer _timer;
-  late DateTime _startTime;
-  late DateTime _endTime;
-  late DateTime _currentTime;
 
   /// The offset to center the circle on the first pixel of the pageview.
   static const _circleCenterOffset = 1.0;
 
-  /// Whether the indicator should be shown.
-  bool get showIndicator {
-    return _currentTime.isAfter(_startTime) && _currentTime.isBefore(_endTime);
-  }
-
-  /// The top value of the current time.
-  double get top {
-    final duration = _currentTime.difference(_startTime);
-    return duration.inMinutes * widget.heightPerMinute;
-  }
-
   @override
   void initState() {
     super.initState();
-    _currentTime = DateTime.now();
-    _startTime = widget.timeOfDayRange.start.toDateTime(_currentTime);
-    _endTime = widget.timeOfDayRange.end.toDateTime(_currentTime);
     _startTimer();
   }
 
   @override
   void didUpdateWidget(covariant TimeIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    final hasChangedTimeOfDayRange = widget.timeOfDayRange != oldWidget.timeOfDayRange;
-
-    if (hasChangedTimeOfDayRange) {
-      _startTime = widget.timeOfDayRange.start.toDateTime(_currentTime);
-      _endTime = widget.timeOfDayRange.end.toDateTime(_currentTime);
+    if (widget.timeOfDayRange != oldWidget.timeOfDayRange || oldWidget.location != widget.location) {
+      setState(() {});
     }
   }
 
@@ -142,57 +122,47 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     super.dispose();
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) {
-      setState(() {
-        // Update the current time.
-        _currentTime = DateTime.now();
-      });
-    });
-  }
+  void _startTimer() => _timer = Timer.periodic(const Duration(seconds: 10), (_) => setState(() {}));
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now().forLocation(location: widget.location).asUtc;
+    final startTime = widget.timeOfDayRange.start.toDateTime(now).asUtc;
+    final endTime = widget.timeOfDayRange.end.toDateTime(now).asUtc;
+    final showIndicator = now.isAfter(startTime) && now.isBefore(endTime);
     if (!showIndicator) return const SizedBox.shrink();
+    final top = now.difference(startTime).inMinutes * widget.heightPerMinute;
 
     final lineColor = widget.style?.lineColor ?? Colors.red;
     final thickness = widget.style?.thickness ?? 1;
 
-    final line = Container(
-      height: thickness,
-      color: lineColor,
-    );
-
-    final circleColor = widget.style?.circleColor ?? lineColor;
     final circleWidth = (widget.style?.circleSize?.width) ?? 10;
     final circleHeight = (widget.style?.circleSize?.height) ?? 10;
-    final circleTop = top - circleHeight / 2;
-
-    // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
-    final circleLeft = widget.timelineWidth - (circleWidth / 2) + _circleCenterOffset;
-
-    final timeIndicatorCircle = DecoratedBox(
-      decoration: BoxDecoration(
-        color: circleColor,
-        shape: BoxShape.circle,
-      ),
-    );
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
         PositionedDirectional(
           top: top,
-          start: widget.timelineWidth,
+          start: 0,
           end: 0,
-          child: line,
+          child: Container(
+            height: thickness,
+            color: lineColor,
+          ),
         ),
         PositionedDirectional(
-          top: circleTop,
-          start: circleLeft,
+          top: top - circleHeight / 2,
+          // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
+          start: -(circleWidth / 2) + _circleCenterOffset,
           width: circleWidth,
           height: circleHeight,
-          child: timeIndicatorCircle,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: widget.style?.circleColor ?? lineColor,
+              shape: BoxShape.circle,
+            ),
+          ),
         ),
       ],
     );

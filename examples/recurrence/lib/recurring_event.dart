@@ -14,7 +14,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
 
   factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent<Event> event, int groupId) {
     return RecurringCalendarEvent(
-      dateTimeRange: event.dateTimeRangeAsUtc,
+      dateTimeRange: event.internalRange(),
       groupId: groupId,
       data: event.data,
       canModify: event.canModify,
@@ -31,7 +31,7 @@ class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
   }) {
     return RecurringCalendarEvent<Event>(
       data: data ?? this.data,
-      dateTimeRange: dateTimeRange ?? dateTimeRangeAsUtc,
+      dateTimeRange: dateTimeRange ?? internalRange(),
       groupId: groupId,
       canModify: canModify ?? this.canModify,
       interaction: interaction ?? this.interaction,

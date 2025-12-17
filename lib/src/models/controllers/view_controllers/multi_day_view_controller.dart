@@ -4,30 +4,31 @@ import 'package:kalender/kalender.dart';
 class MultiDayViewController<T extends Object?> extends ViewController<T> {
   MultiDayViewController({
     required this.viewConfiguration,
-    required this.visibleDateTimeRange,
+    required super.visibleDateTimeRange,
     required this.visibleEvents,
-    DateTime? initialDate,
+    InternalDateTime? initialDate,
+    super.location,
   }) {
-    final pageNavigationFunctions = viewConfiguration.pageNavigationFunctions;
-    initialPage = pageNavigationFunctions.indexFromDate(initialDate ?? DateTime.now());
-
+    final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
+    final now = InternalDateTime.fromDateTime(location == null ? DateTime.now() : TZDateTime.now(location!));
+    initialPage = pageIndexCalculator.indexFromDate(initialDate ?? now, location);
     final type = viewConfiguration.type;
     final viewPortFraction = type == MultiDayViewType.freeScroll ? 1 / viewConfiguration.numberOfDays : 1.0;
 
     pageController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
     headerController = PageController(initialPage: initialPage, viewportFraction: viewPortFraction);
-    numberOfPages = pageNavigationFunctions.numberOfPages;
+    numberOfPages = pageIndexCalculator.numberOfPages(location);
     heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
 
-    final range = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+    final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
 
     if (type == MultiDayViewType.freeScroll) {
-      visibleDateTimeRange.value = DateTimeRange(
+      visibleDateTimeRange.value = InternalDateTimeRange(
         start: range.start,
         end: range.start.addDays(viewConfiguration.numberOfDays),
       );
     } else {
-      visibleDateTimeRange.value = pageNavigationFunctions.dateTimeRangeFromIndex(initialPage);
+      visibleDateTimeRange.value = range;
     }
 
     // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
@@ -70,9 +71,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
 
   @override
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
-
-  @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
 
   void pageListener() {
@@ -89,9 +87,10 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     DateTime date, {
     Duration? duration,
     Curve? curve,
-  }) {
+  }) async {
     // Calculate the pageNumber of the date.
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
+
     // Animate to that page.
     return pageController.animateToPage(
       pageNumber,
@@ -133,7 +132,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     bool centerEvent = true,
   }) async {
     final DateTime date;
-    final eventCenter = event.startAsUtc.add(Duration(minutes: event.duration.inMinutes ~/ 2));
+    final eventCenter = event.internalStart(location: location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
     final target = eventCenter.subtract(duration);
@@ -141,7 +140,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
-    if (target.isSameDay(event.startAsUtc)) {
+    if (target.isSameDay(event.internalStart(location: location))) {
       date = target.asLocal;
     } else {
       date = event.start;
@@ -174,7 +173,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void jumpToDate(DateTime date) {
-    final pageNumber = viewConfiguration.pageNavigationFunctions.indexFromDate(date);
+    final pageNumber = viewConfiguration.pageIndexCalculator.indexFromDate(date, location);
     jumpToPage(pageNumber);
   }
 

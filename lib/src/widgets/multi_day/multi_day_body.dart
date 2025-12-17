@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/models/view_configurations/page_navigation_functions.dart';
+import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
@@ -77,6 +77,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                             viewController: viewController,
                             configuration: configuration,
                             pageHeight: pageHeight,
+                            location: context.location,
                           ),
                         ),
                         PositionedTimeIndicator<T>(
@@ -140,6 +141,9 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
   /// The height of the page.
   final double pageHeight;
 
+  /// The initial location used to calculate the visible events.
+  final Location? location;
+
   /// Creates a new [MultiDayPage].
   const MultiDayPage({
     super.key,
@@ -147,6 +151,7 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
     required this.viewController,
     required this.configuration,
     required this.pageHeight,
+    required this.location,
   });
 
   /// The key used to identify the content of the [MultiDayBody].
@@ -157,7 +162,8 @@ class MultiDayPage<T extends Object?> extends StatefulWidget {
 }
 
 class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
-  PageNavigationFunctions get _pageNavigation => widget.viewController.viewConfiguration.pageNavigationFunctions;
+  /// TODO: figure out the exact rebuilds needed here ....
+  PageIndexCalculator get _pageNavigation => widget.viewController.viewConfiguration.pageIndexCalculator;
 
   @override
   void initState() {
@@ -169,20 +175,30 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant MultiDayPage<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.location != widget.location) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     widget.eventsController.removeListener(_currentPage);
     super.dispose();
   }
 
-  void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage);
-  void _currentPage() => _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0);
+  void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage, widget.location);
+  void _currentPage() =>
+      _updateVisibleEvents(widget.viewController.pageController.page?.round() ?? 0, context.location);
 
   /// Updates the visible events for the given page index.
-  void _updateVisibleEvents(int index) {
+  void _updateVisibleEvents(int index, Location? location) {
     final events = widget.eventsController.eventsFromDateTimeRange(
-      _pageNavigation.dateTimeRangeFromIndex(index),
+      _pageNavigation.dateTimeRangeFromIndex(index, location),
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
+      location: location,
     );
     widget.viewController.visibleEvents.value = events.toSet();
   }
@@ -192,34 +208,35 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: when switching location the current page is sometimes not correct.
     return PageView.builder(
+      key: ValueKey(widget.viewController.viewConfiguration.hashCode + widget.location.hashCode),
       padEnds: false,
-      key: ValueKey(widget.viewController.viewConfiguration.hashCode),
       controller: widget.viewController.pageController,
       itemCount: widget.viewController.numberOfPages,
       physics: widget.configuration.pageScrollPhysics,
       onPageChanged: (index) {
         // Update the visible date time range based on the page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
-        if (_isFreeScroll) {
-          final start = visibleRange.start;
-          final end = visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays);
-          widget.viewController.visibleDateTimeRange.value = DateTimeRange(start: start, end: end);
-        } else {
-          widget.viewController.visibleDateTimeRange.value = visibleRange;
-        }
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
+        final range = _isFreeScroll
+            ? InternalDateTimeRange(
+                start: visibleRange.start,
+                end: visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays),
+              )
+            : visibleRange;
+        final controller = context.calendarController<T>();
+        controller.internalDateTimeRange.value = range;
 
         // Update the visible events for the new page index.
-        _updateVisibleEvents(index);
+        _updateVisibleEvents(index, context.location);
 
         // Call the onPageChanged callback if it was provided.
         final callbacks = context.callbacks<T>();
-        callbacks?.onPageChanged?.call(widget.viewController.visibleDateTimeRange.value.asLocal);
+        callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
-        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index);
-
+        final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
         return Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
@@ -248,7 +265,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
             Positioned.fill(
               child: MultiDayEventsRow<T>(
                 configuration: widget.configuration,
-                visibleDateTimeRange: visibleRange,
+                internalRange: visibleRange,
                 viewController: widget.viewController,
               ),
             ),

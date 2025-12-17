@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
+// TODO: Update docs to reflect visibleDateTimeRange change.
 /// The time line builder.
 ///
 /// The [heightPerMinute] is the height of each minute.
@@ -12,7 +13,7 @@ typedef TimeLineBuilder = Widget Function(
   TimeOfDayRange timeOfDayRange,
   TimelineStyle? style,
   ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
-  ValueNotifier<DateTimeRange> visibleDateTimeRange,
+  ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
 );
 
 /// The prototype time line builder.
@@ -129,7 +130,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   final ValueNotifier<CalendarEvent<dynamic>?> eventBeingDragged;
 
   /// The visibleDataTimeRange.
-  final ValueNotifier<DateTimeRange> visibleDateTimeRange;
+  final ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange;
 
   /// Creates a new [TimeLine] widget.
   const TimeLine({
@@ -149,7 +150,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     TimeOfDayRange timeOfDayRange,
     TimelineStyle? style,
     ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
-    ValueNotifier<DateTimeRange> visibleDateTimeRange,
+    ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
   ) {
     return TimeLine(
       heightPerMinute: heightPerMinute,
@@ -166,7 +167,6 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   /// Builds the time line widget based on the provided context.
   static Widget fromContext<T>(BuildContext context, TimeOfDayRange timeOfDayRange) {
     final calendarController = context.calendarController<T>();
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
     final selectedEvent = calendarController.selectedEvent;
     final timelineStyle = context.components<T>().multiDayComponentStyles.bodyStyles.timelineStyle;
     final bodyComponents = context.components<T>().multiDayComponents.bodyComponents;
@@ -175,7 +175,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
       timeOfDayRange,
       timelineStyle,
       selectedEvent,
-      viewController.visibleDateTimeRange,
+      calendarController.visibleDateTimeRange,
     );
   }
 
@@ -222,6 +222,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     final eventBeingDraggedTimes = ValueListenableBuilder(
       valueListenable: visibleDateTimeRange,
       builder: (context, visibleRange, child) {
+        if (visibleRange == null) return const SizedBox();
         return ValueListenableBuilder(
           valueListenable: eventBeingDragged,
           builder: (context, eventBeingDragged, child) {
@@ -233,11 +234,11 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             if (eventBeingDragged.isMultiDayEvent) return const SizedBox();
 
             // Ensure that the event is visible.
-            final eventRange = eventBeingDragged.dateTimeRangeAsUtc;
+            final eventRange = eventBeingDragged.internalRange(location: context.location);
             if (!eventRange.overlaps(visibleRange)) return const SizedBox();
 
-            final start = eventBeingDragged.startAsUtc;
-            final end = eventBeingDragged.endAsUtc;
+            final start = eventBeingDragged.internalStart(location: context.location);
+            final end = eventBeingDragged.internalEnd(location: context.location);
 
             // Calculate the top and bottom values.
             final startTop = start.difference(timeOfDayRange.start.toDateTime(start)).inMinutes * heightPerMinute;

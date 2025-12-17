@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 mixin NewDraggableWidget<T extends Object?> {
   CalendarController<T> get controller;
@@ -9,18 +10,18 @@ mixin NewDraggableWidget<T extends Object?> {
   ///
   /// [date] is the date the draggable is located at.
   /// [localPosition] is the last known position of the cursor.
-  DateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition);
+  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition);
 
   /// Create a TapDetail for the new event.
   ///
   /// [range] is the dateTimeRange of the new event.
   /// [localPosition] is the last known position of the cursor.
-  TapDetail createTapDetail(BuildContext context, DateTimeRange range, Offset localPosition);
+  TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition);
 
   /// Create the new event and select it where needed.
   void createNewEvent(BuildContext context, DateTime date, Offset localPosition) {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
-    final newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange.asLocal);
+    final newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange.forLocation(location: context.location));
 
     CalendarEvent<T>? event;
     if (callbacks?.onEventCreateWithDetail != null) {
