@@ -132,6 +132,7 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
   void _notifySize() {
     final context = _widgetKey.currentContext;
     if (context == null) return;
+    if (context is Element && context.dirty) return;
     final size = context.size;
 
     // Notify the parent widget if the size has changed.

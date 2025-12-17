@@ -94,6 +94,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
     return MultiDayHeaderWidget<T>(
       content: ExpandablePageView(
+        key: UniqueKey(),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
@@ -170,6 +171,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     return MultiDayHeaderWidget<T>(
       content: ExpandablePageView(
+        key: UniqueKey(),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
@@ -253,6 +255,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       ///
       /// To do this the header would need to display a single page and not multiple. see viewport fraction.
       content: ExpandablePageView(
+        key: UniqueKey(),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
