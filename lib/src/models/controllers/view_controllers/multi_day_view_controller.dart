@@ -41,6 +41,8 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
 
     visibleEvents.value = {};
+
+    pageController.addListener(_offsetListener);
   }
 
   @override
@@ -73,6 +75,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
+
+  void _offsetListener() =>
+      pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
 
   @override
   Future<void> animateToDate(
@@ -181,6 +186,7 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
   void dispose() {
     pageController.dispose();
     headerController.dispose();
+    pageController.removeListener(_offsetListener);
     _controllerGroup.dispose();
     scrollController.dispose();
   }
