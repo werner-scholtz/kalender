@@ -41,10 +41,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
 
     visibleEvents.value = {};
-
-    // This listener will sync the headerController with the pageController.
-    // Note this only really works if both PageView's have the same horizontal 'size'.
-    pageController.addListener(pageListener);
   }
 
   @override
@@ -77,15 +73,6 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
-
-  void pageListener() {
-    if (!headerController.hasClients) return;
-    headerController.position.correctPixels(pageController.offset);
-    headerController.position.notifyListeners();
-
-    // Update the pageOffset based on the current pageController position.
-    pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
-  }
 
   @override
   Future<void> animateToDate(
@@ -192,9 +179,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
 
   @override
   void dispose() {
-    pageController.removeListener(pageListener);
     pageController.dispose();
     headerController.dispose();
+    _controllerGroup.dispose();
     scrollController.dispose();
   }
 }
