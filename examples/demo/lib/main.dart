@@ -13,7 +13,7 @@ void main() {
 class App extends StatefulWidget {
   const App({super.key});
   static AppState? of(BuildContext context) => context.findAncestorStateOfType<AppState>();
-  static EventsController<Event> eventsController(BuildContext context) => of(context)!.eventsController;
+  static EventsController eventsController(BuildContext context) => of(context)!.eventsController;
 
   static List<ViewConfiguration> views(BuildContext context) => of(context)!.viewConfigurations;
 
@@ -38,7 +38,7 @@ class AppState extends State<App> {
 
   void toggleTheme() => themeMode = themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
-  final eventsController = DefaultEventsController<Event>();
+  final eventsController = DefaultEventsController();
 
   final controller1 = CalendarController<Event>();
   late final viewConfiguration1 = ValueNotifier(viewConfigurations[1]);
@@ -78,18 +78,26 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
   late final eventsController = App.eventsController(context);
 
   late final callbacks = CalendarCallbacks<Event>(
-    onEventTapped: (event, renderBox) => createOverlay(event, renderBox),
-    onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
+    onEventTapped: (event, renderBox) => createOverlay(event as Event, renderBox),
+    onEventCreate: (event) => Event(
+      dateTimeRange: DateTimeRange(start: event.start, end: event.end),
+      title: 'New Event',
+    ),
     onEventCreated: (event) => eventsController.addEvent(event),
     onTapped: (date) {
-      eventsController.addEvent(CalendarEvent(
-        dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(hours: 1))),
-        data: const Event(title: 'New Event'),
-      ));
+      eventsController.addEvent(
+        Event(
+          dateTimeRange: DateTimeRange(start: date, end: date.add(const Duration(hours: 1))),
+          title: 'New Event',
+        ),
+      );
     },
     onMultiDayTapped: (dateRange) {
       eventsController.addEvent(
-        CalendarEvent(dateTimeRange: dateRange, data: const Event(title: 'New Event')),
+        Event(
+          dateTimeRange: dateRange,
+          title: 'New Event',
+        ),
       );
     },
   );

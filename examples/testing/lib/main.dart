@@ -5,9 +5,7 @@ import 'package:testing/tiles.dart';
 
 void main() {
   final config = TestConfiguration.week();
-  config.eventsController.addEvents(
-    TestConfiguration.generate(timeOfDayRanges.take(10).toList()),
-  );
+  config.eventsController.addEvents(TestConfiguration.generate(timeOfDayRanges.take(10).toList()));
   runApp(MyApp(config: config));
 }
 
@@ -19,9 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Performance Profiling',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
       home: Home(config: config),
     );
   }
@@ -37,9 +33,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late final TestConfiguration config =
-      widget.config ?? TestConfiguration.week();
-  EventsController<Event> get eventsController => config.eventsController;
+  late final TestConfiguration config = widget.config ?? TestConfiguration.week();
+  EventsController get eventsController => config.eventsController;
   CalendarController<Event> get calendarController => config.calendarController;
 
   @override
@@ -51,14 +46,11 @@ class _HomeState extends State<Home> {
         viewConfiguration: config.viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
-              calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
-        header: CalendarHeader<Event>(
-          multiDayTileComponents: _multiDayTileComponents,
-        ),
+        header: CalendarHeader<Event>(multiDayTileComponents: _multiDayTileComponents),
         body: CalendarBody<Event>(
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
@@ -69,31 +61,31 @@ class _HomeState extends State<Home> {
   }
 
   TileComponents<Event> get _tileComponents {
-    return TileComponents<Event>(
-      tileBuilder: EventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+    return TileComponents(
+      tileBuilder: (event, range) => EventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
     );
   }
 
   TileComponents<Event> get _multiDayTileComponents {
     return TileComponents<Event>(
-      tileBuilder: MultiDayEventTile.builder,
-      overlayTileBuilder: OverlayEventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
     );
   }
 
   ScheduleTileComponents<Event> get _scheduleTileComponents {
     return ScheduleTileComponents<Event>(
-      tileBuilder: MultiDayEventTile.builder,
-      overlayTileBuilder: OverlayEventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
     );
   }
 }

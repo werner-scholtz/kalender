@@ -18,7 +18,7 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
   });
 
   @override
-  List<CalendarEvent<T>> sortEvents(Iterable<CalendarEvent<T>> events) => events.toList();
+  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) => events.toList();
 
   @override
   List<VerticalLayoutData> sortVerticalLayoutData(List<VerticalLayoutData> layoutData) {
@@ -38,8 +38,8 @@ class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDeleg
     final verticalData = <Person, List<VerticalLayoutData>>{};
     for (var event in verticalLayoutData) {
       final data = events.elementAt(event.id);
-      if (data.data is Event) {
-        final person = (data.data as Event).person;
+      if (data is Event) {
+        final person = data.person;
         verticalData.putIfAbsent(person, () => []).add(event);
       }
     }

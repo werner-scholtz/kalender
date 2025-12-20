@@ -5,13 +5,13 @@ import 'package:kalender/kalender.dart';
 
 mixin CalendarOverlay {
   BuildContext get context;
-  EventsController<Event> get eventsController;
+  EventsController get eventsController;
 
   final portalController = OverlayPortalController();
-  CalendarEvent<Event>? selectedEvent;
+  Event? selectedEvent;
   RenderBox? selectedRenderBox;
 
-  void createOverlay(CalendarEvent<Event> event, RenderBox renderBox) {
+  void createOverlay(Event event, RenderBox renderBox) {
     selectedEvent = event;
     selectedRenderBox = renderBox;
     portalController.show();

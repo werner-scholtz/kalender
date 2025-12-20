@@ -28,7 +28,7 @@ void main() {
           // 1. Profile loading events.
           testWidgets('${scenario.name} Loading', (tester) async {
             config.eventsController.clearEvents();
-            final eventBatches = <List<CalendarEvent<Event>>>[];
+            final eventBatches = <List<CalendarEvent>>[];
             for (var range in scenario.eventRanges) {
               final events = TestConfiguration.generate([range]);
               eventBatches.add(events);

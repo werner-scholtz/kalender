@@ -1,17 +1,16 @@
-import 'package:kalender/kalender.dart';
+import 'package:demo/data/event.dart';
 import 'package:flutter/material.dart';
 
-import 'package:demo/data/event.dart';
 
 abstract class Tile extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   final EdgeInsets margin;
   const Tile({required this.event, required this.margin, super.key});
 
-  String get title => event.data?.title ?? "New Event";
-  String? get description => event.data?.description;
+  String get title => event.title;
+  String? get description => event.description;
   Color color(BuildContext context) {
-    return event.data?.color ?? Theme.of(context).colorScheme.primaryContainer;
+    return event.color ?? Theme.of(context).colorScheme.primaryContainer;
   }
 
   Color textColor(Color background) => background.computeLuminance() > 0.5 ? Colors.black : Colors.white;

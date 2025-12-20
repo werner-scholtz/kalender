@@ -33,7 +33,7 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  EventsController<Event> get _eventsController => MyApp.eventsController(context);
+  EventsController get _eventsController => MyApp.eventsController(context);
 
   @override
   Widget build(BuildContext context) {
@@ -122,10 +122,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   TileComponents<Event> get _tileComponents {
     return TileComponents<Event>(
-      tileBuilder: EventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      tileBuilder: (event, range) => EventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
       dragAnchorStrategy: _dragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
@@ -134,11 +134,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   TileComponents<Event> get _multiDayTileComponents {
     return TileComponents<Event>(
-      tileBuilder: MultiDayEventTile.builder,
-      overlayTileBuilder: OverlayEventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+     tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
       dragAnchorStrategy: _dragAnchorStrategy,
       verticalResizeHandle: const VerticalResizeHandle(),
       horizontalResizeHandle: const HorizontalResizeHandle(),
@@ -147,11 +147,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   ScheduleTileComponents<Event> get _scheduleTileComponents {
     return ScheduleTileComponents<Event>(
-      tileBuilder: MultiDayEventTile.builder,
-      overlayTileBuilder: OverlayEventTile.builder,
-      dropTargetTile: DropTargetTile.builder,
-      feedbackTileBuilder: FeedbackTile.builder,
-      tileWhenDraggingBuilder: TileWhenDragging.builder,
+      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
       dragAnchorStrategy: _dragAnchorStrategy,
     );
   }
@@ -159,7 +159,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   CalendarCallbacks<Event> get _callbacks {
     return CalendarCallbacks<Event>(
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
-      onEventCreate: (event) => event.copyWith(data: const Event(title: 'New Event')),
+      onEventCreate: (event) => Event(
+        dateTimeRange: DateTimeRange(start: event.start, end: event.end),
+        title: 'New Event',
+      ),
       onEventCreated: (event) => _eventsController.addEvent(event),
       onTappedWithDetail: _createEvent,
       onLongPressedWithDetail: _createEvent,
@@ -172,6 +175,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       MultiDayDetail detail => detail.dateTimeRange,
       _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
     };
-    _eventsController.addEvent(CalendarEvent<Event>(dateTimeRange: range));
+    _eventsController.addEvent(CalendarEvent(dateTimeRange: range));
   }
 }

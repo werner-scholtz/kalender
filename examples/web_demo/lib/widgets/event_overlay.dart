@@ -4,7 +4,7 @@ import 'package:web_demo/models/event.dart';
 import 'package:web_demo/utils.dart';
 
 class EventOverlayCard extends StatefulWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   final Offset position;
   final double height;
   final double width;
@@ -26,8 +26,8 @@ class EventOverlayCard extends StatefulWidget {
 }
 
 class _EventOverlayCardState extends State<EventOverlayCard> {
-  late CalendarEvent<Event> event = widget.event;
-  late CalendarEvent<Event> displayEvent = widget.event;
+  late Event event = widget.event;
+  late Event displayEvent = widget.event;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,14 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 4.0),
                         child: TextFormField(
-                          initialValue: event.data?.title,
+                          initialValue: event.title,
                           style: Theme.of(context).textTheme.titleMedium,
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             labelText: context.l10n.title,
                           ),
                           onChanged: (value) {
-                            final updatedEvent = event.copyWith(data: event.data?.copyWith(title: value));
+                            final updatedEvent = event.copyWith(title: value);
                             widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
                             setState(() => event = updatedEvent);
                           },
