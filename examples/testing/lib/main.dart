@@ -5,9 +5,7 @@ import 'package:testing/tiles.dart';
 
 void main() {
   final config = TestConfiguration.week();
-  config.eventsController.addEvents(
-    TestConfiguration.generate(timeOfDayRanges.take(10).toList()),
-  );
+  config.eventsController.addEvents(TestConfiguration.generate(timeOfDayRanges.take(10).toList()));
   runApp(MyApp(config: config));
 }
 
@@ -19,9 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Performance Profiling',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
       home: Home(config: config),
     );
   }
@@ -51,8 +47,7 @@ class _HomeState extends State<Home> {
         viewConfiguration: config.viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
-              calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(

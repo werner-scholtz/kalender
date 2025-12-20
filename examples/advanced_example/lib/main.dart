@@ -79,10 +79,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-const people = [
-  Person(name: "Person A", color: Colors.blue),
-  Person(name: "Person B", color: Colors.amber),
-];
+const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Person B", color: Colors.amber)];
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
@@ -159,27 +156,18 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              eventLayoutStrategy:
-                  (
-                    events,
-                    date,
-                    timeOfDayRange,
-                    heightPerMinute,
-                    minimumTileHeight,
-                    cache,
-                    location,
-                  ) {
-                    return CustomSideBySideLayoutDelegate(
-                      events: events,
-                      heightPerMinute: heightPerMinute,
-                      date: date,
-                      timeOfDayRange: timeOfDayRange,
-                      minimumTileHeight: minimumTileHeight,
-                      layoutCache: cache ?? EventLayoutDelegateCache(),
-                      people: people,
-                      location: location,
-                    );
-                  },
+              eventLayoutStrategy: (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache, location) {
+                return CustomSideBySideLayoutDelegate(
+                  events: events,
+                  heightPerMinute: heightPerMinute,
+                  date: date,
+                  timeOfDayRange: timeOfDayRange,
+                  minimumTileHeight: minimumTileHeight,
+                  layoutCache: cache ?? EventLayoutDelegateCache(),
+                  people: people,
+                  location: location,
+                );
+              },
             ),
           ),
         ),
