@@ -39,7 +39,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
                 key: columnKey(date),
                 configuration: configuration,
                 date: InternalDateTime.fromDateTime(date),
-                eventsController: context.EventsController(),
+                eventsController: context.eventsController(),
                 location: context.location,
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
@@ -140,7 +140,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       widget.configuration.minimumTileHeight,
       widget.cache,
       widget.location,
-    ).sortEvents(events) as List<CalendarEvent>;
+    ).sortEvents(events);
   }
 
   @override

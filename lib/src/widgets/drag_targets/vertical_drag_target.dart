@@ -69,7 +69,7 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
 class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarget<T>>
     with SnapPoints, DragTargetUtilities<T> {
   @override
-  EventsController get eventsController => context.EventsController();
+  EventsController get eventsController => context.eventsController();
 
   @override
   CalendarController<T> get controller => widget.controller;

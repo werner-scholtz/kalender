@@ -55,7 +55,7 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
 
 class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDragTarget<T>> with DragTargetUtilities<T> {
   @override
-  EventsController get eventsController => context.EventsController();
+  EventsController get eventsController => context.eventsController();
   @override
   CalendarController<T> get controller => context.calendarController<T>();
   @override

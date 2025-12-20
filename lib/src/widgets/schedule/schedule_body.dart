@@ -36,7 +36,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
-        eventsController: context.EventsController(),
+        eventsController: context.eventsController(),
         viewController: viewController,
         // TODO: this might cause rebuilds.
         dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
@@ -96,7 +96,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
-          eventsController: context.EventsController(),
+          eventsController: context.eventsController(),
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
           dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator

@@ -3,7 +3,7 @@ import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 
 /// The default [EventsController] for managing [CalendarEvent]s.
-class DefaultEventsController extends EventsController<int> {
+class DefaultEventsController extends EventsController {
   final List<Location> locations;
 
   /// Creates a [DefaultEventsController].

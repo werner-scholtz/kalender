@@ -94,7 +94,7 @@ mixin DayEventTileUtils<T extends Object?> {
     bool includeMultiDayEvents = false,
     bool includeSelf = false,
   }) {
-    final eventsController = context.EventsController();
+    final eventsController = context.eventsController();
     final eventRangeOnDate =
         event.internalRange(location: context.location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
     final range = InternalDateTimeRange(
@@ -205,7 +205,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
     bool includeDayEvents = true,
     bool includeSelf = false,
   }) {
-    final eventsController = context.EventsController();
+    final eventsController = context.eventsController();
     final range = event.internalRange(location: context.location);
     final events = eventsController
         .eventsFromDateTimeRange(

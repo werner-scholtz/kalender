@@ -22,21 +22,21 @@ class Components<T extends Object?> extends InheritedWidget {
   }
 }
 
-class EventsControllerProvider<T> extends InheritedWidget {
+class EventsControllerProvider extends InheritedWidget {
   /// The [EventsController] that will be used by the Calendar.
   final EventsController eventsController;
 
   const EventsControllerProvider({super.key, required this.eventsController, required super.child});
 
   @override
-  bool updateShouldNotify(covariant EventsControllerProvider<T> oldWidget) {
+  bool updateShouldNotify(covariant EventsControllerProvider oldWidget) {
     return eventsController != oldWidget.eventsController;
   }
 
-  /// Gets the [EventsControllerProvider] of type [T] from the context.
-  static EventsController of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider<T>>();
-    assert(result != null, 'No EventControllerProvider of <$T> found.');
+  /// Gets the [EventsControllerProvider] from the context.
+  static EventsController of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>();
+    assert(result != null, 'No EventControllerProvider found.');
     return result!.eventsController;
   }
 }
@@ -184,7 +184,7 @@ class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Retrieve the [EventsController].
-  EventsController eventsController<T extends Object?>() => EventsControllerProvider.of<T>(this);
+  EventsController eventsController() => EventsControllerProvider.of(this);
 
   /// Retrieve the [CalendarController].
   CalendarController<T> calendarController<T extends Object?>() => CalendarControllerProvider.of<T>(this);
@@ -199,7 +199,7 @@ extension ProviderContext on BuildContext {
   TileComponents<T> tileComponents<T extends Object?>() => TileComponentProvider.of<T>(this);
 
   /// Retrieve the feedback widget size notifier from the [EventsController].
-  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => EventsController().feedbackWidgetSize;
+  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController().feedbackWidgetSize;
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);

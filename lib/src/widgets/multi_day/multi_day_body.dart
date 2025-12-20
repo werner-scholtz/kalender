@@ -74,7 +74,7 @@ class MultiDayBody<T extends Object?> extends StatelessWidget {
                         Positioned.fill(child: HourLines.fromContext<T>(context, timeOfDayRange)),
                         Positioned.fill(
                           child: MultiDayPage<T>(
-                            eventsController: context.EventsController(),
+                            eventsController: context.eventsController(),
                             viewController: viewController,
                             configuration: configuration,
                             pageHeight: pageHeight,

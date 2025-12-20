@@ -66,7 +66,7 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _eventsController = context.eventsController<T>();
+      _eventsController = context.eventsController();
       _locationNotifier = context.locationNotifier;
 
       _updateEvents();
