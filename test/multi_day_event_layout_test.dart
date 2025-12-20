@@ -164,21 +164,21 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are present.
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsOneWidget);
-      expect(find.byKey(getKey(5)), findsOneWidget);
-      expect(find.byKey(getKey(6)), findsOneWidget);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[4].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[5].id)), findsOneWidget);
 
       /// Check that the events are not overlapping.
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
-        tester.getRect(find.byKey(getKey(4))),
-        tester.getRect(find.byKey(getKey(5))),
-        tester.getRect(find.byKey(getKey(6))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
+        tester.getRect(find.byKey(getKey(events[3].id))),
+        tester.getRect(find.byKey(getKey(events[4].id))),
+        tester.getRect(find.byKey(getKey(events[5].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {
@@ -255,10 +255,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are present.
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsNWidgets(3));
@@ -347,9 +347,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are laid out correctly
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsOneWidget);
@@ -362,18 +362,18 @@ void main() {
       });
 
       // Get positions of each event
-      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
-      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
-      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+      final pos1 = tester.getTopLeft(find.byKey(getKey(events[0].id)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(events[1].id)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(events[2].id)));
 
       expect(pos2.dy, lessThan(pos3.dy));
       expect(pos3.dy, lessThan(pos1.dy));
 
       // Ensure that the rects do not overlap
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {
@@ -461,10 +461,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are laid out correctly
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsOneWidget);
@@ -477,18 +477,18 @@ void main() {
       });
 
       // Get positions of each event
-      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
-      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
-      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+      final pos1 = tester.getTopLeft(find.byKey(getKey(events[0].id)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(events[1].id)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(events[2].id)));
 
       expect(pos3.dy, lessThan(pos2.dy));
       expect(pos2.dy, lessThan(pos1.dy));
 
       // Ensure that the rects do not overlap
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {
