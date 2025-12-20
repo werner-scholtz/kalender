@@ -11,7 +11,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// ```dart
 /// class DayEventTileExample extends StatelessWidget with DayEventTileUtils<T> {
 ///   @override
-///   final CalendarEvent<T> event;
+///   final CalendarEvent event;
 ///
 ///   @override
 ///   final DateTimeRange tileRange;
@@ -47,7 +47,7 @@ mixin DayEventTileUtils<T extends Object?> {
   ///
   /// This is provided by a [TileComponents.tileBuilder] and represents
   /// the event data that this tile is displaying.
-  CalendarEvent<T> get event;
+  CalendarEvent get event;
 
   /// The [DateTimeRange] that the tile is being displayed within.
   ///
@@ -87,14 +87,14 @@ mixin DayEventTileUtils<T extends Object?> {
   ///   after: Duration(minutes: 30),
   /// );
   /// ```
-  List<CalendarEvent<T>> nearbyEvents(
+  List<CalendarEvent> nearbyEvents(
     BuildContext context, {
     Duration before = Duration.zero,
     Duration after = Duration.zero,
     bool includeMultiDayEvents = false,
     bool includeSelf = false,
   }) {
-    final eventsController = context.eventsController<T>();
+    final eventsController = context.EventsController();
     final eventRangeOnDate =
         event.internalRange(location: context.location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
     final range = InternalDateTimeRange(
@@ -143,7 +143,7 @@ mixin DayEventTileUtils<T extends Object?> {
 /// ```dart
 /// class MultiDayEventTileExample extends StatelessWidget with MultiDayEventTileUtils<T> {
 ///   @override
-///   final CalendarEvent<T> event;
+///   final CalendarEvent event;
 ///
 ///   @override
 ///   final DateTimeRange tileRange;
@@ -178,7 +178,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   /// The [CalendarEvent] that the tile is representing.
   ///
   /// This event may span multiple days and is provided by [TileComponents.tileBuilder].
-  CalendarEvent<T> get event;
+  CalendarEvent get event;
 
   /// The [DateTimeRange] that the tile is being displayed within.
   ///
@@ -197,7 +197,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   ///[includeMultiDayEvents] Whether to include other multi-day events (default: true)
   ///[includeDayEvents] Whether to include single-day events (default: true)
   ///[includeSelf] Whether to include the current event in results (default: false)
-  List<CalendarEvent<T>> nearbyEvents(
+  List<CalendarEvent> nearbyEvents(
     BuildContext context, {
     Duration before = Duration.zero,
     Duration after = Duration.zero,
@@ -205,7 +205,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
     bool includeDayEvents = true,
     bool includeSelf = false,
   }) {
-    final eventsController = context.eventsController<T>();
+    final eventsController = context.EventsController();
     final range = event.internalRange(location: context.location);
     final events = eventsController
         .eventsFromDateTimeRange(

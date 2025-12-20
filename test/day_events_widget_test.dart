@@ -14,26 +14,23 @@ void main() {
         start: start.copyWith(hour: start.hour - 1),
         end: start.copyWith(hour: start.hour + 1),
       ),
-      data: 1,
     ),
     CalendarEvent(
       dateTimeRange: DateTimeRange(
         start: start,
         end: start.copyWith(hour: start.hour + 2),
       ),
-      data: 2,
     ),
     CalendarEvent(
       dateTimeRange: DateTimeRange(
         start: start.copyWith(day: start.day + 1),
         end: start.copyWith(day: start.day + 1, hour: start.hour + 3),
       ),
-      data: 3,
     ),
   ];
 
   // Create the necessary controllers
-  final eventsController = DefaultEventsController<int>()..addEvents(events);
+  final eventsController = DefaultEventsController()..addEvents(events);
 
   testWidgets('DayEventsWidget lays out events correctly', (tester) async {
     final calendarController = CalendarController<int>();
@@ -58,8 +55,8 @@ void main() {
           eventsController: eventsController,
           tileComponents: TileComponents<int>(
             tileBuilder: (event, tileRange) => Container(
-              key: ValueKey(event.data!),
-              child: Text(event.data.toString()),
+              key: ValueKey(event.id),
+              child: Text(event.id.toString()),
             ),
           ),
           child: SizedBox(

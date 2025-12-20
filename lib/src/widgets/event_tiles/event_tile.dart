@@ -29,7 +29,7 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
 abstract class EventTile<T extends Object?> extends StatefulWidget {
   /// The event to be displayed in the tile.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The callbacks for the calendar.
   final CalendarCallbacks<T>? callbacks;

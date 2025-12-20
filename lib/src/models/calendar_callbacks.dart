@@ -145,7 +145,7 @@ class CalendarCallbacks<T extends Object?> {
 /// The [renderBox] is the [RenderBox] of the event tile.
 ///
 /// TODO: Remove renderBox in 1.0.0 as it is now included in the [OnEventTappedWithDetail].
-typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent<T> event, RenderBox renderBox);
+typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent event, RenderBox renderBox);
 
 /// The callback for when an event is tapped.
 ///
@@ -156,38 +156,38 @@ typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent<T> event,
 ///
 /// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
 typedef OnEventTappedWithDetail<T extends Object?> = void Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
   RenderBox renderBox,
   TapDetail detail,
 );
 
 /// The callback for when an event is about to be changed.
-typedef OnEventChange<T extends Object?> = void Function(CalendarEvent<T> event);
+typedef OnEventChange<T extends Object?> = void Function(CalendarEvent event);
 
 /// The callback for when an event is changed.
 ///
 /// [event] is the original event.
 /// [updatedEvent] is the updated event.
-typedef OnEventChanged<T extends Object?> = void Function(CalendarEvent<T> event, CalendarEvent<T> updatedEvent);
+typedef OnEventChanged<T extends Object?> = void Function(CalendarEvent event, CalendarEvent updatedEvent);
 
 /// The call back for creating a new event.
 ///
 /// [event] is the event that will be created.
-typedef OnEventCreate<T extends Object?> = CalendarEvent<T>? Function(CalendarEvent<T> event);
+typedef OnEventCreate<T extends Object?> = CalendarEvent? Function(CalendarEvent event);
 
 /// The call back for creating a new event with details.
 ///
 /// [event] is the event that will be created.
 /// [detail] contains the details of the tap that created the event.
-typedef OnEventCreateWithDetail<T extends Object?> = CalendarEvent<T>? Function(
-  CalendarEvent<T> event,
+typedef OnEventCreateWithDetail<T extends Object?> = CalendarEvent? Function(
+  CalendarEvent event,
   TapDetail detail,
 );
 
 /// The callback for a new event has been created.
 ///
 /// [event] is the event that was created.
-typedef OnEventCreated<T extends Object?> = void Function(CalendarEvent<T> event);
+typedef OnEventCreated<T extends Object?> = void Function(CalendarEvent event);
 
 /// The callback for when a calendar page is changed.
 ///

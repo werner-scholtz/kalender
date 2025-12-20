@@ -12,7 +12,7 @@ typedef TimeLineBuilder = Widget Function(
   double heightPerMinute,
   TimeOfDayRange timeOfDayRange,
   TimelineStyle? style,
-  ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
+  ValueNotifier<CalendarEvent?> eventBeingDragged,
   ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
 );
 
@@ -127,7 +127,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   final TimelineStyle? style;
 
   /// The [ValueNotifier] that contains the event being dragged.
-  final ValueNotifier<CalendarEvent<dynamic>?> eventBeingDragged;
+  final ValueNotifier<CalendarEvent?> eventBeingDragged;
 
   /// The visibleDataTimeRange.
   final ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange;
@@ -149,7 +149,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
     double heightPerMinute,
     TimeOfDayRange timeOfDayRange,
     TimelineStyle? style,
-    ValueNotifier<CalendarEvent<Object?>?> eventBeingDragged,
+    ValueNotifier<CalendarEvent?> eventBeingDragged,
     ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
   ) {
     return TimeLine(

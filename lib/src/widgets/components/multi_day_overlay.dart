@@ -9,7 +9,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.da
 /// The [dateTimeRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayEventTile<T> Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
   InternalDateTimeRange internalRange,
   VoidCallback dismissOverlay,
 );
@@ -29,7 +29,7 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [style] is the style for the overlay.
 typedef MultiDayOverlayBuilder<T extends Object?> = Widget Function({
   required DateTime date,
-  required List<CalendarEvent<T>> events,
+  required List<CalendarEvent> events,
   required double tileHeight,
   required OverlayPortalController portalController,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -76,7 +76,7 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
   final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
-  final List<CalendarEvent<T>> events;
+  final List<CalendarEvent> events;
 
   /// The height of the tile.
   final double tileHeight;

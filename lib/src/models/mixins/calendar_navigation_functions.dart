@@ -76,7 +76,7 @@ mixin CalendarNavigationFunctions<T> {
   ///
   /// [centerEvent] center the event on the viewport.
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

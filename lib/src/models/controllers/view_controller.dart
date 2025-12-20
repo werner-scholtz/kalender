@@ -27,7 +27,7 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   ViewConfiguration get viewConfiguration;
 
   /// The [CalendarEvent]s that are currently visible.
-  ValueNotifier<Set<CalendarEvent<T>>> get visibleEvents;
+  ValueNotifier<Set<CalendarEvent>> get visibleEvents;
 
   /// TODO: this can be passed between ViewControllers, but for now it is created here.
 
@@ -75,7 +75,7 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

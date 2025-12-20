@@ -69,7 +69,7 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
 class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarget<T>>
     with SnapPoints, DragTargetUtilities<T> {
   @override
-  EventsController<T> get eventsController => context.eventsController<T>();
+  EventsController get eventsController => context.EventsController();
 
   @override
   CalendarController<T> get controller => widget.controller;
@@ -280,7 +280,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
     // Multi-day events belong in the header, not the body.
     // Return null to prevent updating the selection while dragging over this area.
     if (event.isMultiDayEvent) return null;
@@ -337,7 +337,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
@@ -362,7 +362,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+  CalendarEvent? createEvent(DateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

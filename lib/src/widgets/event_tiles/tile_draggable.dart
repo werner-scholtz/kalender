@@ -8,7 +8,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// A widget that makes the event tile draggable for rescheduling.
 class TileDraggable<T extends Object?> extends StatelessWidget {
   /// The event to be dragged.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The interaction state of the calendar.
   final CalendarInteraction interaction;
@@ -79,7 +79,7 @@ class TileDraggable<T extends Object?> extends StatelessWidget {
 /// A widget that provides a feedback widget for event dragging.
 class FeedbackWidget<T extends Object?> extends StatefulWidget {
   /// The event being dragged.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The builder used to create the feedback tile.
   final FeedbackTileBuilder<T>? feedbackTileBuilder;

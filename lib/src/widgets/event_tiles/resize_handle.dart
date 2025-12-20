@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/components/resize_handles.dart';
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget<T extends Object?> extends StatefulWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The global interaction settings for the calendar.
   final CalendarInteraction interaction;
@@ -154,7 +154,7 @@ class ResizeHandle<T extends Object?> extends StatelessWidget {
   final ResizeDirection direction;
 
   /// The event associated with the resize handle.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The tile components used to build the resize handle.
   final TileComponents<T> tileComponents;

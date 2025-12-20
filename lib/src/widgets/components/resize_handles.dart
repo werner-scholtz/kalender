@@ -17,7 +17,7 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 /// [size] is the size of the event tile.
 /// [axis] is the axis along which the resize handles are positioned.
 typedef ResizeHandlePositioner<T extends Object?> = ResizeHandles<T> Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
   CalendarInteraction interaction,
   TileComponents<T> tileComponents,
   DateTimeRange dateTimeRange,
@@ -28,7 +28,7 @@ typedef ResizeHandlePositioner<T extends Object?> = ResizeHandles<T> Function(
 /// The base class for the ResizeDetectorPositioner.
 abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The global interaction settings for the calendar.
   final CalendarInteraction interaction;
@@ -57,7 +57,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
 
   /// Builds the ResizeHandles using the provided [tileComponents] or the default implementation.
   static ResizeHandles<T> builder<T>(
-    CalendarEvent<T> event,
+    CalendarEvent event,
     CalendarInteraction interaction,
     TileComponents<T> tileComponents,
     DateTimeRange dateTimeRange,

@@ -36,7 +36,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController<T>) {
       return SchedulePositionList<T>(
-        eventsController: context.eventsController<T>(),
+        eventsController: context.EventsController(),
         viewController: viewController,
         // TODO: this might cause rebuilds.
         dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
@@ -96,7 +96,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
       },
       itemBuilder: (context, index) {
         return SchedulePositionList<T>(
-          eventsController: context.eventsController<T>(),
+          eventsController: context.EventsController(),
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
           dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
@@ -124,7 +124,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
 /// - [EmptyItem]: Placeholder for days with no events (configurable)
 class SchedulePositionList<T extends Object?> extends StatefulWidget {
   /// The controller managing the events displayed in this list.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   /// The schedule view controller for this specific view.
   final ScheduleViewController<T> viewController;
@@ -164,7 +164,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
 class _SchedulePositionListState<T extends Object?> extends State<SchedulePositionList<T>> {
   // Convenience getters for accessing widget properties
   ScheduleViewController<T> get viewController => widget.viewController;
-  EventsController<T> get eventsController => widget.eventsController;
+  EventsController get eventsController => widget.eventsController;
   CalendarController<T> get calendarController => context.calendarController<T>();
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
   ScheduleComponentStyles get styles => context.components<T>().scheduleComponentStyles;

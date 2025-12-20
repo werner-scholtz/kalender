@@ -13,7 +13,7 @@ import 'package:kalender/kalender.dart';
 /// [overlayStyles] is the styles for the overlay event tile.
 typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
   required DateTime date,
-  required List<CalendarEvent<T>> events,
+  required List<CalendarEvent> events,
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
@@ -28,7 +28,7 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   final InternalDateTime date;
 
   /// All the events that should be displayed for the given [date].
-  final List<CalendarEvent<T>> events;
+  final List<CalendarEvent> events;
 
   /// The number of hidden rows.
   final int numberOfHiddenRows;

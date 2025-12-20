@@ -8,7 +8,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
 class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
   final CalendarController<T> calendarController;
   final CalendarCallbacks<T>? callbacks;
   final ScheduleViewController<T> viewController;
@@ -52,7 +52,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   List<DateTime> get visibleDates => throw UnimplementedError();
 
   @override
-  EventsController<T> get eventsController => widget.eventsController;
+  EventsController get eventsController => widget.eventsController;
 
   @override
   CalendarController<T> get controller => widget.calendarController;
@@ -199,7 +199,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
     final rangeAsUtc = event.internalRange(location: context.location);
     // Set the highlighted date in the schedule view controller.
     widget.viewController.highlightedDateTimeRange.value = DateTimeRange(
@@ -238,5 +238,5 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) => null;
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) => null;
 }

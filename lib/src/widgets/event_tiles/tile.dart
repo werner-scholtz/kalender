@@ -12,7 +12,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// the current drag state from [CalendarController].
 class Tile<T extends Object?> extends StatefulWidget {
   /// The event associated with the tile.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The builder that builds the tile widget.
   final TileBuilder<T> tileBuilder;

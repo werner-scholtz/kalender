@@ -5,7 +5,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 class CalendarView<T extends Object?> extends StatefulWidget {
   /// The [EventsController] that will be used to populate the events in the calendar view.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   /// The [CalendarController] that is used to control the calendar view.
   final CalendarController<T> calendarController;

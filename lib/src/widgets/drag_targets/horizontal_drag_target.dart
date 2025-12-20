@@ -55,7 +55,7 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
 
 class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDragTarget<T>> with DragTargetUtilities<T> {
   @override
-  EventsController<T> get eventsController => context.eventsController<T>();
+  EventsController get eventsController => context.EventsController();
   @override
   CalendarController<T> get controller => context.calendarController<T>();
   @override
@@ -188,7 +188,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
     if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return null;
@@ -214,7 +214,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) {
     final internalRange = event.internalRange(location: context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
@@ -227,7 +227,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+  CalendarEvent? createEvent(DateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

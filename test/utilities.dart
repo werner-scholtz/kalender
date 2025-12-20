@@ -88,7 +88,7 @@ Future<void> pumpAndSettleWithMaterialApp(
 class TestProvider<T> extends StatelessWidget {
   final Widget child;
   final CalendarController<T> calendarController;
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
   final CalendarCallbacks<T>? callbacks;
   final CalendarComponents<T>? components;
   final TileComponents<T> tileComponents;

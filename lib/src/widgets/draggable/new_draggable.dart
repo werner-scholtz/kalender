@@ -21,9 +21,9 @@ mixin NewDraggableWidget<T extends Object?> {
   /// Create the new event and select it where needed.
   void createNewEvent(BuildContext context, DateTime date, Offset localPosition) {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
-    final newEvent = CalendarEvent<T>(dateTimeRange: dateTimeRange.forLocation(location: context.location));
+    final newEvent = CalendarEvent(dateTimeRange: dateTimeRange.forLocation(location: context.location));
 
-    CalendarEvent<T>? event;
+    CalendarEvent? event;
     if (callbacks?.onEventCreateWithDetail != null) {
       final detail = createTapDetail(context, dateTimeRange, localPosition);
       event = callbacks?.onEventCreateWithDetail?.call(newEvent, detail);

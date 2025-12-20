@@ -24,7 +24,7 @@ class Components<T extends Object?> extends InheritedWidget {
 
 class EventsControllerProvider<T> extends InheritedWidget {
   /// The [EventsController] that will be used by the Calendar.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   const EventsControllerProvider({super.key, required this.eventsController, required super.child});
 
@@ -34,7 +34,7 @@ class EventsControllerProvider<T> extends InheritedWidget {
   }
 
   /// Gets the [EventsControllerProvider] of type [T] from the context.
-  static EventsController<T> of<T>(BuildContext context) {
+  static EventsController of<T>(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider<T>>();
     assert(result != null, 'No EventControllerProvider of <$T> found.');
     return result!.eventsController;
@@ -184,7 +184,7 @@ class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Retrieve the [EventsController].
-  EventsController<T> eventsController<T extends Object?>() => EventsControllerProvider.of<T>(this);
+  EventsController eventsController<T extends Object?>() => EventsControllerProvider.of<T>(this);
 
   /// Retrieve the [CalendarController].
   CalendarController<T> calendarController<T extends Object?>() => CalendarControllerProvider.of<T>(this);
@@ -199,7 +199,7 @@ extension ProviderContext on BuildContext {
   TileComponents<T> tileComponents<T extends Object?>() => TileComponentProvider.of<T>(this);
 
   /// Retrieve the feedback widget size notifier from the [EventsController].
-  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController<T>().feedbackWidgetSize;
+  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => EventsController().feedbackWidgetSize;
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);

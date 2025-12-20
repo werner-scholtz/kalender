@@ -30,7 +30,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
   late final PageController pageController;
 
   @override
-  late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
+  late final ValueNotifier<Set<CalendarEvent>> visibleEvents;
 
   @override
   Future<void> animateToDate(
@@ -63,7 +63,7 @@ class MonthViewController<T extends Object?> extends ViewController<T> {
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

@@ -105,7 +105,7 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
 /// * (This can be compared to the [CalendarEvent.dateTimeRangeAsUtc] to determine on which day it falls.)
 typedef TileBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
   DateTimeRange tileRange,
 );
 
@@ -113,7 +113,7 @@ typedef TileBuilder<T extends Object?> = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileWhenDraggingBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
 );
 
 /// The builder for the feedback tile. (When dragging)
@@ -121,7 +121,7 @@ typedef TileWhenDraggingBuilder<T extends Object?> = Widget Function(
 /// [event] is the event that the tile will be built for.
 /// [dropTargetWidgetSize] is the size of the drop target widget.
 typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
   Size dropTargetWidgetSize,
 );
 
@@ -129,7 +129,7 @@ typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
-  CalendarEvent<T> event,
+  CalendarEvent event,
 );
 
 /// The builder for the empty item.

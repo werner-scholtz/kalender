@@ -39,7 +39,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
                 key: columnKey(date),
                 configuration: configuration,
                 date: InternalDateTime.fromDateTime(date),
-                eventsController: context.eventsController<T>(),
+                eventsController: context.EventsController(),
                 location: context.location,
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
@@ -56,7 +56,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
 /// It listens to the [EventsController] for changes and updates the events accordingly.
 class DayEventsColumn<T extends Object?> extends StatefulWidget {
   /// The controller that holds the events.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   /// The configuration for the multi-day body.
   final MultiDayBodyConfiguration configuration;
@@ -91,7 +91,7 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
 
 class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>> {
   /// The events that are displayed on the day.
-  List<CalendarEvent<T>> _events = [];
+  List<CalendarEvent> _events = [];
 
   @override
   void initState() {
@@ -131,7 +131,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   }
 
   /// Sorts the events based on the layout strategy defined in the configuration.
-  List<CalendarEvent<T>> _sort(Iterable<CalendarEvent<T>> events) {
+  List<CalendarEvent> _sort(Iterable<CalendarEvent> events) {
     return widget.configuration.eventLayoutStrategy(
       [],
       widget.date,
@@ -140,7 +140,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
       widget.configuration.minimumTileHeight,
       widget.cache,
       widget.location,
-    ).sortEvents(events) as List<CalendarEvent<T>>;
+    ).sortEvents(events) as List<CalendarEvent>;
   }
 
   @override
@@ -201,11 +201,11 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
 
 /// This widget is used to render the drop target for the day events.
 class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
   final InternalDateTime date;
-  final List<CalendarEvent<T>> events;
+  final List<CalendarEvent> events;
   final CalendarController<T> controller;
   final EventLayoutDelegateCache cache;
   final Location? location;
@@ -226,7 +226,7 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
 }
 
 class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetColumn<T>> {
-  CalendarEvent<T>? _selectedEvent;
+  CalendarEvent? _selectedEvent;
 
   @override
   void initState() {

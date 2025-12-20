@@ -56,11 +56,11 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
 
 class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWidget<T>> {
   /// The events controller that provides the events.
-  late EventsController<T> _eventsController;
+  late EventsController _eventsController;
   late ValueNotifier<Location?> _locationNotifier;
 
   /// The list of visible events.
-  List<CalendarEvent<T>> _visibleEvents = [];
+  List<CalendarEvent> _visibleEvents = [];
 
   @override
   void initState() {
@@ -135,7 +135,7 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   /// The list of events that will be laid out.
   ///
   /// * Note: not all of these events will necessarily be visible,
-  final List<CalendarEvent<T>> events;
+  final List<CalendarEvent> events;
 
   /// The directionality of the widget.
   final TextDirection textDirection;
@@ -361,7 +361,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
   /// The function that builds the overlay event tile for the event.
   MultiDayOverlayEventTile<T> _overlayEventTileBuilder(
-    CalendarEvent<T> event,
+    CalendarEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {

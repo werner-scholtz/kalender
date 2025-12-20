@@ -301,7 +301,7 @@ void main() {
         );
 
         // Create a multi-day event (24+ hours)
-        final multiDayEvent = CalendarEvent<Object?>(
+        final multiDayEvent = CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 1, 2, 0, 0),
             end: DateTime(2025, 1, 3, 0, 0), // 24 hours
@@ -344,7 +344,7 @@ void main() {
         );
 
         // Create a single-day event (less than 24 hours)
-        final singleDayEvent = CalendarEvent<Object?>(
+        final singleDayEvent = CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 1, 2, 10, 0),
             end: DateTime(2025, 1, 2, 12, 0), // 2 hours
@@ -375,7 +375,7 @@ void main() {
         final controller = CalendarController<Object?>();
 
         // Create a single-day event
-        final singleDayEvent = CalendarEvent<Object?>(
+        final singleDayEvent = CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 1, 2, 10, 0),
             end: DateTime(2025, 1, 2, 12, 0), // 2 hours
@@ -405,7 +405,7 @@ void main() {
         final controller = CalendarController<Object?>();
 
         // Create a multi-day event
-        final multiDayEvent = CalendarEvent<Object?>(
+        final multiDayEvent = CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 1, 2, 0, 0),
             end: DateTime(2025, 1, 3, 0, 0), // 24 hours
@@ -434,7 +434,7 @@ void main() {
         final controller = CalendarController<Object?>();
 
         // Create a single-day event
-        final singleDayEvent = CalendarEvent<Object?>(
+        final singleDayEvent = CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 1, 2, 10, 0),
             end: DateTime(2025, 1, 2, 12, 0), // 2 hours

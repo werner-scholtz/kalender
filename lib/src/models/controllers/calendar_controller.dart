@@ -39,10 +39,10 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   final visibleDateTimeRange = ValueNotifier<DateTimeRange<DateTime>?>(null);
 
   /// The [CalendarEvent]s that are currently visible.
-  final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});
+  final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});
 
   /// The event currently being focused on.
-  final selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
+  final selectedEvent = ValueNotifier<CalendarEvent?>(null);
   int? _selectedEventId;
   int? get selectedEventId => _selectedEventId;
 
@@ -54,13 +54,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   ///
   /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
-  void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
+  void selectEvent(CalendarEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
     _internalFocus = internal;
     selectedEvent.value = event;
   }
 
-  void updateEvent(CalendarEvent<T> event, {bool internal = false}) {
+  void updateEvent(CalendarEvent event, {bool internal = false}) {
     _internalFocus = internal;
     selectedEvent.value = event;
   }
@@ -161,7 +161,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

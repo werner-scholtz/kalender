@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being rescheduled.
 class Reschedule<T extends Object?> {
   /// The [CalendarEvent] that is being rescheduled.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// Create a reschedule object from a [CalendarEvent].
   Reschedule({required this.event});
@@ -13,7 +13,7 @@ class Reschedule<T extends Object?> {
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being resized.
 class Resize<T extends Object?> {
   /// The [CalendarEvent] that is being resized.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The direction that the [CalendarEvent] is being resized in.
   final ResizeDirection direction;
