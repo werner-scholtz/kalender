@@ -2,8 +2,8 @@ import 'package:advanced_example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-TileComponents<Event> get tileComponents {
-  return TileComponents<Event>(
+TileComponents get tileComponents {
+  return TileComponents(
     tileBuilder: EventTile.builder,
     dropTargetTile: DropTargetTile.builder,
     feedbackTileBuilder: FeedbackTile.builder,
@@ -11,8 +11,8 @@ TileComponents<Event> get tileComponents {
   );
 }
 
-TileComponents<Event> get multiDayTileComponents {
-  return TileComponents<Event>(
+TileComponents get multiDayTileComponents {
+  return TileComponents(
     tileBuilder: MultiDayEventTile.builder,
     overlayTileBuilder: OverlayEventTile.builder,
     dropTargetTile: DropTargetTile.builder,
@@ -21,8 +21,8 @@ TileComponents<Event> get multiDayTileComponents {
   );
 }
 
-ScheduleTileComponents<Event> get scheduleTileComponents {
-  return ScheduleTileComponents<Event>(
+ScheduleTileComponents get scheduleTileComponents {
+  return ScheduleTileComponents(
     tileBuilder: MultiDayEventTile.builder,
     overlayTileBuilder: OverlayEventTile.builder,
     dropTargetTile: DropTargetTile.builder,

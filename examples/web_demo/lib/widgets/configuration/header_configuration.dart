@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
-import 'package:web_demo/models/event.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
 import 'package:web_demo/utils.dart';
 
@@ -13,7 +12,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
     required this.calendarConfiguration,
   });
 
-  MultiDayHeaderConfiguration<Event> get configuration => calendarConfiguration.multiDayHeaderConfiguration;
+  MultiDayHeaderConfiguration get configuration => calendarConfiguration.multiDayHeaderConfiguration;
   ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionHeader;
 
   @override
@@ -50,7 +49,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
           items: const [0, 1, 2, 3, 4, 5],
           onChanged: (value) {
             calendarConfiguration.multiDayHeaderConfiguration = value == 0
-                ? MultiDayHeaderConfiguration<Event>(
+                ? MultiDayHeaderConfiguration(
                     showTiles: configuration.showTiles,
                     tileHeight: configuration.tileHeight,
                   )

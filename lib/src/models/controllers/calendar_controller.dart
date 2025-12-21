@@ -12,7 +12,7 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 /// The [CalendarView] attaches itself to the [CalendarController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
-class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
+class CalendarController extends ChangeNotifier with CalendarNavigationFunctions, NewEvent {
   CalendarController() : id = DateTime.now().millisecondsSinceEpoch {
     _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
   }
@@ -21,8 +21,8 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   final int id;
 
   /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
-  ViewController<T>? _viewController;
-  ViewController<T>? get viewController => _viewController;
+  ViewController? _viewController;
+  ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
   /// The internal [InternalDateTimeRange] that is currently visible.
@@ -77,7 +77,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   }
 
   /// Attach the [ViewController] to this [CalendarController].
-  void attach(ViewController<T> viewController) {
+  void attach(ViewController viewController) {
     if (isAttached) detach();
 
     _viewController = viewController;

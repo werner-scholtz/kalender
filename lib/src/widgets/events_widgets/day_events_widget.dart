@@ -6,7 +6,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// This widget renders a [DayEventsColumn] for each day in the [internalRange].
-class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
+class MultiDayEventsRow extends StatelessWidget {
   /// The configuration for the multi-day body.
   final MultiDayBodyConfiguration configuration;
 
@@ -14,7 +14,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
   final InternalDateTimeRange internalRange;
 
   /// The controller for the multi-day view.
-  final MultiDayViewController<T> viewController;
+  final MultiDayViewController viewController;
 
   /// Creates a new instance of the [MultiDayEventsRow] widget.
   const MultiDayEventsRow({
@@ -35,7 +35,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: configuration.horizontalPadding.copyWith(top: 0, bottom: 0),
-              child: DayEventsColumn<T>(
+              child: DayEventsColumn(
                 key: columnKey(date),
                 configuration: configuration,
                 date: InternalDateTime.fromDateTime(date),
@@ -54,7 +54,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
 /// This widget is used to render the events for a single day.
 ///
 /// It listens to the [EventsController] for changes and updates the events accordingly.
-class DayEventsColumn<T extends Object?> extends StatefulWidget {
+class DayEventsColumn extends StatefulWidget {
   /// The controller that holds the events.
   final EventsController eventsController;
 
@@ -67,7 +67,7 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
   final InternalDateTime date;
 
   /// The controller for the multi-day view.
-  // final MultiDayViewController<T> viewController;
+  // final MultiDayViewController viewController;
 
   final EventLayoutDelegateCache cache;
 
@@ -86,10 +86,10 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<DayEventsColumn<T>> createState() => _DayEventsColumnState<T>();
+  State<DayEventsColumn> createState() => _DayEventsColumnState();
 }
 
-class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>> {
+class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
   List<CalendarEvent> _events = [];
 
@@ -101,7 +101,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
   }
 
   @override
-  void didUpdateWidget(covariant DayEventsColumn<T> oldWidget) {
+  void didUpdateWidget(covariant DayEventsColumn oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.location != widget.location) {
       widget.cache.clearAll();
@@ -145,7 +145,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.calendarController<T>();
+    final controller = context.calendarController();
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     final eventsWidget = CustomMultiChildLayout(
@@ -165,8 +165,8 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
               key: DayEventTile.tileKey(item.$2.id),
               child: DayEventTile(
                 event: item.$2,
-                callbacks: context.callbacks<T>(),
-                tileComponents: context.tileComponents<T>(),
+                callbacks: context.callbacks(),
+                tileComponents: context.tileComponents(),
                 dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
                 interaction: context.interaction,
                 resizeAxis: Axis.vertical,
@@ -182,7 +182,7 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
         Positioned.fill(child: eventsWidget),
         Positioned.fill(
           child: PassThroughPointer(
-            child: DayDropTargetColumn<T>(
+            child: DayDropTargetColumn(
               events: _events,
               eventsController: widget.eventsController,
               configuration: widget.configuration,
@@ -200,13 +200,13 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
 }
 
 /// This widget is used to render the drop target for the day events.
-class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
+class DayDropTargetColumn extends StatefulWidget {
   final EventsController eventsController;
   final MultiDayViewConfiguration viewConfiguration;
   final MultiDayBodyConfiguration configuration;
   final InternalDateTime date;
   final List<CalendarEvent> events;
-  final CalendarController<T> controller;
+  final CalendarController controller;
   final EventLayoutDelegateCache cache;
   final Location? location;
   const DayDropTargetColumn({
@@ -222,10 +222,10 @@ class DayDropTargetColumn<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<DayDropTargetColumn<T>> createState() => _DayDropTargetColumnState<T>();
+  State<DayDropTargetColumn> createState() => _DayDropTargetColumnState();
 }
 
-class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetColumn<T>> {
+class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
   CalendarEvent? _selectedEvent;
 
   @override
@@ -235,7 +235,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
   }
 
   @override
-  void didUpdateWidget(covariant DayDropTargetColumn<T> oldWidget) {
+  void didUpdateWidget(covariant DayDropTargetColumn oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.location != widget.location) _update();
   }
@@ -273,7 +273,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    final controller = context.calendarController<T>();
+    final controller = context.calendarController();
 
     // If there is no event being dragged, return an empty widget.
     final event = _selectedEvent;
@@ -290,7 +290,7 @@ class _DayDropTargetColumnState<T extends Object?> extends State<DayDropTargetCo
       eventList.insert(0, event);
     }
 
-    final dropTarget = context.tileComponents<T>().dropTargetTile;
+    final dropTarget = context.tileComponents().dropTargetTile;
 
     return CustomMultiChildLayout(
       delegate: layoutStrategy.call(

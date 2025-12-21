@@ -48,10 +48,10 @@ typedef DateToEventIds = Map<String, Set<int>>;
 ///   102: CalendarEvent(data: 'Lunch', ...),
 /// }
 /// ```
-typedef EventIdToEvent<int> = Map<int, CalendarEvent>;
+typedef EventIdToEvent = Map<int, CalendarEvent>;
 
 /// The default class for storing [CalendarEvent]s.
-class DefaultEventStore extends EventStore<int> {
+class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///
   /// Requesting a location that is not in this list will generate its own date map on demand not a great solution for performance.
@@ -64,7 +64,7 @@ class DefaultEventStore extends EventStore<int> {
   final Map<DateTime, Set<int>> dateIds = {};
 
   /// A Map containing all events.
-  final idEvent = EventIdToEvent<int>();
+  final idEvent = EventIdToEvent();
 
   /// Map of location strings to date maps.
   final locationDateIdMap = LocationDateIdMap();

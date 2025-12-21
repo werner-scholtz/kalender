@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:demo/data/event.dart';
 import 'package:demo/widgets/tile/tiles.dart';
 
-TileComponents<Event> get multiDayBodyComponents {
+TileComponents get multiDayBodyComponents {
   const margin = EdgeInsets.symmetric(horizontal: 1);
   const titlePadding = EdgeInsets.all(8);
   return TileComponents(
@@ -18,7 +18,7 @@ TileComponents<Event> get multiDayBodyComponents {
   );
 }
 
-TileComponents<Event> get multiDayHeaderTileComponents {
+TileComponents get multiDayHeaderTileComponents {
   const margin = EdgeInsets.symmetric(vertical: 1);
   const titlePadding = EdgeInsets.symmetric(vertical: 1, horizontal: 8);
   return TileComponents(
@@ -31,7 +31,7 @@ TileComponents<Event> get multiDayHeaderTileComponents {
   );
 }
 
-ScheduleTileComponents<Event> get scheduleTileComponents {
+ScheduleTileComponents get scheduleTileComponents {
   const margin = EdgeInsets.symmetric(vertical: 1);
   const titlePadding = EdgeInsets.all(8);
   return ScheduleTileComponents(

@@ -9,7 +9,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 ///
 /// Example usage:
 /// ```dart
-/// class DayEventTileExample extends StatelessWidget with DayEventTileUtils<T> {
+/// class DayEventTileExample extends StatelessWidget with DayEventTileUtils {
 ///   @override
 ///   final CalendarEvent event;
 ///
@@ -42,7 +42,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
-mixin DayEventTileUtils<T extends Object?> {
+mixin DayEventTileUtils {
   /// The [CalendarEvent] that the tile is representing.
   ///
   /// This is provided by a [TileComponents.tileBuilder] and represents
@@ -141,7 +141,7 @@ mixin DayEventTileUtils<T extends Object?> {
 ///
 /// Example usage:
 /// ```dart
-/// class MultiDayEventTileExample extends StatelessWidget with MultiDayEventTileUtils<T> {
+/// class MultiDayEventTileExample extends StatelessWidget with MultiDayEventTileUtils {
 ///   @override
 ///   final CalendarEvent event;
 ///
@@ -174,7 +174,7 @@ mixin DayEventTileUtils<T extends Object?> {
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
-mixin MultiDayEventTileUtils<T extends Object?> {
+mixin MultiDayEventTileUtils {
   /// The [CalendarEvent] that the tile is representing.
   ///
   /// This event may span multiple days and is provided by [TileComponents.tileBuilder].

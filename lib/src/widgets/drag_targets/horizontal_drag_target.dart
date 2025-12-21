@@ -9,10 +9,10 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// A [StatefulWidget] that provides a [DragTarget] for [Draggable] widgets containing a [Create], [Resize], [Reschedule] object.
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
-class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
+class HorizontalDragTarget extends StatefulWidget {
   final DateTimeRange visibleDateTimeRange;
 
-  final HorizontalConfiguration<T> configuration;
+  final HorizontalConfiguration configuration;
 
   final HorizontalTriggerWidgetBuilder? leftPageTrigger;
   final HorizontalTriggerWidgetBuilder? rightPageTrigger;
@@ -26,19 +26,19 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<HorizontalDragTarget<T>> createState() => _HorizontalDragTargetState<T>();
+  State<HorizontalDragTarget> createState() => _HorizontalDragTargetState();
 
   /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
   /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsHorizontal].
   ///
   /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
   /// The checks performed for each are detailed in the respective sections below.
-  static bool onWillAcceptWithDetails<T>(
+  static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
-    CalendarController<T> controller,
+    CalendarController controller,
     HorizontalConfiguration configuration,
   ) {
-    return DragTargetUtilities.handleDragDetails<bool, T>(
+    return DragTargetUtilities.handleDragDetails(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.horizontal,
@@ -53,20 +53,20 @@ class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
   }
 }
 
-class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDragTarget<T>> with DragTargetUtilities<T> {
+class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTargetUtilities {
   @override
   EventsController get eventsController => context.eventsController();
   @override
-  CalendarController<T> get controller => context.calendarController<T>();
+  CalendarController get controller => context.calendarController();
   @override
-  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
+  CalendarCallbacks? get callbacks => context.callbacks();
   @override
   List<DateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
-  ViewController<T> get viewController => controller.viewController!;
-  TileComponents<T> get tileComponents => context.tileComponents<T>();
+  ViewController get viewController => controller.viewController!;
+  TileComponents get tileComponents => context.tileComponents();
   DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
@@ -82,7 +82,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  void didUpdateWidget(covariant HorizontalDragTarget<T> oldWidget) {
+  void didUpdateWidget(covariant HorizontalDragTarget oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _updateDimensions());
     super.didUpdateWidget(oldWidget);
   }
@@ -97,7 +97,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   Widget build(BuildContext context) {
     return DragTarget(
       onWillAcceptWithDetails: (details) {
-        final correctType = DragTargetUtilities.handleDragDetails<bool, T>(
+        final correctType = DragTargetUtilities.handleDragDetails(
           details,
           onCreate: (controllerId) => true,
           onResize: (event, direction) => true,
@@ -115,7 +115,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
         // First test if the details can be accepted at all.
         final accepted =
             callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
-                HorizontalDragTarget.onWillAcceptWithDetails<T>(details, controller, widget.configuration);
+                HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
         if (!accepted) return accepted;
 
         return onWillAcceptWithDetails(
@@ -123,7 +123,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
           onResize: (event, direction) => direction.horizontal,
           onReschedule: (event) {
             // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier<T>().value =
+            context.feedbackWidgetSizeNotifier().value =
                 Size(min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length), tileHeight);
 
             controller.selectEvent(event, internal: true);

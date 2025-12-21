@@ -3,13 +3,13 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-typedef UpdatedEvent<T> = (CalendarEvent, CalendarEvent);
+typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
 
-mixin DragTargetUtilities<T> {
+mixin DragTargetUtilities {
   BuildContext get context;
-  CalendarController<T> get controller;
+  CalendarController get controller;
   EventsController get eventsController;
-  CalendarCallbacks<T>? get callbacks;
+  CalendarCallbacks? get callbacks;
   double get dayWidth;
   List<DateTime> get visibleDates;
   bool get multiDayDragTarget;
@@ -58,7 +58,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onMove].
   void _processMove(DragTargetDetails<Object?> details) {
-    return handleDragDetails<void, T>(
+    handleDragDetails(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return;
@@ -97,7 +97,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onAcceptWithDetails].
   void onAcceptWithDetails(DragTargetDetails<Object?> details) {
-    final result = handleDragDetails<UpdatedEvent<T>?, T>(
+    final result = handleDragDetails(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return null;
@@ -139,7 +139,7 @@ mixin DragTargetUtilities<T> {
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    context.feedbackWidgetSizeNotifier<T>().value = Size.zero;
+    context.feedbackWidgetSizeNotifier().value = Size.zero;
     controller.deselectEvent();
     callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }
@@ -177,9 +177,9 @@ mixin DragTargetUtilities<T> {
     final data = details.data;
     if (data is Create) {
       return onCreate(data.controllerId);
-    } else if (data is Resize<T>) {
+    } else if (data is Resize) {
       return onResize(data.event, data.direction);
-    } else if (data is Reschedule<T>) {
+    } else if (data is Reschedule) {
       return onReschedule(data.event);
     } else {
       return onOther.call();

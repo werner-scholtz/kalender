@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being rescheduled.
-class Reschedule<T extends Object?> {
+class Reschedule {
   /// The [CalendarEvent] that is being rescheduled.
   final CalendarEvent event;
 
@@ -11,7 +11,7 @@ class Reschedule<T extends Object?> {
 }
 
 /// A class used by the [DragTargetUtilities] to determine that a [CalendarEvent] is being resized.
-class Resize<T extends Object?> {
+class Resize {
   /// The [CalendarEvent] that is being resized.
   final CalendarEvent event;
 
@@ -28,11 +28,11 @@ class Resize<T extends Object?> {
   bool get horizontalResize => direction.horizontal;
 
   /// Updates the [Resize]'s [CalendarEvent] with the new [DateTimeRange].
-  Resize<T> updateDateTimeRange(
+  Resize updateDateTimeRange(
     DateTimeRange dateTimeRange,
   ) {
     final updatedEvent = event.copyWith(dateTimeRange: dateTimeRange);
-    return Resize<T>(event: updatedEvent, direction: direction);
+    return Resize(event: updatedEvent, direction: direction);
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:kalender/kalender.dart';
 
-mixin NewEvent<T extends Object?> {
+mixin NewEvent {
   /// The event that is being created by the controller.
   CalendarEvent? _newEvent;
   CalendarEvent? get newEvent => _newEvent;

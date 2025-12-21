@@ -42,7 +42,7 @@ void main() {
       );
 
       // Find the VerticalDragTarget
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       expect(dragTargetFinder, findsOneWidget);
 
       final state = tester.state<State>(dragTargetFinder);
@@ -93,7 +93,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -147,7 +147,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -194,7 +194,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -308,8 +308,8 @@ void main() {
           ),
         );
 
-        final reschedule = Reschedule<Object?>(event: multiDayEvent);
-        final details = DragTargetDetails<Object?>(
+        final reschedule = Reschedule(event: multiDayEvent);
+        final details = DragTargetDetails(
           data: reschedule,
           offset: Offset.zero,
         );
@@ -317,7 +317,7 @@ void main() {
         const configuration = MultiDayBodyConfiguration();
 
         // Should return false for multi-day events
-        final result = VerticalDragTarget.onWillAcceptWithDetails<Object?>(
+        final result = VerticalDragTarget.onWillAcceptWithDetails(
           details,
           calendarController,
           configuration,
@@ -351,8 +351,8 @@ void main() {
           ),
         );
 
-        final reschedule = Reschedule<Object?>(event: singleDayEvent);
-        final details = DragTargetDetails<Object?>(
+        final reschedule = Reschedule(event: singleDayEvent);
+        final details = DragTargetDetails(
           data: reschedule,
           offset: Offset.zero,
         );
@@ -360,7 +360,7 @@ void main() {
         const configuration = MultiDayBodyConfiguration();
 
         // Should return true for single-day events
-        final result = VerticalDragTarget.onWillAcceptWithDetails<Object?>(
+        final result = VerticalDragTarget.onWillAcceptWithDetails(
           details,
           calendarController,
           configuration,
@@ -372,7 +372,7 @@ void main() {
 
     group('HorizontalDragTarget rejects single-day events in header', () {
       test('should reject single-day event in header configuration', () {
-        final controller = CalendarController<Object?>();
+        final controller = CalendarController();
 
         // Create a single-day event
         final singleDayEvent = CalendarEvent(
@@ -382,8 +382,8 @@ void main() {
           ),
         );
 
-        final reschedule = Reschedule<Object?>(event: singleDayEvent);
-        final details = DragTargetDetails<Object?>(
+        final reschedule = Reschedule(event: singleDayEvent);
+        final details = DragTargetDetails(
           data: reschedule,
           offset: Offset.zero,
         );
@@ -392,7 +392,7 @@ void main() {
         const configuration = MultiDayHeaderConfiguration();
 
         // Should return false for single-day events in header
-        final result = HorizontalDragTarget.onWillAcceptWithDetails<Object?>(
+        final result = HorizontalDragTarget.onWillAcceptWithDetails(
           details,
           controller,
           configuration,
@@ -402,7 +402,7 @@ void main() {
       });
 
       test('should accept multi-day event in header configuration', () {
-        final controller = CalendarController<Object?>();
+        final controller = CalendarController();
 
         // Create a multi-day event
         final multiDayEvent = CalendarEvent(
@@ -412,8 +412,8 @@ void main() {
           ),
         );
 
-        final reschedule = Reschedule<Object?>(event: multiDayEvent);
-        final details = DragTargetDetails<Object?>(
+        final reschedule = Reschedule(event: multiDayEvent);
+        final details = DragTargetDetails(
           data: reschedule,
           offset: Offset.zero,
         );
@@ -421,7 +421,7 @@ void main() {
         const configuration = MultiDayHeaderConfiguration();
 
         // Should return true for multi-day events in header
-        final result = HorizontalDragTarget.onWillAcceptWithDetails<Object?>(
+        final result = HorizontalDragTarget.onWillAcceptWithDetails(
           details,
           controller,
           configuration,
@@ -431,7 +431,7 @@ void main() {
       });
 
       test('should accept single-day event in month body configuration', () {
-        final controller = CalendarController<Object?>();
+        final controller = CalendarController();
 
         // Create a single-day event
         final singleDayEvent = CalendarEvent(
@@ -441,8 +441,8 @@ void main() {
           ),
         );
 
-        final reschedule = Reschedule<Object?>(event: singleDayEvent);
-        final details = DragTargetDetails<Object?>(
+        final reschedule = Reschedule(event: singleDayEvent);
+        final details = DragTargetDetails(
           data: reschedule,
           offset: Offset.zero,
         );
@@ -451,7 +451,7 @@ void main() {
         final configuration = MonthBodyConfiguration();
 
         // Should return true for single-day events in month body
-        final result = HorizontalDragTarget.onWillAcceptWithDetails<Object?>(
+        final result = HorizontalDragTarget.onWillAcceptWithDetails(
           details,
           controller,
           configuration,
@@ -490,7 +490,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -535,7 +535,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -582,7 +582,7 @@ void main() {
       );
 
       // Find the HorizontalDragTarget in the header (MultiDayHeaderConfiguration)
-      final dragTargetFinder = find.byType(HorizontalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(HorizontalDragTarget);
       expect(dragTargetFinder, findsWidgets); // Header has HorizontalDragTarget
 
       // Get the first one (header)
@@ -631,7 +631,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(HorizontalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(HorizontalDragTarget);
       final state = tester.state<State>(dragTargetFinder.first);
       final stateWithMixin = state as dynamic;
 

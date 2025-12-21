@@ -8,8 +8,8 @@ import 'utilities.dart';
 void main() {
   group('MultiDayEventLayoutWidget', () {
     final eventsController = DefaultEventsController();
-    final controller = CalendarController<int>();
-    final tileComponents = TileComponents<int>(
+    final controller = CalendarController();
+    final tileComponents = TileComponents(
       tileBuilder: (event, tileRange) => Container(
         key: ValueKey(event.id),
         child: Text(event.id.toString()),
@@ -45,7 +45,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
@@ -145,7 +145,7 @@ void main() {
               key: const ValueKey('test'),
               width: dayWidth * 7,
               height: tileHeight * 3,
-              child: MultiDayEventLayoutWidget<int>(
+              child: MultiDayEventLayoutWidget(
                 events: eventsController.events.toList(),
                 internalDateTimeRange: visibleRange,
                 textDirection: TextDirection.ltr,
@@ -237,7 +237,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
@@ -310,7 +310,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
@@ -424,7 +424,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(

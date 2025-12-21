@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
-class ScheduleEventTile<T extends Object?> extends EventTile<T> {
+class ScheduleEventTile extends EventTile {
   const ScheduleEventTile({
     super.key,
     required super.callbacks,
@@ -13,7 +13,7 @@ class ScheduleEventTile<T extends Object?> extends EventTile<T> {
   });
 
   @override
-  EventTileState<T> createState() => EventTileState<T>();
+  EventTileState createState() => EventTileState();
 
   /// A key used to identify the tile.
   static Key tileKey(int eventId) => Key('ScheduleEventTile-$eventId');

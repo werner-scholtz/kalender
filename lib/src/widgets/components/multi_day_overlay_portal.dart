@@ -11,19 +11,19 @@ import 'package:kalender/kalender.dart';
 /// [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] MultiDayEventLayoutWidget.
 /// [overlayBuilders] is the builders for the overlay event tile.
 /// [overlayStyles] is the styles for the overlay event tile.
-typedef MultiDayOverlayPortalBuilder<T extends Object?> = Widget Function({
+typedef MultiDayOverlayPortalBuilder = Widget Function({
   required DateTime date,
   required List<CalendarEvent> events,
   required int numberOfHiddenRows,
   required double tileHeight,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
-  required MultiDayOverlayEventTileBuilder<T> overlayTileBuilder,
-  required OverlayBuilders<T>? overlayBuilders,
+  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
+  required OverlayBuilders? overlayBuilders,
   required OverlayStyles? overlayStyles,
 });
 
 /// A widget that manages the overlay portal for a single day.
-class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
+class MultiDayOverlayPortal extends StatefulWidget {
   /// The date for which the widget is created.
   final InternalDateTime date;
 
@@ -40,10 +40,10 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   final RenderBoxCallback getMultiDayEventLayoutRenderBox;
 
   /// The builder for the overlay event tile.
-  final MultiDayOverlayEventTileBuilder<T> overlayTileBuilder;
+  final MultiDayOverlayEventTileBuilder overlayTileBuilder;
 
   /// The builders for the overlay.
-  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayBuilders? overlayBuilders;
 
   /// The styles for the overlay widgets.
   final OverlayStyles? overlayStyles;
@@ -61,7 +61,7 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<MultiDayOverlayPortal<T>> createState() => _MultiDayOverlayPortalState<T>();
+  State<MultiDayOverlayPortal> createState() => _MultiDayOverlayPortalState();
 
   /// Returns a [Key] for the overlay portal based on the date.
   static Key getKey(DateTime date) {
@@ -70,7 +70,7 @@ class MultiDayOverlayPortal<T extends Object?> extends StatefulWidget {
   }
 }
 
-class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverlayPortal<T>> {
+class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
   /// The controller for the overlay portal.
   final _portalController = OverlayPortalController();
 
@@ -78,7 +78,7 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
   RenderBox getOverlayPortalRenderBox() => context.findRenderObject() as RenderBox;
 
   @override
-  void didUpdateWidget(covariant MultiDayOverlayPortal<T> oldWidget) {
+  void didUpdateWidget(covariant MultiDayOverlayPortal oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     final didUpdate = oldWidget.date != widget.date ||
@@ -105,7 +105,7 @@ class _MultiDayOverlayPortalState<T extends Object?> extends State<MultiDayOverl
               getOverlayPortalRenderBox: getOverlayPortalRenderBox,
               style: widget.overlayStyles?.multiDayOverlayStyle,
             ) ??
-            MultiDayOverlay<T>(
+            MultiDayOverlay(
               key: MultiDayOverlay.getKey(widget.date),
               date: widget.date,
               events: widget.events,

@@ -47,7 +47,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               flex: 3,
               child: ZoomDetector(
                 controller: context.controller,
-                child: CalendarView<Event>(
+                child: CalendarView(
                     location: context.location.value,
                     locale: Localizations.localeOf(context).toLanguageTag(),
                     calendarController: context.controller,
@@ -72,7 +72,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             ValueListenableBuilder(
                               valueListenable: context.configuration.interactionHeader,
                               builder: (context, value, child) {
-                                return CalendarHeader<Event>(
+                                return CalendarHeader(
                                   multiDayTileComponents: _multiDayTileComponents,
                                   multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
                                   interaction: value,
@@ -88,7 +88,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         return ValueListenableBuilder(
                           valueListenable: context.configuration.snapping,
                           builder: (context, snapping, child) {
-                            return CalendarBody<Event>(
+                            return CalendarBody(
                               multiDayTileComponents: _tileComponents,
                               monthTileComponents: _multiDayTileComponents,
                               multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
@@ -120,8 +120,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Offset(20, renderObject.size.height / 2);
   }
 
-  TileComponents<Event> get _tileComponents {
-    return TileComponents<Event>(
+  TileComponents get _tileComponents {
+    return TileComponents(
       tileBuilder: (event, range) => EventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
       feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
@@ -132,8 +132,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  TileComponents<Event> get _multiDayTileComponents {
-    return TileComponents<Event>(
+  TileComponents get _multiDayTileComponents {
+    return TileComponents(
      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
       overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
@@ -145,8 +145,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  ScheduleTileComponents<Event> get _scheduleTileComponents {
-    return ScheduleTileComponents<Event>(
+  ScheduleTileComponents get _scheduleTileComponents {
+    return ScheduleTileComponents(
       tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
       overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
@@ -156,8 +156,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 
-  CalendarCallbacks<Event> get _callbacks {
-    return CalendarCallbacks<Event>(
+  CalendarCallbacks get _callbacks {
+    return CalendarCallbacks(
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
       onEventCreate: (event) => Event(
         dateTimeRange: DateTimeRange(start: event.start, end: event.end),

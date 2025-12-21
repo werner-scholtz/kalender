@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
-class MultiDayViewController<T extends Object?> extends ViewController<T> {
+class MultiDayViewController extends ViewController {
   MultiDayViewController({
     required this.viewConfiguration,
     required super.visibleDateTimeRange,

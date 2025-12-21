@@ -11,27 +11,27 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// The month body's content:
 ///   - Static content [MonthGrid].
 ///   - Dynamic content such as the [PageView] which renders [MultiDayEventWidget], [HorizontalDragTarget], [MultiDayDraggable].
-class MonthBody<T extends Object?> extends StatelessWidget {
+class MonthBody extends StatelessWidget {
   /// The [MultiDayBodyConfiguration] that will be used by the [MonthBody].
-  final HorizontalConfiguration<T>? configuration;
+  final HorizontalConfiguration? configuration;
 
   /// Creates a new [MonthBody].
   const MonthBody({super.key, this.configuration});
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController<T>();
+    final calendarController = context.calendarController();
 
     assert(
-      calendarController.viewController is MonthViewController<T>,
-      'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
+      calendarController.viewController is MonthViewController,
+      'The CalendarController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    if (this.configuration is! MonthBodyConfiguration<T>) {
+    if (this.configuration is! MonthBodyConfiguration) {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
-    final viewController = calendarController.viewController as MonthViewController<T>;
+    final viewController = calendarController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final configuration = this.configuration ?? MonthBodyConfiguration();
     final pageNavigation = viewConfiguration.pageIndexCalculator;
@@ -41,9 +41,9 @@ class MonthBody<T extends Object?> extends StatelessWidget {
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
-        final controller = context.calendarController<T>();
+        final controller = context.calendarController();
         controller.internalDateTimeRange.value = visibleRange;
-        context.callbacks<T>()?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        context.callbacks()?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
@@ -51,7 +51,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 
         return Stack(
           children: [
-            Positioned.fill(child: MonthGrid.fromContext<T>(context, numberOfRows)),
+            Positioned.fill(child: MonthGrid.fromContext(context, numberOfRows)),
             Positioned.fill(
               child: Column(
                 children: List.generate(
@@ -61,7 +61,7 @@ class MonthBody<T extends Object?> extends StatelessWidget {
                     final visibleDateTimeRange = InternalDateTimeRange(start: start, end: start.addDays(7));
 
                     return Expanded(
-                      child: MonthWeek<T>(
+                      child: MonthWeek(
                         key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
                         internalRange: visibleDateTimeRange,
                         configuration: configuration,
@@ -82,10 +82,10 @@ class MonthBody<T extends Object?> extends StatelessWidget {
 /// A single week in the month view.
 ///
 /// It contains the [WeekDayHeaders], the [MultiDayEventWidget], the [HorizontalDragTarget] and the [MultiDayDraggable].
-class MonthWeek<T extends Object?> extends StatelessWidget {
+class MonthWeek extends StatelessWidget {
   final InternalDateTimeRange internalRange;
-  final HorizontalConfiguration<T> configuration;
-  final ViewController<T> viewController;
+  final HorizontalConfiguration configuration;
+  final ViewController viewController;
   const MonthWeek({
     super.key,
     required this.internalRange,
@@ -95,13 +95,13 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final components = context.components<T>();
+    final components = context.components();
     final monthComponents = components.monthComponents;
 
     return Stack(
       children: [
         Positioned.fill(
-          child: MultiDayDraggable<T>(
+          child: MultiDayDraggable(
             key: ValueKey('MultiDayDraggable-${internalRange.start.toIso8601String()}'),
             internalRange: internalRange,
           ),
@@ -109,9 +109,9 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
         Positioned.fill(
           child: Column(
             children: [
-              WeekDayHeaders<T>(
+              WeekDayHeaders(
                 dates: internalRange.dates(),
-                dayHeaderBuilder: MonthDayHeader.fromContext<T>,
+                dayHeaderBuilder: MonthDayHeader.fromContext,
               ),
               Expanded(
                 child: LayoutBuilder(
@@ -119,7 +119,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
                     // Subtract 1 to account for the extra widget at the bottom.
                     final maxNumberOfVerticalEvents = (constraints.maxHeight / configuration.tileHeight).floor() - 1;
 
-                    return MultiDayEventWidget<T>(
+                    return MultiDayEventWidget(
                       internalDateTimeRange: internalRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
@@ -135,7 +135,7 @@ class MonthWeek<T extends Object?> extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-          child: HorizontalDragTarget<T>(
+          child: HorizontalDragTarget(
             visibleDateTimeRange: internalRange,
             configuration: configuration,
             leftPageTrigger: components.monthComponents.bodyComponents.leftTriggerBuilder,

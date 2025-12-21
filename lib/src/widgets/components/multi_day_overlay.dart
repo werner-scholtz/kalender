@@ -8,7 +8,7 @@ import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.da
 /// The [event] is the event that is being displayed.
 /// The [dateTimeRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
-typedef MultiDayOverlayEventTileBuilder<T> = MultiDayOverlayEventTile<T> Function(
+typedef MultiDayOverlayEventTileBuilder = MultiDayOverlayEventTile Function(
   CalendarEvent event,
   InternalDateTimeRange internalRange,
   VoidCallback dismissOverlay,
@@ -27,14 +27,14 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
 /// The [style] is the style for the overlay.
-typedef MultiDayOverlayBuilder<T extends Object?> = Widget Function({
+typedef MultiDayOverlayBuilder = Widget Function({
   required DateTime date,
   required List<CalendarEvent> events,
   required double tileHeight,
   required OverlayPortalController portalController,
   required RenderBoxCallback getMultiDayEventLayoutRenderBox,
   required RenderBoxCallback getOverlayPortalRenderBox,
-  required MultiDayOverlayEventTileBuilder<T> overlayTileBuilder,
+  required MultiDayOverlayEventTileBuilder overlayTileBuilder,
   required MultiDayOverlayStyle? style,
 });
 
@@ -71,7 +71,7 @@ class MultiDayOverlayStyle {
   });
 }
 
-class MultiDayOverlay<T extends Object?> extends StatelessWidget {
+class MultiDayOverlay extends StatelessWidget {
   /// The date for which the widget is created.
   final InternalDateTime date;
 
@@ -91,7 +91,7 @@ class MultiDayOverlay<T extends Object?> extends StatelessWidget {
   final RenderBoxCallback getOverlayPortalRenderBox;
 
   /// The builder for the overlay event tile.
-  final MultiDayOverlayEventTileBuilder<T> overlayTileBuilder;
+  final MultiDayOverlayEventTileBuilder overlayTileBuilder;
 
   /// The style for the overlay.
   final MultiDayOverlayStyle? style;

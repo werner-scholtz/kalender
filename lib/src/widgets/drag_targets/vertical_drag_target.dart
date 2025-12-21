@@ -8,9 +8,9 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [VerticalDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
-class VerticalDragTarget<T extends Object?> extends StatefulWidget {
-  final CalendarController<T> controller;
-  final MultiDayViewController<T> viewController;
+class VerticalDragTarget extends StatefulWidget {
+  final CalendarController controller;
+  final MultiDayViewController viewController;
   final VerticalConfiguration configuration;
 
   final double pageWidth;
@@ -32,22 +32,22 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<VerticalDragTarget<T>> createState() => _VerticalDragTargetState<T>();
+  State<VerticalDragTarget> createState() => _VerticalDragTargetState();
 
   /// The default implementation for [onWillAcceptWithDetails] for a vertical drag target.
   /// This can be overridden by providing a custom implementation via [CalendarCallbacks.onWillAcceptWithDetailsVertical].
   ///
   /// By default the drag target will only accept draggables that are of type [Create], [Resize], or [Reschedule].
   /// The checks performed for each are detailed in the respective sections below.
-  static bool onWillAcceptWithDetails<T>(
+  static bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details,
-    CalendarController<T> controller,
+    CalendarController controller,
     VerticalConfiguration configuration,
   ) {
-    final viewController = controller.viewController as MultiDayViewController<T>;
+    final viewController = controller.viewController as MultiDayViewController;
     final timeOfDayRange = viewController.viewConfiguration.timeOfDayRange;
 
-    return DragTargetUtilities.handleDragDetails<bool, T>(
+    return DragTargetUtilities.handleDragDetails(
       details,
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.vertical,
@@ -66,20 +66,20 @@ class VerticalDragTarget<T extends Object?> extends StatefulWidget {
   }
 }
 
-class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarget<T>>
-    with SnapPoints, DragTargetUtilities<T> {
+class _VerticalDragTargetState extends State<VerticalDragTarget>
+    with SnapPoints, DragTargetUtilities {
   @override
   EventsController get eventsController => context.eventsController();
 
   @override
-  CalendarController<T> get controller => widget.controller;
+  CalendarController get controller => widget.controller;
 
   // TODO: check if this is right, and null check does not break anything.
   @override
   List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
-  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
+  CalendarCallbacks? get callbacks => context.callbacks();
 
   @override
   double get dayWidth => widget.dayWidth;
@@ -87,7 +87,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   @override
   bool get multiDayDragTarget => false;
 
-  MultiDayViewController<T> get viewController => widget.viewController;
+  MultiDayViewController get viewController => widget.viewController;
   ScrollController get scrollController => viewController.scrollController;
   TimeOfDayRange get timeOfDayRange => viewController.viewConfiguration.timeOfDayRange;
 
@@ -118,7 +118,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  void didUpdateWidget(covariant VerticalDragTarget<T> oldWidget) {
+  void didUpdateWidget(covariant VerticalDragTarget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.snapping != widget.snapping) {
       oldWidget.snapping.removeListener(_updateSnapPoints);
@@ -145,7 +145,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     return DragTarget(
       hitTestBehavior: HitTestBehavior.translucent,
       onWillAcceptWithDetails: (details) {
-        final correctType = DragTargetUtilities.handleDragDetails<bool, T>(
+        final correctType = DragTargetUtilities.handleDragDetails(
           details,
           onCreate: (controllerId) => true,
           onResize: (event, direction) => true,
@@ -162,10 +162,10 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
         // First test if the details can be accepted at all.
         final accepted = callbacks?.onWillAcceptWithDetailsVertical?.call(details, controller, bodyConfiguration) ??
-            VerticalDragTarget.onWillAcceptWithDetails<T>(details, controller, bodyConfiguration);
+            VerticalDragTarget.onWillAcceptWithDetails(details, controller, bodyConfiguration);
         if (!accepted) return accepted;
 
-        DragTargetUtilities.handleDragDetails<void, T>(
+        DragTargetUtilities.handleDragDetails(
           details,
           onCreate: (controllerId) {},
           onResize: (event, direction) {},
@@ -174,7 +174,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
             final eventDuration = event.duration;
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
             // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier<T>().value = Size(dayWidth, eventHeight);
+            context.feedbackWidgetSizeNotifier().value = Size(dayWidth, eventHeight);
             // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
           },
@@ -189,7 +189,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
-        final components = context.components<T>().multiDayComponents.bodyComponents;
+        final components = context.components().multiDayComponents.bodyComponents;
 
         final triggerWidth = pageWidth / 50;
         final rightTrigger = CursorNavigationTrigger(

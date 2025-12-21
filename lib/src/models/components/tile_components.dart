@@ -13,29 +13,29 @@ import 'package:kalender/src/widgets/components/default_tile_components.dart';
 ///
 /// The [dropTargetTile] is an extra component used to display where the event will be dropped.
 /// The [verticalResizeHandle] is an extra component used to display the resize handle.
-class TileComponents<T extends Object?> {
+class TileComponents {
   /// The default builder for stationary event tiles.
-  final TileBuilder<T> tileBuilder;
+  final TileBuilder tileBuilder;
 
   /// The builder used when events are displayed in a [Overlay].
   ///
   /// If this is not provided, the [tileBuilder] will be used instead.
-  final TileBuilder<T>? overlayTileBuilder;
+  final TileBuilder? overlayTileBuilder;
 
   /// The builder for the stationary event tile. (When dragging)
-  final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
+  final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
   /// The builder for the feedback tile. (When dragging)
-  final FeedbackTileBuilder<T>? feedbackTileBuilder;
+  final FeedbackTileBuilder? feedbackTileBuilder;
 
   /// The builder for the drop target event tile.
-  final TileDropTargetBuilder<T>? dropTargetTile;
+  final TileDropTargetBuilder? dropTargetTile;
 
   /// The dragAnchorStrategy used by the [feedbackTileBuilder].
   final DragAnchorStrategy? dragAnchorStrategy;
 
   /// The widget that positions and sizes the resize handles.
-  final ResizeHandlePositioner<T>? resizeHandlePositioner;
+  final ResizeHandlePositioner? resizeHandlePositioner;
 
   /// The vertical resize handle.
   final Widget? verticalResizeHandle;
@@ -55,8 +55,8 @@ class TileComponents<T extends Object?> {
     this.horizontalResizeHandle,
   });
 
-  static TileComponents<T> defaultComponents<T extends Object?>() {
-    return TileComponents<T>(
+  static TileComponents defaultComponents() {
+    return const TileComponents(
       tileBuilder: defaultTileBuilder,
       tileWhenDraggingBuilder: defaultTileWhenDraggingBuilder,
       feedbackTileBuilder: defaultFeedbackTileBuilder,
@@ -66,7 +66,7 @@ class TileComponents<T extends Object?> {
 }
 
 /// The components used by the [ScheduleBody] to render the event tiles.
-class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
+class ScheduleTileComponents extends TileComponents {
   /// The builder for the empty day.
   final EmptyItemBuilder? emptyItemBuilder;
 
@@ -74,7 +74,7 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
   final MonthItemBuilder? monthItemBuilder;
 
   @override
-  ResizeHandlePositioner<T>? get resizeHandlePositioner => null;
+  ResizeHandlePositioner? get resizeHandlePositioner => null;
   @override
   Widget? get verticalResizeHandle => null;
   @override
@@ -91,8 +91,8 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
     this.monthItemBuilder,
   });
 
-  static ScheduleTileComponents<T> defaultComponents<T extends Object?>() {
-    return ScheduleTileComponents<T>(
+  static ScheduleTileComponents defaultComponents() {
+    return const ScheduleTileComponents(
       tileBuilder: defaultTileBuilder,
     );
   }
@@ -104,7 +104,7 @@ class ScheduleTileComponents<T extends Object?> extends TileComponents<T> {
 ///
 /// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
 /// * (This can be compared to the [CalendarEvent.dateTimeRangeAsUtc] to determine on which day it falls.)
-typedef TileBuilder<T extends Object?> = Widget Function(
+typedef TileBuilder = Widget Function(
   CalendarEvent event,
   DateTimeRange tileRange,
 );
@@ -112,7 +112,7 @@ typedef TileBuilder<T extends Object?> = Widget Function(
 /// The builder for the event tile when dragging.
 ///
 /// [event] is the event that the tile will be built for.
-typedef TileWhenDraggingBuilder<T extends Object?> = Widget Function(
+typedef TileWhenDraggingBuilder = Widget Function(
   CalendarEvent event,
 );
 
@@ -120,7 +120,7 @@ typedef TileWhenDraggingBuilder<T extends Object?> = Widget Function(
 ///
 /// [event] is the event that the tile will be built for.
 /// [dropTargetWidgetSize] is the size of the drop target widget.
-typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
+typedef FeedbackTileBuilder = Widget Function(
   CalendarEvent event,
   Size dropTargetWidgetSize,
 );
@@ -128,7 +128,7 @@ typedef FeedbackTileBuilder<T extends Object?> = Widget Function(
 /// The builder for the drop target event tile.
 ///
 /// [event] is the event that the tile will be built for.
-typedef TileDropTargetBuilder<T extends Object?> = Widget Function(
+typedef TileDropTargetBuilder = Widget Function(
   CalendarEvent event,
 );
 

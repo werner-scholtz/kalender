@@ -17,10 +17,10 @@ class App extends StatefulWidget {
 
   static List<ViewConfiguration> views(BuildContext context) => of(context)!.viewConfigurations;
 
-  static CalendarController<Event> controller1(BuildContext context) => of(context)!.controller1;
+  static CalendarController controller1(BuildContext context) => of(context)!.controller1;
   static ValueNotifier<ViewConfiguration> view1(BuildContext context) => of(context)!.viewConfiguration1;
 
-  static CalendarController<Event> controller2(BuildContext context) => of(context)!.controller2;
+  static CalendarController controller2(BuildContext context) => of(context)!.controller2;
   static ValueNotifier<ViewConfiguration> view2(BuildContext context) => of(context)!.viewConfiguration2;
 
   @override
@@ -40,10 +40,10 @@ class AppState extends State<App> {
 
   final eventsController = DefaultEventsController();
 
-  final controller1 = CalendarController<Event>();
+  final controller1 = CalendarController();
   late final viewConfiguration1 = ValueNotifier(viewConfigurations[1]);
 
-  final controller2 = CalendarController<Event>();
+  final controller2 = CalendarController();
   late final viewConfiguration2 = ValueNotifier(viewConfigurations[1]);
 
   final viewConfigurations = [
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
   @override
   late final eventsController = App.eventsController(context);
 
-  late final callbacks = CalendarCallbacks<Event>(
+  late final callbacks = CalendarCallbacks(
     onEventTapped: (event, renderBox) => createOverlay(event as Event, renderBox),
     onEventCreate: (event) => Event(
       dateTimeRange: DateTimeRange(start: event.start, end: event.end),

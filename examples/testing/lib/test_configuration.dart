@@ -27,7 +27,7 @@ class TestConfiguration {
   final eventsController = DefaultEventsController();
 
   /// The calendar controller for the test.
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
 
   static List<CalendarEvent> generate(List<TimeOfDayRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');

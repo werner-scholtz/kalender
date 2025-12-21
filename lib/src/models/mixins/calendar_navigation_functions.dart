@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
-mixin CalendarNavigationFunctions<T> {
+mixin CalendarNavigationFunctions {
   /// Jump to the given [DateTime].
   void jumpToPage(int page);
 

@@ -20,9 +20,9 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// * Note: When a event is being modified by the user it renders that event in a separate [CustomMultiChildLayout],
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
-class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
+class MultiDayEventWidget extends StatefulWidget {
   /// The configuration that will be used to layout the multi-day events.
-  final HorizontalConfiguration<T> configuration;
+  final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
   final InternalDateTimeRange internalDateTimeRange;
@@ -31,10 +31,10 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   final int? maxNumberOfVerticalEvents;
 
   /// The cache used to store layout frames for multi-day events.
-  final MultiDayLayoutFrameCache<T>? multiDayCache;
+  final MultiDayLayoutFrameCache? multiDayCache;
 
   /// The builders used to create overlay widgets for multi-day events.
-  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayBuilders? overlayBuilders;
 
   /// The styles used for overlay widgets for multi-day events.
   final OverlayStyles? overlayStyles;
@@ -51,10 +51,10 @@ class MultiDayEventWidget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<MultiDayEventWidget<T>> createState() => _MultiDayEventWidgetState<T>();
+  State<MultiDayEventWidget> createState() => _MultiDayEventWidgetState();
 }
 
-class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWidget<T>> {
+class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   /// The events controller that provides the events.
   late EventsController _eventsController;
   late ValueNotifier<Location?> _locationNotifier;
@@ -100,10 +100,10 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
   @override
   Widget build(BuildContext context) {
     // Update the visible events in the calendar controller.
-    final controller = context.calendarController<T>();
+    final controller = context.calendarController();
     controller.visibleEvents.value = {...controller.visibleEvents.value, ..._visibleEvents};
 
-    return MultiDayEventLayoutWidget<T>(
+    return MultiDayEventLayoutWidget(
       events: _visibleEvents,
       internalDateTimeRange: widget.internalDateTimeRange,
       textDirection: Directionality.of(context),
@@ -125,9 +125,9 @@ class _MultiDayEventWidgetState<T extends Object?> extends State<MultiDayEventWi
 /// visually.
 ///
 /// This widget is used by month views and in day view headers, for displaying multi-day activities.
-class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
+class MultiDayEventLayoutWidget extends StatefulWidget {
   /// The configuration that will be used to layout the multi-day events.
-  final HorizontalConfiguration<T> configuration;
+  final HorizontalConfiguration configuration;
 
   /// The range of dates that are visible.
   final InternalDateTimeRange internalDateTimeRange;
@@ -144,10 +144,10 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   final int? maxNumberOfVerticalEvents;
 
   /// The cache used to store layout frames for multi-day events.
-  final MultiDayLayoutFrameCache<T>? multiDayCache;
+  final MultiDayLayoutFrameCache? multiDayCache;
 
   /// The builders used to create overlay widgets for multi-day events.
-  final OverlayBuilders<T>? multiDayOverlayBuilders;
+  final OverlayBuilders? multiDayOverlayBuilders;
 
   /// The styles used for overlay widgets for multi-day events.
   final OverlayStyles? multiDayOverlayStyles;
@@ -168,25 +168,25 @@ class MultiDayEventLayoutWidget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<MultiDayEventLayoutWidget<T>> createState() => _MultiDayEventLayoutWidgetState<T>();
+  State<MultiDayEventLayoutWidget> createState() => _MultiDayEventLayoutWidgetState();
 }
 
-class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayEventLayoutWidget<T>> {
+class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   /// The range of dates that the events will be laid out on.
   late InternalDateTimeRange _dateTimeRange = widget.internalDateTimeRange;
 
   /// The layout frame that contains all the data needed to display the events.
-  MultiDayLayoutFrame<T>? _frame;
+  MultiDayLayoutFrame? _frame;
 
   /// Get the render box of the widget.
   RenderBox getRenderBox() => context.findRenderObject() as RenderBox;
 
   /// The function that generates the layout frame for the events.
-  GenerateMultiDayLayoutFrame<T> get generateMultiDayLayoutFrame =>
-      widget.configuration.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator<T>;
+  GenerateMultiDayLayoutFrame get generateMultiDayLayoutFrame =>
+      widget.configuration.generateMultiDayLayoutFrame ?? defaultMultiDayFrameGenerator;
 
   /// Returns the maximum number of vertical events that can be displayed.
-  int maxNumberOfRows(MultiDayLayoutFrame<T> frame) {
+  int maxNumberOfRows(MultiDayLayoutFrame frame) {
     final max = widget.maxNumberOfVerticalEvents ?? widget.configuration.maximumNumberOfVerticalEvents;
     return max == null ? frame.totalNumberOfRows : min(frame.totalNumberOfRows, max);
   }
@@ -204,7 +204,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   }
 
   @override
-  void didUpdateWidget(covariant MultiDayEventLayoutWidget<T> oldWidget) {
+  void didUpdateWidget(covariant MultiDayEventLayoutWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     final shouldUpdateCache = !oldWidget.events.equals(widget.events) ||
@@ -257,10 +257,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           key: MultiDayEventTile.tileKey(id),
           child: Padding(
             padding: widget.configuration.eventPadding,
-            child: MultiDayEventTile<T>(
+            child: MultiDayEventTile(
               event: event,
-              callbacks: context.callbacks<T>(),
-              tileComponents: context.tileComponents<T>(),
+              callbacks: context.callbacks(),
+              tileComponents: context.tileComponents(),
               interaction: context.interaction,
               dateTimeRange: widget.internalDateTimeRange,
               resizeAxis: Axis.horizontal,
@@ -272,7 +272,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
 
     // The drop target widget is used to show the drop target for the event that is being dragged.
     final dropTargetWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().selectedEvent,
+      valueListenable: context.calendarController().selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return const SizedBox();
@@ -298,10 +298,10 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
           children: [
             LayoutId(
               id: event.id,
-              child: event.id == -1 || event.id == context.calendarController<T>().selectedEventId
+              child: event.id == -1 || event.id == context.calendarController().selectedEventId
                   ? Padding(
                       padding: widget.configuration.eventPadding,
-                      child: context.tileComponents<T>().dropTargetTile?.call(event) ?? const SizedBox(),
+                      child: context.tileComponents().dropTargetTile?.call(event) ?? const SizedBox(),
                     )
                   : const SizedBox(),
             ),
@@ -338,7 +338,7 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
                     overlayBuilders: widget.multiDayOverlayBuilders,
                     overlayStyles: widget.multiDayOverlayStyles,
                   ) ??
-                  MultiDayOverlayPortal<T>(
+                  MultiDayOverlayPortal(
                     key: MultiDayOverlayPortal.getKey(date),
                     date: date,
                     events: eventsForColumn,
@@ -360,16 +360,16 @@ class _MultiDayEventLayoutWidgetState<T extends Object?> extends State<MultiDayE
   }
 
   /// The function that builds the overlay event tile for the event.
-  MultiDayOverlayEventTile<T> _overlayEventTileBuilder(
+  MultiDayOverlayEventTile _overlayEventTileBuilder(
     CalendarEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {
-    return MultiDayOverlayEventTile<T>(
+    return MultiDayOverlayEventTile(
       event: event,
       dateTimeRange: dateTimeRange,
-      callbacks: context.callbacks<T>(),
-      tileComponents: context.tileComponents<T>(),
+      callbacks: context.callbacks(),
+      tileComponents: context.tileComponents(),
       dismissOverlay: dismissOverlay,
       interaction: context.interaction,
     );

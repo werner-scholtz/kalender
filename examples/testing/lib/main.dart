@@ -35,12 +35,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late final TestConfiguration config = widget.config ?? TestConfiguration.week();
   EventsController get eventsController => config.eventsController;
-  CalendarController<Event> get calendarController => config.calendarController;
+  CalendarController get calendarController => config.calendarController;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView<Event>(
+      body: CalendarView(
         eventsController: config.eventsController,
         calendarController: config.calendarController,
         viewConfiguration: config.viewConfiguration,
@@ -50,8 +50,8 @@ class _HomeState extends State<Home> {
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
-        header: CalendarHeader<Event>(multiDayTileComponents: _multiDayTileComponents),
-        body: CalendarBody<Event>(
+        header: CalendarHeader(multiDayTileComponents: _multiDayTileComponents),
+        body: CalendarBody(
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
           scheduleTileComponents: _scheduleTileComponents,
@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  TileComponents<Event> get _tileComponents {
+  TileComponents get _tileComponents {
     return TileComponents(
       tileBuilder: (event, range) => EventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
@@ -69,8 +69,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  TileComponents<Event> get _multiDayTileComponents {
-    return TileComponents<Event>(
+  TileComponents get _multiDayTileComponents {
+    return TileComponents(
       tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
       overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
@@ -79,8 +79,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  ScheduleTileComponents<Event> get _scheduleTileComponents {
-    return ScheduleTileComponents<Event>(
+  ScheduleTileComponents get _scheduleTileComponents {
+    return ScheduleTileComponents(
       tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
       overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),

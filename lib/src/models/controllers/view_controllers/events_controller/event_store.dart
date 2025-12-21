@@ -3,14 +3,14 @@ import 'package:kalender/kalender.dart';
 /// A class that maps [CalendarEvent]s to dates.
 ///
 /// This class is used to store [CalendarEvent]s and retrieve them based on the date.
-abstract class EventStore<T> {
+abstract class EventStore {
   Iterable<CalendarEvent> get events;
 
   /// Retrieve a [CalendarEvent] by it's id if it exists.
-  CalendarEvent? byId(T id);
+  CalendarEvent? byId(int id);
 
   /// Add a new [event] to the map.
-  T addNewEvent(CalendarEvent event);
+  int addNewEvent(CalendarEvent event);
 
   /// Update an [event] in the map with the [updatedEvent].
   void updateEvent(CalendarEvent event, CalendarEvent updatedEvent);
@@ -21,10 +21,10 @@ abstract class EventStore<T> {
   void removeEvents(List<CalendarEvent> events);
 
   /// Remove an event by its id.
-  void removeById(T id);
+  void removeById(int id);
 
   /// Remove events where where [test] returns true.
-  void removeWhere(bool Function(T key, CalendarEvent element) test);
+  void removeWhere(bool Function(int key, CalendarEvent element) test);
 
   /// Clear all events.
   void clear();
@@ -34,5 +34,5 @@ abstract class EventStore<T> {
   /// Parameters:
   /// - [dateTimeRange]: The internal date time range to search for events.
   /// - [location]: The location for which to retrieve the event IDs.
-  Set<T> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location);
+  Set<int> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location);
 }

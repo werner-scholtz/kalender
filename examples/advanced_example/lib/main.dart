@@ -71,7 +71,7 @@ const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Pers
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
   late MultiDayViewConfiguration _viewConfiguration = _viewConfigurations.first;
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView<Event>(
+      body: CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: _viewConfiguration,
@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader<Event>(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
+            CalendarHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
             const Divider(),
@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: ZoomDetector(
           controller: calendarController,
-          child: CalendarBody<Event>(
+          child: CalendarBody(
             multiDayTileComponents: tileComponents,
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,

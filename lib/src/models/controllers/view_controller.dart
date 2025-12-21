@@ -12,7 +12,7 @@ export 'view_controllers/schedule_view_controller.dart';
 /// A controller for calendar views.
 ///
 /// A view controller lets you control a calendar view.
-abstract class ViewController<T extends Object?> with CalendarNavigationFunctions<T> {
+abstract class ViewController with CalendarNavigationFunctions {
   /// The location of the current view.
   Location? location;
 
@@ -35,7 +35,7 @@ abstract class ViewController<T extends Object?> with CalendarNavigationFunction
   final EventLayoutDelegateCache cache = EventLayoutDelegateCache();
 
   /// The cache used for the multi-day event layout.
-  final MultiDayLayoutFrameCache<T> multiDayCache = MultiDayLayoutFrameCache<T>();
+  final MultiDayLayoutFrameCache multiDayCache = MultiDayLayoutFrameCache();
 
   /// Jump to the given [DateTime].
   @override

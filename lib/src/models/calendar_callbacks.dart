@@ -7,46 +7,46 @@ import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 /// The callbacks used by the [CalendarView].
 ///
 /// - These callbacks are used to notify the parent widget of events that occur in the [CalendarView].
-class CalendarCallbacks<T extends Object?> {
+class CalendarCallbacks {
   /// The callback for when an event is tapped.
   ///
   /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
   /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
   /// /// See TODO: add link to event mixins.
-  final OnEventTapped<T>? onEventTapped;
+  final OnEventTapped? onEventTapped;
 
   /// The callback for when an event is tapped, with details.
   ///
   /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
   /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
   /// /// See TODO: add link to event mixins.
-  final OnEventTappedWithDetail<T>? onEventTappedWithDetail;
+  final OnEventTappedWithDetail? onEventTappedWithDetail;
 
   /// The callback for when an event is about to be created.
   ///
   /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
   /// * If you provide [onEventCreateWithDetail] then that will be used instead.
-  final OnEventCreate<T>? onEventCreate;
+  final OnEventCreate? onEventCreate;
 
   /// The callback for when an event is about to be created.
   ///
   /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
-  final OnEventCreateWithDetail<T>? onEventCreateWithDetail;
+  final OnEventCreateWithDetail? onEventCreateWithDetail;
 
   /// The callback for when an event is created.
   ///
   /// This is used by a [DragTarget] to notify that a new event has been created.
-  final OnEventCreated<T>? onEventCreated;
+  final OnEventCreated? onEventCreated;
 
   /// The callback for when an event is about to be changed.
   ///
   /// This is used by a [Draggable] or [LongPressDraggable] to notify that an event is about to be changed.
-  final OnEventChange<T>? onEventChange;
+  final OnEventChange? onEventChange;
 
   /// The callback for when an event is changed.
   ///
   /// This is used by a [DragTarget] to notify that an event has been changed.
-  final OnEventChanged<T>? onEventChanged;
+  final OnEventChanged? onEventChanged;
 
   /// The callback for when the calendar page is changed.
   final OnPageChanged? onPageChanged;
@@ -106,14 +106,14 @@ class CalendarCallbacks<T extends Object?> {
   bool get hasOnLongPressed => onLongPressed != null || onLongPressedWithDetail != null;
   bool get hasOnTapped => onTapped != null || onTappedWithDetail != null;
 
-  CalendarCallbacks<T> copyWith({
-    OnEventTapped<T>? onEventTapped,
-    OnEventTappedWithDetail<T>? onEventTappedWithDetail,
-    OnEventCreate<T>? onEventCreate,
-    OnEventCreateWithDetail<T>? onEventCreateWithDetail,
-    OnEventCreated<T>? onEventCreated,
-    OnEventChange<T>? onEventChange,
-    OnEventChanged<T>? onEventChanged,
+  CalendarCallbacks copyWith({
+    OnEventTapped? onEventTapped,
+    OnEventTappedWithDetail? onEventTappedWithDetail,
+    OnEventCreate? onEventCreate,
+    OnEventCreateWithDetail? onEventCreateWithDetail,
+    OnEventCreated? onEventCreated,
+    OnEventChange? onEventChange,
+    OnEventChanged? onEventChanged,
     OnPageChanged? onPageChanged,
     OnTapped? onTapped,
     OnTappedWithDetails? onTappedWithDetail,
@@ -121,7 +121,7 @@ class CalendarCallbacks<T extends Object?> {
     OnLongPressedWithDetails? onLongPressedWithDetail,
     OnMultiDayTapped? onMultiDayTapped,
   }) {
-    return CalendarCallbacks<T>(
+    return CalendarCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
       onEventCreate: onEventCreate ?? this.onEventCreate,
       onEventCreateWithDetail: onEventCreateWithDetail ?? this.onEventCreateWithDetail,
@@ -145,7 +145,7 @@ class CalendarCallbacks<T extends Object?> {
 /// The [renderBox] is the [RenderBox] of the event tile.
 ///
 /// TODO: Remove renderBox in 1.0.0 as it is now included in the [OnEventTappedWithDetail].
-typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent event, RenderBox renderBox);
+typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
 
 /// The callback for when an event is tapped.
 ///
@@ -155,31 +155,31 @@ typedef OnEventTapped<T extends Object?> = void Function(CalendarEvent event, Re
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
 ///
 /// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
-typedef OnEventTappedWithDetail<T extends Object?> = void Function(
+typedef OnEventTappedWithDetail = void Function(
   CalendarEvent event,
   RenderBox renderBox,
   TapDetail detail,
 );
 
 /// The callback for when an event is about to be changed.
-typedef OnEventChange<T extends Object?> = void Function(CalendarEvent event);
+typedef OnEventChange = void Function(CalendarEvent event);
 
 /// The callback for when an event is changed.
 ///
 /// [event] is the original event.
 /// [updatedEvent] is the updated event.
-typedef OnEventChanged<T extends Object?> = void Function(CalendarEvent event, CalendarEvent updatedEvent);
+typedef OnEventChanged = void Function(CalendarEvent event, CalendarEvent updatedEvent);
 
 /// The call back for creating a new event.
 ///
 /// [event] is the event that will be created.
-typedef OnEventCreate<T extends Object?> = CalendarEvent? Function(CalendarEvent event);
+typedef OnEventCreate = CalendarEvent? Function(CalendarEvent event);
 
 /// The call back for creating a new event with details.
 ///
 /// [event] is the event that will be created.
 /// [detail] contains the details of the tap that created the event.
-typedef OnEventCreateWithDetail<T extends Object?> = CalendarEvent? Function(
+typedef OnEventCreateWithDetail = CalendarEvent? Function(
   CalendarEvent event,
   TapDetail detail,
 );
@@ -187,7 +187,7 @@ typedef OnEventCreateWithDetail<T extends Object?> = CalendarEvent? Function(
 /// The callback for a new event has been created.
 ///
 /// [event] is the event that was created.
-typedef OnEventCreated<T extends Object?> = void Function(CalendarEvent event);
+typedef OnEventCreated = void Function(CalendarEvent event);
 
 /// The callback for when a calendar page is changed.
 ///
@@ -223,9 +223,9 @@ typedef OnLongPressedWithDetails = void Function(TapDetail details);
 /// [configuration] is the configuration of the vertical view.
 ///
 /// See [VerticalDragTarget.onWillAcceptWithDetails] for default behavior.
-typedef OnWillAcceptWithDetailsVertical<T extends Object?> = bool Function(
+typedef OnWillAcceptWithDetailsVertical = bool Function(
   DragTargetDetails<Object?> details,
-  CalendarController<T> controller,
+  CalendarController controller,
   VerticalConfiguration configuration,
 );
 
@@ -238,10 +238,10 @@ typedef OnWillAcceptWithDetailsVertical<T extends Object?> = bool Function(
 /// By default the calendar will only accept draggables that are of type [Create], [Resize], or [Reschedule].
 ///
 /// See [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
-typedef OnWillAcceptWithDetailsHorizontal<T extends Object?> = bool Function(
+typedef OnWillAcceptWithDetailsHorizontal = bool Function(
   DragTargetDetails<Object?> details,
-  CalendarController<T> controller,
-  HorizontalConfiguration<T> configuration,
+  CalendarController controller,
+  HorizontalConfiguration configuration,
 );
 
 abstract class TapDetail {

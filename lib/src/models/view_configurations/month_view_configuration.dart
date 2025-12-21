@@ -65,7 +65,7 @@ class MonthViewConfiguration extends ViewConfiguration {
   }
 }
 
-class MonthBodyConfiguration<T extends Object?> extends HorizontalConfiguration<T> {
+class MonthBodyConfiguration extends HorizontalConfiguration {
   MonthBodyConfiguration({
     super.generateMultiDayLayoutFrame,
     super.pageTriggerConfiguration,

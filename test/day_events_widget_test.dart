@@ -33,8 +33,8 @@ void main() {
   final eventsController = DefaultEventsController()..addEvents(events);
 
   testWidgets('DayEventsWidget lays out events correctly', (tester) async {
-    final calendarController = CalendarController<int>();
-    final viewController = MultiDayViewController<int>(
+    final calendarController = CalendarController();
+    final viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
       visibleDateTimeRange: ValueNotifier(
         InternalDateTimeRange(start: start.startOfDay, end: start.endOfDay),
@@ -53,7 +53,7 @@ void main() {
         TestProvider(
           calendarController: calendarController,
           eventsController: eventsController,
-          tileComponents: TileComponents<int>(
+          tileComponents: TileComponents(
             tileBuilder: (event, tileRange) => Container(
               key: ValueKey(event.id),
               child: Text(event.id.toString()),
@@ -61,7 +61,7 @@ void main() {
           ),
           child: SizedBox(
             width: 700,
-            child: MultiDayEventsRow<int>(
+            child: MultiDayEventsRow(
               configuration: configuration,
               internalRange: InternalDateTimeRange.fromDateTimeRange(displayRange),
               viewController: viewController,

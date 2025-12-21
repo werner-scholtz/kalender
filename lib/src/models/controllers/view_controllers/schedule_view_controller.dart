@@ -5,7 +5,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-abstract class ScheduleViewController<T extends Object?> extends ViewController<T> with ScheduleMap {
+abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
   final ScheduleViewConfiguration viewConfiguration;
 
@@ -93,7 +93,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   }
 }
 
-class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
+class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({
     super.location,
     required super.viewConfiguration,
@@ -180,7 +180,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   }
 }
 
-class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
+class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({
     super.location,
     required super.viewConfiguration,

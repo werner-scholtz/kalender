@@ -2,7 +2,7 @@ import 'package:advanced_example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class CustomSideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+class CustomSideBySideLayoutDelegate extends EventLayoutDelegate {
   /// A List of people to group the events by.
   final List<Person> people;
 

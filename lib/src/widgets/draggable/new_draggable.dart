@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-mixin NewDraggableWidget<T extends Object?> {
-  CalendarController<T> get controller;
-  CalendarCallbacks<T>? get callbacks;
+mixin NewDraggableWidget {
+  CalendarController get controller;
+  CalendarCallbacks? get callbacks;
 
   /// Calculate the initial dateTimeRange of a new event.
   ///

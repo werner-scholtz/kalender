@@ -14,40 +14,40 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// - [_FreeScrollHeader] this is a special case for a body that scrolls freely (WIP/Not working)
 ///
 /// All Header widgets make use of the [ExpandablePageView] which uses a [SizeReportingWidget]to set the the Height of the header, this is so they can resize dynamically.
-class MultiDayHeader<T extends Object?> extends StatelessWidget {
+class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final HorizontalConfiguration<T>? configuration;
+  final HorizontalConfiguration? configuration;
 
   /// Creates a new [MultiDayHeader].
   const MultiDayHeader({super.key, this.configuration});
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController<T>();
+    final calendarController = context.calendarController();
     assert(
-      calendarController.viewController is MultiDayViewController<T>,
-      'The CalendarController\'s $ViewController<$T> needs to be a $MultiDayViewController<$T>',
+      calendarController.viewController is MultiDayViewController,
+      'The CalendarController\'s $ViewController needs to be a $MultiDayViewController',
     );
 
-    final viewController = calendarController.viewController as MultiDayViewController<T>;
+    final viewController = calendarController.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
-    final headerConfiguration = configuration ?? MultiDayHeaderConfiguration<T>();
-    final components = context.components<T>();
+    final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
+    final components = context.components();
 
     final header = switch (viewConfiguration.type) {
-      MultiDayViewType.freeScroll => _FreeScrollHeader<T>(
+      MultiDayViewType.freeScroll => _FreeScrollHeader(
           key: ValueKey(viewConfiguration.hashCode),
           viewController: viewController,
           configuration: headerConfiguration,
           components: components,
         ),
-      MultiDayViewType.singleDay => _SingleDayHeader<T>(
+      MultiDayViewType.singleDay => _SingleDayHeader(
           key: ValueKey(viewConfiguration.hashCode),
           viewController: viewController,
           configuration: headerConfiguration,
           components: components,
         ),
-      _ => _MultiDayHeader<T>(
+      _ => _MultiDayHeader(
           key: ValueKey(viewConfiguration.hashCode),
           viewController: viewController,
           configuration: headerConfiguration,
@@ -60,10 +60,10 @@ class MultiDayHeader<T extends Object?> extends StatelessWidget {
 }
 
 /// A header catered for displaying multi-day events for a single day body.
-class _SingleDayHeader<T extends Object?> extends StatelessWidget {
-  final MultiDayViewController<T> viewController;
-  final HorizontalConfiguration<T> configuration;
-  final CalendarComponents<T> components;
+class _SingleDayHeader extends StatelessWidget {
+  final MultiDayViewController viewController;
+  final HorizontalConfiguration configuration;
+  final CalendarComponents components;
 
   const _SingleDayHeader({
     super.key,
@@ -82,7 +82,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 
     final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().internalDateTimeRange,
+      valueListenable: context.calendarController().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -92,7 +92,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget<T>(
+    return MultiDayHeaderWidget(
       content: ExpandablePageView(
         key: UniqueKey(),
         controller: viewController.headerController,
@@ -106,10 +106,10 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
           return Stack(
             children: [
               if (configuration.showTiles) ...[
-                Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
+                Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
                 ConstrainedBox(
                   constraints: constraints,
-                  child: MultiDayEventWidget<T>(
+                  child: MultiDayEventWidget(
                     internalDateTimeRange: visibleRange,
                     configuration: configuration,
                     multiDayCache: viewController.multiDayCache,
@@ -119,7 +119,7 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
                   ),
                 ),
                 Positioned.fill(
-                  child: HorizontalDragTarget<T>(
+                  child: HorizontalDragTarget(
                     visibleDateTimeRange: visibleRange,
                     configuration: configuration,
                     leftPageTrigger: headerComponents.leftTriggerBuilder,
@@ -138,10 +138,10 @@ class _SingleDayHeader<T extends Object?> extends StatelessWidget {
 }
 
 /// A header catered for displaying multi-day events for a multi-day body.
-class _MultiDayHeader<T extends Object?> extends StatelessWidget {
-  final MultiDayViewController<T> viewController;
-  final HorizontalConfiguration<T> configuration;
-  final CalendarComponents<T> components;
+class _MultiDayHeader extends StatelessWidget {
+  final MultiDayViewController viewController;
+  final HorizontalConfiguration configuration;
+  final CalendarComponents components;
 
   const _MultiDayHeader({
     super.key,
@@ -159,7 +159,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().internalDateTimeRange,
+      valueListenable: context.calendarController().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -169,7 +169,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget<T>(
+    return MultiDayHeaderWidget(
       content: ExpandablePageView(
         key: UniqueKey(),
         controller: viewController.headerController,
@@ -180,17 +180,17 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 
           return Column(
             children: [
-              WeekDayHeaders<T>(
+              WeekDayHeaders(
                 dates: visibleDates,
-                dayHeaderBuilder: DayHeader.fromContext<T>,
+                dayHeaderBuilder: DayHeader.fromContext,
               ),
               if (configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
+                    Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
-                      child: MultiDayEventWidget<T>(
+                      child: MultiDayEventWidget(
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
@@ -200,7 +200,7 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
                       ),
                     ),
                     Positioned.fill(
-                      child: HorizontalDragTarget<T>(
+                      child: HorizontalDragTarget(
                         visibleDateTimeRange: visibleRange,
                         configuration: configuration,
                         leftPageTrigger: headerComponents.leftTriggerBuilder,
@@ -219,10 +219,10 @@ class _MultiDayHeader<T extends Object?> extends StatelessWidget {
 }
 
 /// TODO: Fix and Ensure this works.
-class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
-  final MultiDayViewController<T> viewController;
-  final HorizontalConfiguration<T> configuration;
-  final CalendarComponents<T> components;
+class _FreeScrollHeader extends StatelessWidget {
+  final MultiDayViewController viewController;
+  final HorizontalConfiguration configuration;
+  final CalendarComponents components;
 
   const _FreeScrollHeader({
     super.key,
@@ -240,7 +240,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController<T>().internalDateTimeRange,
+      valueListenable: context.calendarController().internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');
@@ -250,7 +250,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
       },
     );
 
-    return MultiDayHeaderWidget<T>(
+    return MultiDayHeaderWidget(
       /// TODO: figure out how to get multi-day events to work with FreeScroll.
       ///
       /// To do this the header would need to display a single page and not multiple. see viewport fraction.
@@ -264,17 +264,17 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
 
           return Column(
             children: [
-              WeekDayHeaders<T>(
+              WeekDayHeaders(
                 dates: visibleDates,
-                dayHeaderBuilder: DayHeader.fromContext<T>,
+                dayHeaderBuilder: DayHeader.fromContext,
               ),
               if (configuration.showTiles)
                 Stack(
                   children: [
-                    Positioned.fill(child: MultiDayDraggable<T>(internalRange: visibleRange)),
+                    Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
-                      child: MultiDayEventWidget<T>(
+                      child: MultiDayEventWidget(
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
@@ -284,7 +284,7 @@ class _FreeScrollHeader<T extends Object?> extends StatelessWidget {
                       ),
                     ),
                     Positioned.fill(
-                      child: HorizontalDragTarget<T>(
+                      child: HorizontalDragTarget(
                         visibleDateTimeRange: visibleRange,
                         configuration: configuration,
                         leftPageTrigger: headerComponents.leftTriggerBuilder,

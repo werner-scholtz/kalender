@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class MonthViewController<T extends Object?> extends ViewController<T> {
+class MonthViewController extends ViewController {
   MonthViewController({
     required this.viewConfiguration,
     required super.visibleDateTimeRange,

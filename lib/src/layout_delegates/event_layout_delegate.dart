@@ -17,7 +17,7 @@ export 'package:kalender/src/models/time_of_day_range.dart';
 ///
 ///  * [sideBySideLayoutStrategy], which displays the tiles next to each other.
 ///
-typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function(
+typedef EventLayoutStrategy = EventLayoutDelegate Function(
   Iterable<CalendarEvent> events,
   InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
@@ -28,7 +28,7 @@ typedef EventLayoutStrategy<T extends Object?> = EventLayoutDelegate<T> Function
 );
 
 /// A [EventLayoutStrategy] that lays out the tiles on top of each other.
-EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
+EventLayoutDelegate overlapLayoutStrategy(
   Iterable<CalendarEvent> events,
   InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
@@ -37,7 +37,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
   EventLayoutDelegateCache? cache,
   Location? location,
 ) {
-  return OverlapLayoutDelegate<T>(
+  return OverlapLayoutDelegate(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
@@ -49,7 +49,7 @@ EventLayoutDelegate overlapLayoutStrategy<T extends Object?>(
 }
 
 /// A [EventLayoutStrategy] that lays out the tiles side by side.
-EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
+EventLayoutDelegate sideBySideLayoutStrategy(
   Iterable<CalendarEvent> events,
   InternalDateTime date,
   TimeOfDayRange timeOfDayRange,
@@ -58,7 +58,7 @@ EventLayoutDelegate sideBySideLayoutStrategy<T extends Object?>(
   EventLayoutDelegateCache? cache,
   Location? location,
 ) {
-  return SideBySideLayoutDelegate<T>(
+  return SideBySideLayoutDelegate(
     events: events,
     date: date,
     heightPerMinute: heightPerMinute,
@@ -107,7 +107,7 @@ class EventLayoutDelegateCache {
 /// * [calculateVerticalLayoutData] - Calculates the top and bottom of each event.
 /// * [groupVerticalLayoutData] - Groups the [VerticalLayoutData] into horizontal groups.
 ///
-abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDelegate {
+abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   EventLayoutDelegate({
     required this.events,
     required this.heightPerMinute,
@@ -318,7 +318,7 @@ abstract class EventLayoutDelegate<T extends Object?> extends MultiChildLayoutDe
 }
 
 /// The [OverlapLayoutDelegate] lays out [CalendarEvent]'s, by stacking them on top of one another.
-class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+class OverlapLayoutDelegate extends EventLayoutDelegate {
   OverlapLayoutDelegate({
     required super.events,
     required super.heightPerMinute,
@@ -388,7 +388,7 @@ class OverlapLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
 }
 
 /// The [SideBySideLayoutDelegate] lays out [CalendarEvent]'s next to one another.
-class SideBySideLayoutDelegate<T extends Object?> extends EventLayoutDelegate<T> {
+class SideBySideLayoutDelegate extends EventLayoutDelegate {
   SideBySideLayoutDelegate({
     required super.events,
     required super.heightPerMinute,

@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
 
   /// Create [CalendarController],
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
 
   final now = DateTime.now();
 
@@ -127,18 +127,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView<Event>(
+      body: CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
         // Handle the callbacks made by the calendar.
-        callbacks: CalendarCallbacks<Event>(
+        callbacks: CalendarCallbacks(
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
         // Customize the components.
-        components: CalendarComponents<Event>(
+        components: CalendarComponents(
           multiDayComponents: const MultiDayComponents(),
           multiDayComponentStyles: const MultiDayComponentStyles(),
           monthComponents: const MonthComponents(),
@@ -156,11 +156,11 @@ class _MyHomePageState extends State<MyHomePage> {
               // Add some useful controls.
               _calendarToolbar(),
               // Ad display the default header.
-              CalendarHeader<Event>(multiDayTileComponents: tileComponents(body: false)),
+              CalendarHeader(multiDayTileComponents: tileComponents(body: false)),
             ],
           ),
         ),
-        body: CalendarBody<Event>(
+        body: CalendarBody(
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
           scheduleTileComponents: scheduleTileComponents(context),
@@ -175,8 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Color get color => Theme.of(context).colorScheme.primaryContainer;
   BorderRadius get radius => BorderRadius.circular(8);
 
-  TileComponents<Event> tileComponents({bool body = true}) {
-    return TileComponents<Event>(
+  TileComponents tileComponents({bool body = true}) {
+    return TileComponents(
       tileBuilder: (event, tileRange) {
         return Card(
           color: (event is Event) ? event.color : color,
@@ -214,8 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ScheduleTileComponents<Event> scheduleTileComponents(BuildContext context) {
-    return ScheduleTileComponents<Event>(
+  ScheduleTileComponents scheduleTileComponents(BuildContext context) {
+    return ScheduleTileComponents(
       tileBuilder: (event, tileRange) {
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 1),

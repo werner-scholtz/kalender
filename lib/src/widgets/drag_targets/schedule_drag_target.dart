@@ -7,11 +7,11 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
-class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
+class ScheduleDragTarget extends StatefulWidget {
   final EventsController eventsController;
-  final CalendarController<T> calendarController;
-  final CalendarCallbacks<T>? callbacks;
-  final ScheduleViewController<T> viewController;
+  final CalendarController calendarController;
+  final CalendarCallbacks? callbacks;
+  final ScheduleViewController viewController;
   final BoxConstraints constraints;
   final bool paginated;
 
@@ -41,10 +41,10 @@ class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<ScheduleDragTarget<T>> createState() => _ScheduleDragTargetState<T>();
+  State<ScheduleDragTarget> createState() => _ScheduleDragTargetState();
 }
 
-class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarget<T>> with DragTargetUtilities<T> {
+class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTargetUtilities {
   @override
   double get dayWidth => widget.constraints.maxWidth;
 
@@ -55,10 +55,10 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   EventsController get eventsController => widget.eventsController;
 
   @override
-  CalendarController<T> get controller => widget.calendarController;
+  CalendarController get controller => widget.calendarController;
 
   @override
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  CalendarCallbacks? get callbacks => widget.callbacks;
 
   @override
   bool get multiDayDragTarget => false;
@@ -69,7 +69,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   // The height of the viewport, used for cursor navigation.
   double get viewPortHeight => widget.constraints.maxHeight;
 
-  ScheduleViewController<T> get viewController => widget.viewController;
+  ScheduleViewController get viewController => widget.viewController;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
             // Set the size of the feedback widget.
             const height = 24.0;
 
-            context.feedbackWidgetSizeNotifier<T>().value = Size(dayWidth, height);
+            context.feedbackWidgetSizeNotifier().value = Size(dayWidth, height);
             controller.selectEvent(event, internal: true);
             return true;
           },
