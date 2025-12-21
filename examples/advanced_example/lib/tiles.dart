@@ -34,7 +34,11 @@ ScheduleTileComponents get scheduleTileComponents {
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
   final DateTimeRange tileRange;
-  const BaseEventTile({super.key, required this.event, required this.tileRange});
+  const BaseEventTile({
+    super.key,
+    required this.event,
+    required this.tileRange,
+  });
 
   static const defaultColor = Colors.blueGrey;
   Color get color => event.person.color;
@@ -48,7 +52,10 @@ abstract class BaseEventTile extends StatelessWidget {
       "${event.person.toString()}: ${event.title} (${event.id})";
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(8);
-  BoxDecoration get decoration => BoxDecoration(color: color.withAlpha(150), borderRadius: defaultBorderRadius);
+  BoxDecoration get decoration => BoxDecoration(
+    color: color.withAlpha(150),
+    borderRadius: defaultBorderRadius,
+  );
 }
 
 class EventTile extends BaseEventTile {
@@ -84,7 +91,8 @@ class MultiDayEventTile extends BaseEventTile {
     return MultiDayEventTile(event: event as Event, tileRange: tileRange);
   }
 
-  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
+  EdgeInsets get padding =>
+      const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
 
   static Key getKey(String id) => Key('MultiDayEventTile-$id');
 
@@ -106,7 +114,11 @@ class MultiDayEventTile extends BaseEventTile {
 }
 
 class OverlayEventTile extends BaseEventTile {
-  const OverlayEventTile({super.key, required super.event, required super.tileRange});
+  const OverlayEventTile({
+    super.key,
+    required super.event,
+    required super.tileRange,
+  });
 
   static OverlayEventTile builder(
     CalendarEvent event,
@@ -115,7 +127,8 @@ class OverlayEventTile extends BaseEventTile {
     return OverlayEventTile(event: event as Event, tileRange: tileRange);
   }
 
-  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
+  EdgeInsets get padding =>
+      const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
 
   @override
   Widget build(BuildContext context) {
@@ -125,15 +138,29 @@ class OverlayEventTile extends BaseEventTile {
           left: continuesBefore ? 20 : 0,
           right: continuesAfter ? 20 : 0,
           child: DecoratedBox(
-            decoration: BoxDecoration(color: color.withAlpha(150), borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+              color: color.withAlpha(150),
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Padding(
               padding: padding,
-              child: Text(title(context), style: TextStyle(color: textColor(color))),
+              child: Text(
+                title(context),
+                style: TextStyle(color: textColor(color)),
+              ),
             ),
           ),
         ),
-        if (continuesAfter) const Align(alignment: Alignment.centerRight, child: Icon(Icons.chevron_right)),
-        if (continuesBefore) const Align(alignment: Alignment.centerLeft, child: Icon(Icons.chevron_left)),
+        if (continuesAfter)
+          const Align(
+            alignment: Alignment.centerRight,
+            child: Icon(Icons.chevron_right),
+          ),
+        if (continuesBefore)
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Icon(Icons.chevron_left),
+          ),
       ],
     );
   }
