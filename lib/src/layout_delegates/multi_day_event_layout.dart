@@ -190,7 +190,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     rowInfo.update(rowToUse, (value) => [...value, layout], ifAbsent: () => [layout]);
   }
 
-  final frame = MultiDayLayoutFrame<T>(
+  final frame = MultiDayLayoutFrame(
     dateTimeRange: visibleDateTimeRange,
     layoutInfo: layoutInfo,
     events: sortedEvents,
