@@ -72,14 +72,14 @@ void main() {
     );
 
     // Verify that the events are laid out correctly
-    expect(find.byKey(const ValueKey(1)), findsOneWidget);
-    expect(find.byKey(const ValueKey(2)), findsOneWidget);
-    expect(find.byKey(const ValueKey(3)), findsOneWidget);
+    expect(find.byKey(ValueKey(events[0].id)), findsOneWidget);
+    expect(find.byKey(ValueKey(events[1].id)), findsOneWidget);
+    expect(find.byKey(ValueKey(events[2].id)), findsOneWidget);
 
     // Verify the positions of the events
-    final event1Finder = find.byKey(const ValueKey(1));
-    final event2Finder = find.byKey(const ValueKey(2));
-    final event3Finder = find.byKey(const ValueKey(3));
+    final event1Finder = find.byKey(ValueKey(events[0].id));
+    final event2Finder = find.byKey(ValueKey(events[1].id));
+    final event3Finder = find.byKey(ValueKey(events[2].id));
 
     final event1TopLeft = tester.getTopLeft(event1Finder);
     final event2TopLeft = tester.getTopLeft(event2Finder);

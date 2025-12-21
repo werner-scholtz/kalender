@@ -20,7 +20,7 @@ class CalendarEvent {
   final EventInteraction interaction;
 
   /// The id of the [CalendarEvent].
-  late final String id;
+  late String id;
 
 /*
   CalendarEvent({
