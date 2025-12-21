@@ -57,7 +57,7 @@ void main() {
         ),
       ];
 
-      late int eventId;
+      late String eventId;
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(

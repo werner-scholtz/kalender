@@ -66,7 +66,7 @@ class MultiDayEventTile extends BaseEventTile {
   EdgeInsets get padding =>
       const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
 
-  static Key getKey(int id) => Key('MultiDayEventTile-$id');
+  static Key getKey(String id) => Key('MultiDayEventTile-$id');
 
   @override
   Widget build(BuildContext context) {

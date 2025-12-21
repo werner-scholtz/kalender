@@ -17,13 +17,13 @@ class DayEventTile extends EventTile {
   EventTileState createState() => EventTileState();
 
   /// A key used to identify the [DayEventTile].
-  static Key tileKey(int eventId) => Key('DayEventTile-$eventId');
+  static Key tileKey(String eventId) => Key('DayEventTile-$eventId');
 
   /// A key used to identify the reschedule draggable.
-  static Key rescheduleDraggableKey(int eventId) => Key('DayEventTile-RescheduleDraggable-$eventId');
+  static Key rescheduleDraggableKey(String eventId) => Key('DayEventTile-RescheduleDraggable-$eventId');
 
   /// A key used to identify the gesture detector.
-  static Key gestureDetectorKey(int eventId) => Key('DayEventTile-GestureDetector-$eventId');
+  static Key gestureDetectorKey(String eventId) => Key('DayEventTile-GestureDetector-$eventId');
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {

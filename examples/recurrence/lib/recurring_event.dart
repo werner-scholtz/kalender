@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurrence.dart';
 
 class RecurringCalendarEvent extends CalendarEvent {
-  final int groupId;
+  final String groupId;
 
   
   RecurringCalendarEvent({
@@ -12,7 +12,7 @@ class RecurringCalendarEvent extends CalendarEvent {
     super.interaction,
   });
 
-  factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent event, int groupId) {
+  factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent event, String groupId) {
     return RecurringCalendarEvent(
       dateTimeRange: event.internalRange(),
       groupId: groupId,
@@ -35,10 +35,10 @@ class RecurringCalendarEvent extends CalendarEvent {
 
 class RecurrenceGroup {
   /// Group id,
-  final int id;
+  final String id;
 
   /// Id's of events that are part of this group.
-  final List<int> eventIds;
+  final List<String> eventIds;
 
   /// The recurrence of this group.
   final Recurrence recurrence;
@@ -53,7 +53,7 @@ class RecurrenceGroup {
   });
 
   RecurrenceGroup copyWith({
-    List<int>? eventIds,
+    List<String>? eventIds,
     Recurrence? recurrence,
     DateTimeRange? originalRange,
   }) {
