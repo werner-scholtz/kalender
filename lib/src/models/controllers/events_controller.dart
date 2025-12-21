@@ -19,12 +19,12 @@ abstract class EventsController with ChangeNotifier {
   /// Adds an [CalendarEvent] to the [EventsController].
   ///
   /// Returns the id assigned to the event.
-  int addEvent(CalendarEvent event);
+  String addEvent(CalendarEvent event);
 
   /// Adds a list of [CalendarEvent]s to the [EventsController].
   ///
   /// Returns the id's assigned to the events in order.
-  List<int> addEvents(List<CalendarEvent> events);
+  List<String> addEvents(List<CalendarEvent> events);
 
   /// Removes an [CalendarEvent] from the list of [CalendarEvent]s.
   void removeEvent(CalendarEvent event);
@@ -33,12 +33,12 @@ abstract class EventsController with ChangeNotifier {
   void removeEvents(List<CalendarEvent> events);
 
   /// Remove an [CalendarEvent] with its id.
-  void removeById(int id);
+  void removeById(String id);
 
   /// Removes a list of [CalendarEvent]s from the list of [CalendarEvent]s.
   ///
   /// The events will be removed where [test] returns true.
-  void removeWhere(bool Function(int key, CalendarEvent element) test);
+  void removeWhere(bool Function(String key, CalendarEvent element) test);
 
   /// Removes all [CalendarEvent]s from [_events].
   void clearEvents();
@@ -53,7 +53,7 @@ abstract class EventsController with ChangeNotifier {
   });
 
   /// Retrieve a [CalendarEvent] by it's id if it exists.
-  CalendarEvent? byId(int id);
+  CalendarEvent? byId(String id);
 
   /// Finds the [CalendarEvent]s that occur during the [dateTimeRange].
   ///

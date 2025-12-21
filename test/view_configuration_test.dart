@@ -62,10 +62,10 @@ void main() {
       final value = eventsController.addEvent(
         CalendarEvent(dateTimeRange: DateTimeRange(start: key, end: end)),
       );
-      return MapEntry<DateTime, int>(key, value);
+      return MapEntry<DateTime, String>(key, value);
     },
   );
-  final eventsMap = Map<DateTime, int>.fromEntries(eventMapItems);
+  final eventsMap = Map<DateTime, String>.fromEntries(eventMapItems);
 
   // Test animating to specific events.
   final firstEvent = eventsController.byId(eventsMap[start]!)!;

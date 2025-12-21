@@ -297,7 +297,7 @@ class MultiDayLayoutFrame {
 @immutable
 class EventLayoutInformation {
   /// The id of the event.
-  final int id;
+  final String id;
 
   /// The row that the event should be laid out on.
   final int row;
@@ -318,7 +318,7 @@ class EventLayoutInformation {
   }) : assert(columns.isNotEmpty, 'Columns cannot be empty');
 
   factory EventLayoutInformation.preliminary({
-    required int id,
+    required String id,
     required List<int> columns,
   }) {
     return EventLayoutInformation(

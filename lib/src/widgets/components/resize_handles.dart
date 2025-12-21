@@ -111,10 +111,10 @@ abstract class ResizeHandles extends StatelessWidget {
       const SizedBox();
 
   /// A key used to identify the top resize handle.
-  static Key startResizeDraggableKey(int eventId) => Key('DayEventTile-StartResizeDraggable-$eventId');
+  static Key startResizeDraggableKey(String eventId) => Key('DayEventTile-StartResizeDraggable-$eventId');
 
   /// A key used to identify the bottom resize handle.
-  static Key endResizeDraggableKey(int eventId) => Key('DayEventTile-EndResizeDraggable-$eventId');
+  static Key endResizeDraggableKey(String eventId) => Key('DayEventTile-EndResizeDraggable-$eventId');
 
   /// The start resize detector.
   ///

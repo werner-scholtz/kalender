@@ -15,14 +15,14 @@ class DefaultEventsController extends EventsController {
   Iterable<CalendarEvent> get events => dateMap.events;
 
   @override
-  int addEvent(CalendarEvent event) {
+  String addEvent(CalendarEvent event) {
     final id = dateMap.addNewEvent(event);
     notifyListeners();
     return id;
   }
 
   @override
-  List<int> addEvents(List<CalendarEvent> events) {
+  List<String> addEvents(List<CalendarEvent> events) {
     final ids = events.map(dateMap.addNewEvent).toList();
     notifyListeners();
     return ids;
@@ -41,14 +41,13 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  void removeById(int id) {
-    assert(id != -1, 'Must be a valid id.');
+  void removeById(String id) {
     dateMap.removeById(id);
     notifyListeners();
   }
 
   @override
-  void removeWhere(bool Function(int key, CalendarEvent element) test) {
+  void removeWhere(bool Function(String key, CalendarEvent element) test) {
     dateMap.removeWhere(test);
     notifyListeners();
   }
@@ -70,7 +69,7 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
-  CalendarEvent? byId(int id) => dateMap.byId(id);
+  CalendarEvent? byId(String id) => dateMap.byId(id);
 
   @override
   Iterable<CalendarEvent> eventsFromDateTimeRange(
