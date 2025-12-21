@@ -146,11 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
-                showTiles: false,
-              ),
-            ),
+            CalendarHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
             const Divider(),
