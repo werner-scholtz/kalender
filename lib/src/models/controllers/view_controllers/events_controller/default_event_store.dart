@@ -176,7 +176,6 @@ class DefaultEventStore extends EventStore {
     return eventIds;
   }
 
-
   /// Add an [event] to the map.
   void _addEvent(CalendarEvent event) {
     final id = event.id;

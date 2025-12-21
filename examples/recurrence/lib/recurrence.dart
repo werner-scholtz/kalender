@@ -10,7 +10,6 @@ class RecurrenceController {
 
   final Map<String, RecurrenceGroup> groups = {};
 
-
   String get _nextGroupId {
     final rawRandom = Random();
     const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
