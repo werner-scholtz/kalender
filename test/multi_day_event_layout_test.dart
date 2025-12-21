@@ -92,42 +92,36 @@ void main() {
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 25),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 28),
             end: DateTime(2025, 3, 30),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-
         ),
       ];
       eventsController.addEvents(events);
@@ -205,28 +199,24 @@ void main() {
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-
         ),
       ];
       eventsController.addEvents(events);
@@ -282,19 +272,15 @@ void main() {
       final events = [
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(day: start.day + 3)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
-
         ),
       ];
       eventsController.addEvents(events);
@@ -398,19 +384,15 @@ void main() {
       final events = [
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 12)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 8)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
-
         ),
         CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
-
         ),
       ];
       eventsController.addEvents(events);

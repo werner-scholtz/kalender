@@ -66,8 +66,7 @@ class VerticalDragTarget extends StatefulWidget {
   }
 }
 
-class _VerticalDragTargetState extends State<VerticalDragTarget>
-    with SnapPoints, DragTargetUtilities {
+class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints, DragTargetUtilities {
   @override
   EventsController get eventsController => context.eventsController();
 

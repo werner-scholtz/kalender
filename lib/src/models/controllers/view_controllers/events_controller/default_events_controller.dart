@@ -72,7 +72,7 @@ class DefaultEventsController extends EventsController {
   @override
   CalendarEvent? byId(int id) => dateMap.byId(id);
 
-@override
+  @override
   Iterable<CalendarEvent> eventsFromDateTimeRange(
     InternalDateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,
@@ -152,5 +152,3 @@ class DefaultEventsController extends EventsController {
             );
   }
 }
-
-

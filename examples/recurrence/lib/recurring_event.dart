@@ -5,7 +5,6 @@ import 'package:recurrence/recurrence.dart';
 class RecurringCalendarEvent extends CalendarEvent {
   final int groupId;
 
-  
   RecurringCalendarEvent({
     required this.groupId,
     required super.dateTimeRange,

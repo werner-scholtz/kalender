@@ -13,10 +13,20 @@ class Event extends CalendarEvent {
   final String title;
   final Person person;
 
-  Event({required super.dateTimeRange, required this.title, required this.person, super.interaction});
+  Event({
+    required super.dateTimeRange,
+    required this.title,
+    required this.person,
+    super.interaction,
+  });
 
   @override
-  Event copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, Person? person, String? title}) {
+  Event copyWith({
+    DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
+    Person? person,
+    String? title,
+  }) {
     final newEvent = Event(
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
@@ -54,7 +64,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -67,7 +79,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-const people = [Person(name: "Person A", color: Colors.blue), Person(name: "Person B", color: Colors.amber)];
+const people = [
+  Person(name: "Person A", color: Colors.blue),
+  Person(name: "Person B", color: Colors.amber),
+];
 
 class _MyHomePageState extends State<MyHomePage> {
   final eventsController = DefaultEventsController();
@@ -87,10 +102,13 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) =>
+              calendarController.selectEvent(event),
           onEventCreateWithDetail: (calendarEvent, detail) {
             if (detail is MultiDayDetail) {
-              throw Exception('MultiDayDetail is not supported in this example.');
+              throw Exception(
+                'MultiDayDetail is not supported in this example.',
+              );
             }
 
             final event = calendarEvent as Event;
@@ -124,7 +142,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader(multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false)),
+            CalendarHeader(
+              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+                showTiles: false,
+              ),
+            ),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
             const Divider(),
@@ -137,18 +159,27 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              eventLayoutStrategy: (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache, location) {
-                return CustomSideBySideLayoutDelegate(
-                  events: events,
-                  heightPerMinute: heightPerMinute,
-                  date: date,
-                  timeOfDayRange: timeOfDayRange,
-                  minimumTileHeight: minimumTileHeight,
-                  layoutCache: cache ?? EventLayoutDelegateCache(),
-                  people: people,
-                  location: location,
-                );
-              },
+              eventLayoutStrategy:
+                  (
+                    events,
+                    date,
+                    timeOfDayRange,
+                    heightPerMinute,
+                    minimumTileHeight,
+                    cache,
+                    location,
+                  ) {
+                    return CustomSideBySideLayoutDelegate(
+                      events: events,
+                      heightPerMinute: heightPerMinute,
+                      date: date,
+                      timeOfDayRange: timeOfDayRange,
+                      minimumTileHeight: minimumTileHeight,
+                      layoutCache: cache ?? EventLayoutDelegateCache(),
+                      people: people,
+                      location: location,
+                    );
+                  },
             ),
           ),
         ),
@@ -165,13 +196,21 @@ class PeopleWidget extends StatelessWidget {
     return Row(
       children: [
         // Needed for proper spacing.
-        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
+        PrototypeTimeline.prototypeBuilder(
+          0.7,
+          TimeOfDayRange.allDay(),
+          TimelineStyle(),
+        ),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: people.map((person) => Expanded(child: PersonWidget(person: person))).toList(growable: false),
+              children: people
+                  .map(
+                    (person) => Expanded(child: PersonWidget(person: person)),
+                  )
+                  .toList(growable: false),
             ),
           ),
         ),

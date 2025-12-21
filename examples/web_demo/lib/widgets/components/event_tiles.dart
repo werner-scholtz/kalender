@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/models/event.dart';
 
-
 abstract class BaseEventTile extends StatelessWidget {
   final Event event;
   final DateTimeRange tileRange;

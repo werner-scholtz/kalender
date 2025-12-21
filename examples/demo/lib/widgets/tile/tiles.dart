@@ -1,7 +1,6 @@
 import 'package:demo/data/event.dart';
 import 'package:flutter/material.dart';
 
-
 abstract class Tile extends StatelessWidget {
   final Event event;
   final EdgeInsets margin;

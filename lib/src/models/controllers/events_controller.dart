@@ -16,8 +16,6 @@ abstract class EventsController with ChangeNotifier {
   /// The list of [CalendarEvent]s.
   Iterable<CalendarEvent> get events;
 
-
-
   /// Adds an [CalendarEvent] to the [EventsController].
   ///
   /// Returns the id assigned to the event.

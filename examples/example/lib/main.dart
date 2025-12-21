@@ -314,7 +314,9 @@ class DayEventTile extends StatelessWidget {
     return GestureDetector(
       onTapUp: (details) {},
       child: Card(
-        color: (calendarEvent is Event) ? (calendarEvent.color ?? Theme.of(context).colorScheme.primaryContainer) : Theme.of(context).colorScheme.primaryContainer,
+        color: (calendarEvent is Event)
+            ? (calendarEvent.color ?? Theme.of(context).colorScheme.primaryContainer)
+            : Theme.of(context).colorScheme.primaryContainer,
         child: Text((calendarEvent is Event) ? calendarEvent.title : ""),
       ),
     );

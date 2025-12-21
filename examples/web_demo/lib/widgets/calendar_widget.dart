@@ -134,7 +134,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   TileComponents get _multiDayTileComponents {
     return TileComponents(
-     tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
       overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
       dropTargetTile: (event) => DropTargetTile.builder(event as Event),
       feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
