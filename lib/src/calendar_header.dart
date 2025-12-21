@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-class CalendarHeader<T extends Object?> extends StatefulWidget {
+class CalendarHeader extends StatefulWidget {
   /// The callbacks used by the [CalendarBody].
   ///
   /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
-  final CalendarCallbacks<T>? callbacks;
+  final CalendarCallbacks? callbacks;
 
   /// MultiDay
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
-  final MultiDayHeaderConfiguration<T>? multiDayHeaderConfiguration;
+  final MultiDayHeaderConfiguration? multiDayHeaderConfiguration;
 
   /// The tile components used by the [MultiDayHeader].
-  final TileComponents<T>? multiDayTileComponents;
+  final TileComponents? multiDayTileComponents;
 
   /// The interaction notifier used by the [MultiDayHeader].
   final CalendarInteraction? interaction;
@@ -37,10 +37,10 @@ class CalendarHeader<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<CalendarHeader<T>> createState() => _CalendarHeaderState<T>();
+  State<CalendarHeader> createState() => _CalendarHeaderState();
 }
 
-class _CalendarHeaderState<T extends Object?> extends State<CalendarHeader<T>> {
+class _CalendarHeaderState extends State<CalendarHeader> {
   late CalendarCallbacks? _callbacks;
   late ValueNotifier<CalendarInteraction> _interaction;
 
@@ -52,7 +52,7 @@ class _CalendarHeaderState<T extends Object?> extends State<CalendarHeader<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant CalendarHeader<T> oldWidget) {
+  void didUpdateWidget(covariant CalendarHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.callbacks != widget.callbacks) {
       _callbacks = widget.callbacks;
@@ -70,19 +70,19 @@ class _CalendarHeaderState<T extends Object?> extends State<CalendarHeader<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = context.calendarController<T>().viewController;
+    final viewController = context.calendarController().viewController;
     return Callbacks(
-      callbacks: _callbacks ?? context.callbacks<T>(),
+      callbacks: _callbacks ?? context.callbacks(),
       child: switch (viewController) {
-        MultiDayViewController<T>() => Interaction(
+        MultiDayViewController() => Interaction(
             notifier: _interaction,
             child: TileComponentProvider(
-              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
-              child: MultiDayHeader<T>(configuration: widget.multiDayHeaderConfiguration),
+              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
+              child: MultiDayHeader(configuration: widget.multiDayHeaderConfiguration),
             ),
           ),
-        MonthViewController<T>() => MonthHeader<T>(),
-        ScheduleViewController<T>() => ScheduleHeader<T>(),
+        MonthViewController() => const MonthHeader(),
+        ScheduleViewController() => const ScheduleHeader(),
         _ => throw ErrorHint(
             'Unsupported ViewController type: ${viewController.runtimeType}. '
             'Make sure to use the correct CalendarHeader for the ViewController.',

@@ -9,12 +9,12 @@ import 'package:kalender/src/widgets/multi_day/multi_day_body.dart';
 import 'package:kalender/src/widgets/multi_day/multi_day_header.dart';
 
 /// A class containing custom widget builders for the [MultiDayBody] and [MultiDayHeader].
-class MultiDayComponents<T extends Object?> {
+class MultiDayComponents {
   /// The component builders used by the [MultiDayBody].
-  final MultiDayHeaderComponents<T> headerComponents;
+  final MultiDayHeaderComponents headerComponents;
 
   /// The component builders used by the [MultiDayHeader].
-  final MultiDayBodyComponents<T> bodyComponents;
+  final MultiDayBodyComponents bodyComponents;
 
   const MultiDayComponents({
     this.bodyComponents = const MultiDayBodyComponents(),
@@ -25,7 +25,7 @@ class MultiDayComponents<T extends Object?> {
 /// The component builders used by the [MultiDayHeader].
 ///
 /// - Using these will override the respective default components.
-class MultiDayHeaderComponents<T> {
+class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
   final DayHeaderBuilder dayHeaderBuilder;
 
@@ -39,7 +39,7 @@ class MultiDayHeaderComponents<T> {
   final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
   /// A group of builders for the overlay widgets.
-  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayBuilders? overlayBuilders;
 
   /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
@@ -54,7 +54,7 @@ class MultiDayHeaderComponents<T> {
 /// The component builders used by the [MultiDayBody].
 ///
 /// - Using these will override the respective default components.
-class MultiDayBodyComponents<T> {
+class MultiDayBodyComponents {
   /// A function that builds the hour lines widget.
   final HourLinesBuilder hourLines;
 

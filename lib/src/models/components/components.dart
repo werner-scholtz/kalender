@@ -13,21 +13,21 @@ import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.
 ///
 /// Change the style the default widgets with [multiDayComponentStyles] and [monthComponentStyles].
 /// Provide your own widgets with [multiDayComponents] and [monthComponents].
-class CalendarComponents<T extends Object?> {
+class CalendarComponents {
   /// Components used to override the default month components
-  final MonthComponents<T> monthComponents;
+  final MonthComponents monthComponents;
 
   /// Styles used by the month view.
   final MonthComponentStyles monthComponentStyles;
 
   /// Components used to override the default multi day components.
-  final MultiDayComponents<T> multiDayComponents;
+  final MultiDayComponents multiDayComponents;
 
   /// Styles used by the multi day view.
   final MultiDayComponentStyles multiDayComponentStyles;
 
   /// Components used to override the default schedule components.
-  final ScheduleComponents<T> scheduleComponents;
+  final ScheduleComponents scheduleComponents;
 
   /// Styles used by the schedule view.
   final ScheduleComponentStyles scheduleComponentStyles;
@@ -35,7 +35,7 @@ class CalendarComponents<T extends Object?> {
   /// Default override for the overlay widgets.
   ///
   /// If a more specific builder is provided in [multiDayComponents] or [monthComponents], that will be used instead.
-  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayBuilders? overlayBuilders;
 
   /// Default styles for the overlay widgets.
   ///
@@ -55,12 +55,12 @@ class CalendarComponents<T extends Object?> {
 }
 
 /// Builders used to create the overlayPortal, overlay and overlay button widgets.
-class OverlayBuilders<T extends Object?> {
+class OverlayBuilders {
   /// The builder for the multi day overlay.
-  final MultiDayOverlayBuilder<T>? multiDayOverlayBuilder;
+  final MultiDayOverlayBuilder? multiDayOverlayBuilder;
 
   /// The builder for the multi day overlay portal.
-  final MultiDayOverlayPortalBuilder<T>? multiDayOverlayPortalBuilder;
+  final MultiDayOverlayPortalBuilder? multiDayOverlayPortalBuilder;
 
   /// The builder for the multi day overlay portal button.
   final MultiDayPortalOverlayButtonBuilder? multiDayPortalOverlayButtonBuilder;

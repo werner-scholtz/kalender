@@ -4,7 +4,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/l10n/app_localizations.dart';
 import 'package:web_demo/locales.dart';
-import 'package:web_demo/models/event.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/utils.dart';
@@ -33,7 +32,7 @@ class MyApp extends StatefulWidget {
   static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
 
   /// Returns the [EventsController] of the app.
-  static EventsController<Event> eventsController(BuildContext context) {
+  static EventsController eventsController(BuildContext context) {
     final state = context.findAncestorStateOfType<MyAppState>();
     if (state == null) throw Exception('MyAppState not found in context');
     return state.eventsController;
@@ -66,8 +65,8 @@ class MyAppState extends State<MyApp> {
   Locale get locale => _locale;
   void setLocale(Locale locale) => setState(() => _locale = locale);
 
-  final _eventsController = DefaultEventsController<Event>();
-  DefaultEventsController<Event> get eventsController => _eventsController;
+  final _eventsController = DefaultEventsController();
+  DefaultEventsController get eventsController => _eventsController;
 
   @override
   void initState() {

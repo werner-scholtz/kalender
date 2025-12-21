@@ -104,7 +104,7 @@ class DesktopZoomDetector extends StatefulWidget {
 
 class _DesktopZoomDetectorState extends State<DesktopZoomDetector> with ZoomUtils {
   @override
-  CalendarController<Object?> get controller => widget.controller;
+  CalendarController get controller => widget.controller;
 
   @override
   void initState() {
@@ -168,7 +168,7 @@ class MobileZoomDetector extends StatefulWidget {
 
 class _MobileZoomDetectorState extends State<MobileZoomDetector> with ZoomUtils {
   @override
-  CalendarController<Object?> get controller => widget.controller;
+  CalendarController get controller => widget.controller;
 
   double _previousScale = 0.0;
 

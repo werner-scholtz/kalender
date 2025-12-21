@@ -5,12 +5,12 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-abstract class ScheduleViewController<T extends Object?> extends ViewController<T> with ScheduleMap {
+abstract class ScheduleViewController extends ViewController with ScheduleMap {
   @override
   final ScheduleViewConfiguration viewConfiguration;
 
   @override
-  late final ValueNotifier<Set<CalendarEvent<T>>> visibleEvents;
+  late final ValueNotifier<Set<CalendarEvent>> visibleEvents;
 
   /// The initial date to display in the schedule view.
   final InternalDateTime initialDate;
@@ -93,7 +93,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   }
 }
 
-class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
+class ContinuousScheduleViewController extends ScheduleViewController {
   ContinuousScheduleViewController({
     super.location,
     required super.viewConfiguration,
@@ -124,7 +124,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,
@@ -180,7 +180,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
   }
 }
 
-class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewController<T> {
+class PaginatedScheduleViewController extends ScheduleViewController {
   PaginatedScheduleViewController({
     super.location,
     required super.viewConfiguration,
@@ -231,7 +231,7 @@ class PaginatedScheduleViewController<T extends Object?> extends ScheduleViewCon
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

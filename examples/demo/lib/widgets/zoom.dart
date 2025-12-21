@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:demo/data/event.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +7,7 @@ import 'package:kalender/kalender.dart';
 
 class CalendarZoomDetector extends StatefulWidget {
   final Widget child;
-  final CalendarController<Event> controller;
+  final CalendarController controller;
   const CalendarZoomDetector({super.key, required this.child, required this.controller});
 
   @override
@@ -35,9 +34,9 @@ class _CalendarZoomDetectorState extends State<CalendarZoomDetector> {
   final _max = 2.0;
   final _scrollSensitivity = 0.1;
 
-  MultiDayViewController<Event>? get viewController {
+  MultiDayViewController? get viewController {
     final viewController = widget.controller.viewController;
-    if (viewController is MultiDayViewController<Event>) {
+    if (viewController is MultiDayViewController) {
       return viewController;
     } else {
       return null;

@@ -252,7 +252,7 @@ The calendar has a few useful callback functions, which can change how interacti
 
 The package provides utility mixins to help you build interactive custom event tiles with common functionality like position-to-time conversion and finding nearby events.
 
-For single-day or multi-day view event tiles, use the `DayEventTileUtils<T>` mixin:
+For single-day or multi-day view event tiles, use the `DayEventTileUtils` mixin:
 <details>
   <summary>DayEventTileUtils</summary>
 
@@ -305,7 +305,7 @@ For single-day or multi-day view event tiles, use the `DayEventTileUtils<T>` mix
   </summary>
 </details>
  
-For event tiles that span multiple days (like in month view), use the `MultiDayEventTileUtils<T>` mixin:
+For event tiles that span multiple days (like in month view), use the `MultiDayEventTileUtils` mixin:
 
 <details>
   <summary>MultiDayEventTileUtils</summary>

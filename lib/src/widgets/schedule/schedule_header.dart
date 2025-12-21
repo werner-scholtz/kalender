@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ScheduleHeader<T extends Object?> extends StatelessWidget {
+class ScheduleHeader extends StatelessWidget {
   const ScheduleHeader({super.key});
 
   @override

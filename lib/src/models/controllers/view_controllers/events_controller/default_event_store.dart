@@ -1,6 +1,6 @@
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/controllers/events_controller.dart';
+import 'package:kalender/src/models/controllers/view_controllers/events_controller/event_store.dart';
 
 /// Maps timezone location names to their respective date-to-event-ID indexes.
 ///
@@ -48,11 +48,10 @@ typedef DateToEventIds = Map<String, Set<int>>;
 ///   102: CalendarEvent(data: 'Lunch', ...),
 /// }
 /// ```
-typedef EventIdToEvent<T> = Map<int, CalendarEvent<T>>;
+typedef EventIdToEvent = Map<int, CalendarEvent>;
 
-/// TODO: Rename to EventStore in v1.0.0
 /// The default class for storing [CalendarEvent]s.
-class DefaultDateMap<T> extends DateMap<T> {
+class DefaultEventStore extends EventStore {
   /// Predefined locations for optimizations.
   ///
   /// Requesting a location that is not in this list will generate its own date map on demand not a great solution for performance.
@@ -65,7 +64,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   final Map<DateTime, Set<int>> dateIds = {};
 
   /// A Map containing all events.
-  final idEvent = EventIdToEvent<T>();
+  final idEvent = EventIdToEvent();
 
   /// Map of location strings to date maps.
   final locationDateIdMap = LocationDateIdMap();
@@ -77,13 +76,13 @@ class DefaultDateMap<T> extends DateMap<T> {
   /// TODO: check that [TZDateTime] works the same as [DateTime] for this.
   String toKey(DateTime date) => '${date.year}-${date.month}-${date.day}';
 
-  /// Create a [DefaultDateMap] with optional predefined [locations].
-  DefaultDateMap({required this.locations}) {
+  /// Create a [DefaultEventStore] with optional predefined [locations].
+  DefaultEventStore({required this.locations}) {
     populateAllLocations();
   }
 
   @override
-  Iterable<CalendarEvent<T>> get events => idEvent.values;
+  Iterable<CalendarEvent> get events => idEvent.values;
 
   int _lastId = 0;
   int get _nextId {
@@ -92,7 +91,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  CalendarEvent<T>? byId(int id) => idEvent[id];
+  CalendarEvent? byId(int id) => idEvent[id];
 
   /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
@@ -108,7 +107,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  int addNewEvent(CalendarEvent<T> event) {
+  int addNewEvent(CalendarEvent event) {
     final eventWithId = assignId(event);
     _addEvent(eventWithId);
     return eventWithId.id;
@@ -123,7 +122,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  void removeEvent(CalendarEvent<T> event) {
+  void removeEvent(CalendarEvent event) {
     final id = event.id;
     assert(idEvent[id] != null, 'The event: $event cannot be removed as it does not exist in the map.');
     idEvent.remove(id);
@@ -141,16 +140,16 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   @override
-  void removeEvents(List<CalendarEvent<T>> events) => events.forEach(removeEvent);
+  void removeEvents(List<CalendarEvent> events) => events.forEach(removeEvent);
 
   @override
-  void updateEvent(CalendarEvent<T> event, CalendarEvent<T> updatedEvent) {
+  void updateEvent(CalendarEvent event, CalendarEvent updatedEvent) {
     removeEvent(event);
     _addEvent(updatedEvent);
   }
 
   @override
-  void removeWhere(bool Function(int key, CalendarEvent<T> element) test) {
+  void removeWhere(bool Function(int key, CalendarEvent element) test) {
     final idsToRemove = <int>[];
 
     idEvent.removeWhere((key, event) {
@@ -185,14 +184,14 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   /// Assign and id to an event.
-  CalendarEvent<T> assignId(CalendarEvent<T> event) {
+  CalendarEvent assignId(CalendarEvent event) {
     assert(event.id == -1, 'The id of the event must not be set manually.');
     event.id = _nextId;
     return event;
   }
 
   /// Add an [event] to the map.
-  void _addEvent(CalendarEvent<T> event) {
+  void _addEvent(CalendarEvent event) {
     final id = event.id;
     idEvent[id] = event;
 
@@ -231,7 +230,7 @@ class DefaultDateMap<T> extends DateMap<T> {
   }
 
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
-  void _addEventToLocation(Location? location, CalendarEvent<T> event) {
+  void _addEventToLocation(Location? location, CalendarEvent event) {
     final locationString = location?.name ?? defaultLocation;
     final dates = event.internalRange(location: location).dates();
     for (final date in dates) {

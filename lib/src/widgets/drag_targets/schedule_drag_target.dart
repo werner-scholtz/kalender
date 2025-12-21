@@ -7,11 +7,11 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [ScheduleDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
-class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
-  final EventsController<T> eventsController;
-  final CalendarController<T> calendarController;
-  final CalendarCallbacks<T>? callbacks;
-  final ScheduleViewController<T> viewController;
+class ScheduleDragTarget extends StatefulWidget {
+  final EventsController eventsController;
+  final CalendarController calendarController;
+  final CalendarCallbacks? callbacks;
+  final ScheduleViewController viewController;
   final BoxConstraints constraints;
   final bool paginated;
 
@@ -41,10 +41,10 @@ class ScheduleDragTarget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<ScheduleDragTarget<T>> createState() => _ScheduleDragTargetState<T>();
+  State<ScheduleDragTarget> createState() => _ScheduleDragTargetState();
 }
 
-class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarget<T>> with DragTargetUtilities<T> {
+class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTargetUtilities {
   @override
   double get dayWidth => widget.constraints.maxWidth;
 
@@ -52,13 +52,13 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   List<DateTime> get visibleDates => throw UnimplementedError();
 
   @override
-  EventsController<T> get eventsController => widget.eventsController;
+  EventsController get eventsController => widget.eventsController;
 
   @override
-  CalendarController<T> get controller => widget.calendarController;
+  CalendarController get controller => widget.calendarController;
 
   @override
-  CalendarCallbacks<T>? get callbacks => widget.callbacks;
+  CalendarCallbacks? get callbacks => widget.callbacks;
 
   @override
   bool get multiDayDragTarget => false;
@@ -69,7 +69,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   // The height of the viewport, used for cursor navigation.
   double get viewPortHeight => widget.constraints.maxHeight;
 
-  ScheduleViewController<T> get viewController => widget.viewController;
+  ScheduleViewController get viewController => widget.viewController;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
             // Set the size of the feedback widget.
             const height = 24.0;
 
-            context.feedbackWidgetSizeNotifier<T>().value = Size(dayWidth, height);
+            context.feedbackWidgetSizeNotifier().value = Size(dayWidth, height);
             controller.selectEvent(event, internal: true);
             return true;
           },
@@ -199,7 +199,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
     final rangeAsUtc = event.internalRange(location: context.location);
     // Set the highlighted date in the schedule view controller.
     widget.viewController.highlightedDateTimeRange.value = DateTimeRange(
@@ -238,5 +238,5 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) => null;
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) => null;
 }

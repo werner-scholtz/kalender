@@ -16,25 +16,25 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 /// [dateTimeRange] is the DateTimeRange that the current view is displaying.
 /// [size] is the size of the event tile.
 /// [axis] is the axis along which the resize handles are positioned.
-typedef ResizeHandlePositioner<T extends Object?> = ResizeHandles<T> Function(
-  CalendarEvent<T> event,
+typedef ResizeHandlePositioner = ResizeHandles Function(
+  CalendarEvent event,
   CalendarInteraction interaction,
-  TileComponents<T> tileComponents,
+  TileComponents tileComponents,
   DateTimeRange dateTimeRange,
   Size size,
   Axis axis,
 );
 
 /// The base class for the ResizeDetectorPositioner.
-abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
+abstract class ResizeHandles extends StatelessWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The global interaction settings for the calendar.
   final CalendarInteraction interaction;
 
   /// The tile components used to build the resize handles.
-  final TileComponents<T> tileComponents;
+  final TileComponents tileComponents;
 
   /// The DateTimeRange that the current view is displaying.
   final DateTimeRange dateTimeRange;
@@ -56,10 +56,10 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   });
 
   /// Builds the ResizeHandles using the provided [tileComponents] or the default implementation.
-  static ResizeHandles<T> builder<T>(
-    CalendarEvent<T> event,
+  static ResizeHandles builder(
+    CalendarEvent event,
     CalendarInteraction interaction,
-    TileComponents<T> tileComponents,
+    TileComponents tileComponents,
     DateTimeRange dateTimeRange,
     Size size,
     Axis axis,
@@ -72,7 +72,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
           size,
           axis,
         ) ??
-        DefaultResizeHandles<T>(
+        DefaultResizeHandles(
           event: event,
           interaction: interaction,
           tileComponents: tileComponents,
@@ -119,7 +119,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   /// The start resize detector.
   ///
   /// The direction is determined by the axis.
-  Widget get startResizeDetector => ResizeHandle<T>(
+  Widget get startResizeDetector => ResizeHandle(
         key: startResizeDraggableKey(event.id),
         event: event,
         tileComponents: tileComponents,
@@ -129,7 +129,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
   /// The end resize detector.
   ///
   /// The direction is determined by the axis.
-  Widget get endResizeDetector => ResizeHandle<T>(
+  Widget get endResizeDetector => ResizeHandle(
         key: endResizeDraggableKey(event.id),
         event: event,
         tileComponents: tileComponents,
@@ -138,7 +138,7 @@ abstract class ResizeHandles<T extends Object?> extends StatelessWidget {
 }
 
 /// The base class for the ResizeDetectorPositioner.
-class DefaultResizeHandles<T extends Object?> extends ResizeHandles<T> {
+class DefaultResizeHandles extends ResizeHandles {
   const DefaultResizeHandles({
     required super.event,
     required super.axis,

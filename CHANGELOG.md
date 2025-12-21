@@ -159,7 +159,7 @@
 * Package will use Semantic versioning from 0.6.0 onwards.
 
 ### Breaking changes
-- The `EventsController` is now an abstract class, use `DefaultEventsController<T>` instead.
+- The `EventsController` is now an abstract class, use `DefaultEventsController` instead.
 - The `ViewConfiguration` no longer contains the configuration for `interaction` and `snapping`.
     These are now separate classes that are passed directly to the `Body`/`Header`.
 

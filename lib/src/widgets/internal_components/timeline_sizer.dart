@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A Widget that sizes the width of the [child] based on the [TimeLine].
-class TimelineSizer<T extends Object?> extends StatelessWidget {
+class TimelineSizer extends StatelessWidget {
   final Widget child;
   const TimelineSizer({
     super.key,
@@ -14,7 +14,7 @@ class TimelineSizer<T extends Object?> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create the timeline widget.
-    final calendarComponents = context.components<T>();
+    final calendarComponents = context.components();
     final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
     final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
     final timelineStyle = bodyStyles.timelineStyle;

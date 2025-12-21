@@ -1,9 +1,9 @@
+import 'package:demo/data/event.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:demo/data/event.dart';
 
 class OverlayCard extends StatefulWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   final Offset position;
   final double height;
   final double width;
@@ -25,8 +25,8 @@ class OverlayCard extends StatefulWidget {
 }
 
 class _OverlayCardState extends State<OverlayCard> {
-  late CalendarEvent<Event> event = widget.event;
-  late CalendarEvent<Event> displayEvent = widget.event;
+  late Event event = widget.event;
+  late Event displayEvent = widget.event;
 
   MaterialLocalizations get locale => MaterialLocalizations.of(context);
   bool get use24 => MediaQuery.alwaysUse24HourFormatOf(context);
@@ -50,10 +50,10 @@ class _OverlayCardState extends State<OverlayCard> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      initialValue: event.data?.title,
+                      initialValue: event.title,
                       decoration: const InputDecoration(border: OutlineInputBorder(), labelText: "Title"),
                       onChanged: (value) {
-                        final updatedEvent = event.copyWith(data: event.data?.copyWith(title: value));
+                        final updatedEvent = event.copyWith(title: value);
                         widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
                         setState(() => event = updatedEvent);
                       },
