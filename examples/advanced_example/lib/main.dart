@@ -9,11 +9,34 @@ void main() {
 }
 
 /// Represents an event with a title and color.
-class Event {
+class Event extends CalendarEvent {
   final String title;
   final Person person;
 
-  Event({required this.title, required this.person});
+  Event({
+    required super.dateTimeRange,
+    required this.title,
+    required this.person,
+    super.interaction,
+  });
+
+  @override
+  Event copyWith({
+    DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
+    Person? person,
+    String? title,
+  }) {
+    final newEvent = Event(
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      interaction: interaction ?? this.interaction,
+      title: title ?? this.title,
+      person: person ?? this.person,
+    );
+    newEvent.id = id;
+
+    return newEvent;
+  }
 }
 
 class Person {
@@ -41,7 +64,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -60,8 +85,8 @@ const people = [
 ];
 
 class _MyHomePageState extends State<MyHomePage> {
-  final eventsController = DefaultEventsController<Event>();
-  final calendarController = CalendarController<Event>();
+  final eventsController = DefaultEventsController();
+  final calendarController = CalendarController();
   late MultiDayViewConfiguration _viewConfiguration = _viewConfigurations.first;
   final _viewConfigurations = [
     MultiDayViewConfiguration.singleDay(initialHeightPerMinute: 2),
@@ -71,24 +96,27 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView<Event>(
+      body: CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-          onEventCreateWithDetail: (event, detail) {
+          onEventTapped: (event, renderBox) =>
+              calendarController.selectEvent(event),
+          onEventCreateWithDetail: (calendarEvent, detail) {
             if (detail is MultiDayDetail) {
-              throw Exception('MultiDayDetail is not supported in this example.');
+              throw Exception(
+                'MultiDayDetail is not supported in this example.',
+              );
             }
+
+            final event = calendarEvent as Event;
 
             final dayWidth = detail.renderBox.size.width;
             final tapLocation = detail.localOffset;
             final person = people[tapLocation.dx ~/ (dayWidth / people.length)];
-            return event.copyWith(
-              data: Event(title: 'title', person: person),
-            );
+            return event.copyWith(title: 'title', person: person);
           },
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
@@ -114,8 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 8),
-            CalendarHeader<Event>(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false),
+            CalendarHeader(
+              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+                showTiles: false,
+              ),
             ),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
@@ -124,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: ZoomDetector(
           controller: calendarController,
-          child: CalendarBody<Event>(
+          child: CalendarBody(
             multiDayTileComponents: tileComponents,
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,
@@ -161,20 +191,25 @@ class _MyHomePageState extends State<MyHomePage> {
 class PeopleWidget extends StatelessWidget {
   final MultiDayViewConfiguration viewConfiguration;
   const PeopleWidget({super.key, required this.viewConfiguration});
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         // Needed for proper spacing.
-        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
+        PrototypeTimeline.prototypeBuilder(
+          0.7,
+          TimeOfDayRange.allDay(),
+          TimelineStyle(),
+        ),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: people
-                  .map((person) => Expanded(child: PersonWidget(person: person)))
+                  .map(
+                    (person) => Expanded(child: PersonWidget(person: person)),
+                  )
                   .toList(growable: false),
             ),
           ),

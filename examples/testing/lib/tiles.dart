@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender.dart';
 import 'package:testing/test_configuration.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   final DateTimeRange tileRange;
   const BaseEventTile({
     super.key,
@@ -12,14 +11,14 @@ abstract class BaseEventTile extends StatelessWidget {
   });
 
   static const defaultColor = Colors.blueGrey;
-  Color get color => event.data?.color ?? defaultColor;
+  Color get color => event.color ?? defaultColor;
   Color textColor(Color color) =>
       color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
   bool get continuesAfter => event.dateTimeRange.end.isAfter(tileRange.end);
   bool get continuesBefore =>
       event.dateTimeRange.start.isBefore(tileRange.start);
-  String title(BuildContext context) => "${event.data?.title} (${event.id})";
+  String title(BuildContext context) => "${event.title} (${event.id})";
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(8);
   BoxDecoration get decoration => BoxDecoration(
@@ -30,10 +29,7 @@ abstract class BaseEventTile extends StatelessWidget {
 
 class EventTile extends BaseEventTile {
   const EventTile({super.key, required super.event, required super.tileRange});
-  static EventTile builder(
-    CalendarEvent<Event> event,
-    DateTimeRange tileRange,
-  ) {
+  static EventTile builder(Event event, DateTimeRange tileRange) {
     return EventTile(event: event, tileRange: tileRange);
   }
 
@@ -57,10 +53,7 @@ class MultiDayEventTile extends BaseEventTile {
     required super.event,
     required super.tileRange,
   });
-  static MultiDayEventTile builder(
-    CalendarEvent<Event> event,
-    DateTimeRange tileRange,
-  ) {
+  static MultiDayEventTile builder(Event event, DateTimeRange tileRange) {
     return MultiDayEventTile(event: event, tileRange: tileRange);
   }
 
@@ -93,10 +86,7 @@ class OverlayEventTile extends BaseEventTile {
     required super.tileRange,
   });
 
-  static OverlayEventTile builder(
-    CalendarEvent<Event> event,
-    DateTimeRange tileRange,
-  ) {
+  static OverlayEventTile builder(Event event, DateTimeRange tileRange) {
     return OverlayEventTile(event: event, tileRange: tileRange);
   }
 
@@ -140,17 +130,14 @@ class OverlayEventTile extends BaseEventTile {
 }
 
 class FeedbackTile extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   final Size dropTargetWidgetSize;
   const FeedbackTile({
     super.key,
     required this.event,
     required this.dropTargetWidgetSize,
   });
-  static FeedbackTile builder(
-    CalendarEvent<Event> event,
-    Size dropTargetWidgetSize,
-  ) {
+  static FeedbackTile builder(Event event, Size dropTargetWidgetSize) {
     return FeedbackTile(
       event: event,
       dropTargetWidgetSize: dropTargetWidgetSize,
@@ -164,7 +151,7 @@ class FeedbackTile extends StatelessWidget {
       width: dropTargetWidgetSize.width * 0.8,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(
-        color: (event.data?.color ?? BaseEventTile.defaultColor).withAlpha(150),
+        color: (event.color ?? BaseEventTile.defaultColor).withAlpha(150),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );
@@ -172,9 +159,9 @@ class FeedbackTile extends StatelessWidget {
 }
 
 class DropTargetTile extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   const DropTargetTile({super.key, required this.event});
-  static DropTargetTile builder(CalendarEvent<Event> event) {
+  static DropTargetTile builder(Event event) {
     return DropTargetTile(event: event);
   }
 
@@ -183,7 +170,7 @@ class DropTargetTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(
-          color: (event.data?.color ?? BaseEventTile.defaultColor),
+          color: (event.color ?? BaseEventTile.defaultColor),
           width: 2,
         ),
         borderRadius: BaseEventTile.defaultBorderRadius,
@@ -193,9 +180,9 @@ class DropTargetTile extends StatelessWidget {
 }
 
 class TileWhenDragging extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final Event event;
   const TileWhenDragging({super.key, required this.event});
-  static TileWhenDragging builder(CalendarEvent<Event> event) {
+  static TileWhenDragging builder(Event event) {
     return TileWhenDragging(event: event);
   }
 
@@ -203,7 +190,7 @@ class TileWhenDragging extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: (event.data?.color ?? BaseEventTile.defaultColor).withAlpha(20),
+        color: (event.color ?? BaseEventTile.defaultColor).withAlpha(20),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );

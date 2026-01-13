@@ -1,4 +1,3 @@
-import 'package:demo/data/event.dart';
 import 'package:demo/main.dart';
 import 'package:demo/widgets/navigation_header.dart';
 import 'package:demo/widgets/tile_components.dart';
@@ -7,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class CalendarWidget extends StatelessWidget {
-  final CalendarController<Event> controller;
-  final CalendarCallbacks<Event> callbacks;
+  final CalendarController controller;
+  final CalendarCallbacks callbacks;
   final ValueNotifier<ViewConfiguration> view;
   const CalendarWidget({
     required this.controller,
@@ -22,7 +21,7 @@ class CalendarWidget extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: view,
       builder: (context, value, child) {
-        return CalendarView<Event>(
+        return CalendarView(
           eventsController: App.eventsController(context),
           calendarController: controller,
           viewConfiguration: value,

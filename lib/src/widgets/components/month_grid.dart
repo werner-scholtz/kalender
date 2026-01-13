@@ -33,8 +33,8 @@ class MonthGrid extends StatelessWidget {
     return MonthGrid(style: style, numberOfRows: numberOfRows);
   }
 
-  static Widget fromContext<T extends Object?>(BuildContext context, int numberOfRows) {
-    final components = context.components<T>();
+  static Widget fromContext(BuildContext context, int numberOfRows) {
+    final components = context.components();
     final component = components.monthComponents.bodyComponents.monthGridBuilder;
     final style = components.monthComponentStyles.bodyStyles.monthGridStyle;
     return component.call(style, numberOfRows);

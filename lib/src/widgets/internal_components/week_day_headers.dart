@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/extensions/internal.dart';
 
 /// A row of weekday headers for a week in the month view.
-class WeekDayHeaders<T> extends StatelessWidget {
+class WeekDayHeaders extends StatelessWidget {
   final List<DateTime> dates;
   final Widget Function(BuildContext context, InternalDateTime date) dayHeaderBuilder;
   const WeekDayHeaders({super.key, required this.dates, required this.dayHeaderBuilder});

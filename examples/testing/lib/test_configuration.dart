@@ -30,28 +30,27 @@ class TestConfiguration {
   static DateTimeRange get testRange => DateTimeRange(start: start, end: end);
 
   /// The events controller for the test.
-  final eventsController = DefaultEventsController<Event>();
+  final eventsController = DefaultEventsController();
 
   /// The calendar controller for the test.
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
 
-  static List<CalendarEvent<Event>> generate(List<TimeOfDayRange> timeOfDayRanges) {
+  static List<CalendarEvent> generate(List<TimeOfDayRange> timeOfDayRanges) {
     assert(timeOfDayRanges.isNotEmpty, 'Time of day ranges must not be empty');
 
     // Loop through the test range and create events.
-    final events = <CalendarEvent<Event>>[
+    final events = <CalendarEvent>[
       for (var date in testRange.dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
-          CalendarEvent<Event>(
+          Event(
             dateTimeRange: DateTimeRange(
               start: timeOfDayRange.start.toDateTime(date),
               end: timeOfDayRange.end.toDateTime(date),
             ),
-            data: Event(
-              title: 'Event',
-              description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
-              color: Colors.primaries[date.day % Colors.primaries.length],
-            ),
+            title: 'Event',
+            description:
+                '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
+            color: Colors.primaries[date.day % Colors.primaries.length],
           ),
       ],
     ];
@@ -61,12 +60,43 @@ class TestConfiguration {
 }
 
 /// Represents an event with a title and color.
-class Event {
-  final String title;
-  final Color color;
-  final String description;
+class Event extends CalendarEvent {
+  Event({
+    required super.dateTimeRange,
+    required this.title,
+    this.description,
+    this.color,
+    super.interaction,
+  });
 
-  Event({required this.title, required this.color, required this.description});
+  /// The title of the [Event].
+  final String title;
+
+  /// The description of the [Event].
+  final String? description;
+
+  /// The color of the [Event].
+  final Color? color;
+
+  @override
+  Event copyWith({
+    DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
+    String? title,
+    String? description,
+    Color? color,
+  }) {
+    final newEvent = Event(
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      interaction: interaction ?? this.interaction,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      color: color ?? this.color,
+    );
+    newEvent.id = id;
+
+    return newEvent;
+  }
 }
 
 final timeOfDayRanges = [

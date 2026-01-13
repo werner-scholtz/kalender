@@ -14,12 +14,12 @@ import 'package:kalender/kalender.dart';
 /// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
 /// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
 /// - [textDirection]: The text direction (LTR or RTL) for the layout.
-typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> Function({
+typedef GenerateMultiDayLayoutFrame = MultiDayLayoutFrame Function({
   required InternalDateTimeRange visibleDateTimeRange,
-  required List<CalendarEvent<T>> events,
+  required List<CalendarEvent> events,
   required TextDirection textDirection,
   required Location? location,
-  MultiDayLayoutFrameCache<T>? cache,
+  MultiDayLayoutFrameCache? cache,
 });
 
 /// The default implementation of [GenerateMultiDayLayoutFrame].
@@ -48,13 +48,13 @@ typedef GenerateMultiDayLayoutFrame<T extends Object?> = MultiDayLayoutFrame<T> 
 /// 3. **Row Count Calculation**:
 ///    - The total number of rows is updated as events are assigned to rows.
 ///    - A map is maintained to track the number of rows required for each date.
-MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
+MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   required InternalDateTimeRange visibleDateTimeRange,
-  required List<CalendarEvent<T>> events,
+  required List<CalendarEvent> events,
   required TextDirection textDirection,
   required Location? location,
-  MultiDayLayoutFrameCache<T>? cache,
-  int Function(CalendarEvent<T>, CalendarEvent<T>)? eventComparator,
+  MultiDayLayoutFrameCache? cache,
+  int Function(CalendarEvent, CalendarEvent)? eventComparator,
 }) {
   // Check cache first if provided
   if (cache != null) {
@@ -206,8 +206,8 @@ MultiDayLayoutFrame<T> defaultMultiDayFrameGenerator<T extends Object?>({
 /// A cache for [MultiDayLayoutFrame]s.
 ///
 /// This is used to cache layout frames that are recalculated often.
-class MultiDayLayoutFrameCache<T extends Object?> {
-  final Map<String, MultiDayLayoutFrame<T>> _cache = {};
+class MultiDayLayoutFrameCache {
+  final Map<String, MultiDayLayoutFrame> _cache = {};
 
   /// Generates a cache key based on the parameters.
   String _generateCacheKey(DateTimeRange visibleDateTimeRange) {
@@ -215,12 +215,12 @@ class MultiDayLayoutFrameCache<T extends Object?> {
   }
 
   /// Gets the cached layout frame if it exists.
-  MultiDayLayoutFrame<T>? getCache(DateTimeRange visibleDateTimeRange) {
+  MultiDayLayoutFrame? getCache(DateTimeRange visibleDateTimeRange) {
     final key = _generateCacheKey(visibleDateTimeRange);
     return _cache[key];
   }
 
-  void setCache(DateTimeRange visibleDateTimeRange, MultiDayLayoutFrame<T> frame) {
+  void setCache(DateTimeRange visibleDateTimeRange, MultiDayLayoutFrame frame) {
     final key = _generateCacheKey(visibleDateTimeRange);
     _cache[key] = frame;
   }
@@ -236,14 +236,14 @@ class MultiDayLayoutFrameCache<T extends Object?> {
 
 /// Frame containing all the data to layout the [CalendarEvent]s with [MultiDayLayout].
 @immutable
-class MultiDayLayoutFrame<T> {
+class MultiDayLayoutFrame {
   /// The range of dates that this frame is for.
   ///
   /// ex. 1 Week (7 days).
   final InternalDateTimeRange dateTimeRange;
 
   /// The sorted events for this frame that will be used to generate [MultiDayEventTile]s.
-  final List<CalendarEvent<T>> events;
+  final List<CalendarEvent> events;
 
   /// The layout information for each event in this frame.
   final List<EventLayoutInformation> layoutInfo;
@@ -268,7 +268,7 @@ class MultiDayLayoutFrame<T> {
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///
   /// If [maxNumberOfRows] is null, all events are returned.
-  (List<CalendarEvent<T>> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
+  (List<CalendarEvent> events, List<EventLayoutInformation> layoutInfo) visibleEvents(int? maxNumberOfRows) {
     // If there is no max number of rows we return all the events.
     if (maxNumberOfRows == null) return (this.events, layoutInfo);
 
@@ -286,7 +286,7 @@ class MultiDayLayoutFrame<T> {
   }
 
   /// Returns the events that should be displayed in the given column.
-  List<CalendarEvent<T>> eventsForColumn(int column) {
+  List<CalendarEvent> eventsForColumn(int column) {
     return layoutInfo.where((info) => info.columns.contains(column)).map((info) {
       return events.firstWhere((event) => event.id == info.id);
     }).toList();

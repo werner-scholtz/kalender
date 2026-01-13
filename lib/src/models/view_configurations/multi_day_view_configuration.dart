@@ -285,7 +285,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].
-class MultiDayHeaderConfiguration<T extends Object?> extends HorizontalConfiguration<T> {
+class MultiDayHeaderConfiguration extends HorizontalConfiguration {
   /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayHeaderConfiguration({
     super.showTiles = defaultShowEventTiles,
@@ -298,11 +298,11 @@ class MultiDayHeaderConfiguration<T extends Object?> extends HorizontalConfigura
   });
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
-  MultiDayHeaderConfiguration<T> copyWith({
+  MultiDayHeaderConfiguration copyWith({
     double? tileHeight,
     bool? showTiles,
     PageTriggerConfiguration? pageTriggerConfiguration,
-    GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame,
+    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
     int? maximumNumberOfVerticalEvents,
     EdgeInsets? eventPadding,
     bool? allowSingleDayEvents,

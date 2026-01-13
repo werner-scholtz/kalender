@@ -1,12 +1,11 @@
 import 'dart:io';
 
-import 'package:demo/data/event.dart';
 import 'package:demo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 class NavigationHeader extends StatelessWidget {
-  final CalendarController<Event> controller;
+  final CalendarController controller;
   final ValueNotifier<ViewConfiguration> view;
   const NavigationHeader({
     required this.controller,

@@ -34,10 +34,43 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Event {
+class Event extends CalendarEvent {
+  Event({
+    required super.dateTimeRange,
+    required this.title,
+    this.description,
+    this.color,
+    super.interaction,
+  });
+
+  /// The title of the [Event].
   final String title;
+
+  /// The description of the [Event].
+  final String? description;
+
+  /// The color of the [Event].
   final Color? color;
-  const Event(this.title, this.color);
+
+  @override
+  Event copyWith({
+    DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
+    String? title,
+    String? description,
+    Color? color,
+  }) {
+    final newEvent = Event(
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      interaction: interaction ?? this.interaction,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      color: color ?? this.color,
+    );
+    newEvent.id = id;
+
+    return newEvent;
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -49,10 +82,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   /// Create [EventsController], this is used to add and remove events.
-  final eventsController = DefaultEventsController<Event>();
+  final eventsController = DefaultEventsController();
 
   /// Create [CalendarController],
-  final calendarController = CalendarController<Event>();
+  final calendarController = CalendarController();
 
   final now = DateTime.now();
 
@@ -77,13 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     eventsController.addEvents(
       [
-        CalendarEvent(
+        Event(
           dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          data: const Event('My Event', Colors.green),
+          title: 'My Event',
+          color: Colors.green,
         ),
-        CalendarEvent(
+        Event(
           dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          data: const Event('My Event', Colors.blue),
+          title: 'My Event',
+          color: Colors.blue,
         ),
       ],
     );
@@ -92,18 +127,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CalendarView<Event>(
+      body: CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
         // Handle the callbacks made by the calendar.
-        callbacks: CalendarCallbacks<Event>(
+        callbacks: CalendarCallbacks(
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
         ),
         // Customize the components.
-        components: CalendarComponents<Event>(
+        components: CalendarComponents(
           multiDayComponents: const MultiDayComponents(),
           multiDayComponentStyles: const MultiDayComponentStyles(),
           monthComponents: const MonthComponents(),
@@ -121,11 +156,11 @@ class _MyHomePageState extends State<MyHomePage> {
               // Add some useful controls.
               _calendarToolbar(),
               // Ad display the default header.
-              CalendarHeader<Event>(multiDayTileComponents: tileComponents(body: false)),
+              CalendarHeader(multiDayTileComponents: tileComponents(body: false)),
             ],
           ),
         ),
-        body: CalendarBody<Event>(
+        body: CalendarBody(
           multiDayTileComponents: tileComponents(),
           monthTileComponents: tileComponents(body: false),
           scheduleTileComponents: scheduleTileComponents(context),
@@ -140,13 +175,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Color get color => Theme.of(context).colorScheme.primaryContainer;
   BorderRadius get radius => BorderRadius.circular(8);
 
-  TileComponents<Event> tileComponents({bool body = true}) {
-    return TileComponents<Event>(
+  TileComponents tileComponents({bool body = true}) {
+    return TileComponents(
       tileBuilder: (event, tileRange) {
         return Card(
-          margin: body ? EdgeInsets.zero : const EdgeInsets.symmetric(vertical: 1),
-          color: color,
-          child: Text(event.data?.title ?? ""),
+          color: (event is Event) ? event.color : color,
+          child: Text((event is Event) ? event.title : ""),
         );
       },
       dropTargetTile: (event) => DecoratedBox(
@@ -180,13 +214,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  ScheduleTileComponents<Event> scheduleTileComponents(BuildContext context) {
-    return ScheduleTileComponents<Event>(
+  ScheduleTileComponents scheduleTileComponents(BuildContext context) {
+    return ScheduleTileComponents(
       tileBuilder: (event, tileRange) {
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 1),
           color: color,
-          child: Text(event.data?.title ?? ""),
+          child: Text((event is Event) ? event.title : ""),
         );
       },
       dropTargetTile: (event) => DecoratedBox(
@@ -269,17 +303,21 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class DayEventTile extends StatelessWidget {
-  final CalendarEvent<Event> event;
+  final CalendarEvent event;
   final DateTimeRange tileRange;
   const DayEventTile({super.key, required this.event, required this.tileRange});
 
   @override
   Widget build(BuildContext context) {
+    final calendarEvent = event;
+
     return GestureDetector(
       onTapUp: (details) {},
       child: Card(
-        color: event.data?.color ?? Theme.of(context).colorScheme.primaryContainer,
-        child: Text(event.data?.title ?? ""),
+        color: (calendarEvent is Event)
+            ? (calendarEvent.color ?? Theme.of(context).colorScheme.primaryContainer)
+            : Theme.of(context).colorScheme.primaryContainer,
+        child: Text((calendarEvent is Event) ? calendarEvent.title : ""),
       ),
     );
   }

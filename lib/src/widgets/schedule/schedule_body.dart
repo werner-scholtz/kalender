@@ -16,7 +16,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 /// renders either:
 /// - [ContinuousScheduleViewController]: Single scrollable list of all events
 /// - [PaginatedScheduleViewController]: Paginated view with discrete pages
-class ScheduleBody<T extends Object?> extends StatelessWidget {
+class ScheduleBody extends StatelessWidget {
   /// Configuration options for the schedule body behavior and appearance.
   ///
   /// If not provided, default [ScheduleBodyConfiguration] will be used.
@@ -27,16 +27,16 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController<T>();
+    final calendarController = context.calendarController();
     assert(
-      calendarController.viewController is ScheduleViewController<T>,
-      'The CalendarController\'s $ViewController<$T> needs to be a $MonthViewController<$T>',
+      calendarController.viewController is ScheduleViewController,
+      'The CalendarController\'s $ViewController needs to be a $MonthViewController',
     );
-    final viewController = calendarController.viewController as ScheduleViewController<T>;
+    final viewController = calendarController.viewController as ScheduleViewController;
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
-    if (viewController is ContinuousScheduleViewController<T>) {
-      return SchedulePositionList<T>(
-        eventsController: context.eventsController<T>(),
+    if (viewController is ContinuousScheduleViewController) {
+      return SchedulePositionList(
+        eventsController: context.eventsController(),
         viewController: viewController,
         // TODO: this might cause rebuilds.
         dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
@@ -44,8 +44,8 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         paginated: false,
         configuration: configuration,
       );
-    } else if (viewController is PaginatedScheduleViewController<T>) {
-      return PaginatedSchedule<T>(viewController: viewController, configuration: configuration);
+    } else if (viewController is PaginatedScheduleViewController) {
+      return PaginatedSchedule(viewController: viewController, configuration: configuration);
     } else {
       throw Exception(
         'The view controller is not a $PaginatedScheduleViewController or $ContinuousScheduleViewController',
@@ -62,9 +62,9 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
 ///
 /// The pagination allows users to swipe between different time periods
 /// (e.g., weeks, months) in the schedule view.
-class PaginatedSchedule<T extends Object?> extends StatefulWidget {
+class PaginatedSchedule extends StatefulWidget {
   /// The controller specifically for paginated schedule view.
-  final PaginatedScheduleViewController<T> viewController;
+  final PaginatedScheduleViewController viewController;
 
   /// Configuration for schedule body behavior.
   final ScheduleBodyConfiguration configuration;
@@ -77,10 +77,10 @@ class PaginatedSchedule<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<PaginatedSchedule<T>> createState() => _PaginatedScheduleState<T>();
+  State<PaginatedSchedule> createState() => _PaginatedScheduleState();
 }
 
-class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule<T>> {
+class _PaginatedScheduleState extends State<PaginatedSchedule> {
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -92,11 +92,11 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
         // TODO: Should be fine.
         final range =
             widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
-        context.callbacks<T>()?.onPageChanged?.call(range);
+        context.callbacks()?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
-        return SchedulePositionList<T>(
-          eventsController: context.eventsController<T>(),
+        return SchedulePositionList(
+          eventsController: context.eventsController(),
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
           dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
@@ -122,12 +122,12 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
 /// - [MonthItem]: Month header separators
 /// - [EventItem]: Individual event entries
 /// - [EmptyItem]: Placeholder for days with no events (configurable)
-class SchedulePositionList<T extends Object?> extends StatefulWidget {
+class SchedulePositionList extends StatefulWidget {
   /// The controller managing the events displayed in this list.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   /// The schedule view controller for this specific view.
-  final ScheduleViewController<T> viewController;
+  final ScheduleViewController viewController;
 
   /// Configuration options for the schedule body behavior.
   final ScheduleBodyConfiguration configuration;
@@ -153,7 +153,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<SchedulePositionList<T>> createState() => _SchedulePositionListState<T>();
+  State<SchedulePositionList> createState() => _SchedulePositionListState();
 }
 
 /// The state implementation for [SchedulePositionList].
@@ -161,14 +161,14 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
 /// This class manages the complex logic of generating, organizing, and tracking
 /// schedule items. It handles event changes, position updates, and maintains
 /// the mapping between dates and schedule items.
-class _SchedulePositionListState<T extends Object?> extends State<SchedulePositionList<T>> {
+class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
-  ScheduleViewController<T> get viewController => widget.viewController;
-  EventsController<T> get eventsController => widget.eventsController;
-  CalendarController<T> get calendarController => context.calendarController<T>();
-  CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
-  ScheduleComponentStyles get styles => context.components<T>().scheduleComponentStyles;
-  ScheduleComponents get components => context.components<T>().scheduleComponents;
+  ScheduleViewController get viewController => widget.viewController;
+  EventsController get eventsController => widget.eventsController;
+  CalendarController get calendarController => context.calendarController();
+  CalendarCallbacks? get callbacks => context.callbacks();
+  ScheduleComponentStyles get styles => context.components().scheduleComponentStyles;
+  ScheduleComponents get components => context.components().scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   /// Controller for programmatically scrolling to specific items in the list.
@@ -184,7 +184,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   }
 
   @override
-  void didUpdateWidget(covariant SchedulePositionList<T> oldWidget) {
+  void didUpdateWidget(covariant SchedulePositionList oldWidget) {
     _removeListeners();
     _setup();
     super.didUpdateWidget(oldWidget);
@@ -360,7 +360,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
-            late final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
+            late final tileComponents = context.tileComponents() as ScheduleTileComponents;
             if (item is MonthItem) {
               final locale = context.locale;
               return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
