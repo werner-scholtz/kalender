@@ -120,6 +120,7 @@ class MonthWeek extends StatelessWidget {
                     final maxNumberOfVerticalEvents = (constraints.maxHeight / configuration.tileHeight).floor() - 1;
 
                     return MultiDayEventWidget(
+                      eventsController: context.eventsController(),
                       internalDateTimeRange: internalRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,

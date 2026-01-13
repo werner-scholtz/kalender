@@ -21,6 +21,9 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 ///         This is somewhat expensive computationally as it lays out all the events again to determine the position
 ///         of the event being modified. See todo for a possible solution.
 class MultiDayEventWidget extends StatefulWidget {
+  /// The controller that holds the events.
+  final EventsController eventsController;
+
   /// The configuration that will be used to layout the multi-day events.
   final HorizontalConfiguration configuration;
 
@@ -42,10 +45,11 @@ class MultiDayEventWidget extends StatefulWidget {
   /// Creates a new [MultiDayEventWidget].
   const MultiDayEventWidget({
     super.key,
-    required this.internalDateTimeRange,
-    required this.multiDayCache,
-    required this.maxNumberOfVerticalEvents,
+    required this.eventsController,
     required this.configuration,
+    required this.internalDateTimeRange,
+    required this.maxNumberOfVerticalEvents,
+    required this.multiDayCache,
     required this.overlayBuilders,
     required this.overlayStyles,
   });
@@ -55,8 +59,6 @@ class MultiDayEventWidget extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
-  /// The events controller that provides the events.
-  late EventsController _eventsController;
   late ValueNotifier<Location?> _locationNotifier;
 
   /// The list of visible events.
@@ -66,25 +68,26 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _eventsController = context.eventsController();
+      if (!mounted) return;
+
       _locationNotifier = context.locationNotifier;
 
       _updateEvents();
-      _eventsController.addListener(_updateEvents);
+      widget.eventsController.addListener(_updateEvents);
       _locationNotifier.addListener(_updateEvents);
     });
   }
 
   @override
   void dispose() {
-    _eventsController.removeListener(_updateEvents);
+    widget.eventsController.removeListener(_updateEvents);
     _locationNotifier.removeListener(_updateEvents);
     super.dispose();
   }
 
   /// Updates the list of visible events if there are changes.
   void _updateEvents() {
-    final visibleEvents = _eventsController.eventsFromDateTimeRange(
+    final visibleEvents = widget.eventsController.eventsFromDateTimeRange(
       widget.internalDateTimeRange,
       includeDayEvents: widget.configuration.allowSingleDayEvents,
       includeMultiDayEvents: true,

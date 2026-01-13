@@ -110,6 +110,7 @@ class _SingleDayHeader extends StatelessWidget {
                 ConstrainedBox(
                   constraints: constraints,
                   child: MultiDayEventWidget(
+                    eventsController: context.eventsController(),
                     internalDateTimeRange: visibleRange,
                     configuration: configuration,
                     multiDayCache: viewController.multiDayCache,
@@ -191,6 +192,7 @@ class _MultiDayHeader extends StatelessWidget {
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget(
+                        eventsController: context.eventsController(),
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
@@ -275,6 +277,7 @@ class _FreeScrollHeader extends StatelessWidget {
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget(
+                        eventsController: context.eventsController(),
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
