@@ -67,7 +67,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     widget.eventsController.addListener(_updateEvents);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
