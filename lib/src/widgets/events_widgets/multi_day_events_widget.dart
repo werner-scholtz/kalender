@@ -59,7 +59,7 @@ class MultiDayEventWidget extends StatefulWidget {
 }
 
 class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
-  late ValueNotifier<Location?> _locationNotifier;
+  ValueNotifier<Location?>? _locationNotifier;
 
   /// The list of visible events.
   List<CalendarEvent> _visibleEvents = [];
@@ -67,21 +67,22 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   @override
   void initState() {
     super.initState();
+    
+    widget.eventsController.addListener(_updateEvents);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-
-      _locationNotifier = context.locationNotifier;
-
-      _updateEvents();
-      widget.eventsController.addListener(_updateEvents);
-      _locationNotifier.addListener(_updateEvents);
+      if (mounted) {
+        _locationNotifier = context.locationNotifier;
+        _updateEvents();
+        _locationNotifier?.addListener(_updateEvents);
+      }
     });
   }
 
   @override
   void dispose() {
     widget.eventsController.removeListener(_updateEvents);
-    _locationNotifier.removeListener(_updateEvents);
+    _locationNotifier?.removeListener(_updateEvents);
     super.dispose();
   }
 
@@ -91,7 +92,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
       widget.internalDateTimeRange,
       includeDayEvents: widget.configuration.allowSingleDayEvents,
       includeMultiDayEvents: true,
-      location: _locationNotifier.value,
+      location: _locationNotifier?.value,
     );
 
     if (!listEquals(_visibleEvents, visibleEvents.toList())) {
