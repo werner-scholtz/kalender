@@ -86,7 +86,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
                   top: position.dy,
                   left: position.dx,
                   child: EventOverlayCard(
-                    event: selectedEvent! as Event,
+                    event: Event.fromCalendarEvent(selectedEvent!),
                     position: position,
                     height: height,
                     width: width,

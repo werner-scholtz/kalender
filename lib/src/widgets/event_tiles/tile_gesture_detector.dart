@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
@@ -24,8 +25,12 @@ class TileGestureDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // If no onTapUp callback is provided, return the child as is.
-    if (onTapUp == null) return child;
+    // Check if gesture detection is enabled via callbacks.
+    final callbacks = context.callbacks();
+    final enableGestureDetection = callbacks?.onEventTapped != null || callbacks?.onEventTappedWithDetail != null;
+
+    // If no onTapUp callback is provided or gesture detection is disabled, return the child as is.
+    if (onTapUp == null || !enableGestureDetection) return child;
 
     // Wrap the child in a GestureDetector to handle tap events.
     return GestureDetector(onTapUp: (details) => onTapUp!(details, context), key: gestureDetectorKey, child: child);

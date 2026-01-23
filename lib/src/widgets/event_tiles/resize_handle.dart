@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
-import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -13,10 +12,7 @@ import 'package:kalender/src/widgets/components/resize_handles.dart';
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent event;
-
-  /// The global interaction settings for the calendar.
-  final CalendarInteraction interaction;
+  final int eventId;
 
   /// The tile components used to build the resize handles.
   final TileComponents tileComponents;
@@ -30,8 +26,7 @@ class ResizeHandleWidget extends StatefulWidget {
   /// Creates an instance of [ResizeHandleWidget].
   const ResizeHandleWidget({
     super.key,
-    required this.event,
-    required this.interaction,
+    required this.eventId,
     required this.tileComponents,
     required this.dateTimeRange,
     this.axis = Axis.vertical,
@@ -90,7 +85,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
     if (isMobileDevice) {
       final selectedEvent = controller.selectedEvent.value;
-      if (selectedEvent != null && selectedEvent.id == widget.event.id) {
+      if (selectedEvent != null && selectedEvent.id == widget.eventId) {
         if (mounted) setState(() => _showHandles = true);
       } else {
         if (mounted) setState(() => _showHandles = false);
@@ -125,8 +120,9 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       visible: _showHandles && _size != Size.zero,
       maintainState: false,
       child: ResizeHandles.builder(
-        widget.event,
-        widget.interaction,
+        // TODO(werner): Check that this does not have adverse effects.
+        context.eventsController().byId(widget.eventId)!,
+        context.interaction,
         widget.tileComponents,
         widget.dateTimeRange,
         _size,

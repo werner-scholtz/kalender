@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -9,6 +10,8 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
+
+// TODO(werner): Update docs.
 
 /// The function that is called when the event is tapped.
 typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext context);
@@ -27,18 +30,11 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [DayEventTile] - For day and multi-day views with vertical resizing.
 /// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
-abstract class EventTile extends StatefulWidget {
-  /// The event to be displayed in the tile.
-  final CalendarEvent event;
-
-  /// The callbacks for the calendar.
-  final CalendarCallbacks? callbacks;
+abstract class EventTile extends StatelessWidget {
+  final int eventId;
 
   /// The components used to build the tile.
   final TileComponents tileComponents;
-
-  /// The interaction state of the tile.
-  final CalendarInteraction interaction;
 
   /// The internal date time range that the event spans.
   final InternalDateTimeRange dateTimeRange;
@@ -57,17 +53,12 @@ abstract class EventTile extends StatefulWidget {
 
   const EventTile({
     super.key,
-    required this.callbacks,
+    required this.eventId,
     required this.tileComponents,
-    required this.event,
-    required this.interaction,
     required this.dateTimeRange,
     this.resizeAxis,
     this.dismissOverlay,
   });
-
-  @override
-  State<EventTile> createState() => EventTileState();
 
   /// The function that is called when the event is tapped.
   ///
@@ -85,46 +76,44 @@ abstract class EventTile extends StatefulWidget {
   ///
   /// Each tile type provides a unique key pattern for testing and debugging.
   Key get gestureKey;
-}
-
-class EventTileState extends State<EventTile> {
-  /// Whether gesture detection is enabled based on the provided callbacks.
-  bool get enableGestureDetection =>
-      (widget.callbacks?.onEventTapped != null) || (widget.callbacks?.onEventTappedWithDetail != null);
 
   @override
   Widget build(BuildContext context) {
+    final event = context.eventsController().byId(eventId);
+    if (event == null) {
+      assert(false, 'Event with id $eventId not found');
+      return const SizedBox.shrink();
+    }
+
     final draggable = TileDraggable(
-      interaction: widget.interaction,
-      event: widget.event,
-      feedbackTileBuilder: widget.tileComponents.feedbackTileBuilder,
-      tileWhenDraggingBuilder: widget.tileComponents.tileWhenDraggingBuilder,
-      dragAnchorStrategy: widget.tileComponents.dragAnchorStrategy,
-      rescheduleDraggableKey: widget.rescheduleKey,
-      dismissOverlay: widget.dismissOverlay,
+      eventId: eventId,
+      feedbackTileBuilder: tileComponents.feedbackTileBuilder,
+      tileWhenDraggingBuilder: tileComponents.tileWhenDraggingBuilder,
+      dragAnchorStrategy: tileComponents.dragAnchorStrategy,
+      rescheduleDraggableKey: rescheduleKey,
+      dismissOverlay: dismissOverlay,
       child: Tile(
-        event: widget.event,
-        tileBuilder: widget.tileComponents.tileBuilder,
-        tileWhenDraggingBuilder: widget.tileComponents.tileWhenDraggingBuilder,
-        dateTimeRange: widget.dateTimeRange,
+        initialEvent: event,
+        tileBuilder: tileComponents.tileBuilder,
+        tileWhenDraggingBuilder: tileComponents.tileWhenDraggingBuilder,
+        dateTimeRange: dateTimeRange,
       ),
     );
 
     return TileGestureDetector(
-      gestureDetectorKey: widget.gestureKey,
-      onTapUp: enableGestureDetection ? widget.onTapUp : null,
-      child: (widget.resizeAxis == null)
+      gestureDetectorKey: gestureKey,
+      onTapUp: onTapUp,
+      child: (resizeAxis == null)
           ? draggable
           : Stack(
               children: [
                 Positioned.fill(child: draggable),
                 Positioned.fill(
                   child: ResizeHandleWidget(
-                    event: widget.event,
-                    interaction: widget.interaction,
-                    tileComponents: widget.tileComponents,
-                    dateTimeRange: widget.dateTimeRange,
-                    axis: widget.resizeAxis!,
+                    eventId: eventId,
+                    tileComponents: tileComponents,
+                    dateTimeRange: dateTimeRange,
+                    axis: resizeAxis!,
                   ),
                 ),
               ],

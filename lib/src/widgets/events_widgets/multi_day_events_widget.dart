@@ -62,7 +62,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   ValueNotifier<Location?>? _locationNotifier;
 
   /// The list of visible events.
-  List<CalendarEvent> _visibleEvents = [];
+  List<CalendarEvent> _events = [];
 
   @override
   void initState() {
@@ -88,27 +88,38 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
 
   /// Updates the list of visible events if there are changes.
   void _updateEvents() {
-    final visibleEvents = widget.eventsController.eventsFromDateTimeRange(
-      widget.internalDateTimeRange,
-      includeDayEvents: widget.configuration.allowSingleDayEvents,
-      includeMultiDayEvents: true,
-      location: _locationNotifier?.value,
-    );
+    final visibleEvents = widget.eventsController
+        .eventsFromDateTimeRange(
+          widget.internalDateTimeRange,
+          includeDayEvents: widget.configuration.allowSingleDayEvents,
+          includeMultiDayEvents: true,
+          location: _locationNotifier?.value,
+        )
+        .toList();
 
-    if (!listEquals(_visibleEvents, visibleEvents.toList())) {
+    if (_needsLayout(visibleEvents)) {
       // Update the state with the new visible events.
-      setState(() => _visibleEvents = visibleEvents.toList());
+      setState(() => _events = visibleEvents);
     }
+  }
+
+  /// Checks if the layout of the events has changed.
+  bool _needsLayout(List<CalendarEvent> sortedEvents) {
+    if (sortedEvents.length != _events.length) return true;
+    for (var i = 0; i < sortedEvents.length; i++) {
+      if (!sortedEvents[i].layoutEquals(_events[i])) return true;
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     // Update the visible events in the calendar controller.
     final controller = context.calendarController();
-    controller.visibleEvents.value = {...controller.visibleEvents.value, ..._visibleEvents};
+    controller.visibleEvents.value = {...controller.visibleEvents.value, ..._events};
 
     return MultiDayEventLayoutWidget(
-      events: _visibleEvents,
+      events: _events,
       internalDateTimeRange: widget.internalDateTimeRange,
       textDirection: Directionality.of(context),
       configuration: widget.configuration,
@@ -262,10 +273,8 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           child: Padding(
             padding: widget.configuration.eventPadding,
             child: MultiDayEventTile(
-              event: event,
-              callbacks: context.callbacks(),
+              eventId: event.id,
               tileComponents: context.tileComponents(),
-              interaction: context.interaction,
               dateTimeRange: widget.internalDateTimeRange,
               resizeAxis: Axis.horizontal,
             ),
@@ -370,12 +379,10 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     VoidCallback dismissOverlay,
   ) {
     return MultiDayOverlayEventTile(
-      event: event,
       dateTimeRange: dateTimeRange,
-      callbacks: context.callbacks(),
       tileComponents: context.tileComponents(),
-      dismissOverlay: dismissOverlay,
-      interaction: context.interaction,
+      eventId: event.id,
+      resizeAxis: null,
     );
   }
 }
