@@ -1,6 +1,6 @@
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/controllers/view_controllers/events_controller/event_store.dart';
+import 'package:kalender/src/models/controllers/events_controller/event_store.dart';
 
 /// Maps timezone location names to their respective date-to-event-ID indexes.
 ///

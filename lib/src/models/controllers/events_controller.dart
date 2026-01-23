@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart'
+    show DefaultEventsController;
 
-export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_event_store.dart';
-export 'package:kalender/src/models/controllers/view_controllers/events_controller/default_events_controller.dart';
+export 'package:kalender/src/models/controllers/events_controller/default_event_store.dart';
+export 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart';
 
 /// The [EventsController] is used to manage [CalendarEvent]s.
 ///
