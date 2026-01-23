@@ -85,7 +85,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
     if (isMobileDevice) {
       final selectedEvent = controller.selectedEvent.value;
-      if (selectedEvent != null && selectedEvent.id == widget.event.id) {
+      if (selectedEvent != null && selectedEvent.id == widget.eventId) {
         if (mounted) setState(() => _showHandles = true);
       } else {
         if (mounted) setState(() => _showHandles = false);

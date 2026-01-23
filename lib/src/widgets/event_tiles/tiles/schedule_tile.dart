@@ -23,6 +23,10 @@ class ScheduleEventTile extends EventTile {
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
+        // TODO(werner): Maybe add some kind of error handling here ?
+        final event = context.eventsController().byId(eventId);
+        if (event == null) return;
+
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
         context.callbacks()?.onEventTapped?.call(event, renderObject);
@@ -38,8 +42,8 @@ class ScheduleEventTile extends EventTile {
       };
 
   @override
-  Key get rescheduleKey => ScheduleEventTile.rescheduleDraggableKey(event.id);
+  Key get rescheduleKey => ScheduleEventTile.rescheduleDraggableKey(eventId);
 
   @override
-  Key get gestureKey => ScheduleEventTile.gestureDetectorKey(event.id);
+  Key get gestureKey => ScheduleEventTile.gestureDetectorKey(eventId);
 }
