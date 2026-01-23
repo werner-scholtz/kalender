@@ -74,14 +74,14 @@ class HourLines extends StatelessWidget with TimeLineUtils {
     );
   }
 
-  static Widget fromContext<T extends Object?>(
+  static Widget fromContext(
     BuildContext context,
     TimeOfDayRange timeOfDayRange, {
     HourLinesStyle? style,
     TimelineStyle? timelineStyle,
   }) {
-    final hourLinesStyle = context.components<T>().multiDayComponentStyles.bodyStyles.hourLinesStyle;
-    final components = context.components<T>().multiDayComponents.bodyComponents;
+    final hourLinesStyle = context.components().multiDayComponentStyles.bodyStyles.hourLinesStyle;
+    final components = context.components().multiDayComponents.bodyComponents;
     return components.hourLines.call(context.heightPerMinute, timeOfDayRange, hourLinesStyle, timelineStyle);
   }
 

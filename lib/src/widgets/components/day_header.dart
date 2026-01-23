@@ -62,9 +62,9 @@ class DayHeader extends StatelessWidget {
   /// The default builder for the [DayHeader].
   static DayHeader builder(InternalDateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
 
-  static Widget fromContext<T>(BuildContext context, InternalDateTime date) {
-    final dayHeaderBuilder = context.components<T>().multiDayComponents.headerComponents.dayHeaderBuilder;
-    final dayHeaderStyle = context.components<T>().multiDayComponentStyles.headerStyles.dayHeaderStyle;
+  static Widget fromContext(BuildContext context, InternalDateTime date) {
+    final dayHeaderBuilder = context.components().multiDayComponents.headerComponents.dayHeaderBuilder;
+    final dayHeaderStyle = context.components().multiDayComponentStyles.headerStyles.dayHeaderStyle;
     return dayHeaderBuilder.call(date, dayHeaderStyle);
   }
 

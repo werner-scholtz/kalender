@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
-import 'package:web_demo/models/event.dart';
 
 class ControllerProvider extends InheritedWidget {
-  final controller = CalendarController<Event>();
+  final controller = CalendarController();
   ControllerProvider({required super.child, super.key});
 
   /// Gets the [ControllerProvider] from the context.
-  static CalendarController<Event> of(BuildContext context) {
+  static CalendarController of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<ControllerProvider>();
     assert(result != null, 'No ControllerProvider found.');
     return result!.controller;
@@ -50,5 +49,5 @@ extension CalendarContextUtils on BuildContext {
   CalendarConfiguration get configuration => ConfigurationProvider.of(this);
 
   /// Gets the current [CalendarController] from the [ControllerProvider].
-  CalendarController<Event> get controller => ControllerProvider.of(this);
+  CalendarController get controller => ControllerProvider.of(this);
 }

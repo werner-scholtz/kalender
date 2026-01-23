@@ -2,38 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurrence.dart';
 
-class RecurringCalendarEvent<Event> extends CalendarEvent<Event> {
+class RecurringCalendarEvent extends CalendarEvent {
   final int groupId;
+
   RecurringCalendarEvent({
     required this.groupId,
     required super.dateTimeRange,
     super.interaction,
-    super.data,
-    super.canModify,
   });
 
-  factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent<Event> event, int groupId) {
+  factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent event, int groupId) {
     return RecurringCalendarEvent(
       dateTimeRange: event.internalRange(),
       groupId: groupId,
-      data: event.data,
-      canModify: event.canModify,
     );
   }
 
   /// Copy the [CalendarEvent] with the new values.
   @override
-  RecurringCalendarEvent<Event> copyWith({
+  RecurringCalendarEvent copyWith({
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
-    Event? data,
-    bool? canModify,
   }) {
-    return RecurringCalendarEvent<Event>(
-      data: data ?? this.data,
+    return RecurringCalendarEvent(
       dateTimeRange: dateTimeRange ?? internalRange(),
       groupId: groupId,
-      canModify: canModify ?? this.canModify,
       interaction: interaction ?? this.interaction,
     );
   }

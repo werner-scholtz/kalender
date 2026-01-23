@@ -2,13 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
 import 'package:web_demo/locations.dart';
 import 'package:web_demo/utils.dart';
 
 class NavigationHeader extends StatelessWidget {
-  final CalendarController<Event> controller;
+  final CalendarController controller;
   final List<ViewConfiguration> viewConfigurations;
   final ViewConfiguration viewConfiguration;
   const NavigationHeader({
@@ -105,7 +104,7 @@ class NavigationHeader extends StatelessWidget {
 }
 
 class HeaderDateButton extends StatelessWidget {
-  final CalendarController<Event> controller;
+  final CalendarController controller;
   const HeaderDateButton({super.key, required this.controller});
 
   @override

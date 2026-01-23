@@ -39,7 +39,7 @@ void main() {
       );
 
       // Find the drag target
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       expect(dragTargetFinder, findsOneWidget, reason: 'VerticalDragTarget should be present');
 
       final state = tester.state<State>(dragTargetFinder);
@@ -89,7 +89,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       expect(dragTargetFinder, findsOneWidget);
 
       final state = tester.state<State>(dragTargetFinder);
@@ -124,7 +124,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final renderBox = tester.renderObject(dragTargetFinder) as RenderBox;
       final globalPosition = renderBox.localToGlobal(Offset.zero);
@@ -194,7 +194,7 @@ void main() {
 
       // Find the horizontal drag target (used in month view)
       // Note: Month view has multiple HorizontalDragTarget widgets (one per week row)
-      final dragTargetFinder = find.byType(HorizontalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(HorizontalDragTarget);
       expect(dragTargetFinder, findsWidgets, reason: 'HorizontalDragTarget should be present in month view');
 
       final state = tester.state<State>(dragTargetFinder.first);
@@ -232,7 +232,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(HorizontalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(HorizontalDragTarget);
       expect(dragTargetFinder, findsWidgets);
       final state = tester.state<State>(dragTargetFinder.first);
       final renderBox = tester.renderObject(dragTargetFinder.first) as RenderBox;
@@ -286,7 +286,7 @@ void main() {
       expect(eventId, isNotNull);
 
       // Get drag target state to verify cursor calculation doesn't return null
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       final state = tester.state<State>(dragTargetFinder);
       final stateWithMixin = state as dynamic;
 
@@ -330,7 +330,7 @@ void main() {
         ),
       );
 
-      final dragTargetFinder = find.byType(VerticalDragTarget<Object?>);
+      final dragTargetFinder = find.byType(VerticalDragTarget);
       expect(dragTargetFinder, findsOneWidget);
 
       // Just verify it renders without errors

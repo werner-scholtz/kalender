@@ -2,53 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
 /// The [Components] widget provides the [CalendarComponents] to the widget tree.
-class Components<T extends Object?> extends InheritedWidget {
+class Components extends InheritedWidget {
   /// The [CalendarComponents] that will be used by the Calendar.
-  final CalendarComponents<T> components;
+  final CalendarComponents components;
 
   /// Creates a [Components] with the specified components.
   const Components({super.key, required this.components, required super.child});
 
-  /// Gets the [Components] of type [T] from the context.
-  static CalendarComponents<T> of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<Components<T>>();
-    assert(result != null, 'No ComponentsProvider of <$T> found.');
+  /// Gets the [Components] from the context.
+  static CalendarComponents of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<Components>();
+    assert(result != null, 'No ComponentsProvider found.');
     return result!.components;
   }
 
   @override
-  bool updateShouldNotify(covariant Components<T> oldWidget) {
+  bool updateShouldNotify(covariant Components oldWidget) {
     return components != oldWidget.components;
   }
 }
 
-class EventsControllerProvider<T> extends InheritedWidget {
+class EventsControllerProvider extends InheritedWidget {
   /// The [EventsController] that will be used by the Calendar.
-  final EventsController<T> eventsController;
+  final EventsController eventsController;
 
   const EventsControllerProvider({super.key, required this.eventsController, required super.child});
 
   @override
-  bool updateShouldNotify(covariant EventsControllerProvider<T> oldWidget) {
+  bool updateShouldNotify(covariant EventsControllerProvider oldWidget) {
     return eventsController != oldWidget.eventsController;
   }
 
-  /// Gets the [EventsControllerProvider] of type [T] from the context.
-  static EventsController<T> of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider<T>>();
-    assert(result != null, 'No EventControllerProvider of <$T> found.');
+  /// Gets the [EventsControllerProvider] from the context.
+  static EventsController of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>();
+    assert(result != null, 'No EventControllerProvider found.');
     return result!.eventsController;
   }
 }
 
 /// The [CalendarControllerProvider] is used to provide the [CalendarController] to the [CalendarView]'s descendants.
-class CalendarControllerProvider<T extends Object?> extends InheritedNotifier<CalendarController<T>> {
+class CalendarControllerProvider extends InheritedNotifier<CalendarController> {
   const CalendarControllerProvider({super.key, required super.notifier, required super.child});
 
-  /// Gets the [CalendarControllerProvider] of type [T] from the context.
-  static CalendarController<T> of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<CalendarControllerProvider<T>>();
-    assert(result != null, 'No CalendarControllerProvider of <$T> found.');
+  /// Gets the [CalendarControllerProvider] from the context.
+  static CalendarController of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<CalendarControllerProvider>();
+    assert(result != null, 'No CalendarControllerProvider  found.');
     return result!.notifier!;
   }
 }
@@ -98,43 +98,43 @@ class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
 }
 
 /// The [Callbacks] widget provides the [CalendarCallbacks] to the widget tree.
-class Callbacks<T extends Object?> extends InheritedWidget {
+class Callbacks extends InheritedWidget {
   /// The [CalendarCallbacks] that will be used by the Calendar.
-  final CalendarCallbacks<T>? callbacks;
+  final CalendarCallbacks? callbacks;
 
   /// Creates a [Callbacks] with the specified callbacks.
   const Callbacks({super.key, required this.callbacks, required super.child});
 
   @override
-  bool updateShouldNotify(covariant Callbacks<T> oldWidget) {
+  bool updateShouldNotify(covariant Callbacks oldWidget) {
     return callbacks != oldWidget.callbacks;
   }
 
-  /// Gets the [Callbacks] of type [T] from the context.
-  static CalendarCallbacks<T>? of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<Callbacks<T>>();
-    assert(result != null, 'No CallbackProvider of <$T> found.');
+  /// Gets the [Callbacks] from the context.
+  static CalendarCallbacks? of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<Callbacks>();
+    assert(result != null, 'No CallbackProvider  found.');
     return result!.callbacks;
   }
 }
 
 /// The [TileComponentProvider] provides the [TileComponents] to the widget tree.
-class TileComponentProvider<T extends Object?> extends InheritedWidget {
+class TileComponentProvider extends InheritedWidget {
   /// The tile components used by the Calendar.
-  final TileComponents<T> tileComponents;
+  final TileComponents tileComponents;
 
   /// Creates a [TileComponentProvider] with the specified tile components.
   const TileComponentProvider({super.key, required this.tileComponents, required super.child});
 
   @override
-  bool updateShouldNotify(covariant TileComponentProvider<T> oldWidget) {
+  bool updateShouldNotify(covariant TileComponentProvider oldWidget) {
     return tileComponents != oldWidget.tileComponents;
   }
 
-  /// Gets the [TileComponentProvider] of type [T] from the context.
-  static TileComponents<T> of<T>(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<TileComponentProvider<T>>();
-    assert(result != null, 'No TileComponentProvider of <$T> found.');
+  /// Gets the [TileComponentProvider] from the context.
+  static TileComponents of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<TileComponentProvider>();
+    assert(result != null, 'No TileComponentProvider found.');
     return result!.tileComponents;
   }
 }
@@ -184,22 +184,22 @@ class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Retrieve the [EventsController].
-  EventsController<T> eventsController<T extends Object?>() => EventsControllerProvider.of<T>(this);
+  EventsController eventsController() => EventsControllerProvider.of(this);
 
   /// Retrieve the [CalendarController].
-  CalendarController<T> calendarController<T extends Object?>() => CalendarControllerProvider.of<T>(this);
+  CalendarController calendarController() => CalendarControllerProvider.of(this);
 
   /// Retrieve the [CalendarComponents].
-  CalendarComponents<T> components<T extends Object?>() => Components.of<T>(this);
+  CalendarComponents components() => Components.of(this);
 
   /// Retrieve the [CalendarCallbacks] from the [Callbacks].
-  CalendarCallbacks<T>? callbacks<T extends Object?>() => Callbacks.of<T>(this);
+  CalendarCallbacks? callbacks() => Callbacks.of(this);
 
   /// Retrieve the [TileComponents] from the [TileComponentProvider].
-  TileComponents<T> tileComponents<T extends Object?>() => TileComponentProvider.of<T>(this);
+  TileComponents tileComponents() => TileComponentProvider.of(this);
 
   /// Retrieve the feedback widget size notifier from the [EventsController].
-  ValueNotifier<Size> feedbackWidgetSizeNotifier<T extends Object?>() => eventsController<T>().feedbackWidgetSize;
+  ValueNotifier<Size> feedbackWidgetSizeNotifier() => eventsController().feedbackWidgetSize;
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);

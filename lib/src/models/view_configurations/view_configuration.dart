@@ -121,7 +121,7 @@ abstract class VerticalConfiguration {
 }
 
 /// The base class for all horizontal views of the calendar.
-abstract class HorizontalConfiguration<T extends Object?> {
+abstract class HorizontalConfiguration {
   /// The height of the tiles.
   final double tileHeight;
 
@@ -131,7 +131,7 @@ abstract class HorizontalConfiguration<T extends Object?> {
   /// The function that generates the layout frame for the multi-day event.
   ///
   /// * see [defaultMultiDayFrameGenerator] for default implementation.
-  final GenerateMultiDayLayoutFrame<T>? generateMultiDayLayoutFrame;
+  final GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame;
 
   /// The maximum number of events that can be displayed vertically.
   ///

@@ -7,12 +7,12 @@ import 'utilities.dart';
 
 void main() {
   group('MultiDayEventLayoutWidget', () {
-    final eventsController = DefaultEventsController<int>();
-    final controller = CalendarController<int>();
-    final tileComponents = TileComponents<int>(
+    final eventsController = DefaultEventsController();
+    final controller = CalendarController();
+    final tileComponents = TileComponents(
       tileBuilder: (event, tileRange) => Container(
-        key: ValueKey(event.data!),
-        child: Text(event.data.toString()),
+        key: ValueKey(event.id),
+        child: Text(event.id.toString()),
       ),
     );
 
@@ -27,17 +27,14 @@ void main() {
 
     testWidgets('Basic', (tester) async {
       final events = [
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
-          data: 1,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
-          data: 2,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 6))),
-          data: 3,
         ),
       ];
       eventsController.addEvents(events);
@@ -48,7 +45,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
@@ -90,47 +87,41 @@ void main() {
       ///                  |-----6----|
 
       final events = [
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
-          data: 1,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-          data: 2,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 25),
           ),
-          data: 3,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
-          data: 4,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 28),
             end: DateTime(2025, 3, 30),
           ),
-          data: 5,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-          data: 6,
         ),
       ];
       eventsController.addEvents(events);
@@ -148,7 +139,7 @@ void main() {
               key: const ValueKey('test'),
               width: dayWidth * 7,
               height: tileHeight * 3,
-              child: MultiDayEventLayoutWidget<int>(
+              child: MultiDayEventLayoutWidget(
                 events: eventsController.events.toList(),
                 internalDateTimeRange: visibleRange,
                 textDirection: TextDirection.ltr,
@@ -167,21 +158,21 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are present.
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsOneWidget);
-      expect(find.byKey(getKey(5)), findsOneWidget);
-      expect(find.byKey(getKey(6)), findsOneWidget);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[4].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[5].id)), findsOneWidget);
 
       /// Check that the events are not overlapping.
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
-        tester.getRect(find.byKey(getKey(4))),
-        tester.getRect(find.byKey(getKey(5))),
-        tester.getRect(find.byKey(getKey(6))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
+        tester.getRect(find.byKey(getKey(events[3].id))),
+        tester.getRect(find.byKey(getKey(events[4].id))),
+        tester.getRect(find.byKey(getKey(events[5].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {
@@ -203,33 +194,29 @@ void main() {
       /// _______________________________
       ///                 |------4----|
       final events = [
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 24),
             end: DateTime(2025, 3, 27),
           ),
-          data: 1,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-          data: 2,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 25),
             end: DateTime(2025, 3, 28),
           ),
-          data: 3,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(
             start: DateTime(2025, 3, 27),
             end: DateTime(2025, 3, 30),
           ),
-          data: 4,
         ),
       ];
       eventsController.addEvents(events);
@@ -240,7 +227,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               textDirection: TextDirection.ltr,
@@ -258,10 +245,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are present.
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsNWidgets(3));
@@ -283,25 +270,21 @@ void main() {
       /// _______________________________
       ///   |-4-|
       final events = [
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 6), end: start.copyWith(day: start.day + 3)),
-          data: 1,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(day: start.day + 3)),
-          data: 2,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 6)),
-          data: 3,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 7), end: start.copyWith(hour: 10)),
-          data: 4,
         ),
       ];
       eventsController.addEvents(events);
-      int customComparator(CalendarEvent<int> a, CalendarEvent<int> b) {
+      int customComparator(CalendarEvent a, CalendarEvent b) {
         return a.start.compareTo(b.start);
       }
 
@@ -313,7 +296,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
@@ -350,9 +333,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are laid out correctly
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsOneWidget);
@@ -365,18 +348,18 @@ void main() {
       });
 
       // Get positions of each event
-      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
-      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
-      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+      final pos1 = tester.getTopLeft(find.byKey(getKey(events[0].id)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(events[1].id)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(events[2].id)));
 
       expect(pos2.dy, lessThan(pos3.dy));
       expect(pos3.dy, lessThan(pos1.dy));
 
       // Ensure that the rects do not overlap
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {
@@ -399,25 +382,21 @@ void main() {
       /// _______________________________
       ///   |-4-|
       final events = [
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 12)),
-          data: 1,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start, end: start.copyWith(hour: 8)),
-          data: 2,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 4)),
-          data: 3,
         ),
-        CalendarEvent<int>(
+        CalendarEvent(
           dateTimeRange: DateTimeRange(start: start.copyWith(hour: 3), end: start.copyWith(hour: 16)),
-          data: 4,
         ),
       ];
       eventsController.addEvents(events);
-      int customComparator(CalendarEvent<int> a, CalendarEvent<int> b) {
+      int customComparator(CalendarEvent a, CalendarEvent b) {
         return a.end.compareTo(b.end);
       }
 
@@ -427,7 +406,7 @@ void main() {
             calendarController: controller,
             eventsController: eventsController,
             tileComponents: tileComponents,
-            child: MultiDayEventLayoutWidget<int>(
+            child: MultiDayEventLayoutWidget(
               events: eventsController.events.toList(),
               internalDateTimeRange: visibleRange,
               configuration: MultiDayHeaderConfiguration(
@@ -464,10 +443,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are laid out correctly
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
-      expect(find.byKey(getKey(3)), findsOneWidget);
-      expect(find.byKey(getKey(4)), findsNothing);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[2].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[3].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       expect(buttonFinder, findsOneWidget);
@@ -480,18 +459,18 @@ void main() {
       });
 
       // Get positions of each event
-      final pos1 = tester.getTopLeft(find.byKey(getKey(1)));
-      final pos2 = tester.getTopLeft(find.byKey(getKey(2)));
-      final pos3 = tester.getTopLeft(find.byKey(getKey(3)));
+      final pos1 = tester.getTopLeft(find.byKey(getKey(events[0].id)));
+      final pos2 = tester.getTopLeft(find.byKey(getKey(events[1].id)));
+      final pos3 = tester.getTopLeft(find.byKey(getKey(events[2].id)));
 
       expect(pos3.dy, lessThan(pos2.dy));
       expect(pos2.dy, lessThan(pos1.dy));
 
       // Ensure that the rects do not overlap
       final rects = [
-        tester.getRect(find.byKey(getKey(1))),
-        tester.getRect(find.byKey(getKey(2))),
-        tester.getRect(find.byKey(getKey(3))),
+        tester.getRect(find.byKey(getKey(events[0].id))),
+        tester.getRect(find.byKey(getKey(events[1].id))),
+        tester.getRect(find.byKey(getKey(events[2].id))),
       ];
 
       for (var i = 0; i < rects.length; i++) {

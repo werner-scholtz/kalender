@@ -12,7 +12,7 @@ import 'package:kalender/src/models/mixins/new_event.dart';
 /// The [CalendarView] attaches itself to the [CalendarController] by calling [attach].
 /// And detaches itself by calling [detach].
 ///
-class CalendarController<T extends Object?> extends ChangeNotifier with CalendarNavigationFunctions<T>, NewEvent<T> {
+class CalendarController extends ChangeNotifier with CalendarNavigationFunctions, NewEvent {
   CalendarController() : id = DateTime.now().millisecondsSinceEpoch {
     _internalDateTimeRange.addListener(_updateVisibleDateTimeRange);
   }
@@ -21,8 +21,8 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   final int id;
 
   /// This is a reference to the [ViewController] that is currently attached to this [CalendarController].
-  ViewController<T>? _viewController;
-  ViewController<T>? get viewController => _viewController;
+  ViewController? _viewController;
+  ViewController? get viewController => _viewController;
   bool get isAttached => _viewController != null;
 
   /// The internal [InternalDateTimeRange] that is currently visible.
@@ -39,10 +39,10 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   final visibleDateTimeRange = ValueNotifier<DateTimeRange<DateTime>?>(null);
 
   /// The [CalendarEvent]s that are currently visible.
-  final visibleEvents = ValueNotifier<Set<CalendarEvent<T>>>({});
+  final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});
 
   /// The event currently being focused on.
-  final selectedEvent = ValueNotifier<CalendarEvent<T>?>(null);
+  final selectedEvent = ValueNotifier<CalendarEvent?>(null);
   int? _selectedEventId;
   int? get selectedEventId => _selectedEventId;
 
@@ -54,13 +54,13 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   ///
   /// [event] the event to focus on.
   /// [internal] leave false if not called from within the package.
-  void selectEvent(CalendarEvent<T> event, {bool internal = false}) {
+  void selectEvent(CalendarEvent event, {bool internal = false}) {
     _selectedEventId = event.id;
     _internalFocus = internal;
     selectedEvent.value = event;
   }
 
-  void updateEvent(CalendarEvent<T> event, {bool internal = false}) {
+  void updateEvent(CalendarEvent event, {bool internal = false}) {
     _internalFocus = internal;
     selectedEvent.value = event;
   }
@@ -77,7 +77,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
   }
 
   /// Attach the [ViewController] to this [CalendarController].
-  void attach(ViewController<T> viewController) {
+  void attach(ViewController viewController) {
     if (isAttached) detach();
 
     _viewController = viewController;
@@ -161,7 +161,7 @@ class CalendarController<T extends Object?> extends ChangeNotifier with Calendar
 
   @override
   Future<void> animateToEvent(
-    CalendarEvent<T> event, {
+    CalendarEvent event, {
     Duration? pageDuration,
     Curve? pageCurve,
     Duration? scrollDuration,

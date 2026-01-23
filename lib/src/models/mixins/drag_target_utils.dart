@@ -3,13 +3,13 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
-typedef UpdatedEvent<T> = (CalendarEvent<T>, CalendarEvent<T>);
+typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
 
-mixin DragTargetUtilities<T> {
+mixin DragTargetUtilities {
   BuildContext get context;
-  CalendarController<T> get controller;
-  EventsController<T> get eventsController;
-  CalendarCallbacks<T>? get callbacks;
+  CalendarController get controller;
+  EventsController get eventsController;
+  CalendarCallbacks? get callbacks;
   double get dayWidth;
   List<DateTime> get visibleDates;
   bool get multiDayDragTarget;
@@ -19,7 +19,7 @@ mixin DragTargetUtilities<T> {
   int _lastMoveTimestamp = 0;
 
   /// A copy of the event being created.
-  CalendarEvent<T>? newEvent;
+  CalendarEvent? newEvent;
 
   /// Get the global position of the [DragTarget] widget.
   Offset? get dragTargetPosition {
@@ -35,8 +35,8 @@ mixin DragTargetUtilities<T> {
   /// Handle the [DragTarget.onWillAcceptWithDetails].
   bool onWillAcceptWithDetails(
     DragTargetDetails<Object?> details, {
-    required bool Function(CalendarEvent<T> event, ResizeDirection direction) onResize,
-    required bool Function(CalendarEvent<T> event) onReschedule,
+    required bool Function(CalendarEvent event, ResizeDirection direction) onResize,
+    required bool Function(CalendarEvent event) onReschedule,
   }) {
     return handleDragDetails(
       details,
@@ -58,7 +58,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onMove].
   void _processMove(DragTargetDetails<Object?> details) {
-    return handleDragDetails<void, T>(
+    handleDragDetails(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return;
@@ -97,7 +97,7 @@ mixin DragTargetUtilities<T> {
 
   /// Handle the [DragTarget.onAcceptWithDetails].
   void onAcceptWithDetails(DragTargetDetails<Object?> details) {
-    final result = handleDragDetails<UpdatedEvent<T>?, T>(
+    final result = handleDragDetails(
       details,
       onCreate: (controllerId) {
         if (controllerId != controllerId) return null;
@@ -139,7 +139,7 @@ mixin DragTargetUtilities<T> {
 
     // Update the event in the events controller.
     eventsController.updateEvent(event: originalEvent, updatedEvent: updatedEvent);
-    context.feedbackWidgetSizeNotifier<T>().value = Size.zero;
+    context.feedbackWidgetSizeNotifier().value = Size.zero;
     controller.deselectEvent();
     callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }
@@ -151,13 +151,13 @@ mixin DragTargetUtilities<T> {
   }
 
   /// Reschedule an event.
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime);
+  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime);
 
   /// Resize an event.
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime);
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime);
 
   /// Reschedule an event.
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) => newEvent ??= controller.newEvent;
+  CalendarEvent? createEvent(DateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
   ///
@@ -170,16 +170,16 @@ mixin DragTargetUtilities<T> {
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
-    required K Function(CalendarEvent<T> event, ResizeDirection direction) onResize,
-    required K Function(CalendarEvent<T> event) onReschedule,
+    required K Function(CalendarEvent event, ResizeDirection direction) onResize,
+    required K Function(CalendarEvent event) onReschedule,
     required K Function() onOther,
   }) {
     final data = details.data;
     if (data is Create) {
       return onCreate(data.controllerId);
-    } else if (data is Resize<T>) {
+    } else if (data is Resize) {
       return onResize(data.event, data.direction);
-    } else if (data is Reschedule<T>) {
+    } else if (data is Reschedule) {
       return onReschedule(data.event);
     } else {
       return onOther.call();

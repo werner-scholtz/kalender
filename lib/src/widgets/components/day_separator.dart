@@ -38,9 +38,9 @@ class DaySeparator extends StatelessWidget {
     return DaySeparator(style: style);
   }
 
-  static Widget fromContext<T extends Object?>(BuildContext context) {
-    final daySeparatorStyle = context.components<T>().multiDayComponentStyles.bodyStyles.daySeparatorStyle;
-    final components = context.components<T>().multiDayComponents.bodyComponents;
+  static Widget fromContext(BuildContext context) {
+    final daySeparatorStyle = context.components().multiDayComponentStyles.bodyStyles.daySeparatorStyle;
+    final components = context.components().multiDayComponents.bodyComponents;
     return components.daySeparator.call(daySeparatorStyle);
   }
 

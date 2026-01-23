@@ -28,7 +28,7 @@ void main() {
           // 1. Profile loading events.
           testWidgets('${scenario.name} Loading', (tester) async {
             config.eventsController.clearEvents();
-            final eventBatches = <List<CalendarEvent<Event>>>[];
+            final eventBatches = <List<CalendarEvent>>[];
             for (var range in scenario.eventRanges) {
               final events = TestConfiguration.generate([range]);
               eventBatches.add(events);
@@ -135,7 +135,7 @@ void main() {
             await tester.pumpWidget(MyApp(config: config));
             await tester.pumpAndSettle(Duration(milliseconds: 100));
 
-            final body = find.byType(CalendarBody<Event>);
+            final body = find.byType(CalendarBody);
             final center = tester.getCenter(body);
             final topLeft = tester.getTopLeft(body) + const Offset(25, 25);
             final topRight = tester.getTopRight(body) + const Offset(-25, 25);

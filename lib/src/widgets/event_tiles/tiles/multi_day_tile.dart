@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
-class MultiDayEventTile<T extends Object?> extends EventTile<T> {
+class MultiDayEventTile extends EventTile {
   const MultiDayEventTile({
     super.key,
     required super.callbacks,
@@ -14,7 +14,7 @@ class MultiDayEventTile<T extends Object?> extends EventTile<T> {
   });
 
   @override
-  EventTileState<T> createState() => EventTileState<T>();
+  EventTileState createState() => EventTileState();
 
   /// A key used to identify the tile.
   static Key tileKey(int eventId) => Key('MultiDayEventTile-$eventId');

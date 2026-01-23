@@ -148,7 +148,10 @@ void main() {
       CalendarView(
         eventsController: eventsController,
         calendarController: calendarController,
-        viewConfiguration: ScheduleViewConfiguration.continuous(),
+        viewConfiguration: ScheduleViewConfiguration.continuous(
+          displayRange: displayRange,
+          //initialDateTime: DateTime(2025, 1, 1),
+        ),
         header: CalendarHeader(interaction: interaction),
         body: CalendarBody(interaction: interaction),
       ),

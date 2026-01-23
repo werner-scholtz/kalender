@@ -9,7 +9,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// It uses the [content] and [leading] to determine the height of the [MultiDayHeaderWidget].
 ///
 /// TODO: implement a widget test for this widget.
-class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
+class MultiDayHeaderWidget extends StatelessWidget {
   /// The content that will be displayed in the [MultiDayHeaderWidget].
   final Widget content;
 
@@ -33,7 +33,7 @@ class MultiDayHeaderWidget<T extends Object?> extends StatelessWidget {
     var timeline = prototypeTimelineOverride;
     if (timeline == null) {
       // Create the timeline widget.
-      final calendarComponents = context.components<T>();
+      final calendarComponents = context.components();
       final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
       final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
       final timelineStyle = bodyStyles.timelineStyle;

@@ -6,12 +6,12 @@ import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/month/month_header.dart';
 
 /// A class containing custom widget builders for the [MonthBody] and [MonthHeader].
-class MonthComponents<T extends Object?> {
+class MonthComponents {
   /// The component builders used by the [MonthBody].
-  final MonthBodyComponents<T> bodyComponents;
+  final MonthBodyComponents bodyComponents;
 
   /// The component builders used by the [MonthHeader].
-  final MonthHeaderComponents<T> headerComponents;
+  final MonthHeaderComponents headerComponents;
 
   const MonthComponents({
     this.bodyComponents = const MonthBodyComponents(),
@@ -22,7 +22,7 @@ class MonthComponents<T extends Object?> {
 /// The component builders used by the [MonthBody].
 ///
 /// - Using these will override the respective default components.
-class MonthBodyComponents<T extends Object?> {
+class MonthBodyComponents {
   /// A function that builds the month grid widget.
   final MonthGridBuilder monthGridBuilder;
 
@@ -36,7 +36,7 @@ class MonthBodyComponents<T extends Object?> {
   final HorizontalTriggerWidgetBuilder? rightTriggerBuilder;
 
   /// A group of builders for the overlay widgets.
-  final OverlayBuilders<T>? overlayBuilders;
+  final OverlayBuilders? overlayBuilders;
 
   /// Creates overrides for the default components used by the [MonthBody].
   const MonthBodyComponents({
@@ -51,7 +51,7 @@ class MonthBodyComponents<T extends Object?> {
 /// The component builders used by the [MonthHeader].
 ///
 /// - Using these will override the respective default components.
-class MonthHeaderComponents<T extends Object?> {
+class MonthHeaderComponents {
   /// A function that builds the week day header widget.
   final WeekDayHeaderBuilder weekDayHeaderBuilder;
 

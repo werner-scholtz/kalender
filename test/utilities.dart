@@ -85,13 +85,13 @@ Future<void> pumpAndSettleWithMaterialApp(
   }
 }
 
-class TestProvider<T> extends StatelessWidget {
+class TestProvider extends StatelessWidget {
   final Widget child;
-  final CalendarController<T> calendarController;
-  final EventsController<T> eventsController;
-  final CalendarCallbacks<T>? callbacks;
-  final CalendarComponents<T>? components;
-  final TileComponents<T> tileComponents;
+  final CalendarController calendarController;
+  final EventsController eventsController;
+  final CalendarCallbacks? callbacks;
+  final CalendarComponents? components;
+  final TileComponents tileComponents;
   final ValueNotifier<CalendarInteraction>? interaction;
   final ValueNotifier<CalendarSnapping>? snapping;
   final ValueNotifier<double>? heightPerMinute;
@@ -115,23 +115,23 @@ class TestProvider<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EventsControllerProvider<T>(
+    return EventsControllerProvider(
       eventsController: eventsController,
       child: CalendarControllerProvider(
         notifier: calendarController,
-        child: Callbacks<T>(
+        child: Callbacks(
           callbacks: null,
-          child: Components<T>(
-            components: components ?? CalendarComponents<T>(),
+          child: Components(
+            components: components ?? CalendarComponents(),
             child: Interaction(
               notifier: interaction ?? ValueNotifier(CalendarInteraction()),
               child: Snapping(
                 notifier: snapping ?? ValueNotifier(const CalendarSnapping()),
                 child: HeightPerMinute(
                   notifier: heightPerMinute ?? ValueNotifier(0.7),
-                  child: Callbacks<T>(
-                    callbacks: callbacks ?? CalendarCallbacks<T>(),
-                    child: TileComponentProvider<T>(
+                  child: Callbacks(
+                    callbacks: callbacks ?? const CalendarCallbacks(),
+                    child: TileComponentProvider(
                       tileComponents: tileComponents,
                       child: LocaleProvider(
                         locale: locale,

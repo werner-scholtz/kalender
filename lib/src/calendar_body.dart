@@ -3,27 +3,27 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The calendar body, is a generic widget that creates the relevant widget based on the [ViewController].
-class CalendarBody<T extends Object?> extends StatefulWidget {
+class CalendarBody extends StatefulWidget {
   /// The callbacks used by the [CalendarBody].
   ///
   /// This provides a way to override the [CalendarCallbacks] passed to the [CalendarView].
-  final CalendarCallbacks<T>? callbacks;
+  final CalendarCallbacks? callbacks;
 
   /// The tile components used by the [MultiDayBody].
-  final TileComponents<T>? multiDayTileComponents;
+  final TileComponents? multiDayTileComponents;
 
   /// The [MultiDayBodyConfiguration] that will be used by the [MultiDayBody].
   final MultiDayBodyConfiguration? multiDayBodyConfiguration;
 
   /// The tile components used by the [MonthBody] and [MultiDayHeader].
   /// TODO: convert to MonthTileCompoenents.
-  final TileComponents<T>? monthTileComponents;
+  final TileComponents? monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
-  final HorizontalConfiguration<T>? monthBodyConfiguration;
+  final HorizontalConfiguration? monthBodyConfiguration;
 
   /// The tile components used by the [ScheduleBody].
-  final ScheduleTileComponents<T>? scheduleTileComponents;
+  final ScheduleTileComponents? scheduleTileComponents;
 
   /// The configuration used by the schedule body.
   final ScheduleBodyConfiguration? scheduleBodyConfiguration;
@@ -55,11 +55,11 @@ class CalendarBody<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<CalendarBody<T>> createState() => _CalendarBodyState<T>();
+  State<CalendarBody> createState() => _CalendarBodyState();
 }
 
-class _CalendarBodyState<T extends Object?> extends State<CalendarBody<T>> {
-  late CalendarCallbacks<T>? _callbacks;
+class _CalendarBodyState extends State<CalendarBody> {
+  late CalendarCallbacks? _callbacks;
   late ValueNotifier<CalendarInteraction> _interaction;
   late ValueNotifier<CalendarSnapping> _snapping;
 
@@ -72,7 +72,7 @@ class _CalendarBodyState<T extends Object?> extends State<CalendarBody<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant CalendarBody<T> oldWidget) {
+  void didUpdateWidget(covariant CalendarBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.callbacks != widget.callbacks) {
       _callbacks = widget.callbacks;
@@ -94,29 +94,29 @@ class _CalendarBodyState<T extends Object?> extends State<CalendarBody<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = context.calendarController<T>().viewController;
-    return Callbacks<T>(
-      callbacks: _callbacks ?? context.callbacks<T>(),
+    final viewController = context.calendarController().viewController;
+    return Callbacks(
+      callbacks: _callbacks ?? context.callbacks(),
       child: Interaction(
         notifier: _interaction,
         child: switch (viewController) {
-          MultiDayViewController<T>() => TileComponentProvider<T>(
-              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents<T>(),
+          MultiDayViewController() => TileComponentProvider(
+              tileComponents: widget.multiDayTileComponents ?? TileComponents.defaultComponents(),
               child: HeightPerMinute(
                 notifier: viewController.heightPerMinute,
                 child: Snapping(
                   notifier: _snapping,
-                  child: MultiDayBody<T>(configuration: widget.multiDayBodyConfiguration),
+                  child: MultiDayBody(configuration: widget.multiDayBodyConfiguration),
                 ),
               ),
             ),
-          MonthViewController<T>() => TileComponentProvider<T>(
-              tileComponents: widget.monthTileComponents ?? TileComponents.defaultComponents<T>(),
-              child: MonthBody<T>(configuration: widget.monthBodyConfiguration),
+          MonthViewController() => TileComponentProvider(
+              tileComponents: widget.monthTileComponents ?? TileComponents.defaultComponents(),
+              child: MonthBody(configuration: widget.monthBodyConfiguration),
             ),
-          ScheduleViewController<T>() => TileComponentProvider<T>(
-              tileComponents: widget.scheduleTileComponents ?? ScheduleTileComponents.defaultComponents<T>(),
-              child: ScheduleBody<T>(configuration: widget.scheduleBodyConfiguration),
+          ScheduleViewController() => TileComponentProvider(
+              tileComponents: widget.scheduleTileComponents ?? ScheduleTileComponents.defaultComponents(),
+              child: ScheduleBody(configuration: widget.scheduleBodyConfiguration),
             ),
           _ => throw ErrorHint(
               'Unsupported ViewController type: ${viewController.runtimeType}. '

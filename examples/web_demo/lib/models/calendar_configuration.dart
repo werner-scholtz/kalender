@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/event.dart';
 
 class CalendarConfiguration extends ChangeNotifier {
   /// The view configuration of the calendar.
@@ -41,18 +40,18 @@ class CalendarConfiguration extends ChangeNotifier {
   }
 
   /// The header configuration of the calendar.
-  final multiDayHeaderConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration<Event>());
-  MultiDayHeaderConfiguration<Event> get multiDayHeaderConfiguration => multiDayHeaderConfigurationNotifier.value;
-  set multiDayHeaderConfiguration(MultiDayHeaderConfiguration<Event> value) {
+  final multiDayHeaderConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration());
+  MultiDayHeaderConfiguration get multiDayHeaderConfiguration => multiDayHeaderConfigurationNotifier.value;
+  set multiDayHeaderConfiguration(MultiDayHeaderConfiguration value) {
     if (multiDayHeaderConfigurationNotifier.value == value) return;
     multiDayHeaderConfigurationNotifier.value = value;
     notifyListeners();
   }
 
   /// The month body configuration of the calendar.
-  final monthBodyConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration<Event>());
-  MultiDayHeaderConfiguration<Event> get monthBodyConfiguration => monthBodyConfigurationNotifier.value;
-  set monthBodyConfiguration(MultiDayHeaderConfiguration<Event> value) {
+  final monthBodyConfigurationNotifier = ValueNotifier(const MultiDayHeaderConfiguration());
+  MultiDayHeaderConfiguration get monthBodyConfiguration => monthBodyConfigurationNotifier.value;
+  set monthBodyConfiguration(MultiDayHeaderConfiguration value) {
     if (monthBodyConfigurationNotifier.value == value) return;
     monthBodyConfigurationNotifier.value = value;
     notifyListeners();

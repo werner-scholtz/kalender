@@ -27,15 +27,15 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [DayEventTile] - For day and multi-day views with vertical resizing.
 /// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
-abstract class EventTile<T extends Object?> extends StatefulWidget {
+abstract class EventTile extends StatefulWidget {
   /// The event to be displayed in the tile.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The callbacks for the calendar.
-  final CalendarCallbacks<T>? callbacks;
+  final CalendarCallbacks? callbacks;
 
   /// The components used to build the tile.
-  final TileComponents<T> tileComponents;
+  final TileComponents tileComponents;
 
   /// The interaction state of the tile.
   final CalendarInteraction interaction;
@@ -67,7 +67,7 @@ abstract class EventTile<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<EventTile<T>> createState() => EventTileState<T>();
+  State<EventTile> createState() => EventTileState();
 
   /// The function that is called when the event is tapped.
   ///
@@ -87,14 +87,14 @@ abstract class EventTile<T extends Object?> extends StatefulWidget {
   Key get gestureKey;
 }
 
-class EventTileState<T extends Object?> extends State<EventTile<T>> {
+class EventTileState extends State<EventTile> {
   /// Whether gesture detection is enabled based on the provided callbacks.
   bool get enableGestureDetection =>
       (widget.callbacks?.onEventTapped != null) || (widget.callbacks?.onEventTappedWithDetail != null);
 
   @override
   Widget build(BuildContext context) {
-    final draggable = TileDraggable<T>(
+    final draggable = TileDraggable(
       interaction: widget.interaction,
       event: widget.event,
       feedbackTileBuilder: widget.tileComponents.feedbackTileBuilder,
@@ -102,7 +102,7 @@ class EventTileState<T extends Object?> extends State<EventTile<T>> {
       dragAnchorStrategy: widget.tileComponents.dragAnchorStrategy,
       rescheduleDraggableKey: widget.rescheduleKey,
       dismissOverlay: widget.dismissOverlay,
-      child: Tile<T>(
+      child: Tile(
         event: widget.event,
         tileBuilder: widget.tileComponents.tileBuilder,
         tileWhenDraggingBuilder: widget.tileComponents.tileWhenDraggingBuilder,
@@ -119,7 +119,7 @@ class EventTileState<T extends Object?> extends State<EventTile<T>> {
               children: [
                 Positioned.fill(child: draggable),
                 Positioned.fill(
-                  child: ResizeHandleWidget<T>(
+                  child: ResizeHandleWidget(
                     event: widget.event,
                     interaction: widget.interaction,
                     tileComponents: widget.tileComponents,

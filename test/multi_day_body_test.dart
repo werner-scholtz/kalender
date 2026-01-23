@@ -12,13 +12,13 @@ void main() {
   final callbacks = CalendarCallbacks(onEventCreated: eventsController.addEvent);
   final components = TileComponents(
     tileBuilder: (event, tileRange) => Container(
-      key: ValueKey(event.data as int?),
+      key: ValueKey(event.id as int?),
       color: Colors.red,
     ),
   );
   final scheduleComponents = ScheduleTileComponents(
     tileBuilder: (event, tileRange) => Container(
-      key: ValueKey(event.data as int?),
+      key: ValueKey(event.id as int?),
       color: Colors.blue,
     ),
   );
@@ -61,7 +61,6 @@ void main() {
       setUp(() {
         eventId = eventsController.addEvent(
           CalendarEvent(
-            data: 1,
             dateTimeRange: DateTimeRange(
               start: start.copyWith(hour: 6),
               end: start.copyWith(hour: 8),

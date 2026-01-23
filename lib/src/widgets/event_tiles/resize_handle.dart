@@ -11,15 +11,15 @@ import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
-class ResizeHandleWidget<T extends Object?> extends StatefulWidget {
+class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The global interaction settings for the calendar.
   final CalendarInteraction interaction;
 
   /// The tile components used to build the resize handles.
-  final TileComponents<T> tileComponents;
+  final TileComponents tileComponents;
 
   /// The DateTimeRange that the current view is displaying.
   final DateTimeRange dateTimeRange;
@@ -38,16 +38,16 @@ class ResizeHandleWidget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<ResizeHandleWidget<T>> createState() => _ResizeHandleWidgetState<T>();
+  State<ResizeHandleWidget> createState() => _ResizeHandleWidgetState();
 }
 
 /// The state for the ResizeHandleWidget.
 ///
 /// This state listens to the calendar controller to show or hide the resize handles
 /// based on user interaction.
-class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidget<T>> {
+class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// The calendar controller (nullable to handle dispose before initialization).
-  CalendarController<T>? _controller;
+  CalendarController? _controller;
 
   /// Whether to show the resize handles.
   bool _showHandles = false;
@@ -60,14 +60,14 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _controller = context.calendarController<T>();
+      _controller = context.calendarController();
       _controller?.selectedEvent.addListener(listener);
       setState(() => _size = context.size ?? Size.zero);
     });
   }
 
   @override
-  void didUpdateWidget(covariant ResizeHandleWidget<T> oldWidget) {
+  void didUpdateWidget(covariant ResizeHandleWidget oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) setState(() => _size = context.size ?? Size.zero);
     });
@@ -149,15 +149,15 @@ class _ResizeHandleWidgetState<T extends Object?> extends State<ResizeHandleWidg
 }
 
 /// A widget that detects resize gestures for an event.
-class ResizeHandle<T extends Object?> extends StatelessWidget {
+class ResizeHandle extends StatelessWidget {
   /// The direction of the resize.
   final ResizeDirection direction;
 
   /// The event associated with the resize handle.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The tile components used to build the resize handle.
-  final TileComponents<T> tileComponents;
+  final TileComponents tileComponents;
 
   /// Creates an instance of [ResizeHandle].
   const ResizeHandle({
@@ -168,7 +168,7 @@ class ResizeHandle<T extends Object?> extends StatelessWidget {
   });
 
   /// The resize event data.
-  Resize<T> get data => Resize<T>(event: event, direction: direction);
+  Resize get data => Resize(event: event, direction: direction);
 
   @override
   Widget build(BuildContext context) {
@@ -176,13 +176,13 @@ class ResizeHandle<T extends Object?> extends StatelessWidget {
         ? tileComponents.horizontalResizeHandle
         : tileComponents.verticalResizeHandle;
 
-    return Draggable<Resize<T>>(
+    return Draggable<Resize>(
       data: data,
       feedback: const SizedBox(),
       dragAnchorStrategy: pointerDragAnchorStrategy,
       onDragStarted: () {
-        context.calendarController<T>().selectEvent(event, internal: true);
-        context.callbacks<T>()?.onEventChange?.call(event);
+        context.calendarController().selectEvent(event, internal: true);
+        context.callbacks()?.onEventChange?.call(event);
       },
       child: resizeHandle ?? Container(color: Colors.transparent),
     );

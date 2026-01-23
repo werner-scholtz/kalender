@@ -10,15 +10,15 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// This widget manages the visual transition between normal and dragging states
 /// by switching between [tileBuilder] and [tileWhenDraggingBuilder] based on
 /// the current drag state from [CalendarController].
-class Tile<T extends Object?> extends StatefulWidget {
+class Tile extends StatefulWidget {
   /// The event associated with the tile.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The builder that builds the tile widget.
-  final TileBuilder<T> tileBuilder;
+  final TileBuilder tileBuilder;
 
   /// The builder that builds the tile widget when dragging.
-  final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
+  final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
   /// The DateTimeRange that the current view is displaying.
   final DateTimeRange dateTimeRange;
@@ -33,16 +33,16 @@ class Tile<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<Tile<T>> createState() => _TileState<T>();
+  State<Tile> createState() => _TileState();
 }
 
 /// The state for the Tile widget.
 ///
 /// This state listens to the calendar controller to determine if the event is being dragged,
 /// and rebuilds the widget accordingly.
-class _TileState<T extends Object?> extends State<Tile<T>> {
+class _TileState extends State<Tile> {
   /// The calendar controller.
-  CalendarController<T>? _controller;
+  CalendarController? _controller;
 
   /// Whether the event is being dragged.
   bool _isDragging = false;
@@ -52,7 +52,7 @@ class _TileState<T extends Object?> extends State<Tile<T>> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _controller = context.calendarController<T>();
+      _controller = context.calendarController();
       _controller?.selectedEvent.addListener(_listener);
     });
   }

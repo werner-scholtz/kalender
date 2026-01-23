@@ -12,12 +12,12 @@ import 'package:kalender/kalender.dart';
 ///
 /// The widget listens to page offset changes and automatically repositions
 /// the time indicator to maintain proper alignment with the current view.
-class PositionedTimeIndicator<T extends Object?> extends StatefulWidget {
+class PositionedTimeIndicator extends StatefulWidget {
   /// The [MultiDayViewController] that controls the calendar view.
   ///
   /// This controller provides access to the page offset and view configuration
   /// needed to calculate the time indicator position.
-  final MultiDayViewController<T> viewController;
+  final MultiDayViewController viewController;
 
   /// The initial page number to start from.
   final int initialPage;
@@ -38,16 +38,16 @@ class PositionedTimeIndicator<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<PositionedTimeIndicator<T>> createState() => _PositionedTimeIndicatorState<T>();
+  State<PositionedTimeIndicator> createState() => _PositionedTimeIndicatorState();
 }
 
 /// The state class for [PositionedTimeIndicator].
 ///
 /// This class manages the positioning logic and listens to page offset changes
 /// to keep the time indicator properly positioned relative to the current view.
-class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedTimeIndicator<T>> {
+class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
   /// The [MultiDayViewController] that controls the calendar view.
-  MultiDayViewController<T>? viewController;
+  MultiDayViewController? viewController;
 
   /// The threshold for hiding the time indicator when it's off-screen.
   ///
@@ -100,7 +100,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
   }
 
   @override
-  void didUpdateWidget(covariant PositionedTimeIndicator<T> oldWidget) {
+  void didUpdateWidget(covariant PositionedTimeIndicator oldWidget) {
     _setup();
     super.didUpdateWidget(oldWidget);
   }
@@ -200,7 +200,7 @@ class _PositionedTimeIndicatorState<T extends Object?> extends State<PositionedT
               child: pageOffset <= -_visibilityThreshold || pageOffset >= _visibilityThreshold
                   ? const SizedBox.shrink()
                   : widget.childOverride ??
-                      TimeIndicator.fromContext<T>(
+                      TimeIndicator.fromContext(
                         context,
                         widget.viewController.viewConfiguration.timeOfDayRange,
                       ),

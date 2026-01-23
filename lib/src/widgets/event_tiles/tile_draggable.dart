@@ -6,18 +6,18 @@ import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A widget that makes the event tile draggable for rescheduling.
-class TileDraggable<T extends Object?> extends StatelessWidget {
+class TileDraggable extends StatelessWidget {
   /// The event to be dragged.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The interaction state of the calendar.
   final CalendarInteraction interaction;
 
   /// The builder used to create the feedback tile.
-  final FeedbackTileBuilder<T>? feedbackTileBuilder;
+  final FeedbackTileBuilder? feedbackTileBuilder;
 
   /// The builder used to create the tile when dragging.
-  final TileWhenDraggingBuilder<T>? tileWhenDraggingBuilder;
+  final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
   /// The drag anchor strategy.
   final DragAnchorStrategy? dragAnchorStrategy;
@@ -45,7 +45,7 @@ class TileDraggable<T extends Object?> extends StatelessWidget {
   });
 
   /// The data to be passed during the drag.
-  Reschedule<T> get data => Reschedule<T>(event: event);
+  Reschedule get data => Reschedule(event: event);
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +62,14 @@ class TileDraggable<T extends Object?> extends StatelessWidget {
       data: data,
       feedback: FeedbackWidget(
         event: event,
-        feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier<T>(),
+        feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier(),
         feedbackTileBuilder: feedbackTileBuilder,
       ),
       dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
       onDragStarted: () {
         dismissOverlay?.call();
-        context.calendarController<T>().selectEvent(event, internal: true);
-        context.callbacks<T>()?.onEventChange?.call(event);
+        context.calendarController().selectEvent(event, internal: true);
+        context.callbacks()?.onEventChange?.call(event);
       },
       child: child,
     );
@@ -77,12 +77,12 @@ class TileDraggable<T extends Object?> extends StatelessWidget {
 }
 
 /// A widget that provides a feedback widget for event dragging.
-class FeedbackWidget<T extends Object?> extends StatefulWidget {
+class FeedbackWidget extends StatefulWidget {
   /// The event being dragged.
-  final CalendarEvent<T> event;
+  final CalendarEvent event;
 
   /// The builder used to create the feedback tile.
-  final FeedbackTileBuilder<T>? feedbackTileBuilder;
+  final FeedbackTileBuilder? feedbackTileBuilder;
 
   /// A notifier that provides the size of the feedback widget.
   final ValueNotifier<Size> feedbackWidgetSizeNotifier;
@@ -96,13 +96,13 @@ class FeedbackWidget<T extends Object?> extends StatefulWidget {
   });
 
   @override
-  State<FeedbackWidget<T>> createState() => _FeedbackWidgetState<T>();
+  State<FeedbackWidget> createState() => _FeedbackWidgetState();
 }
 
 /// The state for the feedback widget.
 ///
 /// This state listens to the size notifier and rebuilds the widget when the size changes.
-class _FeedbackWidgetState<T extends Object?> extends State<FeedbackWidget<T>> {
+class _FeedbackWidgetState extends State<FeedbackWidget> {
   /// The size of the feedback widget.
   Size _size = const Size(0, 0);
 
