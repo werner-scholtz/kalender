@@ -302,7 +302,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           children: [
             LayoutId(
               id: event.id,
-              child: event.id == -1 || event.id == context.calendarController().selectedEventId
+              child: event.id == context.calendarController().selectedEventId
                   ? Padding(
                       padding: widget.configuration.eventPadding,
                       child: context.tileComponents().dropTargetTile?.call(event) ?? const SizedBox(),

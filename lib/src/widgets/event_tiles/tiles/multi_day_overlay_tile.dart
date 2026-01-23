@@ -18,13 +18,13 @@ class MultiDayOverlayEventTile extends EventTile {
   EventTileState createState() => EventTileState();
 
   /// A key used to identify the tile.
-  static Key tileKey(int eventId) => Key('MultiDayOverlayEventTile-$eventId');
+  static Key tileKey(String eventId) => Key('MultiDayOverlayEventTile-$eventId');
 
   /// A key used to identify the reschedule draggable.
-  static Key rescheduleDraggableKey(int eventId) => Key('MultiDayOverlayEventTile-RescheduleDraggable-$eventId');
+  static Key rescheduleDraggableKey(String eventId) => Key('MultiDayOverlayEventTile-RescheduleDraggable-$eventId');
 
   /// A key used to identify the gesture detector.
-  static Key gestureDetectorKey(int eventId) => Key('MultiDayOverlayEventTile-GestureDetector-$eventId');
+  static Key gestureDetectorKey(String eventId) => Key('MultiDayOverlayEventTile-GestureDetector-$eventId');
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
