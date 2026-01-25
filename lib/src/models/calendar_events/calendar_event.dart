@@ -22,7 +22,8 @@ class CalendarEvent {
   /// The id of the [CalendarEvent].
   late String id;
 
-/*
+  // TODO(werner): Convert to this constructor, makes more sense in the long run.
+  /*
   CalendarEvent({
     String? id,
     required DateTime start,
@@ -62,9 +63,8 @@ class CalendarEvent {
       InternalDateTime.fromDateTime(start.forLocation(location: location));
   InternalDateTime internalEnd({Location? location}) =>
       InternalDateTime.fromDateTime(end.forLocation(location: location));
-  InternalDateTimeRange internalRange({Location? location}) {
-    return InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
-  }
+  InternalDateTimeRange internalRange({Location? location}) =>
+      InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
   Duration get duration => dateTimeRange.duration;
@@ -96,14 +96,16 @@ class CalendarEvent {
 
   /// Check if the [CalendarEvent] is equal to another [CalendarEvent].
   @override
-  bool operator ==(Object other) {
-    return other is CalendarEvent &&
-        other.id == id &&
-        other.start == start &&
-        other.end == end &&
-        other.interaction == interaction;
-  }
+  bool operator ==(Object other) => other is CalendarEvent && layoutEquals(other);
 
   @override
   int get hashCode => Object.hash(id, start, end, interaction);
+
+  /// Compares properties that affect layout.
+  ///
+  /// Override this in subclasses if you have additional properties that affect
+  /// how the event is rendered/positioned in the calendar.
+  bool layoutEquals(CalendarEvent other) {
+    return id == other.id && start == other.start && end == other.end && interaction == other.interaction;
+  }
 }

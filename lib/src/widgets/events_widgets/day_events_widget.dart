@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -125,9 +124,18 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       ),
     );
 
-    if (!listEquals(sortedEvents, _events)) {
+    if (_needsLayout(sortedEvents)) {
       setState(() => _events = sortedEvents);
     }
+  }
+
+  /// Checks if the layout of the events has changed.
+  bool _needsLayout(List<CalendarEvent> sortedEvents) {
+    if (sortedEvents.length != _events.length) return true;
+    for (var i = 0; i < sortedEvents.length; i++) {
+      if (!sortedEvents[i].layoutEquals(_events[i])) return true;
+    }
+    return false;
   }
 
   /// Sorts the events based on the layout strategy defined in the configuration.
@@ -164,11 +172,9 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
               id: item.$1,
               key: DayEventTile.tileKey(item.$2.id),
               child: DayEventTile(
-                event: item.$2,
-                callbacks: context.callbacks(),
+                eventId: item.$2.id,
                 tileComponents: context.tileComponents(),
                 dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
-                interaction: context.interaction,
                 resizeAxis: Axis.vertical,
               ),
             ),

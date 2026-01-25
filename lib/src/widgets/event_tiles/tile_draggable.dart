@@ -8,10 +8,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// A widget that makes the event tile draggable for rescheduling.
 class TileDraggable extends StatelessWidget {
   /// The event to be dragged.
-  final CalendarEvent event;
-
-  /// The interaction state of the calendar.
-  final CalendarInteraction interaction;
+  final String eventId;
 
   /// The builder used to create the feedback tile.
   final FeedbackTileBuilder? feedbackTileBuilder;
@@ -34,8 +31,7 @@ class TileDraggable extends StatelessWidget {
   /// Creates a tile draggable widget.
   const TileDraggable({
     super.key,
-    required this.interaction,
-    required this.event,
+    required this.eventId,
     required this.feedbackTileBuilder,
     required this.tileWhenDraggingBuilder,
     required this.dragAnchorStrategy,
@@ -44,22 +40,26 @@ class TileDraggable extends StatelessWidget {
     required this.child,
   });
 
-  /// The data to be passed during the drag.
-  Reschedule get data => Reschedule(event: event);
+  // /// The data to be passed during the drag.
+  // /// TODO(werner): Error handling if event is null ?
+  // Reschedule data(BuildContext context) => Reschedule(event: context.eventsController().byId(eventId)!);
 
   @override
   Widget build(BuildContext context) {
+    final event = context.eventsController().byId(eventId);
+    if (event == null) return child;
+
     // If rescheduling is not allowed, return the child directly.
-    if (!interaction.allowRescheduling || !event.interaction.allowRescheduling) {
+    if (!context.interaction.allowRescheduling || !event.interaction.allowRescheduling) {
       return child;
     }
 
-    return switch (interaction.modifyEventGesture) {
+    return switch (context.interaction.modifyEventGesture) {
       CreateEventGesture.tap => Draggable.new,
       CreateEventGesture.longPress => LongPressDraggable.new,
     }(
       key: rescheduleDraggableKey,
-      data: data,
+      data: Reschedule(event: event),
       feedback: FeedbackWidget(
         event: event,
         feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier(),
