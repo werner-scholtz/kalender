@@ -372,12 +372,12 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   }
 
   /// The function that builds the overlay event tile for the event.
-  MultiDayOverlayEventTile _overlayEventTileBuilder(
+  MultiDayEventOverlayTile _overlayEventTileBuilder(
     CalendarEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {
-    return MultiDayOverlayEventTile(
+    return MultiDayEventOverlayTile(
       dateTimeRange: dateTimeRange,
       tileComponents: context.tileComponents(),
       dismissOverlay: dismissOverlay,

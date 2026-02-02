@@ -41,7 +41,7 @@ abstract class EventTile extends StatelessWidget {
 
   /// The function that is called when the overlay needs to be dismissed.
   ///
-  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayOverlayEventTile]
+  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayEventOverlayTile]
   final VoidCallback? dismissOverlay;
 
   /// The axis along which the event can be resized.

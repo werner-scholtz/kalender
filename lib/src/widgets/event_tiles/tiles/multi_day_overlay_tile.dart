@@ -4,8 +4,8 @@ import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
-class MultiDayOverlayEventTile extends EventTile {
-  const MultiDayOverlayEventTile({
+class MultiDayEventOverlayTile extends EventTile {
+  const MultiDayEventOverlayTile({
     super.key,
     required super.eventId,
     required super.tileComponents,
@@ -44,8 +44,8 @@ class MultiDayOverlayEventTile extends EventTile {
       };
 
   @override
-  Key get rescheduleKey => MultiDayOverlayEventTile.rescheduleDraggableKey(eventId);
+  Key get rescheduleKey => MultiDayEventOverlayTile.rescheduleDraggableKey(eventId);
 
   @override
-  Key get gestureKey => MultiDayOverlayEventTile.gestureDetectorKey(eventId);
+  Key get gestureKey => MultiDayEventOverlayTile.gestureDetectorKey(eventId);
 }
