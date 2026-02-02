@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
-import 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart'
-    show DefaultEventsController;
-
-export 'package:kalender/src/models/controllers/events_controller/default_event_store.dart';
-export 'package:kalender/src/models/controllers/events_controller/default_events_controller.dart';
 
 /// The [EventsController] is used to manage [CalendarEvent]s.
 ///
@@ -62,10 +57,11 @@ abstract class EventsController with ChangeNotifier {
   /// The [dateTimeRange] is the range of dates to search for events.
   /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
   /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
+  /// The [location] is the current location TODO
   Iterable<CalendarEvent> eventsFromDateTimeRange(
     InternalDateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
-    required Location? location,
+    Location? location,
   });
 }

@@ -76,7 +76,7 @@ class DefaultEventsController extends EventsController {
     InternalDateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
-    required Location? location,
+    Location? location,
   }) {
     final eventIds = dateMap.eventIdsFromDateTimeRange(dateTimeRange, location);
     final events = eventIds.map((id) => dateMap.byId(id)).nonNulls;
