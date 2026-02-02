@@ -11,6 +11,7 @@ class MultiDayOverlayEventTile extends EventTile {
     required super.tileComponents,
     required super.dateTimeRange,
     required super.resizeAxis,
+    required super.dismissOverlay,
   });
 
   /// A key used to identify the tile.

@@ -29,8 +29,8 @@ class CalendarEvent {
     required DateTime start,
     required DateTime end,
     EventInteraction? interaction,
-  })  : assert(!end.isBefore(start), 'The end date cannot be before the start date.'),
-  id = id ?? _createUniqueId(),
+  })  : assert(start.isBefore(end), 'Start time must be before the end time.')
+        id = id ?? _createUniqueId(),
         start = start.toUtc(),
         end = end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(true);*/

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -381,6 +380,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
     return MultiDayOverlayEventTile(
       dateTimeRange: dateTimeRange,
       tileComponents: context.tileComponents(),
+      dismissOverlay: dismissOverlay,
       eventId: event.id,
       resizeAxis: null,
     );
