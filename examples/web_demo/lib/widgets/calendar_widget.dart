@@ -164,6 +164,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         title: 'New Event',
       ),
       onEventCreated: (event) => _eventsController.addEvent(event),
+      onEventChanged: (event, updatedEvent) => _eventsController.updateEvent(
+        event: event,
+        updatedEvent: updatedEvent,
+      ),
       onTappedWithDetail: _createEvent,
       onLongPressedWithDetail: _createEvent,
     );

@@ -55,6 +55,10 @@ class _HomeState extends State<Home> {
               calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         header: CalendarHeader(multiDayTileComponents: _multiDayTileComponents),
         body: CalendarBody(
