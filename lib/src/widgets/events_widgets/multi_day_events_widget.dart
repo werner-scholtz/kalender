@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -311,7 +310,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           children: [
             LayoutId(
               id: event.id,
-              child: event.id == -1 || event.id == context.calendarController().selectedEventId
+              child: event.id == context.calendarController().selectedEventId
                   ? Padding(
                       padding: widget.configuration.eventPadding,
                       child: context.tileComponents().dropTargetTile?.call(event) ?? const SizedBox(),
@@ -373,14 +372,15 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   }
 
   /// The function that builds the overlay event tile for the event.
-  MultiDayOverlayEventTile _overlayEventTileBuilder(
+  MultiDayEventOverlayTile _overlayEventTileBuilder(
     CalendarEvent event,
     InternalDateTimeRange dateTimeRange,
     VoidCallback dismissOverlay,
   ) {
-    return MultiDayOverlayEventTile(
+    return MultiDayEventOverlayTile(
       dateTimeRange: dateTimeRange,
       tileComponents: context.tileComponents(),
+      dismissOverlay: dismissOverlay,
       eventId: event.id,
       resizeAxis: null,
     );

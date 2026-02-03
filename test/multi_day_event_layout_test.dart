@@ -20,7 +20,7 @@ void main() {
     final end = DateTime(2025, 3, 31);
     final visibleRange = InternalDateTimeRange(start: start.asUtc, end: end.asUtc);
 
-    ValueKey<int> getKey(int data) => ValueKey(data);
+    ValueKey<String> getKey(String data) => ValueKey(data);
 
     /// Clear the events controller after each test.
     tearDown(eventsController.clearEvents);
@@ -63,10 +63,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the events are laid out correctly
-      expect(find.byKey(getKey(1)), findsOneWidget);
-      expect(find.byKey(getKey(2)), findsOneWidget);
+      expect(find.byKey(getKey(events[0].id)), findsOneWidget);
+      expect(find.byKey(getKey(events[1].id)), findsOneWidget);
       // This should be hidden as it exceeds the max number of vertical events.
-      expect(find.byKey(getKey(3)), findsNothing);
+      expect(find.byKey(getKey(events[2].id)), findsNothing);
 
       final buttonFinder = find.byType(MultiDayPortalOverlayButton);
       final numberOfButtons = tester.widgetList(buttonFinder).length;

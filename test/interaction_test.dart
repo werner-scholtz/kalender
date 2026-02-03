@@ -14,11 +14,11 @@ void main() {
   final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
   final interaction = CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true);
 
-  late int dayEventID;
-  late int multiDayEventID;
+  late String dayEventID;
+  late String multiDayEventID;
 
-  late int customDayEventID;
-  late int customMultiDayEventID;
+  late String customDayEventID;
+  late String customMultiDayEventID;
 
   setUpAll(() {
     dayEventID = eventsController.addEvent(

@@ -13,13 +13,13 @@ class MultiDayEventTile extends EventTile {
   });
 
   /// A key used to identify the tile.
-  static Key tileKey(int eventId) => Key('MultiDayEventTile-$eventId');
+  static Key tileKey(String eventId) => Key('MultiDayEventTile-$eventId');
 
   /// A key used to identify the reschedule draggable.
-  static Key rescheduleDraggableKey(int eventId) => Key('MultiDayEventTile-RescheduleDraggable-$eventId');
+  static Key rescheduleDraggableKey(String eventId) => Key('MultiDayEventTile-RescheduleDraggable-$eventId');
 
   /// A key used to identify the gesture detector.
-  static Key gestureDetectorKey(int eventId) => Key('MultiDayEventTile-GestureDetector-$eventId');
+  static Key gestureDetectorKey(String eventId) => Key('MultiDayEventTile-GestureDetector-$eventId');
 
   @override
   void Function(TapUpDetails details, BuildContext context)? get onTapUp => (details, context) {

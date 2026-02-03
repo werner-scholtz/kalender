@@ -311,7 +311,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       children: eventList.indexed.map(
         (item) {
           final event = item.$2;
-          final drawTile = dropTarget != null && (event.id == -1 || event.id == controller.selectedEventId);
+          final drawTile = dropTarget != null && (event.id == controller.selectedEventId);
 
           return LayoutId(
             id: item.$1,

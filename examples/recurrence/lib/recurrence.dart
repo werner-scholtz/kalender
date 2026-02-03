@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurring_event.dart';
@@ -6,12 +8,18 @@ class RecurrenceController {
   RecurrenceController();
   final controller = DefaultEventsController();
 
-  final Map<int, RecurrenceGroup> groups = {};
+  final Map<String, RecurrenceGroup> groups = {};
 
-  int _lastGroupId = 0;
-  int get _nextGroupId {
-    _lastGroupId++;
-    return _lastGroupId;
+  String get _nextGroupId {
+    final rawRandom = Random();
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final charCodes = List<int>.filled(10, 0);
+
+    for (var i = 0; i < 10; i++) {
+      charCodes[i] = alphabet.codeUnitAt(rawRandom.nextInt(62));
+    }
+
+    return String.fromCharCodes(charCodes);
   }
 
   /// Add a recurring event.
@@ -143,7 +151,7 @@ class Recurrence {
   }
 
   /// Generate events for this.
-  List<RecurringCalendarEvent> generateEvents(int groupId) {
+  List<RecurringCalendarEvent> generateEvents(String groupId) {
     final recurrences = type.generateDateTimeRanges(first, number);
     return recurrences.map(
       (recurrence) {
@@ -166,7 +174,7 @@ class Recurrence {
   }
 
   /// Update an existing group of events.
-  List<(CalendarEvent, RecurringCalendarEvent)> updateEvents(int groupId, List<RecurringCalendarEvent> events) {
+  List<(CalendarEvent, RecurringCalendarEvent)> updateEvents(String groupId, List<RecurringCalendarEvent> events) {
     final recurrences = type.generateDateTimeRanges(first, number);
     assert(recurrences.length == events.length);
 

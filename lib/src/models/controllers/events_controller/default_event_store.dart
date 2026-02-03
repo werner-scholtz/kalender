@@ -33,7 +33,7 @@ typedef LocationDateIdMap = Map<String, DateToEventIds>;
 ///   DateTime.utc(2024, 1, 16): {103, 105},
 /// }
 /// ```
-typedef DateToEventIds = Map<String, Set<int>>;
+typedef DateToEventIds = Map<String, Set<String>>;
 
 /// Maps unique event IDs to their corresponding [CalendarEvent] instances.
 ///
@@ -48,7 +48,7 @@ typedef DateToEventIds = Map<String, Set<int>>;
 ///   102: CalendarEvent(data: 'Lunch', ...),
 /// }
 /// ```
-typedef EventIdToEvent = Map<int, CalendarEvent>;
+typedef EventIdToEvent = Map<String, CalendarEvent>;
 
 /// The default class for storing [CalendarEvent]s.
 class DefaultEventStore extends EventStore {
@@ -60,8 +60,8 @@ class DefaultEventStore extends EventStore {
   /// Map of the [DateTime] and event ids.
   ///
   /// The [DateTime] is the date.
-  /// The [Set] of [int] is the ids of the events.
-  final Map<DateTime, Set<int>> dateIds = {};
+  /// The [Set] of [String] is the ids of the events.
+  final Map<DateTime, Set<String>> dateIds = {};
 
   /// A Map containing all events.
   final idEvent = EventIdToEvent();
@@ -84,14 +84,8 @@ class DefaultEventStore extends EventStore {
   @override
   Iterable<CalendarEvent> get events => idEvent.values;
 
-  int _lastId = 0;
-  int get _nextId {
-    _lastId++;
-    return _lastId;
-  }
-
   @override
-  CalendarEvent? byId(int id) => idEvent[id];
+  CalendarEvent? byId(String id) => idEvent[id];
 
   /// Clear the [locationDateIdMap] and [idEvent] maps.
   @override
@@ -107,14 +101,13 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  int addNewEvent(CalendarEvent event) {
-    final eventWithId = assignId(event);
-    _addEvent(eventWithId);
-    return eventWithId.id;
+  String addNewEvent(CalendarEvent event) {
+    _addEvent(event);
+    return event.id;
   }
 
   @override
-  void removeById(int id) {
+  void removeById(String id) {
     final event = byId(id);
     assert(event != null, 'The event with id $id cannot be removed as it does not exist in the map.');
     if (event == null) return;
@@ -149,8 +142,8 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  void removeWhere(bool Function(int key, CalendarEvent element) test) {
-    final idsToRemove = <int>[];
+  void removeWhere(bool Function(String key, CalendarEvent element) test) {
+    final idsToRemove = <String>[];
 
     idEvent.removeWhere((key, event) {
       final shouldRemove = test(key, event);
@@ -162,7 +155,7 @@ class DefaultEventStore extends EventStore {
   }
 
   @override
-  Set<int> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location) {
+  Set<String> eventIdsFromDateTimeRange(InternalDateTimeRange dateTimeRange, Location? location) {
     final locationString = location?.name ?? defaultLocation;
     // Ensure the location exists in the map.
     final hasLocation = hasDateToEventIds(locationString);
@@ -174,20 +167,13 @@ class DefaultEventStore extends EventStore {
     }
 
     final days = dateTimeRange.dates();
-    final eventIds = <int>{};
+    final eventIds = <String>{};
     for (final day in days) {
       final dateIds = locationDateIdMap[locationString]!;
       eventIds.addAll(dateIds[toKey(day)] ?? {});
     }
 
     return eventIds;
-  }
-
-  /// Assign and id to an event.
-  CalendarEvent assignId(CalendarEvent event) {
-    assert(event.id == -1, 'The id of the event must not be set manually.');
-    event.id = _nextId;
-    return event;
   }
 
   /// Add an [event] to the map.

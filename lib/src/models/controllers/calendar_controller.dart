@@ -43,8 +43,8 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
 
   /// The event currently being focused on.
   final selectedEvent = ValueNotifier<CalendarEvent?>(null);
-  int? _selectedEventId;
-  int? get selectedEventId => _selectedEventId;
+  String? _selectedEventId;
+  String? get selectedEventId => _selectedEventId;
 
   /// This is used to determine if focus on the event is coming from within the package or from outside.
   bool _internalFocus = false;

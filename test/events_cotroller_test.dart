@@ -176,7 +176,7 @@ void main() {
 
         test('removing by non-existent id does not affect other events', () {
           final initialCount = eventsController.events.length;
-          const nonExistentId = 99999;
+          const nonExistentId = '99999';
 
           try {
             eventsController.removeById(nonExistentId);
@@ -273,7 +273,7 @@ void main() {
         });
 
         test('returns null for non-existent id', () {
-          const nonExistentId = 88888;
+          const nonExistentId = '88888';
           final retrievedEvent = eventsController.byId(nonExistentId);
           expect(retrievedEvent, null);
         });

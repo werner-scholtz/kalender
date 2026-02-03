@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
@@ -18,31 +20,41 @@ class CalendarEvent {
   final EventInteraction interaction;
 
   /// The id of the [CalendarEvent].
-  int _id = -1;
-  int get id => _id;
-  set id(int value) {
-    if (_id != -1) return;
-    _id = value;
-  }
+  late String id;
 
   // TODO(werner): Convert to this constructor, makes more sense in the long run.
   /*
   CalendarEvent({
-    required this.id,
+    String? id,
     required DateTime start,
     required DateTime end,
     EventInteraction? interaction,
-  })  : assert(!end.isBefore(start), 'The end date cannot be before the start date.'),
+  })  : assert(start.isBefore(end), 'Start time must be before the end time.')
+        id = id ?? _createUniqueId(),
         start = start.toUtc(),
         end = end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(true);*/
 
   CalendarEvent({
+    String? id,
     required DateTimeRange dateTimeRange,
     EventInteraction? interaction,
-  })  : start = dateTimeRange.start.toUtc(),
+  })  : id = id ?? _createUniqueId(),
+        start = dateTimeRange.start.toUtc(),
         end = dateTimeRange.end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(true);
+
+  static String _createUniqueId() {
+    final rawRandom = Random();
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final charCodes = List<int>.filled(10, 0);
+
+    for (var i = 0; i < 10; i++) {
+      charCodes[i] = alphabet.codeUnitAt(rawRandom.nextInt(62));
+    }
+
+    return String.fromCharCodes(charCodes);
+  }
 
   /// The [DateTimeRange] of the [CalendarEvent].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);

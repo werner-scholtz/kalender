@@ -31,7 +31,7 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
 abstract class EventTile extends StatelessWidget {
-  final int eventId;
+  final String eventId;
 
   /// The components used to build the tile.
   final TileComponents tileComponents;
@@ -41,7 +41,7 @@ abstract class EventTile extends StatelessWidget {
 
   /// The function that is called when the overlay needs to be dismissed.
   ///
-  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayOverlayEventTile]
+  /// Currently used to dismiss the overlay when the tile is rendered with the [MultiDayEventOverlayTile]
   final VoidCallback? dismissOverlay;
 
   /// The axis along which the event can be resized.

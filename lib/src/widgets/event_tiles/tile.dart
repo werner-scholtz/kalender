@@ -59,7 +59,7 @@ class _TileState extends State<Tile> {
   @override
   void didChangeDependencies() {
     _controller = context.calendarController();
-    _controller?.selectedEvent.addListener(_controllerListener);
+    _controller?.selectedEvent.addListener(_calendarControllerListener);
 
     _eventsController = context.eventsController();
     _eventsController?.addListener(_eventsControllerListener);
@@ -69,13 +69,13 @@ class _TileState extends State<Tile> {
 
   @override
   void dispose() {
-    _controller?.selectedEvent.removeListener(_controllerListener);
+    _controller?.selectedEvent.removeListener(_calendarControllerListener);
     _eventsController?.removeListener(_eventsControllerListener);
     super.dispose();
   }
 
   /// The listener for the calendar controller's selected event.
-  void _controllerListener() {
+  void _calendarControllerListener() {
     // Check if the dragging state has changed.
     final isDragging = _controller?.selectedEventId == widget.initialEvent.id && (_controller?.internalFocus ?? false);
     if (_isDragging == isDragging) return;

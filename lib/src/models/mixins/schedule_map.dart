@@ -22,7 +22,7 @@ abstract class ListItem {}
 
 /// A class that represents an event item.
 class EventItem extends ListItem {
-  final int eventId;
+  final String eventId;
   final bool isFirst;
   EventItem(this.eventId, this.isFirst);
 }
