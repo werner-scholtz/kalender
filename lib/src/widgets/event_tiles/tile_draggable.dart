@@ -42,9 +42,6 @@ class TileDraggable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = context.eventsController().byId(eventId);
-    if (event == null) return child;
-
     // If rescheduling is not allowed, return the child directly.
     if (!context.interaction.allowRescheduling || !event.interaction.allowRescheduling) {
       return child;
