@@ -23,10 +23,6 @@ class DayEventTile extends EventTile {
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
-        // TODO(werner): Maybe add some kind of error handling here ?
-        final event = context.eventsController().byId(eventId);
-        if (event == null) return;
-
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
         context.callbacks()?.onEventTapped?.call(event, renderObject);
@@ -42,8 +38,8 @@ class DayEventTile extends EventTile {
       };
 
   @override
-  Key get rescheduleKey => DayEventTile.rescheduleDraggableKey(eventId);
+  Key get rescheduleKey => DayEventTile.rescheduleDraggableKey(event.id);
 
   @override
-  Key get gestureKey => DayEventTile.gestureDetectorKey(eventId);
+  Key get gestureKey => DayEventTile.gestureDetectorKey(event.id);
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -79,12 +78,6 @@ abstract class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = context.eventsController().byId(eventId);
-    if (event == null) {
-      assert(false, 'Event with id $eventId not found');
-      return const SizedBox.shrink();
-    }
-
     final draggable = TileDraggable(
       event: event,
       feedbackTileBuilder: tileComponents.feedbackTileBuilder,
