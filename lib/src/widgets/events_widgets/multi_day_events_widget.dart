@@ -272,7 +272,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           child: Padding(
             padding: widget.configuration.eventPadding,
             child: MultiDayEventTile(
-              eventId: event.id,
+              event: event,
               tileComponents: context.tileComponents(),
               dateTimeRange: widget.internalDateTimeRange,
               resizeAxis: Axis.horizontal,
@@ -381,7 +381,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       dateTimeRange: dateTimeRange,
       tileComponents: context.tileComponents(),
       dismissOverlay: dismissOverlay,
-      eventId: event.id,
+      event: event,
       resizeAxis: null,
     );
   }

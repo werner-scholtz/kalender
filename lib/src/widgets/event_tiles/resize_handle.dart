@@ -12,7 +12,7 @@ import 'package:kalender/src/widgets/components/resize_handles.dart';
 /// A widget that positions the resize handles for an event tile.
 class ResizeHandleWidget extends StatefulWidget {
   /// The event associated with the resize handles.
-  final String eventId;
+  final CalendarEvent event;
 
   /// The tile components used to build the resize handles.
   final TileComponents tileComponents;
@@ -26,7 +26,7 @@ class ResizeHandleWidget extends StatefulWidget {
   /// Creates an instance of [ResizeHandleWidget].
   const ResizeHandleWidget({
     super.key,
-    required this.eventId,
+    required this.event,
     required this.tileComponents,
     required this.dateTimeRange,
     this.axis = Axis.vertical,
@@ -85,7 +85,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
     if (isMobileDevice) {
       final selectedEvent = controller.selectedEvent.value;
-      if (selectedEvent != null && selectedEvent.id == widget.eventId) {
+      if (selectedEvent != null && selectedEvent.id == widget.event.id) {
         if (mounted) setState(() => _showHandles = true);
       } else {
         if (mounted) setState(() => _showHandles = false);
@@ -120,8 +120,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       visible: _showHandles && _size != Size.zero,
       maintainState: false,
       child: ResizeHandles.builder(
-        // TODO(werner): Check that this does not have adverse effects.
-        context.eventsController().byId(widget.eventId)!,
+        widget.event,
         context.interaction,
         widget.tileComponents,
         widget.dateTimeRange,
