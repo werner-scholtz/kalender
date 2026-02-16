@@ -30,6 +30,8 @@ export 'package:kalender/src/models/view_configurations/month_view_configuration
 export 'package:kalender/src/models/view_configurations/multi_day_view_configuration.dart';
 export 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
 
+export 'src/models/controllers/events_controller/default_events_controller.dart';
+
 /// Components
 export 'package:kalender/src/models/components/components.dart';
 export 'package:kalender/src/models/components/month_components.dart';

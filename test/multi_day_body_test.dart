@@ -9,7 +9,10 @@ import 'utilities.dart';
 
 void main() {
   final eventsController = DefaultEventsController();
-  final callbacks = CalendarCallbacks(onEventCreated: eventsController.addEvent);
+  final callbacks = CalendarCallbacks(
+    onEventCreated: eventsController.addEvent,
+    onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+  );
   final components = TileComponents(
     tileBuilder: (event, tileRange) => Container(
       key: ValueKey(event.id),

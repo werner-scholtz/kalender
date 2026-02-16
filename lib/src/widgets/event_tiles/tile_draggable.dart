@@ -8,7 +8,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// A widget that makes the event tile draggable for rescheduling.
 class TileDraggable extends StatelessWidget {
   /// The event to be dragged.
-  final String eventId;
+  final CalendarEvent event;
 
   /// The builder used to create the feedback tile.
   final FeedbackTileBuilder? feedbackTileBuilder;
@@ -31,7 +31,7 @@ class TileDraggable extends StatelessWidget {
   /// Creates a tile draggable widget.
   const TileDraggable({
     super.key,
-    required this.eventId,
+    required this.event,
     required this.feedbackTileBuilder,
     required this.tileWhenDraggingBuilder,
     required this.dragAnchorStrategy,
@@ -40,15 +40,8 @@ class TileDraggable extends StatelessWidget {
     required this.child,
   });
 
-  // /// The data to be passed during the drag.
-  // /// TODO(werner): Error handling if event is null ?
-  // Reschedule data(BuildContext context) => Reschedule(event: context.eventsController().byId(eventId)!);
-
   @override
   Widget build(BuildContext context) {
-    final event = context.eventsController().byId(eventId);
-    if (event == null) return child;
-
     // If rescheduling is not allowed, return the child directly.
     if (!context.interaction.allowRescheduling || !event.interaction.allowRescheduling) {
       return child;

@@ -379,7 +379,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                 leading: showDate ? leading : const SizedBox(width: 32),
                 title: ScheduleEventTile(
                   key: ScheduleEventTile.tileKey(event.id),
-                  eventId: event.id,
+                  event: event,
                   tileComponents: tileComponents,
                   dateTimeRange: InternalDateTimeRange.fromDateTimeRange(date.dayRange),
                   resizeAxis: null,

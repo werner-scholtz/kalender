@@ -1,6 +1,7 @@
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
+import 'package:kalender/src/models/controllers/events_controller/default_event_store.dart';
 
 /// The default [EventsController] for managing [CalendarEvent]s.
 class DefaultEventsController extends EventsController {
@@ -76,7 +77,7 @@ class DefaultEventsController extends EventsController {
     InternalDateTimeRange dateTimeRange, {
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
-    required Location? location,
+    Location? location,
   }) {
     final eventIds = dateMap.eventIdsFromDateTimeRange(dateTimeRange, location);
     final events = eventIds.map((id) => dateMap.byId(id)).nonNulls;

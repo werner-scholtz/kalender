@@ -6,7 +6,7 @@ import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 class MultiDayEventTile extends EventTile {
   const MultiDayEventTile({
     super.key,
-    required super.eventId,
+    required super.event,
     required super.tileComponents,
     required super.dateTimeRange,
     required super.resizeAxis,
@@ -23,10 +23,6 @@ class MultiDayEventTile extends EventTile {
 
   @override
   void Function(TapUpDetails details, BuildContext context)? get onTapUp => (details, context) {
-        // TODO(werner): Maybe add some kind of error handling here ?
-        final event = context.eventsController().byId(eventId);
-        if (event == null) return;
-
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
         context.callbacks()?.onEventTapped?.call(event, renderObject);
@@ -42,8 +38,8 @@ class MultiDayEventTile extends EventTile {
       };
 
   @override
-  Key get rescheduleKey => MultiDayEventTile.rescheduleDraggableKey(eventId);
+  Key get rescheduleKey => MultiDayEventTile.rescheduleDraggableKey(event.id);
 
   @override
-  Key get gestureKey => MultiDayEventTile.gestureDetectorKey(eventId);
+  Key get gestureKey => MultiDayEventTile.gestureDetectorKey(event.id);
 }

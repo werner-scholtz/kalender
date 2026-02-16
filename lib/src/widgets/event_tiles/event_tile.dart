@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -31,7 +30,7 @@ typedef EventTileOnTapUp = void Function(TapUpDetails details, BuildContext cont
 /// - [MultiDayEventTile] - For multi-day headers with horizontal resizing.
 /// - [ScheduleEventTile] - For schedule views (drag-only, no resize).
 abstract class EventTile extends StatelessWidget {
-  final String eventId;
+  final CalendarEvent event;
 
   /// The components used to build the tile.
   final TileComponents tileComponents;
@@ -53,7 +52,7 @@ abstract class EventTile extends StatelessWidget {
 
   const EventTile({
     super.key,
-    required this.eventId,
+    required this.event,
     required this.tileComponents,
     required this.dateTimeRange,
     this.resizeAxis,
@@ -79,14 +78,8 @@ abstract class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = context.eventsController().byId(eventId);
-    if (event == null) {
-      assert(false, 'Event with id $eventId not found');
-      return const SizedBox.shrink();
-    }
-
     final draggable = TileDraggable(
-      eventId: eventId,
+      event: event,
       feedbackTileBuilder: tileComponents.feedbackTileBuilder,
       tileWhenDraggingBuilder: tileComponents.tileWhenDraggingBuilder,
       dragAnchorStrategy: tileComponents.dragAnchorStrategy,
@@ -110,7 +103,7 @@ abstract class EventTile extends StatelessWidget {
                 Positioned.fill(child: draggable),
                 Positioned.fill(
                   child: ResizeHandleWidget(
-                    eventId: eventId,
+                    event: event,
                     tileComponents: tileComponents,
                     dateTimeRange: dateTimeRange,
                     axis: resizeAxis!,

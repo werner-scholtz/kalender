@@ -92,6 +92,10 @@ class _HomePageState extends State<HomePage> with CalendarOverlay {
         ),
       );
     },
+    onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+      event: event,
+      updatedEvent: updatedEvent,
+    ),
     onMultiDayTapped: (dateRange) {
       eventsController.addEvent(
         Event(

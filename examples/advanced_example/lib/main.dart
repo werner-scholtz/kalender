@@ -119,6 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
             return event.copyWith(title: 'title', person: person);
           },
           onEventCreated: (event) => eventsController.addEvent(event),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         header: Column(
           children: [

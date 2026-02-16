@@ -41,6 +41,10 @@ class HomeScreen extends ConsumerWidget {
           onEventTapped: (event, renderBox) => view.controller.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         header: Material(
           color: Theme.of(context).colorScheme.surface,

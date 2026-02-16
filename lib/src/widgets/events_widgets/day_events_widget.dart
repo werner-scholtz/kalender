@@ -172,7 +172,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
               id: item.$1,
               key: DayEventTile.tileKey(item.$2.id),
               child: DayEventTile(
-                eventId: item.$2.id,
+                event: item.$2,
                 tileComponents: context.tileComponents(),
                 dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
                 resizeAxis: Axis.vertical,

@@ -136,6 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         // Customize the components.
         components: CalendarComponents(
