@@ -3,25 +3,6 @@ import 'package:intl/intl.dart';
 
 /// Useful extensions for working with [DateTime] objects.
 extension DateTimeExtensions on DateTime {
-  /// Check if the [DateTime] is today in the current time zone.
-  ///
-  /// This method compares the year, month, and day of this [DateTime] object
-  /// with the current date. It returns `true` if the dates match.
-  ///
-  /// The comparison is done in the same time zone as the calling object.
-  /// - This means that the [DateTime.now] is converted to the same time zone
-  ///   as the calling object before the comparison.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = DateTime.now();
-  /// print(date.isToday); // Output: true (if called today)
-  ///
-  /// final otherDate = DateTime(2024, 1, 1);
-  /// print(otherDate.isToday); // Output: false (if not called on Jan 1, 2024)
-  /// ```
-  bool get isToday => isSameDay(DateTime.now());
-
   /// Checks if the [DateTime] is the same day as the calling object.
   ///
   /// This method compares the year, month, and day of this [DateTime] object

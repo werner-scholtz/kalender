@@ -255,10 +255,11 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
     var hasAddedMonth = false;
 
     for (final date in dates) {
+      final internalDate = InternalDateTime.fromDateTime(date);
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
-        InternalDateTimeRange.fromDateTimeRange(date.dayRange),
-        location: null,
+        InternalDateTimeRange.fromDateTimeRange(internalDate.dayRange),
+        location: context.location,
       );
 
       if (events.isEmpty) {
@@ -273,7 +274,8 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
             continue;
 
           case EmptyDayBehavior.showToday:
-            if (date.isToday) {
+            // TODO: check that this works as expected.
+            if (internalDate.isToday(location: context.location)) {
               viewController.addItem(item: EmptyItem(), date: date);
             }
             continue;
@@ -353,22 +355,24 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
           initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
           physics: widget.configuration.scrollPhysics,
           itemBuilder: (context, index) {
+            // TODO: Check that this is still working as expected.
             final item = viewController.item(index);
             final date = viewController.dateTimeFromIndex(index)!;
 
-            late final leading = components.leadingDateBuilder.call(date.asLocal, styles.scheduleDateStyle);
+            late final leading =
+                components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), styles.scheduleDateStyle);
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             late final tileComponents = context.tileComponents<T>() as ScheduleTileComponents<T>;
             if (item is MonthItem) {
               final locale = context.locale;
-              return tileComponents.monthItemBuilder?.call(date.asLocal.monthRange) ??
+              return tileComponents.monthItemBuilder?.call(InternalDateTime.fromDateTime(date).monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 leading: leading,
-                title: tileComponents.emptyItemBuilder?.call(date.asLocal.dayRange),
+                title: tileComponents.emptyItemBuilder?.call(InternalDateTime.fromDateTime(date).dayRange),
               );
               return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
             } else if (item is EventItem) {
