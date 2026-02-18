@@ -120,7 +120,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Get the current visible range after the month view is initialized
-        final visibleRangeBeforeChange = calendarController.visibleDateTimeRange.value;
+        final visibleRangeBeforeChange = calendarController.internalDateTimeRange.value;
 
         // Change to daily view without selectedDate (should use strategy)
         final dailyConfig = MultiDayViewConfiguration.singleDay(

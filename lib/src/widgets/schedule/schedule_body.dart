@@ -386,7 +386,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
                   callbacks: callbacks,
                   tileComponents: tileComponents,
                   event: event,
-                  dateTimeRange: InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                  dateTimeRange: InternalDateTime.fromDateTime(date).dayRange,
                   interaction: context.interaction,
                 ),
               );

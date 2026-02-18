@@ -55,14 +55,16 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
           if (type != RecurrenceType.none) ...[
             FilledButton(
               onPressed: () async {
-                final recurrence = await showDateRangePicker(
+                final result = await showDateRangePicker(
                   context: context,
                   firstDate: DateTime(2000),
                   lastDate: DateTime.now().endOfMonth,
                   initialDateRange: DateTimeRange(start: widget.event.start.toLocal(), end: widget.event.end.toLocal()),
                 );
 
-                if (recurrence == null) return;
+                if (result == null) return;
+
+                final recurrence = InternalDateTimeRange.fromDateTimeRange(result);
                 setState(() {
                   dateTimeRange = DateTimeRange(start: recurrence.start.startOfDay, end: recurrence.end.endOfDay);
                 });
@@ -75,7 +77,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
           FilledButton(
             onPressed: () {
               final recurrence = Recurrence.fromDateTimeRange(
-                eventRange: widget.event.dateTimeRange.toLocal(),
+                eventRange: widget.event.dateTimeRange,
                 recurrenceRange: dateTimeRange,
                 type: type,
               );

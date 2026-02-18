@@ -76,7 +76,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
+  List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
@@ -249,7 +249,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -275,12 +275,12 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration);
+    return InternalDateTime.fromDateTime(startOfDate.add(duration));
   }
 
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, InternalDateTime cursorDateTime) {
     // Multi-day events belong in the header, not the body.
     // Return null to prevent updating the selection while dragging over this area.
     if (event.isMultiDayEvent) return null;
@@ -337,7 +337,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
@@ -362,7 +362,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+  CalendarEvent<T>? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

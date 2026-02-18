@@ -64,7 +64,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
 
   /// Find the initial scroll index for the given date.
   int initialScrollIndex(DateTime date) {
-    final asUtc = date.asUtc.startOfDay;
+    final asUtc = InternalDateTime.fromDateTime(date).startOfDay;
     return dateTimeItemIndex(currentPage)[asUtc] ??= closestIndex(asUtc);
   }
 

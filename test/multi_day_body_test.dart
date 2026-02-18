@@ -261,14 +261,16 @@ void main() {
       final now = DateTime.now();
       final start = now.startOfWeek();
       final end = now.endOfWeek();
-      final range = DateTimeRange(start: start, end: end);
-      final visibleDates = range.asUtc.dates();
+      final range = InternalDateTimeRange(start: start, end: end);
+      final visibleDates = range.dates();
 
       for (var weekday = 0; weekday < 7; weekday++) {
         final day = visibleDates[weekday];
 
         for (var i = 0; i < 24; i++) {
-          final nowOverride = start.copyWith(year: day.year, month: day.month, day: day.day, hour: i);
+          final nowOverride = InternalDateTime.fromDateTime(
+            start.copyWith(year: day.year, month: day.month, day: day.day, hour: i),
+          );
           testWidgets('$nowOverride', (tester) async {
             const dayWidth = 50.0;
             await tester.pumpWidget(

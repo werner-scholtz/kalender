@@ -8,44 +8,6 @@ import 'utilities.dart';
 Future<void> main() async {
   testWithTimeZones(
     body: (timezone, testDates) {
-      group('isSameDay()', () {
-        test('Same day - local', () {
-          final date = DateTime(2024, 1, 15, 10, 30);
-          final sameDay = DateTime(2024, 1, 15);
-          expect(date.isSameDay(sameDay), isTrue);
-        });
-
-        test('Not same day - local', () {
-          final date = DateTime(2024, 1, 15, 10, 30);
-          final notSameDay = DateTime(2024, 1, 16);
-          expect(date.isSameDay(notSameDay), isFalse);
-        });
-
-        test('Same day - utc', () {
-          final date = DateTime.utc(2024, 1, 15, 10, 30);
-          final sameDay = DateTime.utc(2024, 1, 15);
-          expect(date.isSameDay(sameDay), isTrue);
-        });
-
-        test('Not same day - utc', () {
-          final date = DateTime.utc(2024, 1, 15, 10, 30);
-          final notSameDay = DateTime.utc(2024, 1, 16);
-          expect(date.isSameDay(notSameDay), isFalse);
-        });
-
-        test('Same day - to utc', () {
-          final date = DateTime(2024, 1, 15, 10, 30);
-          final sameDay = date.toUtc();
-          expect(date.isSameDay(sameDay), isTrue);
-        });
-
-        test('Not same day - to utc', () {
-          final date = DateTime(2024, 1, 15, 10, 30);
-          final notSameDay = date.toUtc().copyWith(day: date.day + 1);
-          expect(date.isSameDay(notSameDay), isFalse);
-        });
-      });
-
       group('startOfDay', () {
         test('Start of day - local time', () {
           final date = DateTime(2024, 1, 15, 10, 30);

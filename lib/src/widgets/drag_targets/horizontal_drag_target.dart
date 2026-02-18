@@ -10,7 +10,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class HorizontalDragTarget<T extends Object?> extends StatefulWidget {
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange visibleDateTimeRange;
 
   final HorizontalConfiguration<T> configuration;
 
@@ -61,13 +61,13 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
   @override
-  List<DateTime> get visibleDates => visibleDateTimeRange.dates();
+  List<InternalDateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController<T> get viewController => controller.viewController!;
   TileComponents<T> get tileComponents => context.tileComponents<T>();
-  DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
+  InternalDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
 
@@ -169,7 +169,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -214,7 +214,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     final internalRange = event.internalRange(location: context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
@@ -227,17 +227,17 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+  CalendarEvent<T>? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
     var range = newEvent!.internalRange(location: context.location);
+    final cursor = InternalDateTime.fromDateTime(cursorDateTime);
 
-    if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
-        cursorDateTime.isAfter(range.start)) {
-      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
-    } else if (cursorDateTime.isBefore(range.start)) {
-      range = InternalDateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
+    if ((cursor.isSameDay(range.start) || cursor.isSameDay(range.end)) || cursor.isAfter(range.start)) {
+      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursor.endOfDay);
+    } else if (cursor.isBefore(range.start)) {
+      range = InternalDateTimeRange(start: cursor, end: range.start.endOfDay);
     }
 
     // TODO: this as local needs to be investigated.
