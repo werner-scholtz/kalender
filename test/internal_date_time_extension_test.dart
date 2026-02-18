@@ -169,6 +169,88 @@ void main() {
       });
     });
 
+    group('isSameDay', () {
+      test('returns true for the same date', () {
+        final date1 = InternalDateTime(2024, 1, 15, 10, 30);
+        final date2 = InternalDateTime(2024, 1, 15, 22, 0);
+
+        expect(date1.isSameDay(date2), true);
+      });
+
+      test('returns false for different days', () {
+        final date1 = InternalDateTime(2024, 1, 15);
+        final date2 = InternalDateTime(2024, 1, 16);
+
+        expect(date1.isSameDay(date2), false);
+      });
+
+      test('returns false for different months', () {
+        final date1 = InternalDateTime(2024, 1, 15);
+        final date2 = InternalDateTime(2024, 2, 15);
+
+        expect(date1.isSameDay(date2), false);
+      });
+
+      test('returns false for different years', () {
+        final date1 = InternalDateTime(2024, 1, 15);
+        final date2 = InternalDateTime(2025, 1, 15);
+
+        expect(date1.isSameDay(date2), false);
+      });
+
+      test('returns true when both are at start of day', () {
+        final date1 = InternalDateTime(2024, 6, 1);
+        final date2 = InternalDateTime(2024, 6, 1);
+
+        expect(date1.isSameDay(date2), true);
+      });
+
+      test('returns true when one is at start and other at end of day', () {
+        final startOfDay = InternalDateTime(2024, 3, 10, 0, 0, 0);
+        final endOfDay = InternalDateTime(2024, 3, 10, 23, 59, 59);
+
+        expect(startOfDay.isSameDay(endOfDay), true);
+      });
+
+      test('returns false for adjacent days at midnight boundary', () {
+        final endOfDay = InternalDateTime(2024, 3, 10, 23, 59, 59);
+        final startOfNextDay = InternalDateTime(2024, 3, 11, 0, 0, 0);
+
+        expect(endOfDay.isSameDay(startOfNextDay), false);
+      });
+
+      test('works correctly with dates created from TZDateTime', () {
+        final nyLocation = getLocation('America/New_York');
+        final tokyoLocation = getLocation('Asia/Tokyo');
+
+        // 10 PM in New York on Jan 15 and 12 PM in Tokyo on Jan 15
+        // These are different UTC instants but the same display day.
+        final nyDate = InternalDateTime.fromDateTime(TZDateTime(nyLocation, 2024, 1, 15, 22, 0));
+        final tokyoDate = InternalDateTime.fromDateTime(TZDateTime(tokyoLocation, 2024, 1, 15, 12, 0));
+
+        expect(nyDate.isSameDay(tokyoDate), true);
+      });
+
+      test('returns false for TZDateTimes that are same UTC instant but different display days', () {
+        final nyLocation = getLocation('America/New_York');
+        final tokyoLocation = getLocation('Asia/Tokyo');
+
+        // 11 PM on Jan 15 in New York = Jan 16 1 PM in Tokyo
+        // Same UTC instant, but different display days.
+        final nyDate = InternalDateTime.fromDateTime(TZDateTime(nyLocation, 2024, 1, 15, 23, 0));
+        final tokyoDate = InternalDateTime.fromDateTime(TZDateTime(tokyoLocation, 2024, 1, 16, 13, 0));
+
+        expect(nyDate.isSameDay(tokyoDate), false);
+      });
+
+      test('is symmetric', () {
+        final date1 = InternalDateTime(2024, 5, 20, 8, 0);
+        final date2 = InternalDateTime(2024, 5, 20, 18, 0);
+
+        expect(date1.isSameDay(date2), date2.isSameDay(date1));
+      });
+    });
+
     group('type checks', () {
       test('is a subclass of DateTime', () {
         final internal = InternalDateTime(2024);
