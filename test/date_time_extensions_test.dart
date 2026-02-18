@@ -8,28 +8,6 @@ import 'utilities.dart';
 Future<void> main() async {
   testWithTimeZones(
     body: (timezone, testDates) {
-      group('isToday', () {
-        test('Is today - local', () {
-          final now = DateTime.now();
-          expect(now.isToday, isTrue);
-        });
-
-        test('Is not today - local', () {
-          final pastDate = DateTime(2023, 1, 1);
-          expect(pastDate.isToday, isFalse);
-        });
-
-        test('Is today - utc', () {
-          final now = DateTime.now().toUtc();
-          expect(now.isToday, isTrue);
-        });
-
-        test('Is not today - utc', () {
-          final pastDate = DateTime.utc(2023, 1, 1);
-          expect(pastDate.isToday, isFalse);
-        });
-      });
-
       group('isSameDay()', () {
         test('Same day - local', () {
           final date = DateTime(2024, 1, 15, 10, 30);

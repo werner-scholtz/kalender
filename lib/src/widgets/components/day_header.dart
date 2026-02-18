@@ -75,7 +75,7 @@ class DayHeader extends StatelessWidget {
       style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
     );
 
-    final button = date.isToday
+    final button = date.isToday(location: context.location)
         ? IconButton.filled(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
 

@@ -152,6 +152,32 @@ class InternalDateTime extends DateTime {
       return TZDateTime(location, year, month, day, hour, minute, second, millisecond, microsecond);
     }
   }
+
+  /// Checks if this [InternalDateTime] represents the current day in the specified [location].
+  ///
+  /// Both `now` and this date are converted to the same target timezone before
+  /// comparing year, month, and day. This is necessary because comparing in UTC
+  /// can yield incorrect results near midnight — for example, 11:30 PM in New York
+  /// (UTC-5) is already the next day in UTC.
+  ///
+  /// If [location] is `null`, the system's local timezone is used.
+  ///
+  /// Example:
+  /// ```dart
+  /// final date = InternalDateTime.fromDateTime(DateTime.now());
+  ///
+  /// // Check using system timezone
+  /// print(date.isToday()); // true
+  ///
+  /// // Check using a specific timezone
+  /// final location = getLocation('America/New_York');
+  /// print(date.isToday(location: location)); // true (if today in New York)
+  /// ```
+  bool isToday({Location? location}) {
+    final now = location != null ? TZDateTime.now(location) : DateTime.now();
+    final localDate = forLocation(location: location);
+    return localDate.year == now.year && localDate.month == now.month && localDate.day == now.day;
+  }
 }
 
 /// This is a DateTimeRange class used for internal display purposes only.
@@ -173,4 +199,6 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
   DateTimeRange forLocation({Location? location}) {
     return DateTimeRange(start: start.forLocation(location: location), end: end.forLocation(location: location));
   }
+
+  // TODO: Implement dates from InternalDateTimeRange.
 }

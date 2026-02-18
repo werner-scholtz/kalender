@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The month day header builder.
 typedef MonthDayHeaderBuilder = Widget Function(
-  DateTime date,
+  InternalDateTime date,
   MonthDayHeaderStyle? style,
 );
 
@@ -29,11 +29,11 @@ class MonthDayHeaderStyle {
 
 /// A widget that displays the day number.
 class MonthDayHeader extends StatelessWidget {
-  final DateTime date;
+  final InternalDateTime date;
   final MonthDayHeaderStyle? style;
 
   const MonthDayHeader({super.key, required this.date, this.style});
-  static MonthDayHeader builder(DateTime date, MonthDayHeaderStyle? style) {
+  static MonthDayHeader builder(InternalDateTime date, MonthDayHeaderStyle? style) {
     return MonthDayHeader(date: date, style: style);
   }
 
@@ -46,7 +46,7 @@ class MonthDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final button = date.isToday
+    final button = date.isToday(location: context.location)
         ? IconButton.filled(
             onPressed: null,
             icon: Text(
