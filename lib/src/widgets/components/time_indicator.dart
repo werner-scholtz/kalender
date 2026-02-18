@@ -126,7 +126,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now().forLocation(location: widget.location).asUtc;
+    final now = InternalDateTime.fromDateTime(DateTime.now().forLocation(location: widget.location));
     final startTime = widget.timeOfDayRange.start.toDateTime(now).asUtc;
     final endTime = widget.timeOfDayRange.end.toDateTime(now).asUtc;
     final showIndicator = now.isAfter(startTime) && now.isBefore(endTime);

@@ -3,71 +3,6 @@ import 'package:intl/intl.dart';
 
 /// Useful extensions for working with [DateTime] objects.
 extension DateTimeExtensions on DateTime {
-  /// Checks if the [DateTime] is the same day as the calling object.
-  ///
-  /// This method compares the year, month, and day of this [DateTime] object
-  /// with the given [date]. It returns `true` if the dates match.
-  ///
-  /// The [date] parameter can be in either local or UTC time, and the comparison
-  /// will be done in the same time zone as the calling object.
-  ///
-  /// Example:
-  /// ```dart
-  /// final date = DateTime(2024, 1, 15);
-  /// print(date.isSameDay(DateTime(2024, 1, 15))); // Output: true
-  /// print(date.isSameDay(DateTime(2024, 1, 16))); // Output: false
-  /// ```
-  bool isSameDay(DateTime date) {
-    final other = isUtc != date.isUtc
-        ? isUtc
-            ? date.toUtc()
-            : date.toLocal()
-        : date;
-    return year == other.year && month == other.month && day == other.day;
-  }
-
-  /// Gets the start of the date.
-  ///
-  /// This returns a new [DateTime] object representing the start of the day
-  /// (midnight) in the same time zone as the original [DateTime].
-  ///
-  /// Example (local):
-  /// ```dart
-  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final start = date.startOfDay;
-  /// print(start); // Output: 2024-01-15 00:00:00.000
-  /// ```
-  ///
-  /// Example (utc):
-  /// ```dart
-  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final start = date.startOfDay;
-  /// print(start); // Output: 2024-01-15 00:00:00.000Z
-  /// ```
-  DateTime get startOfDay {
-    return copyWith(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
-  }
-
-  /// Gets the end of the date. (aka the start of the next day).
-  ///
-  /// This returns a new [DateTime] object representing the end of the date
-  /// (midnight of the next day), in the same time zone as the original [DateTime].
-  ///
-  /// Example (local):
-  /// ```dart
-  /// final date = DateTime(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final end = date.endOfDay;
-  /// print(end); // Output: 2024-01-16 00:00:00.000
-  /// ```
-  ///
-  /// Example (utc):
-  /// ```dart
-  /// final date = DateTime.utc(2024, 1, 15, 10, 30); // January 15, 2024, 10:30 AM
-  /// final end = date.endOfDay;
-  /// print(end); // Output: 2024-01-16 00:00:00.000Z
-  /// ```
-  DateTime get endOfDay => startOfDay.copyWith(day: day + 1);
-
   /// Gets the [DateTimeRange] representing the entire day in which this
   /// [DateTime] falls.
   ///
@@ -82,7 +17,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-16 00:00:00.000
   /// ```
-  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
+  // DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
 
   /// Gets the start of the month.
   ///
@@ -123,7 +58,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-01 00:00:00.000
   /// print(range.end);   // Output: 2024-02-01 00:00:00.000
   /// ```
-  DateTimeRange get monthRange => DateTimeRange(start: startOfMonth, end: endOfMonth);
+  // DateTimeRange get monthRange => DateTimeRange(start: startOfMonth, end: endOfMonth);
 
   /// Gets the start of the year.
   ///
@@ -226,12 +161,12 @@ extension DateTimeExtensions on DateTime {
   /// final start2 = date2.startOfWeek(firstDayOfWeek: DateTime.sunday);
   /// print(start2); // Output: 2024-01-14 00:00:00.000
   /// ```
-  DateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
-    // Calculate the number of days to subtract to reach the start of the week.
-    // If the current weekday is less than the first day of the week, add 7 to wrap around to the previous week.
-    final daysToSubtract = (weekday < firstDayOfWeek ? 7 : 0) + weekday - firstDayOfWeek;
-    return subtractDays(daysToSubtract).startOfDay;
-  }
+  // DateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
+  //   // Calculate the number of days to subtract to reach the start of the week.
+  //   // If the current weekday is less than the first day of the week, add 7 to wrap around to the previous week.
+  //   final daysToSubtract = (weekday < firstDayOfWeek ? 7 : 0) + weekday - firstDayOfWeek;
+  //   return subtractDays(daysToSubtract).startOfDay;
+  // }
 
   /// Gets the end of the week.
   /// The end of the week is calculated as the start of the next week,
@@ -249,9 +184,9 @@ extension DateTimeExtensions on DateTime {
   /// final endWithSunday = date.endOfWeek(firstDayOfWeek: DateTime.sunday);
   /// print(endWithSunday); // Output: 2024-01-21 00:00:00.000
   /// ```
-  DateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
-    return startOfWeek(firstDayOfWeek: firstDayOfWeek).addDays(7);
-  }
+  // DateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
+  //   return startOfWeek(firstDayOfWeek: firstDayOfWeek).addDays(7);
+  // }
 
   /// Get the week range.
   ///
@@ -270,12 +205,12 @@ extension DateTimeExtensions on DateTime {
   /// print(rangeWithSunday.start); // Output: 2024-01-14 00:00:00.000
   /// print(rangeWithSunday.end);   // Output: 2024-01-21 00:00:00.000
   /// ```
-  DateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
-    return DateTimeRange(
-      start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
-      end: endOfWeek(firstDayOfWeek: firstDayOfWeek),
-    );
-  }
+  // DateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
+  //   return DateTimeRange(
+  //     start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
+  //     end: endOfWeek(firstDayOfWeek: firstDayOfWeek),
+  //   );
+  // }
 
   /// Get the work week range.
   ///
@@ -289,7 +224,7 @@ extension DateTimeExtensions on DateTime {
   /// print(range.start); // Output: 2024-01-15 00:00:00.000
   /// print(range.end);   // Output: 2024-01-20 00:00:00.000
   /// ```
-  DateTimeRange get workWeekRange => DateTimeRange(start: startOfWeek(), end: endOfWeek().subtractDays(2));
+  // DateTimeRange get workWeekRange => DateTimeRange(start: startOfWeek(), end: endOfWeek().subtractDays(2));
 
   /// Add specific amount of [days] (ignoring DST)
   ///
@@ -341,12 +276,12 @@ extension DateTimeExtensions on DateTime {
   /// print(range2.start); // Output: 2024-01-10 10:30:00.000
   /// print(range2.end);   // Output: 2024-01-15 10:30:00.000
   /// ```
-  DateTimeRange customDateTimeRange(int numberOfDays) {
-    assert(numberOfDays != 0, 'The number of days cannot be zero.');
-    final start = numberOfDays.isNegative ? addDays(numberOfDays) : this;
-    final end = numberOfDays.isNegative ? this : addDays(numberOfDays);
-    return DateTimeRange(start: start, end: end);
-  }
+  // DateTimeRange customDateTimeRange(int numberOfDays) {
+  //   assert(numberOfDays != 0, 'The number of days cannot be zero.');
+  //   final start = numberOfDays.isNegative ? addDays(numberOfDays) : this;
+  //   final end = numberOfDays.isNegative ? this : addDays(numberOfDays);
+  //   return DateTimeRange(start: start, end: end);
+  // }
 
   /// TODO: Proposal depend on the intl package so this can be removed.
   /// If we do start depending on the intl package, then we might as well
@@ -357,43 +292,6 @@ extension DateTimeExtensions on DateTime {
   ///
   /// UPDATE: The intl package is now included! These methods provide both
   /// internationalized and customizable options for date formatting.
-
-  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
-  int get weekNumber {
-    // Add 3 to always compare with January 4th, which is always in week 1
-    // Add 7 to index weeks starting with 1 instead of 0
-    final woy = ((ordinalDate - weekday + 10) ~/ 7);
-
-    // If the week number equals zero, it means that the given date belongs to the preceding (week-based) year.
-    if (woy == 0) {
-      // The 28th of December is always in the last week of the year
-      return DateTime(year - 1, 12, 28).weekNumber;
-    }
-
-    // If the week number equals 53, one must check that the date is not actually in week 1 of the following year
-    if (woy == 53 &&
-        DateTime(year, 1, 1).weekday != DateTime.thursday &&
-        DateTime(year, 12, 31).weekday != DateTime.thursday) {
-      return 1;
-    }
-
-    return woy;
-  }
-
-  /// The ordinal date, the number of days since December 31st the previous year.
-  ///
-  /// January 1st has the ordinal date 1
-  ///
-  /// December 31st has the ordinal date 365, or 366 in leap years
-  int get ordinalDate {
-    const offsets = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-    return offsets[month - 1] + day + (isLeapYear && month > 2 ? 1 : 0);
-  }
-
-  /// True if this date is on a leap year.
-  bool get isLeapYear {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-  }
 
   /// Gets the day name in a specific locale.
   ///

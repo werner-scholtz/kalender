@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The positioned timeline widget is used to display the timeline in the [MultiDayBody].
 ///
 /// This returns a [PositionedDirectional] or [SizedBox] widget that respects Directionality.
 class PositionedTimeIndicator extends StatefulWidget {
   /// The list of visible dates in the view.
-  final List<DateTime> visibleDates;
+  final List<InternalDateTime> visibleDates;
 
   /// The width of each day in the view.
   final double dayWidth;
@@ -17,7 +18,7 @@ class PositionedTimeIndicator extends StatefulWidget {
   final Widget child;
 
   /// The date override for testing purposes.
-  final DateTime? nowOverride;
+  final InternalDateTime? nowOverride;
 
   const PositionedTimeIndicator({
     super.key,
@@ -49,9 +50,9 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
 
   void _update() {
     final newIndex = widget.nowOverride != null
-        ? widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!.asUtc))
+        ? widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!))
         // Compare with the current date as UTC.
-        : widget.visibleDates.indexWhere((date) => date.isSameDay(DateTime.now().asUtc));
+        : widget.visibleDates.indexWhere((date) => date.isToday(location: context.location));
 
     if (_index == newIndex) {
       return;

@@ -10,7 +10,7 @@ mixin NewDraggableWidget {
   ///
   /// [date] is the date the draggable is located at.
   /// [localPosition] is the last known position of the cursor.
-  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition);
+  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition);
 
   /// Create a TapDetail for the new event.
   ///
@@ -19,7 +19,7 @@ mixin NewDraggableWidget {
   TapDetail createTapDetail(BuildContext context, InternalDateTimeRange range, Offset localPosition);
 
   /// Create the new event and select it where needed.
-  void createNewEvent(BuildContext context, DateTime date, Offset localPosition) {
+  void createNewEvent(BuildContext context, InternalDateTime date, Offset localPosition) {
     final dateTimeRange = calculateDateTimeRange(date, localPosition);
     final newEvent = CalendarEvent(dateTimeRange: dateTimeRange.forLocation(location: context.location));
 

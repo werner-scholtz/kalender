@@ -55,7 +55,7 @@ void main() {
 
   // What do we need we need a list of DateTime objects to event IDs. to ensure we can find them in the widget tree.
   final eventMapItems = List.generate(
-    displayRange.dates().length,
+    InternalDateTimeRange.fromDateTimeRange(displayRange).dates().length,
     (i) {
       final key = start.copyWith(year: start.year, month: start.month, day: start.day + i).startOfDay;
       final end = key.copyWith(hour: start.hour + 1);

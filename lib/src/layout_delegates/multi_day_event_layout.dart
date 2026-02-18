@@ -101,7 +101,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     final internalRange = event.internalRange(location: location);
 
     // Create a range that rounds the start and end dates to the start and end of the day.
-    final range = DateTimeRange(
+    final range = InternalDateTimeRange(
       start: internalRange.start,
       // If the end date is the start of the day, we use the start of the day otherwise
       // we use the end of the day so that the day is included.
@@ -375,7 +375,7 @@ class MultiDayLayout extends MultiChildLayoutDelegate {
   });
 
   /// The date range that the events are laid out on.
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// The layout info for each event.
   final List<EventLayoutInformation> layoutInfo;

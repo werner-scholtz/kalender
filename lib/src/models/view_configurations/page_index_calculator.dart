@@ -89,7 +89,6 @@ abstract class PageIndexCalculator {
   InternalDateTimeRange dateTimeRangeFromDate(InternalDateTime date, Location? location) {
     final index = indexFromDate(date, location);
     final range = dateTimeRangeFromIndex(index, location);
-    assert(range.isUtc);
     return range;
   }
 
@@ -137,9 +136,10 @@ class DayIndexCalculator extends PageIndexCalculator {
   @override
   InternalDateTimeRange internalRange(Location? location) {
     final localRange = dateTimeRange.forLocation(location: location);
-    final start = localRange.start.startOfDay;
-    // final end = localRange.end.startOfDay == localRange.end ? localRange.end.startOfDay : localRange.end.endOfDay;
-    final end = localRange.end.isStartOfDay ? localRange.end : localRange.end.endOfDay;
+    final start = InternalDateTime.fromDateTime(localRange.start).startOfDay;
+    final end = InternalDateTime.fromDateTime(localRange.end).isStartOfDay
+        ? InternalDateTime.fromDateTime(localRange.end)
+        : InternalDateTime.fromDateTime(localRange.end).endOfDay;
     return InternalDateTimeRange(start: start, end: end);
   }
 }
@@ -179,8 +179,9 @@ class WeekIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
+    final internalDate = InternalDateTime.fromDateTime(date.forLocation(location: location)).startOfDay;
     // print('Date for index calculation: $date');
-    final internalStartOfWeek = date.startOfWeek(firstDayOfWeek: firstDayOfWeek);
+    final internalStartOfWeek = internalDate.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     final internalRange = this.internalRange(location);
     // print('Internal start of range: $internalStartOfWeek');
 
@@ -211,8 +212,9 @@ class WeekIndexCalculator extends PageIndexCalculator {
   @override
   InternalDateTimeRange internalRange(Location? location) {
     final localRange = dateTimeRange.forLocation(location: location);
-    final start = localRange.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
-    final end = localRange.end.endOfWeek(firstDayOfWeek: firstDayOfWeek);
+    final internalRange = InternalDateTimeRange.fromDateTimeRange(localRange);
+    final start = internalRange.start.startOfWeek(firstDayOfWeek: firstDayOfWeek);
+    final end = internalRange.end.endOfWeek(firstDayOfWeek: firstDayOfWeek);
     return InternalDateTimeRange(start: start, end: end);
   }
 }
@@ -235,7 +237,7 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    final startOfDate = date.forLocation(location: location).asUtc;
+    final startOfDate = InternalDateTime.fromDateTime(date.forLocation(location: location));
     final startOfDateUtc = startOfDate.startOfDay;
     final internalRange = this.internalRange(location);
     final index = startOfDateUtc.difference(internalRange.start).inDays ~/ numberOfDays;
@@ -251,7 +253,7 @@ class CustomIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final localRange = dateTimeRange.forLocation(location: location).asUtc;
+    final localRange = InternalDateTimeRange.fromDateTimeRange(dateTimeRange.forLocation(location: location));
     final start = localRange.start.startOfDay;
     final end = localRange.end.startOfDay == localRange.end ? localRange.end.startOfDay : localRange.end.endOfDay;
     final numberOfDaysInRange = end.difference(start).inDays;
@@ -296,8 +298,8 @@ class FreeScrollFunctions extends PageIndexCalculator {
   @override
   InternalDateTimeRange internalRange(Location? location) {
     final localRange = dateTimeRange.forLocation(location: location);
-    final start = localRange.start.startOfDay;
-    final end = localRange.end.endOfDay;
+    final start = InternalDateTime.fromDateTime(localRange.start).startOfDay;
+    final end = InternalDateTime.fromDateTime(localRange.end).endOfDay;
     return InternalDateTimeRange(start: start, end: end);
   }
 }
@@ -317,10 +319,10 @@ class MonthIndexCalculator extends PageIndexCalculator {
   InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
     final internalRange = this.internalRange(location);
     final internalStart = internalRange.start;
-    final startOfMonth = internalStart.copyWith(month: internalStart.month + index);
+    final startOfMonth = InternalDateTime.fromDateTime(internalStart.copyWith(month: internalStart.month + index));
 
     var start = startOfMonth.startOfWeek(firstDayOfWeek: firstDayOfWeek);
-    if (start.isAfter(startOfMonth)) start = start.subtractDays(7);
+    if (start.isAfter(startOfMonth)) start = InternalDateTime.fromDateTime(start.subtractDays(7));
 
     var end = start.addDays(DateTime.daysPerWeek * numberOfRows);
     if (end.isBefore(startOfMonth.endOfMonth)) end = start.addDays(DateTime.daysPerWeek * (numberOfRows + 1));
@@ -330,14 +332,14 @@ class MonthIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    date = date.forLocation(location: location).startOfDay.asUtc;
+    date = InternalDateTime.fromDateTime(date.forLocation(location: location)).startOfDay;
     final internalRange = this.internalRange(location);
-    final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
+    final dateTimeRange = InternalDateTimeRange(start: internalRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
   }
 
   /// Returns the number of rows that need to be displayed for the given [range].
-  int numberOfRowsForRange(DateTimeRange range) {
+  int numberOfRowsForRange(InternalDateTimeRange range) {
     return range.dates().length ~/ DateTime.daysPerWeek;
   }
 
@@ -372,7 +374,7 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   InternalDateTimeRange internalRange(Location? location) {
-    final localRange = dateTimeRange.forLocation(location: location).asUtc;
+    final localRange = InternalDateTimeRange.fromDateTimeRange(dateTimeRange.forLocation(location: location));
     final start = localRange.start.startOfDay;
     final end = localRange.end.startOfDay == localRange.end ? localRange.end.startOfDay : localRange.end.endOfDay;
     return InternalDateTimeRange(start: start, end: end);
@@ -394,9 +396,9 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
 
   @override
   int indexFromDate(DateTime date, Location? location) {
-    date = date.forLocation(location: location).asUtc.startOfDay;
+    date = InternalDateTime.fromDateTime(date.forLocation(location: location)).startOfDay;
     final internalRange = this.internalRange(location);
-    final dateTimeRange = DateTimeRange(start: internalRange.start, end: date);
+    final dateTimeRange = InternalDateTimeRange(start: internalRange.start, end: date);
     return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
   }
 

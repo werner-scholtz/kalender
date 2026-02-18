@@ -75,7 +75,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
+  List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
   CalendarCallbacks? get callbacks => context.callbacks();
@@ -248,7 +248,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -274,7 +274,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration);
+    return InternalDateTime.fromDateTime(startOfDate.add(duration));
   }
 
   /// Update the [CalendarEvent] based on the [Offset] delta.

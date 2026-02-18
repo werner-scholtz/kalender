@@ -110,14 +110,14 @@ mixin ScheduleMap {
   }
 
   int? indexFromDateTimeForPage(int pageIndex, DateTime date) {
-    date = date.forLocation(location: location).asUtc.startOfDay;
+    date = InternalDateTime.fromDateTime(date.forLocation(location: location)).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     return dateTimeFirstItemIndex[date];
   }
 
   /// Find the index closest to the given date.
   int closestIndexForPage(int pageIndex, DateTime date) {
-    date = date.forLocation(location: location).asUtc.startOfDay;
+    date = InternalDateTime.fromDateTime(date.forLocation(location: location)).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     if (dateTimeFirstItemIndex.isEmpty) return 0;
 

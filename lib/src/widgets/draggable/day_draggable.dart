@@ -82,7 +82,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, DateTime date, Offset localPosition) {
+  void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
     final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
     callbacks?.onTapped?.call(dateTime);
 
@@ -93,7 +93,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     );
   }
 
-  void _onLongPress(BuildContext context, DateTime date, Offset position) {
+  void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
     final dateTime = _calculateTimeAndDate(date, position).asLocal;
     callbacks?.onLongPressed?.call(dateTime);
 
@@ -105,7 +105,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   @override
-  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition) {
     final start = _calculateTimeAndDate(date, localPosition);
     final snapInterval = context.snapping.snapIntervalMinutes;
     final end = start.copyWith(minute: start.minute + snapInterval);
@@ -113,7 +113,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
-  DateTime _calculateTimeAndDate(DateTime date, Offset localPosition) {
+  DateTime _calculateTimeAndDate(InternalDateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());

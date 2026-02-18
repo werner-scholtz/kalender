@@ -61,7 +61,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   @override
   CalendarCallbacks? get callbacks => context.callbacks();
   @override
-  List<DateTime> get visibleDates => visibleDateTimeRange.dates();
+  List<InternalDateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
@@ -169,7 +169,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -232,12 +232,12 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     if (event == null) return null;
 
     var range = newEvent!.internalRange(location: context.location);
+    final cursor = InternalDateTime.fromDateTime(cursorDateTime);
 
-    if ((cursorDateTime.isSameDay(range.start) || cursorDateTime.isSameDay(range.end)) ||
-        cursorDateTime.isAfter(range.start)) {
-      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursorDateTime.endOfDay);
-    } else if (cursorDateTime.isBefore(range.start)) {
-      range = InternalDateTimeRange(start: cursorDateTime, end: range.start.endOfDay);
+    if ((cursor.isSameDay(range.start) || cursor.isSameDay(range.end)) || cursor.isAfter(range.start)) {
+      range = InternalDateTimeRange(start: range.start.startOfDay, end: cursor.endOfDay);
+    } else if (cursor.isBefore(range.start)) {
+      range = InternalDateTimeRange(start: cursor, end: range.start.endOfDay);
     }
 
     // TODO: this as local needs to be investigated.

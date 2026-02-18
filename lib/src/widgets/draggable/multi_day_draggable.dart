@@ -67,7 +67,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, DateTime date, Offset localPosition) {
+  void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
     callbacks?.onTapped?.call(date);
 
     if (callbacks?.onTappedWithDetail == null) return;
@@ -78,7 +78,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     );
   }
 
-  void _onLongPress(BuildContext context, DateTime date, Offset position) {
+  void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
     callbacks?.onLongPressed?.call(date);
 
     if (callbacks?.onLongPressedWithDetail == null) return;
@@ -90,7 +90,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
   }
 
   @override
-  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
     return InternalDateTimeRange(start: start, end: end);

@@ -196,7 +196,7 @@ mixin DragTargetUtilities {
   }
 
   /// Calculate the [DateTime] of the cursor.
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   });

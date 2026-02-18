@@ -65,7 +65,7 @@ mixin DayEventTileUtils {
   /// Returns the event's time range intersected with the tile's date.
   DateTimeRange get eventRangeOnDate {
     // TODO: Get the location somehow.
-    return event.internalRange().dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
+    return event.internalRange().dateTimeRangeOnDate(tileRange.start.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -243,13 +243,15 @@ mixin MultiDayEventTileUtils {
     final tileRangeAsUtc = tileRange.asUtc;
     final start = event.internalStart(location: context.location);
     final end = event.internalEnd(location: context.location);
-    final range = DateTimeRange(
+    final range = InternalDateTimeRange(
       start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
       end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,
     );
     final numberOfDays = range.dates().length;
     final dateClicked = localPosition.dx ~/ (renderBox.size.width / numberOfDays);
-    final date = range.start.copyWith(day: range.start.day + dateClicked).startOfDay.asLocal;
+    final date = InternalDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked))
+        .startOfDay
+        .forLocation(location: context.location);
     return date;
   }
 }
