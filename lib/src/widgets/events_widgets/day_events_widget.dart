@@ -43,6 +43,7 @@ class MultiDayEventsRow<T extends Object?> extends StatelessWidget {
                 location: context.location,
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
+                heightPerMinute: context.heightPerMinute,
               ),
             ),
           ),
@@ -74,6 +75,8 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
   /// The location used for date and time calculations.
   final Location? location;
 
+  final double heightPerMinute;
+
   /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
     super.key,
@@ -83,6 +86,7 @@ class DayEventsColumn<T extends Object?> extends StatefulWidget {
     required this.date,
     required this.location,
     required this.cache,
+    required this.heightPerMinute,
   });
 
   @override
@@ -100,14 +104,20 @@ class _DayEventsColumnState<T extends Object?> extends State<DayEventsColumn<T>>
     super.initState();
   }
 
+
   @override
   void didUpdateWidget(covariant DayEventsColumn<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.location != widget.location) {
+
+    final didUpdateLocation = oldWidget.location != widget.location;
+    final didUpdateHeightPerMinute = oldWidget.heightPerMinute != widget.heightPerMinute;
+
+    if (didUpdateLocation || didUpdateHeightPerMinute) {
       widget.cache.clearAll();
       _update();
     }
   }
+
 
   @override
   void dispose() {
