@@ -4,13 +4,11 @@ import 'package:kalender/kalender.dart';
 /// A mixin that adds snap points to a class.
 mixin SnapPoints {
   /// A list of possible [DateTime] snap points that the event can snap to.
-  final List<DateTime> _snapPoints = [];
-  List<DateTime> get snapPoints => _snapPoints.toList();
+  final List<InternalDateTime> _snapPoints = [];
+  List<InternalDateTime> get snapPoints => _snapPoints.toList();
 
   /// Get the closest snap point to the [dateTime] within a [snapRange].
-  DateTime? findSnapPoint(DateTime dateTime, Duration snapRange) {
-    assert(dateTime.isUtc, 'The DateTime must be in UTC.');
-
+  InternalDateTime? findSnapPoint(InternalDateTime dateTime, Duration snapRange) {
     // Check that the snap points are not empty.
     if (_snapPoints.isEmpty) return null;
 
@@ -32,14 +30,13 @@ mixin SnapPoints {
     }
   }
 
-  /// Add a [DateTime] snap point.
-  void addSnapPoint(DateTime dateTime) {
-    assert(dateTime.isUtc, 'The DateTime must be in UTC.');
+  /// Add a [InternalDateTime] snap point.
+  void addSnapPoint(InternalDateTime dateTime) {
     _snapPoints.add(dateTime);
   }
 
-  /// Remove a [DateTime] snap point.
-  void removeSnapPoint(DateTime dateTime) {
+  /// Remove a [InternalDateTime] snap point.
+  void removeSnapPoint(InternalDateTime dateTime) {
     _snapPoints.remove(dateTime);
   }
 
