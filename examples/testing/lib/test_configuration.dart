@@ -48,8 +48,7 @@ class TestConfiguration {
               end: timeOfDayRange.end.toInternalDateTime(date),
             ),
             title: 'Event',
-            description:
-                '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
+            description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',
             color: Colors.primaries[date.day % Colors.primaries.length],
           ),
       ],
