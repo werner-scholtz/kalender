@@ -71,8 +71,12 @@ mixin ScheduleMap {
   /// [item] is the item to add.
   /// [date] is the date to add.
   /// [isFirst] is whether the item is the first item of the date.
-  void addItemForPage(
-      {required ListItem item, required InternalDateTime date, required int pageIndex, bool isFirst = false}) {
+  void addItemForPage({
+    required ListItem item,
+    required InternalDateTime date,
+    required int pageIndex,
+    bool isFirst = false,
+  }) {
     final itemsForPage = indexItem(pageIndex);
     final index = itemsForPage.length;
     itemsForPage[index] = item;
