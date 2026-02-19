@@ -69,7 +69,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
-        pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.singleDay(displayRange ?? kDefaultRange());
 
   /// Creates a [MultiDayViewConfiguration] for a week.
   MultiDayViewConfiguration.week({
@@ -85,7 +85,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.week,
         pageIndexCalculator = PageIndexCalculator.week(
-          displayRange ?? DateTime.now().yearRange,
+          displayRange ?? kDefaultRange(),
           firstDayOfWeek,
         );
 
@@ -102,7 +102,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
-        pageIndexCalculator = PageIndexCalculator.workWeek(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.workWeek(displayRange ?? kDefaultRange());
 
   /// Creates a [MultiDayViewConfiguration] for a custom number of days.
   MultiDayViewConfiguration.custom({
@@ -117,7 +117,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.initialHeightPerMinute = defaultHeightPerMinute,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.custom,
-        pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? DateTime.now().yearRange, numberOfDays);
+        pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? kDefaultRange(), numberOfDays);
 
   /// Creates a [MultiDayViewConfiguration] for a free scrolling view.
   MultiDayViewConfiguration.freeScroll({
@@ -132,7 +132,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
-        pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? DateTime.now().yearRange);
+        pageIndexCalculator = PageIndexCalculator.freeScroll(displayRange ?? kDefaultRange());
 
   MultiDayViewConfiguration copyWith({
     String? name,

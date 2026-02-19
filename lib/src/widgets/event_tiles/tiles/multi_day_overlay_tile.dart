@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';

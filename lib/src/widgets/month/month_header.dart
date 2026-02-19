@@ -35,7 +35,7 @@ class MonthHeader extends StatelessWidget {
           children: List<Widget>.generate(
             7,
             (index) {
-              final date = visibleDateTimeRange.start.addDays(index);
+              final date = visibleDateTimeRange.start.add(Duration(days: index));
               return components.weekDayHeaderBuilder.call(date, style);
             },
           ),

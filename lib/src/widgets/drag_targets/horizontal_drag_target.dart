@@ -208,7 +208,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
     // Update the event with the new start time.
     // TODO: this as local needs to be investigated.
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+    final updatedEvent = event.copyWith(dateTimeRange: newRange);
 
     return updatedEvent;
   }
@@ -223,7 +223,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     };
     if (range == null) return null;
     // TODO: this as local needs to be investigated.
-    return event.copyWith(dateTimeRange: range.asLocal);
+    return event.copyWith(dateTimeRange: range);
   }
 
   @override
@@ -241,6 +241,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     }
 
     // TODO: this as local needs to be investigated.
-    return event.copyWith(dateTimeRange: range.asLocal);
+    return event.copyWith(dateTimeRange: range);
   }
 }

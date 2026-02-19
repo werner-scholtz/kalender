@@ -83,7 +83,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
 
   /// Notify the callbacks about the tap / longPress.
   void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
-    final dateTime = _calculateTimeAndDate(date, localPosition).asLocal;
+    final dateTime = _calculateTimeAndDate(date, localPosition);
     callbacks?.onTapped?.call(dateTime);
 
     if (callbacks?.onTappedWithDetail == null) return;
@@ -94,7 +94,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
-    final dateTime = _calculateTimeAndDate(date, position).asLocal;
+    final dateTime = _calculateTimeAndDate(date, position);
     callbacks?.onLongPressed?.call(dateTime);
 
     if (callbacks?.onLongPressedWithDetail == null) return;

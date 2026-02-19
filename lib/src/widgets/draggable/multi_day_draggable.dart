@@ -71,7 +71,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onTapped?.call(date);
 
     if (callbacks?.onTappedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, localPosition).asLocal;
+    final range = calculateDateTimeRange(date, localPosition);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: localPosition),
@@ -82,7 +82,7 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     callbacks?.onLongPressed?.call(date);
 
     if (callbacks?.onLongPressedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, position).asLocal;
+    final range = calculateDateTimeRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: position),

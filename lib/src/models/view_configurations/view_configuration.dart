@@ -196,3 +196,7 @@ const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
 const kDefaultEmptyDayBehavior = EmptyDayBehavior.showToday;
+DateTimeRange kDefaultRange() {
+  final now = DateTime.now();
+  return DateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));
+}

@@ -57,8 +57,9 @@ class MonthBody extends StatelessWidget {
                 children: List.generate(
                   numberOfRows,
                   (index) {
-                    final start = visibleRange.start.addDays(index * 7);
-                    final visibleDateTimeRange = InternalDateTimeRange(start: start, end: start.addDays(7));
+                    final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
+                    final visibleDateTimeRange =
+                        InternalDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
 
                     return Expanded(
                       child: MonthWeek(

@@ -130,7 +130,7 @@ mixin DayEventTileUtils {
   DateTime dateTimeFromPosition(BuildContext context, Offset localPosition) {
     final minutes = (localPosition.dy / context.heightPerMinute).round();
     final dateTime = eventRangeOnDate.start.add(Duration(minutes: minutes));
-    return dateTime.asLocal;
+    return dateTime;
   }
 }
 
@@ -184,7 +184,7 @@ mixin MultiDayEventTileUtils {
   ///
   /// For multi-day events, this typically represents the visible portion
   /// of the event within the current view (e.g., a week or month).
-  DateTimeRange get tileRange;
+  InternalDateTimeRange get tileRange;
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
   ///
@@ -240,12 +240,11 @@ mixin MultiDayEventTileUtils {
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
     // TODO: ensure this works as expected.
     final renderBox = context.findRenderObject() as RenderBox;
-    final tileRangeAsUtc = tileRange.asUtc;
     final start = event.internalStart(location: context.location);
     final end = event.internalEnd(location: context.location);
     final range = InternalDateTimeRange(
-      start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
-      end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,
+      start: start.isBefore(tileRange.start) ? tileRange.start : start,
+      end: end.isAfter(tileRange.end) ? tileRange.end : end,
     );
     final numberOfDays = range.dates().length;
     final dateClicked = localPosition.dx ~/ (renderBox.size.width / numberOfDays);

@@ -44,7 +44,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
-  })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? DateTime.now().yearRange),
+  })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.continuous;
 
   /// Creates a paginated [ScheduleViewConfiguration].
@@ -53,7 +53,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToSchedule,
     DateTimeRange? displayRange,
-  })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? DateTime.now().yearRange),
+  })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.paginated;
 }
 

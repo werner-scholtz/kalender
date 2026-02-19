@@ -27,7 +27,7 @@ class MultiDayViewController extends ViewController {
     if (type == MultiDayViewType.freeScroll) {
       visibleDateTimeRange.value = InternalDateTimeRange(
         start: range.start,
-        end: range.start.addDays(viewConfiguration.numberOfDays),
+        end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
       );
     } else {
       visibleDateTimeRange.value = range;
@@ -107,7 +107,7 @@ class MultiDayViewController extends ViewController {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final internalDate = InternalDateTime.fromDateTime(date.forLocation(location: location));
+    final internalDate = InternalDateTime.fromExternal(date);
     final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(internalDate);
     final timeDifference = internalDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
@@ -139,7 +139,7 @@ class MultiDayViewController extends ViewController {
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
     if (target.isSameDay(event.internalStart(location: location))) {
-      date = target.asLocal;
+      date = target;
     } else {
       date = event.start;
     }
