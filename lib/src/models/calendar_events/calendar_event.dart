@@ -6,9 +6,7 @@ import 'package:kalender/kalender_extensions.dart';
 
 /// A class representing a object that can be displayed by the calendar.
 ///
-/// A calendar event requires a [DateTimeRange] this is used by the [CalendarView] to render the event.
-///
-/// Any calculations done with the [_dateTimeRange] should be done in utc time and then converted back to local time.
+/// TODO: Add example of how to extend this class.
 class CalendarEvent {
   /// The start [DateTime] of the [CalendarEvent].
   final DateTime start;
@@ -59,11 +57,15 @@ class CalendarEvent {
   /// The [DateTimeRange] of the [CalendarEvent].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
+  /// The [InternalDateTime] representing the start of the [CalendarEvent].
   InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
+
+  /// The [InternalDateTime] representing the end of the [CalendarEvent].
   InternalDateTime internalEnd({Location? location}) => InternalDateTime.fromExternal(end, location: location);
-  InternalDateTimeRange internalRange({Location? location}) {
-    return InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
-  }
+
+  /// The [InternalDateTimeRange] of the [CalendarEvent].
+  InternalDateTimeRange internalRange({Location? location}) =>
+      InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
 
   /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
   Duration get duration => dateTimeRange.duration;
@@ -71,9 +73,8 @@ class CalendarEvent {
   /// Whether the [CalendarEvent] is longer than a day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
-  /// The [DateTime]s that the [CalendarEvent] spans.
-  List<InternalDateTime> datesSpanned({Location? location}) =>
-      internalRange(location: location).dates().map((e) => InternalDateTime(e.year, e.month, e.day)).toList();
+  /// The [InternalDateTime]s that the [CalendarEvent] spans.
+  List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
   /// Copy the [CalendarEvent] with the new values.
   CalendarEvent copyWith({
