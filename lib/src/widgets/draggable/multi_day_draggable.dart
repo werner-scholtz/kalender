@@ -68,7 +68,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
 
   /// Notify the callbacks about the tap / longPress.
   void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
-    callbacks?.onTapped?.call(date);
+    callbacks?.onTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onTappedWithDetail == null) return;
     final range = calculateDateTimeRange(date, localPosition);
