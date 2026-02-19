@@ -32,6 +32,14 @@ class InternalDateTime extends DateTime {
           dateTime.microsecond,
         );
 
+  /// Creates a [InternalDateTime] from an external [DateTime].
+  static InternalDateTime fromExternal(DateTime dateTime, {Location? location}) {
+    if (dateTime is InternalDateTime) return dateTime;
+    final utc = dateTime.toUtc();
+    final date = location != null ? TZDateTime.from(utc, location) : utc.toLocal();
+    return InternalDateTime.fromDateTime(date);
+  }
+
   InternalDateTime get startOfDay => InternalDateTime(year, month, day);
   InternalDateTime get endOfDay => InternalDateTime(year, month, day + 1);
   InternalDateTimeRange get dayRange => InternalDateTimeRange(start: startOfDay, end: endOfDay);
@@ -41,6 +49,7 @@ class InternalDateTime extends DateTime {
   InternalDateTime get startOfYear => InternalDateTime(year, 1, 1);
   InternalDateTime get endOfYear => InternalDateTime(year + 1, 1, 1);
   InternalDateTimeRange get yearRange => InternalDateTimeRange(start: startOfYear, end: endOfYear);
+  bool get isStartOfDay => hour == 0 && minute == 0 && second == 0 && millisecond == 0 && microsecond == 0;
 
   InternalDateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToSubtract = (weekday - firstDayOfWeek) % 7;
@@ -186,5 +195,25 @@ class InternalDateTime extends DateTime {
   /// True if this date is on a leap year.
   bool get isLeapYear {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+  }
+
+  /// Adds a [Duration] to this [InternalDateTime] and returns a new [InternalDateTime].
+  ///
+  /// Note because [InternalDateTime] is stored in UTC, it is unaffected by DST changes,
+  /// so adding a duration will always yield the expected result without any surprises.
+  @override
+  InternalDateTime add(Duration duration) {
+    final result = super.add(duration);
+    return InternalDateTime.fromDateTime(result);
+  }
+
+  /// Subtracts a [Duration] from this [InternalDateTime] and returns a new [InternalDateTime].
+  ///
+  /// Note because [InternalDateTime] is stored in UTC, it is unaffected by DST changes,
+  /// so subtracting a duration will always yield the expected result without any surprises.
+  @override
+  InternalDateTime subtract(Duration duration) {
+    final result = super.subtract(duration);
+    return InternalDateTime.fromDateTime(result);
   }
 }

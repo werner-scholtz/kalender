@@ -263,7 +263,8 @@ class MultiDayLayoutFrame<T> {
   });
 
   /// Returns the date for the given column index.
-  InternalDateTime dateFromColumn(int column) => InternalDateTime.fromDateTime(dateTimeRange.start.addDays(column));
+  InternalDateTime dateFromColumn(int column) =>
+      InternalDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: column)));
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///

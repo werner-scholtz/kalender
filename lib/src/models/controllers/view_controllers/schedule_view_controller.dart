@@ -34,7 +34,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   ItemPositionsListener? itemPositionsListener;
 
   /// The highlighted date time range.
-  final highlightedDateTimeRange = ValueNotifier<DateTimeRange?>(null);
+  final highlightedDateTimeRange = ValueNotifier<InternalDateTimeRange?>(null);
 
   /// The index of the current page.
   late int currentPage;
@@ -46,7 +46,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   ListItem? item(int index) => indexItem(currentPage)[index];
 
   /// Get the [DateTime] for the given index of the current page.
-  DateTime? dateTimeFromIndex(int index) => dateTimeFromIndexForPage(currentPage, index);
+  InternalDateTime? dateTimeFromIndex(int index) => dateTimeFromIndexForPage(currentPage, index);
 
   /// Get the index of the item for the given [DateTime] for the current page.
   int? indexFromDateTime(DateTime date) => indexFromDateTimeForPage(currentPage, date);
@@ -55,7 +55,7 @@ abstract class ScheduleViewController<T extends Object?> extends ViewController<
   int closestIndex(DateTime date) => closestIndexForPage(currentPage, date);
 
   /// Add an item to the schedule map of the current page.
-  void addItem({required ListItem item, required DateTime date, bool isFirst = false}) {
+  void addItem({required ListItem item, required InternalDateTime date, bool isFirst = false}) {
     return addItemForPage(item: item, date: date, pageIndex: currentPage, isFirst: isFirst);
   }
 
@@ -146,7 +146,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
 
     final date = dateTimeFromIndex(currentIndex);
     if (date == null) return;
-    final nextMonth = date.copyWith(month: date.month + 1).startOfMonth;
+    final nextMonth = InternalDateTime.fromDateTime(date.copyWith(month: date.month + 1)).startOfMonth;
 
     final index = monthIndexFromDateTime(currentPage, nextMonth) ?? closestIndex(nextMonth);
     return _animateToIndex(index);
@@ -161,7 +161,7 @@ class ContinuousScheduleViewController<T extends Object?> extends ScheduleViewCo
     final currentDate = dateTimeFromIndex(currentIndex);
 
     if (currentDate == null) return;
-    final previousDate = currentDate.copyWith(month: currentDate.month - 1).startOfMonth;
+    final previousDate = InternalDateTime.fromDateTime(currentDate.copyWith(month: currentDate.month - 1)).startOfMonth;
 
     final index = monthIndexFromDateTime(currentPage, previousDate) ?? closestIndex(previousDate);
     return _animateToIndex(index);

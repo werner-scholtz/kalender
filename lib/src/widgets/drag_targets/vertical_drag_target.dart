@@ -5,6 +5,8 @@ import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
+/// TODO: This needs to be tested :D
+
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [VerticalDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
@@ -306,7 +308,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     var end = start.add(duration);
 
     // Add now to the snap points.
-    late final now = DateTime.now().asUtc;
+    late final now = DateTime.now();
     if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
@@ -342,7 +344,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (!direction.vertical) return null;
 
     // Add now to the snap points.
-    late final now = DateTime.now().asUtc;
+    late final now = DateTime.now();
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;

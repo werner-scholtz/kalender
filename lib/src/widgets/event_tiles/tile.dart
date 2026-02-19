@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
@@ -75,6 +74,6 @@ class _TileState<T extends Object?> extends State<Tile<T>> {
   Widget build(BuildContext context) {
     return _isDragging && widget.tileWhenDraggingBuilder != null
         ? widget.tileWhenDraggingBuilder!.call(widget.event)
-        : widget.tileBuilder.call(widget.event, widget.dateTimeRange.asLocal);
+        : widget.tileBuilder.call(widget.event, widget.dateTimeRange);
   }
 }

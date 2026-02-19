@@ -301,7 +301,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
   /// this is the first occurrence of a new month in the current view.
   ///
   /// [date] The date to potentially add a month header for.
-  void _addMonthItem(DateTime date) {
+  void _addMonthItem(InternalDateTime date) {
     // Check if the date is the first date of the month.
     final previousDateItem = viewController.dateTimeItemIndex(widget.currentPage).keys.lastOrNull;
     if (previousDateItem == null || previousDateItem.startOfMonth != date.startOfMonth) {
