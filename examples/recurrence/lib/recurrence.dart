@@ -94,7 +94,7 @@ enum RecurrenceType {
           second: event.start.second,
         );
         final end = start.add(event.duration);
-        return DateTimeRange(start: start, end: end).asLocal;
+        return DateTimeRange(start: start, end: end);
     }
   }
 
@@ -165,8 +165,8 @@ class Recurrence {
     final (deltaStart, deltaEnd) = Recurrence._calculateDelta(event, updatedEvent);
     return Recurrence(
       first: DateTimeRange(
-        start: first.start.add(deltaStart).asLocal,
-        end: first.end.add(deltaEnd).asLocal,
+        start: first.start.add(deltaStart),
+        end: first.end.add(deltaEnd),
       ),
       number: number,
       type: type,
