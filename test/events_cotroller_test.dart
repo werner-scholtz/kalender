@@ -35,8 +35,8 @@ void main() {
         eventsController.addEvents(
           datesToTest.map((date) {
             final range = DateTimeRange(
-              start: date.startOfDay,
-              end: date.startOfDay.add(const Duration(days: 1)),
+              start: DateTime(date.year, date.month, date.day),
+              end: DateTime(date.year, date.month, date.day + 1),
             );
             return CalendarEvent(dateTimeRange: range);
           }).toList(),
@@ -58,7 +58,8 @@ void main() {
         eventsController.addEvents(
           datesToTest.map(
             (date) {
-              final range = DateTimeRange(start: date.startOfDay, end: date.startOfDay);
+              final start = DateTime(date.year, date.month, date.day);
+              final range = DateTimeRange(start: start, end: start);
               return CalendarEvent(dateTimeRange: range);
             },
           ).toList(),
@@ -80,7 +81,10 @@ void main() {
       group('eventsFromDateTimeRange', () {
         test('only includeMultiDayEvents', () {
           for (final date in datesToTest) {
-            final range = InternalDateTimeRange(start: date.startOfDay, end: date.endOfDay);
+            final range = InternalDateTimeRange(
+              start: InternalDateTime(date.year, date.month, date.day),
+              end: InternalDateTime(date.year, date.month, date.day + 1),
+            );
             final events = eventsController.eventsFromDateTimeRange(
               range,
               includeMultiDayEvents: true,
@@ -93,7 +97,10 @@ void main() {
         });
         test('only includeDayEvents', () {
           for (final date in datesToTest) {
-            final range = InternalDateTimeRange(start: date.startOfDay, end: date.endOfDay);
+            final range = InternalDateTimeRange(
+              start: InternalDateTime(date.year, date.month, date.day),
+              end: InternalDateTime(date.year, date.month, date.day + 1),
+            );
             final events = eventsController.eventsFromDateTimeRange(
               range,
               includeMultiDayEvents: false,
@@ -107,7 +114,10 @@ void main() {
 
         test('includeDayEvents & includeMultiDayEvents', () {
           for (final date in datesToTest) {
-            final range = InternalDateTimeRange(start: date.asUtc.startOfDay, end: date.asUtc.endOfDay);
+            final range = InternalDateTimeRange(
+              start: InternalDateTime(date.year, date.month, date.day),
+              end: InternalDateTime(date.year, date.month, date.day + 1),
+            );
             final events = eventsController.eventsFromDateTimeRange(
               range,
               includeMultiDayEvents: true,
