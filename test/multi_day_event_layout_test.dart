@@ -16,9 +16,9 @@ void main() {
       ),
     );
 
-    final start = DateTime(2025, 3, 24);
-    final end = DateTime(2025, 3, 31);
-    final visibleRange = InternalDateTimeRange(start: start.asUtc, end: end.asUtc);
+    final start = InternalDateTime(2025, 3, 24);
+    final end = InternalDateTime(2025, 3, 31);
+    final visibleRange = InternalDateTimeRange(start: start, end: end);
 
     ValueKey<int> getKey(int data) => ValueKey(data);
 

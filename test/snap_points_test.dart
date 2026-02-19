@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 
@@ -18,39 +19,39 @@ void main() {
     test('addEventSnapPoints', () {
       points.addEventSnapPoints(testEvents.toSet(), null);
       expect(points.snapPoints.length, 6);
-      expect(points.snapPoints[0], DateTime.utc(2024, 1, 1, 10));
-      expect(points.snapPoints[1], DateTime.utc(2024, 1, 1, 11));
-      expect(points.snapPoints[2], DateTime.utc(2024, 1, 1, 11));
-      expect(points.snapPoints[3], DateTime.utc(2024, 1, 1, 12));
-      expect(points.snapPoints[4], DateTime.utc(2024, 1, 1, 12));
-      expect(points.snapPoints[5], DateTime.utc(2024, 1, 1, 13));
+      expect(points.snapPoints[0], InternalDateTime(2024, 1, 1, 10));
+      expect(points.snapPoints[1], InternalDateTime(2024, 1, 1, 11));
+      expect(points.snapPoints[2], InternalDateTime(2024, 1, 1, 11));
+      expect(points.snapPoints[3], InternalDateTime(2024, 1, 1, 12));
+      expect(points.snapPoints[4], InternalDateTime(2024, 1, 1, 12));
+      expect(points.snapPoints[5], InternalDateTime(2024, 1, 1, 13));
     });
 
     test('add / remove SnapPoint', () {
-      points.addSnapPoint(DateTime.utc(2024, 1, 1, 14));
+      points.addSnapPoint(InternalDateTime(2024, 1, 1, 14));
       expect(points.snapPoints.length, 7);
       expect(points.snapPoints[6], DateTime.utc(2024, 1, 1, 14));
 
-      points.removeSnapPoint(DateTime.utc(2024, 1, 1, 14));
+      points.removeSnapPoint(InternalDateTime(2024, 1, 1, 14));
       expect(points.snapPoints.length, 6);
-      expect(points.snapPoints.contains(DateTime.utc(2024, 1, 1, 14)), false);
+      expect(points.snapPoints.contains(InternalDateTime(2024, 1, 1, 14)), false);
     });
 
     test('findSnapPoint', () {
       const snapRange = Duration(hours: 1);
-      var snapPoint = points.findSnapPoint(DateTime.utc(2024, 1, 1, 10, 5), snapRange);
+      var snapPoint = points.findSnapPoint(InternalDateTime(2024, 1, 1, 10, 5), snapRange);
       expect(snapPoint, DateTime.utc(2024, 1, 1, 10));
 
-      snapPoint = points.findSnapPoint(DateTime.utc(2024, 1, 1, 10, 29), snapRange);
+      snapPoint = points.findSnapPoint(InternalDateTime(2024, 1, 1, 10, 29), snapRange);
       expect(snapPoint, DateTime.utc(2024, 1, 1, 10));
 
-      snapPoint = points.findSnapPoint(DateTime.utc(2024, 1, 1, 10, 30), snapRange);
+      snapPoint = points.findSnapPoint(InternalDateTime(2024, 1, 1, 10, 30), snapRange);
       expect(snapPoint, DateTime.utc(2024, 1, 1, 11));
 
-      snapPoint = points.findSnapPoint(DateTime.utc(2024, 1, 1, 10, 31), snapRange);
+      snapPoint = points.findSnapPoint(InternalDateTime(2024, 1, 1, 10, 31), snapRange);
       expect(snapPoint, DateTime.utc(2024, 1, 1, 11));
 
-      final noSnapPoint = points.findSnapPoint(DateTime.utc(2024, 1, 1, 8, 59), snapRange);
+      final noSnapPoint = points.findSnapPoint(InternalDateTime(2024, 1, 1, 8, 59), snapRange);
       expect(noSnapPoint, null);
     });
   });

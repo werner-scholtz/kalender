@@ -34,7 +34,10 @@ void main() {
         // Add multiple events to the controller (multi-day)
         eventsController.addEvents(
           datesToTest.map((date) {
-            final range = DateTimeRange(start: date.startOfDay, end: date.startOfDay.add(const Duration(days: 1)));
+            final range = DateTimeRange(
+              start: date.startOfDay,
+              end: date.startOfDay.add(const Duration(days: 1)),
+            );
             return CalendarEvent(dateTimeRange: range);
           }).toList(),
         );
