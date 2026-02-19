@@ -43,6 +43,7 @@ class ScheduleBody<T extends Object?> extends StatelessWidget {
         currentPage: 0,
         paginated: false,
         configuration: configuration,
+        location: context.location,
       );
     } else if (viewController is PaginatedScheduleViewController<T>) {
       return PaginatedSchedule<T>(viewController: viewController, configuration: configuration);
@@ -104,6 +105,7 @@ class _PaginatedScheduleState<T extends Object?> extends State<PaginatedSchedule
           currentPage: index,
           paginated: true,
           configuration: widget.configuration,
+          location: context.location,
         );
       },
     );
@@ -141,6 +143,9 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
   /// Whether this list is part of a paginated view.
   final bool paginated;
 
+  /// The location for date calculations, used for features like "today" highlighting.
+  final Location? location;
+
   /// Creates a [SchedulePositionList].
   const SchedulePositionList({
     super.key,
@@ -150,6 +155,7 @@ class SchedulePositionList<T extends Object?> extends StatefulWidget {
     required this.currentPage,
     required this.paginated,
     required this.configuration,
+    required this.location,
   });
 
   @override
@@ -259,7 +265,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
         InternalDateTimeRange.fromDateTimeRange(internalDate.dayRange),
-        location: context.location,
+        location: widget.location,
       );
 
       if (events.isEmpty) {
@@ -275,7 +281,7 @@ class _SchedulePositionListState<T extends Object?> extends State<SchedulePositi
 
           case EmptyDayBehavior.showToday:
             // TODO: check that this works as expected.
-            if (internalDate.isToday(location: context.location)) {
+            if (internalDate.isToday(location: widget.location)) {
               viewController.addItem(item: EmptyItem(), date: date);
             }
             continue;
