@@ -57,7 +57,7 @@ void main() {
   final eventMapItems = List.generate(
     InternalDateTimeRange.fromDateTimeRange(displayRange).dates().length,
     (i) {
-      final key = start.copyWith(year: start.year, month: start.month, day: start.day + i).startOfDay;
+      final key = start.copyWith(year: start.year, month: start.month, day: start.day + i);
       final end = key.copyWith(hour: start.hour + 1);
       final value = eventsController.addEvent(
         CalendarEvent(dateTimeRange: DateTimeRange(start: key, end: end)),
@@ -490,7 +490,7 @@ extension ViewControllerUtilities on WidgetTester {
       reason: 'Event ${event.id} should be in the visible events after animating to it',
     );
     expect(
-      event.start.isWithin(controller.visibleDateTimeRange.value!, includeEnd: true),
+      event.internalStart().isWithin(controller.internalDateTimeRange.value!, includeEnd: true),
       isTrue,
       reason: 'Event start ${event.start} should be within the visible range after animating to it',
     );

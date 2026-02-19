@@ -7,6 +7,7 @@ import 'utilities.dart';
 
 void main() {
   final start = DateTime(2025, 3, 24);
+  final internalStart = InternalDateTime.fromDateTime(start);
 
   final events = [
     CalendarEvent(
@@ -37,7 +38,7 @@ void main() {
     final viewController = MultiDayViewController(
       viewConfiguration: MultiDayViewConfiguration.singleDay(),
       visibleDateTimeRange: ValueNotifier(
-        InternalDateTimeRange(start: start.startOfDay, end: start.endOfDay),
+        InternalDateTimeRange(start: internalStart.startOfDay, end: internalStart.endOfDay),
       ),
       visibleEvents: ValueNotifier({}),
     );
@@ -45,7 +46,7 @@ void main() {
 
     const configuration = MultiDayBodyConfiguration();
     // The range to display in the DayEventsWidget.
-    final displayRange = start.asUtc.startOfDay.weekRange();
+    final displayRange = internalStart.startOfDay.weekRange();
 
     // Build the DayEventsWidget
     await tester.pumpWidget(

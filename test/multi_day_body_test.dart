@@ -260,7 +260,7 @@ void main() {
     });
 
     group('PositionedTimeIndicator Tests', () {
-      final now = DateTime.now();
+      final now = InternalDateTime.fromDateTime(DateTime.now());
       final start = now.startOfWeek();
       final end = now.endOfWeek();
       final range = InternalDateTimeRange(start: start, end: end);
