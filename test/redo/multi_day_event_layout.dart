@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   group('MultiDayEventLayoutWidget', () {

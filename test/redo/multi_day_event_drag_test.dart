@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 /// Tests for multi-day event drag behavior in the VerticalDragTarget.
 ///
