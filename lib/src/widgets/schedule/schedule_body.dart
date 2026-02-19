@@ -265,7 +265,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
         InternalDateTimeRange.fromDateTimeRange(internalDate.dayRange),
-        location: context.location,
+        location: widget.location,
       );
 
       if (events.isEmpty) {
@@ -281,7 +281,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
           case EmptyDayBehavior.showToday:
             // TODO: check that this works as expected.
-            if (internalDate.isToday(location: context.location)) {
+            if (internalDate.isToday(location: widget.location)) {
               viewController.addItem(item: EmptyItem(), date: date);
             }
             continue;
