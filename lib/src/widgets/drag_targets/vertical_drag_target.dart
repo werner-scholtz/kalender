@@ -287,7 +287,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     // Return null to prevent updating the selection while dragging over this area.
     if (event.isMultiDayEvent) return null;
 
-    DateTime start;
+    InternalDateTime start;
 
     if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
@@ -308,7 +308,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     var end = start.add(duration);
 
     // Add now to the snap points.
-    late final now = DateTime.now();
+    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
@@ -344,7 +344,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     if (!direction.vertical) return null;
 
     // Add now to the snap points.
-    late final now = DateTime.now();
+    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
