@@ -174,7 +174,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  DateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
+  InternalDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) {
     // Calculate the relative cursor position.
     final localCursorPosition = calculateLocalCursorPosition(offset);
     if (localCursorPosition == null) return null;
@@ -195,14 +195,17 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
     // Get the date for the item index.
     final date = viewController.dateTimeFromIndex(itemIndex);
-    return date;
+
+    // TODO: This needs to be checked.
+    if (date == null) return null;
+    return InternalDateTime.fromDateTime(date);
   }
 
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, InternalDateTime cursorDateTime) {
     final rangeAsUtc = event.internalRange(location: context.location);
     // Set the highlighted date in the schedule view controller.
-    widget.viewController.highlightedDateTimeRange.value = DateTimeRange(
+    widget.viewController.highlightedDateTimeRange.value = InternalDateTimeRange(
       start: cursorDateTime,
       end: cursorDateTime.add(rangeAsUtc.duration),
     );
@@ -220,7 +223,7 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
 
       // Update the event with the new start time.
       // TODO: this as local needs to be investigated.
-      final updatedEvent = event.copyWith(dateTimeRange: newRange.asLocal);
+      final updatedEvent = event.copyWith(dateTimeRange: newRange);
       return updatedEvent;
     }
   }
@@ -238,5 +241,6 @@ class _ScheduleDragTargetState<T extends Object?> extends State<ScheduleDragTarg
   }
 
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) => null;
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, InternalDateTime cursorDateTime) =>
+      null;
 }

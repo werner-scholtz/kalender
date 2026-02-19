@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart' show DateTimeExtensions;
 
 /// Encapsulates a start and end [TimeOfDay] that represents a day time range.
 ///
@@ -30,11 +29,6 @@ class TimeOfDayRange {
 
   /// Creates a [TimeOfDayRange] from the given [DateTimeRange].
   factory TimeOfDayRange.fromDateTimeRange(DateTimeRange dateTimeRange) {
-    assert(
-      dateTimeRange.start.isSameDay(dateTimeRange.end),
-      'The DateTimeRange start and end must be on the same day.',
-    );
-
     return TimeOfDayRange(
       start: TimeOfDay.fromDateTime(dateTimeRange.start),
       end: TimeOfDay.fromDateTime(dateTimeRange.end),

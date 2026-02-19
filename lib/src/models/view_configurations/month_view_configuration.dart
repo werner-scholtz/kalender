@@ -29,7 +29,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
   }) : pageIndexCalculator = MonthIndexCalculator(
-          dateTimeRange: displayRange ?? DateTime.now().yearRange,
+          dateTimeRange: displayRange ?? kDefaultRange(),
           firstDayOfWeek: firstDayOfWeek,
         );
 

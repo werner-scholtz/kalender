@@ -222,7 +222,7 @@ class _MultiDayPageState<T extends Object?> extends State<MultiDayPage<T>> {
         final range = _isFreeScroll
             ? InternalDateTimeRange(
                 start: visibleRange.start,
-                end: visibleRange.start.addDays(widget.viewController.viewConfiguration.numberOfDays),
+                end: visibleRange.start.add(Duration(days: widget.viewController.viewConfiguration.numberOfDays)),
               )
             : visibleRange;
         final controller = context.calendarController<T>();

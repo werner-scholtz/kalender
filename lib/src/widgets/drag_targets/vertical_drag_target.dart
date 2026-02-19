@@ -5,6 +5,8 @@ import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 
+/// TODO: This needs to be tested :D
+
 /// A [StatefulWidget] that provides a [DragTarget] for [Create], [Resize], [Reschedule] objects.
 ///
 /// The [VerticalDragTarget] specializes in accepting [Draggable] widgets for a multi day body.
@@ -76,7 +78,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   // TODO: check if this is right, and null check does not break anything.
   @override
-  List<DateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
+  List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
   CalendarCallbacks<T>? get callbacks => context.callbacks<T>();
@@ -249,7 +251,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   }) {
@@ -275,17 +277,17 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     final numberOfIntervals = (durationFromStart / snapIntervalMinutes).round();
     final duration = Duration(minutes: snapIntervalMinutes * numberOfIntervals);
 
-    return startOfDate.add(duration);
+    return InternalDateTime.fromDateTime(startOfDate.add(duration));
   }
 
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, InternalDateTime cursorDateTime) {
     // Multi-day events belong in the header, not the body.
     // Return null to prevent updating the selection while dragging over this area.
     if (event.isMultiDayEvent) return null;
 
-    DateTime start;
+    InternalDateTime start;
 
     if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
@@ -306,7 +308,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
     var end = start.add(duration);
 
     // Add now to the snap points.
-    late final now = DateTime.now().asUtc;
+    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     // Find the index of the snap point that is within a duration of snapRange of the start.
@@ -337,12 +339,12 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
 
   /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
     // Add now to the snap points.
-    late final now = DateTime.now().asUtc;
+    late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
     final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
@@ -362,7 +364,7 @@ class _VerticalDragTargetState<T extends Object?> extends State<VerticalDragTarg
   }
 
   @override
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) {
+  CalendarEvent<T>? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

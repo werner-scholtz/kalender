@@ -78,10 +78,8 @@ class CalendarViewState<T> extends State<CalendarView<T>> {
     super.initState();
     // Create the initial view controller.
     late final now = widget.location == null ? DateTime.now() : TZDateTime.now(widget.location!);
-    final selected = widget.location == null
-        ? widget.viewConfiguration.initialDateTime
-        : widget.viewConfiguration.initialDateTime?.forLocation(location: widget.location);
-    final initialDate = InternalDateTime.fromDateTime(selected ?? now);
+    final initialDateTime = widget.viewConfiguration.initialDateTime ?? now;
+    final initialDate = InternalDateTime.fromExternal(initialDateTime, location: widget.location);
     _viewController = _createViewController(initialDate: initialDate);
 
     // Attach the view controller when the widget is initialized.

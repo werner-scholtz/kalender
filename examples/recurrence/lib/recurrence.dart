@@ -63,8 +63,8 @@ enum RecurrenceType {
       case daily:
         final ranges = <DateTimeRange>[];
         for (var i = 0; i < number; i++) {
-          final start = first.start.asUtc.add(Duration(days: 1 * i));
-          final end = first.end.asUtc.add(Duration(days: 1 * i));
+          final start = first.start.add(Duration(days: 1 * i));
+          final end = first.end.add(Duration(days: 1 * i));
           ranges.add(DateTimeRange(start: start, end: end));
         }
         return ranges;
@@ -77,8 +77,8 @@ enum RecurrenceType {
       case none:
         return eventRange;
       case daily:
-        final event = eventRange.asUtc;
-        final range = recurrenceRange.asUtc;
+        final event = eventRange;
+        final range = recurrenceRange;
 
         final start = range.start.copyWith(
           hour: event.start.hour,
@@ -86,7 +86,7 @@ enum RecurrenceType {
           second: event.start.second,
         );
         final end = start.add(event.duration);
-        return DateTimeRange(start: start, end: end).asLocal;
+        return DateTimeRange(start: start, end: end);
     }
   }
 
@@ -96,8 +96,8 @@ enum RecurrenceType {
       case none:
         return 1;
       case daily:
-        final first = firstEventRange.asUtc;
-        final range = dateTimeRange.asUtc;
+        final first = firstEventRange;
+        final range = dateTimeRange;
         var number = 0;
         var currentValue = first.start;
 
@@ -157,8 +157,8 @@ class Recurrence {
     final (deltaStart, deltaEnd) = Recurrence._calculateDelta(event, updatedEvent);
     return Recurrence(
       first: DateTimeRange(
-        start: first.start.asUtc.add(deltaStart).asLocal,
-        end: first.end.asUtc.add(deltaEnd).asLocal,
+        start: first.start.add(deltaStart),
+        end: first.end.add(deltaEnd),
       ),
       number: number,
       type: type,

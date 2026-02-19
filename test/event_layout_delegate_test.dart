@@ -6,7 +6,7 @@ import 'utilities.dart';
 
 void main() {
   final date = DateTime(2025);
-  final dateAsUtc = date.asUtc;
+  final internalDate = InternalDateTime.fromDateTime(date);
   final events = [
     CalendarEvent(
       dateTimeRange: DateTimeRange(
@@ -40,7 +40,7 @@ void main() {
               child: CustomMultiChildLayout(
                 delegate: overlapLayoutStrategy(
                   events,
-                  InternalDateTime.fromDateTime(dateAsUtc),
+                  internalDate,
                   TimeOfDayRange.allDay(),
                   heightPerMinute,
                   null,
@@ -80,7 +80,7 @@ void main() {
             child: CustomMultiChildLayout(
               delegate: sideBySideLayoutStrategy(
                 events,
-                InternalDateTime.fromDateTime(dateAsUtc),
+                internalDate,
                 TimeOfDayRange.allDay(),
                 0.7,
                 null,

@@ -120,7 +120,7 @@ class HeaderDateButton extends StatelessWidget {
         if (controller.viewController is MonthViewController) {
           // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
           // we need to check the second week of the visibleDateTimeRange to determine the month and year.
-          final secondWeek = value.start.addDays(7);
+          final secondWeek = value.start.copyWith(day: value.start.day + 7);
           year = secondWeek.year;
           month = secondWeek.monthNameLocalized(context.localeTag);
         } else {

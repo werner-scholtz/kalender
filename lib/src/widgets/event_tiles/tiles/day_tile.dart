@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 class DayEventTile<T extends Object?> extends EventTile<T> {
@@ -34,7 +35,7 @@ class DayEventTile<T extends Object?> extends EventTile<T> {
           event,
           renderObject,
           DayDetail(
-            date: dateTimeRange.start.asLocal,
+            date: dateTimeRange.start.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),

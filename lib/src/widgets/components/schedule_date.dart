@@ -9,7 +9,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The [date] is the date that the header will be displayed for.
 /// The [style] is used to style the day header.
 typedef ScheduleDateBuilder = Widget Function(
-  DateTime date,
+  InternalDateTime date,
   ScheduleDateStyle? style,
 );
 
@@ -34,7 +34,7 @@ class ScheduleDateStyle {
 
 /// A widget that displays the name of the day and the day number of the week.
 class ScheduleDate extends StatelessWidget {
-  final DateTime date;
+  final InternalDateTime date;
   final ScheduleDateStyle? style;
 
   /// Create a new [ScheduleDate].
@@ -42,7 +42,7 @@ class ScheduleDate extends StatelessWidget {
   /// The [date] is the date that will be displayed.
   /// The [style] is the style of the [ScheduleDate].
   const ScheduleDate({super.key, required this.date, this.style});
-  static ScheduleDate builder(DateTime date, ScheduleDateStyle? style) {
+  static ScheduleDate builder(InternalDateTime date, ScheduleDateStyle? style) {
     return ScheduleDate(date: date, style: style);
   }
 
@@ -53,7 +53,7 @@ class ScheduleDate extends StatelessWidget {
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 
-    final button = date.isToday
+    final button = date.isToday(location: context.location)
         ? IconButton.filled(
             onPressed: null,
             icon: Text(

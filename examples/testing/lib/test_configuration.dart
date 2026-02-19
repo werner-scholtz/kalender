@@ -40,7 +40,8 @@ class TestConfiguration {
 
     // Loop through the test range and create events.
     final events = <CalendarEvent<Event>>[
-      for (var date in testRange.dates()) ...[
+      // TODO: figureout what to do here.
+      for (var date in InternalDateTimeRange.fromDateTimeRange(testRange).dates()) ...[
         for (var timeOfDayRange in timeOfDayRanges)
           CalendarEvent<Event>(
             dateTimeRange: DateTimeRange(

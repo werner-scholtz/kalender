@@ -27,15 +27,15 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     if (type == MultiDayViewType.freeScroll) {
       visibleDateTimeRange.value = InternalDateTimeRange(
         start: range.start,
-        end: range.start.addDays(viewConfiguration.numberOfDays),
+        end: range.start.add(Duration(days: viewConfiguration.numberOfDays)),
       );
     } else {
       visibleDateTimeRange.value = range;
     }
 
     // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
-    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toDateTime(DateTime.now());
-    final dayStart = viewConfiguration.timeOfDayRange.start.toDateTime(DateTime.now());
+    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toDateTime(now);
+    final dayStart = viewConfiguration.timeOfDayRange.start.toDateTime(now);
     final timeDifference = initialTimeOfDay.difference(dayStart);
     final initialScrollOffset = timeDifference.inMinutes * (heightPerMinute.value);
     scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
@@ -107,8 +107,9 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     // Animate to the date.
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
-    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(date);
-    final timeDifference = date.difference(startOfDay);
+    final internalDate = InternalDateTime.fromExternal(date);
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(internalDate);
+    final timeDifference = internalDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 
     // Animate to the offset of the time.
@@ -132,13 +133,13 @@ class MultiDayViewController<T extends Object?> extends ViewController<T> {
     final eventCenter = event.internalStart(location: location).add(Duration(minutes: event.duration.inMinutes ~/ 2));
     final halfViewPortHeight = scrollController.position.viewportDimension ~/ 2;
     final duration = Duration(minutes: halfViewPortHeight ~/ heightPerMinute.value);
-    final target = eventCenter.subtract(duration);
+    final target = InternalDateTime.fromDateTime(eventCenter.subtract(duration));
 
     // It is important to check if the target is in the same day as the event start.
     // If it is, we can use the local time of the target, otherwise we use the event start.
     // This prevents the view from moving to the previous day if the event starts at midnight.
     if (target.isSameDay(event.internalStart(location: location))) {
-      date = target.asLocal;
+      date = target;
     } else {
       date = event.start;
     }

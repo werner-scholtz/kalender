@@ -151,13 +151,13 @@ mixin DragTargetUtilities<T> {
   }
 
   /// Reschedule an event.
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime);
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, InternalDateTime cursorDateTime);
 
   /// Resize an event.
-  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, DateTime cursorDateTime);
+  CalendarEvent<T>? resizeEvent(CalendarEvent<T> event, ResizeDirection direction, InternalDateTime cursorDateTime);
 
   /// Reschedule an event.
-  CalendarEvent<T>? createEvent(DateTime cursorDateTime) => newEvent ??= controller.newEvent;
+  CalendarEvent<T>? createEvent(InternalDateTime cursorDateTime) => newEvent ??= controller.newEvent;
 
   /// Processes the [DragTargetDetails] and handle different types of detail data (reschedule, resize, create, other).
   ///
@@ -200,7 +200,7 @@ mixin DragTargetUtilities<T> {
   }
 
   /// Calculate the [DateTime] of the cursor.
-  DateTime? calculateCursorDateTime(
+  InternalDateTime? calculateCursorDateTime(
     Offset offset, {
     Offset feedbackWidgetOffset = Offset.zero,
   });

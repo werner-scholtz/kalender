@@ -67,22 +67,22 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   }
 
   /// Notify the callbacks about the tap / longPress.
-  void _onTap(BuildContext context, DateTime date, Offset localPosition) {
-    callbacks?.onTapped?.call(date);
+  void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+    callbacks?.onTapped?.call(date.forLocation(location: context.location));
 
     if (callbacks?.onTappedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, localPosition).asLocal;
+    final range = calculateDateTimeRange(date, localPosition);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: localPosition),
     );
   }
 
-  void _onLongPress(BuildContext context, DateTime date, Offset position) {
+  void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
     callbacks?.onLongPressed?.call(date);
 
     if (callbacks?.onLongPressedWithDetail == null) return;
-    final range = calculateDateTimeRange(date, position).asLocal;
+    final range = calculateDateTimeRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: position),
@@ -90,7 +90,7 @@ class _MultiDayDraggableState<T extends Object?> extends State<MultiDayDraggable
   }
 
   @override
-  InternalDateTimeRange calculateDateTimeRange(DateTime date, Offset localPosition) {
+  InternalDateTimeRange calculateDateTimeRange(InternalDateTime date, Offset localPosition) {
     final start = date;
     final end = start.endOfDay;
     return InternalDateTimeRange(start: start, end: end);

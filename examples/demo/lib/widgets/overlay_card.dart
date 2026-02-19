@@ -103,7 +103,7 @@ class _OverlayCardState extends State<OverlayCard> {
                 leading: const Icon(Icons.stop),
                 title: TextButton(
                   onPressed: () async {
-                    final last = DateTime.now().addDays(365);
+                    final last = DateTime.now().copyWith(day: DateTime.now().day + 365);
                     final date = await _showDatePicker(event.start.toLocal(), last);
                     if (date == null) return;
 

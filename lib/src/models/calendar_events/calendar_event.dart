@@ -51,10 +51,8 @@ class CalendarEvent<T extends Object?> {
   /// The [DateTimeRange] of the [CalendarEvent].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
-  InternalDateTime internalStart({Location? location}) =>
-      InternalDateTime.fromDateTime(start.forLocation(location: location));
-  InternalDateTime internalEnd({Location? location}) =>
-      InternalDateTime.fromDateTime(end.forLocation(location: location));
+  InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
+  InternalDateTime internalEnd({Location? location}) => InternalDateTime.fromExternal(end, location: location);
   InternalDateTimeRange internalRange({Location? location}) {
     return InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
   }

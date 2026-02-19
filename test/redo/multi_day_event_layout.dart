@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   group('MultiDayEventLayoutWidget', () {
@@ -16,9 +16,9 @@ void main() {
       ),
     );
 
-    final start = DateTime(2025, 3, 24);
-    final end = DateTime(2025, 3, 31);
-    final visibleRange = InternalDateTimeRange(start: start.asUtc, end: end.asUtc);
+    final start = InternalDateTime(2025, 3, 24);
+    final end = InternalDateTime(2025, 3, 31);
+    final visibleRange = InternalDateTimeRange(start: start, end: end);
 
     ValueKey<int> getKey(int data) => ValueKey(data);
 

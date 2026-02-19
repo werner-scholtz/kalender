@@ -9,13 +9,13 @@ typedef IndexItem = Map<int, ListItem>;
 
 /// A map of all the item indices to the date time.
 /// [int] is the index of the item.
-/// [DateTime] is the date time of the item.
-typedef IndexItemDateTime = Map<int, DateTime>;
+/// [InternalDateTime] is the date time of the item.
+typedef IndexItemDateTime = Map<int, InternalDateTime>;
 
 /// A map of all the date times to the item index.
-/// [DateTime] is the date time of the item.
+/// [InternalDateTime] is the date time of the item.
 /// [int] is the index of the item.
-typedef DateTimeItemIndex = Map<DateTime, int>;
+typedef DateTimeItemIndex = Map<InternalDateTime, int>;
 
 /// A abstract class that represents a list item.
 abstract class ListItem {}
@@ -71,7 +71,12 @@ mixin ScheduleMap {
   /// [item] is the item to add.
   /// [date] is the date to add.
   /// [isFirst] is whether the item is the first item of the date.
-  void addItemForPage({required ListItem item, required DateTime date, required int pageIndex, bool isFirst = false}) {
+  void addItemForPage({
+    required ListItem item,
+    required InternalDateTime date,
+    required int pageIndex,
+    bool isFirst = false,
+  }) {
     final itemsForPage = indexItem(pageIndex);
     final index = itemsForPage.length;
     itemsForPage[index] = item;
@@ -93,11 +98,11 @@ mixin ScheduleMap {
     return itemIndexDateTime;
   }
 
-  /// Get the [DateTime] for the given pageIndex and itemIndex.
+  /// Get the [InternalDateTime] for the given pageIndex and itemIndex.
   ///
   /// [pageIndex] is the page index to get the date for.
   /// [itemIndex] is the item index to get the date for.
-  DateTime? dateTimeFromIndexForPage(int pageIndex, int itemIndex) => itemIndexDateTime(pageIndex)[itemIndex];
+  InternalDateTime? dateTimeFromIndexForPage(int pageIndex, int itemIndex) => itemIndexDateTime(pageIndex)[itemIndex];
 
   /// A map of all the pageIndexes to DateTimeItemIndices.
   final _indexedDateTimeItemIndex = <int, DateTimeItemIndex>{};
@@ -110,14 +115,14 @@ mixin ScheduleMap {
   }
 
   int? indexFromDateTimeForPage(int pageIndex, DateTime date) {
-    date = date.forLocation(location: location).asUtc.startOfDay;
+    date = InternalDateTime.fromExternal(date, location: location).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     return dateTimeFirstItemIndex[date];
   }
 
   /// Find the index closest to the given date.
   int closestIndexForPage(int pageIndex, DateTime date) {
-    date = date.forLocation(location: location).asUtc.startOfDay;
+    date = InternalDateTime.fromExternal(date, location: location).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     if (dateTimeFirstItemIndex.isEmpty) return 0;
 
@@ -145,13 +150,13 @@ mixin ScheduleMap {
   }
 
   /// Get the month index for the given pageIndex and date.
-  int? monthIndexFromDateTime(int pageIndex, DateTime date) {
+  int? monthIndexFromDateTime(int pageIndex, InternalDateTime date) {
     final monthIndicesForPage = monthIndices(pageIndex);
     return monthIndicesForPage[date.startOfMonth];
   }
 
   /// Get the month index for the given pageIndex and date.
-  int closestMonthIndex(int pageIndex, DateTime date) {
+  int closestMonthIndex(int pageIndex, InternalDateTime date) {
     final monthIndicesForPage = monthIndices(pageIndex);
     if (monthIndicesForPage.isEmpty) return 0;
 

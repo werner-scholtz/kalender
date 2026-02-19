@@ -114,7 +114,8 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                 leading: const Icon(Icons.stop),
                 title: TextButton(
                   onPressed: () async {
-                    final last = DateTime.now().addDays(365);
+                    final now = DateTime.now();
+                    final last = now.copyWith(day: now.day + 365);
                     final date = await _showDatePicker(event.start, last);
                     if (date == null) return;
 

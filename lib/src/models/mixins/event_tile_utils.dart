@@ -65,7 +65,7 @@ mixin DayEventTileUtils<T extends Object?> {
   /// Returns the event's time range intersected with the tile's date.
   DateTimeRange get eventRangeOnDate {
     // TODO: Get the location somehow.
-    return event.internalRange().dateTimeRangeOnDate(tileRange.start.asUtc.startOfDay)!;
+    return event.internalRange().dateTimeRangeOnDate(tileRange.start.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -130,7 +130,7 @@ mixin DayEventTileUtils<T extends Object?> {
   DateTime dateTimeFromPosition(BuildContext context, Offset localPosition) {
     final minutes = (localPosition.dy / context.heightPerMinute).round();
     final dateTime = eventRangeOnDate.start.add(Duration(minutes: minutes));
-    return dateTime.asLocal;
+    return dateTime;
   }
 }
 
@@ -184,7 +184,7 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   ///
   /// For multi-day events, this typically represents the visible portion
   /// of the event within the current view (e.g., a week or month).
-  DateTimeRange get tileRange;
+  InternalDateTimeRange get tileRange;
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
   ///
@@ -240,16 +240,17 @@ mixin MultiDayEventTileUtils<T extends Object?> {
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
     // TODO: ensure this works as expected.
     final renderBox = context.findRenderObject() as RenderBox;
-    final tileRangeAsUtc = tileRange.asUtc;
     final start = event.internalStart(location: context.location);
     final end = event.internalEnd(location: context.location);
-    final range = DateTimeRange(
-      start: start.isBefore(tileRangeAsUtc.start) ? tileRangeAsUtc.start : start,
-      end: end.isAfter(tileRangeAsUtc.end) ? tileRangeAsUtc.end : end,
+    final range = InternalDateTimeRange(
+      start: start.isBefore(tileRange.start) ? tileRange.start : start,
+      end: end.isAfter(tileRange.end) ? tileRange.end : end,
     );
     final numberOfDays = range.dates().length;
     final dateClicked = localPosition.dx ~/ (renderBox.size.width / numberOfDays);
-    final date = range.start.copyWith(day: range.start.day + dateClicked).startOfDay.asLocal;
+    final date = InternalDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked))
+        .startOfDay
+        .forLocation(location: context.location);
     return date;
   }
 }

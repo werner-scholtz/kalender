@@ -90,5 +90,6 @@ class KalenderView with ChangeNotifier {
   ];
 
   final _now = DateTime.now();
-  late final _displayRange = DateTimeRange(start: _now.subtractDays(363), end: _now.addDays(365));
+  late final _displayRange =
+      DateTimeRange(start: _now.copyWith(day: _now.day - 365), end: _now.copyWith(day: _now.day + 365));
 }

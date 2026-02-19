@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions/internal.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
 class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
@@ -35,7 +35,7 @@ class MultiDayOverlayEventTile<T extends Object?> extends EventTile<T> {
           event,
           renderObject,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange.asLocal,
+            dateTimeRange: dateTimeRange.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
