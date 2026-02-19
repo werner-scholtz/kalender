@@ -58,7 +58,7 @@ class _RecurrenceDialogState extends State<RecurrenceDialog> {
                 final result = await showDateRangePicker(
                   context: context,
                   firstDate: DateTime(2000),
-                  lastDate: DateTime.now().endOfMonth,
+                  lastDate: DateTime.now().copyWith(day: 31),
                   initialDateRange: DateTimeRange(start: widget.event.start.toLocal(), end: widget.event.end.toLocal()),
                 );
 

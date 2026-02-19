@@ -57,7 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final now = DateTime.now();
 
   /// Decide on a range you want to display.
-  late final displayRange = DateTimeRange(start: now.subtractDays(363), end: now.addDays(365));
+  late final displayRange =
+      DateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
 
   /// Set the initial view configuration.
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
