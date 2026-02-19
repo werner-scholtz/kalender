@@ -188,7 +188,7 @@ class _HorizontalDragTargetState<T extends Object?> extends State<HorizontalDrag
   }
 
   @override
-  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, DateTime cursorDateTime) {
+  CalendarEvent<T>? rescheduleEvent(CalendarEvent<T> event, InternalDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
     if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return null;
