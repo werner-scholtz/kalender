@@ -84,7 +84,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   /// Notify the callbacks about the tap / longPress.
   void _onTap(BuildContext context, InternalDateTime date, Offset localPosition) {
     final dateTime = _calculateTimeAndDate(date, localPosition);
-    callbacks?.onTapped?.call(dateTime);
+    callbacks?.onTapped?.call(dateTime.forLocation(location: context.location));
 
     if (callbacks?.onTappedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
@@ -113,7 +113,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   }
 
   /// Calculate a DateTime from the [date] of the draggable and the [localPosition] of the cursor.
-  DateTime _calculateTimeAndDate(InternalDateTime date, Offset localPosition) {
+  InternalDateTime _calculateTimeAndDate(InternalDateTime date, Offset localPosition) {
     // Calculate the duration from the top of the page to the localPosition.
     final durationFromStart = localPosition.dy ~/ context.heightPerMinute;
     final durationFromTop = Duration(minutes: durationFromStart.round());

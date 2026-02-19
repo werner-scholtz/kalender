@@ -1,13 +1,22 @@
+import 'package:kalender/src/models/view_configurations/view_configuration.dart';
 import 'package:kalender/src/platform.dart';
 
 /// The [EventSnapStrategy] typedef defines a function that snaps events to specific intervals.
 ///
 /// This function takes a [cursorDate] and a [startOfDay] date, and returns a new date that is snapped
 /// based on the defined strategy.
-typedef EventSnapStrategy = DateTime Function(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes);
+typedef EventSnapStrategy = InternalDateTime Function(
+  InternalDateTime cursorDate,
+  InternalDateTime startOfDay,
+  int snapIntervalMinutes,
+);
 
 /// The default snap strategy used to snap events to a the [snapIntervalMinutes].
-DateTime defaultSnapStrategy(DateTime cursorDate, DateTime startOfDay, int snapIntervalMinutes) {
+InternalDateTime defaultSnapStrategy(
+  InternalDateTime cursorDate,
+  InternalDateTime startOfDay,
+  int snapIntervalMinutes,
+) {
   final minutes = cursorDate.difference(startOfDay).inMinutes;
   final numberOfIntervals = (minutes / snapIntervalMinutes).round();
   final snappedMinutes = numberOfIntervals * snapIntervalMinutes;
