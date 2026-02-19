@@ -30,7 +30,7 @@ class DayEventTile extends EventTile {
               event,
               renderObject,
               DayDetail(
-                date: dateTimeRange.start.asLocal,
+                date: dateTimeRange.start,
                 renderBox: renderObject,
                 localOffset: details.localPosition,
               ),

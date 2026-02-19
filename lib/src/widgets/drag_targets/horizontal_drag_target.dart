@@ -10,7 +10,7 @@ import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigg
 ///
 /// The [HorizontalDragTarget] specializes in accepting [Draggable] widgets for a multi day header / month body.
 class HorizontalDragTarget extends StatefulWidget {
-  final DateTimeRange visibleDateTimeRange;
+  final InternalDateTimeRange visibleDateTimeRange;
 
   final HorizontalConfiguration configuration;
 
@@ -67,7 +67,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
   ViewController get viewController => controller.viewController!;
   TileComponents get tileComponents => context.tileComponents();
-  DateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
+  InternalDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
 
@@ -188,7 +188,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
     if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return null;
@@ -214,7 +214,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     final internalRange = event.internalRange(location: context.location);
     final range = switch (direction) {
       ResizeDirection.left => calculateDateTimeRangeFromStart(internalRange, cursorDateTime),
@@ -227,7 +227,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   }
 
   @override
-  CalendarEvent? createEvent(DateTime cursorDateTime) {
+  CalendarEvent? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 

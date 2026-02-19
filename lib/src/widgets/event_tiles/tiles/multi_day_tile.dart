@@ -30,7 +30,7 @@ class MultiDayEventTile extends EventTile {
               event,
               renderObject,
               MultiDayDetail(
-                dateTimeRange: dateTimeRange.asLocal,
+                dateTimeRange: dateTimeRange,
                 renderBox: renderObject,
                 localOffset: details.localPosition,
               ),

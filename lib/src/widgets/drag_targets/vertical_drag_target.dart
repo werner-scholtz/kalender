@@ -281,7 +281,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
-  CalendarEvent? rescheduleEvent(CalendarEvent event, DateTime cursorDateTime) {
+  CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
     // Multi-day events belong in the header, not the body.
     // Return null to prevent updating the selection while dragging over this area.
     if (event.isMultiDayEvent) return null;
@@ -338,7 +338,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
   /// Update the [CalendarEvent] based on the [direction] and [cursorDateTime] delta.
   @override
-  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, DateTime cursorDateTime) {
+  CalendarEvent? resizeEvent(CalendarEvent event, ResizeDirection direction, InternalDateTime cursorDateTime) {
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
@@ -363,7 +363,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   }
 
   @override
-  CalendarEvent? createEvent(DateTime cursorDateTime) {
+  CalendarEvent? createEvent(InternalDateTime cursorDateTime) {
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
