@@ -1,5 +1,7 @@
 import 'package:kalender/kalender.dart';
 
+// TODO: Read through documentation and ensure it is up to date and accurate.
+
 /// A timezone-agnostic [DateTime] subclass used internally for display and layout purposes.
 ///
 /// [InternalDateTime] stores date and time components (year, month, day, hour, etc.)

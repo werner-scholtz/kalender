@@ -6,7 +6,7 @@ import 'package:kalender/kalender_extensions.dart';
 
 /// A class representing a object that can be displayed by the calendar.
 ///
-/// TODO: Add example of how to extend this class.
+/// TODO: Add example of how to extend this class. Along with everything that devs need to implement.
 class CalendarEvent {
   /// The start [DateTime] of the [CalendarEvent].
   final DateTime start;
@@ -42,6 +42,7 @@ class CalendarEvent {
         end = dateTimeRange.end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(true);
 
+  // TODO: consider using the uuid package for this, but for now this should be sufficient.
   static String _createUniqueId() {
     final rawRandom = Random();
     const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

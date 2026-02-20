@@ -9,6 +9,8 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
+// TODO: I want to simplify this widget by removing the split between the content and header, essentialy removing the duplicate page views.
+
 /// This widget is used to display a multi-day body.
 ///
 /// The multi-day body has two big parts to it:
