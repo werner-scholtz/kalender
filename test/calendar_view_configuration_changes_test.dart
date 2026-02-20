@@ -5,499 +5,514 @@ import 'package:kalender/kalender.dart';
 import 'utilities.dart';
 
 void main() {
-  group('CalendarView Configuration Changes', () {
-    late EventsController eventsController;
-    late CalendarController calendarController;
-    late DateTimeRange calendarRange;
+  late EventsController eventsController;
+  late CalendarController calendarController;
+  final calendarRange = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
 
-    setUp(() {
-      eventsController = DefaultEventsController();
-      calendarController = CalendarController();
-      calendarRange = DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2026, 12, 31));
-    });
+  /// Shared key so didUpdateWidget fires instead of full rebuild.
+  late GlobalKey calendarViewKey;
 
-    group('View configuration changes with selectedDate', () {
-      testWidgets('should use selectedDate when provided during view configuration change', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(displayRange: calendarRange);
+  setUp(() {
+    eventsController = DefaultEventsController();
+    calendarController = CalendarController();
+    calendarViewKey = GlobalKey();
+  });
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-          ),
-        );
+  /// Helper to pump a CalendarView with the given config and optional body.
+  Future<void> pumpCalendarView(
+    WidgetTester tester, {
+    required ViewConfiguration config,
+    bool withBody = false,
+  }) async {
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        key: calendarViewKey,
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: config,
+        body: withBody ? const CalendarBody() : null,
+      ),
+    );
+  }
 
-        // Change to daily view with specific selectedDate
-        final selectedDate = DateTime(2024, 8, 20);
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
+  // ---------------------------------------------------------------------------
+  // selectedDate tests
+  // ---------------------------------------------------------------------------
+  group('View configuration changes with selectedDate', () {
+    testWidgets('uses initialDateTime when provided during config change', (tester) async {
+      await pumpCalendarView(tester, config: MonthViewConfiguration.singleMonth(displayRange: calendarRange));
+
+      final selectedDate = DateTime(2024, 8, 20);
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
           initialDateTime: selectedDate,
           displayRange: calendarRange,
-        );
+        ),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
+      final visibleRange = calendarController.internalDateTimeRange.value;
+      expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
+    });
 
-        // Verify that the selectedDate was used
-        final visibleRange = calendarController.internalDateTimeRange.value;
-        expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
-      });
+    testWidgets('prioritizes initialDateTime over strategy', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month View', displayRange: calendarRange),
+      );
 
-      testWidgets('should prioritize selectedDate over initial date selection strategy', (tester) async {
-        final calendarViewKey = GlobalKey();
-
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-          ),
-        );
-
-        // Change to daily view with both selectedDate and custom strategy
-        final selectedDate = DateTime(2024, 12, 25);
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
+      final selectedDate = DateTime(2024, 12, 25);
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
           name: 'Day View',
           initialDateTime: selectedDate,
           initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
           displayRange: calendarRange,
-        );
+        ),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
+      final visibleRange = calendarController.internalDateTimeRange.value;
+      expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
+    });
+  });
 
-        // Verify that selectedDate was used, not the strategy result
-        final visibleRange = calendarController.internalDateTimeRange.value;
-        expect(visibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(selectedDate)));
-      });
+  // ---------------------------------------------------------------------------
+  // Strategy tests
+  // ---------------------------------------------------------------------------
+  group('View configuration changes with strategy', () {
+    testWidgets('uses default strategy when no initialDateTime', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month View', displayRange: calendarRange),
+        withBody: true,
+      );
+      expect(find.byType(MonthBody), findsOneWidget);
+
+      calendarController.jumpToDate(DateTime(2024, 6, 1));
+      await tester.pumpAndSettle();
+
+      final visibleRangeBefore = calendarController.internalDateTimeRange.value;
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day View', displayRange: calendarRange),
+      );
+
+      // Default monthly→daily strategy uses dominantMonthDate.
+      final visibleRangeAfter = calendarController.internalDateTimeRange.value;
+      final expectedDate = visibleRangeBefore!.dominantMonthDate;
+      expect(visibleRangeAfter!.start.startOfDay, equals(InternalDateTime.fromDateTime(expectedDate)));
     });
 
-    group('View configuration changes with strategy', () {
-      testWidgets('should use initial date selection strategy when no selectedDate', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
+    testWidgets('uses custom strategy', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month View', displayRange: calendarRange),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-            body: const CalendarBody(),
-          ),
-        );
-        expect(find.byType(MonthBody), findsOneWidget);
-
-        calendarController.jumpToDate(DateTime(2024, 6, 1));
-        await tester.pumpAndSettle();
-
-        // Get the current visible range after the month view is initialized
-        final visibleRangeBeforeChange = calendarController.internalDateTimeRange.value;
-
-        // Change to daily view without selectedDate (should use strategy)
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
-
-        // Verify that the strategy was used (monthly to daily transition)
-        final visibleRangeAfterChange = calendarController.internalDateTimeRange.value;
-        final expectedDate = visibleRangeBeforeChange!.dominantMonthDate;
-        expect(visibleRangeAfterChange!.start.startOfDay, equals(InternalDateTime.fromDateTime(expectedDate)));
-      });
-
-      testWidgets('should use custom initial date selection strategy', (tester) async {
-        final calendarViewKey = GlobalKey();
-
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          displayRange: calendarRange,
-          name: 'Month View',
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-          ),
-        );
-
-        // Change to daily view with custom strategy
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
           name: 'Day View',
           initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
           displayRange: calendarRange,
-        );
+        ),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
-
-        // Verify that the custom strategy was used
-        final visibleRange = calendarController.internalDateTimeRange.value;
-        expect(visibleRange!.start.startOfDay, equals(_fixedDate));
-      });
+      final visibleRange = calendarController.internalDateTimeRange.value;
+      expect(visibleRange!.start.startOfDay, equals(_fixedDate));
     });
 
-    group('Real-world transition scenarios', () {
-      testWidgets('should handle month to week transition correctly', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
+    testWidgets('custom strategy receives correct old view controller', (tester) async {
+      ViewController? capturedOldController;
+      ViewConfiguration? capturedNewConfig;
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-            body: const CalendarBody(),
-          ),
-        );
+      InternalDateTime capturingStrategy({
+        required ViewController oldViewController,
+        required ViewConfiguration newViewConfiguration,
+      }) {
+        capturedOldController = oldViewController;
+        capturedNewConfig = newViewConfiguration;
+        return _fixedDate;
+      }
 
-        expect(find.byType(MonthBody), findsOneWidget);
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
 
-        // Set up a specific month view
-        calendarController.jumpToDate(DateTime(2024, 6, 1));
-        await tester.pumpAndSettle();
+      final originalController = calendarController.viewController;
 
-        final monthVisibleRange = calendarController.visibleDateTimeRange.value;
+      final dailyConfig = MultiDayViewConfiguration.singleDay(
+        name: 'Day',
+        initialDateSelectionStrategy: capturingStrategy,
+        displayRange: calendarRange,
+      );
+      await pumpCalendarView(tester, config: dailyConfig);
 
-        // Transition to week view
-        final weekConfig = MultiDayViewConfiguration.week(
-          name: 'Week View',
-          displayRange: calendarRange,
-        );
+      expect(capturedOldController, same(originalController));
+      expect(capturedNewConfig, same(dailyConfig));
+    });
+  });
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: weekConfig,
-          ),
-        );
+  // ---------------------------------------------------------------------------
+  // Real-world transition scenarios
+  // ---------------------------------------------------------------------------
+  group('Real-world transition scenarios', () {
+    testWidgets('month → week', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+        withBody: true,
+      );
+      expect(find.byType(MonthBody), findsOneWidget);
 
-        // Verify that the week view starts at the beginning of the month range
-        final weekVisibleRange = calendarController.internalDateTimeRange.value;
-        expect(weekVisibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(monthVisibleRange!.start)));
-      });
+      calendarController.jumpToDate(DateTime(2024, 6, 1));
+      await tester.pumpAndSettle();
+      final monthRange = calendarController.visibleDateTimeRange.value;
 
-      testWidgets('should handle week to daily transition correctly', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final weekConfig = MultiDayViewConfiguration.week(
-          name: 'Week View',
-          displayRange: calendarRange,
-        );
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: weekConfig,
-            body: const CalendarBody(),
-          ),
-        );
-
-        expect(find.byType(MultiDayBody), findsOneWidget);
-
-        // Set up a specific week
-        calendarController.jumpToDate(DateTime(2024, 6, 10)); // Monday
-        await tester.pumpAndSettle();
-
-        final weekVisibleRange = calendarController.visibleDateTimeRange.value;
-
-        // Transition to daily view
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
-
-        // Verify that the daily view starts at the beginning of the week
-        final dailyVisibleRange = calendarController.internalDateTimeRange.value;
-        expect(dailyVisibleRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(weekVisibleRange!.start)));
-      });
-
-      testWidgets('should handle daily to month transition correctly', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-            body: const CalendarBody(),
-          ),
-        );
-
-        expect(find.byType(MultiDayBody), findsOneWidget);
-
-        // Set up a specific day
-        final specificDay = DateTime(2024, 6, 15);
-        calendarController.jumpToDate(specificDay);
-        await tester.pumpAndSettle();
-
-        // Transition to month view
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: monthConfig,
-          ),
-        );
-
-        await tester.pumpAndSettle();
-
-        // Verify that the month view shows the correct month
-        final monthVisibleRange = calendarController.internalDateTimeRange.value;
-        expect(monthVisibleRange!.dominantMonthDate.year, equals(specificDay.year));
-        expect(monthVisibleRange.dominantMonthDate.month, equals(specificDay.month));
-        expect(monthVisibleRange.dominantMonthDate.day, equals(1));
-      });
-
-      testWidgets('should handle schedule to daily transition correctly', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final scheduleConfig = ScheduleViewConfiguration.continuous(name: 'Schedule View', displayRange: calendarRange);
-        final calendarView = CalendarView(
-          key: calendarViewKey,
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: scheduleConfig,
-          body: const CalendarBody(),
-        );
-
-        await pumpAndSettleWithMaterialApp(tester, calendarView);
-        await tester.pumpAndSettle();
-
-        expect(find.byType(ScheduleBody), findsOneWidget);
-
-        // Set up a specific date in schedule view
-        final specificDate = DateTime(2024, 7, 20);
-        calendarController.jumpToDate(specificDate);
-        await tester.pumpAndSettle();
-
-        final scheduleVisibleRange = calendarController.internalDateTimeRange.value;
-
-        // Transition to daily view
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
-
-        // Verify that the daily view starts at the schedule start date
-        final dailyVisibleRange = calendarController.internalDateTimeRange.value;
-        expect(dailyVisibleRange!.start.startOfDay, equals(scheduleVisibleRange!.start.startOfDay));
-      });
+      final weekRange = calendarController.internalDateTimeRange.value;
+      expect(weekRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(monthRange!.start)));
     });
 
-    group('View controller disposal', () {
-      testWidgets('should dispose old view controller when configuration changes', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
-          displayRange: calendarRange,
-        );
+    testWidgets('week → day', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
+        withBody: true,
+      );
+      expect(find.byType(MultiDayBody), findsOneWidget);
 
-        final calendarView = CalendarView(
-          key: calendarViewKey,
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: monthConfig,
-        );
+      calendarController.jumpToDate(DateTime(2024, 6, 10));
+      await tester.pumpAndSettle();
+      final weekRange = calendarController.visibleDateTimeRange.value;
 
-        await pumpAndSettleWithMaterialApp(tester, calendarView);
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
 
-        final originalViewController = calendarController.viewController;
-        expect(originalViewController, isNotNull);
-
-        // Change configuration
-        final dailyConfig = MultiDayViewConfiguration.singleDay(
-          name: 'Day View',
-          displayRange: calendarRange,
-        );
-
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig,
-          ),
-        );
-
-        // Verify that a new view controller was created
-        final newViewController = calendarController.viewController;
-        expect(newViewController, isNotNull);
-        expect(newViewController, isNot(same(originalViewController)));
-      });
+      final dayRange = calendarController.internalDateTimeRange.value;
+      expect(dayRange!.start.startOfDay, equals(InternalDateTime.fromDateTime(weekRange!.start)));
     });
 
-    group('Edge cases and error scenarios', () {
-      testWidgets('should handle rapid configuration changes', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final monthConfig = MonthViewConfiguration.singleMonth(
-          name: 'Month View',
+    testWidgets('day → month', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+      expect(find.byType(MultiDayBody), findsOneWidget);
+
+      final specificDay = DateTime(2024, 6, 15);
+      calendarController.jumpToDate(specificDay);
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+      await tester.pumpAndSettle();
+
+      final monthRange = calendarController.internalDateTimeRange.value;
+      expect(monthRange!.dominantMonthDate.year, equals(specificDay.year));
+      expect(monthRange.dominantMonthDate.month, equals(specificDay.month));
+      expect(monthRange.dominantMonthDate.day, equals(1));
+    });
+
+    testWidgets('schedule → day', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.continuous(name: 'Schedule', displayRange: calendarRange),
+        withBody: true,
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(ScheduleBody), findsOneWidget);
+
+      final specificDate = DateTime(2024, 7, 20);
+      calendarController.jumpToDate(specificDate);
+      await tester.pumpAndSettle();
+      final scheduleRange = calendarController.internalDateTimeRange.value;
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
+
+      final dayRange = calendarController.internalDateTimeRange.value;
+      expect(dayRange!.start.startOfDay, equals(scheduleRange!.start.startOfDay));
+    });
+
+    testWidgets('day → week → month (chained transitions)', (tester) async {
+      // Start with day view on June 15
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      // Day → Week
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.week(name: 'Week', displayRange: calendarRange),
+      );
+      final weekRange = calendarController.internalDateTimeRange.value;
+      expect(weekRange, isNotNull);
+
+      // Week → Month
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+      final monthRange = calendarController.internalDateTimeRange.value;
+      expect(monthRange!.dominantMonthDate.month, equals(6));
+    });
+
+    testWidgets('day → work week', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 12)); // Wednesday
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.workWeek(name: 'Work Week', displayRange: calendarRange),
+      );
+
+      final workWeekRange = calendarController.internalDateTimeRange.value;
+      expect(workWeekRange, isNotNull);
+      // Work week should have 5 days
+      expect(workWeekRange!.end.difference(workWeekRange.start).inDays, equals(5));
+    });
+
+    testWidgets('month → schedule', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 1));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.continuous(name: 'Schedule', displayRange: calendarRange),
+        withBody: true,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ScheduleBody), findsOneWidget);
+      expect(calendarController.internalDateTimeRange.value, isNotNull);
+    });
+
+    testWidgets('paginated schedule → day', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: ScheduleViewConfiguration.paginated(name: 'Paginated Schedule', displayRange: calendarRange),
+        withBody: true,
+      );
+      await tester.pumpAndSettle();
+
+      calendarController.jumpToDate(DateTime(2024, 9, 1));
+      await tester.pumpAndSettle();
+      final scheduleRange = calendarController.internalDateTimeRange.value;
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
+
+      final dayRange = calendarController.internalDateTimeRange.value;
+      expect(dayRange!.start.startOfDay, equals(scheduleRange!.start.startOfDay));
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // View controller lifecycle
+  // ---------------------------------------------------------------------------
+  group('View controller lifecycle', () {
+    testWidgets('creates new controller on config change', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+
+      final original = calendarController.viewController;
+      expect(original, isNotNull);
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
+
+      final updated = calendarController.viewController;
+      expect(updated, isNotNull);
+      expect(updated, isNot(same(original)));
+    });
+
+    testWidgets('creates new controller for different objects of same type', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day 1', displayRange: calendarRange),
+      );
+      final original = calendarController.viewController;
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day 2', displayRange: calendarRange),
+      );
+
+      // Different config objects → new view controller.
+      expect(calendarController.viewController, isNot(same(original)));
+    });
+
+    testWidgets('controller is attached after config change', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+
+      expect(calendarController.isAttached, isTrue);
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
+
+      expect(calendarController.isAttached, isTrue);
+      expect(calendarController.viewController, isNotNull);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Edge cases
+  // ---------------------------------------------------------------------------
+  group('Edge cases', () {
+    testWidgets('rapid configuration changes do not crash', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+
+      final configs = [
+        MultiDayViewConfiguration.singleDay(name: 'Day 1', displayRange: calendarRange),
+        MultiDayViewConfiguration.week(name: 'Week 1', displayRange: calendarRange),
+        MonthViewConfiguration.singleMonth(name: 'Month 1', displayRange: calendarRange),
+        MultiDayViewConfiguration.workWeek(name: 'Work Week', displayRange: calendarRange),
+        ScheduleViewConfiguration.continuous(name: 'Schedule', displayRange: calendarRange),
+        MultiDayViewConfiguration.singleDay(name: 'Day 2', displayRange: calendarRange),
+      ];
+
+      for (final config in configs) {
+        await pumpCalendarView(tester, config: config);
+      }
+
+      expect(calendarController.viewController, isNotNull);
+      expect(calendarController.isAttached, isTrue);
+    });
+
+    testWidgets('round-trip transition preserves date context', (tester) async {
+      // Start daily on June 15
+      final startDate = DateTime(2024, 6, 15);
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
+          name: 'Day',
+          initialDateTime: startDate,
           displayRange: calendarRange,
-        );
+        ),
+        withBody: true,
+      );
 
-        final calendarView = CalendarView(
-          key: calendarViewKey,
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: monthConfig,
-        );
+      final initialRange = calendarController.internalDateTimeRange.value;
 
-        await pumpAndSettleWithMaterialApp(tester, calendarView);
+      // Go to month and back
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+      );
 
-        // Rapidly change configurations
-        final configs = [
-          MultiDayViewConfiguration.singleDay(name: 'Day 1', displayRange: calendarRange),
-          MultiDayViewConfiguration.week(name: 'Week 1', displayRange: calendarRange),
-          MonthViewConfiguration.singleMonth(name: 'Month 1', displayRange: calendarRange),
-          MultiDayViewConfiguration.workWeek(name: 'Work Week', displayRange: calendarRange),
-          MultiDayViewConfiguration.singleDay(name: 'Day 2', displayRange: calendarRange),
-        ];
+      final finalRange = calendarController.internalDateTimeRange.value;
+      // After round-trip, should still be in June.
+      expect(finalRange!.start.month, equals(initialRange!.start.month));
+    });
 
-        for (final config in configs) {
-          await pumpAndSettleWithMaterialApp(
-            tester,
-            CalendarView(
-              key: calendarViewKey,
-              eventsController: eventsController,
-              calendarController: calendarController,
-              viewConfiguration: config,
-            ),
-          );
-        }
-
-        // Should not crash and should have a valid view controller
-        expect(calendarController.viewController, isNotNull);
-      });
-
-      testWidgets('should handle same view configuration type without recreation', (tester) async {
-        final calendarViewKey = GlobalKey();
-        final dailyConfig1 = MultiDayViewConfiguration.singleDay(
-          name: 'Day View 1',
+    testWidgets('config change at display range boundary', (tester) async {
+      final start = calendarRange.start;
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
+          name: 'Day',
+          initialDateTime: start,
           displayRange: calendarRange,
-        );
+        ),
+      );
 
-        final calendarView = CalendarView(
-          key: calendarViewKey,
-          eventsController: eventsController,
-          calendarController: calendarController,
-          viewConfiguration: dailyConfig1,
-        );
+      // Switch to month - should not crash at the boundary.
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
 
-        await pumpAndSettleWithMaterialApp(tester, calendarView);
+      expect(calendarController.internalDateTimeRange.value, isNotNull);
+    });
 
-        final originalViewController = calendarController.viewController;
-
-        // Change to identical configuration (same runtime type)
-        final dailyConfig2 = MultiDayViewConfiguration.singleDay(
-          name: 'Day View 2',
+    testWidgets('config change at end of display range', (tester) async {
+      // Jump close to the end of the visible range.
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(
+          name: 'Day',
+          initialDateTime: DateTime(2026, 12, 30),
           displayRange: calendarRange,
-        );
+        ),
+      );
 
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            key: calendarViewKey,
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: dailyConfig2,
-          ),
-        );
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+      );
 
-        // Should create new view controller because configurations are different objects
-        final newViewController = calendarController.viewController;
-        expect(newViewController, isNot(same(originalViewController)));
-      });
+      expect(calendarController.internalDateTimeRange.value, isNotNull);
+    });
+
+    testWidgets('custom number of days', (tester) async {
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.custom(
+          name: '3-Day',
+          numberOfDays: 3,
+          displayRange: calendarRange,
+        ),
+        withBody: true,
+      );
+
+      expect(find.byType(MultiDayBody), findsOneWidget);
+      expect(calendarController.internalDateTimeRange.value, isNotNull);
     });
   });
 }
