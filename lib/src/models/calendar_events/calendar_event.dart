@@ -4,35 +4,49 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
 
-/// A class representing a object that can be displayed by the calendar.
+/// Base class for events displayed in the calendar.
 ///
-/// TODO: Add example of how to extend this class. Along with everything that devs need to implement.
+/// Stores a UTC date range, a unique [id], and an [interaction] config.
+/// Extend this class to attach custom data (title, color, etc.).
+///
+/// ```dart
+/// class Event extends CalendarEvent {
+///   Event({required super.dateTimeRange, required this.title, super.interaction});
+///   final String title;
+///
+///   @override
+///   Event copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) =>
+///       Event(
+///         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+///         interaction: interaction ?? this.interaction,
+///         title: title ?? this.title,
+///       )..id = id;
+///
+///   @override
+///   bool operator ==(Object other) =>
+///       super == other && other is Event && other.title == title;
+///
+///   @override
+///   int get hashCode => Object.hash(super.hashCode, title);
+/// }
+/// ```
 class CalendarEvent {
-  /// The start [DateTime] of the [CalendarEvent].
+  /// The start of the event in UTC.
   final DateTime start;
 
-  /// The end [DateTime] of the [CalendarEvent].
+  /// The end of the event in UTC.
   final DateTime end;
 
-  /// The interaction for the [CalendarEvent].
+  /// Controls whether the event can be moved, resized, etc.
   final EventInteraction interaction;
 
-  /// The id of the [CalendarEvent].
+  /// Unique identifier. Auto-generated if not provided.
   late String id;
 
-  // TODO(werner): Convert to this constructor, makes more sense in the long run.
-  /*
-  CalendarEvent({
-    String? id,
-    required DateTime start,
-    required DateTime end,
-    EventInteraction? interaction,
-  })  : assert(start.isBefore(end), 'Start time must be before the end time.')
-        id = id ?? _createUniqueId(),
-        start = start.toUtc(),
-        end = end.toUtc(),
-        interaction = interaction ?? EventInteraction.fromCanModify(true);*/
-
+  /// Creates a [CalendarEvent].
+  ///
+  /// [dateTimeRange] is stored in UTC. A unique [id] is generated if omitted.
+  /// [interaction] defaults to fully modifiable.
   CalendarEvent({
     String? id,
     required DateTimeRange dateTimeRange,
@@ -42,7 +56,7 @@ class CalendarEvent {
         end = dateTimeRange.end.toUtc(),
         interaction = interaction ?? EventInteraction.fromCanModify(true);
 
-  // TODO: consider using the uuid package for this, but for now this should be sufficient.
+  // TODO: consider using a UUID package for more robust ID generation.
   static String _createUniqueId() {
     final rawRandom = Random();
     const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -55,29 +69,29 @@ class CalendarEvent {
     return String.fromCharCodes(charCodes);
   }
 
-  /// The [DateTimeRange] of the [CalendarEvent].
+  /// The date range as a [DateTimeRange].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
-  /// The [InternalDateTime] representing the start of the [CalendarEvent].
+  /// The start as an [InternalDateTime], adjusted for [location].
   InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
 
-  /// The [InternalDateTime] representing the end of the [CalendarEvent].
+  /// The end as an [InternalDateTime], adjusted for [location].
   InternalDateTime internalEnd({Location? location}) => InternalDateTime.fromExternal(end, location: location);
 
-  /// The [InternalDateTimeRange] of the [CalendarEvent].
+  /// The full range as an [InternalDateTimeRange], adjusted for [location].
   InternalDateTimeRange internalRange({Location? location}) =>
       InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
 
-  /// The total duration of the [CalendarEvent] this uses utc time for the calculation.
+  /// Total duration (UTC-based).
   Duration get duration => dateTimeRange.duration;
 
-  /// Whether the [CalendarEvent] is longer than a day.
+  /// Whether this event spans more than one day.
   bool get isMultiDayEvent => duration.inDays > 0;
 
-  /// The [InternalDateTime]s that the [CalendarEvent] spans.
+  /// All dates this event spans, adjusted for [location].
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
-  /// Copy the [CalendarEvent] with the new values.
+  /// Returns a copy with the given fields replaced.
   CalendarEvent copyWith({
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
@@ -95,17 +109,16 @@ class CalendarEvent {
         '\nend: $end';
   }
 
-  /// Check if the [CalendarEvent] is equal to another [CalendarEvent].
+  /// Check equality based on [layoutEquals].
   @override
   bool operator ==(Object other) => other is CalendarEvent && layoutEquals(other);
 
   @override
   int get hashCode => Object.hash(id, start, end, interaction);
 
-  /// Compares properties that affect layout.
+  /// Compares layout-affecting properties ([id], [start], [end], [interaction]).
   ///
-  /// Override this in subclasses if you have additional properties that affect
-  /// how the event is rendered/positioned in the calendar.
+  /// Override in subclasses that add properties affecting rendering.
   bool layoutEquals(CalendarEvent other) {
     return id == other.id && start == other.start && end == other.end && interaction == other.interaction;
   }
