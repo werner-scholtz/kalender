@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
+export 'package:timezone/timezone.dart';
+
 // TODO: Read through documentation and ensure it is up to date and accurate.
 
 /// This is a DateTimeRange class used for internal display purposes only.

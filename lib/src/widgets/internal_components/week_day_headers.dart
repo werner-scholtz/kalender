@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalender/src/extensions/internal.dart';
+import 'package:kalender/src/extensions/internal_date_time.dart';
 
 /// A row of weekday headers for a week in the month view.
 class WeekDayHeaders extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/calendar_view.dart';
-import 'package:kalender/src/extensions/internal.dart';
+import 'package:kalender/src/extensions/internal_date_time_range.dart';
+
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/controllers/view_controller.dart';
 import 'package:kalender/src/models/mixins/calendar_navigation_functions.dart';

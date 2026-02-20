@@ -1,13 +1,16 @@
 import 'package:kalender/kalender.dart';
 
-// TODO: Read through documentation and ensure it is up to date and accurate.
+export 'package:timezone/timezone.dart';
 
-/// A timezone-agnostic [DateTime] subclass used internally for display and layout purposes.
+/// A [DateTime] subclass that stores date/time components as-is via [DateTime.utc],
+/// bypassing implicit timezone conversions.
 ///
-/// [InternalDateTime] stores date and time components (year, month, day, hour, etc.)
-/// **as-is** using [DateTime.utc], without representing an actual UTC instant.
-/// The UTC flag is used purely as a storage mechanism to avoid any implicit
-/// timezone conversions that Dart's [DateTime] would otherwise apply.
+/// **Not a real UTC instant** — the UTC flag is only used to prevent Dart from
+/// applying local-timezone adjustments. This makes arithmetic (e.g. [add], [subtract])
+/// DST-safe and keeps display values stable across timezones.
+///
+/// Use [fromExternal] to convert a wall-clock [DateTime] or [TZDateTime] into
+/// an [InternalDateTime], and [forLocation] to convert back.
 class InternalDateTime extends DateTime {
   /// Creates a [InternalDateTime] instance.
   InternalDateTime(
@@ -34,7 +37,12 @@ class InternalDateTime extends DateTime {
           dateTime.microsecond,
         );
 
-  /// Creates a [InternalDateTime] from an external [DateTime].
+  /// Converts a [DateTime] or [TZDateTime] into an [InternalDateTime].
+  ///
+  /// Returns [dateTime] unchanged if it is already an [InternalDateTime].
+  /// Otherwise converts to UTC first, then resolves to the target timezone
+  /// ([location] if provided, or the system's local timezone) before
+  /// storing the resulting components.
   static InternalDateTime fromExternal(DateTime dateTime, {Location? location}) {
     if (dateTime is InternalDateTime) return dateTime;
     final utc = dateTime.toUtc();
@@ -42,27 +50,61 @@ class InternalDateTime extends DateTime {
     return InternalDateTime.fromDateTime(date);
   }
 
+  /// Returns midnight (00:00:00) of this date.
   InternalDateTime get startOfDay => InternalDateTime(year, month, day);
+
+  /// Returns midnight (00:00:00) of the **next** day (exclusive upper bound).
+  ///
+  /// This is an exclusive boundary — it represents the start of the following day,
+  /// not the last instant of the current day. Useful for half-open `[start, end)` ranges.
   InternalDateTime get endOfDay => InternalDateTime(year, month, day + 1);
+
+  /// Returns a half-open `[start, end)` range covering this entire day.
   InternalDateTimeRange get dayRange => InternalDateTimeRange(start: startOfDay, end: endOfDay);
+
+  /// Returns the first day of this date's month at midnight.
   InternalDateTime get startOfMonth => InternalDateTime(year, month, 1);
+
+  /// Returns the first day of the **next** month at midnight (exclusive upper bound).
   InternalDateTime get endOfMonth => InternalDateTime(year, month + 1, 1);
+
+  /// Returns a half-open `[start, end)` range covering this entire month.
   InternalDateTimeRange get monthRange => InternalDateTimeRange(start: startOfMonth, end: endOfMonth);
+
+  /// Returns January 1st of this date's year at midnight.
   InternalDateTime get startOfYear => InternalDateTime(year, 1, 1);
+
+  /// Returns January 1st of the **next** year at midnight (exclusive upper bound).
   InternalDateTime get endOfYear => InternalDateTime(year + 1, 1, 1);
+
+  /// Returns a half-open `[start, end)` range covering this entire year.
   InternalDateTimeRange get yearRange => InternalDateTimeRange(start: startOfYear, end: endOfYear);
+
+  /// Whether this date is exactly at midnight (all time components are zero).
   bool get isStartOfDay => hour == 0 && minute == 0 && second == 0 && millisecond == 0 && microsecond == 0;
 
+  /// Returns midnight of the first day of this date's week.
+  ///
+  /// The [firstDayOfWeek] parameter controls which day starts the week
+  /// (defaults to [DateTime.monday] per ISO 8601).
   InternalDateTime startOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToSubtract = (weekday - firstDayOfWeek) % 7;
     return InternalDateTime(year, month, day - daysToSubtract);
   }
 
+  /// Returns midnight of the day **after** the last day of this date's week (exclusive upper bound).
+  ///
+  /// The [firstDayOfWeek] parameter controls which day starts the week
+  /// (defaults to [DateTime.monday] per ISO 8601).
   InternalDateTime endOfWeek({int firstDayOfWeek = DateTime.monday}) {
     final daysToAdd = (firstDayOfWeek - weekday - 1) % 7;
     return InternalDateTime(year, month, day + daysToAdd + 1);
   }
 
+  /// Returns a half-open `[start, end)` range covering this entire week.
+  ///
+  /// The [firstDayOfWeek] parameter controls which day starts the week
+  /// (defaults to [DateTime.monday] per ISO 8601).
   InternalDateTimeRange weekRange({int firstDayOfWeek = DateTime.monday}) {
     return InternalDateTimeRange(
       start: startOfWeek(firstDayOfWeek: firstDayOfWeek),
@@ -105,19 +147,15 @@ class InternalDateTime extends DateTime {
     return localDate.year == now.year && localDate.month == now.month && localDate.day == now.day;
   }
 
-  /// Checks if the [DateTime] is the same day as the calling object.
+  /// Checks if [date] falls on the same calendar day as this [InternalDateTime].
   ///
-  /// This method compares the year, month, and day of this [DateTime] object
-  /// with the given [date]. It returns `true` if the dates match.
-  ///
-  /// The [date] parameter can be in either local or UTC time, and the comparison
-  /// will be done in the same time zone as the calling object.
+  /// Compares year, month, and day components only; time-of-day is ignored.
   ///
   /// Example:
   /// ```dart
-  /// final date = DateTime(2024, 1, 15);
-  /// print(date.isSameDay(DateTime(2024, 1, 15))); // Output: true
-  /// print(date.isSameDay(DateTime(2024, 1, 16))); // Output: false
+  /// final date = InternalDateTime(2024, 1, 15);
+  /// print(date.isSameDay(InternalDateTime(2024, 1, 15))); // Output: true
+  /// print(date.isSameDay(InternalDateTime(2024, 1, 16))); // Output: false
   /// ```
   bool isSameDay(InternalDateTime date) {
     return year == date.year && month == date.month && day == date.day;
