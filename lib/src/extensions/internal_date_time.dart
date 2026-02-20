@@ -256,4 +256,36 @@ class InternalDateTime extends DateTime {
     final result = super.subtract(duration);
     return InternalDateTime.fromDateTime(result);
   }
+
+  /// Returns the [Duration] between this and [other].
+  ///
+  /// Because both values are stored as UTC, the result is free from
+  /// DST-related surprises.
+  @override
+  Duration difference(DateTime other) => super.difference(other);
+
+  /// Returns a new [InternalDateTime] with the given fields replaced.
+  ///
+  /// Unspecified fields are copied from this instance.
+  InternalDateTime copyWith({
+    int? year,
+    int? month,
+    int? day,
+    int? hour,
+    int? minute,
+    int? second,
+    int? millisecond,
+    int? microsecond,
+  }) {
+    return InternalDateTime(
+      year ?? this.year,
+      month ?? this.month,
+      day ?? this.day,
+      hour ?? this.hour,
+      minute ?? this.minute,
+      second ?? this.second,
+      millisecond ?? this.millisecond,
+      microsecond ?? this.microsecond,
+    );
+  }
 }

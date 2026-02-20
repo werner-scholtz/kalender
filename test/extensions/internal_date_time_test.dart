@@ -827,5 +827,137 @@ void main() {
         expect(result, isA<InternalDateTime>());
       });
     });
+
+    // ── difference ───────────────────────────────────────────────────────
+
+    group('difference', () {
+      test('returns positive duration when other is earlier', () {
+        final a = InternalDateTime(2024, 1, 2);
+        final b = InternalDateTime(2024, 1, 1);
+
+        expect(a.difference(b), const Duration(days: 1));
+      });
+
+      test('returns negative duration when other is later', () {
+        final a = InternalDateTime(2024, 1, 1);
+        final b = InternalDateTime(2024, 1, 2);
+
+        expect(a.difference(b), const Duration(days: -1));
+      });
+
+      test('returns zero for the same instant', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30);
+        expect(dt.difference(InternalDateTime(2024, 6, 15, 10, 30)), Duration.zero);
+      });
+
+      test('handles hour-level differences', () {
+        final a = InternalDateTime(2024, 1, 1, 14, 0);
+        final b = InternalDateTime(2024, 1, 1, 10, 0);
+
+        expect(a.difference(b), const Duration(hours: 4));
+      });
+
+      test('works across month boundaries', () {
+        final a = InternalDateTime(2024, 3, 1);
+        final b = InternalDateTime(2024, 2, 1);
+
+        // Feb 2024 has 29 days (leap year)
+        expect(a.difference(b), const Duration(days: 29));
+      });
+
+      test('works with a plain DateTime argument', () {
+        final internal = InternalDateTime(2024, 1, 2);
+        final plain = DateTime.utc(2024, 1, 1);
+
+        expect(internal.difference(plain), const Duration(days: 1));
+      });
+    });
+
+    // ── copyWith ─────────────────────────────────────────────────────────
+
+    group('copyWith', () {
+      test('returns an InternalDateTime', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30);
+        expect(dt.copyWith(), isA<InternalDateTime>());
+      });
+
+      test('copies all fields when no arguments are given', () {
+        final dt = InternalDateTime(2024, 3, 15, 10, 30, 45, 100, 200);
+        final copy = dt.copyWith();
+
+        expect(copy.year, 2024);
+        expect(copy.month, 3);
+        expect(copy.day, 15);
+        expect(copy.hour, 10);
+        expect(copy.minute, 30);
+        expect(copy.second, 45);
+        expect(copy.millisecond, 100);
+        expect(copy.microsecond, 200);
+        expect(copy.isAtSameMomentAs(dt), true);
+      });
+
+      test('replaces year', () {
+        final dt = InternalDateTime(2024, 6, 15);
+        expect(dt.copyWith(year: 2025).year, 2025);
+        expect(dt.copyWith(year: 2025).month, 6);
+      });
+
+      test('replaces month', () {
+        final dt = InternalDateTime(2024, 6, 15);
+        expect(dt.copyWith(month: 12).month, 12);
+        expect(dt.copyWith(month: 12).day, 15);
+      });
+
+      test('replaces day', () {
+        final dt = InternalDateTime(2024, 6, 15);
+        expect(dt.copyWith(day: 28).day, 28);
+      });
+
+      test('replaces hour', () {
+        final dt = InternalDateTime(2024, 6, 15, 10);
+        expect(dt.copyWith(hour: 23).hour, 23);
+      });
+
+      test('replaces minute', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30);
+        expect(dt.copyWith(minute: 59).minute, 59);
+      });
+
+      test('replaces second', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30, 45);
+        expect(dt.copyWith(second: 0).second, 0);
+      });
+
+      test('replaces millisecond', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30, 45, 100);
+        expect(dt.copyWith(millisecond: 999).millisecond, 999);
+      });
+
+      test('replaces microsecond', () {
+        final dt = InternalDateTime(2024, 6, 15, 10, 30, 45, 100, 200);
+        expect(dt.copyWith(microsecond: 500).microsecond, 500);
+      });
+
+      test('replaces multiple fields at once', () {
+        final dt = InternalDateTime(2024, 1, 1, 0, 0, 0);
+        final copy = dt.copyWith(year: 2025, month: 12, day: 31, hour: 23, minute: 59, second: 59);
+
+        expect(copy.year, 2025);
+        expect(copy.month, 12);
+        expect(copy.day, 31);
+        expect(copy.hour, 23);
+        expect(copy.minute, 59);
+        expect(copy.second, 59);
+      });
+
+      test('handles day overflow into next month', () {
+        final dt = InternalDateTime(2024, 1, 15);
+        final copy = dt.copyWith(day: 32);
+
+        // DateTime normalizes day 32 of January → Feb 1
+        expect(copy.month, 2);
+        expect(copy.day, 1);
+      });
+    });
   });
 }
