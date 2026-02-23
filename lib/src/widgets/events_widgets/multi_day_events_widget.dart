@@ -113,9 +113,12 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Update the visible events in the calendar controller.
-    final controller = context.calendarController();
-    controller.visibleEvents.value = {...controller.visibleEvents.value, ..._events};
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final controller = context.calendarController();
+        controller.visibleEvents.value = {...controller.visibleEvents.value, ..._events};
+      }
+    });
 
     return MultiDayEventLayoutWidget(
       events: _events,
