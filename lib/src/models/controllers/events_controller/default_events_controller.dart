@@ -8,54 +8,56 @@ class DefaultEventsController extends EventsController {
   final List<Location> locations;
 
   /// Creates a [DefaultEventsController].
+  ///
+  /// The [locations] can be provided to the [DefaultEventStore] to optimize the retrieval and addition of events based on location.
   DefaultEventsController({List<Location>? locations}) : locations = locations ?? [];
 
-  late final dateMap = DefaultEventStore(locations: locations);
+  late final eventStore = DefaultEventStore(locations: locations);
 
   @override
-  Iterable<CalendarEvent> get events => dateMap.events;
+  Iterable<CalendarEvent> get events => eventStore.events;
 
   @override
   String addEvent(CalendarEvent event) {
-    final id = dateMap.addNewEvent(event);
+    final id = eventStore.addNewEvent(event);
     notifyListeners();
     return id;
   }
 
   @override
   List<String> addEvents(List<CalendarEvent> events) {
-    final ids = events.map(dateMap.addNewEvent).toList();
+    final ids = events.map(eventStore.addNewEvent).toList();
     notifyListeners();
     return ids;
   }
 
   @override
   void removeEvent(CalendarEvent event) {
-    dateMap.removeEvent(event);
+    eventStore.removeEvent(event);
     notifyListeners();
   }
 
   @override
   void removeEvents(List<CalendarEvent> events) {
-    dateMap.removeEvents(events);
+    eventStore.removeEvents(events);
     notifyListeners();
   }
 
   @override
   void removeById(String id) {
-    dateMap.removeById(id);
+    eventStore.removeById(id);
     notifyListeners();
   }
 
   @override
   void removeWhere(bool Function(String key, CalendarEvent element) test) {
-    dateMap.removeWhere(test);
+    eventStore.removeWhere(test);
     notifyListeners();
   }
 
   @override
   void clearEvents() {
-    dateMap.clear();
+    eventStore.clear();
     notifyListeners();
   }
 
@@ -65,12 +67,12 @@ class DefaultEventsController extends EventsController {
     required CalendarEvent updatedEvent,
   }) {
     updatedEvent.id = event.id;
-    dateMap.updateEvent(event, updatedEvent);
+    eventStore.updateEvent(event, updatedEvent);
     notifyListeners();
   }
 
   @override
-  CalendarEvent? byId(String id) => dateMap.byId(id);
+  CalendarEvent? byId(String id) => eventStore.byId(id);
 
   @override
   Iterable<CalendarEvent> eventsFromDateTimeRange(
@@ -79,8 +81,8 @@ class DefaultEventsController extends EventsController {
     bool includeDayEvents = true,
     Location? location,
   }) {
-    final eventIds = dateMap.eventIdsFromDateTimeRange(dateTimeRange, location);
-    final events = eventIds.map((id) => dateMap.byId(id)).nonNulls;
+    final eventIds = eventStore.eventIdsFromDateTimeRange(dateTimeRange, location);
+    final events = eventIds.map((id) => eventStore.byId(id)).nonNulls;
 
     if (includeMultiDayEvents && includeDayEvents) {
       return _allEventsFromDateTimeRange(events, dateTimeRange, location);

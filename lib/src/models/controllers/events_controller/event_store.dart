@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 ///
 /// This class is used to store [CalendarEvent]s and retrieve them based on the date.
 abstract class EventStore {
+  /// A iterable of all [CalendarEvent]s in the store.
   Iterable<CalendarEvent> get events;
 
   /// Retrieve a [CalendarEvent] by it's id if it exists.
@@ -18,6 +19,7 @@ abstract class EventStore {
   /// Remove the [event].
   void removeEvent(CalendarEvent event);
 
+  /// Remove a list of [CalendarEvent]s.
   void removeEvents(List<CalendarEvent> events);
 
   /// Remove an event by its id.

@@ -72,9 +72,8 @@ class DefaultEventStore extends EventStore {
   /// The default location string.
   static const defaultLocation = 'default';
 
-  /// Convert a [DateTime] to a key string.
-  /// TODO: check that [TZDateTime] works the same as [DateTime] for this.
-  String toKey(DateTime date) => '${date.year}-${date.month}-${date.day}';
+  /// Convert a [InternalDateTime] to a key string.
+  String toKey(InternalDateTime date) => '${date.year}-${date.month}-${date.day}';
 
   /// Create a [DefaultEventStore] with optional predefined [locations].
   DefaultEventStore({required this.locations}) {
