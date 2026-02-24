@@ -1,3 +1,8 @@
+## 0.16.0
+TODO: CalendarEvent changes
+1. Extensible now.
+2. ID changes. (int -> string)
+
 ## 0.15.0
 - feat: Added timezone support.
         

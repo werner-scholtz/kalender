@@ -71,11 +71,11 @@ A minimal example to get you started:
 final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
 
-/// Add a [CalendarEvent] to the [EventsController].
+/// Add a [CalendarEvent] to the [DefaultEventsController].
 void addEvents() {
+  final now = DateTime.now();
   eventsController.addEvent(CalendarEvent(
     dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-    data: "Event 1",
   ));
 }
 
@@ -87,7 +87,7 @@ Widget build(BuildContext context) {
     viewConfiguration: MultiDayViewConfiguration.singleDay(),
     callbacks: CalendarCallbacks(
       onEventTapped: (event, renderBox) => controller.selectEvent(event),
-      onEventCreate: (event) => event.copyWith(data: "Some data"),
+      onEventCreate: (event) => event,
       onEventCreated: (event) => eventsController.addEvent(event),
     ),
     header: CalendarHeader(),
@@ -95,6 +95,13 @@ Widget build(BuildContext context) {
   );
 }
 ```
+
+
+TODO: Add an example of how to extend the CalendarEvent class.
+
+TODO: Add an example of how to add custom tile builders with the new approach.
+
+TODO: Add a note about overriding the on event create with a constructor for the custom class.
 
 ## Views
 

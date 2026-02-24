@@ -9,7 +9,9 @@ import 'package:kalender/src/widgets/internal_components/time_indicator_position
 import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
-// TODO: I want to simplify this widget by removing the split between the content and header, essentialy removing the duplicate page views.
+// TODO: I want to simplify this widget by removing the split between the content and header, essentialy removing the duplicate page views,
+//  this should remove quite a but of complexity however it does mean that the timeline will scroll with the page view,
+//  which is not ideal but also not a deal breaker, if this is a feature that is requested a lot adding a pinned timeline can be re-implemented at that point.
 
 /// This widget is used to display a multi-day body.
 ///
