@@ -168,8 +168,19 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
         DragTargetUtilities.handleDragDetails(
           details,
-          onCreate: (controllerId) {},
-          onResize: (event, direction) {},
+          onCreate: (controllerId) {
+            final newEvent = controller.newEvent;
+            if (controller.selectedEvent.value != newEvent && newEvent != null) {
+              controller.selectEvent(newEvent, internal: true);
+            }
+          },
+          onResize: (event, direction) {
+            if (controller.selectedEvent.value?.id != event.id) {
+              // Re-select the event so that _selectedEventId is restored when the
+              // cursor re-enters after having left the widget (onLeave clears it).
+              controller.selectEvent(event, internal: true);
+            }
+          },
           onReschedule: (event) {
             // Calculate the size of the feedback widget.
             final eventDuration = event.duration;

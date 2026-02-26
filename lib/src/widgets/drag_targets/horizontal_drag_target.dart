@@ -120,7 +120,14 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
         return onWillAcceptWithDetails(
           details,
-          onResize: (event, direction) => direction.horizontal,
+          onResize: (event, direction) {
+            if (controller.selectedEvent.value?.id != event.id) {
+              // Re-select the event so that _selectedEventId is restored when the
+              // cursor re-enters after having left the widget (onLeave clears it).
+              controller.selectEvent(event, internal: true);
+            }
+            return direction.horizontal;
+          },
           onReschedule: (event) {
             // Set the size of the feedback widget.
             context.feedbackWidgetSizeNotifier().value =

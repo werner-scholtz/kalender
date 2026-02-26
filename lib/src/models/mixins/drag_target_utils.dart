@@ -40,7 +40,13 @@ mixin DragTargetUtilities {
   }) {
     return handleDragDetails(
       details,
-      onCreate: (controllerId) => controllerId == controller.id,
+      onCreate: (controllerId) {
+        if (controller.newEvent != null && newEvent == null) {
+          newEvent = controller.newEvent;
+          controller.selectEvent(newEvent!, internal: true);
+        }
+        return controllerId == controller.id;
+      },
       onResize: onResize,
       onReschedule: onReschedule,
       onOther: () => false,
