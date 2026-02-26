@@ -145,13 +145,13 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// Override this method to provide custom sorting.
   List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events);
 
-  /// Calculates the height of an item based on the [duration] and [heightPerMinute] of the event.
+  /// Calculates the height of an item based on the [CalendarEvent.duration] and [heightPerMinute] of the event.
   ///
   /// [event] - The event to calculate the height of.
   /// [heightPerMinute] - The per minute of the current view.
   double calculateHeight(CalendarEvent event) {
     final durationOnDate = event.internalRange(location: location).dateTimeRangeOnDate(date)?.duration ?? Duration.zero;
-    final height = ((durationOnDate.inSeconds / 60) * heightPerMinute);
+    final height = durationOnDate.inSeconds * heightPerMinute / 60;
     if (minimumTileHeight != null && height < minimumTileHeight!) {
       return minimumTileHeight!;
     }
@@ -166,7 +166,9 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   double calculateDistanceFromStart(CalendarEvent event) {
     final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
     final dateStart = timeOfDayRange.start.toDateTime(date);
-    return (eventStart.difference(dateStart).inMinutes * heightPerMinute);
+    final difference = eventStart.difference(dateStart);
+    final height = difference.inSeconds * heightPerMinute / 60;
+    return height;
   }
 
   /// This is used to sort the vertical layout data after calculation.
