@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -46,15 +45,6 @@ void main() {
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
-
-  /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers
-  /// [TestGesture.removePointer] as a teardown so callers don't have to.
-  Future<TestGesture> createMouseGesture(WidgetTester tester) async {
-    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-    await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
-    return gesture;
-  }
 
   Future<void> pumpMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
         tester,
@@ -106,7 +96,7 @@ void main() {
       expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody not found');
 
       // Resize handles are only shown on hover for non-mobile devices.
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       final dayTile = find.byKey(DayEventTile.tileKey(dayEventID));
       expect(dayTile, findsOneWidget, reason: 'DayEventTile with id $dayEventID not found');
@@ -127,7 +117,7 @@ void main() {
       await pumpMultiDayView(tester);
       expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody not found');
 
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       // allowRescheduling: false, allowStartResize: false, allowEndResize: true
       final customDayTile = find.byKey(DayEventTile.tileKey(customDayEventID));
@@ -155,7 +145,7 @@ void main() {
       await pumpMonthView(tester);
       expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody not found');
 
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
       expect(tile, findsOneWidget, reason: 'MultiDayEventTile with id $multiDayEventID not found');
@@ -169,7 +159,7 @@ void main() {
       await pumpMonthView(tester);
       expect(find.byType(MonthBody), findsOneWidget, reason: 'MonthBody not found');
 
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       // allowRescheduling: false, allowStartResize: false, allowEndResize: true
       final customTile = find.byKey(MultiDayEventTile.tileKey(customMultiDayEventID));
@@ -190,7 +180,7 @@ void main() {
       await pumpScheduleView(tester);
       expect(find.byType(ScheduleBody), findsOneWidget, reason: 'ScheduleBody not found');
 
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       final tile = find.byKey(ScheduleEventTile.tileKey(multiDayEventID));
       expect(tile, findsOneWidget, reason: 'ScheduleEventTile with id $multiDayEventID not found');
@@ -204,7 +194,7 @@ void main() {
       await pumpScheduleView(tester);
       expect(find.byType(ScheduleBody), findsOneWidget, reason: 'ScheduleBody not found');
 
-      final gesture = await createMouseGesture(tester);
+      final gesture = await tester.createMouseGesture();
 
       final customTile = find.byKey(ScheduleEventTile.tileKey(customMultiDayEventID));
       expect(customTile, findsOneWidget, reason: 'ScheduleEventTile with id $customMultiDayEventID not found');

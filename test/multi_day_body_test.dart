@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -8,11 +7,10 @@ import 'package:kalender/src/widgets/internal_components/positioned_timeline.dar
 import 'utilities.dart';
 
 void main() {
-  final eventsController = DefaultEventsController();
-  final callbacks = CalendarCallbacks(
-    onEventCreated: eventsController.addEvent,
-    onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
-  );
+  late DefaultEventsController eventsController;
+  late CalendarController calendarController;
+  late CalendarCallbacks callbacks;
+
   final components = TileComponents(
     tileBuilder: (event, tileRange) => Container(
       key: ValueKey(event.id),
@@ -26,12 +24,21 @@ void main() {
     ),
   );
 
+  setUp(() {
+    eventsController = DefaultEventsController();
+    calendarController = CalendarController();
+    callbacks = CalendarCallbacks(
+      onEventCreated: eventsController.addEvent,
+      onEventChanged: (event, updatedEvent) =>
+          eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+    );
+  });
+
   group('MultiDayBody', () {
     group('Gesture Tests', () {
       final start = DateTime(2025, 3, 24);
       final end = DateTime(2025, 3, 31);
       final dateTimeRange = DateTimeRange(start: start, end: end);
-      final calendarController = CalendarController();
 
       /// A list of different view configurations to test.
       final viewConfigurations = [
@@ -72,40 +79,37 @@ void main() {
         );
       });
 
-      tearDown(eventsController.clearEvents);
-
-      for (final viewConfiguration in viewConfigurations) {
-        testWidgets('Event resize', (tester) async {
-          await tester.pumpWidget(
-            wrapWithMaterialApp(
-              CalendarView(
-                eventsController: eventsController,
-                calendarController: calendarController,
-                viewConfiguration: viewConfiguration,
-                callbacks: callbacks,
-                body: CalendarBody(
-                  multiDayTileComponents: components,
-                  monthTileComponents: components,
-                  scheduleTileComponents: scheduleComponents,
-                ),
+      Future<void> pumpCalendarView(
+        WidgetTester tester,
+        MultiDayViewConfiguration viewConfiguration,
+      ) =>
+          pumpAndSettleWithMaterialApp(
+            tester,
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: viewConfiguration,
+              callbacks: callbacks,
+              body: CalendarBody(
+                multiDayTileComponents: components,
+                monthTileComponents: components,
+                scheduleTileComponents: scheduleComponents,
               ),
             ),
           );
 
-          await tester.pump();
+      for (final viewConfiguration in viewConfigurations) {
+        testWidgets('Event resize - ${viewConfiguration.name}', (tester) async {
+          await pumpCalendarView(tester, viewConfiguration);
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
-          // Create a mouse gesture to hover over the event tile.
-          // This is needed because resize handles are only shown on hover for non-mobile devices.
-          final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-          await gesture.addPointer(location: Offset.zero);
-          addTearDown(gesture.removePointer);
+          // Resize handles are only shown on hover for non-mobile devices.
+          final gesture = await tester.createMouseGesture();
 
           // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
-          // Find the resize handles.
           await tester.hoverOn(dayEventTile, gesture);
           final topResizeHandle = find.descendant(
             of: dayEventTile,
@@ -122,42 +126,22 @@ void main() {
           final initialTopLeft = tester.getTopLeft(dayEventTile);
           final initialBottomRight = tester.getBottomRight(dayEventTile);
 
-          // Perform a resize action on the bottom resize handle.
-          final bottomResizeHandleCenter = tester.getCenter(bottomResizeHandle);
-          await tester.dragFrom(bottomResizeHandleCenter, const Offset(0, 50));
+          await tester.dragFrom(tester.getCenter(bottomResizeHandle), const Offset(0, 50));
           await tester.pumpAndSettle();
 
           final size = tester.getSize(dayEventTile);
           final topLeft = tester.getTopLeft(dayEventTile);
           final bottomRight = tester.getBottomRight(dayEventTile);
 
-          // Check that the size of the tile has changed.
           expect(initialSize.height < size.height, isTrue, reason: 'Height should increase');
           expect(initialTopLeft == topLeft, isTrue, reason: 'Top left should not change');
           expect(initialBottomRight.dy < bottomRight.dy, isTrue, reason: 'Bottom right dy should increase');
         });
 
-        testWidgets('Event reschedule', (tester) async {
-          await tester.pumpWidget(
-            wrapWithMaterialApp(
-              CalendarView(
-                eventsController: eventsController,
-                calendarController: calendarController,
-                viewConfiguration: viewConfiguration,
-                callbacks: callbacks,
-                body: CalendarBody(
-                  multiDayTileComponents: components,
-                  monthTileComponents: components,
-                  scheduleTileComponents: scheduleComponents,
-                ),
-              ),
-            ),
-          );
-
-          await tester.pumpAndSettle();
+        testWidgets('Event reschedule - ${viewConfiguration.name}', (tester) async {
+          await pumpCalendarView(tester, viewConfiguration);
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
-          // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
@@ -165,48 +149,24 @@ void main() {
             of: dayEventTile,
             matching: find.byKey(DayEventTile.rescheduleDraggableKey(eventId)),
           );
-
-          // Check that the draggable(s) widget is rendered.
           expect(rescheduleDraggable, findsOneWidget, reason: 'Reschedule draggable should be rendered');
 
           final initialPosition = tester.getCenter(dayEventTile);
 
           await tester.drag(dayEventTile, const Offset(0, 50));
-          // await tester.dragFrom(tester.getCenter(dayEventTile), const Offset(0, 50));
           await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-          final position = tester.getCenter(dayEventTile);
-
-          // Check that the position of the tile has changed.
-          expect(initialPosition == position, isFalse);
+          expect(tester.getCenter(dayEventTile) == initialPosition, isFalse);
         });
 
-        testWidgets('New event', (tester) async {
-          await tester.pumpWidget(
-            wrapWithMaterialApp(
-              CalendarView(
-                eventsController: eventsController,
-                calendarController: calendarController,
-                viewConfiguration: viewConfiguration,
-                callbacks: callbacks,
-                body: CalendarBody(
-                  multiDayTileComponents: components,
-                  monthTileComponents: components,
-                  scheduleTileComponents: scheduleComponents,
-                ),
-              ),
-            ),
-          );
-          await tester.pumpAndSettle();
+        testWidgets('New event - ${viewConfiguration.name}', (tester) async {
+          await pumpCalendarView(tester, viewConfiguration);
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
 
-          // Check that the event is rendered.
           final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
           expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
 
-          // get the bottom of the dayEventTile
-          final bottomOfExistingEvent = tester.getBottomLeft(dayEventTile);
-          final newEventStart = bottomOfExistingEvent + const Offset(0, 25);
+          final newEventStart = tester.getBottomLeft(dayEventTile) + const Offset(0, 25);
           await tester.dragFrom(newEventStart, const Offset(0, 100));
           await tester.pumpAndSettle();
 
@@ -216,8 +176,6 @@ void main() {
     });
 
     group('Day Separator Tests', () {
-      final calendarController = CalendarController();
-
       /// A list of different view configurations to test.
       final viewConfigurations = [
         MultiDayViewConfiguration.singleDay(),
@@ -229,31 +187,28 @@ void main() {
 
       for (final viewConfiguration in viewConfigurations) {
         testWidgets('Day Separator - ${viewConfiguration.name}', (tester) async {
-          await tester.pumpWidget(
-            wrapWithMaterialApp(
-              CalendarView(
-                eventsController: eventsController,
-                calendarController: calendarController,
-                viewConfiguration: viewConfiguration,
-                callbacks: callbacks,
-                body: CalendarBody(
-                  multiDayTileComponents: components,
-                  monthTileComponents: components,
-                  scheduleTileComponents: scheduleComponents,
-                ),
+          await pumpAndSettleWithMaterialApp(
+            tester,
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: viewConfiguration,
+              callbacks: callbacks,
+              body: CalendarBody(
+                multiDayTileComponents: components,
+                monthTileComponents: components,
+                scheduleTileComponents: scheduleComponents,
               ),
             ),
           );
-          await tester.pumpAndSettle();
           expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
-          final daySeparatorFinder = find.byType(DaySeparator);
-          final expectedNumber = viewConfiguration.type == MultiDayViewType.freeScroll
-              ? viewConfiguration.numberOfDays * 1
+          final expectedCount = viewConfiguration.type == MultiDayViewType.freeScroll
+              ? viewConfiguration.numberOfDays
               : viewConfiguration.numberOfDays + 1;
           expect(
-            daySeparatorFinder,
-            findsNWidgets(expectedNumber),
-            reason: 'There should be $expectedNumber DaySeparators',
+            find.byType(DaySeparator),
+            findsNWidgets(expectedCount),
+            reason: 'There should be $expectedCount DaySeparators',
           );
         });
       }

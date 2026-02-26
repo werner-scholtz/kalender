@@ -7,8 +7,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 ///
 /// This widget uses the [TimeLine] to determine the size of the [leading].
 /// It uses the [content] and [leading] to determine the height of the [MultiDayHeaderWidget].
-///
-/// TODO: implement a widget test for this widget.
 class MultiDayHeaderWidget extends StatelessWidget {
   /// The content that will be displayed in the [MultiDayHeaderWidget].
   final Widget content;

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -153,7 +154,10 @@ class TestProvider extends StatelessWidget {
 }
 
 extension WidgetTesterUtils on WidgetTester {
-  // Helper function to hover over a tile.
+  /// Moves [gesture] to the centre of [tile] and waits for the frame to settle.
+  ///
+  /// Resize handles are only shown on hover for non-mobile devices, so tests
+  /// that check for them must hover over the tile first.
   Future<void> hoverOn(
     Finder tile,
     TestGesture gesture,
@@ -161,5 +165,14 @@ extension WidgetTesterUtils on WidgetTester {
     await pump();
     await gesture.moveTo(getCenter(tile));
     await pumpAndSettle();
+  }
+
+  /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers
+  /// [TestGesture.removePointer] as a teardown so callers don't have to.
+  Future<TestGesture> createMouseGesture() async {
+    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    return gesture;
   }
 }

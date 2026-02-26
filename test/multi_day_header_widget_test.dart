@@ -4,89 +4,68 @@ import 'package:kalender/src/widgets/internal_components/multi_day_header_layout
 
 import 'utilities.dart';
 
+// Finders are constant across all MultiDayHeaderWidget tests.
+final _headerFinder = find.byType(MultiDayHeaderWidget);
+final _contentFinder = find.byKey(const ValueKey('content'));
+final _leadingFinder = find.byKey(const ValueKey('leading'));
+
+/// Asserts that the header, content, and leading widgets are all present and
+/// that the header has the given [expectedHeight].
+void _expectHeader(WidgetTester tester, double expectedHeight) {
+  expect(_headerFinder, findsOneWidget);
+  expect(_contentFinder, findsOneWidget);
+  expect(_leadingFinder, findsOneWidget);
+  final headerHeight = tester.getSize(_headerFinder).height;
+  expect(
+    headerHeight,
+    expectedHeight,
+    reason: 'Header height ($headerHeight) is not the same as the expected height ($expectedHeight).',
+  );
+}
+
 void main() {
   group('MultiDayHeaderWidget Tests', () {
-    // The layout checks to test the [MultiDayHeaderWidget].
-    // `name : [contentHeight, leadingHeight, expectedHeight]`
-    final layoutChecks = <String, List<double>>{
-      'content & leading same height': [48.0, 48.0, 48.0],
-      'content (height) is larger than leading': [96.0, 48.0, 96.0],
-      'leading (height) is larger than content': [48.0, 96.0, 96.0],
-    };
+    // Layout cases: (description, contentHeight, leadingHeight, expectedHeight).
+    final layoutChecks = <({String name, double contentHeight, double leadingHeight, double expectedHeight})>[
+      (name: 'content & leading same height', contentHeight: 48.0, leadingHeight: 48.0, expectedHeight: 48.0),
+      (name: 'content height larger than leading', contentHeight: 96.0, leadingHeight: 48.0, expectedHeight: 96.0),
+      (name: 'leading height larger than content', contentHeight: 48.0, leadingHeight: 96.0, expectedHeight: 96.0),
+    ];
 
-    for (final layoutChecks in layoutChecks.entries) {
-      testWidgets('Test MultiDayHeaderWidget (${layoutChecks.key})', (tester) async {
-        final contentHeight = layoutChecks.value[0];
-        final leadingHeight = layoutChecks.value[1];
-        final expectedHeight = layoutChecks.value[2];
-
-        await tester.pumpWidget(
-          wrapWithMaterialApp(
-            MultiDayHeaderWidget(
-              content: SizedBox(height: contentHeight, key: const ValueKey('content')),
-              leading: SizedBox(width: 48, height: leadingHeight, key: const ValueKey('leading')),
-              prototypeTimelineOverride: const SizedBox(width: 48),
-            ),
+    for (final check in layoutChecks) {
+      testWidgets('layout - ${check.name}', (tester) async {
+        await pumpAndSettleWithMaterialApp(
+          tester,
+          MultiDayHeaderWidget(
+            content: SizedBox(height: check.contentHeight, key: const ValueKey('content')),
+            leading: SizedBox(width: 48, height: check.leadingHeight, key: const ValueKey('leading')),
+            prototypeTimelineOverride: const SizedBox(width: 48),
           ),
         );
 
-        await tester.pump();
-
-        // Assert: Verify the widget renders as expected.
-        final headerFinder = find.byType(MultiDayHeaderWidget);
-        final contentFinder = find.byKey(const ValueKey('content'));
-        final leadingFinder = find.byKey(const ValueKey('leading'));
-
-        expect(headerFinder, findsOneWidget);
-        expect(contentFinder, findsOneWidget);
-        expect(leadingFinder, findsOneWidget);
-
-        final headerSize = tester.getSize(headerFinder);
-
-        expect(
-          headerSize.height,
-          expectedHeight,
-          reason: 'Header height (${headerSize.height}) is not the same as the expected height ($expectedHeight).',
-        );
+        _expectHeader(tester, check.expectedHeight);
       });
     }
 
-    testWidgets('Test MultiDayHeader dynamic size', (tester) async {
+    testWidgets('resizes dynamically when content height changes', (tester) async {
       final contentHeightNotifier = ValueNotifier(48.0);
 
-      await tester.pumpWidget(
-        wrapWithMaterialApp(
-          MultiDayHeaderWidget(
-            content: ValueListenableBuilder(
-              valueListenable: contentHeightNotifier,
-              builder: (context, value, child) => SizedBox(height: value, key: const ValueKey('content')),
-            ),
-            leading: const SizedBox(width: 48, height: 48, key: ValueKey('leading')),
-            prototypeTimelineOverride: const SizedBox(width: 48),
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        MultiDayHeaderWidget(
+          content: ValueListenableBuilder(
+            valueListenable: contentHeightNotifier,
+            builder: (context, value, child) => SizedBox(height: value, key: const ValueKey('content')),
           ),
+          leading: const SizedBox(width: 48, height: 48, key: ValueKey('leading')),
+          prototypeTimelineOverride: const SizedBox(width: 48),
         ),
       );
 
-      final heightsToTest = [48.0, 96.0, 144.0, 192.0, 240.0];
-      for (final height in heightsToTest) {
+      for (final height in [48.0, 96.0, 144.0, 192.0, 240.0]) {
         contentHeightNotifier.value = height;
         await tester.pumpAndSettle();
-
-        final headerFinder = find.byType(MultiDayHeaderWidget);
-        final contentFinder = find.byKey(const ValueKey('content'));
-        final leadingFinder = find.byKey(const ValueKey('leading'));
-
-        expect(headerFinder, findsOneWidget);
-        expect(contentFinder, findsOneWidget);
-        expect(leadingFinder, findsOneWidget);
-
-        final headerSize = tester.getSize(headerFinder);
-
-        expect(
-          headerSize.height,
-          height,
-          reason: 'Header height (${headerSize.height}) is not the same as the expected height ($height).',
-        );
+        _expectHeader(tester, height);
       }
     });
   });
