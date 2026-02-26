@@ -139,32 +139,35 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final circleWidth = (widget.style?.circleSize?.width) ?? 10;
     final circleHeight = (widget.style?.circleSize?.height) ?? 10;
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        PositionedDirectional(
-          top: top,
-          start: 0,
-          end: 0,
-          child: Container(
-            height: thickness,
-            color: lineColor,
-          ),
-        ),
-        PositionedDirectional(
-          top: top - circleHeight / 2,
-          // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
-          start: -(circleWidth / 2) + _circleCenterOffset,
-          width: circleWidth,
-          height: circleHeight,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: widget.style?.circleColor ?? lineColor,
-              shape: BoxShape.circle,
+    // This ignore pointer is needed so that users can interact with the event tiles and other components that are behind the time indicator.
+    return IgnorePointer(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          PositionedDirectional(
+            top: top,
+            start: 0,
+            end: 0,
+            child: Container(
+              height: thickness,
+              color: lineColor,
             ),
           ),
-        ),
-      ],
+          PositionedDirectional(
+            top: top - circleHeight / 2,
+            // This needs to be offset slightly so the center of the circle aligns with the first pixel of the pageview.
+            start: -(circleWidth / 2) + _circleCenterOffset,
+            width: circleWidth,
+            height: circleHeight,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: widget.style?.circleColor ?? lineColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
