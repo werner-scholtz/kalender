@@ -125,6 +125,10 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       oldWidget.snapping.removeListener(_updateSnapPoints);
       widget.snapping.addListener(_updateSnapPoints);
     }
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.visibleEvents.removeListener(_updateSnapPoints);
+      widget.controller.visibleEvents.addListener(_updateSnapPoints);
+    }
   }
 
   @override
