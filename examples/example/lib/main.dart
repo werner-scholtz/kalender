@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           monthTileComponents: tileComponents(body: false),
           scheduleTileComponents: scheduleTileComponents(context),
           multiDayBodyConfiguration: const MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: const MultiDayHeaderConfiguration(),
+          monthBodyConfiguration: const MonthBodyConfiguration(),
           scheduleBodyConfiguration: ScheduleBodyConfiguration(),
         ),
       ),

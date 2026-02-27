@@ -157,6 +157,16 @@ abstract class HorizontalConfiguration {
     this.pageTriggerConfiguration = const PageTriggerConfiguration.defaultConfiguration(),
   });
 
+  HorizontalConfiguration copyWith({
+    double? tileHeight,
+    bool? showTiles,
+    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
+    int? maximumNumberOfVerticalEvents,
+    EdgeInsets? eventPadding,
+    bool? allowSingleDayEvents,
+    PageTriggerConfiguration? pageTriggerConfiguration,
+  });
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

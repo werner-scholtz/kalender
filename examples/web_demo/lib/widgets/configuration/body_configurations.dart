@@ -63,7 +63,7 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
   final CalendarConfiguration calendarConfiguration;
   const MonthBodyConfigurationWidget({super.key, required this.calendarConfiguration});
 
-  MultiDayHeaderConfiguration get configuration => calendarConfiguration.monthBodyConfiguration;
+  MonthBodyConfiguration get configuration => calendarConfiguration.monthBodyConfiguration;
   ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionBody;
 
   @override

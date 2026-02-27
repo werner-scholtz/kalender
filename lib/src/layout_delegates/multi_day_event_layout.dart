@@ -93,8 +93,11 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   var maxRow = 0;
 
   // A map that contains the number of rows for each of the columns.
+  // Initialised to -1 (sentinel: no event assigned to this column yet) so that
+  // columns without any events do not trigger spurious overflow buttons when
+  // maxNumberOfRows is 0.
   final columnRowMap = <int, int>{
-    for (final date in visibleDates) visibleDates.indexOf(date): 0,
+    for (final date in visibleDates) visibleDates.indexOf(date): -1,
   };
 
   for (final event in sortedEvents) {
@@ -180,7 +183,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
 
     // Update the map with the number of rows for each column.
     for (final column in columns) {
-      columnRowMap[column] = max(columnRowMap[column] ?? 0, layout.row);
+      columnRowMap[column] = max(columnRowMap[column] ?? -1, layout.row);
     }
 
     layoutInfo.add(layout);
@@ -191,7 +194,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     dateTimeRange: visibleDateTimeRange,
     layoutInfo: layoutInfo,
     events: sortedEvents,
-    totalNumberOfRows: maxRow + 1,
+    totalNumberOfRows: sortedEvents.isEmpty ? 0 : maxRow + 1,
     columnRowMap: columnRowMap,
   );
 

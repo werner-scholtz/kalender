@@ -20,7 +20,7 @@ class CalendarBody extends StatefulWidget {
   final TileComponents? monthTileComponents;
 
   /// The [MultiDayHeaderConfiguration] that will be used by the [MonthBody].
-  final HorizontalConfiguration? monthBodyConfiguration;
+  final MonthBodyConfiguration? monthBodyConfiguration;
 
   /// The tile components used by the [ScheduleBody].
   final ScheduleTileComponents? scheduleTileComponents;
