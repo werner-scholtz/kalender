@@ -298,8 +298,8 @@ void main() {
       final event = CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: end));
       controller.addEvent(event);
 
-      final newStart = DateTime.utc(2024, 12, 20, 14);
-      final newEnd = DateTime.utc(2024, 12, 20, 15);
+      final newStart = DateTime.utc(2024, 12, 20, 6);
+      final newEnd = DateTime.utc(2024, 12, 20, 7);
       final updatedEvent = CalendarEvent(dateTimeRange: DateTimeRange(start: newStart, end: newEnd));
       controller.updateEvent(event: event, updatedEvent: updatedEvent);
 
