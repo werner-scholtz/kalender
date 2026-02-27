@@ -6,7 +6,7 @@ import 'package:kalender/src/widgets/components/month_grid.dart' show MonthGrid;
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart' show WeekDayHeaders;
 import 'package:kalender/src/widgets/month/month_body.dart' show MonthBody, MonthWeek;
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
 import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
@@ -230,25 +230,23 @@ void main() {
           );
           testWidgets('$nowOverride', (tester) async {
             const dayWidth = 50.0;
-            await tester.pumpWidget(
-              wrapWithMaterialApp(
-                Stack(
-                  children: [
-                    const SizedBox(width: dayWidth * 7),
-                    PositionedTimeIndicator(
-                      visibleDates: visibleDates,
-                      dayWidth: dayWidth,
-                      nowOverride: nowOverride,
-                      child: const SizedBox(
-                        width: dayWidth,
-                        key: ValueKey('child'),
-                      ),
+            await pumpAndSettleWithMaterialApp(
+              tester,
+              Stack(
+                children: [
+                  const SizedBox(width: dayWidth * 7),
+                  PositionedTimeIndicator(
+                    visibleDates: visibleDates,
+                    dayWidth: dayWidth,
+                    nowOverride: nowOverride,
+                    child: const SizedBox(
+                      width: dayWidth,
+                      key: ValueKey('child'),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
-            await tester.pumpAndSettle();
 
             final child = find.byKey(const ValueKey('child'));
             expect(child, findsOneWidget);

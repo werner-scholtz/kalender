@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 /// The goal of these test is to ensure that navigation for different view controllers/viewConfigurations works as expected.
 ///

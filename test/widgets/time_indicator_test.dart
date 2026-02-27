@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   group('TimeIndicatorPositioner', () {
@@ -14,30 +14,27 @@ void main() {
 
     for (final (index, date) in range.dates().map(InternalDateTime.fromDateTime).indexed) {
       testWidgets('for date index: ($index)', (tester) async {
-        await tester.pumpWidget(
-          wrapWithMaterialApp(
-            SizedBox(
-              width: 700,
-              height: 100,
-              child: Stack(
-                children: [
-                  PositionedTimeIndicator(
-                    viewController: MultiDayViewController(
-                      viewConfiguration: viewConfiguration,
-                      visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
-                      visibleEvents: ValueNotifier(<CalendarEvent>{}),
-                    ),
-                    initialPage: 0,
-                    dateOverride: date,
-                    childOverride: SizedBox(key: key),
+        await pumpAndSettleWithMaterialApp(
+          tester,
+          SizedBox(
+            width: 700,
+            height: 100,
+            child: Stack(
+              children: [
+                PositionedTimeIndicator(
+                  viewController: MultiDayViewController(
+                    viewConfiguration: viewConfiguration,
+                    visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),
+                    visibleEvents: ValueNotifier(<CalendarEvent>{}),
                   ),
-                ],
-              ),
+                  initialPage: 0,
+                  dateOverride: date,
+                  childOverride: SizedBox(key: key),
+                ),
+              ],
             ),
           ),
         );
-
-        await tester.pumpAndSettle();
         final finder = find.byKey(key);
         expect(finder, findsOneWidget);
         expect(tester.getTopLeft(finder).dx, index * 100.0);

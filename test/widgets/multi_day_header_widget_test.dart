@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart' show MultiDayHeaderWidget;
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 // Finders are constant across all MultiDayHeaderWidget tests.
 final _headerFinder = find.byType(MultiDayHeaderWidget);

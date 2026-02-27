@@ -5,7 +5,7 @@ import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared helpers
@@ -16,7 +16,7 @@ import 'utilities.dart';
 /// date assertions in all cursor-position tests.
 final _weekInitialDate = DateTime(2025, 1, 6);
 
-final _displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
+// year2025DisplayRange from utilities.dart is used in place of a local _displayRange.
 
 /// A calendar with year 2025 display range and initialDate safely inside it.
 Future<dynamic> _pumpWeekView(
@@ -30,7 +30,7 @@ Future<dynamic> _pumpWeekView(
       eventsController: eventsController ?? DefaultEventsController(),
       calendarController: CalendarController(),
       viewConfiguration: MultiDayViewConfiguration.week(
-        displayRange: _displayRange,
+        displayRange: year2025DisplayRange,
         initialDateTime: _weekInitialDate,
         timeOfDayRange: timeOfDayRange,
         initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
@@ -196,7 +196,7 @@ void main() {
           eventsController: DefaultEventsController(),
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
           ),
           body: const CalendarBody(),
@@ -273,7 +273,7 @@ void main() {
           eventsController: DefaultEventsController(),
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
             timeOfDayRange: _restrictedRange,
           ),
@@ -442,7 +442,7 @@ void main() {
           eventsController: DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
           body: const CalendarBody(),
@@ -517,7 +517,7 @@ void main() {
           eventsController: ec ?? DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
           body: const CalendarBody(),
@@ -623,7 +623,7 @@ void main() {
           eventsController: ec,
           calendarController: controller,
           viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: _weekInitialDate,
           ),
           body: const CalendarBody(),
@@ -675,7 +675,7 @@ void main() {
           eventsController: ec,
           calendarController: controller,
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 1),
           ),
           body: const CalendarBody(),
@@ -727,7 +727,7 @@ void main() {
           eventsController: ec,
           calendarController: CalendarController(),
           viewConfiguration: ScheduleViewConfiguration.continuous(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),
           ),
           body: const CalendarBody(),
@@ -744,7 +744,7 @@ void main() {
           eventsController: DefaultEventsController(),
           calendarController: CalendarController(),
           viewConfiguration: ScheduleViewConfiguration.paginated(
-            displayRange: _displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025, 1, 6),
           ),
           body: const CalendarBody(),

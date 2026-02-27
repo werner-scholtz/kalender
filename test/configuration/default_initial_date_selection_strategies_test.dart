@@ -3,13 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:timezone/data/latest_10y.dart';
 
-const locationsToTest = [
-  'UTC',
-  'Africa/Johannesburg',
-  'America/New_York',
-  'Europe/London',
-  'Australia/Sydney',
-];
+import '../utilities.dart';
 
 void main() {
   initializeTimeZones();

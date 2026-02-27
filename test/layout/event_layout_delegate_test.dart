@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   final date = DateTime(2025);

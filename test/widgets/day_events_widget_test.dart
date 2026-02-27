@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/events_widgets/day_events_widget.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   final start = DateTime(2025, 3, 24);

@@ -5,12 +5,11 @@ import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/schedule_tile.dart';
 
-import 'utilities.dart';
+import '../utilities.dart';
 
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
-  final displayRange = DateTimeRange(start: DateTime(2025), end: DateTime(2026));
   final interaction = CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true);
 
   late String dayEventID;
@@ -52,7 +51,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MultiDayViewConfiguration.singleDay(
-            displayRange: displayRange,
+            displayRange: year2025DisplayRange,
             initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
             initialDateTime: DateTime(2025, 1, 1),
           ),
@@ -67,7 +66,7 @@ void main() {
           eventsController: eventsController,
           calendarController: calendarController,
           viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: displayRange,
+            displayRange: year2025DisplayRange,
             initialDateTime: DateTime(2025),
           ),
           header: CalendarHeader(interaction: interaction),
@@ -80,7 +79,7 @@ void main() {
         CalendarView(
           eventsController: eventsController,
           calendarController: calendarController,
-          viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: displayRange),
+          viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
           header: CalendarHeader(interaction: interaction),
           body: CalendarBody(interaction: interaction),
         ),
