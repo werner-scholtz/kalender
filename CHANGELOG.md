@@ -15,7 +15,6 @@
 
 ### Fixes
 
-- `fix:` Schedule body rendering issue.
 - `fix:` SnapPoints calculation.
 - `fix:` Visible events not updating correctly after a change.
 - `fix:` Pointer events now pass through the time indicator widget.
@@ -33,10 +32,18 @@
 - Extensive test additions and refactoring across controllers, layout delegates, drag targets, interactions, view configurations and callbacks.
 - Added a tool (`tool/test_timezones_linux.dart`) for running the test suite under multiple timezones on Linux.
 
-// TODO: Add note about contributors.
+### Contributors
+
+- `CalendarEvent` extensibility, `EventsController` as a full interface, and event/group ID migration to `String` contributed by [RedDuality](https://github.com/RedDuality).
 
 ## 0.15.0
 - feat: Added timezone support.
+- feat: Use `linked_pageview` package for linked scrolling between multi-day header and body. [PR #247](https://github.com/werner-scholtz/kalender/pull/247)
+- fix: Wrong current date highlighting due to extension method issues. [PR #260](https://github.com/werner-scholtz/kalender/pull/260) / [#251](https://github.com/werner-scholtz/kalender/issues/251)
+- fix: Schedule body rendering issue.
+- fix: SnapPoints calculation.
+- fix: `EventLayoutDelegateCache` not being cleared when `heightPerMinute` changes.
+- fix: `MultiDayViewController` now correctly exposes a page offset listener.
         
 ### Breaking Changes
 
