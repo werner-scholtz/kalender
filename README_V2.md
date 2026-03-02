@@ -1,11 +1,32 @@
 <p align="center">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/banner.png?raw=true" width="100%" style="border-radius:6px; margin-top:8px; margin-bottom:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/banner.png" width="100%" style="border-radius:6px; margin-top:8px; margin-bottom:8px;" />
 </p>
 
 # Kalender
 A Flutter calendar package offering Day, MultiDay, Month, and Schedule views with full control over appearance and behavior. Check out the live demo [here](https://werner-scholtz.github.io/kalender/).
 
+> [!WARNING]
 > This package is still in development — API changes may occur before version 1.0.0.
+
+**Upgrading?** See the [Migration Guide](MIGRATION.md).
+
+## Table of Contents
+
+- [Features](#features)
+- [Preview](#preview)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Custom Events](#custom-events)
+- [Views](#views)
+- [Controllers](#controllers)
+- [Tile Components](#tile-components)
+- [Callbacks](#callbacks)
+- [Configuration & Interaction](#configuration--interaction)
+- [Appearance / Custom Components](#appearance--custom-components)
+- [Event Layout](#event-layout)
+- [Locale](#locale)
+- [Location](#location)
+- [API Reference](#api-reference)
 
 ## Features
 
@@ -16,15 +37,11 @@ A Flutter calendar package offering Day, MultiDay, Month, and Schedule views wit
 * **Resize:** Resize events on desktop and mobile.
 * **Controllers:** Manage your calendar with dedicated controllers. [find out more](#controllers)
 * **Callbacks:** React to taps, long presses, event creation and changes. [find out more](#callbacks)
-* **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](#header--body-configuration)
+* **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](#configuration--interaction)
 * **Appearance:** Style default components or supply custom builders. [find out more](#appearance--custom-components)
 * **Event layout:** Built-in strategies or bring your own. [find out more](#event-layout)
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](#location)
-
-## Roadmap
-
-* **Views:** FreeScroll calendar view.
 
 ## Preview
 
@@ -32,47 +49,62 @@ A Flutter calendar package offering Day, MultiDay, Month, and Schedule views wit
 Displays one or more days with time on the vertical axis — ideal for detailed scheduling.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_day_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_day_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_day_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_day_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_day_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_day_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_day_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_day_dark.png" width="9%" style="border-radius:6px;" />
 </div>
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_week_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_week_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_week_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_week_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_week_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_week_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_week_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_week_dark.png" width="9%" style="border-radius:6px;" />
 </div>
 
 ### MonthView
 Shows an entire month at a glance, with days arranged horizontally.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_month_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_month_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_month_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_month_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_month_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_month_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_month_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_month_dark.png" width="9%" style="border-radius:6px;" />
 </div>
 
 ### ScheduleView
 Presents events in a continuous, scrollable list focused on upcoming or grouped events.
 
 <div style="padding:8px; display:inline-block; text-align:center;">
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_schedule_light.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/desktop_schedule_dark.png?raw=true" width="37%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_schedule_light.png?raw=true" width="9%" style="border-radius:6px; margin-right:8px;" />
-  <img src="https://github.com/werner-scholtz/kalender/blob/main/readme_assets/mobile_schedule_dark.png?raw=true" width="9%" style="border-radius:6px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_schedule_light.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_schedule_dark.png" width="37%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_schedule_light.png" width="9%" style="border-radius:6px; margin-right:8px;" />
+  <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/mobile_schedule_dark.png" width="9%" style="border-radius:6px;" />
 </div>
 
 ---
 
 ## Installation
 
+### Requirements
+
+| Requirement | Version          |
+| ----------- | ---------------- |
+| Dart SDK    | `>=3.0.0 <4.0.0` |
+| Flutter     | `>=3.22.0`       |
+
+### Dependencies
+
 ```yaml
 dependencies:
   kalender: ^0.16.0
-  timezone: ^0.9.0   # only needed for timezone / location support
+```
+
+If you plan to use [location/timezones](#location) support, also add:
+
+```yaml
+dependencies:
+  timezone: ^0.10.0
 ```
 
 If you plan to use [locale](#locale) support, also add:
@@ -82,15 +114,6 @@ dependencies:
   intl: ^0.19.0
 ```
 
-And call `initializeDateFormatting()` before `runApp`:
-
-```dart
-void main() async {
-  await initializeDateFormatting();
-  runApp(const MyApp());
-}
-```
-
 ---
 
 ## Quick Start
@@ -98,20 +121,43 @@ void main() async {
 The minimal setup — using only the base `CalendarEvent` class with no custom fields:
 
 ```dart
-final eventsController = DefaultEventsController();
-final calendarController = CalendarController();
+import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 
-Widget build(BuildContext context) {
-  return CalendarView(
-    eventsController: eventsController,
-    calendarController: calendarController,
-    viewConfiguration: MultiDayViewConfiguration.singleDay(),
-    callbacks: CalendarCallbacks(
-      onEventCreated: (event) => eventsController.addEvent(event),
-    ),
-    header: CalendarHeader(),
-    body: CalendarBody(),
-  );
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(body: MyCalendar()),
+    );
+  }
+}
+
+class MyCalendar extends StatelessWidget {
+  MyCalendar({super.key});
+
+  final eventsController = DefaultEventsController();
+  final calendarController = CalendarController();
+
+  @override
+  Widget build(BuildContext context) {
+    return CalendarView(
+      eventsController: eventsController,
+      calendarController: calendarController,
+      viewConfiguration: MultiDayViewConfiguration.singleDay(),
+      callbacks: CalendarCallbacks(
+        onEventCreated: (event) => eventsController.addEvent(event),
+      ),
+      header: CalendarHeader(),
+      body: CalendarBody(),
+    );
+  }
 }
 ```
 
@@ -174,9 +220,24 @@ class Event extends CalendarEvent {
 }
 ```
 
-> **Note:** If you don't override `==` and `hashCode`, the calendar cannot detect changes to your custom fields and tiles will not update when those values change (e.g. via `eventsController.updateEvent(...)`). Always override both whenever you add fields to your `CalendarEvent` subclass.
+> [!NOTE]
+> If you don't override `==` and `hashCode`, the calendar cannot detect changes to your custom fields and tiles will not update when those values change (e.g. via `eventsController.updateEvent(...)`). Always override both whenever you add fields to your `CalendarEvent` subclass.
 
-> **`layoutEquals`:** Only override this when a custom property changes the *size or position* of the tile — for example, a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, and `interaction`, which is sufficient for most cases.
+### Updating events
+
+Use `eventsController.updateEvent()` to replace an existing event with an updated copy:
+
+```dart
+final original = eventsController.byId(someId)! as Event;
+final updated = original.copyWith(title: 'Updated Title', color: Colors.red);
+eventsController.updateEvent(original, updated);
+```
+
+Because `==` and `hashCode` include your custom fields, the calendar will detect the change and rebuild the tile.
+
+### `layoutEquals`
+
+Only override `layoutEquals` when a custom property changes the *size or position* of the tile — for example, a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, and `interaction`, which is sufficient for most cases.
 
 ### Accessing custom fields in tile builders
 
@@ -211,32 +272,46 @@ callbacks: CalendarCallbacks(
 
 ## Views
 
-Switch between views by passing a different `ViewConfiguration` to `CalendarView`. When switching, the `initialDateSelectionStrategy` on the view configuration determines which date becomes visible. All configurations accept a `displayRange` and an optional `initialDateTime`.
+Switch between views by passing a different `ViewConfiguration` to `CalendarView`. When switching, the `initialDateSelectionStrategy` on the view configuration determines which date becomes visible.
+
+All configurations accept:
+- `displayRange` — the total date range the calendar can navigate within (e.g. Jan 2024 – Dec 2025). Defaults to ± 1 year from today.
+- `initialDateTime` — the date to show on first render. Defaults to `DateTime.now()`.
+
+```dart
+MultiDayViewConfiguration.week(
+  displayRange: DateTimeRange(
+    start: DateTime(2024, 1, 1),
+    end: DateTime(2025, 12, 31),
+  ),
+  initialDateTime: DateTime(2024, 6, 15),
+)
+```
 
 ### MultiDay View
 Displays one or more days with time on the vertical axis.
 
-| Constructor | Description |
-|---|---|
-| `MultiDayViewConfiguration.singleDay()` | Single day |
-| `MultiDayViewConfiguration.week()` | Full 7-day week |
-| `MultiDayViewConfiguration.workWeek()` | Monday – Friday |
+| Constructor                                 | Description           |
+| ------------------------------------------- | --------------------- |
+| `MultiDayViewConfiguration.singleDay()`     | Single day            |
+| `MultiDayViewConfiguration.week()`          | Full 7-day week       |
+| `MultiDayViewConfiguration.workWeek()`      | Monday – Friday       |
 | `MultiDayViewConfiguration.custom(days: n)` | Custom number of days |
 
 ### Month View
 Shows an entire month at a glance, weeks as rows.
 
-| Constructor | Description |
-|---|---|
+| Constructor                            | Description  |
+| -------------------------------------- | ------------ |
 | `MonthViewConfiguration.singleMonth()` | Single month |
 
 ### Schedule View
 Presents events in a chronological scrollable list.
 
-| Constructor | Description |
-|---|---|
+| Constructor                              | Description            |
+| ---------------------------------------- | ---------------------- |
 | `ScheduleViewConfiguration.continuous()` | Single continuous list |
-| `ScheduleViewConfiguration.paginated()` | Paginated by month |
+| `ScheduleViewConfiguration.paginated()`  | Paginated by month     |
 
 ---
 
@@ -246,17 +321,17 @@ Presents events in a chronological scrollable list.
 
 [`EventsController`](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller/default_events_controller.dart) unless you need a custom storage layer.
 
-| Method | Description |
-|---|---|
-| `addEvent(event)` | Add a single event, returns its `String` id |
-| `addEvents(events)` | Add multiple events, returns `List<String>` of ids |
-| `removeEvent(event)` | Remove a specific event |
-| `removeEvents(events)` | Remove a list of events |
-| `removeWhere(test)` | Remove events matching a predicate |
-| `updateEvent(event, updatedEvent)` | Replace an existing event |
-| `byId(id)` | Return the event with the given `String` id, or `null` |
-| `clearEvents()` | Remove all events |
-| `eventsFromDateTimeRange(range)` | Events occurring during the given range |
+| Method                             | Description                                            |
+| ---------------------------------- | ------------------------------------------------------ |
+| `addEvent(event)`                  | Add a single event, returns its `String` id            |
+| `addEvents(events)`                | Add multiple events, returns `List<String>` of ids     |
+| `removeEvent(event)`               | Remove a specific event                                |
+| `removeEvents(events)`             | Remove a list of events                                |
+| `removeWhere(test)`                | Remove events matching a predicate                     |
+| `updateEvent(event, updatedEvent)` | Replace an existing event                              |
+| `byId(id)`                         | Return the event with the given `String` id, or `null` |
+| `clearEvents()`                    | Remove all events                                      |
+| `eventsFromDateTimeRange(range)`   | Events occurring during the given range                |
 
 ### CalendarController
 
@@ -264,11 +339,11 @@ Presents events in a chronological scrollable list.
 
 **State notifiers:**
 
-| Notifier | Type | Description |
-|---|---|---|
-| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange>` | The currently visible date range |
-| `visibleEvents` | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen |
-| `selectedEvent` | `ValueNotifier<CalendarEvent?>` | The focused event (shows drop target / resize handles) |
+| Notifier               | Type                                | Description                                            |
+| ---------------------- | ----------------------------------- | ------------------------------------------------------ |
+| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange>`      | The currently visible date range                       |
+| `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
+| `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
 
 **Navigation methods:**
 
@@ -283,7 +358,9 @@ Presents events in a chronological scrollable list.
 
 ## Tile Components
 
-`TileComponents` is the primary way to control how events look in the calendar. Pass it to `CalendarHeader` and/or `CalendarBody`.
+`TileComponents` is the primary way to control how events look in the calendar. Pass it to `CalendarHeader` and/or `CalendarBody` for day, multi-day, and month views.
+
+For schedule views, use `ScheduleTileComponents` instead (passed via `CalendarBody.scheduleTileComponents`).
 
 ### Simple tile
 
@@ -370,6 +447,7 @@ CalendarBody(
 
 For tiles that need to know the exact tapped time or find nearby events, use the provided mixins.
 
+> [!TIP]
 > **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `CalendarCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget receives events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
 
 <details>
@@ -489,79 +567,74 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 
 Pass a `CalendarCallbacks` to `CalendarView` to react to user interactions.
 
-<details>
-  <summary>CalendarCallbacks reference</summary>
+```dart
+CalendarCallbacks(
+  // --- Event interactions ---
 
-  ```dart
-  CalendarCallbacks(
-    // --- Event interactions ---
+  // Called when an event tile is tapped.
+  onEventTapped: (event, renderBox) {},
 
-    // Called when an event tile is tapped.
-    onEventTapped: (event, renderBox) {},
+  // Called when an event tile is tapped — includes tap position detail.
+  onEventTappedWithDetail: (event, renderBox, detail) {},
 
-    // Called when an event tile is tapped — includes tap position detail.
-    onEventTappedWithDetail: (event, renderBox, detail) {},
+  // Called before the calendar creates a new event from a gesture.
+  // Return your concrete Event subclass here.
+  onEventCreate: (event) {
+    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+  },
 
-    // Called before the calendar creates a new event from a gesture.
-    // Return your concrete Event subclass here.
-    onEventCreate: (event) {
-      return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
-    },
+  // Same as onEventCreate but includes gesture detail (position, renderBox).
+  onEventCreateWithDetail: (event, detail) {
+    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+  },
 
-    // Same as onEventCreate but includes gesture detail (position, renderBox).
-    onEventCreateWithDetail: (event, detail) {
-      return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
-    },
+  // Called after a new event has been committed — add it to your controller here.
+  onEventCreated: (event) => eventsController.addEvent(event),
 
-    // Called after a new event has been committed — add it to your controller here.
-    onEventCreated: (event) => eventsController.addEvent(event),
+  // Called just before a rescheduled / resized event is applied.
+  onEventChange: (event) {},
 
-    // Called just before a rescheduled / resized event is applied.
-    onEventChange: (event) {},
+  // Called after a rescheduled / resized event is applied.
+  onEventChanged: (original, updated) {
+    eventsController.updateEvent(original, updated);
+  },
 
-    // Called after a rescheduled / resized event is applied.
-    onEventChanged: (original, updated) {
-      // Persist the change to your database / state here.
-      eventsController.updateEvent(original, updated);
-    },
+  // --- Calendar interactions ---
 
-    // --- Calendar interactions ---
+  // Called when the visible page changes.
+  onPageChanged: (visibleDateTimeRange) {},
 
-    // Called when the visible page changes.
-    onPageChanged: (visibleDateTimeRange) {},
+  // Called when the user taps an empty area (day / week body).
+  onTapped: (date) {},
+  onTappedWithDetail: (detail) {
+    // detail.dateTime or detail.dateTimeRange, plus renderBox & localOffset.
+  },
 
-    // Called when the user taps an empty area (day / week body).
-    onTapped: (date) {},
-    onTappedWithDetail: (detail) {
-      // detail.dateTime or detail.dateTimeRange, plus renderBox & localOffset.
-    },
+  // Called when the user long-presses an empty area.
+  onLongPressed: (date) {},
+  onLongPressedWithDetail: (detail) {},
 
-    // Called when the user long-presses an empty area.
-    onLongPressed: (date) {},
-    onLongPressedWithDetail: (detail) {},
+  // --- Drag-and-drop acceptance ---
 
-    // --- Drag-and-drop acceptance ---
+  // Day / week vertical drag target. Return false to reject the drop.
+  onWillAcceptWithDetailsVertical: (details, controller, configuration) => true,
 
-    // Day / week vertical drag target. Return false to reject the drop.
-    onWillAcceptWithDetailsVertical: (details, controller, configuration) => true,
-
-    // Month / header horizontal drag target.
-    onWillAcceptWithDetailsHorizontal: (details, controller, configuration) => true,
-  )
-  ```
-</details>
+  // Month / header horizontal drag target.
+  onWillAcceptWithDetailsHorizontal: (details, controller, configuration) => true,
+)
+```
 
 ---
 
-## Header & Body Configuration
+## Configuration & Interaction
 
 `CalendarHeader` and `CalendarBody` accept view-specific configuration objects:
 
-| View | Header config class | Body config class |
-|---|---|---|
+| View     | Header config class           | Body config class           |
+| -------- | ----------------------------- | --------------------------- |
 | MultiDay | `MultiDayHeaderConfiguration` | `MultiDayBodyConfiguration` |
-| Month | — | `MonthBodyConfiguration` |
-| Schedule | — | `ScheduleBodyConfiguration` |
+| Month    | —                             | `MonthBodyConfiguration`    |
+| Schedule | —                             | `ScheduleBodyConfiguration` |
 
 Both also accept:
 - `interaction: ValueNotifier<CalendarInteraction>` — toggling resize / reschedule / create.
@@ -658,7 +731,42 @@ CalendarBody(
 
 ### Zoom
 
-It is possible to zoom the calendar in/out by changing `heightPerMinute`. The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo) example shows how this is done with [`CalendarZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/demo/lib/widgets/zoom.dart).
+Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo) example shows a full implementation with [`CalendarZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/demo/lib/widgets/zoom.dart).
+
+Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop:
+
+```dart
+class ZoomableCalendar extends StatelessWidget {
+  final CalendarController calendarController;
+  final Widget child;
+
+  const ZoomableCalendar({
+    super.key,
+    required this.calendarController,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerSignal: (event) {
+        if (!HardwareKeyboard.instance.isControlPressed) return;
+        if (event is! PointerScrollEvent) return;
+
+        final viewController = calendarController.viewController;
+        if (viewController is! MultiDayViewController) return;
+
+        final heightPerMinute = viewController.heightPerMinute;
+        final delta = event.scrollDelta.dy.sign * -0.1;
+        heightPerMinute.value = (heightPerMinute.value + delta).clamp(0.5, 2.0);
+      },
+      child: child,
+    );
+  }
+}
+```
+
+Wrap your `CalendarView` with this widget to enable Ctrl+scroll zooming.
 
 ---
 
@@ -753,12 +861,72 @@ The package uses [`CustomMultiChildLayout`](https://api.flutter.dev/flutter/widg
 
 Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
-| Strategy | Behavior |
-|---|---|
-| `overlapLayoutStrategy` | Tiles stack on top of each other (default) |
-| `sideBySideLayoutStrategy` | Tiles placed side by side |
+| Strategy                   | Behavior                                   |
+| -------------------------- | ------------------------------------------ |
+| `overlapLayoutStrategy`    | Tiles stack on top of each other (default) |
+| `sideBySideLayoutStrategy` | Tiles placed side by side                  |
 
 To create a custom strategy, subclass `EventLayoutDelegate` — see [`CustomSideBySideLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
+
+Here's a minimal skeleton:
+
+```dart
+class MyLayoutDelegate extends EventLayoutDelegate {
+  MyLayoutDelegate({
+    required super.events,
+    required super.heightPerMinute,
+    required super.date,
+    required super.location,
+    required super.timeOfDayRange,
+    required super.minimumTileHeight,
+    required super.layoutCache,
+  });
+
+  @override
+  List<CalendarEvent> sortEvents(Iterable<CalendarEvent> events) =>
+      events.toList()..sort((a, b) => a.start.compareTo(b.start));
+
+  @override
+  List<VerticalLayoutData> sortVerticalLayoutData(
+      List<VerticalLayoutData> layoutData) => layoutData;
+
+  @override
+  void performLayout(Size size) {
+    final verticalLayoutData = calculateVerticalLayoutData(size);
+    for (final data in verticalLayoutData) {
+      layoutChild(data.id, BoxConstraints.tightFor(
+        width: size.width,
+        height: data.height,
+      ));
+      positionChild(data.id, Offset(0, data.top));
+    }
+  }
+}
+```
+
+Then create your strategy function:
+
+```dart
+EventLayoutDelegate myLayoutStrategy(
+  Iterable<CalendarEvent> events,
+  InternalDateTime date,
+  TimeOfDayRange timeOfDayRange,
+  double heightPerMinute,
+  double? minimumTileHeight,
+  EventLayoutDelegateCache? cache,
+  Location? location,
+) {
+  return MyLayoutDelegate(
+    events: events,
+    date: date,
+    heightPerMinute: heightPerMinute,
+    timeOfDayRange: timeOfDayRange,
+    minimumTileHeight: minimumTileHeight,
+    layoutCache: cache ?? EventLayoutDelegateCache(),
+    location: location,
+  );
+}
+```
 
 ### Horizontal layout (Month view / MultiDay header)
 
@@ -792,6 +960,15 @@ CalendarBody(
 
 ## Locale
 
+And call `initializeDateFormatting()` before `runApp`:
+
+```dart
+void main() async {
+  await initializeDateFormatting();
+  runApp(const MyApp());
+}
+```
+
 `CalendarView` has a `locale` property that controls day/month name formatting.
 
 ```dart
@@ -814,8 +991,6 @@ CalendarView(
   ),
 )
 ```
-
-> **Setup reminder:** call `initializeDateFormatting()` in `main()` before using any locale. See [Installation](#installation).
 
 ---
 
@@ -848,82 +1023,10 @@ final eventsController = DefaultEventsController(
 
 See the [timezone package](https://pub.dev/packages/timezone) for setup instructions per platform. The [web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) also provides a working example.
 
-**Notes:**
-- Changing `location` at runtime automatically updates visible date/time ranges.
-- Location identifiers: [IANA Time Zone Database](https://www.iana.org/time-zones).
+Changing `location` at runtime automatically updates visible date/time ranges. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
 
 ---
 
-## Migration Guide
+## API Reference
 
-### v0.15.x → v0.16.0
-
-#### `CalendarEvent` is no longer generic
-
-**Before:**
-```dart
-CalendarEvent<MyData>(dateTimeRange: range, data: MyData(...))
-```
-
-**After** — extend `CalendarEvent` instead:
-```dart
-class MyEvent extends CalendarEvent {
-  final MyData data;
-
-  MyEvent({required super.dateTimeRange, required this.data});
-
-  @override
-  MyEvent copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, MyData? data}) =>
-      MyEvent(
-        dateTimeRange: dateTimeRange ?? this.dateTimeRange,
-        interaction: interaction ?? this.interaction,
-        data: data ?? this.data,
-      )..id = id;
-}
-```
-
-#### Event IDs are now `String`
-
-**Before:**
-```dart
-int id = eventsController.addEvent(event);
-CalendarEvent? found = eventsController.byId(42);
-```
-
-**After:**
-```dart
-String id = eventsController.addEvent(event);
-CalendarEvent? found = eventsController.byId('some-id');
-```
-
-#### Renamed symbols
-
-| Old name | New name |
-|---|---|
-| `MultiDayOverlayEventTile` | `MultiDayEventOverlayTile` |
-
-#### Moved imports
-
-`EventsController` and related files moved into the `controllers` folder. Package-relative imports need updating. The top-level `package:kalender/kalender.dart` barrel export is unaffected.
-
-#### `DefaultEventsController` direct export
-
-`DefaultEventsController` is now exported directly from `package:kalender/kalender.dart`. No changes needed if you already import from there.
-
-#### `DayEventTileUtils` / `MultiDayEventTileUtils` no longer generic
-
-The mixins no longer carry a type parameter. Remove `<T>` from the mixin application and the `event` / `tileRange` field declarations.
-
-**Before:**
-```dart
-class MyTile extends StatelessWidget with DayEventTileUtils<MyData> {
-  @override final CalendarEvent<MyData> event;
-  @override final DateTimeRange tileRange;
-```
-
-**After:**
-```dart
-class MyTile extends StatelessWidget with DayEventTileUtils {
-  @override final CalendarEvent event;
-  @override final InternalDateTimeRange tileRange;
-```
+Full API documentation is available on [pub.dev](https://pub.dev/documentation/kalender/latest/).
