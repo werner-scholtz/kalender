@@ -17,6 +17,7 @@ This package is still in development so changes to the API will most likely occu
 * **Event layout:** Use a provided layout strategy or create a custom one. [find out more](#event-layout)
 * **Locale:** Provide a locale for the desired language. [find out more](#locale)
 * **Location:** Provide a location from the [timezone](https://pub.dev/packages/timezone) package [find out more](#location)
+* **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](#custom-events)
 
 ## Roadmap
 
@@ -71,37 +72,118 @@ A minimal example to get you started:
 final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
 
-/// Add a [CalendarEvent] to the [DefaultEventsController].
 void addEvents() {
   final now = DateTime.now();
-  eventsController.addEvent(CalendarEvent(
+  eventsController.addEvent(Event(
     dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
+    title: 'My Event',
+    color: Colors.blue,
   ));
 }
 
-Widget build(BuildContext context) {  
+Widget build(BuildContext context) {
   return CalendarView(
     eventsController: eventsController,
     calendarController: calendarController,
-    // The calender widget will automatically display the correct header & body widgets based on the viewConfiguration.
     viewConfiguration: MultiDayViewConfiguration.singleDay(),
     callbacks: CalendarCallbacks(
-      onEventTapped: (event, renderBox) => controller.selectEvent(event),
-      onEventCreate: (event) => event,
+      onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+      // Return a concrete instance of your Event subclass when creating new events.
+      onEventCreate: (event) => Event(
+        dateTimeRange: event.dateTimeRange,
+        title: 'New Event',
+        color: Colors.blue,
+      ),
       onEventCreated: (event) => eventsController.addEvent(event),
     ),
-    header: CalendarHeader(),
-    body: CalendarBody(),
+    header: CalendarHeader(
+      tileComponents: TileComponents(
+        tileBuilder: (event, tileRange) {
+          final myEvent = event as Event;
+          return Container(
+            decoration: BoxDecoration(
+              color: myEvent.color ?? Colors.blue,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            padding: const EdgeInsets.all(4),
+            child: Text(myEvent.title, style: const TextStyle(color: Colors.white)),
+          );
+        },
+      ),
+    ),
+    body: CalendarBody(
+      tileComponents: TileComponents(
+        tileBuilder: (event, tileRange) {
+          final myEvent = event as Event;
+          return Container(
+            decoration: BoxDecoration(
+              color: myEvent.color ?? Colors.blue,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            padding: const EdgeInsets.all(4),
+            child: Text(myEvent.title, style: const TextStyle(color: Colors.white)),
+          );
+        },
+      ),
+    ),
   );
 }
 ```
 
+## Custom Events
 
-TODO: Add an example of how to extend the CalendarEvent class.
+Since v0.16.0, `CalendarEvent` is no longer generic. To attach custom data (title, color, etc.), extend `CalendarEvent` directly and override `copyWith`. This is the recommended approach for all apps.
 
-TODO: Add an example of how to add custom tile builders with the new approach.
+```dart
+class Event extends CalendarEvent {
+  final String title;
+  final String? description;
+  final Color? color;
 
-TODO: Add a note about overriding the on event create with a constructor for the custom class.
+  Event({
+    required super.dateTimeRange,
+    required this.title,
+    this.description,
+    this.color,
+    super.interaction,
+  });
+
+  @override
+  Event copyWith({
+    DateTimeRange? dateTimeRange,
+    EventInteraction? interaction,
+    String? title,
+    String? description,
+    Color? color,
+  }) {
+    final updated = Event(
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      interaction: interaction ?? this.interaction,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      color: color ?? this.color,
+    );
+    // Preserve the existing ID.
+    updated.id = id;
+    return updated;
+  }
+
+  // Override layoutEquals if any of your custom fields affect how the tile is rendered.
+  @override
+  bool layoutEquals(CalendarEvent other) {
+    return super.layoutEquals(other) && other is Event && other.color == color;
+  }
+}
+```
+
+Accesss your custom fields in tile builders by casting the event:
+
+```dart
+tileBuilder: (event, tileRange) {
+  final myEvent = event as Event;
+  return Text(myEvent.title);
+},
+```
 
 ## Views
 
@@ -264,49 +346,55 @@ For single-day or multi-day view event tiles, use the `DayEventTileUtils` mixin:
   <summary>DayEventTileUtils</summary>
 
   ```dart
-  class CustomDayEventTile extends StatelessWidget with DayEventTileUtils<MyEventData> {
+  class CustomDayEventTile extends StatelessWidget with DayEventTileUtils {
     @override
-    final CalendarEvent<MyEventData> event;
-    
+    final CalendarEvent event;
+
     @override
     final DateTimeRange tileRange;
-    
+
     const CustomDayEventTile({
       super.key,
       required this.event,
       required this.tileRange,
     });
 
+    // Convenience getter — cast once and use everywhere in this widget.
+    Event get myEvent => event as Event;
+
     @override
     Widget build(BuildContext context) {
       return GestureDetector(
         onTapUp: (details) {
-          // Get the exact time that was tapped within the event
+          // Get the exact time that was tapped within the event.
           final tappedTime = dateTimeFromPosition(context, details.localPosition);
           print('Tapped at: $tappedTime');
 
-          // Find events that occur around the same time
+          // Find events that occur around the same time.
           final nearby = nearbyEvents(
             context,
             before: const Duration(minutes: 15),
             after: const Duration(minutes: 15),
           );
-
           print('Found ${nearby.length} nearby events');
         },
         child: Container(
           decoration: BoxDecoration(
-            color: event.data?.color ?? Colors.blue,
+            color: myEvent.color ?? Colors.blue,
             borderRadius: BorderRadius.circular(4),
           ),
           padding: const EdgeInsets.all(4),
           child: Text(
-            event.data?.title ?? 'Event',
+            myEvent.title,
             style: const TextStyle(color: Colors.white),
           ),
         ),
       );
     }
+
+    // Static factory for use in TileComponents.tileBuilder.
+    static Widget builder(CalendarEvent event, DateTimeRange tileRange) =>
+        CustomDayEventTile(event: event, tileRange: tileRange);
   }
   ```
   </summary>
@@ -318,45 +406,52 @@ For event tiles that span multiple days (like in month view), use the `MultiDayE
   <summary>MultiDayEventTileUtils</summary>
 
   ```dart
-  class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils<MyEventData> {
+  class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils {
     @override
-    final CalendarEvent<MyEventData> event;
-    
+    final CalendarEvent event;
+
     @override
     final DateTimeRange tileRange;
-    
+
     const CustomMultiDayEventTile({
       super.key,
       required this.event,
       required this.tileRange,
     });
 
+    // Convenience getter — cast once and use everywhere in this widget.
+    Event get myEvent => event as Event;
+
     @override
     Widget build(BuildContext context) {
       return GestureDetector(
         onTapUp: (details) {
-          // Get the specific date that was tapped within the multi-day event
+          // Get the specific date that was tapped within the multi-day event.
           final tappedDate = dateFromPosition(context, details.localPosition);
           print('Tapped on date: ${tappedDate.toString()}');
-          
-          // Find other events on the same date range
+
+          // Find other events that overlap this one.
           final overlappingEvents = nearbyEvents(context);
           print('Found ${overlappingEvents.length} overlapping events');
         },
         child: Container(
           decoration: BoxDecoration(
-            color: event.data?.color ?? Colors.green,
+            color: myEvent.color ?? Colors.green,
             borderRadius: BorderRadius.circular(4),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
           child: Text(
-            event.data?.title ?? 'Multi-day Event',
+            myEvent.title,
             style: const TextStyle(color: Colors.white, fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
         ),
       );
     }
+
+    // Static factory for use in TileComponents.tileBuilder.
+    static Widget builder(CalendarEvent event, DateTimeRange tileRange) =>
+        CustomMultiDayEventTile(event: event, tileRange: tileRange);
   }
   ```
   </summary>
