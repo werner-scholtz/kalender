@@ -1,7 +1,39 @@
 ## 0.16.0
-TODO: CalendarEvent changes
-1. Extensible now.
-2. ID changes. (int -> string)
+
+### Breaking Changes
+
+- `CalendarEvent` is no longer generic. The `data` field and `<T>` type parameter have been removed. Custom data should now be added by **extending** `CalendarEvent` directly.
+- Event IDs changed from `int` to `String`. This affects `addEvent` (returns `String`), `addEvents` (returns `List<String>`), `removeById`, `byId`, and any code that stores or compares event IDs.
+- `EventTile.eventId` is now a `String`.
+- `MultiDayOverlayEventTile` renamed to `MultiDayEventOverlayTile`.
+- `EventsController` folder moved into the `controllers` folder; update any direct imports.
+
+### Features
+
+- `CalendarEvent` is now extensible. Attach custom fields (title, color, etc.) by subclassing and overriding `copyWith`. See the updated examples for guidance.
+- `CalendarEvent` gained a `layoutEquals` method used internally for optimized layout rebuilds.
+
+### Fixes
+
+- `fix:` Schedule body rendering issue.
+- `fix:` SnapPoints calculation.
+- `fix:` Visible events not updating correctly after a change.
+- `fix:` Pointer events now pass through the time indicator widget.
+- Various bugs uncovered by the expanded test suite.
+
+### Improvements
+
+- `EventLayoutDelegateCache` is now cleared automatically when `heightPerMinute` changes.
+- `eventsFromDateTimeRange` — the `location` parameter is no longer required.
+- Vertical drag-target behavior improved.
+- `DefaultEventsController` is now exported from `kalender.dart` directly.
+
+### Tests
+
+- Extensive test additions and refactoring across controllers, layout delegates, drag targets, interactions, view configurations and callbacks.
+- Added a tool (`tool/test_timezones_linux.dart`) for running the test suite under multiple timezones on Linux.
+
+// TODO: Add note about contributors.
 
 ## 0.15.0
 - feat: Added timezone support.
