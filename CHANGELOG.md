@@ -44,7 +44,7 @@
 - fix: SnapPoints calculation.
 - fix: `EventLayoutDelegateCache` not being cleared when `heightPerMinute` changes.
 - fix: `MultiDayViewController` now correctly exposes a page offset listener.
-        
+
 ### Breaking Changes
 
 - Added InternalDateTime and InternalDateTimeRange classes accessible through `kalender/extensions.dart`.
