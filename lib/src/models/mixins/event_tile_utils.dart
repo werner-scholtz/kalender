@@ -63,9 +63,9 @@ mixin DayEventTileUtils {
   /// you only want the portion visible on the current day.
   ///
   /// Returns the event's time range intersected with the tile's date.
-  DateTimeRange get eventRangeOnDate {
-    // TODO: Get the location somehow.
-    return event.internalRange().dateTimeRangeOnDate(tileRange.start.startOfDay)!;
+  DateTimeRange eventRangeOnDate(BuildContext context) {
+    final location = context.location;
+    return event.internalRange(location: location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -129,7 +129,7 @@ mixin DayEventTileUtils {
   /// ```
   DateTime dateTimeFromPosition(BuildContext context, Offset localPosition) {
     final minutes = (localPosition.dy / context.heightPerMinute).round();
-    final dateTime = eventRangeOnDate.start.add(Duration(minutes: minutes));
+    final dateTime = eventRangeOnDate(context).start.add(Duration(minutes: minutes));
     return dateTime;
   }
 }
