@@ -1,6 +1,12 @@
 ## 0.15.0
 - feat: Added timezone support.
-        
+- feat: Use `linked_pageview` package for linked scrolling between multi-day header and body. [PR #247](https://github.com/werner-scholtz/kalender/pull/247)
+- fix: Wrong current date highlighting due to extension method issues. [PR #260](https://github.com/werner-scholtz/kalender/pull/260) / [#251](https://github.com/werner-scholtz/kalender/issues/251)
+- fix: Schedule body rendering issue.
+- fix: SnapPoints calculation.
+- fix: `EventLayoutDelegateCache` not being cleared when `heightPerMinute` changes.
+- fix: `MultiDayViewController` now correctly exposes a page offset listener.
+
 ### Breaking Changes
 
 - Added InternalDateTime and InternalDateTimeRange classes accessible through `kalender/extensions.dart`.
