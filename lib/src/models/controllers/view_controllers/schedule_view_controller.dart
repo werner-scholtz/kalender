@@ -82,15 +82,7 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   void dispose() => highlightedDateTimeRange.dispose();
 
   /// Check if the controller has been initialized with the necessary components.
-  bool get hasInitialized {
-    if (itemScrollController == null || itemPositionsListener == null) {
-      debugPrint(
-        'ScheduleViewController has not been initialized with ItemScrollController and ItemPositionsListener.',
-      );
-      return false;
-    }
-    return true;
-  }
+  bool get hasInitialized => itemScrollController != null && itemPositionsListener != null;
 }
 
 class ContinuousScheduleViewController extends ScheduleViewController {
@@ -283,11 +275,5 @@ class PaginatedScheduleViewController extends ScheduleViewController {
   }
 
   /// Check if the page controller has clients.
-  bool get _hasClients {
-    if (!pageController.hasClients) {
-      debugPrint("$PaginatedScheduleViewController's PageController has no clients.");
-      return false;
-    }
-    return true;
-  }
+  bool get _hasClients => pageController.hasClients;
 }

@@ -27,13 +27,13 @@ class MonthBody extends StatelessWidget {
       'The CalendarController\'s $ViewController needs to be a $MonthViewController',
     );
 
-    if (this.configuration is! MonthBodyConfiguration) {
+    if (this.configuration != null && this.configuration is! MonthBodyConfiguration) {
       debugPrint('Warning: The configuration provided to the $MonthBody is not a $MonthBodyConfiguration.');
     }
 
     final viewController = calendarController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
-    final configuration = this.configuration ?? MonthBodyConfiguration();
+    final configuration = this.configuration ?? const MonthBodyConfiguration();
     final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     return PageView.builder(
