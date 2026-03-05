@@ -101,7 +101,7 @@ class DefaultEventStore extends EventStore {
 
   @override
   String addNewEvent(CalendarEvent event) {
-    _addEvent(event);
+    addEvent(event);
     return event.id;
   }
 
@@ -137,7 +137,7 @@ class DefaultEventStore extends EventStore {
   @override
   void updateEvent(CalendarEvent event, CalendarEvent updatedEvent) {
     removeEvent(event);
-    _addEvent(updatedEvent);
+    addEvent(updatedEvent);
   }
 
   @override
@@ -175,13 +175,13 @@ class DefaultEventStore extends EventStore {
   }
 
   /// Add an [event] to the map.
-  void _addEvent(CalendarEvent event) {
+  void addEvent(CalendarEvent event) {
     final id = event.id;
     idEvent[id] = event;
 
     for (final locationString in locationDateIdMap.keys) {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
-      _addEventToLocation(location, event);
+      addEventToLocation(location, event);
     }
   }
 
@@ -209,12 +209,12 @@ class DefaultEventStore extends EventStore {
 
     // Add all existing events to the new location.
     for (final event in idEvent.values) {
-      _addEventToLocation(location, event);
+      addEventToLocation(location, event);
     }
   }
 
   /// Add an [event] to the specified [location] in the [locationDateIdMap].
-  void _addEventToLocation(Location? location, CalendarEvent event) {
+  void addEventToLocation(Location? location, CalendarEvent event) {
     final locationString = location?.name ?? defaultLocation;
     final dates = event.internalRange(location: location).dates();
     for (final date in dates) {
