@@ -284,7 +284,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     if (cursorDate == null) return null;
 
     // Calculate the start of the day.
-    final startOfDate = timeOfDayRange.start.toDateTime(cursorDate);
+    final startOfDate = timeOfDayRange.start.toInternalDateTime(cursorDate);
 
     // Calculate the duration to add to the startOfDate.
     final durationFromStart = localCursorPosition.dy ~/ heightPerMinute;
@@ -306,8 +306,8 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     if (timeOfDayRange.isAllDay) {
       start = cursorDateTime;
     } else {
-      final startOfDate = timeOfDayRange.start.toDateTime(cursorDateTime);
-      final endOfDate = timeOfDayRange.end.toDateTime(cursorDateTime);
+      final startOfDate = timeOfDayRange.start.toInternalDateTime(cursorDateTime);
+      final endOfDate = timeOfDayRange.end.toInternalDateTime(cursorDateTime);
       if (cursorDateTime.isBefore(startOfDate)) {
         start = startOfDate;
       } else if (cursorDateTime.add(event.duration).isAfter(endOfDate)) {

@@ -34,8 +34,8 @@ class MultiDayViewController extends ViewController {
     }
 
     // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
-    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toDateTime(now);
-    final dayStart = viewConfiguration.timeOfDayRange.start.toDateTime(now);
+    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toInternalDateTime(now);
+    final dayStart = viewConfiguration.timeOfDayRange.start.toInternalDateTime(now);
     final timeDifference = initialTimeOfDay.difference(dayStart);
     final initialScrollOffset = timeDifference.inMinutes * (heightPerMinute.value);
     scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
@@ -108,7 +108,7 @@ class MultiDayViewController extends ViewController {
     await animateToDate(date, duration: pageDuration, curve: pageCurve);
 
     final internalDate = InternalDateTime.fromExternal(date);
-    final startOfDay = viewConfiguration.timeOfDayRange.start.toDateTime(internalDate);
+    final startOfDay = viewConfiguration.timeOfDayRange.start.toInternalDateTime(internalDate);
     final timeDifference = internalDate.difference(startOfDay);
     final timeOffset = timeDifference.inMinutes * (heightPerMinute.value);
 

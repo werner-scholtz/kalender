@@ -44,8 +44,8 @@ class TestConfiguration {
         for (var timeOfDayRange in timeOfDayRanges)
           Event(
             dateTimeRange: DateTimeRange(
-              start: timeOfDayRange.start.toDateTime(date),
-              end: timeOfDayRange.end.toDateTime(date),
+              start: timeOfDayRange.start.toInternalDateTime(date),
+              end: timeOfDayRange.end.toInternalDateTime(date),
             ),
             title: 'Event',
             description: '${date.year}-${date.month}-${date.day} ${timeOfDayRange.start.hour}',

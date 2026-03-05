@@ -165,7 +165,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent event) {
     final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
-    final dateStart = timeOfDayRange.start.toDateTime(date);
+    final dateStart = timeOfDayRange.start.toInternalDateTime(date);
     final difference = eventStart.difference(dateStart);
     final height = difference.inSeconds * heightPerMinute / 60;
     return height;

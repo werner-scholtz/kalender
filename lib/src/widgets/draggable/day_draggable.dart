@@ -119,7 +119,7 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     final durationFromTop = Duration(minutes: durationFromStart.round());
 
     // Calculate the start of the day.
-    final startOfDay = widget.timeOfDayRange.start.toDateTime(date);
+    final startOfDay = widget.timeOfDayRange.start.toInternalDateTime(date);
 
     // Calculate dateTime of the cursor.
     final startOfEvent = startOfDay.add(durationFromTop);

@@ -241,8 +241,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             final end = eventBeingDragged.internalEnd(location: context.location);
 
             // Calculate the top and bottom values.
-            final startTop = start.difference(timeOfDayRange.start.toDateTime(start)).inMinutes * heightPerMinute;
-            final endTop = end.difference(timeOfDayRange.start.toDateTime(end)).inMinutes * heightPerMinute;
+            final startTop = start.difference(timeOfDayRange.start.toInternalDateTime(start)).inMinutes * heightPerMinute;
+            final endTop = end.difference(timeOfDayRange.start.toInternalDateTime(end)).inMinutes * heightPerMinute;
 
             final startTime = TimeOfDay.fromDateTime(start);
             final endTime = TimeOfDay.fromDateTime(end);
