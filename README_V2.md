@@ -26,7 +26,6 @@ A Flutter calendar package offering Day, MultiDay, Month, and Schedule views wit
 - [Event Layout](#event-layout)
 - [Locale](#locale)
 - [Location](#location)
-- [API Reference](#api-reference)
 
 ## Features
 
@@ -1024,9 +1023,3 @@ final eventsController = DefaultEventsController(
 See the [timezone package](https://pub.dev/packages/timezone) for setup instructions per platform. The [web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) also provides a working example.
 
 Changing `location` at runtime automatically updates visible date/time ranges. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
-
----
-
-## API Reference
-
-Full API documentation is available on [pub.dev](https://pub.dev/documentation/kalender/latest/).
