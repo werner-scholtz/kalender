@@ -11,7 +11,7 @@ extension TimeOfDayExtension on TimeOfDay {
   }
 
   /// An extension on [TimeOfDay] that adds a method to convert the [TimeOfDay] to a [DateTime].
-  DateTime toDateTime(InternalDateTime dateTime) {
+  DateTime toDateTime(DateTime dateTime) {
     return dateTime.copyWith(hour: hour, minute: minute);
   }
 }
