@@ -25,7 +25,6 @@ const _reset = '\x1B[0m';
 const _bold = '\x1B[1m';
 const _green = '\x1B[32m';
 const _red = '\x1B[31m';
-const _cyan = '\x1B[36m';
 
 void main(List<String> args) async {
   final results = <String, bool>{};
@@ -35,9 +34,6 @@ void main(List<String> args) async {
   print('Project root: $projectRoot\n');
 
   for (final tz in _timezones) {
-    final childNow = await _probeDateTime(tz);
-    stdout.write('$_cyan=== $tz — $childNow ===$_reset\n');
-
     final process = await Process.start(
       'flutter',
       ['test', ...args],
@@ -81,15 +77,4 @@ String _findProjectRoot() {
     dir = parent;
   }
   return dir.path;
-}
-
-/// Spawns the system `date` command with [tz] injected as the TZ environment
-/// variable, confirming the clock the child `flutter test` process will see.
-Future<String> _probeDateTime(String tz) async {
-  final result = await Process.run(
-    'date',
-    [],
-    environment: {...Platform.environment, 'TZ': tz},
-  );
-  return (result.stdout as String).trim();
 }
