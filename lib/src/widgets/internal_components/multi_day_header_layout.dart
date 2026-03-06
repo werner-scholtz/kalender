@@ -31,7 +31,7 @@ class MultiDayHeaderWidget extends StatelessWidget {
     var timeline = prototypeTimelineOverride;
     if (timeline == null) {
       // Create the timeline widget.
-      final calendarComponents = context.components();
+      final calendarComponents = context.components;
       final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
       final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
       final timelineStyle = bodyStyles.timelineStyle;

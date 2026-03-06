@@ -26,7 +26,7 @@ class TileGestureDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if gesture detection is enabled via callbacks.
-    final callbacks = context.callbacks();
+    final callbacks = context.callbacks;
     final enableGestureDetection = callbacks?.onEventTapped != null || callbacks?.onEventTappedWithDetail != null;
 
     // If no onTapUp callback is provided or gesture detection is disabled, return the child as is.

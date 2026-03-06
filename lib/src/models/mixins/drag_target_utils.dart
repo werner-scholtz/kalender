@@ -141,7 +141,7 @@ mixin DragTargetUtilities {
     final originalEvent = result.$1;
     final updatedEvent = result.$2;
 
-    context.feedbackWidgetSizeNotifier().value = Size.zero;
+    context.feedbackWidgetSizeNotifier.value = Size.zero;
     controller.deselectEvent();
     callbacks?.onEventChanged?.call(originalEvent, updatedEvent);
   }

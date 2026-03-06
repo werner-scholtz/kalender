@@ -115,7 +115,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final controller = context.calendarController();
+        final controller = context.calendarController;
         controller.visibleEvents.value = {...controller.visibleEvents.value, ..._events};
       }
     });
@@ -276,7 +276,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
             padding: widget.configuration.eventPadding,
             child: MultiDayEventTile(
               event: event,
-              tileComponents: context.tileComponents(),
+              tileComponents: context.tileComponents,
               dateTimeRange: widget.internalDateTimeRange,
               resizeAxis: Axis.horizontal,
             ),
@@ -287,7 +287,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
 
     // The drop target widget is used to show the drop target for the event that is being dragged.
     final dropTargetWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController().selectedEvent,
+      valueListenable: context.calendarController.selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
         if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return const SizedBox();
@@ -313,10 +313,10 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
           children: [
             LayoutId(
               id: event.id,
-              child: event.id == context.calendarController().selectedEventId
+              child: event.id == context.calendarController.selectedEventId
                   ? Padding(
                       padding: widget.configuration.eventPadding,
-                      child: context.tileComponents().dropTargetTile?.call(event) ?? const SizedBox(),
+                      child: context.tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
                     )
                   : const SizedBox(),
             ),
@@ -382,7 +382,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
   ) {
     return MultiDayEventOverlayTile(
       dateTimeRange: dateTimeRange,
-      tileComponents: context.tileComponents(),
+      tileComponents: context.tileComponents,
       dismissOverlay: dismissOverlay,
       event: event,
       resizeAxis: null,

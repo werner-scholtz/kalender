@@ -70,7 +70,7 @@ class VerticalDragTarget extends StatefulWidget {
 
 class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints, DragTargetUtilities {
   @override
-  EventsController get eventsController => context.eventsController();
+  EventsController get eventsController => context.eventsController;
 
   @override
   CalendarController get controller => widget.controller;
@@ -80,7 +80,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   List<InternalDateTime> get visibleDates => viewController.visibleDateTimeRange.value!.dates();
 
   @override
-  CalendarCallbacks? get callbacks => context.callbacks();
+  CalendarCallbacks? get callbacks => context.callbacks;
 
   @override
   double get dayWidth => widget.dayWidth;
@@ -190,7 +190,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
             final eventDuration = event.duration;
             final eventHeight = eventDuration.inMinutes * heightPerMinute;
             // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier().value = Size(dayWidth, eventHeight);
+            context.feedbackWidgetSizeNotifier.value = Size(dayWidth, eventHeight);
             // Select the event as an internal one.
             controller.selectEvent(event, internal: true);
           },
@@ -205,7 +205,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       builder: (context, candidateData, rejectedData) {
         // Check if the candidateData is null.
         if (candidateData.firstOrNull == null) return const SizedBox();
-        final components = context.components().multiDayComponents.bodyComponents;
+        final components = context.components.multiDayComponents.bodyComponents;
 
         final triggerWidth = pageWidth / 50;
         final rightTrigger = CursorNavigationTrigger(

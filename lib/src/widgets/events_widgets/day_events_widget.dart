@@ -38,7 +38,7 @@ class MultiDayEventsRow extends StatelessWidget {
                 key: columnKey(date),
                 configuration: configuration,
                 date: InternalDateTime.fromDateTime(date),
-                eventsController: context.eventsController(),
+                eventsController: context.eventsController,
                 location: context.location,
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
@@ -163,7 +163,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.calendarController();
+    final controller = context.calendarController;
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
     final eventsWidget = CustomMultiChildLayout(
@@ -183,7 +183,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
               key: DayEventTile.tileKey(item.$2.id),
               child: DayEventTile(
                 event: item.$2,
-                tileComponents: context.tileComponents(),
+                tileComponents: context.tileComponents,
                 dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
                 resizeAxis: Axis.vertical,
               ),
@@ -289,7 +289,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
   @override
   Widget build(BuildContext context) {
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
-    final controller = context.calendarController();
+    final controller = context.calendarController;
 
     // If there is no event being dragged, return an empty widget.
     final event = _selectedEvent;
@@ -306,7 +306,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       eventList.insert(0, event);
     }
 
-    final dropTarget = context.tileComponents().dropTargetTile;
+    final dropTarget = context.tileComponents.dropTargetTile;
 
     return CustomMultiChildLayout(
       delegate: layoutStrategy.call(

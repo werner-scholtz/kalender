@@ -27,7 +27,7 @@ class ScheduleBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController();
+    final calendarController = context.calendarController;
     assert(
       calendarController.viewController is ScheduleViewController,
       'The CalendarController\'s $ViewController needs to be a $MonthViewController',
@@ -36,7 +36,7 @@ class ScheduleBody extends StatelessWidget {
     final configuration = this.configuration ?? ScheduleBodyConfiguration();
     if (viewController is ContinuousScheduleViewController) {
       return SchedulePositionList(
-        eventsController: context.eventsController(),
+        eventsController: context.eventsController,
         viewController: viewController,
         // TODO: this might cause rebuilds.
         dateTimeRange: viewController.viewConfiguration.pageIndexCalculator.internalRange(context.location),
@@ -93,11 +93,11 @@ class _PaginatedScheduleState extends State<PaginatedSchedule> {
         // TODO: Should be fine.
         final range =
             widget.viewController.viewConfiguration.pageIndexCalculator.dateTimeRangeFromIndex(value, context.location);
-        context.callbacks()?.onPageChanged?.call(range);
+        context.callbacks?.onPageChanged?.call(range);
       },
       itemBuilder: (context, index) {
         return SchedulePositionList(
-          eventsController: context.eventsController(),
+          eventsController: context.eventsController,
           viewController: widget.viewController,
           // TODO: Might cause unnecessary rebuilds.
           dateTimeRange: widget.viewController.viewConfiguration.pageIndexCalculator
@@ -171,10 +171,10 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   // Convenience getters for accessing widget properties
   ScheduleViewController get viewController => widget.viewController;
   EventsController get eventsController => widget.eventsController;
-  CalendarController get calendarController => context.calendarController();
-  CalendarCallbacks? get callbacks => context.callbacks();
-  ScheduleComponentStyles get styles => context.components().scheduleComponentStyles;
-  ScheduleComponents get components => context.components().scheduleComponents;
+  CalendarController get calendarController => context.calendarController;
+  CalendarCallbacks? get callbacks => context.callbacks;
+  ScheduleComponentStyles get styles => context.components.scheduleComponentStyles;
+  ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
   /// Controller for programmatically scrolling to specific items in the list.
@@ -370,7 +370,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
-            late final tileComponents = context.tileComponents() as ScheduleTileComponents;
+            late final tileComponents = context.tileComponents as ScheduleTileComponents;
             if (item is MonthItem) {
               final locale = context.locale;
               return tileComponents.monthItemBuilder?.call(InternalDateTime.fromDateTime(date).monthRange) ??

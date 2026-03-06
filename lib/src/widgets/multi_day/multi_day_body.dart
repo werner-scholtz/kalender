@@ -42,7 +42,7 @@ class MultiDayBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.calendarController();
+    final controller = context.calendarController;
 
     assert(
       controller.viewController is MultiDayViewController,
@@ -78,7 +78,7 @@ class MultiDayBody extends StatelessWidget {
                         Positioned.fill(child: HourLines.fromContext(context, timeOfDayRange)),
                         Positioned.fill(
                           child: MultiDayPage(
-                            eventsController: context.eventsController(),
+                            eventsController: context.eventsController,
                             viewController: viewController,
                             configuration: configuration,
                             pageHeight: pageHeight,
@@ -229,14 +229,14 @@ class _MultiDayPageState extends State<MultiDayPage> {
                 end: visibleRange.start.add(Duration(days: widget.viewController.viewConfiguration.numberOfDays)),
               )
             : visibleRange;
-        final controller = context.calendarController();
+        final controller = context.calendarController;
         controller.internalDateTimeRange.value = range;
 
         // Update the visible events for the new page index.
         _updateVisibleEvents(index, context.location);
 
         // Call the onPageChanged callback if it was provided.
-        final callbacks = context.callbacks();
+        final callbacks = context.callbacks;
         callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {

@@ -25,10 +25,10 @@ class DayDraggable extends StatefulWidget {
 
 class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
   @override
-  CalendarCallbacks? get callbacks => context.callbacks();
+  CalendarCallbacks? get callbacks => context.callbacks;
 
   @override
-  CalendarController get controller => context.calendarController();
+  CalendarController get controller => context.calendarController;
 
   @override
   Widget build(BuildContext context) {

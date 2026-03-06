@@ -55,18 +55,18 @@ class HorizontalDragTarget extends StatefulWidget {
 
 class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTargetUtilities {
   @override
-  EventsController get eventsController => context.eventsController();
+  EventsController get eventsController => context.eventsController;
   @override
-  CalendarController get controller => context.calendarController();
+  CalendarController get controller => context.calendarController;
   @override
-  CalendarCallbacks? get callbacks => context.callbacks();
+  CalendarCallbacks? get callbacks => context.callbacks;
   @override
   List<InternalDateTime> get visibleDates => visibleDateTimeRange.dates();
   @override
   bool get multiDayDragTarget => true;
 
   ViewController get viewController => controller.viewController!;
-  TileComponents get tileComponents => context.tileComponents();
+  TileComponents get tileComponents => context.tileComponents;
   InternalDateTimeRange get visibleDateTimeRange => widget.visibleDateTimeRange;
   PageTriggerConfiguration get pageTrigger => widget.configuration.pageTriggerConfiguration;
   double get tileHeight => widget.configuration.tileHeight;
@@ -130,7 +130,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
           },
           onReschedule: (event) {
             // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier().value =
+            context.feedbackWidgetSizeNotifier.value =
                 Size(min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length), tileHeight);
 
             controller.selectEvent(event, internal: true);

@@ -57,10 +57,10 @@ class _TileState extends State<Tile> {
 
   @override
   void didChangeDependencies() {
-    _controller = context.calendarController();
+    _controller = context.calendarController;
     _controller?.selectedEvent.addListener(_calendarControllerListener);
 
-    _eventsController = context.eventsController();
+    _eventsController = context.eventsController;
     _eventsController?.addListener(_eventsControllerListener);
 
     super.didChangeDependencies();

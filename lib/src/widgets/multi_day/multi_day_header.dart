@@ -23,7 +23,7 @@ class MultiDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController();
+    final calendarController = context.calendarController;
     assert(
       calendarController.viewController is MultiDayViewController,
       'The CalendarController\'s $ViewController needs to be a $MultiDayViewController',
@@ -32,7 +32,7 @@ class MultiDayHeader extends StatelessWidget {
     final viewController = calendarController.viewController as MultiDayViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final headerConfiguration = configuration ?? const MultiDayHeaderConfiguration();
-    final components = context.components();
+    final components = context.components;
 
     final header = switch (viewConfiguration.type) {
       MultiDayViewType.freeScroll => _FreeScrollHeader(
@@ -82,7 +82,7 @@ class _SingleDayHeader extends StatelessWidget {
 
     final dayHeaderStyle = componentStyles.dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController().internalDateTimeRange,
+      valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -110,7 +110,7 @@ class _SingleDayHeader extends StatelessWidget {
                 ConstrainedBox(
                   constraints: constraints,
                   child: MultiDayEventWidget(
-                    eventsController: context.eventsController(),
+                    eventsController: context.eventsController,
                     internalDateTimeRange: visibleRange,
                     configuration: configuration,
                     multiDayCache: viewController.multiDayCache,
@@ -160,7 +160,7 @@ class _MultiDayHeader extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController().internalDateTimeRange,
+      valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
@@ -192,7 +192,7 @@ class _MultiDayHeader extends StatelessWidget {
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget(
-                        eventsController: context.eventsController(),
+                        eventsController: context.eventsController,
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,
@@ -242,7 +242,7 @@ class _FreeScrollHeader extends StatelessWidget {
 
     final weekNumberStyle = componentStyles.weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
-      valueListenable: context.calendarController().internalDateTimeRange,
+      valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
         if (value == null) {
           debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');
@@ -277,7 +277,7 @@ class _FreeScrollHeader extends StatelessWidget {
                     ConstrainedBox(
                       constraints: BoxConstraints(minHeight: configuration.tileHeight),
                       child: MultiDayEventWidget(
-                        eventsController: context.eventsController(),
+                        eventsController: context.eventsController,
                         internalDateTimeRange: visibleRange,
                         configuration: configuration,
                         multiDayCache: viewController.multiDayCache,

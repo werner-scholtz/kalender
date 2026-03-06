@@ -81,8 +81,8 @@ class TimeIndicator extends StatefulWidget {
     BuildContext context,
     TimeOfDayRange timeOfDayRange,
   ) {
-    final timeIndicatorStyle = context.components().multiDayComponentStyles.bodyStyles.timeIndicatorStyle;
-    final components = context.components().multiDayComponents.bodyComponents;
+    final timeIndicatorStyle = context.components.multiDayComponentStyles.bodyStyles.timeIndicatorStyle;
+    final components = context.components.multiDayComponents.bodyComponents;
     return components.timeIndicator.call(
       timeOfDayRange,
       context.heightPerMinute,

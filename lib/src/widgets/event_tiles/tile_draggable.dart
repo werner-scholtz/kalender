@@ -55,14 +55,14 @@ class TileDraggable extends StatelessWidget {
       data: Reschedule(event: event),
       feedback: FeedbackWidget(
         event: event,
-        feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier(),
+        feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier,
         feedbackTileBuilder: feedbackTileBuilder,
       ),
       dragAnchorStrategy: dragAnchorStrategy ?? childDragAnchorStrategy,
       onDragStarted: () {
         dismissOverlay?.call();
-        context.calendarController().selectEvent(event, internal: true);
-        context.callbacks()?.onEventChange?.call(event);
+        context.calendarController.selectEvent(event, internal: true);
+        context.callbacks?.onEventChange?.call(event);
       },
       child: child,
     );

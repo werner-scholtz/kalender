@@ -184,22 +184,22 @@ class HeightPerMinute extends InheritedNotifier<ValueNotifier<double>> {
 /// Extension methods for [BuildContext] to retrieve various calendar-related providers.
 extension ProviderContext on BuildContext {
   /// Retrieve the [EventsController].
-  EventsController eventsController() => EventsControllerProvider.of(this);
+  EventsController get eventsController => EventsControllerProvider.of(this);
 
   /// Retrieve the [CalendarController].
-  CalendarController calendarController() => CalendarControllerProvider.of(this);
+  CalendarController get calendarController => CalendarControllerProvider.of(this);
 
   /// Retrieve the [CalendarComponents].
-  CalendarComponents components() => Components.of(this);
+  CalendarComponents get components => Components.of(this);
 
   /// Retrieve the [CalendarCallbacks] from the [Callbacks].
-  CalendarCallbacks? callbacks() => Callbacks.of(this);
+  CalendarCallbacks? get callbacks => Callbacks.of(this);
 
   /// Retrieve the [TileComponents] from the [TileComponentProvider].
-  TileComponents tileComponents() => TileComponentProvider.of(this);
+  TileComponents get tileComponents => TileComponentProvider.of(this);
 
   /// Retrieve the feedback widget size notifier from the [EventsController].
-  ValueNotifier<Size> feedbackWidgetSizeNotifier() => eventsController().feedbackWidgetSize;
+  ValueNotifier<Size> get feedbackWidgetSizeNotifier => eventsController.feedbackWidgetSize;
 
   /// Retrieve the locale.
   dynamic get locale => LocaleProvider.of(this);

@@ -83,7 +83,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
             // Set the size of the feedback widget.
             const height = 24.0;
 
-            context.feedbackWidgetSizeNotifier().value = Size(dayWidth, height);
+            context.feedbackWidgetSizeNotifier.value = Size(dayWidth, height);
             controller.selectEvent(event, internal: true);
             return true;
           },

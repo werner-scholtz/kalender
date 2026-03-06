@@ -14,7 +14,7 @@ class TimelineSizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create the timeline widget.
-    final calendarComponents = context.components();
+    final calendarComponents = context.components;
     final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
     final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
     final timelineStyle = bodyStyles.timelineStyle;

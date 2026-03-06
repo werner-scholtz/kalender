@@ -38,7 +38,7 @@ class MonthDayHeader extends StatelessWidget {
   }
 
   static Widget fromContext(BuildContext context, InternalDateTime date) {
-    final components = context.components();
+    final components = context.components;
     final dayHeader = components.monthComponents.bodyComponents.monthDayHeaderBuilder;
     final style = components.monthComponentStyles.bodyStyles.monthDayHeaderStyle;
     return dayHeader(date, style);

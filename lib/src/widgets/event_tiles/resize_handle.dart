@@ -55,7 +55,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _controller = context.calendarController();
+      _controller = context.calendarController;
       _controller?.selectedEvent.addListener(listener);
       setState(() => _size = context.size ?? Size.zero);
     });
@@ -176,8 +176,8 @@ class ResizeHandle extends StatelessWidget {
       feedback: const SizedBox(),
       dragAnchorStrategy: pointerDragAnchorStrategy,
       onDragStarted: () {
-        context.calendarController().selectEvent(event, internal: true);
-        context.callbacks()?.onEventChange?.call(event);
+        context.calendarController.selectEvent(event, internal: true);
+        context.callbacks?.onEventChange?.call(event);
       },
       child: resizeHandle ?? Container(color: Colors.transparent),
     );

@@ -70,9 +70,9 @@ class _CalendarHeaderState extends State<CalendarHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final viewController = context.calendarController().viewController;
+    final viewController = context.calendarController.viewController;
     return Callbacks(
-      callbacks: _callbacks ?? context.callbacks(),
+      callbacks: _callbacks ?? context.callbacks,
       child: switch (viewController) {
         MultiDayViewController() => Interaction(
             notifier: _interaction,

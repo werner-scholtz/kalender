@@ -20,7 +20,7 @@ class MonthBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarController = context.calendarController();
+    final calendarController = context.calendarController;
 
     assert(
       calendarController.viewController is MonthViewController,
@@ -41,9 +41,9 @@ class MonthBody extends StatelessWidget {
       itemCount: pageNavigation.numberOfPages(context.location),
       onPageChanged: (index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
-        final controller = context.calendarController();
+        final controller = context.calendarController;
         controller.internalDateTimeRange.value = visibleRange;
-        context.callbacks()?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
+        context.callbacks?.onPageChanged?.call(controller.visibleDateTimeRange.value!);
       },
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
@@ -96,7 +96,7 @@ class MonthWeek extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final components = context.components();
+    final components = context.components;
     final monthComponents = components.monthComponents;
 
     return Stack(
@@ -124,7 +124,7 @@ class MonthWeek extends StatelessWidget {
                         ((constraints.maxHeight / configuration.tileHeight).floor() - 1).clamp(0, double.maxFinite).toInt();
 
                     return MultiDayEventWidget(
-                      eventsController: context.eventsController(),
+                      eventsController: context.eventsController,
                       internalDateTimeRange: internalRange,
                       configuration: configuration,
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
