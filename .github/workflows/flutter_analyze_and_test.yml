@@ -7,9 +7,9 @@ name: Analyze and Test
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, main-wip]
   push:
-    branches: [main]
+    branches: [main, main-wip]
 
 jobs:
   analyze: # Separate job for analysis
