@@ -79,7 +79,7 @@ void main() {
     const headerConfig = MultiDayHeaderConfiguration();
 
     // MonthBodyConfiguration: allowSingleDayEvents = true
-    final monthConfig = MonthBodyConfiguration();
+    const monthConfig = MonthBodyConfiguration();
 
     test('Create with matching controller id → true', () {
       expect(

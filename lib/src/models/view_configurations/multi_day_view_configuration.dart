@@ -298,6 +298,7 @@ class MultiDayHeaderConfiguration extends HorizontalConfiguration {
   });
 
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
+  @override
   MultiDayHeaderConfiguration copyWith({
     double? tileHeight,
     bool? showTiles,

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/components/month_day_header.dart' show MonthDayHeader;
-import 'package:kalender/src/widgets/components/month_grid.dart' show MonthGrid;
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart' show WeekDayHeaders;
-import 'package:kalender/src/widgets/month/month_body.dart' show MonthBody, MonthWeek;
 
 import '../utilities.dart';
 

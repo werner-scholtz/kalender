@@ -70,7 +70,7 @@ void main() {
           calendarController: controller,
           eventsController: eventsController,
           tileComponents: tileComponents,
-          child: sizedBoxWrapper != null ? sizedBoxWrapper : inner,
+          child: sizedBoxWrapper ?? inner,
         ),
       );
     }
@@ -127,7 +127,7 @@ void main() {
     // Regression: when the available height per week row was less than tileHeight,
     // MonthBody computed a negative maxNumberOfVerticalEvents (e.g. -1), turning
     // "numberOfHiddenRows = (row+1) - (-1)" into 2 even for a single event.
-    // A second part of the same bug: columnRowMap was initialised to 0 for every
+    // A second part of the same bug: columnRowMap was initialized to 0 for every
     // column, so days that had NO event also showed overflow buttons whenever
     // maxNumberOfRows dropped to 0.
     testWidgets('Overflow button count is correct when maxNumberOfVerticalEvents is 0', (tester) async {
