@@ -96,21 +96,21 @@ Presents events in a continuous, scrollable list focused on upcoming or grouped 
 
 ```yaml
 dependencies:
-  kalender: ^0.16.0
+  kalender: ^0.15.0
 ```
 
 If you plan to use [location/timezones](#location) support, also add:
 
 ```yaml
 dependencies:
-  timezone: ^0.10.0
+  timezone: ^0.10.1
 ```
 
 If you plan to use [locale](#locale) support, also add:
 
 ```yaml
 dependencies:
-  intl: ^0.19.0
+  intl: '>=0.17.0 <0.22.2'
 ```
 
 ---
@@ -138,9 +138,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyCalendar extends StatelessWidget {
-  MyCalendar({super.key});
+class MyCalendar extends StatefulWidget {
+  const MyCalendar({super.key});
 
+  @override
+  State<MyCalendar> createState() => _MyCalendarState();
+}
+
+class _MyCalendarState extends State<MyCalendar> {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
 
@@ -229,7 +234,7 @@ Use `eventsController.updateEvent()` to replace an existing event with an update
 ```dart
 final original = eventsController.byId(someId)! as Event;
 final updated = original.copyWith(title: 'Updated Title', color: Colors.red);
-eventsController.updateEvent(original, updated);
+eventsController.updateEvent(event: original, updatedEvent: updated);
 ```
 
 Because `==` and `hashCode` include your custom fields, the calendar will detect the change and rebuild the tile.
@@ -318,7 +323,7 @@ Presents events in a chronological scrollable list.
 
 ### EventsController
 
-[`EventsController`](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/events_controller.dart#L8) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller/default_events_controller.dart) unless you need a custom storage layer.
+[`EventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller.dart) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller/default_events_controller.dart) unless you need a custom storage layer.
 
 | Method                             | Description                                            |
 | ---------------------------------- | ------------------------------------------------------ |
@@ -327,14 +332,14 @@ Presents events in a chronological scrollable list.
 | `removeEvent(event)`               | Remove a specific event                                |
 | `removeEvents(events)`             | Remove a list of events                                |
 | `removeWhere(test)`                | Remove events matching a predicate                     |
-| `updateEvent(event, updatedEvent)` | Replace an existing event                              |
+| `updateEvent({event, updatedEvent})` | Replace an existing event (named parameters)           |
 | `byId(id)`                         | Return the event with the given `String` id, or `null` |
 | `clearEvents()`                    | Remove all events                                      |
-| `eventsFromDateTimeRange(range)`   | Events occurring during the given range                |
+| `eventsFromDateTimeRange(range)`   | Events occurring during the given range (accepts optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
 ### CalendarController
 
-[`CalendarController`](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/calendar_controller.dart#L15) drives a single `CalendarView` widget.
+[`CalendarController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/calendar_controller.dart) drives a single `CalendarView` widget.
 
 **State notifiers:**
 
@@ -351,7 +356,7 @@ Presents events in a chronological scrollable list.
 - `animateToDate(date)` / `animateToDateTime(dateTime)`
 - `animateToEvent(event)`
 
-> Internally the controller delegates to a [`ViewController`](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/models/controllers/view_controller.dart#L8) — `MultiDayViewController`, `MonthViewController`, or `ScheduleViewController` — depending on the active `ViewConfiguration`.
+> Internally the controller delegates to a [`ViewController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/view_controller.dart) — `MultiDayViewController`, `MonthViewController`, or `ScheduleViewController` — depending on the active `ViewConfiguration`.
 
 ---
 
@@ -367,7 +372,7 @@ For most apps a plain `tileBuilder` is all you need:
 
 ```dart
 CalendarBody(
-  tileComponents: TileComponents(
+  multiDayTileComponents: TileComponents(
     tileBuilder: (event, tileRange) {
       final myEvent = event as Event;
       return Container(
@@ -475,7 +480,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
         onTapUp: (details) {
           // Convert a local tap position into an exact DateTime.
           final tappedTime = dateTimeFromPosition(context, details.localPosition);
-          print('Tapped at: $tappedTime');
+          debugPrint('Tapped at: $tappedTime');
 
           // Find events that overlap a ±15-minute window around this one.
           final nearby = nearbyEvents(
@@ -483,7 +488,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
             before: const Duration(minutes: 15),
             after: const Duration(minutes: 15),
           );
-          print('Found ${nearby.length} nearby events');
+          debugPrint('Found ${nearby.length} nearby events');
         },
         child: Container(
           decoration: BoxDecoration(
@@ -531,10 +536,10 @@ For tiles that need to know the exact tapped time or find nearby events, use the
         onTapUp: (details) {
           // Convert a horizontal tap position into a specific date.
           final tappedDate = dateFromPosition(context, details.localPosition);
-          print('Tapped on: $tappedDate');
+          debugPrint('Tapped on: $tappedDate');
 
           final overlapping = nearbyEvents(context);
-          print('Found ${overlapping.length} overlapping events');
+          debugPrint('Found ${overlapping.length} overlapping events');
         },
         child: Container(
           decoration: BoxDecoration(
@@ -595,7 +600,7 @@ CalendarCallbacks(
 
   // Called after a rescheduled / resized event is applied.
   onEventChanged: (original, updated) {
-    eventsController.updateEvent(original, updated);
+    eventsController.updateEvent(event: original, updatedEvent: updated);
   },
 
   // --- Calendar interactions ---
@@ -636,27 +641,27 @@ CalendarCallbacks(
 | Schedule | —                             | `ScheduleBodyConfiguration` |
 
 Both also accept:
-- `interaction: ValueNotifier<CalendarInteraction>` — toggling resize / reschedule / create.
-- `snapping: ValueNotifier<CalendarSnapping>` — (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
+- `interaction: CalendarInteraction` — toggling resize / reschedule / create.
+- `snapping: CalendarSnapping` — (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
 
 ### Interaction & Snapping
 
 ```dart
 CalendarBody(
-  interaction: ValueNotifier(CalendarInteraction(
+  interaction: CalendarInteraction(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
     // Tap to create (default) or long-press to create:
     createEventGesture: CreateEventGesture.tap,
-  )),
-  snapping: ValueNotifier(CalendarSnapping(
+  ),
+  snapping: CalendarSnapping(
     snapIntervalMinutes: 15,
     snapToTimeIndicator: true,
     snapToOtherEvents: true,
     snapRange: const Duration(minutes: 5),
     eventSnapStrategy: defaultSnapStrategy,
-  )),
+  ),
 )
 ```
 
@@ -771,9 +776,9 @@ Wrap your `CalendarView` with this widget to enable Ctrl+scroll zooming.
 
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without rebuilding widgets.
+Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets.
 
-Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/d5f973c176e97118792c919dda58699b24af19f7/lib/src/models/components/schedule_components.dart#L5).
+Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/schedule_components.dart).
 
 <details>
   <summary>MultiDayComponents</summary>
@@ -856,7 +861,7 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
 
 ### Vertical layout (Day / MultiDay body)
 
-The package uses [`CustomMultiChildLayout`](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) with an [`EventLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/d79a8ea7fa1474a9085cb835e25a89ed9b7872a5/lib/src/layout_delegates/event_layout_delegate.dart) to position tiles.
+The package uses [`CustomMultiChildLayout`](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) with an [`EventLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/layout_delegates/event_layout_delegate.dart) to position tiles.
 
 Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
@@ -959,7 +964,7 @@ CalendarBody(
 
 ## Locale
 
-And call `initializeDateFormatting()` before `runApp`:
+Kalender uses the [intl](https://pub.dev/packages/intl) package to localize day and month names. Call `initializeDateFormatting()` before `runApp`:
 
 ```dart
 void main() async {
@@ -995,7 +1000,7 @@ CalendarView(
 
 ## Location
 
-`CalendarView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. All events are stored in UTC and converted to the given location for display.
+`CalendarView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `CalendarEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
 
 ```dart
 import 'package:timezone/timezone.dart' as tz;

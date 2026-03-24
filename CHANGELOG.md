@@ -10,7 +10,7 @@
 
 ### Features
 
-- `CalendarEvent` is now extensible. Attach custom fields (title, color, etc.) by subclassing and overriding `copyWith`. See the updated examples for guidance.
+- `CalendarEvent` is now extensible. Attach custom fields (title, color, etc.) by sub-classing and overriding `copyWith`. See the updated examples for guidance.
 - `CalendarEvent` gained a `layoutEquals` method used internally for optimized layout rebuilds.
 
 ### Fixes
