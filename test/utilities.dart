@@ -11,7 +11,7 @@ final year2025DisplayRange = DateTimeRange(start: DateTime(2025), end: DateTime(
 
 /// Timezone names used in tests that exercise timezone-aware controllers.
 const locationsToTest = [
-  'UTC',
+  'Etc/UTC',
   'Africa/Johannesburg',
   'America/New_York',
   'Europe/London',
