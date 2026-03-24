@@ -129,11 +129,27 @@ class MobileHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(context.l10n.appTitle),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
-        actions: const [
-          ThemeButton(),
-          SizedBox(width: 4),
-          TextDirectionButton(),
-          SizedBox(width: 4),
+        actions: [
+          const ThemeButton(),
+          const SizedBox(width: 4),
+          const TextDirectionButton(),
+          const SizedBox(width: 4),
+          IconButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('This is a pre-release example for v0.16.0'),
+                content: const Text(
+                  "This is a pre-release example for v0.16.0 which is not yet released, see 'main-wip' branch.",
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+                ],
+              ),
+            ),
+            icon: Icon(Icons.warning, color: Theme.of(context).colorScheme.error),
+            tooltip: 'Warning - v0.16.0 pre-release example.',
+          ),
         ],
       ),
       body: const EventOverlayPortal(child: SingleCalendarView()),
