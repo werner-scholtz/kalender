@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:timezone/data/latest_10y.dart';
 
 final locationsToTest = [
-  'UTC',
+  'Etc/UTC',
   'Africa/Johannesburg',
   'America/New_York',
   'Europe/London',
