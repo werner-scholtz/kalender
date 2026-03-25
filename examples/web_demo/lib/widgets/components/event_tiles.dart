@@ -10,7 +10,7 @@ abstract class BaseEventTile extends StatelessWidget {
     required this.tileRange,
   });
 
-  static const defaultColor = Colors.blueGrey;
+  static const defaultColor = Color(0xFF6366F1);
   Color get color => event.color ?? defaultColor;
   Color textColor(Color color) => color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
@@ -18,8 +18,14 @@ abstract class BaseEventTile extends StatelessWidget {
   bool get continuesBefore => event.dateTimeRange.start.isBefore(tileRange.start);
   String title(BuildContext context) => event.title;
 
-  static BorderRadius defaultBorderRadius = BorderRadius.circular(8);
-  BoxDecoration get decoration => BoxDecoration(color: color.withAlpha(150), borderRadius: defaultBorderRadius);
+  static BorderRadius defaultBorderRadius = BorderRadius.circular(6);
+  BoxDecoration get decoration => BoxDecoration(
+        color: color.withAlpha(35),
+        borderRadius: defaultBorderRadius,
+        border: Border(
+          left: BorderSide(color: color, width: 3),
+        ),
+      );
 }
 
 class EventTile extends BaseEventTile {
@@ -28,15 +34,26 @@ class EventTile extends BaseEventTile {
     return EventTile(event: event, tileRange: tileRange);
   }
 
-  EdgeInsets get padding => const EdgeInsets.all(4);
+  EdgeInsets get padding => const EdgeInsets.symmetric(horizontal: 8, vertical: 4);
 
   @override
   Widget build(BuildContext context) {
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     return DecoratedBox(
-      decoration: decoration,
+      decoration: BoxDecoration(
+        color: Color.lerp(surfaceColor, color, 0.12),
+        borderRadius: BaseEventTile.defaultBorderRadius,
+        border: Border(
+          left: BorderSide(color: color, width: 3),
+        ),
+      ),
       child: Padding(
         padding: padding,
-        child: Text(title(context), style: TextStyle(color: textColor(color))),
+        child: Text(
+          title(context),
+          style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w500),
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }
@@ -48,15 +65,36 @@ class MultiDayEventTile extends BaseEventTile {
     return MultiDayEventTile(event: event, tileRange: tileRange);
   }
 
-  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
-
   @override
   Widget build(BuildContext context) {
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
+    const radius = Radius.circular(6);
+    final borderRadius = BorderRadius.horizontal(
+      left: continuesBefore ? Radius.zero : radius,
+      right: continuesAfter ? Radius.zero : radius,
+    );
+
     return DecoratedBox(
-      decoration: decoration,
+      decoration: BoxDecoration(
+        color: Color.lerp(surfaceColor, color, 0.18),
+        borderRadius: borderRadius,
+        border: continuesBefore ? null : Border(left: BorderSide(color: color, width: 3)),
+      ),
       child: Padding(
-        padding: padding,
-        child: Text(title(context), style: TextStyle(color: textColor(color))),
+        padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title(context),
+                style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (continuesAfter)
+              Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
+          ],
+        ),
       ),
     );
   }
@@ -69,29 +107,42 @@ class OverlayEventTile extends BaseEventTile {
     return OverlayEventTile(event: event, tileRange: tileRange);
   }
 
-  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 1, horizontal: 4);
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          left: continuesBefore ? 20 : 0,
-          right: continuesAfter ? 20 : 0,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: color.withAlpha(150),
-              borderRadius: BorderRadius.circular(8),
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
+    const radius = Radius.circular(6);
+    final borderRadius = BorderRadius.horizontal(
+      left: continuesBefore ? Radius.zero : radius,
+      right: continuesAfter ? Radius.zero : radius,
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Color.lerp(surfaceColor, color, 0.22),
+        borderRadius: borderRadius,
+        border: continuesBefore ? null : Border(left: BorderSide(color: color, width: 3)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+        child: Row(
+          children: [
+            if (continuesBefore)
+              Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: Icon(Icons.chevron_left, size: 14, color: color.withAlpha(150)),
+              ),
+            Expanded(
+              child: Text(
+                title(context),
+                style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            child: Padding(
-              padding: padding,
-              child: Text(title(context), style: TextStyle(color: textColor(color))),
-            ),
-          ),
+            if (continuesAfter)
+              Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
+          ],
         ),
-        if (continuesAfter) const Align(alignment: Alignment.centerRight, child: Icon(Icons.chevron_right)),
-        if (continuesBefore) const Align(alignment: Alignment.centerLeft, child: Icon(Icons.chevron_left)),
-      ],
+      ),
     );
   }
 }
@@ -106,13 +157,23 @@ class FeedbackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = event.color ?? BaseEventTile.defaultColor;
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: dropTargetWidgetSize.width * 0.8,
+      duration: const Duration(milliseconds: 200),
+      width: dropTargetWidgetSize.width * 0.85,
       height: dropTargetWidgetSize.height,
       decoration: BoxDecoration(
-        color: (event.color ?? BaseEventTile.defaultColor).withAlpha(150),
+        color: Color.lerp(surfaceColor, color, 0.18),
         borderRadius: BaseEventTile.defaultBorderRadius,
+        border: Border(left: BorderSide(color: color, width: 3)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withAlpha(40),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
     );
   }
@@ -127,9 +188,12 @@ class DropTargetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = event.color ?? BaseEventTile.defaultColor;
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: (event.color ?? BaseEventTile.defaultColor), width: 2),
+        color: Color.lerp(surfaceColor, color, 0.08)!.withAlpha(80),
+        border: Border.all(color: color.withAlpha(80), width: 1.5),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );
@@ -145,9 +209,14 @@ class TileWhenDragging extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = event.color ?? BaseEventTile.defaultColor;
+    final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: (event.color ?? BaseEventTile.defaultColor).withAlpha(20),
+        color: Color.lerp(surfaceColor, color, 0.06),
+        border: Border(
+          left: BorderSide(color: color.withAlpha(60), width: 3),
+        ),
         borderRadius: BaseEventTile.defaultBorderRadius,
       ),
     );

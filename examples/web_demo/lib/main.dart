@@ -54,6 +54,73 @@ class MyAppState extends State<MyApp> {
     super.dispose();
   }
 
+  static ThemeData _buildTheme(Brightness brightness) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF6366F1),
+      brightness: brightness,
+    );
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      cardTheme: CardThemeData(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: colorScheme.outlineVariant.withAlpha(80)),
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 4,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainerLow,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: colorScheme.outlineVariant.withAlpha(80)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+      expansionTileTheme: ExpansionTileThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbIcon: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const Icon(Icons.check, size: 14);
+          }
+          return null;
+        }),
+      ),
+    );
+  }
+
   Locale _resolveLocale(Locale? locale, Iterable<Locale> supportedLocales) {
     if (locale == null) return const Locale('en', 'US');
     for (var supportedLocale in supportedLocales) {
@@ -85,14 +152,8 @@ class MyAppState extends State<MyApp> {
                     debugShowCheckedModeBanner: false,
                     title: 'Web Demo',
                     themeMode: themeMode,
-                    theme: ThemeData(
-                      useMaterial3: true,
-                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-                    ),
-                    darkTheme: ThemeData(
-                      useMaterial3: true,
-                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
-                    ),
+                    theme: _buildTheme(Brightness.light),
+                    darkTheme: _buildTheme(Brightness.dark),
                     locale: locale,
                     supportedLocales: supportedLocales,
                     localizationsDelegates: const [
@@ -131,9 +192,11 @@ class MobileHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(context.l10n.appTitle),
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+        title: Text(
+          context.l10n.appTitle,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 12),
         actions: const [
           ThemeButton(),
           SizedBox(width: 4),
@@ -141,6 +204,10 @@ class MobileHomePage extends StatelessWidget {
           SizedBox(width: 4),
           WarningButton(),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80)),
+        ),
       ),
       body: const SingleCalendarView(),
     );
@@ -161,20 +228,26 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(context.l10n.appTitle),
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
+        title: Text(
+          context.l10n.appTitle,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 12),
         actions: [
           const WarningButton(),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           const ThemeButton(),
           const SizedBox(width: 4),
           const TextDirectionButton(),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           const LocaleDropdown(),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           ViewTypePicker(type: _type, onChanged: (value) => setState(() => _type = value)),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80)),
+        ),
       ),
       body: _type == ViewType.single ? const SingleCalendarView() : const MultiCalendarView(),
     );

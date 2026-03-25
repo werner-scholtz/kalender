@@ -37,18 +37,17 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  
+  bool _showConfig = true;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final canShowCustomize = constraints.maxWidth > 800;
+        final canShowCustomize = constraints.maxWidth > 500;
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 3,
               child: ZoomDetector(
                 controller: context.controller,
                 child: CalendarView(
@@ -58,33 +57,51 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     eventsController: context.eventsController,
                     viewConfiguration: context.configuration.viewConfiguration,
                     callbacks: _callbacks,
-                    header: Material(
-                      color: Theme.of(context).colorScheme.surface,
-                      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-                      elevation: 2,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+                    header: Column(
+                      spacing: 4,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80),
+                              ),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                             child: NavigationHeader(
                               controller: context.controller,
                               viewConfigurations: context.configuration.viewConfigurations,
                               viewConfiguration: context.configuration.viewConfiguration,
+                              onToggleConfig: canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
+                              configVisible: _showConfig,
                             ),
                           ),
-                          if (context.configuration.showHeader)
-                            ValueListenableBuilder(
-                              valueListenable: context.configuration.interactionHeader,
-                              builder: (context, value, child) {
-                                return CalendarHeader(
+                        ),
+                        if (context.configuration.showHeader)
+                          ValueListenableBuilder(
+                            valueListenable: context.configuration.interactionHeader,
+                            builder: (context, value, child) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                                    ),
+                                  ),
+                                ),
+                                child: CalendarHeader(
                                   multiDayTileComponents: _multiDayTileComponents,
                                   multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
                                   interaction: value,
-                                );
-                              },
-                            )
-                        ],
-                      ),
+                                ),
+                              );
+                            },
+                          ),
+                      ],
                     ),
                     body: ValueListenableBuilder(
                       valueListenable: context.configuration.interactionBody,
@@ -108,9 +125,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               ),
             ),
             if (canShowCustomize)
-              Expanded(
-                flex: 1,
-                child: CalendarConfigurationWidget(configuration: context.configuration),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                alignment: Alignment.centerLeft,
+                child: _showConfig
+                    ? SizedBox(
+                        width: 280,
+                        child: CalendarConfigurationWidget(configuration: context.configuration),
+                      )
+                    : const SizedBox.shrink(),
               ),
           ],
         );
