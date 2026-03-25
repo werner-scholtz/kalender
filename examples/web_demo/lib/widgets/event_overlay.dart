@@ -10,6 +10,7 @@ class EventOverlayCard extends StatefulWidget {
   final double width;
   final VoidCallback onDismiss;
   final EventsController eventsController;
+  final Location? location;
 
   const EventOverlayCard({
     super.key,
@@ -19,6 +20,7 @@ class EventOverlayCard extends StatefulWidget {
     required this.width,
     required this.onDismiss,
     required this.eventsController,
+    required this.location,
   });
 
   @override
@@ -27,13 +29,17 @@ class EventOverlayCard extends StatefulWidget {
 
 class _EventOverlayCardState extends State<EventOverlayCard> {
   late Event event = widget.event;
-  late Event displayEvent = widget.event;
+
+  Location? get _location => widget.location;
 
   @override
   Widget build(BuildContext context) {
     const contentPadding = EdgeInsets.symmetric(horizontal: 2);
     final locale = MaterialLocalizations.of(context);
     final use24 = MediaQuery.alwaysUse24HourFormatOf(context);
+
+    final displayStart = event.internalStart(location: _location);
+    final displayEnd = event.internalEnd(location: _location);
 
     return Card(
       elevation: 5,
@@ -82,30 +88,27 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                 leading: const Icon(Icons.play_arrow),
                 title: TextButton(
                   onPressed: () async {
-                    final date = await _showDatePicker(DateTime(1970), event.end);
+                    final date = await _showDatePicker(DateTime(1970), displayEnd);
                     if (date == null) return;
-
-                    final newRange = DateTimeRange(start: date, end: event.end);
-                    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-                    widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                    setState(() => event = updatedEvent);
+                    final newStart = _toUtc(date.year, date.month, date.day, displayStart.hour, displayStart.minute);
+                    final newEnd =
+                        _toUtc(displayEnd.year, displayEnd.month, displayEnd.day, displayEnd.hour, displayEnd.minute);
+                    if (newStart.isAfter(newEnd)) return;
+                    _updateEvent(DateTimeRange(start: newStart, end: newEnd));
                   },
-                  child: Text(locale.formatShortDate(event.start)),
+                  child: Text(locale.formatShortDate(displayStart)),
                 ),
                 trailing: TextButton(
                   onPressed: () async {
-                    final time = await _showTimePicker(event.start);
+                    final time = await _showTimePicker(displayStart);
                     if (time == null) return;
-                    final start = event.start.copyWith(hour: time.hour, minute: time.minute);
-                    if (start.isAfter(event.end)) return;
-
-                    final newRange = DateTimeRange(start: start, end: event.end);
-                    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-                    widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                    setState(() => event = updatedEvent);
+                    final newStart =
+                        _toUtc(displayStart.year, displayStart.month, displayStart.day, time.hour, time.minute);
+                    if (newStart.isAfter(event.end)) return;
+                    _updateEvent(DateTimeRange(start: newStart, end: event.end));
                   },
                   child: Text(
-                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(event.start), alwaysUse24HourFormat: use24),
+                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(displayStart), alwaysUse24HourFormat: use24),
                   ),
                 ),
               ),
@@ -116,30 +119,24 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                   onPressed: () async {
                     final now = DateTime.now();
                     final last = now.copyWith(day: now.day + 365);
-                    final date = await _showDatePicker(event.start, last);
+                    final date = await _showDatePicker(displayStart, last);
                     if (date == null) return;
-
-                    final newRange = DateTimeRange(start: event.start, end: date);
-                    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-                    widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                    setState(() => event = updatedEvent);
+                    final newEnd = _toUtc(date.year, date.month, date.day, displayEnd.hour, displayEnd.minute);
+                    if (newEnd.isBefore(event.start)) return;
+                    _updateEvent(DateTimeRange(start: event.start, end: newEnd));
                   },
-                  child: Text(locale.formatShortDate(event.end)),
+                  child: Text(locale.formatShortDate(displayEnd)),
                 ),
                 trailing: TextButton(
                   onPressed: () async {
-                    final time = await _showTimePicker(event.end);
+                    final time = await _showTimePicker(displayEnd);
                     if (time == null) return;
-                    final end = event.end.copyWith(hour: time.hour, minute: time.minute);
-                    if (end.isBefore(event.start)) return;
-
-                    final newRange = DateTimeRange(start: event.start, end: end);
-                    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-                    widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
-                    setState(() => event = updatedEvent);
+                    final newEnd = _toUtc(displayEnd.year, displayEnd.month, displayEnd.day, time.hour, time.minute);
+                    if (newEnd.isBefore(event.start)) return;
+                    _updateEvent(DateTimeRange(start: event.start, end: newEnd));
                   },
                   child: Text(
-                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(event.end), alwaysUse24HourFormat: use24),
+                    locale.formatTimeOfDay(TimeOfDay.fromDateTime(displayEnd), alwaysUse24HourFormat: use24),
                   ),
                 ),
               ),
@@ -171,5 +168,16 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
       context: context,
       initialTime: TimeOfDay.fromDateTime(date),
     );
+  }
+
+  /// Converts wall-clock components back to UTC via InternalDateTime.
+  DateTime _toUtc(int year, int month, int day, int hour, int minute) {
+    return InternalDateTime(year, month, day, hour, minute).forLocation(location: _location).toUtc();
+  }
+
+  void _updateEvent(DateTimeRange newRange) {
+    final updatedEvent = event.copyWith(dateTimeRange: newRange);
+    widget.eventsController.updateEvent(event: event, updatedEvent: updatedEvent);
+    setState(() => event = updatedEvent);
   }
 }

@@ -7,12 +7,12 @@ import 'package:web_demo/locales.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/event_overlay_portal.dart';
 import 'package:web_demo/widgets/locale_dropdown.dart';
 import 'package:web_demo/widgets/text_direction_button.dart';
 import 'package:web_demo/widgets/theme_button.dart';
 import 'package:web_demo/widgets/view_type_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:web_demo/widgets/warning_button.dart';
 
 import 'timezone/stub.dart'
     if (dart.library.html) 'timezone/browser.dart'
@@ -129,30 +129,15 @@ class MobileHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(context.l10n.appTitle),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
-        actions: [
-          const ThemeButton(),
-          const SizedBox(width: 4),
-          const TextDirectionButton(),
-          const SizedBox(width: 4),
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('This is a pre-release example for v0.16.0'),
-                content: const Text(
-                  "This is a pre-release example for v0.16.0 which is not yet released, see 'main-wip' branch.",
-                ),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-                ],
-              ),
-            ),
-            icon: Icon(Icons.warning, color: Theme.of(context).colorScheme.error),
-            tooltip: 'Warning - v0.16.0 pre-release example.',
-          ),
+        actions: const [
+          ThemeButton(),
+          SizedBox(width: 4),
+          TextDirectionButton(),
+          SizedBox(width: 4),
+          WarningButton(),
         ],
       ),
-      body: const EventOverlayPortal(child: SingleCalendarView()),
+      body: const SingleCalendarView(),
     );
   }
 }
@@ -175,6 +160,8 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
         title: Text(context.l10n.appTitle),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
         actions: [
+          const WarningButton(),
+          const SizedBox(width: 4),
           const ThemeButton(),
           const SizedBox(width: 4),
           const TextDirectionButton(),
@@ -182,27 +169,9 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
           const LocaleDropdown(),
           const SizedBox(width: 4),
           ViewTypePicker(type: _type, onChanged: (value) => setState(() => _type = value)),
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('This is a pre-release example for v0.16.0'),
-                content: const Text(
-                  "This is a pre-release example for v0.16.0 which is not yet released, see 'main-wip' branch.",
-                ),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-                ],
-              ),
-            ),
-            icon: Icon(Icons.warning, color: Theme.of(context).colorScheme.error),
-            tooltip: 'Warning - v0.16.0 pre-release example.',
-          ),
         ],
       ),
-      body: EventOverlayPortal(
-        child: _type == ViewType.single ? const SingleCalendarView() : const MultiCalendarView(),
-      ),
+      body: _type == ViewType.single ? const SingleCalendarView() : const MultiCalendarView(),
     );
   }
 }

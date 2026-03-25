@@ -18,7 +18,12 @@ class Calendar extends StatelessWidget {
     return ControllerProvider(
       child: ConfigurationProvider(
         child: LocationProvider(
-          child: const CalendarWidget(),
+          child: Builder(
+            builder: (context) => EventOverlayPortal(
+              location: context.location.value,
+              child: const CalendarWidget(),
+            ),
+          ),
         ),
       ),
     );

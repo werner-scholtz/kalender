@@ -8,7 +8,8 @@ import 'package:web_demo/widgets/event_overlay.dart';
 
 class EventOverlayPortal extends StatefulWidget {
   final Widget child;
-  const EventOverlayPortal({super.key, required this.child});
+  final Location? location;
+  const EventOverlayPortal({super.key, required this.child, required this.location});
 
   static void createEventOverlay(BuildContext context, CalendarEvent event, RenderBox renderBox) {
     final state = context.findAncestorStateOfType<EventOverlayPortalState>();
@@ -92,6 +93,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
                     width: width,
                     onDismiss: controller.hide,
                     eventsController: eventsController,
+                    location: widget.location,
                   ),
                 ),
               ],
