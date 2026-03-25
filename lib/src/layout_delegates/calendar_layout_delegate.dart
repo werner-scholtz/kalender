@@ -59,6 +59,6 @@ class CalendarLayoutDelegate extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(covariant CalendarLayoutDelegate oldDelegate) {
-    return false;
+    return headerId != oldDelegate.headerId || bodyId != oldDelegate.bodyId;
   }
 }

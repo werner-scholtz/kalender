@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:linked_pageview/linked_pageview.dart';
 
 /// Thanks to https://gist.github.com/andrzejchm for https://gist.github.com/andrzejchm/02c1728b6f31a69fde2fb4e10b636060
@@ -40,6 +41,20 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   }
 
   @override
+  void didUpdateWidget(covariant ExpandablePageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_updatePage);
+      _currentPage = widget.controller.initialPage;
+      widget.controller.addListener(_updatePage);
+    }
+    if (oldWidget.itemCount != widget.itemCount) {
+      _heights = List.filled(widget.itemCount, 80, growable: true);
+      _currentPage = widget.controller.initialPage;
+    }
+  }
+
+  @override
   void dispose() {
     widget.controller.removeListener(_updatePage);
     super.dispose();
@@ -53,6 +68,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       duration: const Duration(milliseconds: 100),
       builder: (context, value, child) => SizedBox(height: value, child: child),
       child: LinkedPageView.builder(
+        key: ObjectKey(widget.controller),
         padEnds: false,
         controller: widget.controller,
         itemCount: widget.itemCount,
@@ -67,8 +83,13 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       minHeight: 0,
       maxHeight: double.infinity,
       alignment: Alignment.topCenter,
-      child: SizeReportingWidget(
-        onSizeChange: (size) => setState(() => _heights[index] = size.height),
+      child: _SizeReporter(
+        onSizeChanged: (size) {
+          // Only rebuild if the height actually changed to avoid layout thrashing.
+          if (_heights[index] != size.height) {
+            setState(() => _heights[index] = size.height);
+          }
+        },
         child: item,
       ),
     );
@@ -84,61 +105,39 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   }
 }
 
-/// This widget reports its size to the parent widget.
-class SizeReportingWidget extends StatefulWidget {
-  /// The child widget.
-  final Widget child;
+/// Reports its child's size after layout using a custom [RenderProxyBox].
+///
+/// Unlike approaches that read size via [GlobalKey] in a post-frame callback,
+/// this reads the child's size directly in [performLayout] — the only point in
+/// the pipeline where the render object is guaranteed to have a valid size.
+class _SizeReporter extends SingleChildRenderObjectWidget {
+  final ValueChanged<Size> onSizeChanged;
 
-  /// The callback that is called when the size of the widget changes.
-  final ValueChanged<Size> onSizeChange;
-
-  const SizeReportingWidget({
-    super.key,
-    required this.child,
-    required this.onSizeChange,
-  });
+  const _SizeReporter({required this.onSizeChanged, required super.child});
 
   @override
-  State<SizeReportingWidget> createState() => _SizeReportingWidgetState();
+  RenderObject createRenderObject(BuildContext context) => _RenderSizeReporter(onSizeChanged);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderSizeReporter renderObject) {
+    renderObject.onSizeChanged = onSizeChanged;
+  }
 }
 
-class _SizeReportingWidgetState extends State<SizeReportingWidget> {
-  /// The key of the widget.
-  final _widgetKey = GlobalKey();
+class _RenderSizeReporter extends RenderProxyBox {
+  _RenderSizeReporter(this.onSizeChanged);
 
-  /// The old size of the widget.
-  Size? _oldSize;
+  ValueChanged<Size> onSizeChanged;
+  Size? _previousSize;
 
   @override
-  Widget build(BuildContext context) {
-    // Notify the parent widget about the size after the first frame.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-
-    // Listen for size changes.
-    return NotificationListener<SizeChangedLayoutNotification>(
-      onNotification: (_) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-        return true;
-      },
-      child: SizeChangedLayoutNotifier(
-        child: Container(
-          key: _widgetKey,
-          child: widget.child,
-        ),
-      ),
-    );
-  }
-
-  void _notifySize() {
-    final context = _widgetKey.currentContext;
-    if (context == null) return;
-    if (context is Element && context.dirty) return;
-    final size = context.size;
-
-    // Notify the parent widget if the size has changed.
-    if (_oldSize != size && size != null) {
-      _oldSize = size;
-      widget.onSizeChange(size);
+  void performLayout() {
+    super.performLayout();
+    final newSize = size;
+    if (_previousSize != newSize) {
+      _previousSize = newSize;
+      // Defer the callback to avoid triggering setState during layout.
+      WidgetsBinding.instance.addPostFrameCallback((_) => onSizeChanged(newSize));
     }
   }
 }

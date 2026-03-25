@@ -13,7 +13,7 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// - [_MultiDayHeader] this is used for a body that displays multiple days.
 /// - [_FreeScrollHeader] this is a special case for a body that scrolls freely (WIP/Not working)
 ///
-/// All Header widgets make use of the [ExpandablePageView] which uses a [SizeReportingWidget]to set the the Height of the header, this is so they can resize dynamically.
+/// All Header widgets make use of the [ExpandablePageView] to set the Height of the header, this is so they can resize dynamically.
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final HorizontalConfiguration? configuration;
@@ -94,7 +94,6 @@ class _SingleDayHeader extends StatelessWidget {
 
     return MultiDayHeaderWidget(
       content: ExpandablePageView(
-        key: UniqueKey(),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
@@ -172,7 +171,6 @@ class _MultiDayHeader extends StatelessWidget {
 
     return MultiDayHeaderWidget(
       content: ExpandablePageView(
-        key: UniqueKey(),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
