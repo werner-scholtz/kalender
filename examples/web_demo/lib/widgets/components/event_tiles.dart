@@ -84,6 +84,7 @@ class MultiDayEventTile extends BaseEventTile {
         padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
         child: Row(
           children: [
+            if (continuesBefore) Icon(Icons.chevron_left, size: 14, color: color.withAlpha(150)),
             Expanded(
               child: Text(
                 title(context),
@@ -91,8 +92,7 @@ class MultiDayEventTile extends BaseEventTile {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (continuesAfter)
-              Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
+            if (continuesAfter) Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
           ],
         ),
       ),
@@ -138,8 +138,7 @@ class OverlayEventTile extends BaseEventTile {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (continuesAfter)
-              Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
+            if (continuesAfter) Icon(Icons.chevron_right, size: 14, color: color.withAlpha(150)),
           ],
         ),
       ),
