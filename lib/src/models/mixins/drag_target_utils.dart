@@ -50,6 +50,7 @@ mixin DragTargetUtilities {
       onResize: onResize,
       onReschedule: onReschedule,
       onOther: () => false,
+      resolveEvent: _resolveEvent,
     );
   }
 
@@ -98,6 +99,7 @@ mixin DragTargetUtilities {
         controller.updateEvent(rescheduledEvent, internal: true);
       },
       onOther: () {},
+      resolveEvent: _resolveEvent,
     );
   }
 
@@ -135,6 +137,7 @@ mixin DragTargetUtilities {
         return (event, updatedEvent);
       },
       onOther: () => null,
+      resolveEvent: _resolveEvent,
     );
 
     if (result == null) return;
@@ -169,20 +172,29 @@ mixin DragTargetUtilities {
   /// [onOther] - handle other types.
   ///
   /// Each handler function returns a value of type [K], which is the result of handling the data.
+  /// Resolves the latest version of the [event] from the [EventsController],
+  /// falling back to the provided instance if not found.
+  CalendarEvent _resolveEvent(CalendarEvent event) {
+    return eventsController.byId(event.id) ?? event;
+  }
+
   static K handleDragDetails<K extends Object?, T extends Object?>(
     DragTargetDetails<Object?> details, {
     required K Function(int controllerId) onCreate,
     required K Function(CalendarEvent event, ResizeDirection direction) onResize,
     required K Function(CalendarEvent event) onReschedule,
     required K Function() onOther,
+    CalendarEvent Function(CalendarEvent event)? resolveEvent,
   }) {
     final data = details.data;
     if (data is Create) {
       return onCreate(data.controllerId);
     } else if (data is Resize) {
-      return onResize(data.event, data.direction);
+      final event = resolveEvent?.call(data.event) ?? data.event;
+      return onResize(event, data.direction);
     } else if (data is Reschedule) {
-      return onReschedule(data.event);
+      final event = resolveEvent?.call(data.event) ?? data.event;
+      return onReschedule(event);
     } else {
       return onOther.call();
     }

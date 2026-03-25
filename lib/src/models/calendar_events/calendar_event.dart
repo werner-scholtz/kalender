@@ -100,10 +100,9 @@ class CalendarEvent {
     EventInteraction? interaction,
   }) {
     return CalendarEvent(
-      id: id,
       dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       interaction: interaction ?? this.interaction,
-    );
+    )..id = id;
   }
 
   @override
