@@ -72,30 +72,19 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   double get tileHeight => widget.configuration.tileHeight;
 
   @override
-  late double dayWidth;
-  late double pageWidth;
+  double dayWidth = 0;
+  double pageWidth = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _updateDimensions());
-  }
-
-  @override
-  void didUpdateWidget(covariant HorizontalDragTarget oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _updateDimensions());
-    super.didUpdateWidget(oldWidget);
-  }
-
-  void _updateDimensions() {
-    if (!mounted) return;
-    pageWidth = context.size?.width ?? 0;
+  void _updateDimensions(BoxConstraints constraints) {
+    pageWidth = constraints.maxWidth;
     dayWidth = pageWidth / visibleDates.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget(
+    return LayoutBuilder(builder: (context, constraints) {
+      _updateDimensions(constraints);
+      return DragTarget(
       onWillAcceptWithDetails: (details) {
         final correctType = DragTargetUtilities.handleDragDetails(
           details,
@@ -173,7 +162,10 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
         );
       },
     );
+    },);
   }
+
+
 
   @override
   InternalDateTime? calculateCursorDateTime(
@@ -211,13 +203,9 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
     );
     final duration = event.duration;
     final endTime = newStartTime.add(duration);
-    final newRange = DateTimeRange(start: newStartTime, end: endTime);
+    final newRange = InternalDateTimeRange(start: newStartTime, end: endTime);
 
-    // Update the event with the new start time.
-    // TODO: this as local needs to be investigated.
-    final updatedEvent = event.copyWith(dateTimeRange: newRange);
-
-    return updatedEvent;
+    return event.copyWith(dateTimeRange: toLocationDateTimeRange(newRange));
   }
 
   @override
@@ -229,8 +217,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
       _ => null
     };
     if (range == null) return null;
-    // TODO: this as local needs to be investigated.
-    return event.copyWith(dateTimeRange: range);
+    return event.copyWith(dateTimeRange: toLocationDateTimeRange(range));
   }
 
   @override
@@ -247,7 +234,6 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
       range = InternalDateTimeRange(start: cursor, end: range.start.endOfDay);
     }
 
-    // TODO: this as local needs to be investigated.
-    return event.copyWith(dateTimeRange: range);
+    return event.copyWith(dateTimeRange: toLocationDateTimeRange(range));
   }
 }

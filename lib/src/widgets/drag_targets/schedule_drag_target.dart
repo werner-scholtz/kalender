@@ -212,19 +212,16 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
     if (event.isMultiDayEvent) {
       final duration = rangeAsUtc.duration;
       final endTime = cursorDateTime.add(duration);
-      final newRange = DateTimeRange(start: cursorDateTime, end: endTime);
-      return event.copyWith(dateTimeRange: newRange);
+      final newRange = InternalDateTimeRange(start: cursorDateTime, end: endTime);
+      return event.copyWith(dateTimeRange: toLocationDateTimeRange(newRange));
     } else {
       // Calculate the new dateTimeRange for the event.
       final newStartTime = cursorDateTime;
       final duration = event.duration;
       final endTime = newStartTime.add(duration);
-      final newRange = DateTimeRange(start: newStartTime, end: endTime);
+      final newRange = InternalDateTimeRange(start: newStartTime, end: endTime);
 
-      // Update the event with the new start time.
-      // TODO: this as local needs to be investigated.
-      final updatedEvent = event.copyWith(dateTimeRange: newRange);
-      return updatedEvent;
+      return event.copyWith(dateTimeRange: toLocationDateTimeRange(newRange));
     }
   }
 

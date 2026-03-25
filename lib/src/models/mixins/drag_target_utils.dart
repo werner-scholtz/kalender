@@ -242,4 +242,14 @@ mixin DragTargetUtilities {
       return InternalDateTimeRange(start: dateTimeRange.start, end: newEnd);
     }
   }
+
+  /// Converts an [InternalDateTimeRange] to a [DateTimeRange] for the current location,
+  /// handling DST spring-forward gaps where start can get pushed past end.
+  DateTimeRange toLocationDateTimeRange(InternalDateTimeRange range) {
+    final location = context.location;
+    var start = range.start.forLocation(location: location);
+    var end = range.end.forLocation(location: location);
+    if (start.isAfter(end)) (start, end) = (end, start);
+    return DateTimeRange(start: start, end: end);
+  }
 }
