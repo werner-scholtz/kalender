@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -14,12 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kalender Example',
-      themeMode: ThemeMode.light,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         cardTheme: const CardThemeData(
-            margin: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -34,22 +34,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// A custom event that extends [CalendarEvent] with a title and color.
 class Event extends CalendarEvent {
   Event({
     required super.dateTimeRange,
     required this.title,
-    this.description,
     this.color,
     super.interaction,
   });
 
-  /// The title of the [Event].
   final String title;
-
-  /// The description of the [Event].
-  final String? description;
-
-  /// The color of the [Event].
   final Color? color;
 
   @override
@@ -57,20 +51,23 @@ class Event extends CalendarEvent {
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
     String? title,
-    String? description,
     Color? color,
   }) {
     final newEvent = Event(
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       title: title ?? this.title,
-      description: description ?? this.description,
       color: color ?? this.color,
     );
     newEvent.id = id;
-
     return newEvent;
   }
+
+  @override
+  bool operator ==(Object other) => super == other && other is Event && other.title == title && other.color == color;
+
+  @override
+  int get hashCode => Object.hash(super.hashCode, title, color);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -81,48 +78,66 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  /// Create [EventsController], this is used to add and remove events.
   final eventsController = DefaultEventsController();
-
-  /// Create [CalendarController],
   final calendarController = CalendarController();
 
   final now = DateTime.now();
 
-  /// Decide on a range you want to display.
-  late final displayRange =
-      DateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
+  late final displayRange = DateTimeRange(
+    start: now.copyWith(day: now.day - 365),
+    end: now.copyWith(day: now.day + 365),
+  );
 
-  /// Set the initial view configuration.
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
-
-  /// Create a list of view configurations to choose from.
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
     MultiDayViewConfiguration.singleDay(displayRange: displayRange),
     MultiDayViewConfiguration.workWeek(displayRange: displayRange),
     MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
-    MonthViewConfiguration.singleMonth(),
-    MultiDayViewConfiguration.freeScroll(displayRange: displayRange, numberOfDays: 4, name: "Free Scroll (WIP)"),
+    MonthViewConfiguration.singleMonth(displayRange: displayRange),
+    ScheduleViewConfiguration.continuous(displayRange: displayRange),
   ];
 
   @override
   void initState() {
     super.initState();
-    eventsController.addEvents(
-      [
-        Event(
-          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          title: 'My Event',
-          color: Colors.green,
+
+    // Add some sample events to showcase the calendar.
+    final today = DateTime(now.year, now.month, now.day);
+    eventsController.addEvents([
+      Event(
+        dateTimeRange: DateTimeRange(
+          start: today.add(const Duration(hours: 9)),
+          end: today.add(const Duration(hours: 10, minutes: 30)),
         ),
-        Event(
-          dateTimeRange: DateTimeRange(start: now, end: now.add(const Duration(hours: 1))),
-          title: 'My Event',
-          color: Colors.blue,
+        title: 'Team Standup',
+        color: Colors.blue,
+      ),
+      Event(
+        dateTimeRange: DateTimeRange(
+          start: today.add(const Duration(hours: 13)),
+          end: today.add(const Duration(hours: 14)),
         ),
-      ],
-    );
+        title: 'Lunch Meeting',
+        color: Colors.green,
+      ),
+      Event(
+        dateTimeRange: DateTimeRange(
+          start: today.add(const Duration(days: 1, hours: 10)),
+          end: today.add(const Duration(days: 1, hours: 12)),
+        ),
+        title: 'Workshop',
+        color: Colors.orange,
+      ),
+      Event(
+        dateTimeRange: DateTimeRange(
+          start: today,
+          end: today.add(const Duration(days: 3)),
+        ),
+        title: 'Conference',
+        color: Colors.purple,
+      ),
+    ]);
   }
 
   @override
@@ -132,65 +147,60 @@ class _MyHomePageState extends State<MyHomePage> {
         eventsController: eventsController,
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
-        // Handle the callbacks made by the calendar.
         callbacks: CalendarCallbacks(
           onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
-          onEventCreate: (event) => event,
+          onEventCreate: (event) {
+            // Give newly created events a default title.
+            return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
+          },
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
             event: event,
             updatedEvent: updatedEvent,
           ),
         ),
-        // Customize the components.
-        components: CalendarComponents(
-          multiDayComponents: const MultiDayComponents(),
-          multiDayComponentStyles: const MultiDayComponentStyles(),
-          monthComponents: const MonthComponents(),
-          monthComponentStyles: const MonthComponentStyles(),
-          scheduleComponents: const ScheduleComponents(),
-          scheduleComponentStyles: const ScheduleComponentStyles(),
-        ),
-        // Style the header with a martial widget.
+        // Style the header with a Material widget.
         header: Material(
           color: Theme.of(context).colorScheme.surface,
           surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
           elevation: 2,
           child: Column(
             children: [
-              // Add some useful controls.
               _calendarToolbar(),
-              // Ad display the default header.
-              CalendarHeader(multiDayTileComponents: tileComponents(body: false)),
+              CalendarHeader(multiDayTileComponents: _tileComponents()),
             ],
           ),
         ),
         body: CalendarBody(
-          multiDayTileComponents: tileComponents(),
-          monthTileComponents: tileComponents(body: false),
-          scheduleTileComponents: scheduleTileComponents(context),
-          multiDayBodyConfiguration: const MultiDayBodyConfiguration(showMultiDayEvents: false),
-          monthBodyConfiguration: const MonthBodyConfiguration(),
-          scheduleBodyConfiguration: ScheduleBodyConfiguration(),
+          multiDayTileComponents: _tileComponents(),
+          monthTileComponents: _tileComponents(),
+          scheduleTileComponents: _scheduleTileComponents(),
         ),
       ),
     );
   }
 
-  Color get color => Theme.of(context).colorScheme.primaryContainer;
-  BorderRadius get radius => BorderRadius.circular(8);
+  Color _eventColor(CalendarEvent event) =>
+      (event is Event ? event.color : null) ?? Theme.of(context).colorScheme.primaryContainer;
 
-  TileComponents tileComponents({bool body = true}) {
+  TileComponents _tileComponents() {
+    final radius = BorderRadius.circular(8);
+    final scheme = Theme.of(context).colorScheme;
+
     return TileComponents(
-      tileBuilder: (event, tileRange) {
-        return Card(
-          color: (event is Event) ? event.color : color,
-          child: Text((event is Event) ? event.title : ""),
-        );
-      },
+      tileBuilder: (event, tileRange) => Card(
+        color: _eventColor(event),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Text(
+            (event is Event) ? event.title : '',
+            style: TextStyle(color: scheme.onPrimaryContainer, fontSize: 12),
+          ),
+        ),
+      ),
       dropTargetTile: (event) => DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+          border: Border.all(color: scheme.onSurface.withAlpha(80), width: 2),
           borderRadius: radius,
         ),
       ),
@@ -198,131 +208,107 @@ class _MyHomePageState extends State<MyHomePage> {
         duration: const Duration(milliseconds: 250),
         width: dropTargetWidgetSize.width * 0.8,
         height: dropTargetWidgetSize.height,
-        decoration: BoxDecoration(color: color.withAlpha(100), borderRadius: radius),
+        decoration: BoxDecoration(color: _eventColor(event).withAlpha(100), borderRadius: radius),
       ),
       tileWhenDraggingBuilder: (event) => Container(
-        decoration: BoxDecoration(color: color.withAlpha(80), borderRadius: radius),
+        decoration: BoxDecoration(color: _eventColor(event).withAlpha(80), borderRadius: radius),
       ),
       dragAnchorStrategy: pointerDragAnchorStrategy,
       verticalResizeHandle: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(150),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: scheme.onPrimaryContainer.withAlpha(150), shape: BoxShape.circle),
       ),
       horizontalResizeHandle: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(150),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: scheme.onPrimaryContainer.withAlpha(150), shape: BoxShape.circle),
       ),
     );
   }
 
-  ScheduleTileComponents scheduleTileComponents(BuildContext context) {
+  ScheduleTileComponents _scheduleTileComponents() {
+    final scheme = Theme.of(context).colorScheme;
+    final radius = BorderRadius.circular(8);
+
     return ScheduleTileComponents(
-      tileBuilder: (event, tileRange) {
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 1),
-          color: color,
-          child: Text((event is Event) ? event.title : ""),
-        );
-      },
+      tileBuilder: (event, tileRange) => Card(
+        margin: const EdgeInsets.symmetric(vertical: 1),
+        color: _eventColor(event),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Text((event is Event) ? event.title : ''),
+        ),
+      ),
       dropTargetTile: (event) => DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
+          border: Border.all(color: scheme.onSurface.withAlpha(80), width: 2),
           borderRadius: radius,
         ),
       ),
     );
   }
 
+  /// Whether the platform supports desktop-style navigation (prev/next page buttons).
+  bool get _isDesktop {
+    if (kIsWeb) return true;
+    final platform = Theme.of(context).platform;
+    return platform != TargetPlatform.android && platform != TargetPlatform.iOS;
+  }
+
   Widget _calendarToolbar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        spacing: 4,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: calendarController.internalDateTimeRange,
-                  builder: (context, value, child) {
-                    if (value == null) return const SizedBox.shrink();
+          // Month/year label that navigates to today on tap.
+          ValueListenableBuilder(
+            valueListenable: calendarController.internalDateTimeRange,
+            builder: (context, value, child) {
+              if (value == null) return const SizedBox.shrink();
+              final localRange = value.forLocation();
 
-                    final String month;
-                    final int year;
+              final String month;
+              final int year;
 
-                    if (viewConfiguration is MonthViewConfiguration) {
-                      final dominantMonthDate = value.dominantMonthDate;
-                      // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
-                      // we need to check the second week of the visibleDateTimeRange to determine the month and year.
-                      year = dominantMonthDate.year;
-                      month = dominantMonthDate.monthNameLocalized();
-                    } else {
-                      year = value.start.year;
-                      month = value.start.monthNameLocalized();
-                    }
+              if (viewConfiguration is MonthViewConfiguration) {
+                final dominantMonthDate = InternalDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
+                year = dominantMonthDate.year;
+                month = dominantMonthDate.monthNameLocalized();
+              } else {
+                year = localRange.start.year;
+                month = localRange.start.monthNameLocalized();
+              }
 
-                    return FilledButton.tonal(
-                      onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(150, kMinInteractiveDimension),
-                      ),
-                      child: Text('$month $year'),
-                    );
-                  },
-                ),
-              ],
-            ),
+              return FilledButton.tonal(
+                onPressed: () => calendarController.animateToDate(DateTime.now()),
+                style: FilledButton.styleFrom(minimumSize: const Size(150, kMinInteractiveDimension)),
+                child: Text('$month $year'),
+              );
+            },
           ),
-          if (!Platform.isAndroid && !Platform.isIOS)
+
+          if (_isDesktop) ...[
             IconButton.filledTonal(
               onPressed: () => calendarController.animateToPreviousPage(),
               icon: const Icon(Icons.chevron_left),
             ),
-          if (!Platform.isAndroid && !Platform.isIOS)
             IconButton.filledTonal(
               onPressed: () => calendarController.animateToNextPage(),
               icon: const Icon(Icons.chevron_right),
             ),
+          ],
           IconButton.filledTonal(
             onPressed: () => calendarController.animateToDate(DateTime.now()),
             icon: const Icon(Icons.today),
           ),
-          SizedBox(
-            width: 120,
-            child: DropdownMenu(
-              dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
-              initialSelection: viewConfiguration,
-              onSelected: (value) {
-                if (value == null) return;
-                setState(() => viewConfiguration = value);
-              },
-            ),
+          const Spacer(),
+          DropdownMenu(
+            dropdownMenuEntries: viewConfigurations.map((e) => DropdownMenuEntry(value: e, label: e.name)).toList(),
+            initialSelection: viewConfiguration,
+            onSelected: (value) {
+              if (value == null) return;
+              setState(() => viewConfiguration = value);
+            },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DayEventTile extends StatelessWidget {
-  final CalendarEvent event;
-  final DateTimeRange tileRange;
-  const DayEventTile({super.key, required this.event, required this.tileRange});
-
-  @override
-  Widget build(BuildContext context) {
-    final calendarEvent = event;
-
-    return GestureDetector(
-      onTapUp: (details) {},
-      child: Card(
-        color: (calendarEvent is Event)
-            ? (calendarEvent.color ?? Theme.of(context).colorScheme.primaryContainer)
-            : Theme.of(context).colorScheme.primaryContainer,
-        child: Text((calendarEvent is Event) ? calendarEvent.title : ""),
       ),
     );
   }

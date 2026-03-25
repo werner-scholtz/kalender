@@ -20,6 +20,21 @@ class Event extends CalendarEvent {
     super.interaction,
   });
 
+  factory Event.fromDetail(CalendarEvent calendarEvent, TapDetail detail) {
+    if (detail is MultiDayDetail) {
+      throw Exception('MultiDayDetail is not supported in this example.');
+    }
+    final dayWidth = detail.renderBox.size.width;
+    final tapLocation = detail.localOffset;
+    final person = people[tapLocation.dx ~/ (dayWidth / people.length)];
+    return Event(
+      dateTimeRange: calendarEvent.dateTimeRange,
+      title: 'New Event',
+      person: person,
+      interaction: calendarEvent.interaction,
+    );
+  }
+
   @override
   Event copyWith({
     DateTimeRange? dateTimeRange,
@@ -34,9 +49,20 @@ class Event extends CalendarEvent {
       person: person ?? this.person,
     );
     newEvent.id = id;
-
     return newEvent;
   }
+
+  @override
+  operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Event &&
+        other.title == title &&
+        other.person == person &&
+        other.dateTimeRange == dateTimeRange;
+  }
+
+  @override
+  int get hashCode => Object.hash(super.hashCode, title, person);
 }
 
 class Person {
@@ -63,10 +89,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      title: 'Advanced Example',
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
       home: const MyHomePage(),
     );
   }
@@ -102,27 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) =>
-              calendarController.selectEvent(event),
-          onEventCreateWithDetail: (calendarEvent, detail) {
-            if (detail is MultiDayDetail) {
-              throw Exception(
-                'MultiDayDetail is not supported in this example.',
-              );
-            }
-
-            final event = calendarEvent as Event;
-
-            final dayWidth = detail.renderBox.size.width;
-            final tapLocation = detail.localOffset;
-            final person = people[tapLocation.dx ~/ (dayWidth / people.length)];
-            return event.copyWith(title: 'title', person: person);
-          },
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
-          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
-            event: event,
-            updatedEvent: updatedEvent,
-          ),
+          onEventChanged: (event, updatedEvent) =>
+              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
         ),
         header: Column(
           children: [
@@ -147,9 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 8),
             CalendarHeader(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
-                showTiles: false,
-              ),
+              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false),
             ),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
@@ -200,20 +206,14 @@ class PeopleWidget extends StatelessWidget {
     return Row(
       children: [
         // Needed for proper spacing.
-        PrototypeTimeline.prototypeBuilder(
-          0.7,
-          TimeOfDayRange.allDay(),
-          TimelineStyle(),
-        ),
+        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: people
-                  .map(
-                    (person) => Expanded(child: PersonWidget(person: person)),
-                  )
+                  .map((person) => Expanded(child: PersonWidget(person: person)))
                   .toList(growable: false),
             ),
           ),

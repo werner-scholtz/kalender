@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kalender/kalender.dart';
-import 'package:riverpod_example/calendar_components.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -21,8 +20,10 @@ class MyApp extends StatelessWidget {
 }
 
 /// Provider for the calendar view.
-final kalenderView = ChangeNotifierProvider<KalenderView>((ref) => KalenderView());
-final eventsProvider = ChangeNotifierProvider<EventsController>((ref) => DefaultEventsController());
+final kalenderView = Provider<KalenderView>((ref) => KalenderView());
+
+/// Provider for the events controller.
+final eventsProvider = Provider<EventsController>((ref) => DefaultEventsController());
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -50,17 +51,9 @@ class HomeScreen extends ConsumerWidget {
           color: Theme.of(context).colorScheme.surface,
           surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
           elevation: 2,
-          child: Column(
-            children: [
-              CalendarToolBar(),
-              CalendarHeader(multiDayTileComponents: tileComponents(context, body: false)),
-            ],
-          ),
+          child: CalendarHeader(),
         ),
         body: CalendarBody(
-          multiDayTileComponents: tileComponents(context),
-          monthTileComponents: tileComponents(context, body: false),
-          scheduleTileComponents: scheduleTileComponents(context),
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
           monthBodyConfiguration: MonthBodyConfiguration(),
         ),
