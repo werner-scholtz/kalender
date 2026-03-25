@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-      - run: flutter build web --release --base-href /kalender/
+      - run: flutter build web --release --wasm --base-href /kalender/
         shell: bash
         working-directory: examples/web_demo
       - run: git config user.name github-actions
