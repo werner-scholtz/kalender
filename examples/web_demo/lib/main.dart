@@ -103,6 +103,9 @@ class MyAppState extends State<MyApp> {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
+          backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
+          minimumSize: const Size(36, 36),
+          padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),

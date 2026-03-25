@@ -66,11 +66,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.surface,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80),
-                              ),
-                            ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -78,7 +73,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               controller: context.controller,
                               viewConfigurations: context.configuration.viewConfigurations,
                               viewConfiguration: context.configuration.viewConfiguration,
-                              onToggleConfig: canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
+                              onToggleConfig:
+                                  canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
                               configVisible: _showConfig,
                             ),
                           ),
@@ -88,8 +84,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             valueListenable: context.configuration.interactionHeader,
                             builder: (context, value, child) {
                               return Container(
+                                padding: const EdgeInsets.only(top: 4),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainerLowest,
                                   border: Border(
                                     bottom: BorderSide(
                                       color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
