@@ -138,6 +138,16 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     super.dispose();
   }
 
+  /// Converts an [InternalDateTimeRange] to a [DateTimeRange] for the current location,
+  /// handling DST spring-forward gaps where start can get pushed past end.
+  DateTimeRange _toLocationDateTimeRange(InternalDateTimeRange range) {
+    final location = context.location;
+    var start = range.start.forLocation(location: location);
+    var end = range.end.forLocation(location: location);
+    if (start.isAfter(end)) (start, end) = (end, start);
+    return DateTimeRange(start: start, end: end);
+  }
+
   /// Update the snap points.
   void _updateSnapPoints() {
     if (!snapToOtherEvents) return;
@@ -341,9 +351,12 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       start = end.subtract(duration);
     }
 
-    // Update the event with the new range.
-    final newRange = InternalDateTimeRange(start: start, end: end);
-    final updatedEvent = event.copyWith(dateTimeRange: newRange.forLocation(location: context.location));
+    // Convert only start and recompute end from the original duration to avoid
+    // the DST spring-forward gap collapsing start and end to the same UTC instant.
+    final convertedStart = start.forLocation(location: context.location);
+    final updatedEvent = event.copyWith(
+      dateTimeRange: DateTimeRange(start: convertedStart, end: convertedStart.add(duration)),
+    );
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
@@ -374,7 +387,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: dateTimeRange.forLocation(location: context.location));
+    return event.copyWith(dateTimeRange: _toLocationDateTimeRange(dateTimeRange));
   }
 
   @override
@@ -382,7 +395,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     final event = super.createEvent(cursorDateTime);
     if (event == null) return null;
 
-    // TODO: This might need to take `dateTimeRange` into account otherwise some new events might be created in undisplayed area's.
+    // TODO: This might need to take `timeOfDayRange` into account otherwise some new events might be created in undisplayed area's.
     var range = newEvent!.internalRange(location: context.location);
 
     if (cursorDateTime.isAfter(range.start)) {
@@ -391,6 +404,6 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: range.forLocation(location: context.location));
+    return event.copyWith(dateTimeRange: _toLocationDateTimeRange(range));
   }
 }
