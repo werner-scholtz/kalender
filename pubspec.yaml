@@ -14,13 +14,13 @@ dependencies:
   collection: ^1.19.1
   flutter:
     sdk: flutter
-  intl: '>=0.17.0 <0.22.2'
-  linked_pageview: ^1.1.5
+  intl: '>=0.19.0 <0.23.0'
+  linked_pageview: ^1.1.0
   scrollable_positioned_list: ^0.3.8
-  timezone: ^0.11.0
+  timezone: '>=0.11.0 <0.12.0'
   universal_platform: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
