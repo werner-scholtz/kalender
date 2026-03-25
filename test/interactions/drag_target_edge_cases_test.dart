@@ -542,8 +542,9 @@ void main() {
       final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;
 
       expect(result, isNotNull);
-      expect(result!.dateTimeRange.start.day, equals(9), reason: 'Event date should change to Jan 9');
-      expect(result.dateTimeRange.start.hour, equals(10), reason: 'Original 10:00 start hour should be preserved');
+      final resultStart = result!.internalStart();
+      expect(resultStart.day, equals(9), reason: 'Event date should change to Jan 9');
+      expect(resultStart.hour, equals(10), reason: 'Original 10:00 start hour should be preserved');
     });
 
     testWidgets('multi-day event: date changes but duration is preserved', (tester) async {
@@ -581,9 +582,10 @@ void main() {
       final result = state.rescheduleEvent(event, cursor) as CalendarEvent?;
 
       expect(result, isNotNull);
-      expect(result!.dateTimeRange.start.day, equals(20));
-      expect(result.dateTimeRange.start.hour, equals(9));
-      expect(result.dateTimeRange.start.minute, equals(30));
+      final resultStart = result!.internalStart();
+      expect(resultStart.day, equals(20));
+      expect(resultStart.hour, equals(9));
+      expect(resultStart.minute, equals(30));
     });
   });
 
