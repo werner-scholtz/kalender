@@ -6,6 +6,7 @@ import 'package:web_demo/l10n/app_localizations.dart';
 import 'package:web_demo/locales.dart';
 import 'package:web_demo/pages/multi_calendar.dart';
 import 'package:web_demo/pages/single_calendar.dart';
+import 'package:web_demo/providers.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/locale_dropdown.dart';
 import 'package:web_demo/widgets/text_direction_button.dart';
@@ -28,50 +29,29 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  /// TODO: redo to use providers.
-  static MyAppState? of(BuildContext context) => context.findAncestorStateOfType<MyAppState>();
-
-  /// Returns the [EventsController] of the app.
-  static EventsController eventsController(BuildContext context) {
-    final state = context.findAncestorStateOfType<MyAppState>();
-    if (state == null) throw Exception('MyAppState not found in context');
-    return state.eventsController;
-  }
-
   @override
   State<MyApp> createState() => MyAppState();
 }
 
 class MyAppState extends State<MyApp> {
-  /// The theme mode of the app.
-  ThemeMode _themeMode = ThemeMode.dark;
-  ThemeMode get themeMode => _themeMode;
-
-  /// Toggles the theme mode of the app.
-  void toggleTheme() {
-    return setState(() => _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
-  }
-
-  /// The text direction of the app.
-  TextDirection _textDirection = TextDirection.ltr;
-  TextDirection get textDirection => _textDirection;
-
-  /// Toggles the text direction of the app.
-  void toggleTextDirection() {
-    return setState(() => _textDirection = _textDirection == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr);
-  }
-
-  Locale _locale = supportedLocales.first;
-  Locale get locale => _locale;
-  void setLocale(Locale locale) => setState(() => _locale = locale);
-
+  final _themeMode = ValueNotifier(ThemeMode.dark);
+  final _textDirection = ValueNotifier(TextDirection.ltr);
+  final _locale = ValueNotifier(supportedLocales.first);
   final _eventsController = DefaultEventsController();
-  DefaultEventsController get eventsController => _eventsController;
 
   @override
   void initState() {
     super.initState();
     _eventsController.addEvents(generateEvents(context));
+  }
+
+  @override
+  void dispose() {
+    _themeMode.dispose();
+    _textDirection.dispose();
+    _locale.dispose();
+    _eventsController.dispose();
+    super.dispose();
   }
 
   Locale _resolveLocale(Locale? locale, Iterable<Locale> supportedLocales) {
@@ -87,33 +67,58 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final isMobile = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Web Demo',
-      themeMode: _themeMode,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
-      ),
-      locale: locale,
-      supportedLocales: supportedLocales,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      localeResolutionCallback: (locale, supportedLocales) => _resolveLocale(locale, supportedLocales),
-      localeListResolutionCallback: (locales, supportedLocales) {
-        return _resolveLocale(locales?.isNotEmpty == true ? locales!.first : null, supportedLocales);
-      },
-      home: Directionality(
-        textDirection: _textDirection,
-        child: isMobile ? const MobileHomePage() : const DesktopHomePage(),
+    return ThemeModeProvider(
+      notifier: _themeMode,
+      child: TextDirectionProvider(
+        notifier: _textDirection,
+        child: LocaleNotifierProvider(
+          notifier: _locale,
+          child: EventsControllerProvider(
+            eventsController: _eventsController,
+            child: ValueListenableBuilder(
+              valueListenable: _themeMode,
+              builder: (_, themeMode, __) => ValueListenableBuilder(
+                valueListenable: _locale,
+                builder: (_, locale, __) => ValueListenableBuilder(
+                  valueListenable: _textDirection,
+                  builder: (_, textDirection, __) => MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'Web Demo',
+                    themeMode: themeMode,
+                    theme: ThemeData(
+                      useMaterial3: true,
+                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+                    ),
+                    darkTheme: ThemeData(
+                      useMaterial3: true,
+                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+                    ),
+                    locale: locale,
+                    supportedLocales: supportedLocales,
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    localeResolutionCallback: (locale, supportedLocales) =>
+                        _resolveLocale(locale, supportedLocales),
+                    localeListResolutionCallback: (locales, supportedLocales) {
+                      return _resolveLocale(
+                        locales?.isNotEmpty == true ? locales!.first : null,
+                        supportedLocales,
+                      );
+                    },
+                    home: Directionality(
+                      textDirection: textDirection,
+                      child: isMobile ? const MobileHomePage() : const DesktopHomePage(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

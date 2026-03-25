@@ -3,10 +3,9 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
 
 class ControllerProvider extends InheritedWidget {
-  final controller = CalendarController();
-  ControllerProvider({required super.child, super.key});
+  final CalendarController controller;
+  ControllerProvider({required super.child, super.key}) : controller = CalendarController();
 
-  /// Gets the [ControllerProvider] from the context.
   static CalendarController of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<ControllerProvider>();
     assert(result != null, 'No ControllerProvider found.');
@@ -22,7 +21,6 @@ class ControllerProvider extends InheritedWidget {
 class ConfigurationProvider extends InheritedNotifier<CalendarConfiguration> {
   ConfigurationProvider({required super.child, super.key}) : super(notifier: CalendarConfiguration());
 
-  /// Gets the [ConfigurationProvider] from the context.
   static CalendarConfiguration of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<ConfigurationProvider>();
     assert(result != null, 'No ConfigurationProvider found.');
@@ -33,7 +31,6 @@ class ConfigurationProvider extends InheritedNotifier<CalendarConfiguration> {
 class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
   LocationProvider({required super.child, super.key}) : super(notifier: ValueNotifier<Location?>(null));
 
-  /// Gets the [LocationProvider] from the context.
   static ValueNotifier<Location?> of(BuildContext context) {
     final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
     assert(result != null, 'No LocationProvider found.');
@@ -41,13 +38,64 @@ class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
   }
 }
 
+class ThemeModeProvider extends InheritedNotifier<ValueNotifier<ThemeMode>> {
+  const ThemeModeProvider({required ValueNotifier<ThemeMode> notifier, required super.child, super.key})
+      : super(notifier: notifier);
+
+  static ValueNotifier<ThemeMode> of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<ThemeModeProvider>();
+    assert(result != null, 'No ThemeModeProvider found.');
+    return result!.notifier!;
+  }
+}
+
+class TextDirectionProvider extends InheritedNotifier<ValueNotifier<TextDirection>> {
+  const TextDirectionProvider({required ValueNotifier<TextDirection> notifier, required super.child, super.key})
+      : super(notifier: notifier);
+
+  static ValueNotifier<TextDirection> of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<TextDirectionProvider>();
+    assert(result != null, 'No TextDirectionProvider found.');
+    return result!.notifier!;
+  }
+}
+
+class LocaleNotifierProvider extends InheritedNotifier<ValueNotifier<Locale>> {
+  const LocaleNotifierProvider({required ValueNotifier<Locale> notifier, required super.child, super.key})
+      : super(notifier: notifier);
+
+  static ValueNotifier<Locale> of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<LocaleNotifierProvider>();
+    assert(result != null, 'No LocaleNotifierProvider found.');
+    return result!.notifier!;
+  }
+}
+
+class EventsControllerProvider extends InheritedWidget {
+  final EventsController eventsController;
+  const EventsControllerProvider({required this.eventsController, required super.child, super.key});
+
+  static EventsController of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<EventsControllerProvider>();
+    assert(result != null, 'No EventsControllerProvider found.');
+    return result!.eventsController;
+  }
+
+  @override
+  bool updateShouldNotify(covariant EventsControllerProvider oldWidget) {
+    return eventsController != oldWidget.eventsController;
+  }
+}
+
 extension CalendarContextUtils on BuildContext {
-  /// Gets the current [Location] from the [LocationProvider].
   ValueNotifier<Location?> get location => LocationProvider.of(this);
-
-  /// Gets the current [CalendarConfiguration] from the [ConfigurationProvider].
   CalendarConfiguration get configuration => ConfigurationProvider.of(this);
-
-  /// Gets the current [CalendarController] from the [ControllerProvider].
   CalendarController get controller => ControllerProvider.of(this);
+}
+
+extension AppContextUtils on BuildContext {
+  ValueNotifier<ThemeMode> get themeModeNotifier => ThemeModeProvider.of(this);
+  ValueNotifier<TextDirection> get textDirectionNotifier => TextDirectionProvider.of(this);
+  ValueNotifier<Locale> get localeNotifier => LocaleNotifierProvider.of(this);
+  EventsController get eventsController => EventsControllerProvider.of(this);
 }
