@@ -36,5 +36,22 @@
   "endTime": "Ora di fine",
   "noViewConfigurationOptions": "Nessuna opzione di configurazione disponibile per questo tipo di vista.",
   "title": "Titolo",
-  "delete": "Elimina"
+  "delete": "Elimina",
+  "preReleaseTitle": "Esempio pre-release",
+  "preReleaseContent": "Questo è un esempio pre-release per v0.16.0 che non è ancora stato rilasciato.\n\nVedi il branch 'main-wip' per i progressi.",
+  "gotIt": "Capito",
+  "preReleaseInfo": "Info pre-release",
+  "language": "Lingua",
+  "calendarLayout": "Layout del calendario",
+  "previous": "Precedente",
+  "next": "Successivo",
+  "today": "Oggi",
+  "viewType": "Tipo di vista",
+  "timezone": "Fuso orario",
+  "configuration": "Configurazione",
+  "start": "Inizio",
+  "end": "Fine",
+  "newEventTitle": "Nuovo evento",
+  "hideConfiguration": "Nascondi configurazione",
+  "showConfiguration": "Mostra configurazione"
 }

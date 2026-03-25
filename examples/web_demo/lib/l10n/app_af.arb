@@ -36,5 +36,22 @@
   "endTime": "Eindtyd",
   "noViewConfigurationOptions": "Geen konfigurasie-opsies beskikbaar vir hierdie aansig nie.",
   "title": "Titel",
-  "delete": "Verwyder"
+  "delete": "Verwyder",
+  "preReleaseTitle": "Vooraf-vrystellingsvoorbeeld",
+  "preReleaseContent": "Hierdie is 'n vooraf-vrystellingsvoorbeeld vir v0.16.0 wat nog nie vrygestel is nie.\n\nSien die 'main-wip'-tak vir vordering.",
+  "gotIt": "Verstaan",
+  "preReleaseInfo": "Vooraf-vrystellingsinfo",
+  "language": "Taal",
+  "calendarLayout": "Kalender-uitleg",
+  "previous": "Vorige",
+  "next": "Volgende",
+  "today": "Vandag",
+  "viewType": "Aansig tipe",
+  "timezone": "Tydsone",
+  "configuration": "Konfigurasie",
+  "start": "Begin",
+  "end": "Einde",
+  "newEventTitle": "Nuwe gebeurtenis",
+  "hideConfiguration": "Versteek konfigurasie",
+  "showConfiguration": "Wys konfigurasie"
 }

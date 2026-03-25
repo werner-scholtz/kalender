@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/locales.dart';
 import 'package:web_demo/providers.dart';
+import 'package:web_demo/utils.dart';
 
 class LocaleDropdown extends StatelessWidget {
   const LocaleDropdown({super.key});
@@ -11,7 +12,7 @@ class LocaleDropdown extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: context.localeNotifier,
       builder: (context, locale, _) => PopupMenuButton<Locale>(
-        tooltip: 'Language',
+        tooltip: context.l10n.language,
         onSelected: (value) => context.localeNotifier.value = value,
         offset: const Offset(0, 40),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

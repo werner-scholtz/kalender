@@ -150,7 +150,6 @@ class MyAppState extends State<MyApp> {
                   valueListenable: _textDirection,
                   builder: (_, textDirection, __) => MaterialApp(
                     debugShowCheckedModeBanner: false,
-                    title: 'Web Demo',
                     themeMode: themeMode,
                     theme: _buildTheme(Brightness.light),
                     darkTheme: _buildTheme(Brightness.dark),
@@ -170,6 +169,7 @@ class MyAppState extends State<MyApp> {
                         supportedLocales,
                       );
                     },
+                    onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
                     home: Directionality(
                       textDirection: textDirection,
                       child: isMobile ? const MobileHomePage() : const DesktopHomePage(),

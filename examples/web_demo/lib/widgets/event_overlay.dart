@@ -114,7 +114,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                       _DateTimeRow(
                         icon: Icons.circle_outlined,
                         iconColor: Colors.green,
-                        label: 'Start',
+                        label: context.l10n.start,
                         dateText: locale.formatShortDate(displayStart),
                         timeText: locale.formatTimeOfDay(
                           TimeOfDay.fromDateTime(displayStart),
@@ -149,7 +149,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                       _DateTimeRow(
                         icon: Icons.stop_circle_outlined,
                         iconColor: colorScheme.error,
-                        label: 'End',
+                        label: context.l10n.end,
                         dateText: locale.formatShortDate(displayEnd),
                         timeText: locale.formatTimeOfDay(
                           TimeOfDay.fromDateTime(displayEnd),

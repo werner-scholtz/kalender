@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/calendar_configuration.dart';
+import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/configuration/body_configurations.dart';
 import 'package:web_demo/widgets/configuration/header_configuration.dart';
 import 'package:web_demo/widgets/configuration/view_configuration.dart';
@@ -72,7 +73,7 @@ class CalendarConfigurationWidget extends StatelessWidget {
                         Icon(Icons.tune, size: 20, color: colorScheme.primary),
                         const SizedBox(width: 8),
                         Text(
-                          'Configuration',
+                          context.l10n.configuration,
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: colorScheme.onSurface,

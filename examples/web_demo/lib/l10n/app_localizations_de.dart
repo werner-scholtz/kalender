@@ -127,4 +127,56 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete => 'Löschen';
+
+  @override
+  String get preReleaseTitle => 'Vorab-Beispiel';
+
+  @override
+  String get preReleaseContent =>
+      'Dies ist ein Vorab-Beispiel für v0.16.0, das noch nicht veröffentlicht wurde.\n\nSiehe den \'main-wip\'-Branch für den Fortschritt.';
+
+  @override
+  String get gotIt => 'Verstanden';
+
+  @override
+  String get preReleaseInfo => 'Vorab-Info';
+
+  @override
+  String get language => 'Sprache';
+
+  @override
+  String get calendarLayout => 'Kalenderansicht';
+
+  @override
+  String get previous => 'Zurück';
+
+  @override
+  String get next => 'Weiter';
+
+  @override
+  String get today => 'Heute';
+
+  @override
+  String get viewType => 'Ansichtstyp';
+
+  @override
+  String get timezone => 'Zeitzone';
+
+  @override
+  String get configuration => 'Konfiguration';
+
+  @override
+  String get start => 'Beginn';
+
+  @override
+  String get end => 'Ende';
+
+  @override
+  String get newEventTitle => 'Neues Ereignis';
+
+  @override
+  String get hideConfiguration => 'Konfiguration ausblenden';
+
+  @override
+  String get showConfiguration => 'Konfiguration anzeigen';
 }

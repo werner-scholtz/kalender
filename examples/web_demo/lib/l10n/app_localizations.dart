@@ -332,6 +332,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// No description provided for @preReleaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-release Example'**
+  String get preReleaseTitle;
+
+  /// No description provided for @preReleaseContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the \'main-wip\' branch for progress.'**
+  String get preReleaseContent;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotIt;
+
+  /// No description provided for @preReleaseInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-release info'**
+  String get preReleaseInfo;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @calendarLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar layout'**
+  String get calendarLayout;
+
+  /// No description provided for @previous.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @viewType.
+  ///
+  /// In en, this message translates to:
+  /// **'View type'**
+  String get viewType;
+
+  /// No description provided for @timezone.
+  ///
+  /// In en, this message translates to:
+  /// **'Timezone'**
+  String get timezone;
+
+  /// No description provided for @configuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration'**
+  String get configuration;
+
+  /// No description provided for @start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// No description provided for @end.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get end;
+
+  /// No description provided for @newEventTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Event'**
+  String get newEventTitle;
+
+  /// No description provided for @hideConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide configuration'**
+  String get hideConfiguration;
+
+  /// No description provided for @showConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Show configuration'**
+  String get showConfiguration;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

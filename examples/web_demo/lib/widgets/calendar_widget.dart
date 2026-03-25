@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
+import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/calendar_configuration.dart';
 import 'package:web_demo/widgets/components/calendar_header.dart';
 import 'package:web_demo/widgets/components/event_tiles.dart';
@@ -131,7 +134,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 alignment: Alignment.centerLeft,
                 child: _showConfig
                     ? SizedBox(
-                        width: 280,
+                        width: min(constraints.maxWidth * 0.35, 400),
                         child: CalendarConfigurationWidget(configuration: context.configuration),
                       )
                     : const SizedBox.shrink(),
@@ -189,7 +192,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
       onEventCreate: (event) => Event(
         dateTimeRange: DateTimeRange(start: event.start, end: event.end),
-        title: 'New Event',
+        title: context.l10n.newEventTitle,
       ),
       onEventCreated: (event) => context.eventsController.addEvent(event),
       onEventChanged: (event, updatedEvent) => context.eventsController.updateEvent(
@@ -207,6 +210,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       MultiDayDetail detail => detail.dateTimeRange,
       _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
     };
-    context.eventsController.addEvent(Event(dateTimeRange: range, title: 'New Event'));
+    context.eventsController.addEvent(Event(dateTimeRange: range, title: context.l10n.newEventTitle));
   }
 }

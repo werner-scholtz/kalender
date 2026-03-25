@@ -127,4 +127,56 @@ class AppLocalizationsAf extends AppLocalizations {
 
   @override
   String get delete => 'Verwyder';
+
+  @override
+  String get preReleaseTitle => 'Vooraf-vrystellingsvoorbeeld';
+
+  @override
+  String get preReleaseContent =>
+      'Hierdie is \'n vooraf-vrystellingsvoorbeeld vir v0.16.0 wat nog nie vrygestel is nie.\n\nSien die \'main-wip\'-tak vir vordering.';
+
+  @override
+  String get gotIt => 'Verstaan';
+
+  @override
+  String get preReleaseInfo => 'Vooraf-vrystellingsinfo';
+
+  @override
+  String get language => 'Taal';
+
+  @override
+  String get calendarLayout => 'Kalender-uitleg';
+
+  @override
+  String get previous => 'Vorige';
+
+  @override
+  String get next => 'Volgende';
+
+  @override
+  String get today => 'Vandag';
+
+  @override
+  String get viewType => 'Aansig tipe';
+
+  @override
+  String get timezone => 'Tydsone';
+
+  @override
+  String get configuration => 'Konfigurasie';
+
+  @override
+  String get start => 'Begin';
+
+  @override
+  String get end => 'Einde';
+
+  @override
+  String get newEventTitle => 'Nuwe gebeurtenis';
+
+  @override
+  String get hideConfiguration => 'Versteek konfigurasie';
+
+  @override
+  String get showConfiguration => 'Wys konfigurasie';
 }

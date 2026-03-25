@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_demo/utils.dart';
 
 class WarningButton extends StatelessWidget {
   const WarningButton({super.key});
@@ -11,18 +12,16 @@ class WarningButton extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           icon: Icon(Icons.info_outline, color: colorScheme.primary, size: 32),
-          title: const Text('Pre-release Example'),
+          title: Text(context.l10n.preReleaseTitle),
           titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          content: const Text(
-            "This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the 'main-wip' branch for progress.",
-          ),
+          content: Text(context.l10n.preReleaseContent),
           contentTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
           actions: [
             FilledButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Got it'),
+              child: Text(context.l10n.gotIt),
             ),
           ],
           actionsAlignment: MainAxisAlignment.center,
@@ -30,7 +29,7 @@ class WarningButton extends StatelessWidget {
         ),
       ),
       icon: Icon(Icons.info_outline, color: colorScheme.onSurfaceVariant),
-      tooltip: 'Pre-release info',
+      tooltip: context.l10n.preReleaseInfo,
     );
   }
 }

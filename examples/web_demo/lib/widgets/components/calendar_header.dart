@@ -41,7 +41,7 @@ class NavigationHeader extends StatelessWidget {
             minimumSize: const Size(36, 36),
             padding: EdgeInsets.zero,
           ),
-          tooltip: 'Previous',
+          tooltip: context.l10n.previous,
         );
 
         late final nextButton = IconButton(
@@ -52,14 +52,14 @@ class NavigationHeader extends StatelessWidget {
             minimumSize: const Size(36, 36),
             padding: EdgeInsets.zero,
           ),
-          tooltip: 'Next',
+          tooltip: context.l10n.next,
         );
 
         final todayButton = isCompact
             ? IconButton(
                 icon: const Icon(Icons.today, size: 18),
                 onPressed: () => controller.animateToDate(DateTime.now()),
-                tooltip: 'Today',
+                tooltip: context.l10n.today,
                 style: IconButton.styleFrom(
                   backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
                   minimumSize: const Size(36, 36),
@@ -68,7 +68,7 @@ class NavigationHeader extends StatelessWidget {
               )
             : FilledButton.tonalIcon(
                 icon: const Icon(Icons.today, size: 18),
-                label: const Text('Today'),
+                label: Text(context.l10n.today),
                 onPressed: () => controller.animateToDate(DateTime.now()),
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 36),
@@ -79,7 +79,7 @@ class NavigationHeader extends StatelessWidget {
         Widget view;
         if (usePopups) {
           view = PopupMenuButton<ViewConfiguration>(
-            tooltip: 'View type',
+            tooltip: context.l10n.viewType,
             icon: Icon(Icons.view_week_outlined, size: 18, color: colorScheme.primary),
             style: IconButton.styleFrom(
               backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
@@ -113,7 +113,7 @@ class NavigationHeader extends StatelessWidget {
           );
         } else {
           view = PopupMenuButton<ViewConfiguration>(
-            tooltip: 'View type',
+            tooltip: context.l10n.viewType,
             onSelected: (value) => context.configuration.viewConfiguration = value,
             offset: const Offset(0, 40),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -167,7 +167,7 @@ class NavigationHeader extends StatelessWidget {
         Widget location;
         if (usePopups) {
           location = PopupMenuButton<Location?>(
-            tooltip: 'Timezone',
+            tooltip: context.l10n.timezone,
             icon: Icon(Icons.public, size: 18, color: colorScheme.primary),
             style: IconButton.styleFrom(
               backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
@@ -228,7 +228,7 @@ class NavigationHeader extends StatelessWidget {
         } else {
           final currentLabel = context.location.value?.name.split('/').last ?? DateTime.now().timeZoneName;
           location = PopupMenuButton<Location?>(
-            tooltip: 'Timezone',
+            tooltip: context.l10n.timezone,
             onSelected: (value) => context.location.value = value,
             offset: const Offset(0, 40),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -314,7 +314,7 @@ class NavigationHeader extends StatelessWidget {
               child: const Icon(Icons.tune, size: 18),
             ),
             onPressed: onToggleConfig,
-            tooltip: configVisible ? 'Hide configuration' : 'Show configuration',
+            tooltip: configVisible ? context.l10n.hideConfiguration : context.l10n.showConfiguration,
             style: IconButton.styleFrom(
               backgroundColor: configVisible
                   ? colorScheme.primaryContainer.withAlpha(120)

@@ -20,7 +20,7 @@ class ViewTypePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return PopupMenuButton<ViewType>(
-      tooltip: 'Calendar layout',
+      tooltip: context.l10n.calendarLayout,
       onSelected: onChanged,
       offset: const Offset(0, 40),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

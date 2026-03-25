@@ -127,4 +127,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get preReleaseTitle => 'Pre-release Example';
+
+  @override
+  String get preReleaseContent =>
+      'This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the \'main-wip\' branch for progress.';
+
+  @override
+  String get gotIt => 'Got it';
+
+  @override
+  String get preReleaseInfo => 'Pre-release info';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get calendarLayout => 'Calendar layout';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get viewType => 'View type';
+
+  @override
+  String get timezone => 'Timezone';
+
+  @override
+  String get configuration => 'Configuration';
+
+  @override
+  String get start => 'Start';
+
+  @override
+  String get end => 'End';
+
+  @override
+  String get newEventTitle => 'New Event';
+
+  @override
+  String get hideConfiguration => 'Hide configuration';
+
+  @override
+  String get showConfiguration => 'Show configuration';
 }

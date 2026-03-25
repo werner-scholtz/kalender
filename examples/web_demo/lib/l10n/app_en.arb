@@ -36,5 +36,22 @@
   "endTime": "End Time",
   "noViewConfigurationOptions": "No view configuration options available for this view type.",
   "title": "Title",
-  "delete": "Delete"
+  "delete": "Delete",
+  "preReleaseTitle": "Pre-release Example",
+  "preReleaseContent": "This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the 'main-wip' branch for progress.",
+  "gotIt": "Got it",
+  "preReleaseInfo": "Pre-release info",
+  "language": "Language",
+  "calendarLayout": "Calendar layout",
+  "previous": "Previous",
+  "next": "Next",
+  "today": "Today",
+  "viewType": "View type",
+  "timezone": "Timezone",
+  "configuration": "Configuration",
+  "start": "Start",
+  "end": "End",
+  "newEventTitle": "New Event",
+  "hideConfiguration": "Hide configuration",
+  "showConfiguration": "Show configuration"
 }
