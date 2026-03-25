@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:recurrence/recurring_event.dart';
@@ -10,17 +8,8 @@ class RecurrenceController {
 
   final Map<String, RecurrenceGroup> groups = {};
 
-  String get _nextGroupId {
-    final rawRandom = Random();
-    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final charCodes = List<int>.filled(10, 0);
-
-    for (var i = 0; i < 10; i++) {
-      charCodes[i] = alphabet.codeUnitAt(rawRandom.nextInt(62));
-    }
-
-    return String.fromCharCodes(charCodes);
-  }
+  static int _groupCounter = 0;
+  String get _nextGroupId => 'group_${_groupCounter++}';
 
   /// Add a recurring event.
   void addEvent(CalendarEvent event, Recurrence recurrence) {
@@ -57,70 +46,95 @@ class RecurrenceController {
       controller.updateEvent(event: item.$1, updatedEvent: item.$2);
     }
   }
+
+  /// Look up the [RecurrenceGroup] for a given event, or `null` if it's not a recurring event.
+  RecurrenceGroup? groupFor(CalendarEvent event) {
+    if (event is! RecurringCalendarEvent) return null;
+    return groups[event.groupId];
+  }
+
+  /// Replace an entire recurrence group with a new [Recurrence].
+  ///
+  /// Removes old events and creates new ones according to the updated recurrence.
+  void replaceRecurrence(String groupId, Recurrence newRecurrence) {
+    final group = groups[groupId]!;
+
+    // Remove existing events.
+    for (final id in group.eventIds) {
+      controller.removeById(id);
+    }
+
+    // Generate new events.
+    final newEvents = newRecurrence.generateEvents(groupId);
+    final newIds = controller.addEvents(newEvents);
+
+    // Update the group.
+    groups[groupId] = RecurrenceGroup(id: groupId, eventIds: newIds, recurrence: newRecurrence);
+  }
+
+  /// Delete an entire recurrence group and all its events.
+  void deleteGroup(String groupId) {
+    final group = groups[groupId];
+    if (group == null) return;
+
+    for (final id in group.eventIds) {
+      controller.removeById(id);
+    }
+    groups.remove(groupId);
+  }
 }
 
 enum RecurrenceType {
   none,
-  daily;
+  daily,
+  weekly;
 
-  /// TODO: test this
+  /// The interval in days between recurrences.
+  int get _intervalDays {
+    return switch (this) {
+      none => 0,
+      daily => 1,
+      weekly => 7,
+    };
+  }
+
+  /// Generate [number] date-time ranges starting from [first], each offset by the recurrence interval.
+  /// All DateTimes should be in local time.
   List<DateTimeRange> generateDateTimeRanges(DateTimeRange first, int number) {
-    switch (this) {
-      case none:
-        return [first];
-      case daily:
-        final ranges = <DateTimeRange>[];
-        for (var i = 0; i < number; i++) {
-          final start = first.start.add(Duration(days: 1 * i));
-          final end = first.end.add(Duration(days: 1 * i));
-          ranges.add(DateTimeRange(start: start, end: end));
-        }
-        return ranges;
-    }
+    if (this == none) return [first];
+    return List.generate(number, (i) {
+      final offset = Duration(days: _intervalDays * i);
+      return DateTimeRange(start: first.start.add(offset), end: first.end.add(offset));
+    });
   }
 
-  /// TODO: test this
+  /// Compute the first recurrence range: takes the time-of-day from [eventRange]
+  /// and the start date from [recurrenceRange]. All DateTimes should be in local time.
   DateTimeRange firstRecurrence(DateTimeRange eventRange, DateTimeRange recurrenceRange) {
-    switch (this) {
-      case none:
-        return eventRange;
-      case daily:
-        final event = eventRange;
-        final range = recurrenceRange;
-
-        final start = range.start.copyWith(
-          hour: event.start.hour,
-          minute: event.start.minute,
-          second: event.start.second,
-        );
-        final end = start.add(event.duration);
-        return DateTimeRange(start: start, end: end);
-    }
+    if (this == none) return eventRange;
+    final start = recurrenceRange.start.copyWith(
+      hour: eventRange.start.hour,
+      minute: eventRange.start.minute,
+      second: eventRange.start.second,
+    );
+    final end = start.add(eventRange.duration);
+    return DateTimeRange(start: start, end: end);
   }
 
-  /// TODO: test this
+  /// Count how many recurrences of [firstEventRange] fit within [dateTimeRange].
   int numberFromDateTimeRange(DateTimeRange firstEventRange, DateTimeRange dateTimeRange) {
-    switch (this) {
-      case none:
-        return 1;
-      case daily:
-        final first = firstEventRange;
-        final range = dateTimeRange;
-        var number = 0;
-        var currentValue = first.start;
-
-        while (_startIsDuring(currentValue, range) && number < 10000) {
-          number++;
-          currentValue = first.start.add(Duration(days: 1 * number));
-        }
-
-        return number;
+    if (this == none) return 1;
+    var count = 0;
+    var current = firstEventRange.start;
+    while (_isWithin(current, dateTimeRange) && count < 10000) {
+      count++;
+      current = firstEventRange.start.add(Duration(days: _intervalDays * count));
     }
+    return count;
   }
 
-  bool _startIsDuring(DateTime date, DateTimeRange dateTimeRange) {
-    return (date.isAfter(dateTimeRange.start) || date.isAtSameMomentAs(dateTimeRange.start)) &&
-        date.isBefore(dateTimeRange.end);
+  bool _isWithin(DateTime date, DateTimeRange range) {
+    return !date.isBefore(range.start) && date.isBefore(range.end);
   }
 }
 
@@ -128,7 +142,7 @@ class Recurrence {
   /// The type of recurrence.
   final RecurrenceType type;
 
-  /// The range of the first recurrence. (local time)
+  /// The range of the first recurrence (local time).
   late final DateTimeRange first;
 
   /// The number of recurrences.
@@ -140,7 +154,9 @@ class Recurrence {
     required this.type,
   }) : assert(!first.start.isUtc && !first.end.isUtc);
 
-  /// TODO: test this
+  /// Create a [Recurrence] from an event's local-time range and a recurrence date range.
+  ///
+  /// Both [eventRange] and [recurrenceRange] must be in local time.
   Recurrence.fromDateTimeRange({
     required DateTimeRange eventRange,
     required DateTimeRange recurrenceRange,

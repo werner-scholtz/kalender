@@ -92,11 +92,15 @@ class CalendarEvent {
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
   /// Returns a copy with the given fields replaced.
+  ///
+  /// The [id] is preserved so that selection and layout lookups continue to
+  /// reference the same logical event.
   CalendarEvent copyWith({
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
   }) {
     return CalendarEvent(
+      id: id,
       dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       interaction: interaction ?? this.interaction,
     );

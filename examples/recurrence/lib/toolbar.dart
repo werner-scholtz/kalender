@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -9,50 +8,47 @@ class CalendarToolBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = kIsWeb ||
+        (Theme.of(context).platform != TargetPlatform.android && Theme.of(context).platform != TargetPlatform.iOS);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        spacing: 4,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: calendarController.internalDateTimeRange,
-                  builder: (context, value, child) {
-                    if (value == null) return const SizedBox.shrink();
+          ValueListenableBuilder(
+            valueListenable: calendarController.internalDateTimeRange,
+            builder: (context, value, child) {
+              if (value == null) return const SizedBox.shrink();
+              final localRange = value.forLocation();
 
-                    final String month;
-                    final int year;
+              final String month;
+              final int year;
 
-                    if (calendarController.viewController?.viewConfiguration is MonthViewConfiguration) {
-                      final dominantMonthDate = value.dominantMonthDate;
-                      // Since the visible DateTimeRange returned by the month view does not always start at the beginning of the month,
-                      // we need to check the second week of the visibleDateTimeRange to determine the month and year.
-                      year = dominantMonthDate.year;
-                      month = dominantMonthDate.monthNameLocalized();
-                    } else {
-                      year = value.start.year;
-                      month = value.start.monthNameLocalized();
-                    }
+              if (calendarController.viewController?.viewConfiguration is MonthViewConfiguration) {
+                final dominantMonthDate = InternalDateTimeRange.fromDateTimeRange(localRange).dominantMonthDate;
+                year = dominantMonthDate.year;
+                month = dominantMonthDate.monthNameLocalized();
+              } else {
+                year = localRange.start.year;
+                month = localRange.start.monthNameLocalized();
+              }
 
-                    return FilledButton.tonal(
-                      onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(150, kMinInteractiveDimension),
-                      ),
-                      child: Text('$month $year'),
-                    );
-                  },
+              return FilledButton.tonal(
+                onPressed: () => calendarController.animateToDate(DateTime.now()),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(150, kMinInteractiveDimension),
                 ),
-              ],
-            ),
+                child: Text('$month $year'),
+              );
+            },
           ),
-          if (!Platform.isAndroid && !Platform.isIOS)
+          if (isDesktop)
             IconButton.filledTonal(
               onPressed: () => calendarController.animateToPreviousPage(),
               icon: const Icon(Icons.chevron_left),
             ),
-          if (!Platform.isAndroid && !Platform.isIOS)
+          if (isDesktop)
             IconButton.filledTonal(
               onPressed: () => calendarController.animateToNextPage(),
               icon: const Icon(Icons.chevron_right),

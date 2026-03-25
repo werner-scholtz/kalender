@@ -4,6 +4,7 @@ import 'package:recurrence/components.dart';
 import 'package:recurrence/dialog.dart';
 
 import 'package:recurrence/recurrence.dart';
+import 'package:recurrence/recurring_event.dart';
 import 'package:recurrence/toolbar.dart';
 
 void main() {
@@ -16,8 +17,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Kalender Recurrence',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+      title: 'Kalender Recurrence Example',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        cardTheme: const CardThemeData(
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
+        cardTheme: const CardThemeData(
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        ),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -49,12 +65,12 @@ class _MyHomePageState extends State<MyHomePage> {
         calendarController: calendarController,
         viewConfiguration: viewConfiguration,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) => _onEventTapped(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) async {
-            final recurrence = await showRecurrenceDialog(event);
-            if (recurrence == null) return;
-            controller.addEvent(event, recurrence);
+            final result = await _showDialog(event);
+            if (result is! RecurrenceDialogSave) return;
+            controller.addEvent(event, result.recurrence);
           },
           onEventChanged: controller.updateEvent,
         ),
@@ -80,10 +96,34 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<Recurrence?> showRecurrenceDialog(CalendarEvent event) async {
-    return showAdaptiveDialog<Recurrence?>(
+  void _onEventTapped(CalendarEvent event) async {
+    calendarController.selectEvent(event);
+
+    final group = event is RecurringCalendarEvent ? controller.groupFor(event) : null;
+    final result = await _showDialog(event, existingGroup: group);
+
+    if (result is RecurrenceDialogSave) {
+      if (group != null) {
+        // Editing an existing group — replace all events.
+        controller.replaceRecurrence(group.id, result.recurrence);
+      } else {
+        // Non-recurring event tapped — create a new recurrence from it.
+        controller.addEvent(event, result.recurrence);
+      }
+    } else if (result is RecurrenceDialogDelete && group != null) {
+      controller.deleteGroup(group.id);
+    }
+
+    calendarController.deselectEvent();
+  }
+
+  Future<RecurrenceDialogResult?> _showDialog(
+    CalendarEvent event, {
+    RecurrenceGroup? existingGroup,
+  }) {
+    return showAdaptiveDialog<RecurrenceDialogResult?>(
       context: context,
-      builder: (context) => RecurrenceDialog(event),
+      builder: (context) => RecurrenceDialog(event, existingGroup: existingGroup),
     );
   }
 }

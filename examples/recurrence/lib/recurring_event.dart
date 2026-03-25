@@ -24,12 +24,20 @@ class RecurringCalendarEvent extends CalendarEvent {
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
   }) {
-    return RecurringCalendarEvent(
-      dateTimeRange: dateTimeRange ?? internalRange(),
+    final copy = RecurringCalendarEvent(
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       groupId: groupId,
       interaction: interaction ?? this.interaction,
     );
+    copy.id = id;
+    return copy;
   }
+
+  @override
+  bool operator ==(Object other) => super == other && other is RecurringCalendarEvent && other.groupId == groupId;
+
+  @override
+  int get hashCode => Object.hash(super.hashCode, groupId);
 }
 
 class RecurrenceGroup {

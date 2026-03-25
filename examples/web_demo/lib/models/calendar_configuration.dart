@@ -49,7 +49,7 @@ class CalendarConfiguration extends ChangeNotifier {
   }
 
   /// The month body configuration of the calendar.
-  final monthBodyConfigurationNotifier = ValueNotifier(MonthBodyConfiguration());
+  final monthBodyConfigurationNotifier = ValueNotifier(const MonthBodyConfiguration());
   MonthBodyConfiguration get monthBodyConfiguration => monthBodyConfigurationNotifier.value;
   set monthBodyConfiguration(MonthBodyConfiguration value) {
     if (monthBodyConfigurationNotifier.value == value) return;
