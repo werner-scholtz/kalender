@@ -69,6 +69,7 @@ class NavigationHeader extends StatelessWidget {
         tooltip: context.l10n.today,
       );
     }
+    final cs = Theme.of(context).colorScheme;
     return FilledButton.tonalIcon(
       icon: const Icon(Icons.today, size: 18),
       label: Text(context.l10n.today),
@@ -76,6 +77,8 @@ class NavigationHeader extends StatelessWidget {
       style: FilledButton.styleFrom(
         minimumSize: const Size(0, 36),
         padding: const EdgeInsets.symmetric(horizontal: 12),
+        backgroundColor: cs.surfaceContainerHighest.withAlpha(120),
+        foregroundColor: cs.onSurface,
       ),
     );
   }
@@ -172,7 +175,7 @@ class NavigationHeader extends StatelessWidget {
       onPressed: onToggleConfig,
       tooltip: configVisible ? context.l10n.hideConfiguration : context.l10n.showConfiguration,
       style: IconButton.styleFrom(
-        backgroundColor: configVisible ? cs.primaryContainer.withAlpha(120) : cs.surfaceContainerHighest.withAlpha(120),
+        backgroundColor: configVisible ? cs.surfaceContainerHighest.withAlpha(160) : cs.surfaceContainerHighest.withAlpha(120),
         minimumSize: const Size(36, 36),
         padding: EdgeInsets.zero,
       ),
@@ -218,6 +221,8 @@ class HeaderDateButton extends StatelessWidget {
             minimumSize: compact ? const Size(0, 36) : const Size(140, 42),
             padding: compact ? const EdgeInsets.symmetric(horizontal: 10) : const EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(120),
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
           ),
           child: compact
               ? Text(

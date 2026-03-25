@@ -112,6 +112,19 @@ class MyAppState extends State<MyApp> {
       expansionTileTheme: ExpansionTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: colorScheme.surfaceContainerHigh.withAlpha(120),
+        collapsedBackgroundColor: colorScheme.surfaceContainer.withAlpha(100),
+        iconColor: colorScheme.primary,
+        collapsedIconColor: colorScheme.onSurfaceVariant,
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+      ),
+      listTileTheme: const ListTileThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        contentPadding: EdgeInsets.only(left: 16, right: 10, top: 0, bottom: 0),
       ),
       switchTheme: SwitchThemeData(
         thumbIcon: WidgetStateProperty.resolveWith((states) {
@@ -125,13 +138,13 @@ class MyAppState extends State<MyApp> {
   }
 
   Locale _resolveLocale(Locale? locale, Iterable<Locale> supportedLocales) {
-    if (locale == null) return const Locale('en', 'US');
+    if (locale == null) return const Locale('en', 'GB');
     for (var supportedLocale in supportedLocales) {
       if (supportedLocale.languageCode == locale.languageCode) {
         return supportedLocale;
       }
     }
-    return const Locale('en', 'US');
+    return const Locale('en', 'GB');
   }
 
   @override
@@ -164,8 +177,7 @@ class MyAppState extends State<MyApp> {
                       GlobalWidgetsLocalizations.delegate,
                       GlobalCupertinoLocalizations.delegate,
                     ],
-                    localeResolutionCallback: (locale, supportedLocales) =>
-                        _resolveLocale(locale, supportedLocales),
+                    localeResolutionCallback: (locale, supportedLocales) => _resolveLocale(locale, supportedLocales),
                     localeListResolutionCallback: (locales, supportedLocales) {
                       return _resolveLocale(
                         locales?.isNotEmpty == true ? locales!.first : null,

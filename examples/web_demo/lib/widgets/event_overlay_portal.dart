@@ -11,7 +11,7 @@ class EventOverlayPortal extends StatefulWidget {
   final Location? location;
   const EventOverlayPortal({super.key, required this.child, required this.location});
 
-  static void createEventOverlay(BuildContext context, CalendarEvent event, RenderBox renderBox) {
+  static void createEventOverlay(BuildContext context, Event event, RenderBox renderBox) {
     final state = context.findAncestorStateOfType<EventOverlayPortalState>();
     if (state == null) throw Exception('EventOverlayPortalState not found in context');
     state.createOverlay(event, renderBox);
@@ -85,7 +85,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
                   top: position.dy,
                   left: position.dx,
                   child: EventOverlayCard(
-                    event: Event.fromCalendarEvent(selectedEvent!),
+                    event: selectedEvent! as Event,
                     position: position,
                     height: height,
                     width: width,

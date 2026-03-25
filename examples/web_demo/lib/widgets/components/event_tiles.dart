@@ -38,10 +38,11 @@ class EventTile extends BaseEventTile {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Color.lerp(surfaceColor, color, 0.12),
+        color: Color.lerp(surfaceColor, color, isDark ? 0.25 : 0.12),
         borderRadius: BaseEventTile.defaultBorderRadius,
         border: Border(
           left: BorderSide(color: color, width: 3),
@@ -67,6 +68,7 @@ class MultiDayEventTile extends BaseEventTile {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     const radius = Radius.circular(6);
     final borderRadius = BorderRadius.horizontal(
@@ -76,7 +78,7 @@ class MultiDayEventTile extends BaseEventTile {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Color.lerp(surfaceColor, color, 0.18),
+        color: Color.lerp(surfaceColor, color, isDark ? 0.30 : 0.18),
         borderRadius: borderRadius,
         border: continuesBefore ? null : Border(left: BorderSide(color: color, width: 3)),
       ),
@@ -109,6 +111,7 @@ class OverlayEventTile extends BaseEventTile {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = Theme.of(context).colorScheme.surfaceContainerLow;
     const radius = Radius.circular(6);
     final borderRadius = BorderRadius.horizontal(
@@ -118,7 +121,7 @@ class OverlayEventTile extends BaseEventTile {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Color.lerp(surfaceColor, color, 0.22),
+        color: Color.lerp(surfaceColor, color, isDark ? 0.35 : 0.22),
         borderRadius: borderRadius,
         border: continuesBefore ? null : Border(left: BorderSide(color: color, width: 3)),
       ),

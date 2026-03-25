@@ -15,7 +15,7 @@ class Event extends CalendarEvent {
       dateTimeRange: event.dateTimeRange,
       interaction: event.interaction,
       title: '',
-    )..id = event.id; // TODO(werner): Is there a better way to do this ?
+    )..id = event.id;
   }
 
   /// The title of the [Event].
@@ -43,8 +43,6 @@ class Event extends CalendarEvent {
         color: color ?? this.color,
       )..id = id;
 
-  // TODO(werner): People will have to override equality in their own models...
-  //  add this to the documentaion.
   @override
   operator ==(Object other) {
     if (identical(this, other)) return true;

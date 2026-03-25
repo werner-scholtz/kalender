@@ -13,7 +13,8 @@ import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/zoom.dart';
 
 class Calendar extends StatelessWidget {
-  const Calendar({super.key});
+  final bool initialShowConfig;
+  const Calendar({super.key, this.initialShowConfig = true});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class Calendar extends StatelessWidget {
           child: Builder(
             builder: (context) => EventOverlayPortal(
               location: context.location.value,
-              child: const CalendarWidget(),
+              child: CalendarWidget(initialShowConfig: initialShowConfig),
             ),
           ),
         ),
@@ -33,14 +34,15 @@ class Calendar extends StatelessWidget {
 }
 
 class CalendarWidget extends StatefulWidget {
-  const CalendarWidget({super.key});
+  final bool initialShowConfig;
+  const CalendarWidget({super.key, this.initialShowConfig = true});
 
   @override
   State<CalendarWidget> createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  bool _showConfig = true;
+  late bool _showConfig = widget.initialShowConfig;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     calendarController: context.controller,
                     eventsController: context.eventsController,
                     viewConfiguration: context.configuration.viewConfiguration,
+                    components: _components(context),
                     callbacks: _callbacks,
                     header: Column(
                       spacing: 4,
@@ -66,6 +69,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.surface,
+                            border: !context.configuration.showHeader
+                                ? Border(
+                                    bottom: BorderSide(
+                                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                                    ),
+                                  )
+                                : null,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -131,13 +141,42 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 child: _showConfig
                     ? SizedBox(
                         width: min(constraints.maxWidth * 0.35, 400),
-                        child: CalendarConfigurationWidget(configuration: context.configuration),
+                        height: constraints.maxHeight,
+                        child: CalendarConfigurationWidget(
+                          configuration: context.configuration,
+                          onDismiss: () => setState(() => _showConfig = false),
+                        ),
                       )
                     : const SizedBox.shrink(),
               ),
           ],
         );
       },
+    );
+  }
+
+  CalendarComponents _components(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final lineColor = cs.outlineVariant.withAlpha(60);
+    final mutedText = TextStyle(color: cs.onSurfaceVariant);
+    return CalendarComponents(
+      multiDayComponentStyles: MultiDayComponentStyles(
+        headerStyles: MultiDayHeaderComponentStyles(
+          dayHeaderStyle: DayHeaderStyle(
+            textStyle: mutedText,
+            numberTextStyle: mutedText,
+          ),
+        ),
+        bodyStyles: MultiDayBodyComponentStyles(
+          hourLinesStyle: HourLinesStyle(color: lineColor),
+          daySeparatorStyle: DaySeparatorStyle(color: lineColor),
+        ),
+      ),
+      monthComponentStyles: MonthComponentStyles(
+        bodyStyles: MonthBodyComponentStyles(
+          monthGridStyle: MonthGridStyle(color: lineColor),
+        ),
+      ),
     );
   }
 
@@ -185,17 +224,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   CalendarCallbacks get _callbacks {
     return CalendarCallbacks(
-      onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event, renderBox),
+      onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event as Event, renderBox),
       onEventCreate: (event) => Event(
         dateTimeRange: DateTimeRange(start: event.start, end: event.end),
         title: context.l10n.newEventTitle,
       ),
       onEventCreated: (event) => context.eventsController.addEvent(event),
       onEventChanged: (event, updatedEvent) => context.eventsController.updateEvent(
-        event: event,
-        updatedEvent: updatedEvent,
+        event: event as Event,
+        updatedEvent: updatedEvent as Event,
       ),
-      onTappedWithDetail: _createEvent,
       onLongPressedWithDetail: _createEvent,
     );
   }

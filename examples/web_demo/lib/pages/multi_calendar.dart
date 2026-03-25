@@ -9,8 +9,8 @@ class MultiCalendarView extends StatelessWidget {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(flex: 3, child: Calendar()),
-        Flexible(flex: 3, child: Calendar()),
+        Flexible(flex: 3, child: Calendar(initialShowConfig: false)),
+        Flexible(flex: 3, child: Calendar(initialShowConfig: false)),
       ],
     );
   }
