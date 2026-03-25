@@ -111,13 +111,30 @@ class NavigationHeader extends StatelessWidget {
   }) {
     final selected = context.location.value;
     final textStyle = Theme.of(context).textTheme.bodyMedium;
+    final isSystemTime = selected == null;
     List<PopupMenuEntry<Location?>> items(BuildContext _) => [
-          ChipDropdown.checkMenuItem(
-            value: null,
-            label: DateTime.now().timeZoneName,
-            selected: selected == null,
-            colorScheme: cs,
-            textStyle: textStyle,
+          // Use onTap for the system-time item because PopupMenuButton treats
+          // a null value as "dismissed" and never calls onSelected for it.
+          PopupMenuItem<Location?>(
+            onTap: () => context.location.value = null,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isSystemTime ? Icons.check_circle : Icons.circle_outlined,
+                  size: 16,
+                  color: isSystemTime ? cs.primary : cs.onSurfaceVariant,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  DateTime.now().timeZoneName,
+                  style: textStyle?.copyWith(
+                    fontWeight: isSystemTime ? FontWeight.w600 : FontWeight.w400,
+                    color: isSystemTime ? cs.primary : null,
+                  ),
+                ),
+              ],
+            ),
           ),
           for (final loc in supportedLocations)
             ChipDropdown.checkMenuItem<Location?>(

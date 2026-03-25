@@ -19,9 +19,10 @@ const _eventColors = [
 /// Generate a list of events for the demo.
 List<CalendarEvent> generateEvents(BuildContext context) {
   final now = DateTime.now();
+  final date = DateTime(now.year, now.month, now.day, now.hour);
   const numOfEvents = 1000;
   return List.generate(numOfEvents, (index) {
-    final start = now.add(Duration(days: index - (numOfEvents ~/ 2)));
+    final start = date.add(Duration(days: index - (numOfEvents ~/ 2)));
     final end = start.add(Duration(hours: Random().nextInt(3) + 1));
     return Event(
       dateTimeRange: DateTimeRange(start: start, end: end),

@@ -104,6 +104,11 @@ class CalendarViewState extends State<CalendarView> {
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
+      // Preserve the current height per minute (zoom level) when only the location changed.
+      final oldHeightPerMinute = _viewController is MultiDayViewController
+          ? (_viewController as MultiDayViewController).heightPerMinute.value
+          : null;
+
       // Use selectedDate if available, otherwise use the initial date selection strategy
       final initialDate = widget.viewConfiguration.initialDateTime != null
           ? InternalDateTime.fromDateTime(widget.viewConfiguration.initialDateTime!)
@@ -114,6 +119,12 @@ class CalendarViewState extends State<CalendarView> {
 
       // Create the new view controller.
       _viewController = _createViewController(initialDate: initialDate);
+
+      // Restore the zoom level if the new controller is also a MultiDayViewController.
+      if (oldHeightPerMinute != null && _viewController is MultiDayViewController) {
+        (_viewController as MultiDayViewController).heightPerMinute.value = oldHeightPerMinute;
+      }
+
       // Dispose the old view controller if it exists.
       widget.calendarController.viewController?.dispose();
 
