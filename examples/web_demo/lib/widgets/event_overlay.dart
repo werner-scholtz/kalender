@@ -112,7 +112,7 @@ class _EventOverlayCardState extends State<EventOverlayCard> {
                       const SizedBox(height: 12),
                       // Start time row
                       _DateTimeRow(
-                        icon: Icons.circle_outlined,
+                        icon: Icons.play_circle_outline,
                         iconColor: Colors.green,
                         label: context.l10n.start,
                         dateText: locale.formatShortDate(displayStart),

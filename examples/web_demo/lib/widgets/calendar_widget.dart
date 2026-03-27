@@ -186,57 +186,52 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Offset(20, renderObject.size.height / 2);
   }
 
-  TileComponents get _tileComponents {
-    return TileComponents(
-      tileBuilder: (event, range) => EventTile.builder(event as Event, range),
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
-      dragAnchorStrategy: _dragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-  }
+  TileComponents get _tileComponents => TileComponents(
+        tileBuilder: (event, range) => EventTile.builder(event as Event, range),
+        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+        dragAnchorStrategy: _dragAnchorStrategy,
+        verticalResizeHandle: const VerticalResizeHandle(),
+        horizontalResizeHandle: const HorizontalResizeHandle(),
+      );
 
-  TileComponents get _multiDayTileComponents {
-    return TileComponents(
-      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
-      dragAnchorStrategy: _dragAnchorStrategy,
-      verticalResizeHandle: const VerticalResizeHandle(),
-      horizontalResizeHandle: const HorizontalResizeHandle(),
-    );
-  }
+  TileComponents get _multiDayTileComponents => TileComponents(
+        tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+        overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+        dragAnchorStrategy: _dragAnchorStrategy,
+        verticalResizeHandle: const VerticalResizeHandle(),
+        horizontalResizeHandle: const HorizontalResizeHandle(),
+      );
 
-  ScheduleTileComponents get _scheduleTileComponents {
-    return ScheduleTileComponents(
-      tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-      overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
-      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
-      dragAnchorStrategy: _dragAnchorStrategy,
-    );
-  }
+  ScheduleTileComponents get _scheduleTileComponents => ScheduleTileComponents(
+        tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
+        overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+        dragAnchorStrategy: _dragAnchorStrategy,
+      );
 
-  CalendarCallbacks get _callbacks {
-    return CalendarCallbacks(
-      onEventTapped: (event, renderBox) => EventOverlayPortal.createEventOverlay(context, event as Event, renderBox),
-      onEventCreate: (event) => Event(
-        dateTimeRange: DateTimeRange(start: event.start, end: event.end),
-        title: context.l10n.newEventTitle,
-      ),
-      onEventCreated: (event) => context.eventsController.addEvent(event),
-      onEventChanged: (event, updatedEvent) => context.eventsController.updateEvent(
-        event: event as Event,
-        updatedEvent: updatedEvent as Event,
-      ),
-      onLongPressedWithDetail: _createEvent,
-    );
-  }
+  CalendarCallbacks get _callbacks => CalendarCallbacks(
+        onEventTapped: (event, renderBox) {
+          EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
+          if (isTouch) context.controller.selectEvent(event);
+        },
+        onEventCreate: (event) => Event(
+          dateTimeRange: DateTimeRange(start: event.start, end: event.end),
+          title: context.l10n.newEventTitle,
+        ),
+        onEventCreated: (event) => context.eventsController.addEvent(event),
+        onEventChanged: (event, updatedEvent) => context.eventsController.updateEvent(
+          event: event as Event,
+          updatedEvent: updatedEvent as Event,
+        ),
+        onLongPressedWithDetail: _createEvent,
+      );
 
   void _createEvent(TapDetail detail) {
     final range = switch (detail) {

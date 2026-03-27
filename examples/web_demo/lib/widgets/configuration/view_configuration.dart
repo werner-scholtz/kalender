@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/providers.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
 import 'package:web_demo/utils.dart';
 

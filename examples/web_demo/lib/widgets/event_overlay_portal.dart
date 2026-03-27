@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
-import 'package:web_demo/providers.dart';
+import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/event_overlay.dart';
 
 class EventOverlayPortal extends StatefulWidget {
@@ -43,7 +43,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
         return LayoutBuilder(
           builder: (context, constraints) {
             var width = min(300.0, constraints.maxWidth);
-            var height = 300.0;
+            var height = 200.0;
 
             var position = selectedRenderBox!.localToGlobal(Offset.zero);
             final size = constraints.biggest;

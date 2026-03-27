@@ -1,9 +1,12 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/l10n/app_localizations.dart';
+import 'package:web_demo/models/calendar_configuration.dart';
 import 'package:web_demo/models/event.dart';
+import 'package:web_demo/providers.dart';
 
 /// A palette of colors for demo events.
 const _eventColors = [
@@ -35,4 +38,18 @@ List<CalendarEvent> generateEvents(BuildContext context) {
 extension BuildContextExtension on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
   String get localeTag => Localizations.localeOf(this).toLanguageTag();
+
+  ValueNotifier<ThemeMode> get themeModeNotifier => ThemeModeProvider.of(this);
+  ValueNotifier<TextDirection> get textDirectionNotifier => TextDirectionProvider.of(this);
+  ValueNotifier<Locale> get localeNotifier => LocaleNotifierProvider.of(this);
+  EventsController get eventsController => EventsControllerProvider.of(this);
+  ThemeData get theme => Theme.of(this);
+  ColorScheme get colorScheme => theme.colorScheme;
+  TextTheme get textTheme => theme.textTheme;
+
+  ValueNotifier<Location?> get location => LocationProvider.of(this);
+  CalendarConfiguration get configuration => ConfigurationProvider.of(this);
+  CalendarController get controller => ControllerProvider.of(this);
 }
+
+final isTouch = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;

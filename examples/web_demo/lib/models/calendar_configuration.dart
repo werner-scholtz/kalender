@@ -4,7 +4,7 @@ import 'package:kalender/kalender.dart';
 
 class CalendarConfiguration extends ChangeNotifier {
   /// The view configuration of the calendar.
-  late final viewConfigurationNotifier = ValueNotifier(viewConfigurations[1]);
+  late final viewConfigurationNotifier = ValueNotifier(isMobile ? viewConfigurations[3] : viewConfigurations[1]);
   ViewConfiguration get viewConfiguration => viewConfigurationNotifier.value;
   set viewConfiguration(ViewConfiguration value) {
     if (viewConfigurationNotifier.value == value) return;
@@ -18,12 +18,23 @@ class CalendarConfiguration extends ChangeNotifier {
     end: DateTime(DateTime.now().year + 10),
   );
 
+  TimeOfDay get _initialTimeOfDay {
+    final now = TimeOfDay.now();
+    final hour = now.hour == 2 ? 1 : (now.hour - 2);
+    return TimeOfDay(hour: hour, minute: 0);
+  }
+
   /// The available view configurations of the calendar.
   late final viewConfigurations = [
-    MultiDayViewConfiguration.singleDay(displayRange: _displayRange),
-    MultiDayViewConfiguration.week(displayRange: _displayRange),
-    MultiDayViewConfiguration.workWeek(displayRange: _displayRange),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, name: "Custom 3 Days", displayRange: _displayRange),
+    MultiDayViewConfiguration.singleDay(displayRange: _displayRange, initialTimeOfDay: _initialTimeOfDay),
+    MultiDayViewConfiguration.week(displayRange: _displayRange, initialTimeOfDay: _initialTimeOfDay),
+    MultiDayViewConfiguration.workWeek(displayRange: _displayRange, initialTimeOfDay: _initialTimeOfDay),
+    MultiDayViewConfiguration.custom(
+      numberOfDays: 3,
+      name: "Custom 3 Days",
+      displayRange: _displayRange,
+      initialTimeOfDay: _initialTimeOfDay,
+    ),
     MonthViewConfiguration.singleMonth(displayRange: _displayRange),
     ScheduleViewConfiguration.continuous(name: "Schedule", displayRange: _displayRange),
     ScheduleViewConfiguration.paginated(name: "Paginated Schedule", displayRange: _displayRange),

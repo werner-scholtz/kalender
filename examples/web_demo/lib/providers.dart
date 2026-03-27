@@ -86,16 +86,3 @@ class EventsControllerProvider extends InheritedWidget {
     return eventsController != oldWidget.eventsController;
   }
 }
-
-extension CalendarContextUtils on BuildContext {
-  ValueNotifier<Location?> get location => LocationProvider.of(this);
-  CalendarConfiguration get configuration => ConfigurationProvider.of(this);
-  CalendarController get controller => ControllerProvider.of(this);
-}
-
-extension AppContextUtils on BuildContext {
-  ValueNotifier<ThemeMode> get themeModeNotifier => ThemeModeProvider.of(this);
-  ValueNotifier<TextDirection> get textDirectionNotifier => TextDirectionProvider.of(this);
-  ValueNotifier<Locale> get localeNotifier => LocaleNotifierProvider.of(this);
-  EventsController get eventsController => EventsControllerProvider.of(this);
-}

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
@@ -34,7 +33,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final _themeMode = ValueNotifier(ThemeMode.dark);
+  final _themeMode = ValueNotifier(ThemeMode.system);
   final _textDirection = ValueNotifier(TextDirection.ltr);
   final _locale = ValueNotifier(supportedLocales.first);
   final _eventsController = DefaultEventsController();
@@ -55,13 +54,11 @@ class MyAppState extends State<MyApp> {
   }
 
   static ThemeData _buildTheme(Brightness brightness) {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF6366F1),
-      brightness: brightness,
-    );
+    final colorScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF6366F1), brightness: brightness);
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+      iconTheme: IconThemeData(size: isTouch ? 22.0 : 18.0, color: colorScheme.onSurfaceVariant),
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -98,13 +95,14 @@ class MyAppState extends State<MyApp> {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
+          minimumSize: Size(0, isTouch ? 44 : 36),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
-          minimumSize: const Size(36, 36),
+          minimumSize: Size(isTouch ? 44 : 36, isTouch ? 44 : 36),
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
@@ -149,7 +147,6 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
     return ThemeModeProvider(
       notifier: _themeMode,
       child: TextDirectionProvider(
@@ -187,7 +184,7 @@ class MyAppState extends State<MyApp> {
                     onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
                     home: Directionality(
                       textDirection: textDirection,
-                      child: isMobile ? const MobileHomePage() : const DesktopHomePage(),
+                      child: isTouch ? const MobileHomePage() : const DesktopHomePage(),
                     ),
                   ),
                 ),
@@ -213,11 +210,14 @@ class MobileHomePage extends StatelessWidget {
         ),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 12),
         actions: const [
+          WarningButton(),
+          SizedBox(width: 4),
           ThemeButton(),
           SizedBox(width: 4),
           TextDirectionButton(),
           SizedBox(width: 4),
-          WarningButton(),
+          SizedBox(width: 4),
+          LocaleDropdown(),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
