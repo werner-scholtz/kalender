@@ -82,8 +82,8 @@ abstract class ResizeHandles extends StatelessWidget {
         );
   }
 
-  /// Whether the device is a mobile device.
-  bool get isMobile => isMobileDevice;
+  /// Whether the device is a touch device.
+  bool isTouch(BuildContext context) => isTouchDevice(context);
 
   /// Whether the axis is vertical.
   bool get isVertical => axis == Axis.vertical;
@@ -157,7 +157,9 @@ class DefaultResizeHandles extends ResizeHandles {
       return const SizedBox();
     }
 
-    if (isMobile && axis == Axis.horizontal) {
+    final touch = isTouch(context);
+
+    if (touch && axis == Axis.horizontal) {
       // Horizontal resize handles are not supported by default on mobile devices.
       // This is because they will be super small and hard to interact with.
       return const SizedBox();
@@ -180,8 +182,8 @@ class DefaultResizeHandles extends ResizeHandles {
               ? Positioned(
                   top: 0,
                   left: 0,
-                  right: isMobileDevice ? null : 0,
-                  width: isMobileDevice ? handleLength : null,
+                  right: touch ? null : 0,
+                  width: touch ? handleLength : null,
                   height: handleLength,
                   child: startResizeDetector,
                 )
@@ -196,9 +198,9 @@ class DefaultResizeHandles extends ResizeHandles {
           isVertical
               ? Positioned(
                   bottom: 0,
-                  left: isMobileDevice ? null : 0,
+                  left: touch ? null : 0,
                   right: 0,
-                  width: isMobileDevice ? handleLength : null,
+                  width: touch ? handleLength : null,
                   height: handleLength,
                   child: endResizeDetector,
                 )

@@ -83,7 +83,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
     final controller = _controller;
     if (controller == null) return;
 
-    if (isMobileDevice) {
+    if (isTouchDevice(context)) {
       final selectedEvent = controller.selectedEvent.value;
       if (selectedEvent != null && selectedEvent.id == widget.event.id) {
         if (mounted) setState(() => _showHandles = true);
@@ -97,14 +97,14 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
 
   /// [PointerEnterEvent] handler to show/hide resize handles on non-mobile devices.
   void _onEnter(PointerEnterEvent event) {
-    if (isMobileDevice) return;
+    if (isTouchDevice(context)) return;
     if (_controller?.internalFocus == true) return;
     if (_showHandles == false && mounted) setState(() => _showHandles = true);
   }
 
   /// [PointerExitEvent] handler to show/hide resize handles on non-mobile devices.
   void _onExit(PointerExitEvent event) {
-    if (isMobileDevice) return;
+    if (isTouchDevice(context)) return;
     if (_showHandles == true && mounted) setState(() => _showHandles = false);
   }
 
@@ -129,7 +129,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
       ),
     );
 
-    if (isMobileDevice) {
+    if (isTouchDevice(context)) {
       return visibility;
     } else {
       return MouseRegion(

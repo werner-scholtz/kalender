@@ -114,19 +114,19 @@ jobs:
 
           # Add and commit files
           if [ -f "performance_summary.json" ]; then
-            git add "performance_summary.json"
-            git add performance_comparison.md performance_history.json performance_chart.svg README.md
+            git add -f "performance_summary.json"
+            git add -f performance_comparison.md performance_history.json performance_chart.svg README.md
             echo "📊 Added performance comparison, history, chart, and README"
-            
+
             # Create commit with meaningful message
             COMMIT_MSG="Performance data for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
             COMMIT_MSG="$COMMIT_MSG
 
           Includes comparison report, history, chart, and README dashboard"
-            
+
             git commit -m "$COMMIT_MSG"
             git push origin performance-results
-            
+
             echo "✅ Performance summary committed to performance-results branch"
           else
             echo "❌ No performance summary file found"
@@ -170,23 +170,23 @@ jobs:
               } else {
                 comment += 'Performance profiling completed but no comparison data available.\n';
               }
-              
+
               comment += '\n---\n';
               comment += `*Performance test run: ${context.runNumber}*\n`;
               comment += `*Commit: ${context.sha.substring(0, 7)}*`;
-              
+
               // Find existing performance comment and update it, or create new one
               const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
               });
-              
+
               const botComment = comments.find(comment => 
                 comment.user.type === 'Bot' && 
                 comment.body.includes('📊 Performance Test Results')
               );
-              
+
               if (botComment) {
                 await github.rest.issues.updateComment({
                   owner: context.repo.owner,
@@ -204,7 +204,7 @@ jobs:
               }
             } catch (error) {
               console.error('Error posting comment:', error);
-              
+
               // Fallback: post simple comment
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
