@@ -1,0 +1,14 @@
+{
+  "runs": [
+    {
+      "timestamp": "2026-03-31T07:03:13+00:00",
+      "run_number": "226",
+      "commit_sha": "2c6afc3dd90ffbcd776ff609f136b7cb48b380b1",
+      "scenario_count": 24,
+      "avg_build_time_ms": 4.431074632729556,
+      "avg_rasterizer_time_ms": 6.830004358654416,
+      "missed_build_budget_total": 27,
+      "missed_rasterizer_budget_total": 35
+    }
+  ]
+}

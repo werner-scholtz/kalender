@@ -1,10 +1,29 @@
 # Performance Results
 
-This branch contains historical performance profiling summaries for the Kalender package.
+This branch stores generated performance artifacts from the Kalender profiling workflow.
 
-## Overview
+## Trend Chart (Last 20 Runs)
 
-Performance tests are automatically run on every commit to the main branch using Flutter's integration test framework with timeline tracing. The results are stored here as timestamped JSON files to track performance trends over time.
+![Performance trend](performance_chart.svg)
 
-## Detailed Results
-More detailed results are available from https://github.com/werner-scholtz/kalender/actions/workflows/performance_profiling.yml as artifacts.
+## Latest Run Summary
+
+| Metric | Value |
+|--------|-------|
+| Run | #226 (2c6afc3) |
+| Timestamp (UTC) | 2026-03-31T07:03:13+00:00 |
+| Average frame build time | 4.431074632729556 ms |
+| Average frame rasterizer time | 6.830004358654416 ms |
+| Missed build budget (total) | 27 |
+| Missed rasterizer budget (total) | 35 |
+| Scenario count | 24 |
+
+## Latest Comparison Report
+
+- See [performance_comparison.md](performance_comparison.md) for detailed metric-by-metric deltas.
+
+## Recent Runs
+
+| Run | Timestamp (UTC) | Avg Build (ms) | Avg Rasterizer (ms) | Missed Build | Missed Rasterizer |
+|-----|------------------|----------------|---------------------|--------------|-------------------|
+| #226 (2c6afc3) | 2026-03-31T07:03:13+00:00 | 4.43 | 6.83 | 27 | 35 |
