@@ -102,7 +102,7 @@ jobs:
             --history-file performance_history.json \
             --chart-output performance_chart.svg \
             --readme-output README.md \
-            --history-limit 20 \
+            --history-limit 50 \
             --run-number "${{ github.run_number }}" \
             --commit-sha "${{ github.sha }}" \
             --verbose

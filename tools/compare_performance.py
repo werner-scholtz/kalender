@@ -379,7 +379,7 @@ def generate_svg_chart(history_data, output_path):
         '<rect width="100%" height="100%" fill="#ffffff" />',
         (
             '<text x="70" y="28" font-family="Arial, sans-serif" font-size="20" '
-            'font-weight="600" fill="#111827">Kalender Performance Trend (Last 20 Runs)</text>'
+            'font-weight="600" fill="#111827">Kalender Performance Trend (Last 50 Runs)</text>'
         ),
     ]
 
@@ -469,7 +469,7 @@ def render_readme(history_data, comparison_path, chart_path):
         '',
         'This branch stores generated performance artifacts from the Kalender profiling workflow.',
         '',
-        '## Trend Chart (Last 20 Runs)',
+        '## Trend Chart (Last 50 Runs)',
         '',
         f'![Performance trend]({Path(chart_path).name})',
         '',
@@ -564,8 +564,8 @@ def main():
     parser.add_argument(
         '--history-limit',
         type=int,
-        default=20,
-        help='Maximum number of history runs to keep (default: 20)',
+        default=50,
+        help='Maximum number of history runs to keep (default: 50)',
     )
     parser.add_argument(
         '--run-number',
