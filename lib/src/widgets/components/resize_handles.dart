@@ -82,9 +82,6 @@ abstract class ResizeHandles extends StatelessWidget {
         );
   }
 
-  /// Whether the device is a touch device.
-  bool isTouch(BuildContext context) => isTouchDevice(context);
-
   /// Whether the axis is vertical.
   bool get isVertical => axis == Axis.vertical;
 
@@ -157,7 +154,7 @@ class DefaultResizeHandles extends ResizeHandles {
       return const SizedBox();
     }
 
-    final touch = isTouch(context);
+    final touch = isMobileDevice;
 
     if (touch && axis == Axis.horizontal) {
       // Horizontal resize handles are not supported by default on mobile devices.
