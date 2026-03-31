@@ -1,3 +1,6 @@
+## 0.15.1
+- Bump timezone dependency to 0.11.0 see [timezone changelog](https://pub.dev/packages/timezone/changelog) for details.
+
 ## 0.15.0
 - feat: Added timezone support.
 - feat: Use `linked_pageview` package for linked scrolling between multi-day header and body. [PR #247](https://github.com/werner-scholtz/kalender/pull/247)
