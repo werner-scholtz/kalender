@@ -2,10 +2,10 @@ name: Performance Profiling Tests
 
 on:
   push:
-    branches: [main]
+    branches: [main-wip]
   # TODO: this should not always run for prs.
   pull_request:
-    branches: [main]
+    branches: [main-wip]
   # Allow manual trigger
   workflow_dispatch:
 
@@ -90,44 +90,39 @@ jobs:
           # Copy the new performance summary
           cp examples/testing/performance_summary.json "performance_summary.json"
 
-          # Run performance comparison if we have a baseline
-          if [ -s baseline_performance.json ] && [ "$(cat baseline_performance.json)" != "{}" ]; then
-            echo "🔍 Running performance comparison..."
-            
-            # Copy the comparison script from the original branch
-            git show ${{ github.sha }}:.github/scripts/compare_performance.py > compare_performance.py
-            
-            python3 compare_performance.py \
-              --current performance_summary.json \
-              --baseline baseline_performance.json \
-              --output performance_comparison.md \
-              --verbose
-            
-            # Clean up the temporary script
-            rm compare_performance.py
-            
-            echo "✅ Performance comparison completed"
-          else
-            echo "ℹ️ Skipping comparison - no baseline data available"
-          fi
+          echo "🔍 Running performance comparison and dashboard generation..."
+
+          # Copy the comparison script from the original branch
+          git show ${{ github.sha }}:tools/compare_performance.py > compare_performance.py
+
+          python3 compare_performance.py \
+            --current performance_summary.json \
+            --baseline baseline_performance.json \
+            --output performance_comparison.md \
+            --history-file performance_history.json \
+            --chart-output performance_chart.svg \
+            --readme-output README.md \
+            --history-limit 20 \
+            --run-number "${{ github.run_number }}" \
+            --commit-sha "${{ github.sha }}" \
+            --verbose
+
+          # Clean up the temporary script
+          rm compare_performance.py
+
+          echo "✅ Performance comparison and dashboard generation completed"
 
           # Add and commit files
           if [ -f "performance_summary.json" ]; then
             git add "performance_summary.json"
-            
-            # Add comparison report if it exists
-            if ls performance_comparison.md 1> /dev/null 2>&1; then
-              git add performance_comparison.md
-              echo "📊 Added performance comparison report"
-            fi
+            git add performance_comparison.md performance_history.json performance_chart.svg README.md
+            echo "📊 Added performance comparison, history, chart, and README"
             
             # Create commit with meaningful message
             COMMIT_MSG="Performance data for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
-            if ls performance_comparison.md 1> /dev/null 2>&1; then
-              COMMIT_MSG="$COMMIT_MSG
+            COMMIT_MSG="$COMMIT_MSG
 
-          Includes performance comparison report"
-            fi
+          Includes comparison report, history, chart, and README dashboard"
             
             git commit -m "$COMMIT_MSG"
             git push origin performance-results
@@ -153,7 +148,7 @@ jobs:
       - name: Compare performance and generate report
         if: github.event_name == 'pull_request'
         run: |
-          python3 .github/scripts/compare_performance.py \
+          python3 tools/compare_performance.py \
             --current examples/testing/performance_summary.json \
             --baseline baseline_performance.json \
             --output performance_report.md \

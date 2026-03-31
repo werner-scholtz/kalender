@@ -25,26 +25,6 @@
             "flutterMode": "release"
         },
         {
-            "name": "demo",
-            "cwd": "examples/demo",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "demo (profile mode)",
-            "cwd": "examples/demo",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "demo (release mode)",
-            "cwd": "examples/demo",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
-        {
             "name": "recurrence",
             "cwd": "examples/recurrence",
             "request": "launch",
