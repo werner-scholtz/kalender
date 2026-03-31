@@ -2,10 +2,10 @@ name: Performance Profiling Tests
 
 on:
   push:
-    branches: [main-wip]
+    branches: [main]
   # TODO: this should not always run for prs.
   pull_request:
-    branches: [main-wip]
+    branches: [main]
   # Allow manual trigger
   workflow_dispatch:
 
