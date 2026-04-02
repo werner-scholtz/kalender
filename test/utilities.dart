@@ -179,6 +179,30 @@ extension WidgetTesterUtils on WidgetTester {
     await pumpAndSettle();
   }
 
+  /// Performs a long-press-drag gesture sequence for [LongPressDraggable] widgets.
+  ///
+  /// This starts a gesture at [startLocation], waits for the long press delay,
+  /// then moves by [offset] and lifts the pointer.
+  Future<void> longPressDrag(
+    Offset startLocation,
+    Offset offset,
+  ) async {
+    final gesture = await startGesture(startLocation);
+    await pump(const Duration(milliseconds: 500));
+    await gesture.moveBy(offset);
+    await pumpAndSettle();
+    await gesture.up();
+    await pumpAndSettle();
+  }
+
+  /// Performs a long-press-drag on the given [finder] widget.
+  Future<void> longPressDragWidget(
+    Finder finder,
+    Offset offset,
+  ) async {
+    await longPressDrag(getCenter(finder), offset);
+  }
+
   /// Creates a mouse [TestGesture] positioned at [Offset.zero] and registers
   /// [TestGesture.removePointer] as a teardown so callers don't have to.
   Future<TestGesture> createMouseGesture() async {

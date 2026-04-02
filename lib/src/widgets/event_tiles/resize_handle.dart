@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:kalender/src/enumerations.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
+import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/components/resize_handles.dart';
 
 /// A widget that positions the resize handles for an event tile.
@@ -44,8 +44,14 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// The calendar controller (nullable to handle dispose before initialization).
   CalendarController? _controller;
 
-  /// Whether to show the resize handles.
-  bool _showHandles = false;
+  /// Whether the resize handles are shown due to a hover event (precise input).
+  bool _showFromHover = false;
+
+  /// Whether the resize handles are shown due to event selection (imprecise input).
+  bool _showFromSelection = false;
+
+  /// Whether to show the resize handles (derived from hover or selection).
+  bool get _showHandles => _showFromHover || _showFromSelection;
 
   /// The size of the event tile.
   Size _size = Size.zero;
@@ -78,68 +84,85 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// The listener for the calendar controller's selected event.
   ///
   /// This listener updates the visibility of the resize handles based on whether the current event
-  /// is selected and the device type.
+  /// is selected or if an internal drag operation is in progress.
   void listener() {
     final controller = _controller;
     if (controller == null) return;
 
-    if (isMobileDevice) {
-      final selectedEvent = controller.selectedEvent.value;
-      if (selectedEvent != null && selectedEvent.id == widget.event.id) {
-        if (mounted) setState(() => _showHandles = true);
-      } else {
-        if (mounted) setState(() => _showHandles = false);
+    if (controller.internalFocus) {
+      // Suppress handles during internal drag/resize operations.
+      if ((_showFromHover || _showFromSelection) && mounted) {
+        setState(() {
+          _showFromHover = false;
+          _showFromSelection = false;
+        });
       }
-    } else if (_showHandles == true && controller.internalFocus) {
-      if (mounted) setState(() => _showHandles = false);
+      return;
+    }
+
+    final selectedEvent = controller.selectedEvent.value;
+    final isSelected = selectedEvent != null && selectedEvent.id == widget.event.id;
+    if (isSelected != _showFromSelection && mounted) {
+      setState(() => _showFromSelection = isSelected);
     }
   }
 
-  /// [PointerEnterEvent] handler to show/hide resize handles on non-mobile devices.
+  /// [PointerEnterEvent] handler to show resize handles on hover (precise input).
   void _onEnter(PointerEnterEvent event) {
-    if (isMobileDevice) return;
     if (_controller?.internalFocus == true) return;
-    if (_showHandles == false && mounted) setState(() => _showHandles = true);
+    if (!_showFromHover && mounted) setState(() => _showFromHover = true);
   }
 
-  /// [PointerExitEvent] handler to show/hide resize handles on non-mobile devices.
+  /// [PointerExitEvent] handler to hide resize handles when the pointer leaves.
   void _onExit(PointerExitEvent event) {
-    if (isMobileDevice) return;
-    if (_showHandles == true && mounted) setState(() => _showHandles = false);
+    if (_showFromHover && mounted) setState(() => _showFromHover = false);
   }
 
-  /// [PointerHoverEvent] handler to show/hide resize handles on non-mobile devices.
+  /// [PointerHoverEvent] handler to show resize handles on hover (precise input).
   void _onHover(PointerHoverEvent event) {
     if (_controller?.internalFocus == true) return;
-    if (_showHandles == false && mounted) setState(() => _showHandles = true);
+    if (!_showFromHover && mounted) setState(() => _showFromHover = true);
+  }
+
+  /// Resolves whether the current input is imprecise.
+  ///
+  /// If the [InputMode] is [InputMode.auto], the input is considered imprecise
+  /// when the handles were shown via selection (not hover).
+  /// Otherwise, the explicit [InputMode] setting is used.
+  bool _resolveIsImprecise(CalendarInteraction interaction) {
+    return switch (interaction.inputMode) {
+      InputMode.precise => false,
+      InputMode.imprecise => true,
+      InputMode.auto => !_showFromHover,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
+    final interaction = context.interaction;
+    final isImprecise = _resolveIsImprecise(interaction);
+
     final visibility = Visibility(
       visible: _showHandles && _size != Size.zero,
       maintainState: false,
       child: ResizeHandles.builder(
         widget.event,
-        context.interaction,
+        interaction,
         widget.tileComponents,
         widget.dateTimeRange,
         _size,
         widget.axis,
+        isImprecise,
       ),
     );
 
-    if (isMobileDevice) {
-      return visibility;
-    } else {
-      return MouseRegion(
-        onEnter: _onEnter,
-        onExit: _onExit,
-        onHover: _onHover,
-        opaque: false,
-        child: visibility,
-      );
-    }
+    return MouseRegion(
+      onEnter: _onEnter,
+      onExit: _onExit,
+      onHover: _onHover,
+      opaque: false,
+      child: visibility,
+    );
   }
 }
 

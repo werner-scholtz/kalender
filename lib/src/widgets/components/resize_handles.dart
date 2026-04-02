@@ -5,7 +5,6 @@ import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
-import 'package:kalender/src/platform.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 
 /// The builder that positions the ResizeHandles.
@@ -16,6 +15,7 @@ import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 /// [dateTimeRange] is the DateTimeRange that the current view is displaying.
 /// [size] is the size of the event tile.
 /// [axis] is the axis along which the resize handles are positioned.
+/// [isImprecise] indicates whether the current input is imprecise (e.g. touch/finger).
 typedef ResizeHandlePositioner = ResizeHandles Function(
   CalendarEvent event,
   CalendarInteraction interaction,
@@ -23,6 +23,7 @@ typedef ResizeHandlePositioner = ResizeHandles Function(
   DateTimeRange dateTimeRange,
   Size size,
   Axis axis,
+  bool isImprecise,
 );
 
 /// The base class for the ResizeDetectorPositioner.
@@ -45,6 +46,12 @@ abstract class ResizeHandles extends StatelessWidget {
   /// The axis along which the resize handles are positioned.
   final Axis axis;
 
+  /// Whether the current input is imprecise (e.g. touch/finger).
+  ///
+  /// When `true`, resize handles are positioned at corners for easier targeting.
+  /// When `false`, resize handles span the full width/height of the event tile.
+  final bool isImprecise;
+
   const ResizeHandles({
     required this.event,
     required this.interaction,
@@ -52,6 +59,7 @@ abstract class ResizeHandles extends StatelessWidget {
     required this.dateTimeRange,
     required this.size,
     required this.axis,
+    required this.isImprecise,
     super.key,
   });
 
@@ -63,6 +71,7 @@ abstract class ResizeHandles extends StatelessWidget {
     DateTimeRange dateTimeRange,
     Size size,
     Axis axis,
+    bool isImprecise,
   ) {
     return tileComponents.resizeHandlePositioner?.call(
           event,
@@ -71,6 +80,7 @@ abstract class ResizeHandles extends StatelessWidget {
           dateTimeRange,
           size,
           axis,
+          isImprecise,
         ) ??
         DefaultResizeHandles(
           event: event,
@@ -79,6 +89,7 @@ abstract class ResizeHandles extends StatelessWidget {
           dateTimeRange: dateTimeRange,
           size: size,
           axis: axis,
+          isImprecise: isImprecise,
         );
   }
 
@@ -143,6 +154,7 @@ class DefaultResizeHandles extends ResizeHandles {
     required super.tileComponents,
     required super.dateTimeRange,
     required super.size,
+    required super.isImprecise,
     super.key,
   });
 
@@ -154,10 +166,8 @@ class DefaultResizeHandles extends ResizeHandles {
       return const SizedBox();
     }
 
-    final touch = isMobileDevice;
-
-    if (touch && axis == Axis.horizontal) {
-      // Horizontal resize handles are not supported by default on mobile devices.
+    if (isImprecise && axis == Axis.horizontal && !interaction.allowHorizontalImpreciseResize) {
+      // Horizontal resize handles are not supported by default for imprecise input.
       // This is because they will be super small and hard to interact with.
       return const SizedBox();
     }
@@ -179,8 +189,8 @@ class DefaultResizeHandles extends ResizeHandles {
               ? Positioned(
                   top: 0,
                   left: 0,
-                  right: touch ? null : 0,
-                  width: touch ? handleLength : null,
+                  right: isImprecise ? null : 0,
+                  width: isImprecise ? handleLength : null,
                   height: handleLength,
                   child: startResizeDetector,
                 )
@@ -195,9 +205,9 @@ class DefaultResizeHandles extends ResizeHandles {
           isVertical
               ? Positioned(
                   bottom: 0,
-                  left: touch ? null : 0,
+                  left: isImprecise ? null : 0,
                   right: 0,
-                  width: touch ? handleLength : null,
+                  width: isImprecise ? handleLength : null,
                   height: handleLength,
                   child: endResizeDetector,
                 )

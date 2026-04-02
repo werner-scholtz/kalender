@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -10,6 +12,11 @@ void main() {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
   final viewConfiguration = MultiDayViewConfiguration.week();
+  final preciseInteraction = CalendarInteraction(
+    inputMode: InputMode.precise,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
+  );
   const headerConfiguration = MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1);
 
   setUpAll(() {
@@ -51,10 +58,11 @@ void main() {
             eventsController: eventsController,
             calendarController: calendarController,
             viewConfiguration: viewConfiguration,
-            header: const CalendarHeader(
+            header: CalendarHeader(
               multiDayHeaderConfiguration: headerConfiguration,
+              interaction: preciseInteraction,
             ),
-            body: const CalendarBody(),
+            body: CalendarBody(interaction: preciseInteraction),
           ),
         );
 
@@ -102,8 +110,12 @@ void main() {
         expect(event, findsOne);
 
         // Simulate a drag gesture on the event tile to dismiss the overlay.
-        final gesture = await tester.startGesture(tester.getCenter(event), pointer: 1);
-        await gesture.moveBy(const Offset(10, 0));
+        final gesture = await tester.startGesture(
+          tester.getCenter(event),
+          pointer: 1,
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.moveBy(const Offset(20, 0));
         await tester.pumpAndSettle();
 
         expect(overlay, findsNothing);

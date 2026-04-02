@@ -1,5 +1,84 @@
 # Migration Guide
 
+## v0.16.x → v0.17.0
+
+### Input mode replaces platform-based mobile/desktop split
+
+Resize handle behavior is now driven by **input precision** (`InputMode`) instead of platform detection (`isMobileDevice`). This affects how resize handles are positioned and when they become visible.
+
+**New `InputMode` enum:**
+
+| Value | Meaning |
+|-------|---------|
+| `auto` (default) | Detect dynamically — hover indicates precise input, selection indicates imprecise |
+| `precise` | Mouse, stylus, trackpad — full-width handles, shown on hover |
+| `imprecise` | Touch/finger — corner handles, shown on selection |
+
+**`CalendarInteraction` has two new fields:**
+```dart
+CalendarInteraction(
+  inputMode: InputMode.auto,                  // NEW — default is auto
+  allowHorizontalImpreciseResize: false,      // NEW — opt-in for horizontal touch resize
+)
+```
+
+### `ResizeHandlePositioner` typedef has a new `isImprecise` parameter
+
+If you provide a custom `resizeHandlePositioner` in `TileComponents`, update it to accept the new parameter:
+
+**Before:**
+```dart
+TileComponents(
+  resizeHandlePositioner: (event, interaction, components, range, size, axis) {
+    return MyCustomResizeHandles(...);
+  },
+)
+```
+
+**After:**
+```dart
+TileComponents(
+  resizeHandlePositioner: (event, interaction, components, range, size, axis, isImprecise) {
+    return MyCustomResizeHandles(..., isImprecise: isImprecise);
+  },
+)
+```
+
+### `ResizeHandles` abstract class requires `isImprecise`
+
+If you extend `ResizeHandles`, add `isImprecise` to your constructor:
+
+**Before:**
+```dart
+class MyResizeHandles extends ResizeHandles {
+  const MyResizeHandles({
+    required super.event,
+    required super.axis,
+    required super.interaction,
+    required super.tileComponents,
+    required super.dateTimeRange,
+    required super.size,
+  });
+}
+```
+
+**After:**
+```dart
+class MyResizeHandles extends ResizeHandles {
+  const MyResizeHandles({
+    required super.event,
+    required super.axis,
+    required super.interaction,
+    required super.tileComponents,
+    required super.dateTimeRange,
+    required super.size,
+    required super.isImprecise,
+  });
+}
+```
+
+---
+
 ## v0.15.x → v0.16.0
 
 ### `CalendarEvent` is no longer generic

@@ -9,7 +9,22 @@ import '../utilities.dart';
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
-  final interaction = CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true);
+  final interaction = CalendarInteraction(
+    allowResizing: true,
+    allowRescheduling: true,
+    allowEventCreation: true,
+    inputMode: InputMode.precise,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
+  );
+  final impreciseInteraction = CalendarInteraction(
+    allowResizing: true,
+    allowRescheduling: true,
+    allowEventCreation: true,
+    inputMode: InputMode.imprecise,
+    createEventGesture: CreateEventGesture.longPress,
+    modifyEventGesture: CreateEventGesture.longPress,
+  );
 
   setUp(() {
     eventsController = DefaultEventsController();
@@ -505,6 +520,171 @@ void main() {
       await tester.tapAt(tester.getCenter(body));
       await tester.longPressAt(tester.getCenter(body));
       await tester.dragFrom(tester.getCenter(body), const Offset(100, 0));
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Imprecise (touch) helpers
+  // ---------------------------------------------------------------------------
+
+  Future<void> pumpImpreciseMultiDayView(
+    WidgetTester tester, {
+    required CalendarCallbacks callbacks,
+  }) async {
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: MultiDayViewConfiguration.singleDay(
+          displayRange: year2025DisplayRange,
+          initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+          initialDateTime: DateTime(2025, 1, 1),
+        ),
+        callbacks: callbacks,
+        header: CalendarHeader(interaction: impreciseInteraction),
+        body: CalendarBody(interaction: impreciseInteraction),
+      ),
+    );
+  }
+
+  Future<void> pumpImpreciseMonthView(
+    WidgetTester tester, {
+    required CalendarCallbacks callbacks,
+  }) async {
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: MonthViewConfiguration.singleMonth(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime(2025, 1, 1),
+        ),
+        callbacks: callbacks,
+        header: CalendarHeader(interaction: impreciseInteraction),
+        body: CalendarBody(interaction: impreciseInteraction),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Imprecise (touch) MultiDayView Tests
+  // ---------------------------------------------------------------------------
+  group('MultiDayView Imprecise Callbacks', () {
+    testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
+      CalendarEvent? createdEvent;
+      CalendarEvent? createdConfirmed;
+
+      await pumpImpreciseMultiDayView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onEventCreate: (event) {
+            createdEvent = event;
+            return event;
+          },
+          onEventCreated: (event) => createdConfirmed = event,
+        ),
+      );
+
+      final body = find.byType(MultiDayBody);
+
+      expect(createdEvent, isNull);
+      expect(createdConfirmed, isNull);
+
+      await tester.longPressDrag(tester.getCenter(body), const Offset(0, 100));
+
+      expect(createdEvent, isNotNull);
+      expect(createdConfirmed, isNotNull);
+    });
+
+    testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
+      CalendarEvent? changedBefore;
+      CalendarEvent? changedAfter;
+
+      await pumpImpreciseMultiDayView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onEventChange: (event) => changedBefore = event,
+          onEventChanged: (_, updated) => changedAfter = updated,
+        ),
+      );
+
+      final id = eventsController.addEvent(
+        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1, 1), end: DateTime(2025, 1, 1, 12))),
+      );
+      await tester.pumpAndSettle();
+
+      final eventFinder = find.byKey(DayEventTile.tileKey(id));
+      expect(eventFinder, findsOneWidget);
+
+      expect(changedBefore, isNull);
+      expect(changedAfter, isNull);
+
+      await tester.longPressDragWidget(eventFinder, const Offset(0, 100));
+
+      expect(changedBefore, isNotNull);
+      expect(changedAfter, isNotNull);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Imprecise (touch) MonthView Tests
+  // ---------------------------------------------------------------------------
+  group('MonthView Imprecise Callbacks', () {
+    testWidgets('long-press drag-to-create fires onEventCreate and onEventCreated', (tester) async {
+      CalendarEvent? createdEvent;
+      CalendarEvent? createdConfirmed;
+
+      await pumpImpreciseMonthView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onEventCreate: (event) {
+            createdEvent = event;
+            return event;
+          },
+          onEventCreated: (event) => createdConfirmed = event,
+        ),
+      );
+
+      final body = find.byType(MonthBody);
+
+      expect(createdEvent, isNull);
+      expect(createdConfirmed, isNull);
+
+      await tester.longPressDrag(tester.getCenter(body), const Offset(100, 0));
+
+      expect(createdEvent, isNotNull);
+      expect(createdConfirmed, isNotNull);
+    });
+
+    testWidgets('long-press drag-to-reschedule fires onEventChange and onEventChanged', (tester) async {
+      CalendarEvent? changedBefore;
+      CalendarEvent? changedAfter;
+
+      await pumpImpreciseMonthView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onEventChange: (event) => changedBefore = event,
+          onEventChanged: (_, updated) => changedAfter = updated,
+        ),
+      );
+
+      final id = eventsController.addEvent(
+        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime(2025, 1, 1), end: DateTime(2025, 1, 1, 1))),
+      );
+      await tester.pumpAndSettle();
+
+      final eventFinder = find.byKey(MultiDayEventTile.tileKey(id));
+      expect(eventFinder, findsOneWidget);
+
+      expect(changedBefore, isNull);
+      expect(changedAfter, isNull);
+
+      await tester.longPressDragWidget(eventFinder, const Offset(100, 0));
+
+      expect(changedBefore, isNotNull);
+      expect(changedAfter, isNotNull);
     });
   });
 }

@@ -1,3 +1,21 @@
+## 0.17.0
+
+### Breaking Changes
+
+- `ResizeHandlePositioner` typedef now takes an additional `bool isImprecise` parameter.
+- `ResizeHandles` abstract class now requires an `isImprecise` constructor parameter.
+
+### Features
+
+- New `InputMode` enum (`auto`, `precise`, `imprecise`) on `CalendarInteraction` replaces platform-based mobile/desktop detection for resize handle behavior.
+- Resize handle positioning and visibility is now driven by input precision (mouse/stylus/trackpad vs touch) instead of platform (`iOS`/`Android`).
+- `InputMode.auto` (default) detects input type dynamically — hover triggers precise mode, selection triggers imprecise mode.
+- New `allowHorizontalImpreciseResize` option on `CalendarInteraction` to opt-in to horizontal resize handles for touch input (disabled by default).
+- `CalendarInteraction.resolveIsImprecise()` provides a way to query the resolved input mode.
+- Removed direct `isMobileDevice` usage from resize handle widgets.
+
+---
+
 ## 0.16.0
 
 ### Breaking Changes

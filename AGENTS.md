@@ -5,7 +5,7 @@
 Kalender is a Flutter calendar widget package providing four views: **MultiDay** (day/week), **Month**, **Schedule**, and a generic **CalendarView** orchestrator. The library is pre-1.0 (v0.15.0) and actively developed.
 
 - **SDK constraints**: Dart `>=3.0.0 <4.0.0`, Flutter `>=3.22.0`
-- **Key dependencies**: `intl`, `timezone`, `collection`, `linked_pageview`, `scrollable_positioned_list`, `universal_platform`
+- **Key dependencies**: `intl`, `timezone`, `collection`, `linked_pageview`, `scrollable_positioned_list`
 
 ## Repository Layout
 

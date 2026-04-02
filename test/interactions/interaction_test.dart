@@ -10,7 +10,23 @@ import '../utilities.dart';
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
-  final interaction = CalendarInteraction(allowResizing: true, allowRescheduling: true, allowEventCreation: true);
+  final interaction = CalendarInteraction(
+    allowResizing: true,
+    allowRescheduling: true,
+    allowEventCreation: true,
+    inputMode: InputMode.precise,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
+  );
+
+  final impreciseInteraction = CalendarInteraction(
+    allowResizing: true,
+    allowRescheduling: true,
+    allowEventCreation: true,
+    inputMode: InputMode.imprecise,
+    createEventGesture: CreateEventGesture.longPress,
+    modifyEventGesture: CreateEventGesture.longPress,
+  );
 
   late String dayEventID;
   late String multiDayEventID;
@@ -82,6 +98,35 @@ void main() {
           viewConfiguration: ScheduleViewConfiguration.continuous(displayRange: year2025DisplayRange),
           header: CalendarHeader(interaction: interaction),
           body: CalendarBody(interaction: interaction),
+        ),
+      );
+
+  Future<void> pumpImpreciseMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: MultiDayViewConfiguration.singleDay(
+            displayRange: year2025DisplayRange,
+            initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialDateTime: DateTime(2025, 1, 1),
+          ),
+          header: CalendarHeader(interaction: impreciseInteraction),
+          body: CalendarBody(interaction: impreciseInteraction),
+        ),
+      );
+
+  Future<void> pumpImpreciseMonthView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: MonthViewConfiguration.singleMonth(
+            displayRange: year2025DisplayRange,
+            initialDateTime: DateTime(2025),
+          ),
+          header: CalendarHeader(interaction: impreciseInteraction),
+          body: CalendarBody(interaction: impreciseInteraction),
         ),
       );
 
@@ -201,6 +246,71 @@ void main() {
       expect(find.byKey(ScheduleEventTile.rescheduleDraggableKey(customMultiDayEventID)), findsNothing);
       expect(find.byKey(ResizeHandles.startResizeDraggableKey(customMultiDayEventID)), findsNothing);
       expect(find.byKey(ResizeHandles.endResizeDraggableKey(customMultiDayEventID)), findsNothing);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Imprecise (touch) MultiDayView
+  // ---------------------------------------------------------------------------
+
+  group('MultiDayView imprecise interaction', () {
+    testWidgets('default events show vertical resize handles on selection', (tester) async {
+      await pumpImpreciseMultiDayView(tester);
+      expect(find.byType(MultiDayBody), findsOneWidget);
+
+      // Before selection, resize handles are not visible.
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(dayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(dayEventID)), findsNothing);
+
+      // Select the day event to trigger handle visibility.
+      final dayEvent = eventsController.events.firstWhere((e) => e.id == dayEventID);
+      calendarController.selectEvent(dayEvent);
+      await tester.pumpAndSettle();
+
+      // Vertical resize handles should now be visible.
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(dayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(dayEventID)), findsOneWidget);
+
+      // Horizontal resize handles (multi-day header) should be hidden in imprecise mode.
+      final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
+      calendarController.selectEvent(multiDayEvent);
+      await tester.pumpAndSettle();
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsNothing);
+    });
+
+    testWidgets('custom events respect per-event interaction overrides on selection', (tester) async {
+      await pumpImpreciseMultiDayView(tester);
+      expect(find.byType(MultiDayBody), findsOneWidget);
+
+      // Select the custom day event (allowStartResize: false, allowEndResize: true).
+      final customDayEvent = eventsController.events.firstWhere((e) => e.id == customDayEventID);
+      calendarController.selectEvent(customDayEvent);
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(DayEventTile.rescheduleDraggableKey(customDayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(customDayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(customDayEventID)), findsOneWidget);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Imprecise (touch) MonthView
+  // ---------------------------------------------------------------------------
+
+  group('MonthView imprecise interaction', () {
+    testWidgets('horizontal resize handles are hidden in imprecise mode', (tester) async {
+      await pumpImpreciseMonthView(tester);
+      expect(find.byType(MonthBody), findsOneWidget);
+
+      // Select the multi-day event.
+      final multiDayEvent = eventsController.events.firstWhere((e) => e.id == multiDayEventID);
+      calendarController.selectEvent(multiDayEvent);
+      await tester.pumpAndSettle();
+
+      // Horizontal resize handles should be hidden in imprecise mode by default.
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsNothing);
     });
   });
 }

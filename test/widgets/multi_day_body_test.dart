@@ -11,6 +11,12 @@ void main() {
   late CalendarController calendarController;
   late CalendarCallbacks callbacks;
 
+  final preciseInteraction = CalendarInteraction(
+    inputMode: InputMode.precise,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
+  );
+
   final components = TileComponents(
     tileBuilder: (event, tileRange) => Container(
       key: ValueKey(event.id),
@@ -91,6 +97,7 @@ void main() {
               viewConfiguration: viewConfiguration,
               callbacks: callbacks,
               body: CalendarBody(
+                interaction: preciseInteraction,
                 multiDayTileComponents: components,
                 monthTileComponents: components,
                 scheduleTileComponents: scheduleComponents,
@@ -169,6 +176,124 @@ void main() {
           final newEventStart = tester.getBottomLeft(dayEventTile) + const Offset(0, 25);
           await tester.dragFrom(newEventStart, const Offset(0, 100));
           await tester.pumpAndSettle();
+
+          expect(eventsController.events.length, 2, reason: 'There should be 2 events');
+        });
+      }
+    });
+
+    group('Imprecise Gesture Tests', () {
+      final start = DateTime(2025, 3, 24);
+      final end = DateTime(2025, 3, 31);
+      final dateTimeRange = DateTimeRange(start: start, end: end);
+
+      final impreciseInteraction = CalendarInteraction(
+        inputMode: InputMode.imprecise,
+        createEventGesture: CreateEventGesture.longPress,
+        modifyEventGesture: CreateEventGesture.longPress,
+      );
+
+      final impreciseViewConfigurations = [
+        MultiDayViewConfiguration.singleDay(
+          initialTimeOfDay: const TimeOfDay(hour: 5, minute: 0),
+          initialHeightPerMinute: 1,
+          displayRange: dateTimeRange,
+          initialDateTime: start,
+        ),
+      ];
+
+      late String eventId;
+      setUp(() {
+        eventId = eventsController.addEvent(
+          CalendarEvent(
+            dateTimeRange: DateTimeRange(
+              start: start.copyWith(hour: 6),
+              end: start.copyWith(hour: 8),
+            ),
+          ),
+        );
+      });
+
+      Future<void> pumpImpreciseCalendarView(
+        WidgetTester tester,
+        MultiDayViewConfiguration viewConfiguration,
+      ) =>
+          pumpAndSettleWithMaterialApp(
+            tester,
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: viewConfiguration,
+              callbacks: callbacks,
+              body: CalendarBody(
+                interaction: impreciseInteraction,
+                multiDayTileComponents: components,
+                monthTileComponents: components,
+                scheduleTileComponents: scheduleComponents,
+              ),
+            ),
+          );
+
+      for (final viewConfiguration in impreciseViewConfigurations) {
+        testWidgets('Event resize via selection - ${viewConfiguration.name}', (tester) async {
+          await pumpImpreciseCalendarView(tester, viewConfiguration);
+          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
+          expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
+
+          // Resize handles are not visible before selection.
+          expect(
+            find.descendant(of: dayEventTile, matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId))),
+            findsNothing,
+          );
+
+          // Select event to show resize handles.
+          final event = eventsController.events.firstWhere((e) => e.id == eventId);
+          calendarController.selectEvent(event);
+          await tester.pumpAndSettle();
+
+          final bottomResizeHandle = find.descendant(
+            of: dayEventTile,
+            matching: find.byKey(ResizeHandles.endResizeDraggableKey(eventId)),
+          );
+          expect(bottomResizeHandle, findsOneWidget, reason: 'Bottom resize handle should show after selection');
+
+          final initialBottomRight = tester.getBottomRight(dayEventTile);
+
+          await tester.dragFrom(tester.getCenter(bottomResizeHandle), const Offset(0, 50));
+          await tester.pumpAndSettle();
+
+          expect(
+            tester.getBottomRight(dayEventTile).dy > initialBottomRight.dy,
+            isTrue,
+            reason: 'Bottom right dy should increase after resize',
+          );
+        });
+
+        testWidgets('Event reschedule via long-press drag - ${viewConfiguration.name}', (tester) async {
+          await pumpImpreciseCalendarView(tester, viewConfiguration);
+          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
+          expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
+
+          final initialPosition = tester.getCenter(dayEventTile);
+
+          await tester.longPressDragWidget(dayEventTile, const Offset(0, 50));
+
+          expect(tester.getCenter(dayEventTile) == initialPosition, isFalse);
+        });
+
+        testWidgets('New event via long-press drag - ${viewConfiguration.name}', (tester) async {
+          await pumpImpreciseCalendarView(tester, viewConfiguration);
+          expect(find.byType(MultiDayBody), findsOneWidget, reason: 'MultiDayBody should be rendered');
+
+          final dayEventTile = find.byKey(DayEventTile.tileKey(eventId));
+          expect(dayEventTile, findsOneWidget, reason: 'DayEventTile should be rendered');
+
+          final newEventStart = tester.getBottomLeft(dayEventTile) + const Offset(0, 25);
+          await tester.longPressDrag(newEventStart, const Offset(0, 100));
 
           expect(eventsController.events.length, 2, reason: 'There should be 2 events');
         });

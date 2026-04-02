@@ -42,7 +42,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 * **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](#custom-events)
 * **Tile components:** Fully customize event tiles — stationary, dragging, feedback, and resize handles. [find out more](#tile-components)
 * **Reschedule:** Drag and drop events between days and times.
-* **Resize:** Resize events on desktop and mobile.
+* **Resize:** Resize events with input-precision-aware handles (mouse/stylus/trackpad vs touch).
 * **Controllers:** Manage your calendar with dedicated controllers. [find out more](#controllers)
 * **Callbacks:** React to taps, long presses, event creation and changes. [find out more](#callbacks)
 * **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](#configuration--interaction)
@@ -633,6 +633,13 @@ CalendarBody(
     allowEventCreation: true,
     // Tap to create (default) or long-press to create:
     createEventGesture: CreateEventGesture.tap,
+    // Input mode affects resize handle positioning and visibility:
+    //   auto (default) — detects dynamically from pointer events
+    //   precise         — mouse, stylus, trackpad (full-width handles, hover-to-show)
+    //   imprecise       — touch/finger (corner handles, selection-to-show)
+    inputMode: InputMode.auto,
+    // Opt-in to horizontal resize handles in imprecise/touch mode (default: false):
+    allowHorizontalImpreciseResize: false,
   ),
   snapping: CalendarSnapping(
     snapIntervalMinutes: 15,

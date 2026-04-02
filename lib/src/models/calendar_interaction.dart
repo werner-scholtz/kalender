@@ -24,6 +24,27 @@ InternalDateTime defaultSnapStrategy(
   return snappedDate;
 }
 
+/// The [InputMode] defines the type of input the calendar should optimize for.
+///
+/// This affects how resize handles are positioned and how visibility is triggered.
+enum InputMode {
+  /// Automatically detect input type.
+  ///
+  /// Uses the platform heuristic as a fallback (iOS/Android → [imprecise], otherwise → [precise]).
+  /// At runtime, hover events indicate precise input and selection indicates imprecise input.
+  auto,
+
+  /// Precise input mode (mouse, stylus, trackpad).
+  ///
+  /// Resize handles span the full width/height of the event tile and are shown on hover.
+  precise,
+
+  /// Imprecise input mode (touch/finger).
+  ///
+  /// Resize handles are positioned at corners for easier targeting and are shown when the event is selected.
+  imprecise,
+}
+
 /// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
 ///
 /// TODO: Rename this to EventInteractionGesture.
@@ -91,6 +112,33 @@ class CalendarInteraction {
   final int throttleMilliseconds;
   static const defaultThrottleMilliseconds = 16;
 
+  /// The input mode for the calendar.
+  ///
+  /// This determines how resize handles are positioned and when they become visible.
+  /// See [InputMode] for details on each mode.
+  final InputMode inputMode;
+  static const defaultInputMode = InputMode.auto;
+
+  /// Whether to allow horizontal resize handles in [InputMode.imprecise] mode.
+  ///
+  /// By default, horizontal resize handles are hidden for imprecise input because
+  /// they are too small to interact with reliably using touch.
+  /// Set this to `true` to enable them.
+  final bool allowHorizontalImpreciseResize;
+  static const defaultAllowHorizontalImpreciseResize = false;
+
+  /// Resolves whether the current input mode is imprecise.
+  ///
+  /// If [inputMode] is [InputMode.auto], falls back to a platform heuristic
+  /// (iOS/Android → imprecise, otherwise → precise).
+  bool resolveIsImprecise() {
+    return switch (inputMode) {
+      InputMode.precise => false,
+      InputMode.imprecise => true,
+      InputMode.auto => isMobileDevice,
+    };
+  }
+
   /// Creates a new [CalendarInteraction] instance with the specified settings.
   ///
   /// All parameters are optional and default to the values defined in the class.
@@ -99,12 +147,14 @@ class CalendarInteraction {
     this.allowRescheduling = defaultAllowRescheduling,
     this.allowEventCreation = defaultAllowEventCreation,
     this.throttleMilliseconds = defaultThrottleMilliseconds,
+    this.inputMode = defaultInputMode,
+    this.allowHorizontalImpreciseResize = defaultAllowHorizontalImpreciseResize,
     CreateEventGesture? createEventGesture,
     CreateEventGesture? modifyEventGesture,
-  })  : createEventGesture =
-            createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
-        modifyEventGesture =
-            modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
+  })  : createEventGesture = createEventGesture ??
+            (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
+        modifyEventGesture = modifyEventGesture ??
+            (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
   /// Creates a copy of this [CalendarInteraction] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.
@@ -113,14 +163,20 @@ class CalendarInteraction {
     bool? allowRescheduling,
     bool? allowEventCreation,
     int? throttleMilliseconds,
+    InputMode? inputMode,
+    bool? allowHorizontalImpreciseResize,
     CreateEventGesture? createEventGesture,
+    CreateEventGesture? modifyEventGesture,
   }) {
     return CalendarInteraction(
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       allowEventCreation: allowEventCreation ?? this.allowEventCreation,
       throttleMilliseconds: throttleMilliseconds ?? this.throttleMilliseconds,
+      inputMode: inputMode ?? this.inputMode,
+      allowHorizontalImpreciseResize: allowHorizontalImpreciseResize ?? this.allowHorizontalImpreciseResize,
       createEventGesture: createEventGesture ?? this.createEventGesture,
+      modifyEventGesture: modifyEventGesture ?? this.modifyEventGesture,
     );
   }
 
@@ -129,7 +185,9 @@ class CalendarInteraction {
     return other is CalendarInteraction &&
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
-        other.allowEventCreation == allowEventCreation;
+        other.allowEventCreation == allowEventCreation &&
+        other.inputMode == inputMode &&
+        other.allowHorizontalImpreciseResize == allowHorizontalImpreciseResize;
   }
 
   @override
@@ -137,6 +195,8 @@ class CalendarInteraction {
         allowResizing,
         allowRescheduling,
         allowEventCreation,
+        inputMode,
+        allowHorizontalImpreciseResize,
       );
 }
 
