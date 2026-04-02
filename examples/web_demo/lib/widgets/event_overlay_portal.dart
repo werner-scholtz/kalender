@@ -21,9 +21,25 @@ class EventOverlayPortal extends StatefulWidget {
   State<EventOverlayPortal> createState() => EventOverlayPortalState();
 }
 
-class EventOverlayPortalState extends State<EventOverlayPortal> {
+class EventOverlayPortalState extends State<EventOverlayPortal> with SingleTickerProviderStateMixin {
   /// The controller for the overlay portal.
   final controller = OverlayPortalController();
+
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 150),
+  );
+
+  late final CurvedAnimation _curvedAnimation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.easeOut,
+    reverseCurve: Curves.easeIn,
+  );
+
+  late final Animation<double> _scaleAnimation = Tween<double>(
+    begin: 0.85,
+    end: 1.0,
+  ).animate(_curvedAnimation);
 
   /// The selected event and its render box.
   CalendarEvent? selectedEvent;
@@ -33,6 +49,20 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
     selectedEvent = event;
     selectedRenderBox = renderBox;
     controller.show();
+    _animationController.forward(from: 0.0);
+  }
+
+  void _dismissOverlay() {
+    _animationController.reverse().then((_) {
+      if (controller.isShowing) controller.hide();
+    });
+  }
+
+  @override
+  void dispose() {
+    _curvedAnimation.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,22 +106,32 @@ class EventOverlayPortalState extends State<EventOverlayPortal> {
               fit: StackFit.expand,
               children: [
                 Positioned.fill(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: controller.hide,
+                  child: FadeTransition(
+                    opacity: _curvedAnimation,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: _dismissOverlay,
+                      child: const ColoredBox(color: Colors.black12),
+                    ),
                   ),
                 ),
                 Positioned(
                   top: position.dy,
                   left: position.dx,
-                  child: EventOverlayCard(
-                    event: selectedEvent! as Event,
-                    position: position,
-                    height: height,
-                    width: width,
-                    onDismiss: controller.hide,
-                    eventsController: context.eventsController,
-                    location: widget.location,
+                  child: FadeTransition(
+                    opacity: _curvedAnimation,
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: EventOverlayCard(
+                        event: selectedEvent! as Event,
+                        position: position,
+                        height: height,
+                        width: width,
+                        onDismiss: _dismissOverlay,
+                        eventsController: context.eventsController,
+                        location: widget.location,
+                      ),
+                    ),
                   ),
                 ),
               ],

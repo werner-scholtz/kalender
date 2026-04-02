@@ -6,8 +6,8 @@ import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/calendar_configuration.dart';
-import 'package:web_demo/widgets/components/calendar_header.dart';
-import 'package:web_demo/widgets/components/event_tiles.dart';
+import 'package:web_demo/widgets/navigation_header.dart';
+import 'package:web_demo/widgets/event_tiles.dart';
 import 'package:web_demo/widgets/event_overlay_portal.dart';
 import 'package:web_demo/widgets/resize_handle.dart';
 import 'package:web_demo/widgets/zoom.dart';
@@ -218,8 +218,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   CalendarCallbacks get _callbacks => CalendarCallbacks(
         onEventTapped: (event, renderBox) {
-          EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
-          if (isTouch) context.controller.selectEvent(event);
+          if (isTouch) {
+            if (context.controller.selectedEventId == event.id) {
+              EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
+            } else {
+              context.controller.selectEvent(event);
+            }
+          } else {
+            context.controller.deselectEvent();
+            EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
+          }
+        },
+        onTapped: (_) {
+          if (isTouch) context.controller.deselectEvent();
         },
         onEventCreate: (event) => Event(
           dateTimeRange: DateTimeRange(start: event.start, end: event.end),

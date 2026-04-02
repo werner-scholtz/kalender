@@ -27,14 +27,14 @@ class DayEventTile extends EventTile {
         final renderObject = context.findRenderObject()! as RenderBox;
         context.callbacks?.onEventTapped?.call(event, renderObject);
         context.callbacks?.onEventTappedWithDetail?.call(
-              event,
-              renderObject,
-              DayDetail(
-                date: dateTimeRange.start,
-                renderBox: renderObject,
-                localOffset: details.localPosition,
-              ),
-            );
+          event,
+          renderObject,
+          DayDetail(
+            date: dateTimeRange.start,
+            renderBox: renderObject,
+            localOffset: details.localPosition,
+          ),
+        );
       };
 
   @override
