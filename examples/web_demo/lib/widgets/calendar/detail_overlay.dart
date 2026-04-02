@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/event_overlay.dart';
+import 'package:web_demo/widgets/calendar/detail_card.dart';
 
-class EventOverlayPortal extends StatefulWidget {
+class EventDetailOverlay extends StatefulWidget {
   final Widget child;
   final Location? location;
-  const EventOverlayPortal({super.key, required this.child, required this.location});
+  const EventDetailOverlay({super.key, required this.child, required this.location});
 
   static void createEventOverlay(BuildContext context, Event event, RenderBox renderBox) {
-    final state = context.findAncestorStateOfType<EventOverlayPortalState>();
-    if (state == null) throw Exception('EventOverlayPortalState not found in context');
+    final state = context.findAncestorStateOfType<EventDetailOverlayState>();
+    if (state == null) throw Exception('EventDetailOverlayState not found in context');
     state.createOverlay(event, renderBox);
   }
 
   @override
-  State<EventOverlayPortal> createState() => EventOverlayPortalState();
+  State<EventDetailOverlay> createState() => EventDetailOverlayState();
 }
 
-class EventOverlayPortalState extends State<EventOverlayPortal> with SingleTickerProviderStateMixin {
+class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTickerProviderStateMixin {
   /// The controller for the overlay portal.
   final controller = OverlayPortalController();
 
@@ -122,7 +122,7 @@ class EventOverlayPortalState extends State<EventOverlayPortal> with SingleTicke
                     opacity: _curvedAnimation,
                     child: ScaleTransition(
                       scale: _scaleAnimation,
-                      child: EventOverlayCard(
+                      child: EventDetailCard(
                         event: selectedEvent! as Event,
                         position: position,
                         height: height,

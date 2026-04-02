@@ -3,16 +3,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/l10n/app_localizations.dart';
 import 'package:web_demo/locales.dart';
-import 'package:web_demo/pages/multi_calendar.dart';
-import 'package:web_demo/pages/single_calendar.dart';
 import 'package:web_demo/providers.dart';
+import 'package:web_demo/widgets/calendar/calendar.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/locale_dropdown.dart';
-import 'package:web_demo/widgets/text_direction_button.dart';
-import 'package:web_demo/widgets/theme_button.dart';
-import 'package:web_demo/widgets/view_type_picker.dart';
+import 'package:web_demo/theme.dart';
+import 'package:web_demo/widgets/toolbar/locale_dropdown.dart';
+import 'package:web_demo/widgets/toolbar/text_direction_button.dart';
+import 'package:web_demo/widgets/toolbar/theme_button.dart';
+import 'package:web_demo/widgets/toolbar/view_type_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:web_demo/widgets/warning_button.dart';
+import 'package:web_demo/widgets/toolbar/warning_button.dart';
 
 import 'timezone/stub.dart'
     if (dart.library.html) 'timezone/browser.dart'
@@ -37,6 +37,7 @@ class MyAppState extends State<MyApp> {
   final _textDirection = ValueNotifier(TextDirection.ltr);
   final _locale = ValueNotifier(supportedLocales.first);
   final _eventsController = DefaultEventsController();
+  late final _appSettings = AppSettings(themeMode: _themeMode, textDirection: _textDirection, locale: _locale);
 
   @override
   void initState() {
@@ -53,87 +54,7 @@ class MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  static ThemeData _buildTheme(Brightness brightness) {
-    final colorScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF6366F1), brightness: brightness);
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      iconTheme: IconThemeData(size: isTouch ? 22.0 : 18.0, color: colorScheme.onSurfaceVariant),
-      appBarTheme: AppBarTheme(
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-      ),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: colorScheme.outlineVariant.withAlpha(80)),
-        ),
-      ),
-      dialogTheme: DialogThemeData(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 4,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: colorScheme.surfaceContainerLow,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.outlineVariant.withAlpha(80)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          minimumSize: Size(0, isTouch ? 44 : 36),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          backgroundColor: colorScheme.surfaceContainerHighest.withAlpha(120),
-          minimumSize: Size(isTouch ? 44 : 36, isTouch ? 44 : 36),
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-      expansionTileTheme: ExpansionTileThemeData(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: colorScheme.surfaceContainerHigh.withAlpha(120),
-        collapsedBackgroundColor: colorScheme.surfaceContainer.withAlpha(100),
-        iconColor: colorScheme.primary,
-        collapsedIconColor: colorScheme.onSurfaceVariant,
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-      ),
-      listTileTheme: const ListTileThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        dense: true,
-        visualDensity: VisualDensity.compact,
-        contentPadding: EdgeInsets.only(left: 16, right: 10, top: 0, bottom: 0),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbIcon: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
-            return const Icon(Icons.check, size: 14);
-          }
-          return null;
-        }),
-      ),
-    );
-  }
+  static ThemeData _buildTheme(Brightness brightness) => buildAppTheme(brightness);
 
   Locale _resolveLocale(Locale? locale, Iterable<Locale> supportedLocales) {
     if (locale == null) return const Locale('en', 'GB');
@@ -147,48 +68,35 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeModeProvider(
-      notifier: _themeMode,
-      child: TextDirectionProvider(
-        notifier: _textDirection,
-        child: LocaleNotifierProvider(
-          notifier: _locale,
-          child: EventsControllerProvider(
-            eventsController: _eventsController,
-            child: ValueListenableBuilder(
-              valueListenable: _themeMode,
-              builder: (_, themeMode, __) => ValueListenableBuilder(
-                valueListenable: _locale,
-                builder: (_, locale, __) => ValueListenableBuilder(
-                  valueListenable: _textDirection,
-                  builder: (_, textDirection, __) => MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    themeMode: themeMode,
-                    theme: _buildTheme(Brightness.light),
-                    darkTheme: _buildTheme(Brightness.dark),
-                    locale: locale,
-                    supportedLocales: supportedLocales,
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    localeResolutionCallback: (locale, supportedLocales) => _resolveLocale(locale, supportedLocales),
-                    localeListResolutionCallback: (locales, supportedLocales) {
-                      return _resolveLocale(
-                        locales?.isNotEmpty == true ? locales!.first : null,
-                        supportedLocales,
-                      );
-                    },
-                    onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
-                    home: Directionality(
-                      textDirection: textDirection,
-                      child: isTouch ? const MobileHomePage() : const DesktopHomePage(),
-                    ),
-                  ),
-                ),
-              ),
+    return AppSettingsProvider(
+      settings: _appSettings,
+      child: EventsControllerProvider(
+        eventsController: _eventsController,
+        child: ListenableBuilder(
+          listenable: Listenable.merge([_themeMode, _locale, _textDirection]),
+          builder: (_, __) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            themeMode: _themeMode.value,
+            theme: _buildTheme(Brightness.light),
+            darkTheme: _buildTheme(Brightness.dark),
+            locale: _locale.value,
+            supportedLocales: supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            localeListResolutionCallback: (locales, supportedLocales) {
+              return _resolveLocale(
+                locales?.isNotEmpty == true ? locales!.first : null,
+                supportedLocales,
+              );
+            },
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+            home: Directionality(
+              textDirection: _textDirection.value,
+              child: isTouch ? const MobileHomePage() : const DesktopHomePage(),
             ),
           ),
         ),
@@ -224,7 +132,7 @@ class MobileHomePage extends StatelessWidget {
           child: Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80)),
         ),
       ),
-      body: const SingleCalendarView(),
+      body: const Calendar(),
     );
   }
 }
@@ -264,7 +172,15 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
           child: Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withAlpha(80)),
         ),
       ),
-      body: _type == ViewType.single ? const SingleCalendarView() : const MultiCalendarView(),
+      body: _type == ViewType.single
+          ? const Calendar()
+          : const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(flex: 3, child: Calendar(initialShowConfig: false)),
+                Flexible(flex: 3, child: Calendar(initialShowConfig: false)),
+              ],
+            ),
     );
   }
 }

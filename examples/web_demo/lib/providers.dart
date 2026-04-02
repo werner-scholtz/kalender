@@ -1,75 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/calendar_configuration.dart';
+import 'package:web_demo/models/demo_configuration.dart';
 
-class ControllerProvider extends InheritedWidget {
-  final CalendarController controller;
-  ControllerProvider({required super.child, super.key}) : controller = CalendarController();
+// ---------------------------------------------------------------------------
+// App-level settings (theme, text direction, locale)
+// ---------------------------------------------------------------------------
 
-  static CalendarController of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<ControllerProvider>();
-    assert(result != null, 'No ControllerProvider found.');
-    return result!.controller;
+class AppSettings {
+  final ValueNotifier<ThemeMode> themeMode;
+  final ValueNotifier<TextDirection> textDirection;
+  final ValueNotifier<Locale> locale;
+
+  AppSettings({
+    required this.themeMode,
+    required this.textDirection,
+    required this.locale,
+  });
+}
+
+class AppSettingsProvider extends InheritedWidget {
+  final AppSettings settings;
+  const AppSettingsProvider({required this.settings, required super.child, super.key});
+
+  static AppSettings of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<AppSettingsProvider>();
+    assert(result != null, 'No AppSettingsProvider found.');
+    return result!.settings;
   }
 
   @override
-  bool updateShouldNotify(covariant ControllerProvider oldWidget) {
-    return controller != oldWidget.controller;
-  }
+  bool updateShouldNotify(covariant AppSettingsProvider oldWidget) => settings != oldWidget.settings;
 }
 
-class ConfigurationProvider extends InheritedNotifier<CalendarConfiguration> {
-  ConfigurationProvider({required super.child, super.key}) : super(notifier: CalendarConfiguration());
-
-  static CalendarConfiguration of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<ConfigurationProvider>();
-    assert(result != null, 'No ConfigurationProvider found.');
-    return result!.notifier!;
-  }
-}
-
-class LocationProvider extends InheritedNotifier<ValueNotifier<Location?>> {
-  LocationProvider({required super.child, super.key}) : super(notifier: ValueNotifier<Location?>(null));
-
-  static ValueNotifier<Location?> of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<LocationProvider>();
-    assert(result != null, 'No LocationProvider found.');
-    return result!.notifier!;
-  }
-}
-
-class ThemeModeProvider extends InheritedNotifier<ValueNotifier<ThemeMode>> {
-  const ThemeModeProvider({required ValueNotifier<ThemeMode> notifier, required super.child, super.key})
-      : super(notifier: notifier);
-
-  static ValueNotifier<ThemeMode> of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<ThemeModeProvider>();
-    assert(result != null, 'No ThemeModeProvider found.');
-    return result!.notifier!;
-  }
-}
-
-class TextDirectionProvider extends InheritedNotifier<ValueNotifier<TextDirection>> {
-  const TextDirectionProvider({required ValueNotifier<TextDirection> notifier, required super.child, super.key})
-      : super(notifier: notifier);
-
-  static ValueNotifier<TextDirection> of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<TextDirectionProvider>();
-    assert(result != null, 'No TextDirectionProvider found.');
-    return result!.notifier!;
-  }
-}
-
-class LocaleNotifierProvider extends InheritedNotifier<ValueNotifier<Locale>> {
-  const LocaleNotifierProvider({required ValueNotifier<Locale> notifier, required super.child, super.key})
-      : super(notifier: notifier);
-
-  static ValueNotifier<Locale> of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<LocaleNotifierProvider>();
-    assert(result != null, 'No LocaleNotifierProvider found.');
-    return result!.notifier!;
-  }
-}
+// ---------------------------------------------------------------------------
+// Events controller
+// ---------------------------------------------------------------------------
 
 class EventsControllerProvider extends InheritedWidget {
   final EventsController eventsController;
@@ -84,5 +49,39 @@ class EventsControllerProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(covariant EventsControllerProvider oldWidget) {
     return eventsController != oldWidget.eventsController;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Calendar-scoped state (controller, configuration, location)
+// ---------------------------------------------------------------------------
+
+class CalendarScope extends InheritedWidget {
+  final CalendarController controller;
+  final DemoConfiguration configuration;
+  final ValueNotifier<Location?> location;
+
+  CalendarScope({
+    required super.child,
+    super.key,
+  })  : controller = CalendarController(),
+        configuration = DemoConfiguration(),
+        location = ValueNotifier<Location?>(null);
+
+  static CalendarScope _of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<CalendarScope>();
+    assert(result != null, 'No CalendarScope found.');
+    return result!;
+  }
+
+  static CalendarController controllerOf(BuildContext context) => _of(context).controller;
+  static DemoConfiguration configurationOf(BuildContext context) => _of(context).configuration;
+  static ValueNotifier<Location?> locationOf(BuildContext context) => _of(context).location;
+
+  @override
+  bool updateShouldNotify(covariant CalendarScope oldWidget) {
+    return controller != oldWidget.controller ||
+        configuration != oldWidget.configuration ||
+        location != oldWidget.location;
   }
 }

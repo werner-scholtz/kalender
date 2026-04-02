@@ -5,12 +5,12 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/calendar_configuration.dart';
-import 'package:web_demo/widgets/navigation_header.dart';
-import 'package:web_demo/widgets/event_tiles.dart';
-import 'package:web_demo/widgets/event_overlay_portal.dart';
-import 'package:web_demo/widgets/resize_handle.dart';
-import 'package:web_demo/widgets/zoom.dart';
+import 'package:web_demo/widgets/configuration/configuration_panel.dart';
+import 'package:web_demo/widgets/calendar/detail_overlay.dart';
+import 'package:web_demo/widgets/calendar/event_tiles.dart';
+import 'package:web_demo/widgets/calendar/resize_handle.dart';
+import 'package:web_demo/widgets/calendar/navigation_header.dart';
+import 'package:web_demo/widgets/calendar/zoom.dart';
 
 class Calendar extends StatelessWidget {
   final bool initialShowConfig;
@@ -18,30 +18,26 @@ class Calendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ControllerProvider(
-      child: ConfigurationProvider(
-        child: LocationProvider(
-          child: Builder(
-            builder: (context) => EventOverlayPortal(
-              location: context.location.value,
-              child: CalendarWidget(initialShowConfig: initialShowConfig),
-            ),
-          ),
+    return CalendarScope(
+      child: Builder(
+        builder: (context) => EventDetailOverlay(
+          location: context.location.value,
+          child: CalendarContent(initialShowConfig: initialShowConfig),
         ),
       ),
     );
   }
 }
 
-class CalendarWidget extends StatefulWidget {
+class CalendarContent extends StatefulWidget {
   final bool initialShowConfig;
-  const CalendarWidget({super.key, this.initialShowConfig = true});
+  const CalendarContent({super.key, this.initialShowConfig = true});
 
   @override
-  State<CalendarWidget> createState() => _CalendarWidgetState();
+  State<CalendarContent> createState() => _CalendarContentState();
 }
 
-class _CalendarWidgetState extends State<CalendarWidget> {
+class _CalendarContentState extends State<CalendarContent> {
   late bool _showConfig = widget.initialShowConfig;
 
   @override
@@ -142,7 +138,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     ? SizedBox(
                         width: min(constraints.maxWidth * 0.35, 400),
                         height: constraints.maxHeight,
-                        child: CalendarConfigurationWidget(
+                        child: ConfigurationPanel(
                           configuration: context.configuration,
                           onDismiss: () => setState(() => _showConfig = false),
                         ),
@@ -186,30 +182,34 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Offset(20, renderObject.size.height / 2);
   }
 
-  TileComponents get _tileComponents => TileComponents(
-        tileBuilder: (event, range) => EventTile.builder(event as Event, range),
-        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
-        dragAnchorStrategy: _dragAnchorStrategy,
-        verticalResizeHandle: const VerticalResizeHandle(),
-        horizontalResizeHandle: const HorizontalResizeHandle(),
-      );
+  TileComponents _buildTileComponents({
+    required Widget Function(CalendarEvent, DateTimeRange) tileBuilder,
+    Widget Function(CalendarEvent, DateTimeRange)? overlayTileBuilder,
+    bool includeResizeHandles = true,
+  }) {
+    return TileComponents(
+      tileBuilder: tileBuilder,
+      overlayTileBuilder: overlayTileBuilder,
+      dropTargetTile: (event) => DropTargetTile.builder(event as Event),
+      feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
+      tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
+      dragAnchorStrategy: _dragAnchorStrategy,
+      verticalResizeHandle: includeResizeHandles ? const ResizeHandle.vertical() : null,
+      horizontalResizeHandle: includeResizeHandles ? const ResizeHandle.horizontal() : null,
+    );
+  }
 
-  TileComponents get _multiDayTileComponents => TileComponents(
+  TileComponents get _tileComponents =>
+      _buildTileComponents(tileBuilder: (event, range) => EventTile.builder(event as Event, range));
+
+  TileComponents get _multiDayTileComponents => _buildTileComponents(
         tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-        overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
-        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
-        feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
-        tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
-        dragAnchorStrategy: _dragAnchorStrategy,
-        verticalResizeHandle: const VerticalResizeHandle(),
-        horizontalResizeHandle: const HorizontalResizeHandle(),
+        overlayTileBuilder: (event, range) => MultiDayEventTile.overlayBuilder(event as Event, range),
       );
 
   ScheduleTileComponents get _scheduleTileComponents => ScheduleTileComponents(
         tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-        overlayTileBuilder: (event, range) => OverlayEventTile.builder(event as Event, range),
+        overlayTileBuilder: (event, range) => MultiDayEventTile.overlayBuilder(event as Event, range),
         dropTargetTile: (event) => DropTargetTile.builder(event as Event),
         feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
         tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
@@ -220,13 +220,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         onEventTapped: (event, renderBox) {
           if (isTouch) {
             if (context.controller.selectedEventId == event.id) {
-              EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
+              EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
             } else {
               context.controller.deselectEvent();
               context.controller.selectEvent(event);
             }
           } else {
-            EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
+            EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
           }
         },
         onTapped: (_) => context.controller.deselectEvent(),
@@ -239,15 +239,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           event: event as Event,
           updatedEvent: updatedEvent as Event,
         ),
-        onLongPressedWithDetail: _createEvent,
+        onLongPressedWithDetail: (TapDetail detail) {
+          final range = switch (detail) {
+            DayDetail detail => DateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
+            MultiDayDetail detail => detail.dateTimeRange,
+            _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
+          };
+          context.eventsController.addEvent(Event(dateTimeRange: range, title: context.l10n.newEventTitle));
+        },
       );
-
-  void _createEvent(TapDetail detail) {
-    final range = switch (detail) {
-      DayDetail detail => DateTimeRange(start: detail.date, end: detail.date.add(const Duration(minutes: 45))),
-      MultiDayDetail detail => detail.dateTimeRange,
-      _ => throw Exception('Unsupported detail type: ${detail.runtimeType}'),
-    };
-    context.eventsController.addEvent(Event(dateTimeRange: range, title: context.l10n.newEventTitle));
-  }
 }

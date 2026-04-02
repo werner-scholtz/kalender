@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/locales.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/chip_dropdown.dart';
+import 'package:web_demo/widgets/toolbar/chip_dropdown.dart';
 
 class LocaleDropdown extends StatelessWidget {
   const LocaleDropdown({super.key});

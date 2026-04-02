@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/calendar_configuration.dart';
+import 'package:web_demo/models/demo_configuration.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
 import 'package:web_demo/utils.dart';
 
-class MultiDayBodyConfigurationWidget extends StatelessWidget {
-  final CalendarConfiguration calendarConfiguration;
-  const MultiDayBodyConfigurationWidget({super.key, required this.calendarConfiguration});
+class MultiDayBodyEditor extends StatelessWidget {
+  final DemoConfiguration demoConfiguration;
+  const MultiDayBodyEditor({super.key, required this.demoConfiguration});
 
-  MultiDayBodyConfiguration get configuration => calendarConfiguration.multiDayBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionBody;
-  ValueNotifier<CalendarSnapping> get snapping => calendarConfiguration.snapping;
+  MultiDayBodyConfiguration get configuration => demoConfiguration.multiDayBodyConfiguration;
+  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
+  ValueNotifier<CalendarSnapping> get snapping => demoConfiguration.snapping;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
       children: [
         SwitchListTile.adaptive(
           value: configuration.showMultiDayEvents,
-          onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = configuration.copyWith(
             showMultiDayEvents: value,
           ),
           title: Text(context.l10n.showMultiDayEvents),
@@ -36,7 +36,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
             EdgeInsets.only(left: 8, right: 0, top: 0, bottom: 0),
             EdgeInsets.only(left: 12, right: 0, top: 0, bottom: 0),
           ],
-          onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = configuration.copyWith(
             horizontalPadding: value,
           ),
           itemToString: (value) => "L: ${value.left.toInt()}, R: ${value.right.toInt()}",
@@ -45,7 +45,7 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
           label: context.l10n.minimumTileHeight,
           value: configuration.minimumTileHeight,
           items: const [-1, 24.0, 32.0, 40.0, 48.0],
-          onChanged: (value) => calendarConfiguration.multiDayBodyConfiguration = MultiDayBodyConfiguration(
+          onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = MultiDayBodyConfiguration(
             minimumTileHeight: value == -1 ? null : value,
             showMultiDayEvents: configuration.showMultiDayEvents,
             horizontalPadding: configuration.horizontalPadding,
@@ -59,12 +59,12 @@ class MultiDayBodyConfigurationWidget extends StatelessWidget {
   }
 }
 
-class MonthBodyConfigurationWidget extends StatelessWidget {
-  final CalendarConfiguration calendarConfiguration;
-  const MonthBodyConfigurationWidget({super.key, required this.calendarConfiguration});
+class MonthBodyEditor extends StatelessWidget {
+  final DemoConfiguration demoConfiguration;
+  const MonthBodyEditor({super.key, required this.demoConfiguration});
 
-  MonthBodyConfiguration get configuration => calendarConfiguration.monthBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionBody;
+  MonthBodyConfiguration get configuration => demoConfiguration.monthBodyConfiguration;
+  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
           label: context.l10n.tileHeight,
           value: configuration.tileHeight,
           items: const [24.0, 32.0, 40.0, 48.0],
-          onChanged: (value) => calendarConfiguration.monthBodyConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.monthBodyConfiguration = configuration.copyWith(
             tileHeight: value,
           ),
           itemToString: (value) => value.toString(),
@@ -92,7 +92,7 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
             EdgeInsets.only(left: 8, right: 0, top: 0, bottom: 2),
             EdgeInsets.only(left: 12, right: 0, top: 0, bottom: 2),
           ],
-          onChanged: (value) => calendarConfiguration.monthBodyConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.monthBodyConfiguration = configuration.copyWith(
             eventPadding: value,
           ),
           itemToString: (value) =>
@@ -104,12 +104,12 @@ class MonthBodyConfigurationWidget extends StatelessWidget {
   }
 }
 
-class ScheduleBodyConfigurationWidget extends StatelessWidget {
-  final CalendarConfiguration calendarConfiguration;
-  const ScheduleBodyConfigurationWidget({super.key, required this.calendarConfiguration});
+class ScheduleBodyEditor extends StatelessWidget {
+  final DemoConfiguration demoConfiguration;
+  const ScheduleBodyEditor({super.key, required this.demoConfiguration});
 
-  ScheduleBodyConfiguration get configuration => calendarConfiguration.scheduleBodyConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionBody;
+  ScheduleBodyConfiguration get configuration => demoConfiguration.scheduleBodyConfiguration;
+  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionBody;
 
   @override
   Widget build(BuildContext context) {
@@ -119,9 +119,9 @@ class ScheduleBodyConfigurationWidget extends StatelessWidget {
       children: [
         DropDownEditor<EmptyDayBehavior>(
           label: context.l10n.emptyDayBehavior,
-          value: calendarConfiguration.scheduleBodyConfiguration.emptyDay,
+          value: demoConfiguration.scheduleBodyConfiguration.emptyDay,
           items: EmptyDayBehavior.values,
-          onChanged: (value) => calendarConfiguration.scheduleBodyConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.scheduleBodyConfiguration = configuration.copyWith(
             emptyDay: value,
           ),
           itemToString: (value) => value.toString(),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/calendar_configuration.dart';
+import 'package:web_demo/models/demo_configuration.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/configuration/body_configurations.dart';
-import 'package:web_demo/widgets/configuration/header_configuration.dart';
-import 'package:web_demo/widgets/configuration/view_configuration.dart';
+import 'package:web_demo/widgets/configuration/body_editors.dart';
+import 'package:web_demo/widgets/configuration/header_editor.dart';
+import 'package:web_demo/widgets/configuration/view_editors.dart';
 
-class CalendarConfigurationWidget extends StatelessWidget {
-  final CalendarConfiguration configuration;
+class ConfigurationPanel extends StatelessWidget {
+  final DemoConfiguration configuration;
   final VoidCallback? onDismiss;
-  const CalendarConfigurationWidget({super.key, required this.configuration, this.onDismiss});
+  const ConfigurationPanel({super.key, required this.configuration, this.onDismiss});
 
   static const borderRadius = BorderRadius.all(Radius.circular(12));
 
@@ -61,14 +61,14 @@ class CalendarConfigurationWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                CalendarViewConfiguration(viewConfiguration: configuration.viewConfiguration),
+                ViewConfigurationEditor(viewConfiguration: configuration.viewConfiguration),
                 if (configuration.viewConfiguration is MultiDayViewConfiguration) ...[
-                  MultiDayHeaderConfigurationWidget(calendarConfiguration: configuration),
-                  MultiDayBodyConfigurationWidget(calendarConfiguration: configuration),
+                  MultiDayHeaderEditor(demoConfiguration: configuration),
+                  MultiDayBodyEditor(demoConfiguration: configuration),
                 ] else if (configuration.viewConfiguration is MonthViewConfiguration) ...[
-                  MonthBodyConfigurationWidget(calendarConfiguration: configuration),
+                  MonthBodyEditor(demoConfiguration: configuration),
                 ] else if (configuration.viewConfiguration is ScheduleViewConfiguration) ...[
-                  ScheduleBodyConfigurationWidget(calendarConfiguration: configuration),
+                  ScheduleBodyEditor(demoConfiguration: configuration),
                 ] else
                   const SizedBox.shrink(),
               ],

@@ -3,7 +3,7 @@ import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/utils.dart';
 
-class EventOverlayCard extends StatefulWidget {
+class EventDetailCard extends StatefulWidget {
   final Event event;
   final Offset position;
   final double height;
@@ -12,7 +12,7 @@ class EventOverlayCard extends StatefulWidget {
   final EventsController eventsController;
   final Location? location;
 
-  const EventOverlayCard({
+  const EventDetailCard({
     super.key,
     required this.event,
     required this.position,
@@ -24,10 +24,10 @@ class EventOverlayCard extends StatefulWidget {
   });
 
   @override
-  State<EventOverlayCard> createState() => _EventOverlayCardState();
+  State<EventDetailCard> createState() => _EventDetailCardState();
 }
 
-class _EventOverlayCardState extends State<EventOverlayCard> {
+class _EventDetailCardState extends State<EventDetailCard> {
   late Event event = widget.event;
 
   Location? get _location => widget.location;

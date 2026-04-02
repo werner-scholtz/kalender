@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/utils.dart';
-import 'package:web_demo/widgets/chip_dropdown.dart';
+import 'package:web_demo/widgets/toolbar/chip_dropdown.dart';
 
 enum ViewType {
   // A view that shows a single calendar.
   single(),
 
   // A view that shows multiple calendars next to each other.
-  double();
+  dual();
 
   const ViewType();
 }

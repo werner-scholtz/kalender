@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:web_demo/models/calendar_configuration.dart';
+import 'package:web_demo/models/demo_configuration.dart';
 import 'package:web_demo/widgets/configuration/editor_widgets.dart';
 import 'package:web_demo/utils.dart';
 
-class MultiDayHeaderConfigurationWidget extends StatelessWidget {
-  final CalendarConfiguration calendarConfiguration;
+class MultiDayHeaderEditor extends StatelessWidget {
+  final DemoConfiguration demoConfiguration;
 
-  const MultiDayHeaderConfigurationWidget({
+  const MultiDayHeaderEditor({
     super.key,
-    required this.calendarConfiguration,
+    required this.demoConfiguration,
   });
 
-  MultiDayHeaderConfiguration get configuration => calendarConfiguration.multiDayHeaderConfiguration;
-  ValueNotifier<CalendarInteraction> get interaction => calendarConfiguration.interactionHeader;
+  MultiDayHeaderConfiguration get configuration => demoConfiguration.multiDayHeaderConfiguration;
+  ValueNotifier<CalendarInteraction> get interaction => demoConfiguration.interactionHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +22,14 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
       initiallyExpanded: true,
       children: [
         SwitchListTile.adaptive(
-          value: calendarConfiguration.showHeader,
-          onChanged: (value) => calendarConfiguration.showHeader = value,
+          value: demoConfiguration.showHeader,
+          onChanged: (value) => demoConfiguration.showHeader = value,
           title: Text(context.l10n.showHeader),
-          subtitle: Text(context.l10n.showHeaderForView(calendarConfiguration.viewConfiguration.name)),
+          subtitle: Text(context.l10n.showHeaderForView(demoConfiguration.viewConfiguration.name)),
         ),
         SwitchListTile.adaptive(
           value: configuration.showTiles,
-          onChanged: (value) => calendarConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
             showTiles: value,
           ),
           title: Text(context.l10n.showTiles),
@@ -38,7 +38,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
           label: context.l10n.tileHeight,
           value: configuration.tileHeight,
           items: const [24.0, 32.0, 40.0, 48.0],
-          onChanged: (value) => calendarConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
             tileHeight: value,
           ),
           itemToString: (value) => value.toString(),
@@ -48,7 +48,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
           value: configuration.maximumNumberOfVerticalEvents ?? 0,
           items: const [0, 1, 2, 3, 4, 5],
           onChanged: (value) {
-            calendarConfiguration.multiDayHeaderConfiguration = value == 0
+            demoConfiguration.multiDayHeaderConfiguration = value == 0
                 ? MultiDayHeaderConfiguration(
                     showTiles: configuration.showTiles,
                     tileHeight: configuration.tileHeight,
@@ -69,7 +69,7 @@ class MultiDayHeaderConfigurationWidget extends StatelessWidget {
             EdgeInsets.only(left: 8, right: 0, top: 0, bottom: 2),
             EdgeInsets.only(left: 12, right: 0, top: 0, bottom: 2),
           ],
-          onChanged: (value) => calendarConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
+          onChanged: (value) => demoConfiguration.multiDayHeaderConfiguration = configuration.copyWith(
             eventPadding: value,
           ),
           itemToString: (value) =>

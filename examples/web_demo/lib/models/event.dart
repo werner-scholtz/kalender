@@ -8,16 +8,6 @@ class Event extends CalendarEvent {
   /// Creates an [Event].
   Event({required super.dateTimeRange, required this.title, this.description, this.color, super.interaction});
 
-  /// Creates an [Event] from a [CalendarEvent].
-  factory Event.fromCalendarEvent(CalendarEvent event) {
-    if (event is Event) return event;
-    return Event(
-      dateTimeRange: event.dateTimeRange,
-      interaction: event.interaction,
-      title: '',
-    )..id = event.id;
-  }
-
   /// The title of the [Event].
   final String title;
 

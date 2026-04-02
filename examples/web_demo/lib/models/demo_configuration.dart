@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-class CalendarConfiguration extends ChangeNotifier {
+class DemoConfiguration extends ChangeNotifier {
   /// The view configuration of the calendar.
   late final viewConfigurationNotifier = ValueNotifier(isMobile ? viewConfigurations[3] : viewConfigurations[1]);
   ViewConfiguration get viewConfiguration => viewConfigurationNotifier.value;
@@ -103,7 +103,7 @@ class CalendarConfiguration extends ChangeNotifier {
   @override
   operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! CalendarConfiguration) return false;
+    if (other is! DemoConfiguration) return false;
     return viewConfiguration == other.viewConfiguration &&
         multiDayBodyConfiguration == other.multiDayBodyConfiguration &&
         multiDayHeaderConfiguration == other.multiDayHeaderConfiguration &&
