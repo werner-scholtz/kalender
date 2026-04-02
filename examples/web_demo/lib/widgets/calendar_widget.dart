@@ -222,16 +222,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             if (context.controller.selectedEventId == event.id) {
               EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
             } else {
+              context.controller.deselectEvent();
               context.controller.selectEvent(event);
             }
           } else {
-            context.controller.deselectEvent();
             EventOverlayPortal.createEventOverlay(context, event as Event, renderBox);
           }
         },
-        onTapped: (_) {
-          if (isTouch) context.controller.deselectEvent();
-        },
+        onTapped: (_) => context.controller.deselectEvent(),
         onEventCreate: (event) => Event(
           dateTimeRange: DateTimeRange(start: event.start, end: event.end),
           title: context.l10n.newEventTitle,
