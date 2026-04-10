@@ -132,8 +132,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get preReleaseTitle => 'Vorab-Beispiel';
 
   @override
-  String get preReleaseContent =>
-      'Dies ist ein Vorab-Beispiel für v0.16.0, das noch nicht veröffentlicht wurde.\n\nSiehe den \'main-wip\'-Branch für den Fortschritt.';
+  String get preReleaseContent => 'Dies ist ein Vorab-Beispiel für v0.17.0, das noch nicht veröffentlicht wurde.';
 
   @override
   String get gotIt => 'Verstanden';

@@ -342,7 +342,7 @@ abstract class AppLocalizations {
   /// No description provided for @preReleaseContent.
   ///
   /// In en, this message translates to:
-  /// **'This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the \'main-wip\' branch for progress.'**
+  /// **'This is a pre-release example for v0.17.0 which is not yet released.'**
   String get preReleaseContent;
 
   /// No description provided for @gotIt.

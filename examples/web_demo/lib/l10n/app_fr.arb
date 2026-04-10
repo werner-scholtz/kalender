@@ -38,7 +38,7 @@
   "title": "Titre",
   "delete": "Supprimer",
   "preReleaseTitle": "Exemple pré-version",
-  "preReleaseContent": "Ceci est un exemple pré-version pour v0.16.0 qui n'est pas encore publié.\n\nVoir la branche 'main-wip' pour la progression.",
+  "preReleaseContent": "Ceci est un exemple pré-version pour v0.17.0 qui n'est pas encore publié.",
   "gotIt": "Compris",
   "preReleaseInfo": "Info pré-version",
   "language": "Langue",

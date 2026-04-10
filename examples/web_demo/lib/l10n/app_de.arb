@@ -38,7 +38,7 @@
   "title": "Titel",
   "delete": "Löschen",
   "preReleaseTitle": "Vorab-Beispiel",
-  "preReleaseContent": "Dies ist ein Vorab-Beispiel für v0.16.0, das noch nicht veröffentlicht wurde.\n\nSiehe den 'main-wip'-Branch für den Fortschritt.",
+  "preReleaseContent": "Dies ist ein Vorab-Beispiel für v0.17.0, das noch nicht veröffentlicht wurde.",
   "gotIt": "Verstanden",
   "preReleaseInfo": "Vorab-Info",
   "language": "Sprache",

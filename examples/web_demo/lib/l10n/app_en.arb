@@ -38,7 +38,7 @@
   "title": "Title",
   "delete": "Delete",
   "preReleaseTitle": "Pre-release Example",
-  "preReleaseContent": "This is a pre-release example for v0.16.0 which is not yet released.\n\nSee the 'main-wip' branch for progress.",
+  "preReleaseContent": "This is a pre-release example for v0.17.0 which is not yet released.",
   "gotIt": "Got it",
   "preReleaseInfo": "Pre-release info",
   "language": "Language",

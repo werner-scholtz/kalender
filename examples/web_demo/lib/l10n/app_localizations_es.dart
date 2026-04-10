@@ -132,8 +132,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get preReleaseTitle => 'Ejemplo preliminar';
 
   @override
-  String get preReleaseContent =>
-      'Este es un ejemplo preliminar para v0.16.0 que aún no se ha publicado.\n\nConsulte la rama \'main-wip\' para ver el progreso.';
+  String get preReleaseContent => 'Este es un ejemplo preliminar para v0.17.0 que aún no se ha publicado.';
 
   @override
   String get gotIt => 'Entendido';

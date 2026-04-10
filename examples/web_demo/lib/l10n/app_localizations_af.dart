@@ -133,7 +133,7 @@ class AppLocalizationsAf extends AppLocalizations {
 
   @override
   String get preReleaseContent =>
-      'Hierdie is \'n vooraf-vrystellingsvoorbeeld vir v0.16.0 wat nog nie vrygestel is nie.\n\nSien die \'main-wip\'-tak vir vordering.';
+      'Hierdie is \'n vooraf-vrystellingsvoorbeeld vir v0.17.0 wat nog nie vrygestel is nie.';
 
   @override
   String get gotIt => 'Verstaan';
