@@ -10,6 +10,7 @@ class EventDetailCard extends StatefulWidget {
   final double width;
   final VoidCallback onDismiss;
   final EventsController eventsController;
+  final CalendarController controller;
   final Location? location;
 
   const EventDetailCard({
@@ -20,6 +21,7 @@ class EventDetailCard extends StatefulWidget {
     required this.width,
     required this.onDismiss,
     required this.eventsController,
+    required this.controller,
     required this.location,
   });
 
@@ -179,6 +181,7 @@ class _EventDetailCardState extends State<EventDetailCard> {
                         width: double.infinity,
                         child: FilledButton.icon(
                           onPressed: () {
+                            widget.controller.deselectEvent();
                             widget.eventsController.removeEvent(event);
                             widget.onDismiss();
                           },

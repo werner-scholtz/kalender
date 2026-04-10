@@ -129,6 +129,7 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
                         width: width,
                         onDismiss: _dismissOverlay,
                         eventsController: context.eventsController,
+                        controller: context.controller,
                         location: widget.location,
                       ),
                     ),

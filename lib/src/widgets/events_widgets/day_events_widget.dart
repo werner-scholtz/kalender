@@ -103,7 +103,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     super.initState();
   }
 
-
   @override
   void didUpdateWidget(covariant DayEventsColumn oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -116,7 +115,6 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
       _update();
     }
   }
-
 
   @override
   void dispose() {
@@ -280,8 +278,11 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       return;
     }
 
-    // If the configuration does not allow multi-day events and the selected event is a multi-day event, we do not update the state.
-    if (!widget.configuration.showMultiDayEvents && selectedEvent.isMultiDayEvent) return;
+    // If the configuration does not allow multi-day events and the selected event is a multi-day event, clear the state.
+    if (!widget.configuration.showMultiDayEvents && selectedEvent.isMultiDayEvent) {
+      if (_selectedEvent != null) setState(() => _selectedEvent = null);
+      return;
+    }
 
     setState(() => _selectedEvent = selectedEvent);
   }

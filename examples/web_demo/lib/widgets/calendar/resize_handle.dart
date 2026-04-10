@@ -17,8 +17,8 @@ class _ResizeHandleState extends State<ResizeHandle> {
 
   EdgeInsets get _margin {
     return widget.axis == Axis.vertical
-        ? EdgeInsets.symmetric(vertical: 3, horizontal: isTouch ? 3 : 32)
-        : EdgeInsets.symmetric(vertical: isTouch ? 3 : 10, horizontal: isTouch ? 3 : 6);
+        ? EdgeInsets.symmetric(vertical: 3, horizontal: isTouch ? 3 : 6)
+        : EdgeInsets.symmetric(vertical: isTouch ? 1 : 3, horizontal: isTouch ? 1 : 4);
   }
 
   BorderRadius get _borderRadius => BorderRadius.circular(isTouch ? 4 : 2);
