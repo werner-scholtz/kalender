@@ -15,11 +15,13 @@ class ResizeHandle extends StatefulWidget {
 class _ResizeHandleState extends State<ResizeHandle> {
   bool hovering = false;
 
-  EdgeInsets _margin(bool isTouch) {
+  EdgeInsets get _margin {
     return widget.axis == Axis.vertical
         ? EdgeInsets.symmetric(vertical: 3, horizontal: isTouch ? 3 : 32)
         : EdgeInsets.symmetric(vertical: isTouch ? 3 : 10, horizontal: isTouch ? 3 : 6);
   }
+
+  BorderRadius get _borderRadius => BorderRadius.circular(isTouch ? 4 : 2);
 
   MouseCursor get _cursor =>
       widget.axis == Axis.vertical ? SystemMouseCursors.resizeUp : SystemMouseCursors.resizeLeftRight;
@@ -31,13 +33,12 @@ class _ResizeHandleState extends State<ResizeHandle> {
     final child = AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
-      margin: _margin(isTouch),
+      margin: _margin,
       decoration: BoxDecoration(
         color: active ? context.colorScheme.primary.withAlpha(80) : Colors.transparent,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: _borderRadius,
       ),
     );
-
 
     if (isTouch) return child;
 

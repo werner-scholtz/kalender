@@ -185,7 +185,6 @@ class _CalendarContentState extends State<CalendarContent> {
   TileComponents _buildTileComponents({
     required Widget Function(CalendarEvent, DateTimeRange) tileBuilder,
     Widget Function(CalendarEvent, DateTimeRange)? overlayTileBuilder,
-    bool includeResizeHandles = true,
   }) {
     return TileComponents(
       tileBuilder: tileBuilder,
@@ -194,8 +193,8 @@ class _CalendarContentState extends State<CalendarContent> {
       feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
       tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
       dragAnchorStrategy: _dragAnchorStrategy,
-      verticalResizeHandle: includeResizeHandles ? const ResizeHandle.vertical() : null,
-      horizontalResizeHandle: includeResizeHandles ? const ResizeHandle.horizontal() : null,
+      verticalResizeHandle: const ResizeHandle.vertical(),
+      horizontalResizeHandle: const ResizeHandle.horizontal(),
     );
   }
 
@@ -218,16 +217,9 @@ class _CalendarContentState extends State<CalendarContent> {
 
   CalendarCallbacks get _callbacks => CalendarCallbacks(
         onEventTapped: (event, renderBox) {
-          if (isTouch) {
-            if (context.controller.selectedEventId == event.id) {
-              EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
-            } else {
-              context.controller.deselectEvent();
-              context.controller.selectEvent(event);
-            }
-          } else {
-            EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
-          }
+          context.controller.deselectEvent();
+          context.controller.selectEvent(event);
+          EventDetailOverlay.createEventOverlay(context, event as Event, renderBox);
         },
         onTapped: (_) => context.controller.deselectEvent(),
         onEventCreate: (event) => Event(

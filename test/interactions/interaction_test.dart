@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -26,6 +27,15 @@ void main() {
     inputMode: InputMode.imprecise,
     createEventGesture: CreateEventGesture.longPress,
     modifyEventGesture: CreateEventGesture.longPress,
+  );
+
+  final autoInteraction = CalendarInteraction(
+    allowResizing: true,
+    allowRescheduling: true,
+    allowEventCreation: true,
+    inputMode: InputMode.auto,
+    createEventGesture: CreateEventGesture.tap,
+    modifyEventGesture: CreateEventGesture.tap,
   );
 
   late String dayEventID;
@@ -129,6 +139,35 @@ void main() {
           body: CalendarBody(interaction: impreciseInteraction),
         ),
       );
+
+  Future<void> pumpAutoMultiDayView(WidgetTester tester) => pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: MultiDayViewConfiguration.singleDay(
+            displayRange: year2025DisplayRange,
+            initialTimeOfDay: const TimeOfDay(hour: 0, minute: 0),
+            initialDateTime: DateTime(2025, 1, 1),
+          ),
+          header: CalendarHeader(interaction: autoInteraction),
+          body: CalendarBody(interaction: autoInteraction),
+        ),
+      );
+
+  Future<void> sendPointerHover(
+    WidgetTester tester, {
+    required Finder target,
+    required PointerDeviceKind kind,
+    int pointer = 1,
+  }) async {
+    final position = tester.getCenter(target);
+    tester.binding.handlePointerEvent(PointerAddedEvent(pointer: pointer, position: Offset.zero, kind: kind));
+    tester.binding.handlePointerEvent(PointerEnterEvent(pointer: pointer, position: position, kind: kind));
+    tester.binding.handlePointerEvent(PointerHoverEvent(pointer: pointer, position: position, kind: kind));
+    await tester.pumpAndSettle();
+    tester.binding.handlePointerEvent(PointerRemovedEvent(pointer: pointer, position: position, kind: kind));
+  }
 
   // ---------------------------------------------------------------------------
   // MultiDayView
@@ -311,6 +350,46 @@ void main() {
       // Horizontal resize handles should be hidden in imprecise mode by default.
       expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsNothing);
       expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsNothing);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Auto input mode
+  // ---------------------------------------------------------------------------
+
+  group('MultiDayView auto interaction', () {
+    testWidgets('touch hover events do not switch horizontal handles into precise mode', (tester) async {
+      await pumpAutoMultiDayView(tester);
+      expect(find.byType(MultiDayBody), findsOneWidget);
+
+      final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
+      expect(tile, findsOneWidget);
+
+      await sendPointerHover(
+        tester,
+        target: tile,
+        kind: PointerDeviceKind.touch,
+      );
+
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsNothing);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsNothing);
+    });
+
+    testWidgets('mouse hover events still show horizontal resize handles', (tester) async {
+      await pumpAutoMultiDayView(tester);
+      expect(find.byType(MultiDayBody), findsOneWidget);
+
+      final tile = find.byKey(MultiDayEventTile.tileKey(multiDayEventID));
+      expect(tile, findsOneWidget);
+
+      await sendPointerHover(
+        tester,
+        target: tile,
+        kind: PointerDeviceKind.mouse,
+      );
+
+      expect(find.byKey(ResizeHandles.startResizeDraggableKey(multiDayEventID)), findsOneWidget);
+      expect(find.byKey(ResizeHandles.endResizeDraggableKey(multiDayEventID)), findsOneWidget);
     });
   });
 }

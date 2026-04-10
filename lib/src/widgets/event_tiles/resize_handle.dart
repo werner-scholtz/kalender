@@ -50,6 +50,14 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// Whether the resize handles are shown due to event selection (imprecise input).
   bool _showFromSelection = false;
 
+  /// Whether the pointer event should be treated as precise input.
+  bool _isPrecisePointer(PointerEvent event) {
+    return switch (event.kind) {
+      PointerDeviceKind.mouse || PointerDeviceKind.stylus || PointerDeviceKind.invertedStylus => true,
+      _ => false,
+    };
+  }
+
   /// Whether to show the resize handles (derived from hover or selection).
   bool get _showHandles => _showFromHover || _showFromSelection;
 
@@ -110,6 +118,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// [PointerEnterEvent] handler to show resize handles on hover (precise input).
   void _onEnter(PointerEnterEvent event) {
     if (_controller?.internalFocus == true) return;
+    if (!_isPrecisePointer(event)) return;
     if (!_showFromHover && mounted) setState(() => _showFromHover = true);
   }
 
@@ -121,6 +130,7 @@ class _ResizeHandleWidgetState extends State<ResizeHandleWidget> {
   /// [PointerHoverEvent] handler to show resize handles on hover (precise input).
   void _onHover(PointerHoverEvent event) {
     if (_controller?.internalFocus == true) return;
+    if (!_isPrecisePointer(event)) return;
     if (!_showFromHover && mounted) setState(() => _showFromHover = true);
   }
 

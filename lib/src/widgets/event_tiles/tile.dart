@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/extensions/internal_date_time_range.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/controllers/calendar_controller.dart';
@@ -23,7 +24,7 @@ class Tile extends StatefulWidget {
   final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
   /// The DateTimeRange that the current view is displaying.
-  final DateTimeRange dateTimeRange;
+  final InternalDateTimeRange dateTimeRange;
 
   /// Creates an instance of [Tile].
   const Tile({
@@ -89,9 +90,7 @@ class _TileState extends State<Tile> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _isDragging && widget.tileWhenDraggingBuilder != null
-        ? widget.tileWhenDraggingBuilder!.call(_event)
-        : widget.tileBuilder.call(_event, widget.dateTimeRange);
-  }
+  Widget build(BuildContext context) => _isDragging && widget.tileWhenDraggingBuilder != null
+      ? widget.tileWhenDraggingBuilder!.call(_event)
+      : widget.tileBuilder.call(_event, widget.dateTimeRange.forLocation(location: context.location));
 }

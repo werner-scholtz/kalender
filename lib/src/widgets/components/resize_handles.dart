@@ -176,7 +176,7 @@ class DefaultResizeHandles extends ResizeHandles {
 
     // The length of the resize handle.
     // TODO: Make this configurable in the future.
-    const handleLength = 16.0;
+    final handleLength = isImprecise ? 24.0 : 16.0;
 
     // Determine whether to hide the start resize handle.
     final hideStart = (handleLength * 2) > (length / 2);
