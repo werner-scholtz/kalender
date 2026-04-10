@@ -71,8 +71,12 @@ class ScheduleDate extends StatelessWidget {
             visualDensity: VisualDensity.compact,
           );
 
-    return Column(
-      children: [text, button],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [text, button],
+      ),
     );
   }
 }

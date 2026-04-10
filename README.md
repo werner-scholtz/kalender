@@ -53,9 +53,9 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Preview
 
-| MultiDay (week)                                                                                                                | Month                                                                                                                           | Schedule                                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_week_light.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_month_light.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/desktop_schedule_light.png" width="100%" /> |
+| MultiDay (week)                                                                                                          | Month                                                                                                                     | Schedule                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/week_view.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_view.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/schedule_view.png" width="100%" /> |
 
 See all views — desktop & mobile, light & dark — in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
 
