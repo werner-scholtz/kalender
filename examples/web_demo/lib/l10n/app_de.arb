@@ -53,5 +53,6 @@
   "end": "Ende",
   "newEventTitle": "Neues Ereignis",
   "hideConfiguration": "Konfiguration ausblenden",
-  "showConfiguration": "Konfiguration anzeigen"
+  "showConfiguration": "Konfiguration anzeigen",
+  "tileLayout": "Kachel-Layout"
 }

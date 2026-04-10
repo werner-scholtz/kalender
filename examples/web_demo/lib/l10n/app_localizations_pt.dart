@@ -179,4 +179,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Mostrar configuração';
+
+  @override
+  String get tileLayout => 'Layout de blocos';
 }

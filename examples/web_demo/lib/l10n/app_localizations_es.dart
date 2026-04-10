@@ -179,4 +179,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Mostrar configuración';
+
+  @override
+  String get tileLayout => 'Disposición de mosaicos';
 }

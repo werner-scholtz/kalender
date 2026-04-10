@@ -53,5 +53,6 @@
   "end": "Fim",
   "newEventTitle": "Novo evento",
   "hideConfiguration": "Ocultar configuração",
-  "showConfiguration": "Mostrar configuração"
+  "showConfiguration": "Mostrar configuração",
+  "tileLayout": "Layout de blocos"
 }

@@ -51,7 +51,12 @@ class _CalendarContentState extends State<CalendarContent> {
             Expanded(
               child: ZoomDetector(
                 controller: context.controller,
-                child: CalendarView(
+                child: ListenableBuilder(
+                  listenable: Listenable.merge([
+                    context.configuration.viewConfigurationNotifier,
+                    context.location,
+                  ]),
+                  builder: (context, _) => CalendarView(
                     location: context.location.value,
                     locale: Localizations.localeOf(context).toLanguageTag(),
                     calendarController: context.controller,
@@ -86,9 +91,12 @@ class _CalendarContentState extends State<CalendarContent> {
                           ),
                         ),
                         if (context.configuration.showHeader)
-                          ValueListenableBuilder(
-                            valueListenable: context.configuration.interactionHeader,
-                            builder: (context, value, child) {
+                          ListenableBuilder(
+                            listenable: Listenable.merge([
+                              context.configuration.interactionHeader,
+                              context.configuration.multiDayHeaderConfigurationNotifier,
+                            ]),
+                            builder: (context, _) {
                               return Container(
                                 padding: const EdgeInsets.only(top: 4),
                                 decoration: BoxDecoration(
@@ -101,32 +109,34 @@ class _CalendarContentState extends State<CalendarContent> {
                                 child: CalendarHeader(
                                   multiDayTileComponents: _multiDayTileComponents,
                                   multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
-                                  interaction: value,
+                                  interaction: context.configuration.interactionBody.value,
                                 ),
                               );
                             },
                           ),
                       ],
                     ),
-                    body: ValueListenableBuilder(
-                      valueListenable: context.configuration.interactionBody,
-                      builder: (context, interactionBody, child) {
-                        return ValueListenableBuilder(
-                          valueListenable: context.configuration.snapping,
-                          builder: (context, snapping, child) {
-                            return CalendarBody(
-                              multiDayTileComponents: _tileComponents,
-                              monthTileComponents: _multiDayTileComponents,
-                              multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
-                              monthBodyConfiguration: context.configuration.monthBodyConfiguration,
-                              scheduleTileComponents: _scheduleTileComponents,
-                              interaction: interactionBody,
-                              snapping: snapping,
-                            );
-                          },
+                    body: ListenableBuilder(
+                      listenable: Listenable.merge([
+                        context.configuration.interactionBody,
+                        context.configuration.snapping,
+                        context.configuration.multiDayBodyConfigurationNotifier,
+                        context.configuration.monthBodyConfigurationNotifier,
+                      ]),
+                      builder: (context, _) {
+                        return CalendarBody(
+                          multiDayTileComponents: _tileComponents,
+                          monthTileComponents: _multiDayTileComponents,
+                          multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
+                          monthBodyConfiguration: context.configuration.monthBodyConfiguration,
+                          scheduleTileComponents: _scheduleTileComponents,
+                          interaction: context.configuration.interactionBody.value,
+                          snapping: context.configuration.snapping.value,
                         );
                       },
-                    )),
+                    ),
+                  ),
+                ),
               ),
             ),
             if (canShowCustomize)

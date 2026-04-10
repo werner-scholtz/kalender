@@ -179,4 +179,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Afficher la configuration';
+
+  @override
+  String get tileLayout => 'Disposition des tuiles';
 }

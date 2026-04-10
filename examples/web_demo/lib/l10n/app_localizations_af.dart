@@ -179,4 +179,7 @@ class AppLocalizationsAf extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Wys konfigurasie';
+
+  @override
+  String get tileLayout => 'Teël-uitleg';
 }

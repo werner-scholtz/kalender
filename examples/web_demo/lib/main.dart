@@ -35,7 +35,10 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   final _themeMode = ValueNotifier(ThemeMode.system);
   final _textDirection = ValueNotifier(TextDirection.ltr);
-  final _locale = ValueNotifier(supportedLocales.first);
+  late final _locale = ValueNotifier(_resolveLocale(
+    WidgetsBinding.instance.platformDispatcher.locale,
+    supportedLocales,
+  ));
   final _eventsController = DefaultEventsController();
   late final _appSettings = AppSettings(themeMode: _themeMode, textDirection: _textDirection, locale: _locale);
 

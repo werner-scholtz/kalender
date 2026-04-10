@@ -434,6 +434,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show configuration'**
   String get showConfiguration;
+
+  /// No description provided for @tileLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Tile Layout'**
+  String get tileLayout;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

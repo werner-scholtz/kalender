@@ -179,4 +179,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Show configuration';
+
+  @override
+  String get tileLayout => 'Tile Layout';
 }

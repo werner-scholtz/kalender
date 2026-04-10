@@ -179,4 +179,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get showConfiguration => 'Konfiguration anzeigen';
+
+  @override
+  String get tileLayout => 'Kachel-Layout';
 }

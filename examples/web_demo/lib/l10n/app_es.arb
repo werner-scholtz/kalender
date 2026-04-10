@@ -53,5 +53,6 @@
   "end": "Fin",
   "newEventTitle": "Nuevo evento",
   "hideConfiguration": "Ocultar configuración",
-  "showConfiguration": "Mostrar configuración"
+  "showConfiguration": "Mostrar configuración",
+  "tileLayout": "Disposición de mosaicos"
 }

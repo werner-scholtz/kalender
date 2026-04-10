@@ -53,5 +53,6 @@
   "end": "Fin",
   "newEventTitle": "Nouvel événement",
   "hideConfiguration": "Masquer la configuration",
-  "showConfiguration": "Afficher la configuration"
+  "showConfiguration": "Afficher la configuration",
+  "tileLayout": "Disposition des tuiles"
 }
