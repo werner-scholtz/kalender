@@ -109,6 +109,16 @@
       "avg_rasterizer_time_ms": 6.718067670859654,
       "missed_build_budget_total": 30,
       "missed_rasterizer_budget_total": 27
+    },
+    {
+      "timestamp": "2026-04-10T13:57:52+00:00",
+      "run_number": "237",
+      "commit_sha": "29b9420491e78cdf30f8c9582775e9ba1aa192da",
+      "scenario_count": 24,
+      "avg_build_time_ms": 4.660220988637405,
+      "avg_rasterizer_time_ms": 6.946942401418336,
+      "missed_build_budget_total": 31,
+      "missed_rasterizer_budget_total": 43
     }
   ]
 }
