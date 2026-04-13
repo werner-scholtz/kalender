@@ -102,8 +102,8 @@ class ScheduleTileComponents extends TileComponents {
 ///
 /// [event] is the event that the tile will be built for.
 ///
-/// [tileRange] is the [DateTimeRange] of the view the tile will be displayed in.
-/// * (This can be compared to the [CalendarEvent.dateTimeRangeAsUtc] to determine on which day it falls.)
+/// [tileRange] is the wall-clock [DateTimeRange] of the view the tile will be displayed in.
+/// The values are local [DateTime]s (or [TZDateTime]s when a timezone location is set).
 typedef TileBuilder = Widget Function(
   CalendarEvent event,
   DateTimeRange tileRange,

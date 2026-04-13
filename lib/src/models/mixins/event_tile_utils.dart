@@ -4,6 +4,37 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
+mixin EventTileUtils {
+  /// The [CalendarEvent] that the tile is representing.
+  ///
+  /// This is provided by a [TileComponents.tileBuilder] and represents
+  /// the event data that this tile is displaying.
+  CalendarEvent get event;
+
+  /// The [DateTimeRange] that the tile is being displayed within.
+  ///
+  /// This represents the time span that the tile is displayed on,
+  /// as provided by the [TileComponents.tileBuilder]. For day views, this is
+  /// typically a single day's range.
+  ///
+  /// The values are **wall-clock** [DateTime]s (local or [TZDateTime]),
+  /// not UTC. See [internalTileRange] to obtain an [InternalDateTimeRange].
+  DateTimeRange get tileRange;
+
+  /// Converts [tileRange] into an [InternalDateTimeRange] using the
+  /// current [LocationProvider].
+  ///
+  /// This is useful when mixin helpers need DST-safe arithmetic on the
+  /// tile's date boundaries (e.g. [DayEventTileUtils.eventRangeOnDate]).
+  InternalDateTimeRange internalTileRange(BuildContext context) {
+    final location = context.location;
+    return InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(tileRange.start, location: location),
+      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    );
+  }
+}
+
 /// A mixin that provides useful utilities for day-based event tiles.
 ///
 /// This mixin is intended to be used with widgets that are descendants of a [CalendarView]
@@ -28,15 +59,15 @@ export 'package:kalender/kalender_extensions.dart';
 ///   Widget build(BuildContext context) {
 ///     return GestureDetector(
 ///       onTapUp: (details) {
-///         final dateTime = getDateTimeFromPosition(context, details.localPosition);
+///         final dateTime = dateTimeFromPosition(context, details.localPosition);
 ///         print('Tapped on: $dateTime');
-///         final nearbyEvents = getNearbyEvents(
+///         final nearby = nearbyEvents(
 ///           context,
 ///           includeMultiDayEvents: true,
 ///           before: const Duration(minutes: 15),
 ///           after: const Duration(minutes: 15),
 ///         );
-///         print('Nearby events: $nearbyEvents');
+///         print('Nearby events: $nearby');
 ///       },
 ///       child: Container(color: Colors.red),
 ///     );
@@ -44,19 +75,21 @@ export 'package:kalender/kalender_extensions.dart';
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
-mixin DayEventTileUtils {
-  /// The [CalendarEvent] that the tile is representing.
-  ///
-  /// This is provided by a [TileComponents.tileBuilder] and represents
-  /// the event data that this tile is displaying.
+mixin DayEventTileUtils implements EventTileUtils {
+  @override
   CalendarEvent get event;
 
-  /// The [DateTimeRange] that the tile is being displayed within.
-  ///
-  /// This represents the time span that the tile is displayed on,
-  /// as provided by the [TileComponents.tileBuilder]. For day views, this is
-  /// typically a single day's range.
-  InternalDateTimeRange get tileRange;
+  @override
+  DateTimeRange get tileRange;
+
+  @override
+  InternalDateTimeRange internalTileRange(BuildContext context) {
+    final location = context.location;
+    return InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(tileRange.start, location: location),
+      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    );
+  }
 
   /// Get the [DateTimeRange] of the event clipped to the current display date.
   ///
@@ -67,7 +100,7 @@ mixin DayEventTileUtils {
   /// Returns the event's time range intersected with the tile's date.
   DateTimeRange eventRangeOnDate(BuildContext context) {
     final location = context.location;
-    return event.internalRange(location: location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
+    return event.internalRange(location: location).dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
   }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
@@ -83,7 +116,7 @@ mixin DayEventTileUtils {
   /// Example usage:
   /// ```dart
   /// // Find events within 30 minutes before and after
-  /// final nearbyEvents = getNearbyEvents(
+  /// final nearby = nearbyEvents(
   ///   context,
   ///   before: Duration(minutes: 30),
   ///   after: Duration(minutes: 30),
@@ -97,8 +130,9 @@ mixin DayEventTileUtils {
     bool includeSelf = false,
   }) {
     final eventsController = context.eventsController;
-    final eventRangeOnDate =
-        event.internalRange(location: context.location).dateTimeRangeOnDate(tileRange.start.startOfDay)!;
+    final eventRangeOnDate = event
+        .internalRange(location: context.location)
+        .dateTimeRangeOnDate(internalTileRange(context).start.startOfDay)!;
     final range = InternalDateTimeRange(
       start: eventRangeOnDate.start.subtract(before),
       end: eventRangeOnDate.end.add(after),
@@ -123,7 +157,7 @@ mixin DayEventTileUtils {
   /// ```dart
   /// GestureDetector(
   ///   onTapUp: (details) {
-  ///     final tappedTime = getDateTimeFromPosition(context, details.localPosition);
+  ///     final tappedTime = dateTimeFromPosition(context, details.localPosition);
   ///     // tappedTime now contains the specific time that was tapped
   ///   },
   ///   child: eventTile,
@@ -176,17 +210,21 @@ mixin DayEventTileUtils {
 /// }
 /// ```
 // ignore: library_private_types_in_public_api
-mixin MultiDayEventTileUtils {
-  /// The [CalendarEvent] that the tile is representing.
-  ///
-  /// This event may span multiple days and is provided by [TileComponents.tileBuilder].
+mixin MultiDayEventTileUtils implements EventTileUtils {
+  @override
   CalendarEvent get event;
 
-  /// The [DateTimeRange] that the tile is being displayed within.
-  ///
-  /// For multi-day events, this typically represents the visible portion
-  /// of the event within the current view (e.g., a week or month).
-  InternalDateTimeRange get tileRange;
+  @override
+  DateTimeRange get tileRange;
+
+  @override
+  InternalDateTimeRange internalTileRange(BuildContext context) {
+    final location = context.location;
+    return InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(tileRange.start, location: location),
+      end: InternalDateTime.fromExternal(tileRange.end, location: location),
+    );
+  }
 
   /// Fetches a list of [CalendarEvent]s that are chronologically close to the current [event].
   ///
@@ -209,9 +247,13 @@ mixin MultiDayEventTileUtils {
   }) {
     final eventsController = context.eventsController;
     final range = event.internalRange(location: context.location);
+    final searcRange = InternalDateTimeRange(
+      start: range.start.subtract(before),
+      end: range.end.add(after),
+    );
     final events = eventsController
         .eventsFromDateTimeRange(
-          range,
+          searcRange,
           includeMultiDayEvents: includeMultiDayEvents,
           includeDayEvents: includeDayEvents,
           location: context.location,
@@ -233,7 +275,7 @@ mixin MultiDayEventTileUtils {
   /// ```dart
   /// GestureDetector(
   ///   onTapUp: (details) {
-  ///     final date = getDateFromPosition(context, details.localPosition);
+  ///     final date = dateFromPosition(context, details.localPosition);
   ///     print('Tapped on: ${date.toString()}');
   ///   },
   ///   child: multiDayEventTile,

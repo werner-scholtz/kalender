@@ -23,7 +23,7 @@ class Tile extends StatefulWidget {
   /// The builder that builds the tile widget when dragging.
   final TileWhenDraggingBuilder? tileWhenDraggingBuilder;
 
-  /// The DateTimeRange that the current view is displaying.
+  /// The [InternalDateTimeRange] that the current view is displaying.
   final InternalDateTimeRange dateTimeRange;
 
   /// Creates an instance of [Tile].

@@ -441,7 +441,6 @@ For tiles that need to know the exact tapped time or find nearby events, use the
     @override
     final CalendarEvent event;
 
-    // tileRange is InternalDateTimeRange to satisfy the mixin contract.
     @override
     final InternalDateTimeRange tileRange;
 

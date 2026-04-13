@@ -2,6 +2,7 @@
 
 ### Breaking Changes
 
+- `DayEventTileUtils` and `MultiDayEventTileUtils` now `implement EventTileUtils` instead of using `on EventTileUtils`. Users can now apply a single mixin (`with DayEventTileUtils`) instead of two (`with EventTileUtils, DayEventTileUtils`). Existing code using both mixins will continue to compile.
 - `ResizeHandlePositioner` typedef now takes an additional `bool isImprecise` parameter.
 - `ResizeHandles` abstract class now requires an `isImprecise` constructor parameter.
 
