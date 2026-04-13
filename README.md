@@ -10,12 +10,12 @@ This branch stores generated performance artifacts from the Kalender profiling w
 
 | Metric | Value |
 |--------|-------|
-| Run | #244 (6d8b32a) |
-| Timestamp (UTC) | 2026-04-13T07:48:20+00:00 |
-| Average frame build time | 4.525245487290296 ms |
-| Average frame rasterizer time | 6.872916113135735 ms |
-| Missed build budget (total) | 30 |
-| Missed rasterizer budget (total) | 31 |
+| Run | #245 (0c23ead) |
+| Timestamp (UTC) | 2026-04-13T07:52:58+00:00 |
+| Average frame build time | 4.30323698368952 ms |
+| Average frame rasterizer time | 6.973988545773303 ms |
+| Missed build budget (total) | 29 |
+| Missed rasterizer budget (total) | 39 |
 | Scenario count | 24 |
 
 ## Latest Comparison Report
@@ -26,6 +26,7 @@ This branch stores generated performance artifacts from the Kalender profiling w
 
 | Run | Timestamp (UTC) | Avg Build (ms) | Avg Rasterizer (ms) | Missed Build | Missed Rasterizer |
 |-----|------------------|----------------|---------------------|--------------|-------------------|
+| #245 (0c23ead) | 2026-04-13T07:52:58+00:00 | 4.30 | 6.97 | 29 | 39 |
 | #244 (6d8b32a) | 2026-04-13T07:48:20+00:00 | 4.53 | 6.87 | 30 | 31 |
 | #243 (75472ae) | 2026-04-13T07:45:54+00:00 | 4.96 | 7.34 | 33 | 48 |
 | #242 (aa0ffac) | 2026-04-13T06:40:22+00:00 | 4.67 | 6.97 | 30 | 36 |
