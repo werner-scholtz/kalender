@@ -47,6 +47,9 @@ class DayHeaderStyle {
 
 /// A widget that displays the name of the day and the day number of the week.
 class DayHeader extends StatelessWidget {
+  /// Key applied to the [IconButton] when the date is today.
+  static const todayKey = ValueKey('DayHeader.today');
+
   /// The date that will be displayed in the [DayHeader].
   final InternalDateTime date;
 
@@ -75,8 +78,10 @@ class DayHeader extends StatelessWidget {
       style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
     );
 
-    final button = date.isToday(location: context.location)
-        ? IconButton.filled(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
+    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
+    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final button = isToday
+        ? IconButton.filled(key: todayKey, onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
 
     final dayName = Text(

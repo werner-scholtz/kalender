@@ -14,6 +14,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     required super.name,
     super.initialDateTime,
     super.initialDateSelectionStrategy,
+    super.nowCallback,
     required this.firstDayOfWeek,
     required this.pageIndexCalculator,
   }) : assert(
@@ -26,6 +27,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.name = 'Month',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToMonthly,
+    super.nowCallback,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
   }) : pageIndexCalculator = MonthIndexCalculator(

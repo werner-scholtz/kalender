@@ -169,6 +169,64 @@ void main() {
       });
     });
 
+    group('isToday with explicit now', () {
+      test('returns true when now matches the same day', () {
+        final date = InternalDateTime(2026, 4, 13);
+        final now = DateTime(2026, 4, 13, 14, 30);
+        expect(date.isToday(now: now), true);
+      });
+
+      test('returns false when now is a different day', () {
+        final date = InternalDateTime(2026, 4, 13);
+        final now = DateTime(2026, 4, 14, 0, 0);
+        expect(date.isToday(now: now), false);
+      });
+
+      test('returns false when now is the previous day', () {
+        final date = InternalDateTime(2026, 4, 13);
+        final now = DateTime(2026, 4, 12, 23, 59);
+        expect(date.isToday(now: now), false);
+      });
+
+      test('returns true regardless of time-of-day component', () {
+        final date = InternalDateTime(2026, 4, 13, 23, 59, 59);
+        final now = DateTime(2026, 4, 13, 0, 0, 1);
+        expect(date.isToday(now: now), true);
+      });
+
+      test('now parameter takes precedence over location', () {
+        // Even though location would resolve differently, now wins.
+        final date = InternalDateTime(2026, 1, 15);
+        final now = DateTime(2026, 1, 15, 12, 0);
+        final location = getLocation('America/New_York');
+        expect(date.isToday(now: now, location: location), true);
+      });
+
+      test('returns false with now in a different month', () {
+        final date = InternalDateTime(2026, 3, 15);
+        final now = DateTime(2026, 4, 15, 12, 0);
+        expect(date.isToday(now: now), false);
+      });
+
+      test('returns false with now in a different year', () {
+        final date = InternalDateTime(2025, 4, 13);
+        final now = DateTime(2026, 4, 13, 12, 0);
+        expect(date.isToday(now: now), false);
+      });
+
+      test('works with UTC DateTime as now', () {
+        final date = InternalDateTime(2026, 4, 13, 10, 0);
+        final now = DateTime.utc(2026, 4, 13, 22, 0);
+        expect(date.isToday(now: now), true);
+      });
+
+      test('falls back to location-based behavior when now is null', () {
+        final now = DateTime.now();
+        final date = InternalDateTime(now.year, now.month, now.day);
+        expect(date.isToday(now: null), true);
+      });
+    });
+
     group('isSameDay', () {
       test('returns true for the same date', () {
         final date1 = InternalDateTime(2024, 1, 15, 10, 30);

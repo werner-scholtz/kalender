@@ -33,6 +33,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 - [Event Layout](#event-layout)
 - [Locale](#locale)
 - [Location](#location)
+- [Now Callback](#now-callback)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -50,6 +51,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 * **Event layout:** Built-in strategies or bring your own. [find out more](#event-layout)
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](#location)
+* **Now callback:** Override what "now" means for the time indicator and today highlighting — useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](#now-callback)
 
 ## Preview
 
@@ -1015,6 +1017,25 @@ final eventsController = DefaultEventsController(
 See the [timezone package](https://pub.dev/packages/timezone) for setup instructions per platform. The [web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) also provides a working example.
 
 Changing `location` at runtime automatically updates visible date/time ranges. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
+
+### Now Callback
+
+By default, the time indicator position and "today" header highlighting are derived from the calendar's `Location`. If your app stores wall-clock times as UTC (e.g. an application where `location: UTC`) but still wants the indicator and today highlight to reflect the user's local time, pass a `NowCallback` on your view configuration:
+
+```dart
+MultiDayViewConfiguration.week(
+  nowCallback: () => DateTime.now(), // system local time
+)
+```
+
+The callback's return value is used for:
+- Positioning the time indicator on the calendar grid.
+- Determining which day is "today" for header highlighting (`DayHeader`, `MonthDayHeader`, `ScheduleDate`).
+- Evaluating `EmptyDayBehavior.showToday` in schedule views.
+
+Any `DateTime` subtype works — `DateTime.now()`, `DateTime.now().toUtc()`, or `TZDateTime.now(location)` for a specific timezone.
+
+When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.
 
 ---
 

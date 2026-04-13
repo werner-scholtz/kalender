@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The positioned timeline widget is used to display the timeline in the [MultiDayBody].
@@ -20,12 +20,19 @@ class PositionedTimeIndicator extends StatefulWidget {
   /// The date override for testing purposes.
   final InternalDateTime? nowOverride;
 
+  /// An optional callback that returns the current [DateTime] for the time indicator.
+  ///
+  /// When provided, the wall-clock components of the returned [DateTime] are used
+  /// to determine which day is "today", bypassing the calendar's location.
+  final NowCallback? nowCallback;
+
   const PositionedTimeIndicator({
     super.key,
     required this.visibleDates,
     required this.dayWidth,
     required this.child,
     this.nowOverride,
+    this.nowCallback,
   });
 
   @override
@@ -49,10 +56,16 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
   }
 
   void _update() {
-    final newIndex = widget.nowOverride != null
-        ? widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!))
-        // Compare with the current date as UTC.
-        : widget.visibleDates.indexWhere((date) => date.isToday(location: context.location));
+    int newIndex;
+    if (widget.nowOverride != null) {
+      newIndex = widget.visibleDates.indexWhere((date) => date.isSameDay(widget.nowOverride!));
+    } else if (widget.nowCallback != null) {
+      final now = InternalDateTime.fromDateTime(widget.nowCallback!());
+      newIndex = widget.visibleDates.indexWhere((date) => date.isSameDay(now));
+    } else {
+      // Compare with the current date using the calendar's location.
+      newIndex = widget.visibleDates.indexWhere((date) => date.isToday(location: context.location));
+    }
 
     if (_index == newIndex) {
       return;

@@ -1,3 +1,21 @@
+## 0.18.0
+
+### Features
+
+- New `NowCallback` typedef and `ViewConfiguration.nowCallback` field to decouple the time indicator, today highlighting, and schedule empty-day logic from the calendar's configured `Location`.
+- `InternalDateTime.isToday()` now accepts an optional `DateTime? now` parameter, allowing callers to override what "today" means.
+- `DayHeader`, `MonthDayHeader`, and `ScheduleDate` read `nowCallback` from the view configuration and use it for today highlighting. When set, it takes priority over the `Location`-based check.
+- `EmptyDayBehavior.showToday` in `ScheduleBody` now respects `nowCallback`.
+- Added static `todayKey` constants on `DayHeader`, `MonthDayHeader`, and `ScheduleDate` for easier widget-test assertions.
+
+### Tests
+
+- Added unit tests for `InternalDateTime.isToday(now:)` parameter.
+- Added widget tests for `nowCallback`-driven today highlighting across `DayHeader`, `MonthDayHeader`, and `ScheduleDate`.
+- Added widget tests for time indicator positioning with `nowCallback`.
+
+---
+
 ## 0.17.0
 
 ### Breaking Changes

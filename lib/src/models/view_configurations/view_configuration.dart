@@ -8,6 +8,21 @@ import 'package:kalender/src/models/view_configurations/schedule_view_configurat
 
 export 'package:kalender/kalender_extensions.dart';
 
+/// A callback that returns the current [DateTime] representing "now" for the calendar.
+///
+/// The returned [DateTime]'s wall-clock components (year, month, day, hour, minute)
+/// are used as-is to:
+/// - Position the time indicator on the calendar grid.
+/// - Determine which day is "today" for header highlighting
+///   ([DayHeader], [MonthDayHeader], [ScheduleDate]).
+/// - Evaluate [EmptyDayBehavior.showToday] in schedule views.
+///
+/// Any [DateTime] subtype works:
+/// - [DateTime.now] — uses the system's local wall-clock time.
+/// - `() => DateTime.now().toUtc()` — uses the current UTC time.
+/// - `() => TZDateTime.now(location)` — uses the wall-clock time for a specific timezone.
+typedef NowCallback = DateTime Function();
+
 /// The base class for all [ViewConfiguration]s.
 ///
 /// [ViewConfiguration]s are used to configure the view of the calendar.
@@ -16,12 +31,12 @@ abstract class ViewConfiguration {
     required this.name,
     this.initialDateTime,
     this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
+    this.nowCallback,
   });
 
   /// The name of the [ViewConfiguration].
   final String name;
 
-  // TODO(werner): rename to initialDateTime.
   /// The selected date to start the view from.
   ///
   /// If this is provided, it will take precedence over the initial date selection strategy.
@@ -34,6 +49,34 @@ abstract class ViewConfiguration {
   /// between different view types (daily, weekly, monthly, schedule).
   /// Defaults to [kDefaultInitialDateSelectionStrategy] which follows specific rules for each transition type.
   final InitialDateSelectionStrategy initialDateSelectionStrategy;
+
+  /// An optional callback that overrides how the calendar resolves "now".
+  ///
+  /// When provided, the wall-clock components of the returned [DateTime] are
+  /// used instead of the calendar's [Location]-based time resolution for:
+  ///
+  /// - **Time indicator positioning** — determines both the horizontal (day)
+  ///   and vertical (time-of-day) placement of the current-time line.
+  /// - **"Today" highlighting** — the default [DayHeader], [MonthDayHeader],
+  ///   and [ScheduleDate] widgets use this to decide which day receives the
+  ///   filled-button highlight.
+  /// - **Schedule empty-day logic** — [EmptyDayBehavior.showToday] uses this
+  ///   to decide whether an empty day should still be shown.
+  ///
+  /// This is useful when the calendar displays events in UTC but should
+  /// reflect the user's local wall-clock time. For example, a time-tracking
+  /// app that stores wall-clock times as UTC values can pass [DateTime.now]
+  /// to align the indicator and highlighting with local time:
+  ///
+  /// ```dart
+  /// MultiDayViewConfiguration.week(
+  ///   nowCallback: DateTime.now,
+  /// )
+  /// ```
+  ///
+  /// When `null` (the default), the calendar uses its configured [Location]
+  /// to determine the current time.
+  final NowCallback? nowCallback;
 
   /// The functions for navigating the [PageView].
   PageIndexCalculator get pageIndexCalculator;

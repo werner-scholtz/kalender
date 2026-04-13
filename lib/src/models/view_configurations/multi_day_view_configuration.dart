@@ -43,6 +43,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required super.name,
     super.initialDateTime,
     super.initialDateSelectionStrategy,
+    super.nowCallback,
     required this.timeOfDayRange,
     required this.numberOfDays,
     required this.firstDayOfWeek,
@@ -61,6 +62,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.name = 'Day',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToDaily,
+    super.nowCallback,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -76,6 +78,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.name = 'Week',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToWeekly,
+    super.nowCallback,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -94,6 +97,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.name = 'Work Week',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToWeekly,
+    super.nowCallback,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     this.numberOfDays = 5,
@@ -109,6 +113,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.name = 'Custom',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToWeekly,
+    super.nowCallback,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
@@ -124,6 +129,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     super.name = 'Free Scroll',
     super.initialDateTime,
     super.initialDateSelectionStrategy = kDefaultToWeekly,
+    super.nowCallback,
     DateTimeRange? displayRange,
     TimeOfDayRange? timeOfDayRange,
     required this.numberOfDays,
@@ -138,6 +144,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     String? name,
     DateTime? initialDateTime,
     InitialDateSelectionStrategy? initialDateSelectionStrategy,
+    NowCallback? nowCallback,
     TimeOfDayRange? timeOfDayRange,
     DateTimeRange? displayRange,
     int? numberOfDays,
@@ -147,6 +154,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     final name0 = name ?? this.name;
     final selectedDate0 = initialDateTime ?? this.initialDateTime;
     final initialDateSelectionStrategy0 = initialDateSelectionStrategy ?? this.initialDateSelectionStrategy;
+    final nowCallback0 = nowCallback ?? this.nowCallback;
     final timeOfDayRange0 = timeOfDayRange ?? this.timeOfDayRange;
     final displayRange0 = displayRange ?? dateTimeRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
@@ -157,6 +165,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           name: name0,
           initialDateTime: selectedDate0,
           initialDateSelectionStrategy: initialDateSelectionStrategy0,
+          nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -166,6 +175,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           name: name0,
           initialDateTime: selectedDate0,
           initialDateSelectionStrategy: initialDateSelectionStrategy0,
+          nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -175,6 +185,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           name: name0,
           initialDateTime: selectedDate0,
           initialDateSelectionStrategy: initialDateSelectionStrategy0,
+          nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           initialTimeOfDay: initialTimeOfDay0,
@@ -183,6 +194,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           name: name0,
           initialDateTime: selectedDate0,
           initialDateSelectionStrategy: initialDateSelectionStrategy0,
+          nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
@@ -193,6 +205,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           name: name0,
           initialDateTime: selectedDate0,
           initialDateSelectionStrategy: initialDateSelectionStrategy0,
+          nowCallback: nowCallback0,
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,

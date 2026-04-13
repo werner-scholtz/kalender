@@ -21,7 +21,7 @@ void main() {
             height: 100,
             child: Stack(
               children: [
-                PositionedTimeIndicator(
+                TimeIndicatorPositioner(
                   viewController: MultiDayViewController(
                     viewConfiguration: viewConfiguration,
                     visibleDateTimeRange: ValueNotifier(InternalDateTimeRange.fromDateTimeRange(range)),

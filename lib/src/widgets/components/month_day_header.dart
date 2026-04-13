@@ -29,6 +29,9 @@ class MonthDayHeaderStyle {
 
 /// A widget that displays the day number.
 class MonthDayHeader extends StatelessWidget {
+  /// Key applied to the [IconButton] when the date is today.
+  static const todayKey = ValueKey('MonthDayHeader.today');
+
   final InternalDateTime date;
   final MonthDayHeaderStyle? style;
 
@@ -46,8 +49,11 @@ class MonthDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final button = date.isToday(location: context.location)
+    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
+    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final button = isToday
         ? IconButton.filled(
+            key: todayKey,
             onPressed: null,
             icon: Text(
               date.day.toString(),

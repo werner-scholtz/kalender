@@ -85,7 +85,7 @@ class MultiDayBody extends StatelessWidget {
                             location: context.location,
                           ),
                         ),
-                        PositionedTimeIndicator(
+                        TimeIndicatorPositioner(
                           viewController: viewController,
                           initialPage: viewController.initialPage,
                         ),

@@ -128,7 +128,13 @@ class InternalDateTime extends DateTime {
   /// can yield incorrect results near midnight — for example, 11:30 PM in New York
   /// (UTC-5) is already the next day in UTC.
   ///
-  /// If [location] is `null`, the system's local timezone is used.
+  /// If [now] is provided, it is used as the reference time instead of
+  /// computing the current time from [location] or the system clock.
+  /// The wall-clock components of [now] are compared directly against this date's
+  /// wall-clock components (via [isSameDay]), so the caller is responsible for
+  /// ensuring [now] is in the desired timezone.
+  ///
+  /// If [location] is `null` and [now] is `null`, the system's local timezone is used.
   ///
   /// Example:
   /// ```dart
@@ -140,11 +146,20 @@ class InternalDateTime extends DateTime {
   /// // Check using a specific timezone
   /// final location = getLocation('America/New_York');
   /// print(date.isToday(location: location)); // true (if today in New York)
+  ///
+  /// // Check using an explicit 'now' value
+  /// final customNow = DateTime(2024, 1, 15, 14, 30);
+  /// print(date.isToday(now: customNow)); // true only if date is Jan 15
   /// ```
-  bool isToday({Location? location}) {
-    final now = location != null ? TZDateTime.now(location) : DateTime.now();
+  bool isToday({Location? location, DateTime? now}) {
+    if (now != null) {
+      return isSameDay(InternalDateTime.fromDateTime(now));
+    }
+    final currentTime = location != null ? TZDateTime.now(location) : DateTime.now();
     final localDate = forLocation(location: location);
-    return localDate.year == now.year && localDate.month == now.month && localDate.day == now.day;
+    return localDate.year == currentTime.year &&
+        localDate.month == currentTime.month &&
+        localDate.day == currentTime.day;
   }
 
   /// Checks if [date] falls on the same calendar day as this [InternalDateTime].

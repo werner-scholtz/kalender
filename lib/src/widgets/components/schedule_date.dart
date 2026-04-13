@@ -34,6 +34,9 @@ class ScheduleDateStyle {
 
 /// A widget that displays the name of the day and the day number of the week.
 class ScheduleDate extends StatelessWidget {
+  /// Key applied to the [IconButton] when the date is today.
+  static const todayKey = ValueKey('ScheduleDate.today');
+
   final InternalDateTime date;
   final ScheduleDateStyle? style;
 
@@ -53,8 +56,11 @@ class ScheduleDate extends StatelessWidget {
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 
-    final button = date.isToday(location: context.location)
+    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
+    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final button = isToday
         ? IconButton.filled(
+            key: todayKey,
             onPressed: null,
             icon: Text(
               date.day.toString(),

@@ -5,14 +5,14 @@ import 'package:kalender/kalender.dart';
 
 /// A widget that positions a time indicator to follow the current page position.
 ///
-/// The [PositionedTimeIndicator] calculates the position of a time indicator
+/// The [TimeIndicatorPositioner] calculates the position of a time indicator
 /// based on the current page offset and positions it accordingly. It's designed
 /// to work with multi-day calendar views where the time indicator needs to
 /// track the current day across different pages.
 ///
 /// The widget listens to page offset changes and automatically repositions
 /// the time indicator to maintain proper alignment with the current view.
-class PositionedTimeIndicator extends StatefulWidget {
+class TimeIndicatorPositioner extends StatefulWidget {
   /// The [MultiDayViewController] that controls the calendar view.
   ///
   /// This controller provides access to the page offset and view configuration
@@ -28,8 +28,8 @@ class PositionedTimeIndicator extends StatefulWidget {
   /// An optional child widget to display within the positioned indicator.
   final Widget? childOverride;
 
-  /// Creates a [PositionedTimeIndicator].
-  const PositionedTimeIndicator({
+  /// Creates a [TimeIndicatorPositioner].
+  const TimeIndicatorPositioner({
     super.key,
     required this.viewController,
     required this.initialPage,
@@ -38,14 +38,14 @@ class PositionedTimeIndicator extends StatefulWidget {
   });
 
   @override
-  State<PositionedTimeIndicator> createState() => _PositionedTimeIndicatorState();
+  State<TimeIndicatorPositioner> createState() => _TimeIndicatorPositionerState();
 }
 
-/// The state class for [PositionedTimeIndicator].
+/// The state class for [TimeIndicatorPositioner].
 ///
 /// This class manages the positioning logic and listens to page offset changes
 /// to keep the time indicator properly positioned relative to the current view.
-class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
+class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController? viewController;
 
@@ -100,7 +100,7 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
   }
 
   @override
-  void didUpdateWidget(covariant PositionedTimeIndicator oldWidget) {
+  void didUpdateWidget(covariant TimeIndicatorPositioner oldWidget) {
     _setup();
     super.didUpdateWidget(oldWidget);
   }
@@ -137,9 +137,11 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
 
   /// Updates the today page number based on the current date.
   void _updatePageNumberAndIndex() {
+    final nowCallback = widget.viewController.viewConfiguration.nowCallback;
     final location = widget.viewController.location;
     final today = InternalDateTime.fromDateTime(
-      widget.dateOverride ?? (location == null ? DateTime.now() : TZDateTime.now(location)),
+      widget.dateOverride ??
+          (nowCallback != null ? nowCallback() : (location == null ? DateTime.now() : TZDateTime.now(location))),
     );
     final now = today.startOfDay;
     final pageNavigation = widget.viewController.viewConfiguration.pageIndexCalculator;
@@ -156,7 +158,8 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
     // Update the today page number immediately.
     _updatePageNumberAndIndex();
 
-    final now = DateTime.now();
+    final nowCallback = widget.viewController.viewConfiguration.nowCallback;
+    final now = nowCallback != null ? nowCallback() : DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
     final timeUntilMidnight = tomorrow.difference(now);
 
@@ -204,6 +207,7 @@ class _PositionedTimeIndicatorState extends State<PositionedTimeIndicator> {
                       TimeIndicator.fromContext(
                         context,
                         widget.viewController.viewConfiguration.timeOfDayRange,
+                        nowCallback: widget.viewController.viewConfiguration.nowCallback,
                       ),
             ),
           ],

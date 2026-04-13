@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
-import 'package:kalender/src/widgets/internal_components/positioned_timeline.dart';
+import 'package:kalender/src/widgets/internal_components/positioned_time_indicator.dart';
 
 import '../utilities.dart';
 
@@ -35,8 +35,7 @@ void main() {
     calendarController = CalendarController();
     callbacks = CalendarCallbacks(
       onEventCreated: eventsController.addEvent,
-      onEventChanged: (event, updatedEvent) =>
-          eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+      onEventChanged: (event, updatedEvent) => eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
     );
   });
 

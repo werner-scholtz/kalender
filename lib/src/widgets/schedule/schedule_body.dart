@@ -281,7 +281,8 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
           case EmptyDayBehavior.showToday:
             // TODO: check that this works as expected.
-            if (internalDate.isToday(location: widget.location)) {
+            final now = widget.viewController.viewConfiguration.nowCallback?.call();
+            if (internalDate.isToday(location: widget.location, now: now)) {
               viewController.addItem(item: EmptyItem(), date: date);
             }
             continue;

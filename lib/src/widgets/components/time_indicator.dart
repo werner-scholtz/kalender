@@ -53,12 +53,19 @@ class TimeIndicator extends StatefulWidget {
   /// The location to use for the time indicator.
   final Location? location;
 
+  /// An optional callback that returns the current [DateTime] for the time indicator.
+  ///
+  /// When provided, the wall-clock components of the returned [DateTime] are used
+  /// directly, bypassing the [location]-based time resolution.
+  final NowCallback? nowCallback;
+
   /// Creates a new [TimeIndicator] widget.
   const TimeIndicator({
     super.key,
     required this.timeOfDayRange,
     required this.heightPerMinute,
     required this.location,
+    this.nowCallback,
     this.style,
   });
 
@@ -66,23 +73,40 @@ class TimeIndicator extends StatefulWidget {
     TimeOfDayRange timeOfDayRange,
     double heightPerMinute,
     TimeIndicatorStyle? style,
-    Location? location,
-  ) {
+    Location? location, {
+    NowCallback? nowCallback,
+  }) {
     return TimeIndicator(
       timeOfDayRange: timeOfDayRange,
       heightPerMinute: heightPerMinute,
       location: location,
+      nowCallback: nowCallback,
       style: style,
     );
   }
 
   /// Creates a [TimeIndicator] from the [BuildContext].
+  ///
+  /// When [nowCallback] is provided, the default [TimeIndicator] will use it
+  /// to determine the current time instead of using the calendar's [Location].
+  /// Custom [TimeIndicatorBuilder]s will not receive the callback automatically.
   static Widget fromContext(
     BuildContext context,
-    TimeOfDayRange timeOfDayRange,
-  ) {
+    TimeOfDayRange timeOfDayRange, {
+    NowCallback? nowCallback,
+  }) {
     final timeIndicatorStyle = context.components.multiDayComponentStyles.bodyStyles.timeIndicatorStyle;
     final components = context.components.multiDayComponents.bodyComponents;
+    // If the default builder is used and a nowCallback is provided, pass it through.
+    if (nowCallback != null && components.timeIndicator == TimeIndicator.builder) {
+      return TimeIndicator.builder(
+        timeOfDayRange,
+        context.heightPerMinute,
+        timeIndicatorStyle,
+        context.location,
+        nowCallback: nowCallback,
+      );
+    }
     return components.timeIndicator.call(
       timeOfDayRange,
       context.heightPerMinute,
@@ -111,7 +135,9 @@ class _TimeIndicatorState extends State<TimeIndicator> {
   @override
   void didUpdateWidget(covariant TimeIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.timeOfDayRange != oldWidget.timeOfDayRange || oldWidget.location != widget.location) {
+    if (widget.timeOfDayRange != oldWidget.timeOfDayRange ||
+        oldWidget.location != widget.location ||
+        oldWidget.nowCallback != widget.nowCallback) {
       setState(() {});
     }
   }
@@ -126,7 +152,9 @@ class _TimeIndicatorState extends State<TimeIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    final now = InternalDateTime.fromExternal(DateTime.timestamp(), location: widget.location);
+    final now = widget.nowCallback != null
+        ? InternalDateTime.fromDateTime(widget.nowCallback!())
+        : InternalDateTime.fromExternal(DateTime.timestamp(), location: widget.location);
     final startTime = widget.timeOfDayRange.start.toInternalDateTime(now);
     final endTime = widget.timeOfDayRange.end.toInternalDateTime(now);
     final showIndicator = now.isAfter(startTime) && now.isBefore(endTime);
