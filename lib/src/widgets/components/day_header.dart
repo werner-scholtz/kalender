@@ -7,7 +7,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The [date] is the date that the header will be displayed for.
 /// The [style] is used to style the day header.
 typedef DayHeaderBuilder = Widget Function(
-  InternalDateTime date,
+  DateTime date,
   DayHeaderStyle? style,
 );
 
@@ -51,7 +51,7 @@ class DayHeader extends StatelessWidget {
   static const todayKey = ValueKey('DayHeader.today');
 
   /// The date that will be displayed in the [DayHeader].
-  final InternalDateTime date;
+  final DateTime date;
 
   /// The style of the [DayHeader].
   final DayHeaderStyle? style;
@@ -63,12 +63,12 @@ class DayHeader extends StatelessWidget {
   const DayHeader({super.key, required this.date, this.style});
 
   /// The default builder for the [DayHeader].
-  static DayHeader builder(InternalDateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
+  static DayHeader builder(DateTime date, DayHeaderStyle? style) => DayHeader(date: date, style: style);
 
   static Widget fromContext(BuildContext context, InternalDateTime date) {
     final dayHeaderBuilder = context.components.multiDayComponents.headerComponents.dayHeaderBuilder;
     final dayHeaderStyle = context.components.multiDayComponentStyles.headerStyles.dayHeaderStyle;
-    return dayHeaderBuilder.call(date, dayHeaderStyle);
+    return dayHeaderBuilder.call(date.forLocation(location: context.location), dayHeaderStyle);
   }
 
   @override
@@ -79,13 +79,14 @@ class DayHeader extends StatelessWidget {
     );
 
     final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
-    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final isToday = now != null ? localDate.isToday(now: now) : localDate.isToday(location: context.location);
     final button = isToday
         ? IconButton.filled(key: todayKey, onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
 
     final dayName = Text(
-      style?.stringBuilder?.call(date) ?? date.dayNameShortLocalized(context.locale),
+      style?.stringBuilder?.call(localDate) ?? localDate.dayNameShortLocalized(context.locale),
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 

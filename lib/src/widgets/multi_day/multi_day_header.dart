@@ -165,7 +165,7 @@ class _MultiDayHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MultiDayHeader.');
           return const SizedBox.shrink();
         }
-        return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
+        return headerComponents.weekNumberBuilder.call(value.forLocation(location: context.location), weekNumberStyle);
       },
     );
 
@@ -246,7 +246,7 @@ class _FreeScrollHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');
           return const SizedBox.shrink();
         }
-        return headerComponents.weekNumberBuilder.call(value, weekNumberStyle);
+        return headerComponents.weekNumberBuilder.call(value.forLocation(location: context.location), weekNumberStyle);
       },
     );
 
