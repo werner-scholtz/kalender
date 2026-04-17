@@ -207,7 +207,7 @@ class ResizeHandle extends StatelessWidget {
     return Draggable<Resize>(
       data: data,
       feedback: const SizedBox(),
-      dragAnchorStrategy: pointerDragAnchorStrategy,
+      dragAnchorStrategy: tileComponents.dragAnchorStrategy ?? childDragAnchorStrategy,
       onDragStarted: () {
         context.calendarController.selectEvent(event, internal: true);
         context.callbacks?.onEventChange?.call(event);
