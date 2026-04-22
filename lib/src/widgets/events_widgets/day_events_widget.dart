@@ -322,11 +322,13 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
       children: eventList.indexed.map(
         (item) {
           final event = item.$2;
-          final drawTile = dropTarget != null && (event.id == controller.selectedEventId);
+          final latest = widget.eventsController.byId(event.id);
+          final selected = event.id == controller.selectedEventId;
+          final drawTile = dropTarget != null && selected;
 
           return LayoutId(
             id: item.$1,
-            child: drawTile ? dropTarget.call(event) : const SizedBox(),
+            child: drawTile ? dropTarget.call(latest ?? event) : const SizedBox(),
           );
         },
       ).toList(),

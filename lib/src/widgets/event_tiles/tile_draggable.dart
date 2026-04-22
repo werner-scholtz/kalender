@@ -3,6 +3,7 @@ import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/calendar_interaction.dart';
 import 'package:kalender/src/models/components/tile_components.dart';
+import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// A widget that makes the event tile draggable for rescheduling.
@@ -55,6 +56,7 @@ class TileDraggable extends StatelessWidget {
       data: Reschedule(event: event),
       feedback: FeedbackWidget(
         event: event,
+        eventsController: context.eventsController,
         feedbackWidgetSizeNotifier: context.feedbackWidgetSizeNotifier,
         feedbackTileBuilder: feedbackTileBuilder,
       ),
@@ -74,6 +76,12 @@ class FeedbackWidget extends StatefulWidget {
   /// The event being dragged.
   final CalendarEvent event;
 
+  /// The events controller, used to listen for updates to the event being dragged.
+  ///
+  /// This is passed explicitly because the feedback widget is rendered in an overlay
+  /// which is not a descendant of the [EventsControllerProvider].
+  final EventsController? eventsController;
+
   /// The builder used to create the feedback tile.
   final FeedbackTileBuilder? feedbackTileBuilder;
 
@@ -84,6 +92,7 @@ class FeedbackWidget extends StatefulWidget {
   const FeedbackWidget({
     super.key,
     required this.event,
+    required this.eventsController,
     this.feedbackTileBuilder,
     required this.feedbackWidgetSizeNotifier,
   });
@@ -95,20 +104,26 @@ class FeedbackWidget extends StatefulWidget {
 /// The state for the feedback widget.
 ///
 /// This state listens to the size notifier and rebuilds the widget when the size changes.
+/// It also listens to the events controller and rebuilds when the underlying event is updated.
 class _FeedbackWidgetState extends State<FeedbackWidget> {
   /// The size of the feedback widget.
   Size _size = const Size(0, 0);
+
+  /// The current event associated with the feedback widget.
+  late CalendarEvent _event = widget.event;
 
   @override
   void initState() {
     super.initState();
     _updateSize();
     widget.feedbackWidgetSizeNotifier.addListener(_updateSize);
+    widget.eventsController?.addListener(_eventsControllerListener);
   }
 
   @override
   void dispose() {
     widget.feedbackWidgetSizeNotifier.removeListener(_updateSize);
+    widget.eventsController?.removeListener(_eventsControllerListener);
     super.dispose();
   }
 
@@ -122,9 +137,17 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
     setState(() => _size = widget.feedbackWidgetSizeNotifier.value);
   }
 
+  /// The listener for the events controller.
+  void _eventsControllerListener() {
+    final updatedEvent = widget.eventsController?.byId(widget.event.id);
+    if (updatedEvent == null) return;
+    if (updatedEvent == _event) return;
+    if (mounted) setState(() => _event = updatedEvent);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final feedbackTile = widget.feedbackTileBuilder?.call(widget.event, _size);
+    final feedbackTile = widget.feedbackTileBuilder?.call(_event, _size);
     return feedbackTile ?? const SizedBox();
   }
 }
