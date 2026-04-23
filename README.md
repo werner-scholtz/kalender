@@ -55,9 +55,9 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Preview
 
-| MultiDay (week)                                                                                                          | Month                                                                                                                     | Schedule                                                                                                                       |
-| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/week_view.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/month_view.png" width="100%" /> | <img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/schedule_view.png" width="100%" /> |
+| MultiDay (week) | Month | Schedule |
+| --- | --- | --- |
+| ![MultiDay View](readme_assets/week_view.png) | ![Month View](readme_assets/month_view.png) | ![Schedule View](readme_assets/schedule_view.png) |
 
 See all views — desktop & mobile, light & dark — in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
 
@@ -561,6 +561,10 @@ CalendarCallbacks(
   // Called when an event tile is tapped — includes tap position detail.
   onEventTappedWithDetail: (event, renderBox, detail) {},
 
+  // Called when an event is secondary tapped (right-clicked).
+  onEventSecondaryTapped: (event, renderBox) {},
+  onEventSecondaryTappedWithDetail: (event, renderBox, detail) {},
+
   // Called before the calendar creates a new event from a gesture.
   // Return your concrete Event subclass here.
   onEventCreate: (event) {
@@ -594,9 +598,17 @@ CalendarCallbacks(
     // detail.dateTime or detail.dateTimeRange, plus renderBox & localOffset.
   },
 
+  // Called when the user secondary taps (right-clicks) an empty area.
+  onSecondaryTapped: (date) {},
+  onSecondaryTappedWithDetail: (detail) {},
+
   // Called when the user long-presses an empty area.
   onLongPressed: (date) {},
   onLongPressedWithDetail: (detail) {},
+
+  // Called when the user secondary long-presses an empty area.
+  onSecondaryLongPressed: (date) {},
+  onSecondaryLongPressedWithDetail: (detail) {},
 
   // --- Drag-and-drop acceptance ---
 

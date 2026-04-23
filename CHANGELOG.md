@@ -1,3 +1,17 @@
+## 0.18.1
+
+### Features
+
+- Added support for secondary gestures (right-clicks) on empty calendar spaces: `onSecondaryTapped`, `onSecondaryLongPressed` and their `WithDetail` variants. 
+- Added support for secondary gestures (right-clicks) on events: `onEventSecondaryTapped` and `onEventSecondaryTappedWithDetail`.
+
+### Fixes
+
+- Fixed an issue where `DayDetail` and `MultiDayDetail` exposed internal `InternalDateTime` and `InternalDateTimeRange` objects without timezone offsets applied. All tap details now correctly apply `.forLocation()` to expose wall-clock DateTimes to consumers.
+- Fixed some raw callbacks (`onLongPressed`, `onSecondaryLongPressed`) leaking internal representations instead of `.forLocation()` adjusted ones.
+
+---
+
 ## 0.18.0
 
 ### Features
