@@ -38,6 +38,22 @@ class DayEventTile extends EventTile {
       };
 
   @override
+  EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
+        // Find the global position and size of the tile.
+        final renderObject = context.findRenderObject()! as RenderBox;
+        context.callbacks?.onEventSecondaryTapped?.call(event, renderObject);
+        context.callbacks?.onEventSecondaryTappedWithDetail?.call(
+          event,
+          renderObject,
+          DayDetail(
+            date: dateTimeRange.start,
+            renderBox: renderObject,
+            localOffset: details.localPosition,
+          ),
+        );
+      };
+
+  @override
   Key get rescheduleKey => DayEventTile.rescheduleDraggableKey(event.id);
 
   @override

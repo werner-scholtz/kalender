@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -107,6 +108,35 @@ void main() {
       expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(0));
     });
 
+    testWidgets('onSecondaryTapped fires with correct date', (tester) async {
+      DateTime? tappedDate;
+      TapDetail? tappedDetail;
+
+      await pumpMultiDayView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onSecondaryTapped: (date) => tappedDate = date,
+          onSecondaryTappedWithDetail: (details) => tappedDetail = details,
+        ),
+      );
+
+      final body = find.byType(MultiDayBody);
+      expect(body, findsOneWidget);
+
+      expect(tappedDate, isNull);
+      expect(tappedDetail, isNull);
+
+      await tester.tapAt(tester.getCenter(body), buttons: kSecondaryButton);
+
+      expect(tappedDate, DateTime(2025, 1, 1, 6, 30));
+      expect(tappedDetail, isNotNull);
+      expect(tappedDetail!.isDayDetail, isTrue);
+      expect(tappedDetail!.localOffset.dx, greaterThan(0));
+      expect(tappedDetail!.localOffset.dy, greaterThan(0));
+      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dx, greaterThanOrEqualTo(0));
+      expect(tappedDetail!.renderBox.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(0));
+    });
+
     testWidgets('onLongPressed fires', (tester) async {
       DateTime? longPressedDate;
       TapDetail? longPressedDetail;
@@ -125,6 +155,30 @@ void main() {
       expect(longPressedDetail, isNull);
 
       await tester.longPressAt(tester.getCenter(body));
+
+      expect(longPressedDate, isNotNull);
+      expect(longPressedDetail, isNotNull);
+      expect(longPressedDetail!.isDayDetail, isTrue);
+    });
+
+    testWidgets('onSecondaryLongPressed fires', (tester) async {
+      DateTime? longPressedDate;
+      TapDetail? longPressedDetail;
+
+      await pumpMultiDayView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onSecondaryLongPressed: (date) => longPressedDate = date,
+          onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
+        ),
+      );
+
+      final body = find.byType(MultiDayBody);
+
+      expect(longPressedDate, isNull);
+      expect(longPressedDetail, isNull);
+
+      await tester.longPressAt(tester.getCenter(body), buttons: kSecondaryButton);
 
       expect(longPressedDate, isNotNull);
       expect(longPressedDetail, isNotNull);
@@ -315,6 +369,31 @@ void main() {
       expect(tappedDetail!.isMultiDayDetail, isTrue);
     });
 
+    testWidgets('onSecondaryTapped fires with correct date', (tester) async {
+      DateTime? tappedDate;
+      TapDetail? tappedDetail;
+
+      await pumpMonthView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onSecondaryTapped: (date) => tappedDate = date,
+          onSecondaryTappedWithDetail: (details) => tappedDetail = details,
+        ),
+      );
+
+      final body = find.byType(MonthBody);
+      expect(body, findsOneWidget);
+
+      expect(tappedDate, isNull);
+      expect(tappedDetail, isNull);
+
+      await tester.tapAt(tester.getCenter(body), buttons: kSecondaryButton);
+
+      expect(tappedDate, isNotNull);
+      expect(tappedDetail, isNotNull);
+      expect(tappedDetail!.isMultiDayDetail, isTrue);
+    });
+
     testWidgets('onLongPressed fires', (tester) async {
       DateTime? longPressedDate;
       TapDetail? longPressedDetail;
@@ -333,6 +412,30 @@ void main() {
       expect(longPressedDetail, isNull);
 
       await tester.longPressAt(tester.getCenter(body));
+
+      expect(longPressedDate, isNotNull);
+      expect(longPressedDetail, isNotNull);
+      expect(longPressedDetail!.isMultiDayDetail, isTrue);
+    });
+
+    testWidgets('onSecondaryLongPressed fires', (tester) async {
+      DateTime? longPressedDate;
+      TapDetail? longPressedDetail;
+
+      await pumpMonthView(
+        tester,
+        callbacks: CalendarCallbacks(
+          onSecondaryLongPressed: (date) => longPressedDate = date,
+          onSecondaryLongPressedWithDetail: (details) => longPressedDetail = details,
+        ),
+      );
+
+      final body = find.byType(MonthBody);
+
+      expect(longPressedDate, isNull);
+      expect(longPressedDetail, isNull);
+
+      await tester.longPressAt(tester.getCenter(body), buttons: kSecondaryButton);
 
       expect(longPressedDate, isNotNull);
       expect(longPressedDetail, isNotNull);

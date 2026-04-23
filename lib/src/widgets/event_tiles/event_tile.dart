@@ -66,6 +66,9 @@ abstract class EventTile extends StatelessWidget {
   /// appropriate detail objects.
   EventTileOnTapUp? get onTapUp;
 
+  /// The function that is called when the event is secondary tapped.
+  EventTileOnTapUp? get onSecondaryTapUp;
+
   /// A key used to identify the reschedule draggable.
   ///
   /// Each tile type provides a unique key pattern for testing and debugging.
@@ -96,6 +99,7 @@ abstract class EventTile extends StatelessWidget {
     return TileGestureDetector(
       gestureDetectorKey: gestureKey,
       onTapUp: onTapUp,
+      onSecondaryTapUp: onSecondaryTapUp,
       child: (resizeAxis == null)
           ? draggable
           : Stack(

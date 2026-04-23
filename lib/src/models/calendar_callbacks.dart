@@ -22,6 +22,12 @@ class CalendarCallbacks {
   /// /// See TODO: add link to event mixins.
   final OnEventTappedWithDetail? onEventTappedWithDetail;
 
+  /// The callback for when an event is secondary tapped.
+  final OnEventTapped? onEventSecondaryTapped;
+
+  /// The callback for when an event is secondary tapped, with details.
+  final OnEventTappedWithDetail? onEventSecondaryTappedWithDetail;
+
   /// The callback for when an event is about to be created.
   ///
   /// This is used by a [Draggable] or [LongPressDraggable] to create a new event.
@@ -61,6 +67,14 @@ class CalendarCallbacks {
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnTappedWithDetails? onTappedWithDetail;
 
+  /// The callback for when a user secondary taps on the calendar.
+  final OnTapped? onSecondaryTapped;
+
+  /// The callback for when a user secondary taps on the calendar with details.
+  ///
+  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
+  final OnTappedWithDetails? onSecondaryTappedWithDetail;
+
   /// The callback for when a user long presses on the calendar.
   final OnLongPressed? onLongPressed;
 
@@ -68,6 +82,14 @@ class CalendarCallbacks {
   ///
   /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
   final OnLongPressedWithDetails? onLongPressedWithDetail;
+
+  /// The callback for when a user secondary long presses on the calendar.
+  final OnLongPressed? onSecondaryLongPressed;
+
+  /// The callback for when a user secondary long presses on the calendar with details.
+  ///
+  /// The details can be a [DayDetail] or a [MultiDayDetail], depending on the calendar view.
+  final OnLongPressedWithDetails? onSecondaryLongPressedWithDetail;
 
   /// The callback for when a drag target is evaluating whether to accept a draggable, on a vertical view.
   ///
@@ -87,6 +109,8 @@ class CalendarCallbacks {
   const CalendarCallbacks({
     this.onEventTapped,
     this.onEventTappedWithDetail,
+    this.onEventSecondaryTapped,
+    this.onEventSecondaryTappedWithDetail,
     this.onEventChange,
     this.onEventChanged,
     this.onEventCreate,
@@ -95,20 +119,29 @@ class CalendarCallbacks {
     this.onPageChanged,
     this.onTapped,
     this.onTappedWithDetail,
+    this.onSecondaryTapped,
+    this.onSecondaryTappedWithDetail,
     this.onLongPressed,
     this.onLongPressedWithDetail,
+    this.onSecondaryLongPressed,
+    this.onSecondaryLongPressedWithDetail,
     this.onWillAcceptWithDetailsVertical,
     this.onWillAcceptWithDetailsHorizontal,
     this.onMultiDayTapped,
   });
 
   bool get hasOnEventTapped => onEventTapped != null || onEventTappedWithDetail != null;
+  bool get hasOnEventSecondaryTapped => onEventSecondaryTapped != null || onEventSecondaryTappedWithDetail != null;
   bool get hasOnLongPressed => onLongPressed != null || onLongPressedWithDetail != null;
+  bool get hasOnSecondaryLongPressed => onSecondaryLongPressed != null || onSecondaryLongPressedWithDetail != null;
   bool get hasOnTapped => onTapped != null || onTappedWithDetail != null;
+  bool get hasOnSecondaryTapped => onSecondaryTapped != null || onSecondaryTappedWithDetail != null;
 
   CalendarCallbacks copyWith({
     OnEventTapped? onEventTapped,
     OnEventTappedWithDetail? onEventTappedWithDetail,
+    OnEventTapped? onEventSecondaryTapped,
+    OnEventTappedWithDetail? onEventSecondaryTappedWithDetail,
     OnEventCreate? onEventCreate,
     OnEventCreateWithDetail? onEventCreateWithDetail,
     OnEventCreated? onEventCreated,
@@ -117,12 +150,19 @@ class CalendarCallbacks {
     OnPageChanged? onPageChanged,
     OnTapped? onTapped,
     OnTappedWithDetails? onTappedWithDetail,
+    OnTapped? onSecondaryTapped,
+    OnTappedWithDetails? onSecondaryTappedWithDetail,
     OnLongPressed? onLongPressed,
     OnLongPressedWithDetails? onLongPressedWithDetail,
+    OnLongPressed? onSecondaryLongPressed,
+    OnLongPressedWithDetails? onSecondaryLongPressedWithDetail,
     OnMultiDayTapped? onMultiDayTapped,
   }) {
     return CalendarCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
+      onEventTappedWithDetail: onEventTappedWithDetail ?? this.onEventTappedWithDetail,
+      onEventSecondaryTapped: onEventSecondaryTapped ?? this.onEventSecondaryTapped,
+      onEventSecondaryTappedWithDetail: onEventSecondaryTappedWithDetail ?? this.onEventSecondaryTappedWithDetail,
       onEventCreate: onEventCreate ?? this.onEventCreate,
       onEventCreateWithDetail: onEventCreateWithDetail ?? this.onEventCreateWithDetail,
       onEventCreated: onEventCreated ?? this.onEventCreated,
@@ -131,8 +171,12 @@ class CalendarCallbacks {
       onPageChanged: onPageChanged ?? this.onPageChanged,
       onTapped: onTapped ?? this.onTapped,
       onTappedWithDetail: onTappedWithDetail ?? this.onTappedWithDetail,
+      onSecondaryTapped: onSecondaryTapped ?? this.onSecondaryTapped,
+      onSecondaryTappedWithDetail: onSecondaryTappedWithDetail ?? this.onSecondaryTappedWithDetail,
       onLongPressed: onLongPressed ?? this.onLongPressed,
       onLongPressedWithDetail: onLongPressedWithDetail ?? this.onLongPressedWithDetail,
+      onSecondaryLongPressed: onSecondaryLongPressed ?? this.onSecondaryLongPressed,
+      onSecondaryLongPressedWithDetail: onSecondaryLongPressedWithDetail ?? this.onSecondaryLongPressedWithDetail,
       // ignore: deprecated_member_use_from_same_package
       onMultiDayTapped: onMultiDayTapped ?? this.onMultiDayTapped,
     );

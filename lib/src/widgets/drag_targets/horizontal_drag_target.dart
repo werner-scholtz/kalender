@@ -82,90 +82,91 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      _updateDimensions(constraints);
-      return DragTarget(
-      onWillAcceptWithDetails: (details) {
-        final correctType = DragTargetUtilities.handleDragDetails(
-          details,
-          onCreate: (controllerId) => true,
-          onResize: (event, direction) => true,
-          onReschedule: (event) => true,
-          onOther: () => false,
-        );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _updateDimensions(constraints);
+        return DragTarget(
+          onWillAcceptWithDetails: (details) {
+            final correctType = DragTargetUtilities.handleDragDetails(
+              details,
+              onCreate: (controllerId) => true,
+              onResize: (event, direction) => true,
+              onReschedule: (event) => true,
+              onOther: () => false,
+            );
 
-        if (!correctType) {
-          debugPrint(
-            'HorizontalDragTarget: cannot use details: $details because of unknown data type',
-          );
-          return false;
-        }
-
-        // First test if the details can be accepted at all.
-        final accepted =
-            callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
-                HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
-        if (!accepted) return accepted;
-
-        return onWillAcceptWithDetails(
-          details,
-          onResize: (event, direction) {
-            if (controller.selectedEvent.value?.id != event.id) {
-              // Re-select the event so that _selectedEventId is restored when the
-              // cursor re-enters after having left the widget (onLeave clears it).
-              controller.selectEvent(event, internal: true);
+            if (!correctType) {
+              debugPrint(
+                'HorizontalDragTarget: cannot use details: $details because of unknown data type',
+              );
+              return false;
             }
-            return direction.horizontal;
+
+            // First test if the details can be accepted at all.
+            final accepted =
+                callbacks?.onWillAcceptWithDetailsHorizontal?.call(details, controller, widget.configuration) ??
+                    HorizontalDragTarget.onWillAcceptWithDetails(details, controller, widget.configuration);
+            if (!accepted) return accepted;
+
+            return onWillAcceptWithDetails(
+              details,
+              onResize: (event, direction) {
+                if (controller.selectedEvent.value?.id != event.id) {
+                  // Re-select the event so that _selectedEventId is restored when the
+                  // cursor re-enters after having left the widget (onLeave clears it).
+                  controller.selectEvent(event, internal: true);
+                }
+                return direction.horizontal;
+              },
+              onReschedule: (event) {
+                // Set the size of the feedback widget.
+                context.feedbackWidgetSizeNotifier.value =
+                    Size(min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length), tileHeight);
+
+                controller.selectEvent(event, internal: true);
+                return true;
+              },
+            );
           },
-          onReschedule: (event) {
-            // Set the size of the feedback widget.
-            context.feedbackWidgetSizeNotifier.value =
-                Size(min(pageWidth, dayWidth * event.datesSpanned(location: context.location).length), tileHeight);
+          onMove: onMove,
+          onAcceptWithDetails: onAcceptWithDetails,
+          onLeave: onLeave,
+          builder: (context, candidateData, rejectedData) {
+            // Check if the candidateData is null.
+            if (candidateData.firstOrNull == null) return const SizedBox();
 
-            controller.selectEvent(event, internal: true);
-            return true;
+            final triggerWidth = pageWidth / 50;
+            final pageAnimationDuration = pageTrigger.animationDuration;
+            final pageTriggerDelay = pageTrigger.triggerDelay;
+            final pageAnimationCurve = pageTrigger.animationCurve;
+
+            final rightTrigger = CursorNavigationTrigger(
+              triggerDelay: pageTriggerDelay,
+              onTrigger: () =>
+                  viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
+              child: widget.rightPageTrigger?.call(pageWidth) ??
+                  ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+            );
+
+            final leftTrigger = CursorNavigationTrigger(
+              triggerDelay: pageTriggerDelay,
+              onTrigger: () =>
+                  viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
+              child: widget.leftPageTrigger?.call(pageWidth) ??
+                  ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+            );
+
+            return Stack(
+              children: [
+                PositionedDirectional(end: 0, top: 0, bottom: 0, child: rightTrigger),
+                PositionedDirectional(start: 0, top: 0, bottom: 0, child: leftTrigger),
+              ],
+            );
           },
-        );
-      },
-      onMove: onMove,
-      onAcceptWithDetails: onAcceptWithDetails,
-      onLeave: onLeave,
-      builder: (context, candidateData, rejectedData) {
-        // Check if the candidateData is null.
-        if (candidateData.firstOrNull == null) return const SizedBox();
-
-        final triggerWidth = pageWidth / 50;
-        final pageAnimationDuration = pageTrigger.animationDuration;
-        final pageTriggerDelay = pageTrigger.triggerDelay;
-        final pageAnimationCurve = pageTrigger.animationCurve;
-
-        final rightTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTriggerDelay,
-          onTrigger: () => viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
-          child: widget.rightPageTrigger?.call(pageWidth) ??
-              ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
-        );
-
-        final leftTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTriggerDelay,
-          onTrigger: () =>
-              viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
-          child: widget.leftPageTrigger?.call(pageWidth) ??
-              ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
-        );
-
-        return Stack(
-          children: [
-            PositionedDirectional(end: 0, top: 0, bottom: 0, child: rightTrigger),
-            PositionedDirectional(start: 0, top: 0, bottom: 0, child: leftTrigger),
-          ],
         );
       },
     );
-    },);
   }
-
-
 
   @override
   InternalDateTime? calculateCursorDateTime(

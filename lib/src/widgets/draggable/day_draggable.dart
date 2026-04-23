@@ -47,8 +47,14 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
                     onPointerMove: (event) => position = event.localPosition,
                     child: GestureDetector(
                       onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
+                      onSecondaryTap: callbacks?.hasOnSecondaryTapped == true
+                          ? () => _onSecondaryTap(context, date, position)
+                          : null,
                       onLongPress:
                           callbacks?.hasOnLongPressed == true ? () => _onLongPress(context, date, position) : null,
+                      onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
+                          ? () => _onSecondaryLongPress(context, date, position)
+                          : null,
                       child: context.interaction.allowEventCreation
                           ? switch (context.interaction.createEventGesture) {
                               CreateEventGesture.tap => Draggable(
@@ -100,6 +106,28 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     if (callbacks?.onLongPressedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
+      DayDetail(date: dateTime, renderBox: renderBox, localOffset: position),
+    );
+  }
+
+  void _onSecondaryTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+    final dateTime = _calculateTimeAndDate(date, localPosition);
+    callbacks?.onSecondaryTapped?.call(dateTime.forLocation(location: context.location));
+
+    if (callbacks?.onSecondaryTappedWithDetail == null) return;
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onSecondaryTappedWithDetail?.call(
+      DayDetail(renderBox: renderBox, localOffset: localPosition, date: dateTime),
+    );
+  }
+
+  void _onSecondaryLongPress(BuildContext context, InternalDateTime date, Offset position) {
+    final dateTime = _calculateTimeAndDate(date, position);
+    callbacks?.onSecondaryLongPressed?.call(dateTime);
+
+    if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onSecondaryLongPressedWithDetail?.call(
       DayDetail(date: dateTime, renderBox: renderBox, localOffset: position),
     );
   }

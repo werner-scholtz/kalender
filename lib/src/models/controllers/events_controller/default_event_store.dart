@@ -144,10 +144,8 @@ class DefaultEventStore extends EventStore {
   void removeWhere(bool Function(String key, CalendarEvent element) test) {
     // Collect the events to remove first, before modifying idEvent, so that
     // removeEvent can still look them up while cleaning up locationDateIdMap.
-    final eventsToRemove = idEvent.entries
-        .where((entry) => test(entry.key, entry.value))
-        .map((entry) => entry.value)
-        .toList();
+    final eventsToRemove =
+        idEvent.entries.where((entry) => test(entry.key, entry.value)).map((entry) => entry.value).toList();
 
     eventsToRemove.forEach(removeEvent);
   }

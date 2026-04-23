@@ -151,10 +151,10 @@ class CalendarInteraction {
     this.allowHorizontalImpreciseResize = defaultAllowHorizontalImpreciseResize,
     CreateEventGesture? createEventGesture,
     CreateEventGesture? modifyEventGesture,
-  })  : createEventGesture = createEventGesture ??
-            (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
-        modifyEventGesture = modifyEventGesture ??
-            (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
+  })  : createEventGesture =
+            createEventGesture ?? (isMobileDevice ? defaultMobileCreateEventGesture : defaultCreateEventGesture),
+        modifyEventGesture =
+            modifyEventGesture ?? (isMobileDevice ? defaultMobileModifyEventGesture : defaultModifyEventGesture);
 
   /// Creates a copy of this [CalendarInteraction] but with the given fields replaced with the new values.
   /// If the fields are not provided, the original values will be used.

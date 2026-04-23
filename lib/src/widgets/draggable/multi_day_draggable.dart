@@ -33,8 +33,13 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
                   onPointerMove: (event) => position = event.localPosition,
                   child: GestureDetector(
                     onTap: callbacks?.hasOnTapped == true ? () => _onTap(context, date, position) : null,
+                    onSecondaryTap:
+                        callbacks?.hasOnSecondaryTapped == true ? () => _onSecondaryTap(context, date, position) : null,
                     onLongPress:
                         callbacks?.hasOnLongPressed == true ? () => _onLongPress(context, date, position) : null,
+                    onSecondaryLongPress: callbacks?.hasOnSecondaryLongPressed == true
+                        ? () => _onSecondaryLongPress(context, date, position)
+                        : null,
                     child: context.interaction.allowEventCreation
                         ? switch (context.interaction.createEventGesture) {
                             CreateEventGesture.tap => Draggable(
@@ -85,6 +90,28 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     final range = calculateDateTimeRange(date, position);
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
+      MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: position),
+    );
+  }
+
+  void _onSecondaryTap(BuildContext context, InternalDateTime date, Offset localPosition) {
+    callbacks?.onSecondaryTapped?.call(date.forLocation(location: context.location));
+
+    if (callbacks?.onSecondaryTappedWithDetail == null) return;
+    final range = calculateDateTimeRange(date, localPosition);
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onSecondaryTappedWithDetail?.call(
+      MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: localPosition),
+    );
+  }
+
+  void _onSecondaryLongPress(BuildContext context, InternalDateTime date, Offset position) {
+    callbacks?.onSecondaryLongPressed?.call(date);
+
+    if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
+    final range = calculateDateTimeRange(date, position);
+    final renderBox = context.findRenderObject() as RenderBox;
+    callbacks?.onSecondaryLongPressedWithDetail?.call(
       MultiDayDetail(dateTimeRange: range, renderBox: renderBox, localOffset: position),
     );
   }

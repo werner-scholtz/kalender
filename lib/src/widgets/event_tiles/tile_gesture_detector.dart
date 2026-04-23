@@ -9,6 +9,9 @@ class TileGestureDetector extends StatelessWidget {
   /// The function that is called when the event is tapped.
   final EventTileOnTapUp? onTapUp;
 
+  /// The function that is called when the event is secondary tapped.
+  final EventTileOnTapUp? onSecondaryTapUp;
+
   /// The key used to identify the gesture detector.
   final Key gestureDetectorKey;
 
@@ -19,6 +22,7 @@ class TileGestureDetector extends StatelessWidget {
   const TileGestureDetector({
     super.key,
     required this.onTapUp,
+    required this.onSecondaryTapUp,
     required this.gestureDetectorKey,
     required this.child,
   });
@@ -28,11 +32,23 @@ class TileGestureDetector extends StatelessWidget {
     // Check if gesture detection is enabled via callbacks.
     final callbacks = context.callbacks;
     final enableGestureDetection = callbacks?.onEventTapped != null || callbacks?.onEventTappedWithDetail != null;
+    final enableSecondaryGestureDetection =
+        callbacks?.onEventSecondaryTapped != null || callbacks?.onEventSecondaryTappedWithDetail != null;
 
-    // If no onTapUp callback is provided or gesture detection is disabled, return the child as is.
-    if (onTapUp == null || !enableGestureDetection) return child;
+    // If no callbacks are provided or gesture detection is disabled, return the child as is.
+    if ((onTapUp == null || !enableGestureDetection) &&
+        (onSecondaryTapUp == null || !enableSecondaryGestureDetection)) {
+      return child;
+    }
 
     // Wrap the child in a GestureDetector to handle tap events.
-    return GestureDetector(onTapUp: (details) => onTapUp!(details, context), key: gestureDetectorKey, child: child);
+    return GestureDetector(
+      onTapUp: enableGestureDetection && onTapUp != null ? (details) => onTapUp!(details, context) : null,
+      onSecondaryTapUp: enableSecondaryGestureDetection && onSecondaryTapUp != null
+          ? (details) => onSecondaryTapUp!(details, context)
+          : null,
+      key: gestureDetectorKey,
+      child: child,
+    );
   }
 }
