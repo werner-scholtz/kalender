@@ -31,7 +31,7 @@ class MultiDayEventOverlayTile extends EventTile {
           event,
           renderObject,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange,
+            dateTimeRange: dateTimeRange.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
@@ -47,7 +47,7 @@ class MultiDayEventOverlayTile extends EventTile {
           event,
           renderObject,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange,
+            dateTimeRange: dateTimeRange.forLocation(location: context.location),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),

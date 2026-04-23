@@ -95,18 +95,19 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     if (callbacks?.onTappedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
-      DayDetail(renderBox: renderBox, localOffset: localPosition, date: dateTime),
+      DayDetail(
+          renderBox: renderBox, localOffset: localPosition, date: dateTime.forLocation(location: context.location)),
     );
   }
 
   void _onLongPress(BuildContext context, InternalDateTime date, Offset position) {
     final dateTime = _calculateTimeAndDate(date, position);
-    callbacks?.onLongPressed?.call(dateTime);
+    callbacks?.onLongPressed?.call(dateTime.forLocation(location: context.location));
 
     if (callbacks?.onLongPressedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
-      DayDetail(date: dateTime, renderBox: renderBox, localOffset: position),
+      DayDetail(date: dateTime.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
     );
   }
 
@@ -117,18 +118,19 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     if (callbacks?.onSecondaryTappedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryTappedWithDetail?.call(
-      DayDetail(renderBox: renderBox, localOffset: localPosition, date: dateTime),
+      DayDetail(
+          renderBox: renderBox, localOffset: localPosition, date: dateTime.forLocation(location: context.location)),
     );
   }
 
   void _onSecondaryLongPress(BuildContext context, InternalDateTime date, Offset position) {
     final dateTime = _calculateTimeAndDate(date, position);
-    callbacks?.onSecondaryLongPressed?.call(dateTime);
+    callbacks?.onSecondaryLongPressed?.call(dateTime.forLocation(location: context.location));
 
     if (callbacks?.onSecondaryLongPressedWithDetail == null) return;
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryLongPressedWithDetail?.call(
-      DayDetail(date: dateTime, renderBox: renderBox, localOffset: position),
+      DayDetail(date: dateTime.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
     );
   }
 
