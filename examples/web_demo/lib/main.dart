@@ -160,8 +160,6 @@ class _DesktopHomePageState extends State<DesktopHomePage> {
         ),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 12),
         actions: [
-          const WarningButton(),
-          const SizedBox(width: 8),
           const ThemeButton(),
           const SizedBox(width: 4),
           const TextDirectionButton(),
