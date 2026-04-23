@@ -8,6 +8,13 @@
 - `EmptyDayBehavior.showToday` in `ScheduleBody` now respects `nowCallback`.
 - Added static `todayKey` constants on `DayHeader`, `MonthDayHeader`, and `ScheduleDate` for easier widget-test assertions.
 
+### Fixes
+
+- TimeOfDay extensions (incorrect copyWith)
+- Week and DayHeaders returning InternalDateTime
+- Resize handle dragAnchorStrategy
+- CalendarEvent passed to builders (sometimes outdated)
+
 ### Tests
 
 - Added unit tests for `InternalDateTime.isToday(now:)` parameter.
