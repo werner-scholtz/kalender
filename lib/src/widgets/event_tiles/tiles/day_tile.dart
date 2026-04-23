@@ -25,12 +25,13 @@ class DayEventTile extends EventTile {
   EventTileOnTapUp? get onTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
+        final exactTime = _calculateExactTime(details.localPosition, context);
         context.callbacks?.onEventTapped?.call(event, renderObject);
         context.callbacks?.onEventTappedWithDetail?.call(
           event,
           renderObject,
           DayDetail(
-            date: dateTimeRange.start.forLocation(location: context.location),
+            date: exactTime,
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
@@ -41,17 +42,32 @@ class DayEventTile extends EventTile {
   EventTileOnTapUp? get onSecondaryTapUp => (details, context) {
         // Find the global position and size of the tile.
         final renderObject = context.findRenderObject()! as RenderBox;
+        final exactTime = _calculateExactTime(details.localPosition, context);
         context.callbacks?.onEventSecondaryTapped?.call(event, renderObject);
         context.callbacks?.onEventSecondaryTappedWithDetail?.call(
           event,
           renderObject,
           DayDetail(
-            date: dateTimeRange.start.forLocation(location: context.location),
+            date: exactTime,
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
         );
       };
+
+  DateTime _calculateExactTime(Offset localPosition, BuildContext context) {
+    var date = dateTimeRange.start;
+    try {
+      final heightPerMinute = context.heightPerMinute;
+      if (heightPerMinute > 0) {
+        final minutes = (localPosition.dy / heightPerMinute).round();
+        date = date.add(Duration(minutes: minutes));
+      }
+    } catch (_) {
+      // Fallback if HeightPerMinute provider is not present
+    }
+    return date.forLocation(location: context.location);
+  }
 
   @override
   Key get rescheduleKey => DayEventTile.rescheduleDraggableKey(event.id);

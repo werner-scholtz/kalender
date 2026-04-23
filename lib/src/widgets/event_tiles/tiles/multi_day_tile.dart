@@ -30,7 +30,7 @@ class MultiDayEventTile extends EventTile {
           event,
           renderObject,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange.forLocation(location: context.location),
+            dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
@@ -46,12 +46,23 @@ class MultiDayEventTile extends EventTile {
           event,
           renderObject,
           MultiDayDetail(
-            dateTimeRange: dateTimeRange.forLocation(location: context.location),
+            dateTimeRange: _calculateExactDayRange(details.localPosition, renderObject.size, context),
             renderBox: renderObject,
             localOffset: details.localPosition,
           ),
         );
       };
+
+  DateTimeRange _calculateExactDayRange(Offset localPosition, Size size, BuildContext context) {
+    var date = dateTimeRange.start;
+    if (size.width > 0) {
+      final percentage = (localPosition.dx / size.width).clamp(0.0, 1.0);
+      final daysOffset = (dateTimeRange.duration.inDays * percentage).truncate();
+      date = date.add(Duration(days: daysOffset));
+    }
+    final range = InternalDateTimeRange(start: date.startOfDay, end: date.endOfDay);
+    return range.forLocation(location: context.location);
+  }
 
   @override
   Key get rescheduleKey => MultiDayEventTile.rescheduleDraggableKey(event.id);

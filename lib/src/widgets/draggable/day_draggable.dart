@@ -96,7 +96,10 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       DayDetail(
-          renderBox: renderBox, localOffset: localPosition, date: dateTime.forLocation(location: context.location)),
+        renderBox: renderBox,
+        localOffset: localPosition,
+        date: dateTime.forLocation(location: context.location),
+      ),
     );
   }
 
@@ -119,7 +122,10 @@ class _DayDraggableState extends State<DayDraggable> with NewDraggableWidget {
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryTappedWithDetail?.call(
       DayDetail(
-          renderBox: renderBox, localOffset: localPosition, date: dateTime.forLocation(location: context.location)),
+        renderBox: renderBox,
+        localOffset: localPosition,
+        date: dateTime.forLocation(location: context.location),
+      ),
     );
   }
 

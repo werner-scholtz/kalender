@@ -80,9 +80,10 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onTappedWithDetail?.call(
       MultiDayDetail(
-          dateTimeRange: range.forLocation(location: context.location),
-          renderBox: renderBox,
-          localOffset: localPosition),
+        dateTimeRange: range.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: localPosition,
+      ),
     );
   }
 
@@ -94,7 +95,10 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onLongPressedWithDetail?.call(
       MultiDayDetail(
-          dateTimeRange: range.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
+        dateTimeRange: range.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: position,
+      ),
     );
   }
 
@@ -106,9 +110,10 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryTappedWithDetail?.call(
       MultiDayDetail(
-          dateTimeRange: range.forLocation(location: context.location),
-          renderBox: renderBox,
-          localOffset: localPosition),
+        dateTimeRange: range.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: localPosition,
+      ),
     );
   }
 
@@ -120,7 +125,10 @@ class _MultiDayDraggableState extends State<MultiDayDraggable> with NewDraggable
     final renderBox = context.findRenderObject() as RenderBox;
     callbacks?.onSecondaryLongPressedWithDetail?.call(
       MultiDayDetail(
-          dateTimeRange: range.forLocation(location: context.location), renderBox: renderBox, localOffset: position),
+        dateTimeRange: range.forLocation(location: context.location),
+        renderBox: renderBox,
+        localOffset: position,
+      ),
     );
   }
 

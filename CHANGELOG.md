@@ -1,3 +1,11 @@
+## 0.18.2
+
+### Features
+
+- `TapDetail` from `*WithDetail` callbacks now calculates the exact `DateTime` under the cursor or finger tap based on spatio-temporal position within the event UI, rather than returning the event's start time.
+
+---
+
 ## 0.18.1
 
 ### Features

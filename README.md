@@ -55,10 +55,6 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Preview
 
-| MultiDay (week) | Month | Schedule |
-| --- | --- | --- |
-| ![MultiDay View](readme_assets/week_view.png) | ![Month View](readme_assets/month_view.png) | ![Schedule View](readme_assets/schedule_view.png) |
-
 See all views — desktop & mobile, light & dark — in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
 
 ---
@@ -559,6 +555,8 @@ CalendarCallbacks(
   onEventTapped: (event, renderBox) {},
 
   // Called when an event tile is tapped — includes tap position detail.
+  // The 'detail' parameter provides the tap location and its exact calculated 'DateTime'
+  // position based on the tapped position within the event UI.
   onEventTappedWithDetail: (event, renderBox, detail) {},
 
   // Called when an event is secondary tapped (right-clicked).

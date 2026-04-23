@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart';
@@ -291,7 +291,7 @@ void main() {
       expect(tappedRenderBox, isNull);
       expect(tappedDetail, isNull);
 
-      await tester.tap(gestureDetector);
+      await tester.tapAt(tester.getTopLeft(gestureDetector) + const Offset(0, 60));
       await tester.pumpAndSettle();
 
       expect(tappedEvent, isNotNull);
@@ -299,6 +299,10 @@ void main() {
       expect(tappedRenderBox, isNotNull);
       expect(tappedDetail, isNotNull);
       expect(tappedDetail!.isDayDetail, isTrue);
+
+      final dayDetail = tappedDetail as DayDetail;
+      expect(dayDetail.date.isAfter(DateTime(2025, 1, 1, 1, 0)), isTrue);
+      expect(dayDetail.date.isBefore(DateTime(2025, 1, 1, 12, 0)), isTrue);
     });
 
     testWidgets('onPageChanged fires when navigating pages', (tester) async {
