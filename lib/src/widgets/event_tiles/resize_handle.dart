@@ -187,16 +187,12 @@ class ResizeHandle extends StatelessWidget {
   /// The tile components used to build the resize handle.
   final TileComponents tileComponents;
 
-  /// The length of the resize handle.
-  final double length;
-
   /// Creates an instance of [ResizeHandle].
   const ResizeHandle({
     super.key,
     required this.event,
     required this.tileComponents,
     required this.direction,
-    required this.length,
   });
 
   /// The resize event data.
@@ -210,12 +206,8 @@ class ResizeHandle extends StatelessWidget {
 
     return Draggable<Resize>(
       data: data,
-      feedback: Container(
-        color: Colors.transparent,
-        width: length,
-        height: 10,
-      ),
-      dragAnchorStrategy: tileComponents.dragAnchorStrategy ?? childDragAnchorStrategy,
+      feedback: const SizedBox(),
+      dragAnchorStrategy: tileComponents.resizeDragAnchorStrategy ?? childDragAnchorStrategy,
       onDragStarted: () {
         context.calendarController.selectEvent(event, internal: true);
         context.callbacks?.onEventChange?.call(event);

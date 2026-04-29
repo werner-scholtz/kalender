@@ -1,3 +1,13 @@
+## 0.18.4
+
+### Fixes
+
+- Reverted `ResizeHandle` and `ResizeHandles` now take a `length` parameter.
+
+### Features
+
+- Added `resizeDragAnchorStrategy` to TileComponents.
+
 ## 0.18.3
 
 ### Fixes

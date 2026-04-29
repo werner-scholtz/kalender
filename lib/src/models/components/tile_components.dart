@@ -34,6 +34,9 @@ class TileComponents {
   /// The dragAnchorStrategy used by the [feedbackTileBuilder].
   final DragAnchorStrategy? dragAnchorStrategy;
 
+  /// The dragAnchorStrategy used by the resize handles.
+  final DragAnchorStrategy? resizeDragAnchorStrategy;
+
   /// The widget that positions and sizes the resize handles.
   final ResizeHandlePositioner? resizeHandlePositioner;
 
@@ -50,6 +53,7 @@ class TileComponents {
     this.feedbackTileBuilder,
     this.overlayTileBuilder,
     this.dragAnchorStrategy,
+    this.resizeDragAnchorStrategy,
     this.resizeHandlePositioner,
     this.verticalResizeHandle,
     this.horizontalResizeHandle,
@@ -87,6 +91,7 @@ class ScheduleTileComponents extends TileComponents {
     super.feedbackTileBuilder,
     super.overlayTileBuilder,
     super.dragAnchorStrategy,
+    super.resizeDragAnchorStrategy,
     this.emptyItemBuilder,
     this.monthItemBuilder,
   });
