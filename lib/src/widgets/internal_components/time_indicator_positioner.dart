@@ -45,7 +45,7 @@ class TimeIndicatorPositioner extends StatefulWidget {
 ///
 /// This class manages the positioning logic and listens to page offset changes
 /// to keep the time indicator properly positioned relative to the current view.
-class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
+class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with WidgetsBindingObserver {
   /// The [MultiDayViewController] that controls the calendar view.
   MultiDayViewController? viewController;
 
@@ -55,8 +55,8 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
   /// the time indicator will be hidden to improve performance.
   static const double _visibilityThreshold = 1.0;
 
-  /// Timer that triggers daily updates at midnight.
-  Timer? _dailyUpdateTimer;
+  /// Timer that triggers periodically to check if the day has changed.
+  Timer? _dateCheckTimer;
 
   /// The page number that contains today's date.
   ///
@@ -96,6 +96,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _setup();
   }
 
@@ -107,8 +108,16 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
 
   @override
   void dispose() {
-    _dailyUpdateTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _dateCheckTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkIfDayChanged();
+    }
   }
 
   /// Sets up the initial state of the time indicator positioner.
@@ -150,37 +159,34 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> {
     todayIndex = range.dates().indexOf(now);
   }
 
-  /// Sets up a timer that triggers every day at midnight to update the today page number.
+  /// Sets up a timer that reliably triggers every minute to check if the date has changed.
   void _setupDailyTimer() {
     // Cancel any existing timer to avoid multiple timers running simultaneously
-    _dailyUpdateTimer?.cancel();
+    _dateCheckTimer?.cancel();
 
     // Update the today page number immediately.
     _updatePageNumberAndIndex();
 
-    final nowCallback = widget.viewController.viewConfiguration.nowCallback;
-    final now = nowCallback != null ? nowCallback() : DateTime.now();
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    final timeUntilMidnight = tomorrow.difference(now);
+    // Set up a 1-minute recurring timer that checks for day changes
+    _dateCheckTimer = Timer.periodic(const Duration(minutes: 1), (_) {
+      _checkIfDayChanged();
+    });
+  }
 
-    // Set up the first timer to trigger at the next midnight
-    _dailyUpdateTimer = Timer(timeUntilMidnight, () {
-      _updatePageNumberAndIndex();
-      // Update the page offset to reflect the new today page
+  /// Checks if the day has changed since the last calculation.
+  void _checkIfDayChanged() {
+    final oldPageNumber = todayPageNumber;
+    final oldIndex = todayIndex;
+
+    _updatePageNumberAndIndex();
+
+    // Only trigger a rebuild if the day actually changed
+    if (oldPageNumber != todayPageNumber || oldIndex != todayIndex) {
       pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
       if (mounted) {
         setState(() {});
       }
-
-      // Set up recurring daily timer
-      _dailyUpdateTimer = Timer.periodic(const Duration(days: 1), (_) {
-        _updatePageNumberAndIndex();
-        pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    });
+    }
   }
 
   @override
