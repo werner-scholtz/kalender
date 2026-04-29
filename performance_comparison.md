@@ -1,23 +1,25 @@
 ## Summary
 
+**Critical Performance Issues:**
+- 🔴 **ten_events_per_day-month-navigation**: Frame build time increased by 22.8%
+- 🔴 **ten_events_per_day-week-scrolling**: Frame build time increased by 31.1%
+- 🔴 **one_event_per_day-month-loadingEvents**: Frame build time increased by 40.4%
+- 🔴 **one_event_per_day-schedule-loadingEvents**: Frame build time increased by 25.7%
+
 **Minor Performance Regressions:**
-- 🟠 **ten_events_per_day-month-resizing**: Frame build time increased by 7.6%
-- 🟠 **one_event_per_day-month-resizing**: Frame build time increased by 14.5%
+- 🟠 **one_event_per_day-month-navigation**: Frame build time increased by 7.6%
+- 🟠 **ten_events_per_day-week-navigation**: Frame build time increased by 14.6%
+- 🟠 **ten_events_per_day-schedule-loadingEvents**: Frame build time increased by 10.6%
+- 🟠 **ten_events_per_day-week-resizing**: Frame build time increased by 13.5%
+- 🟠 **ten_events_per_day-schedule-navigation**: Frame build time increased by 5.6%
+- 🟠 **one_event_per_day-schedule-navigation**: Frame build time increased by 10.5%
+- 🟠 **ten_events_per_day-schedule-rescheduling**: Frame build time increased by 9.5%
 
 **Performance Improvements:**
-- 🟢 **ten_events_per_day-week-resizing**: Frame build time improved by 11.4%
-- 🟢 **one_event_per_day-week-resizing**: Frame build time improved by 10.9%
-- 🟢 **one_event_per_day-schedule-navigation**: Frame build time improved by 10.2%
-- 🟢 **ten_events_per_day-week-scrolling**: Frame build time improved by 10.6%
-- 🟢 **one_event_per_day-schedule-loadingEvents**: Frame build time improved by 17.8%
-- 🟢 **ten_events_per_day-month-navigation**: Frame build time improved by 11.1%
-- 🟢 **ten_events_per_day-week-rescheduling**: Frame build time improved by 10.6%
-- 🟢 **one_event_per_day-month-loadingEvents**: Frame build time improved by 26.0%
-- 🟢 **ten_events_per_day-schedule-navigation**: Frame build time improved by 15.6%
-- 🟢 **ten_events_per_day-month-loadingEvents**: Frame build time improved by 11.4%
-- 🟢 **ten_events_per_day-schedule-loadingEvents**: Frame build time improved by 14.6%
-- 🟢 **ten_events_per_day-month-rescheduling**: Frame build time improved by 17.9%
-- 🟢 **ten_events_per_day-week-navigation**: Frame build time improved by 18.2%
+- 🟢 **ten_events_per_day-week-loadingEvents**: Frame build time improved by 16.3%
+- 🟢 **ten_events_per_day-month-resizing**: Frame build time improved by 18.0%
+- 🟢 **one_event_per_day-week-resizing**: Frame build time improved by 16.8%
+- 🟢 **one_event_per_day-month-resizing**: Frame build time improved by 28.2%
 
 **Analysis Overview:**
 - Total scenarios: 24
@@ -30,94 +32,94 @@
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 2.02ms | 2.73ms | -0.71ms (-26.0%) | 🟢 |
-| Worst Frame Build Time Millis | 4.69ms | 6.93ms | -2.23ms (-32.3%) | 🟢 |
+| Average Frame Build Time Millis | 2.83ms | 2.02ms | +0.82ms (+40.4%) | 🔴 |
+| Worst Frame Build Time Millis | 7.23ms | 4.69ms | +2.54ms (+54.0%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 3.32ms | 4.02ms | -0.70ms (-17.3%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 4.71ms | 3.32ms | +1.39ms (+41.8%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 1.0 | 0.5 | +0 (+100.0%) | 🔴 |
+| New Gen Gc Count | 0.5 | 1.0 | -0 (-50.0%) | 🟢 |
 | Old Gen Gc Count | 2.0 | 2.0 | +0 (+0.0%) | 🟡 |
 
 #### one_event_per_day-month-navigation
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 4.56ms | 5.03ms | -0.47ms (-9.3%) | 🟢 |
-| Worst Frame Build Time Millis | 13.86ms | 16.40ms | -2.54ms (-15.5%) | 🟢 |
-| Missed Frame Build Budget Count | 0.0 | 0.5 | -0 (-100.0%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 4.45ms | 5.55ms | -1.09ms (-19.7%) | 🟢 |
+| Average Frame Build Time Millis | 4.90ms | 4.56ms | +0.34ms (+7.6%) | 🟠 |
+| Worst Frame Build Time Millis | 17.42ms | 13.86ms | +3.56ms (+25.7%) | 🔴 |
+| Missed Frame Build Budget Count | 0.75 | 0.0 | +1 (+0.0%) | 🟡 |
+| Average Frame Rasterizer Time Millis | 5.97ms | 4.45ms | +1.52ms (+34.1%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.25 | 0.25 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 4.0 | 5.0 | -1 (-20.0%) | 🟢 |
-| Old Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
+| New Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
+| Old Gen Gc Count | 5.0 | 4.0 | +1 (+25.0%) | 🔴 |
 
 #### one_event_per_day-month-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.66ms | 0.72ms | -0.06ms (-8.1%) | 🟢 |
-| Worst Frame Build Time Millis | 2.80ms | 3.15ms | -0.34ms (-10.9%) | 🟢 |
+| Average Frame Build Time Millis | 0.64ms | 0.66ms | -0.02ms (-2.8%) | 🟡 |
+| Worst Frame Build Time Millis | 3.32ms | 2.80ms | +0.52ms (+18.4%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 4.19ms | 5.25ms | -1.06ms (-20.2%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 1.25 | 1.75 | -0 (-28.6%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 5.51ms | 4.19ms | +1.32ms (+31.6%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 2.0 | 1.25 | +1 (+60.0%) | 🔴 |
 | New Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 3.5 | 3.5 | +0 (+0.0%) | 🟡 |
+| Old Gen Gc Count | 4.0 | 3.5 | +0 (+14.3%) | 🔴 |
 
 #### one_event_per_day-month-resizing
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.55ms | 0.48ms | +0.07ms (+14.5%) | 🔴 |
-| Worst Frame Build Time Millis | 2.33ms | 2.23ms | +0.11ms (+4.8%) | 🟠 |
+| Average Frame Build Time Millis | 0.40ms | 0.55ms | -0.16ms (-28.2%) | 🟢 |
+| Worst Frame Build Time Millis | 2.01ms | 2.33ms | -0.32ms (-13.8%) | 🟢 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 4.89ms | 4.76ms | +0.13ms (+2.8%) | 🟠 |
+| Average Frame Rasterizer Time Millis | 4.74ms | 4.89ms | -0.15ms (-3.1%) | 🟡 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 1.5 | 1.5 | +0 (+0.0%) | 🟡 |
+| New Gen Gc Count | 0.5 | 1.5 | -1 (-66.7%) | 🟢 |
 | Old Gen Gc Count | 1.5 | 1.5 | +0 (+0.0%) | 🟡 |
 
 #### one_event_per_day-schedule-loadingEvents
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 8.16ms | 9.93ms | -1.77ms (-17.8%) | 🟢 |
-| Worst Frame Build Time Millis | 22.66ms | 27.17ms | -4.51ms (-16.6%) | 🟢 |
+| Average Frame Build Time Millis | 10.25ms | 8.16ms | +2.10ms (+25.7%) | 🔴 |
+| Worst Frame Build Time Millis | 28.51ms | 22.66ms | +5.85ms (+25.8%) | 🔴 |
 | Missed Frame Build Budget Count | 1.0 | 1.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 4.27ms | 4.96ms | -0.69ms (-13.9%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 6.19ms | 4.27ms | +1.92ms (+44.8%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 2.5 | 2.0 | +0 (+25.0%) | 🔴 |
-| Old Gen Gc Count | 2.5 | 2.0 | +0 (+25.0%) | 🔴 |
+| New Gen Gc Count | 2.0 | 2.5 | -0 (-20.0%) | 🟢 |
+| Old Gen Gc Count | 2.0 | 2.5 | -0 (-20.0%) | 🟢 |
 
 #### one_event_per_day-schedule-navigation
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 6.63ms | 7.39ms | -0.75ms (-10.2%) | 🟢 |
-| Worst Frame Build Time Millis | 12.21ms | 14.58ms | -2.37ms (-16.3%) | 🟢 |
+| Average Frame Build Time Millis | 7.33ms | 6.63ms | +0.70ms (+10.5%) | 🔴 |
+| Worst Frame Build Time Millis | 14.31ms | 12.21ms | +2.10ms (+17.2%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 5.07ms | 6.69ms | -1.62ms (-24.2%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 6.97ms | 5.07ms | +1.91ms (+37.6%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 5.5 | 5.5 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 3.5 | 3.0 | +0 (+16.7%) | 🔴 |
+| Old Gen Gc Count | 2.5 | 3.5 | -1 (-28.6%) | 🟢 |
 
 #### one_event_per_day-schedule-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 2.24ms | 2.30ms | -0.06ms (-2.5%) | 🟡 |
-| Worst Frame Build Time Millis | 22.48ms | 26.68ms | -4.19ms (-15.7%) | 🟢 |
-| Missed Frame Build Budget Count | 1.0 | 1.5 | -0 (-33.3%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 5.20ms | 6.65ms | -1.45ms (-21.9%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 2.0 | -2 (-100.0%) | 🟢 |
-| New Gen Gc Count | 8.0 | 8.5 | -0 (-5.9%) | 🟢 |
-| Old Gen Gc Count | 3.5 | 4.5 | -1 (-22.2%) | 🟢 |
+| Average Frame Build Time Millis | 2.34ms | 2.24ms | +0.11ms (+4.8%) | 🟠 |
+| Worst Frame Build Time Millis | 30.54ms | 22.48ms | +8.06ms (+35.8%) | 🔴 |
+| Missed Frame Build Budget Count | 1.0 | 1.0 | +0 (+0.0%) | 🟡 |
+| Average Frame Rasterizer Time Millis | 6.70ms | 5.20ms | +1.50ms (+28.9%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 1.75 | 0.0 | +2 (+0.0%) | 🟡 |
+| New Gen Gc Count | 10.0 | 8.0 | +2 (+25.0%) | 🔴 |
+| Old Gen Gc Count | 5.5 | 3.5 | +2 (+57.1%) | 🔴 |
 
 #### one_event_per_day-week-loadingEvents
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.63ms | 0.69ms | -0.06ms (-8.9%) | 🟢 |
-| Worst Frame Build Time Millis | 1.61ms | 1.82ms | -0.22ms (-11.8%) | 🟢 |
+| Average Frame Build Time Millis | 0.65ms | 0.63ms | +0.02ms (+3.9%) | 🟠 |
+| Worst Frame Build Time Millis | 1.69ms | 1.61ms | +0.09ms (+5.3%) | 🟠 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 3.12ms | 3.66ms | -0.54ms (-14.6%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 3.88ms | 3.12ms | +0.75ms (+24.1%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | Old Gen Gc Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
@@ -126,106 +128,106 @@
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 2.57ms | 2.85ms | -0.28ms (-9.7%) | 🟢 |
-| Worst Frame Build Time Millis | 10.05ms | 10.17ms | -0.12ms (-1.1%) | 🟡 |
+| Average Frame Build Time Millis | 2.50ms | 2.57ms | -0.07ms (-2.9%) | 🟡 |
+| Worst Frame Build Time Millis | 9.27ms | 10.05ms | -0.78ms (-7.8%) | 🟢 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 3.31ms | 4.08ms | -0.78ms (-19.0%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 4.20ms | 3.31ms | +0.89ms (+27.0%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 2.0 | 2.5 | -0 (-20.0%) | 🟢 |
+| Old Gen Gc Count | 2.0 | 2.0 | +0 (+0.0%) | 🟡 |
 
 #### one_event_per_day-week-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.70ms | 0.72ms | -0.02ms (-2.4%) | 🟡 |
-| Worst Frame Build Time Millis | 3.45ms | 5.02ms | -1.57ms (-31.2%) | 🟢 |
+| Average Frame Build Time Millis | 0.66ms | 0.70ms | -0.04ms (-5.7%) | 🟢 |
+| Worst Frame Build Time Millis | 3.33ms | 3.45ms | -0.12ms (-3.5%) | 🟡 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 3.60ms | 4.27ms | -0.67ms (-15.7%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.25 | 0.75 | -0 (-66.7%) | 🟢 |
-| New Gen Gc Count | 5.0 | 4.0 | +1 (+25.0%) | 🔴 |
-| Old Gen Gc Count | 3.0 | 2.5 | +0 (+20.0%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 4.62ms | 3.60ms | +1.02ms (+28.4%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 1.25 | 0.25 | +1 (+400.0%) | 🔴 |
+| New Gen Gc Count | 4.5 | 5.0 | -0 (-10.0%) | 🟢 |
+| Old Gen Gc Count | 2.5 | 3.0 | -0 (-16.7%) | 🟢 |
 
 #### one_event_per_day-week-resizing
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.49ms | 0.55ms | -0.06ms (-10.9%) | 🟢 |
-| Worst Frame Build Time Millis | 2.98ms | 2.91ms | +0.07ms (+2.5%) | 🟠 |
+| Average Frame Build Time Millis | 0.41ms | 0.49ms | -0.08ms (-16.8%) | 🟢 |
+| Worst Frame Build Time Millis | 1.96ms | 2.98ms | -1.02ms (-34.3%) | 🟢 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 3.36ms | 4.45ms | -1.09ms (-24.5%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 0.25 | -0 (-100.0%) | 🟢 |
-| New Gen Gc Count | 0.0 | 1.5 | -2 (-100.0%) | 🟢 |
-| Old Gen Gc Count | 1.0 | 0.5 | +0 (+100.0%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 4.04ms | 3.36ms | +0.68ms (+20.3%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
+| New Gen Gc Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
+| Old Gen Gc Count | 0.0 | 1.0 | -1 (-100.0%) | 🟢 |
 
 #### one_event_per_day-week-scrolling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 1.81ms | 1.86ms | -0.05ms (-2.6%) | 🟡 |
-| Worst Frame Build Time Millis | 3.66ms | 3.63ms | +0.03ms (+0.7%) | 🟠 |
+| Average Frame Build Time Millis | 1.87ms | 1.81ms | +0.05ms (+2.9%) | 🟠 |
+| Worst Frame Build Time Millis | 4.43ms | 3.66ms | +0.77ms (+21.2%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 4.57ms | 5.18ms | -0.60ms (-11.6%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 5.67ms | 4.57ms | +1.09ms (+23.9%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.25 | 0.25 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 3.5 | 2.0 | +2 (+75.0%) | 🔴 |
+| Old Gen Gc Count | 1.5 | 3.5 | -2 (-57.1%) | 🟢 |
 
 #### ten_events_per_day-month-loadingEvents
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 6.59ms | 7.44ms | -0.85ms (-11.4%) | 🟢 |
-| Worst Frame Build Time Millis | 20.93ms | 29.12ms | -8.19ms (-28.1%) | 🟢 |
-| Missed Frame Build Budget Count | 4.25 | 5.25 | -1 (-19.0%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 6.91ms | 9.09ms | -2.18ms (-24.0%) | 🟢 |
+| Average Frame Build Time Millis | 6.67ms | 6.59ms | +0.08ms (+1.2%) | 🟠 |
+| Worst Frame Build Time Millis | 23.18ms | 20.93ms | +2.25ms (+10.7%) | 🔴 |
+| Missed Frame Build Budget Count | 5.25 | 4.25 | +1 (+23.5%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 9.37ms | 6.91ms | +2.46ms (+35.5%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 10.0 | 9.5 | +0 (+5.3%) | 🟠 |
+| New Gen Gc Count | 9.5 | 10.0 | -0 (-5.0%) | 🟢 |
 | Old Gen Gc Count | 5.5 | 5.5 | +0 (+0.0%) | 🟡 |
 
 #### ten_events_per_day-month-navigation
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 12.33ms | 13.88ms | -1.55ms (-11.1%) | 🟢 |
-| Worst Frame Build Time Millis | 35.94ms | 39.13ms | -3.19ms (-8.2%) | 🟢 |
-| Missed Frame Build Budget Count | 3.25 | 3.75 | -0 (-13.3%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 6.81ms | 9.61ms | -2.81ms (-29.2%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 0.5 | -0 (-100.0%) | 🟢 |
-| New Gen Gc Count | 8.0 | 8.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 5.0 | 6.0 | -1 (-16.7%) | 🟢 |
+| Average Frame Build Time Millis | 15.14ms | 12.33ms | +2.81ms (+22.8%) | 🔴 |
+| Worst Frame Build Time Millis | 53.06ms | 35.94ms | +17.12ms (+47.6%) | 🔴 |
+| Missed Frame Build Budget Count | 3.75 | 3.25 | +0 (+15.4%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 9.15ms | 6.81ms | +2.34ms (+34.4%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
+| New Gen Gc Count | 10.0 | 8.0 | +2 (+25.0%) | 🔴 |
+| Old Gen Gc Count | 6.0 | 5.0 | +1 (+20.0%) | 🔴 |
 
 #### ten_events_per_day-month-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 1.22ms | 1.49ms | -0.27ms (-17.9%) | 🟢 |
-| Worst Frame Build Time Millis | 7.60ms | 9.70ms | -2.10ms (-21.6%) | 🟢 |
+| Average Frame Build Time Millis | 1.21ms | 1.22ms | -0.01ms (-1.0%) | 🟡 |
+| Worst Frame Build Time Millis | 9.38ms | 7.60ms | +1.77ms (+23.3%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 5.95ms | 8.99ms | -3.04ms (-33.8%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 5.5 | -6 (-100.0%) | 🟢 |
-| New Gen Gc Count | 6.5 | 8.0 | -2 (-18.8%) | 🟢 |
-| Old Gen Gc Count | 0.5 | 2.0 | -2 (-75.0%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 8.83ms | 5.95ms | +2.88ms (+48.4%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 7.75 | 0.0 | +8 (+0.0%) | 🟡 |
+| New Gen Gc Count | 6.0 | 6.5 | -0 (-7.7%) | 🟢 |
+| Old Gen Gc Count | 1.5 | 0.5 | +1 (+200.0%) | 🔴 |
 
 #### ten_events_per_day-month-resizing
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.77ms | 0.72ms | +0.05ms (+7.6%) | 🟠 |
-| Worst Frame Build Time Millis | 4.16ms | 3.42ms | +0.74ms (+21.5%) | 🔴 |
+| Average Frame Build Time Millis | 0.64ms | 0.77ms | -0.14ms (-18.0%) | 🟢 |
+| Worst Frame Build Time Millis | 3.18ms | 4.16ms | -0.98ms (-23.6%) | 🟢 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 4.54ms | 6.48ms | -1.94ms (-30.0%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 1.0 | 0.5 | +0 (+100.0%) | 🔴 |
-| Old Gen Gc Count | 0.0 | 1.0 | -1 (-100.0%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 6.18ms | 4.54ms | +1.64ms (+36.3%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 0.25 | 0.0 | +0 (+0.0%) | 🟡 |
+| New Gen Gc Count | 0.0 | 1.0 | -1 (-100.0%) | 🟢 |
+| Old Gen Gc Count | 1.0 | 0.0 | +1 (+0.0%) | 🟡 |
 
 #### ten_events_per_day-schedule-loadingEvents
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 4.73ms | 5.54ms | -0.81ms (-14.6%) | 🟢 |
-| Worst Frame Build Time Millis | 19.33ms | 23.13ms | -3.79ms (-16.4%) | 🟢 |
-| Missed Frame Build Budget Count | 2.25 | 4.5 | -2 (-50.0%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 4.93ms | 6.49ms | -1.56ms (-24.0%) | 🟢 |
+| Average Frame Build Time Millis | 5.23ms | 4.73ms | +0.50ms (+10.6%) | 🔴 |
+| Worst Frame Build Time Millis | 23.34ms | 19.33ms | +4.00ms (+20.7%) | 🔴 |
+| Missed Frame Build Budget Count | 3.5 | 2.25 | +1 (+55.6%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 6.73ms | 4.93ms | +1.80ms (+36.5%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 14.0 | 14.0 | +0 (+0.0%) | 🟡 |
 | Old Gen Gc Count | 6.0 | 6.0 | +0 (+0.0%) | 🟡 |
@@ -234,84 +236,84 @@
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 20.44ms | 24.20ms | -3.77ms (-15.6%) | 🟢 |
-| Worst Frame Build Time Millis | 36.78ms | 44.65ms | -7.87ms (-17.6%) | 🟢 |
-| Missed Frame Build Budget Count | 8.0 | 9.0 | -1 (-11.1%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 5.51ms | 7.09ms | -1.58ms (-22.3%) | 🟢 |
+| Average Frame Build Time Millis | 21.58ms | 20.44ms | +1.14ms (+5.6%) | 🟠 |
+| Worst Frame Build Time Millis | 45.62ms | 36.78ms | +8.84ms (+24.0%) | 🔴 |
+| Missed Frame Build Budget Count | 8.5 | 8.0 | +0 (+6.2%) | 🟠 |
+| Average Frame Rasterizer Time Millis | 7.94ms | 5.51ms | +2.44ms (+44.2%) | 🔴 |
 | Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 14.0 | 14.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 9.0 | 8.5 | +0 (+5.9%) | 🟠 |
+| Old Gen Gc Count | 9.0 | 9.0 | +0 (+0.0%) | 🟡 |
 
 #### ten_events_per_day-schedule-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 1.10ms | 1.07ms | +0.03ms (+3.2%) | 🟠 |
-| Worst Frame Build Time Millis | 14.89ms | 17.11ms | -2.22ms (-13.0%) | 🟢 |
-| Missed Frame Build Budget Count | 0.25 | 0.25 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 5.08ms | 6.55ms | -1.48ms (-22.5%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.5 | 1.75 | -1 (-71.4%) | 🟢 |
-| New Gen Gc Count | 6.5 | 6.0 | +0 (+8.3%) | 🟠 |
-| Old Gen Gc Count | 3.5 | 2.5 | +1 (+40.0%) | 🔴 |
+| Average Frame Build Time Millis | 1.21ms | 1.10ms | +0.10ms (+9.5%) | 🟠 |
+| Worst Frame Build Time Millis | 16.30ms | 14.89ms | +1.41ms (+9.5%) | 🟠 |
+| Missed Frame Build Budget Count | 0.75 | 0.25 | +0 (+200.0%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 7.33ms | 5.08ms | +2.26ms (+44.4%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 5.5 | 0.5 | +5 (+1000.0%) | 🔴 |
+| New Gen Gc Count | 6.0 | 6.5 | -0 (-7.7%) | 🟢 |
+| Old Gen Gc Count | 3.0 | 3.5 | -0 (-14.3%) | 🟢 |
 
 #### ten_events_per_day-week-loadingEvents
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 1.37ms | 1.40ms | -0.03ms (-2.1%) | 🟡 |
-| Worst Frame Build Time Millis | 10.11ms | 7.31ms | +2.80ms (+38.2%) | 🔴 |
+| Average Frame Build Time Millis | 1.15ms | 1.37ms | -0.22ms (-16.3%) | 🟢 |
+| Worst Frame Build Time Millis | 7.01ms | 10.11ms | -3.10ms (-30.7%) | 🟢 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 5.25ms | 6.15ms | -0.89ms (-14.5%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.25 | 0.0 | +0 (+0.0%) | 🟡 |
+| Average Frame Rasterizer Time Millis | 6.87ms | 5.25ms | +1.61ms (+30.7%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 0.25 | 0.25 | +0 (+0.0%) | 🟡 |
 | New Gen Gc Count | 4.0 | 4.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 3.0 | 4.0 | -1 (-25.0%) | 🟢 |
+| Old Gen Gc Count | 4.0 | 3.0 | +1 (+33.3%) | 🔴 |
 
 #### ten_events_per_day-week-navigation
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 6.76ms | 8.26ms | -1.50ms (-18.2%) | 🟢 |
-| Worst Frame Build Time Millis | 25.67ms | 28.31ms | -2.64ms (-9.3%) | 🟢 |
-| Missed Frame Build Budget Count | 2.0 | 3.5 | -2 (-42.9%) | 🟢 |
-| Average Frame Rasterizer Time Millis | 7.30ms | 9.49ms | -2.19ms (-23.1%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| New Gen Gc Count | 8.0 | 7.0 | +1 (+14.3%) | 🔴 |
-| Old Gen Gc Count | 5.0 | 6.0 | -1 (-16.7%) | 🟢 |
+| Average Frame Build Time Millis | 7.74ms | 6.76ms | +0.99ms (+14.6%) | 🔴 |
+| Worst Frame Build Time Millis | 27.53ms | 25.67ms | +1.86ms (+7.2%) | 🟠 |
+| Missed Frame Build Budget Count | 2.5 | 2.0 | +0 (+25.0%) | 🔴 |
+| Average Frame Rasterizer Time Millis | 9.94ms | 7.30ms | +2.63ms (+36.1%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 1.0 | 0.0 | +1 (+0.0%) | 🟡 |
+| New Gen Gc Count | 7.0 | 8.0 | -1 (-12.5%) | 🟢 |
+| Old Gen Gc Count | 5.5 | 5.0 | +0 (+10.0%) | 🟠 |
 
 #### ten_events_per_day-week-rescheduling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 1.20ms | 1.34ms | -0.14ms (-10.6%) | 🟢 |
-| Worst Frame Build Time Millis | 4.65ms | 7.38ms | -2.73ms (-37.0%) | 🟢 |
+| Average Frame Build Time Millis | 1.21ms | 1.20ms | +0.01ms (+0.9%) | 🟠 |
+| Worst Frame Build Time Millis | 4.80ms | 4.65ms | +0.15ms (+3.2%) | 🟠 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 8.60ms | 11.17ms | -2.57ms (-23.0%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 1.5 | 17.0 | -16 (-91.2%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 11.40ms | 8.60ms | +2.80ms (+32.5%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 17.0 | 1.5 | +16 (+1033.3%) | 🔴 |
 | New Gen Gc Count | 8.0 | 8.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 2.5 | 2.0 | +0 (+25.0%) | 🔴 |
+| Old Gen Gc Count | 2.0 | 2.5 | -0 (-20.0%) | 🟢 |
 
 #### ten_events_per_day-week-resizing
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 0.91ms | 1.03ms | -0.12ms (-11.4%) | 🟢 |
-| Worst Frame Build Time Millis | 4.43ms | 5.67ms | -1.25ms (-22.0%) | 🟢 |
+| Average Frame Build Time Millis | 1.04ms | 0.91ms | +0.12ms (+13.5%) | 🔴 |
+| Worst Frame Build Time Millis | 5.58ms | 4.43ms | +1.15ms (+26.0%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 8.66ms | 12.32ms | -3.65ms (-29.7%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 2.25 | 2.75 | -0 (-18.2%) | 🟢 |
-| New Gen Gc Count | 1.5 | 2.0 | -0 (-25.0%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 12.22ms | 8.66ms | +3.56ms (+41.1%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 3.5 | 2.25 | +1 (+55.6%) | 🔴 |
+| New Gen Gc Count | 2.0 | 1.5 | +0 (+33.3%) | 🔴 |
 | Old Gen Gc Count | 2.0 | 2.0 | +0 (+0.0%) | 🟡 |
 
 #### ten_events_per_day-week-scrolling
 
 | Metric | Current | Baseline | Change | Status |
 |--------|---------|----------|--------|--------|
-| Average Frame Build Time Millis | 2.89ms | 3.23ms | -0.34ms (-10.6%) | 🟢 |
-| Worst Frame Build Time Millis | 5.98ms | 6.09ms | -0.11ms (-1.9%) | 🟡 |
+| Average Frame Build Time Millis | 3.79ms | 2.89ms | +0.90ms (+31.1%) | 🔴 |
+| Worst Frame Build Time Millis | 10.20ms | 5.98ms | +4.22ms (+70.6%) | 🔴 |
 | Missed Frame Build Budget Count | 0.0 | 0.0 | +0 (+0.0%) | 🟡 |
-| Average Frame Rasterizer Time Millis | 7.70ms | 11.06ms | -3.36ms (-30.3%) | 🟢 |
-| Missed Frame Rasterizer Budget Count | 0.0 | 1.0 | -1 (-100.0%) | 🟢 |
+| Average Frame Rasterizer Time Millis | 11.55ms | 7.70ms | +3.85ms (+49.9%) | 🔴 |
+| Missed Frame Rasterizer Budget Count | 1.75 | 0.0 | +2 (+0.0%) | 🟡 |
 | New Gen Gc Count | 6.0 | 6.0 | +0 (+0.0%) | 🟡 |
-| Old Gen Gc Count | 1.5 | 1.5 | +0 (+0.0%) | 🟡 |
+| Old Gen Gc Count | 2.0 | 1.5 | +0 (+33.3%) | 🔴 |
 
 </details>
