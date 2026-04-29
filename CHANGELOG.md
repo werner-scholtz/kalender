@@ -1,3 +1,9 @@
+## 0.18.3
+
+### Fixes
+
+- `ResizeHandle` and `ResizeHandles` now take a `length` parameter to provide properly sized `Draggable` feedback widgets instead of an empty layout, improving the resizing feedback.
+
 ## 0.18.2
 
 ### Features

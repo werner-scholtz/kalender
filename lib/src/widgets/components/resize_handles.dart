@@ -127,21 +127,23 @@ abstract class ResizeHandles extends StatelessWidget {
   /// The start resize detector.
   ///
   /// The direction is determined by the axis.
-  Widget get startResizeDetector => ResizeHandle(
+  Widget startResizeDetector(double length) => ResizeHandle(
         key: startResizeDraggableKey(event.id),
         event: event,
         tileComponents: tileComponents,
         direction: axis == Axis.vertical ? ResizeDirection.top : ResizeDirection.left,
+        length: length,
       );
 
   /// The end resize detector.
   ///
   /// The direction is determined by the axis.
-  Widget get endResizeDetector => ResizeHandle(
+  Widget endResizeDetector(double length) => ResizeHandle(
         key: endResizeDraggableKey(event.id),
         event: event,
         tileComponents: tileComponents,
         direction: axis == Axis.vertical ? ResizeDirection.bottom : ResizeDirection.right,
+        length: length,
       );
 }
 
@@ -192,14 +194,14 @@ class DefaultResizeHandles extends ResizeHandles {
                   right: isImprecise ? null : 0,
                   width: isImprecise ? handleLength : null,
                   height: handleLength,
-                  child: startResizeDetector,
+                  child: startResizeDetector(length),
                 )
               : Positioned(
                   left: 0,
                   top: 0,
                   bottom: 0,
                   width: handleLength,
-                  child: startResizeDetector,
+                  child: startResizeDetector(length),
                 ),
         if (showEnd(location: location))
           isVertical
@@ -209,14 +211,14 @@ class DefaultResizeHandles extends ResizeHandles {
                   right: 0,
                   width: isImprecise ? handleLength : null,
                   height: handleLength,
-                  child: endResizeDetector,
+                  child: endResizeDetector(length),
                 )
               : Positioned(
                   right: 0,
                   top: 0,
                   bottom: 0,
                   width: handleLength,
-                  child: endResizeDetector,
+                  child: endResizeDetector(length),
                 ),
       ],
     );
