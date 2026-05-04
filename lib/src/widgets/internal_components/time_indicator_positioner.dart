@@ -98,12 +98,13 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _setup();
+    pageOffset = (todayPageNumber - widget.initialPage).toDouble();
   }
 
   @override
   void didUpdateWidget(covariant TimeIndicatorPositioner oldWidget) {
-    _setup();
     super.didUpdateWidget(oldWidget);
+    _setup();
   }
 
   @override
@@ -126,7 +127,7 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     viewController = widget.viewController;
     viewController?.pageOffset.addListener(_listener);
     _setupDailyTimer();
-    pageOffset = (todayPageNumber - widget.initialPage).toDouble();
+    pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
   }
 
   /// Listener callback that triggers a rebuild when the page offset changes.
