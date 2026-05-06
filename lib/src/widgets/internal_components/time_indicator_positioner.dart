@@ -127,7 +127,19 @@ class _TimeIndicatorPositionerState extends State<TimeIndicatorPositioner> with 
     viewController = widget.viewController;
     viewController?.pageOffset.addListener(_listener);
     _setupDailyTimer();
-    pageOffset = todayPageNumber - widget.viewController.pageOffset.value;
+
+    var currentOffset = widget.viewController.pageOffset.value;
+    final pageController = widget.viewController.pageController;
+
+    if (pageController.hasClients && pageController.position.hasPixels) {
+      currentOffset = pageController.page ?? currentOffset;
+    } else if (currentOffset == 0.0) {
+      // Fallback to initialPage if the page controller hasn't laid out yet
+      // and haven't emitted any scroll position updates.
+      currentOffset = widget.initialPage.toDouble();
+    }
+
+    pageOffset = todayPageNumber - currentOffset;
   }
 
   /// Listener callback that triggers a rebuild when the page offset changes.

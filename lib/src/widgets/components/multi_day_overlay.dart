@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
+import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
@@ -245,20 +246,51 @@ class MultiDayOverlay extends StatelessWidget {
                     ),
                     Padding(
                       padding: style?.eventsPadding ?? const EdgeInsets.all(4.0),
-                      child: ListBody(
+                      child: Stack(
                         children: [
-                          for (final event in events)
-                            Padding(
-                              padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
-                              child: SizedBox(
-                                height: tileHeight,
-                                child: overlayTileBuilder(
-                                  event,
-                                  InternalDateTimeRange.fromDateTimeRange(date.dayRange),
-                                  portalController.hide,
+                          ListBody(
+                            children: [
+                              for (final event in events)
+                                Padding(
+                                  padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
+                                  child: SizedBox(
+                                    height: tileHeight,
+                                    child: overlayTileBuilder(
+                                      event,
+                                      InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                      portalController.hide,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                            ],
+                          ),
+                          ValueListenableBuilder<CalendarEvent?>(
+                            valueListenable: context.calendarController.selectedEvent,
+                            builder: (context, selectedEvent, child) {
+                              if (selectedEvent == null) return const SizedBox();
+                              if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
+
+                              final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
+                              if (eventIndex == -1) return const SizedBox();
+
+                              final eventPadding = style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
+                              final verticalPadding = eventPadding.vertical;
+
+                              return Positioned(
+                                top: eventIndex * (tileHeight + verticalPadding),
+                                left: 0,
+                                right: 0,
+                                height: tileHeight + verticalPadding,
+                                child: PassThroughPointer(
+                                  child: Padding(
+                                    padding: eventPadding,
+                                    child:
+                                        context.tileComponents.dropTargetTile?.call(selectedEvent) ?? const SizedBox(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),

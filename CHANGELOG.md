@@ -1,3 +1,10 @@
+## 0.18.5
+
+### Fixes
+
+- Fixed an issue where the highlighted selection border (`dropTargetTile`) was painted on the wrong tile or missing entirely in month view overlapping events and the "X more" overflow drop-down.
+- Fixed a bug where the `TimeIndicator` would disappear when zooming the calendar before any page navigation had occurred.
+
 ## 0.18.4
 
 ### Fixes

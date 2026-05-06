@@ -296,18 +296,24 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         }
         final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.internalDateTimeRange,
-          events: [event],
+          events: widget.events,
           textDirection: widget.textDirection,
           // TODO: check
           cache: null,
           location: widget.location,
         );
 
+        final layoutInfo = frame.layoutInfo.where((info) => info.id == event.id).toList();
+        if (layoutInfo.isEmpty) return const SizedBox();
+
+        final maxNumberOfRows = this.maxNumberOfRows(frame);
+        if (layoutInfo.first.row >= maxNumberOfRows) return const SizedBox();
+
         return CustomMultiChildLayout(
           delegate: MultiDayLayout(
             dateTimeRange: widget.internalDateTimeRange,
-            layoutInfo: frame.layoutInfo,
-            numberOfRows: frame.totalNumberOfRows,
+            layoutInfo: layoutInfo,
+            numberOfRows: maxNumberOfRows,
             tileHeight: widget.configuration.tileHeight,
           ),
           children: [
