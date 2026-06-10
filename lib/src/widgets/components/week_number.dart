@@ -19,6 +19,7 @@ class WeekNumberStyle {
     this.visualDensity,
     this.tooltip,
     this.padding,
+    this.alignment,
   });
 
   /// The [TextStyle] used by the [WeekNumber] widget to display the week number.
@@ -32,6 +33,9 @@ class WeekNumberStyle {
 
   /// The padding around by the [WeekNumber] widget.
   final EdgeInsets? padding;
+
+  /// The alignment of the week number within its available cell.
+  final AlignmentGeometry? alignment;
 }
 
 /// A widget that displays the week number.
@@ -58,7 +62,8 @@ class WeekNumber extends StatelessWidget {
 
     final padding = weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
 
-    return Center(
+    return Align(
+      alignment: weekNumberStyle?.alignment ?? Alignment.center,
       child: Padding(
         padding: padding,
         child: IconButton.filledTonal(

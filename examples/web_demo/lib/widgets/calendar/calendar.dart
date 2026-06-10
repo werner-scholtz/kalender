@@ -178,9 +178,34 @@ class _CalendarContentState extends State<CalendarContent> {
           daySeparatorStyle: DaySeparatorStyle(color: lineColor),
         ),
       ),
+      monthComponents: MonthComponents(
+        bodyComponents: MonthBodyComponents(
+          weekNumberBuilder: _buildWeekNumberText,
+        ),
+      ),
       monthComponentStyles: MonthComponentStyles(
         bodyStyles: MonthBodyComponentStyles(
           monthGridStyle: MonthGridStyle(color: lineColor),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeekNumberText(DateTimeRange visibleDateTimeRange, WeekNumberStyle? style) {
+    final internalDateTimeRange = InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(visibleDateTimeRange.start),
+      end: InternalDateTime.fromExternal(visibleDateTimeRange.end),
+    );
+    final (start, end) = internalDateTimeRange.weekNumbers;
+    final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
+
+    return Align(
+      alignment: style?.alignment ?? Alignment.center,
+      child: Padding(
+        padding: style?.padding ?? const EdgeInsets.symmetric(horizontal: 4),
+        child: Text(
+          weekNumber,
+          style: style?.textStyle,
         ),
       ),
     );

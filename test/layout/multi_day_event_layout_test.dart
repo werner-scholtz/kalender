@@ -35,6 +35,7 @@ void main() {
         key: ValueKey(event.id),
         child: Text(event.id.toString()),
       ),
+      dropTargetTile: (event) => Container(key: const ValueKey('drop-target')),
     );
 
     final start = InternalDateTime(2025, 3, 24);
@@ -50,7 +51,7 @@ void main() {
     // Widget-building helper – avoids repeating the full provider/widget tree.
     // -----------------------------------------------------------------------
     Widget buildLayoutWidget({
-      required MultiDayHeaderConfiguration configuration,
+      required HorizontalConfiguration configuration,
       Widget? sizedBoxWrapper,
     }) {
       final inner = MultiDayEventLayoutWidget(
@@ -77,7 +78,7 @@ void main() {
 
     // Convenience overload that wraps the layout widget inside a SizedBox.
     Widget buildLayoutWidgetSized({
-      required MultiDayHeaderConfiguration configuration,
+      required HorizontalConfiguration configuration,
       required double width,
       required double height,
     }) {
@@ -197,6 +198,49 @@ void main() {
       // The button must show '1 more' (one hidden event).
       final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
       expect(buttonText, equals('1 more'));
+    });
+
+    testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
+      final storedEvent = CalendarEvent(
+        dateTimeRange: DateTimeRange(
+          start: DateTime(2025, 3, 24),
+          end: DateTime(2025, 3, 25),
+        ),
+      );
+      eventsController.addEvent(storedEvent);
+
+      const dayWidth = 80.0;
+      const tileHeight = 40.0;
+
+      await tester.pumpWidget(
+        buildLayoutWidgetSized(
+          configuration: const MonthBodyConfiguration(tileHeight: tileHeight),
+          width: dayWidth * 7,
+          height: tileHeight * 3,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      controller.selectEvent(storedEvent, internal: true);
+      await tester.pump();
+
+      final initialWidth = tester.getSize(find.byKey(const ValueKey('drop-target'))).width;
+
+      controller.selectEvent(
+        storedEvent.copyWith(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 3, 24),
+            end: DateTime(2025, 3, 27),
+          ),
+        ),
+        internal: true,
+      );
+      await tester.pump();
+
+      final resizedWidth = tester.getSize(find.byKey(const ValueKey('drop-target'))).width;
+
+      expect(resizedWidth, greaterThan(initialWidth));
+      expect(resizedWidth, greaterThan(dayWidth * 2.5));
     });
 
     testWidgets('Multiple events', (tester) async {

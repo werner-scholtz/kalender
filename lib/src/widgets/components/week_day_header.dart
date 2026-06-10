@@ -47,14 +47,6 @@ class WeekDayHeader extends StatelessWidget {
     final padding = style?.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final textStyle = style?.textStyle ?? Theme.of(context).textTheme.bodySmall;
     final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
-    return Padding(
-      padding: padding,
-      child: Center(
-        child: Text(
-          dateText,
-          style: textStyle,
-        ),
-      ),
-    );
+    return Padding(padding: padding, child: Center(child: Text(dateText, style: textStyle)));
   }
 }

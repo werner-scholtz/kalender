@@ -1,3 +1,13 @@
+## 0.18.6
+
+### Features
+
+- Added optional month-view week numbers via `MonthViewConfiguration.showWeekNumbers`, with customizable `MonthBodyComponents.weekNumberBuilder` and `MonthBodyComponentStyles.weekNumberStyle`.
+
+### Fixes 
+
+- Fixed a month-view regression where the `dropTargetTile` preview could fail to render while resizing an event.
+
 ## 0.18.5
 
 ### Fixes
