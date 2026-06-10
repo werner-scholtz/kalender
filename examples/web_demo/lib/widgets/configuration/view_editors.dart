@@ -121,6 +121,13 @@ class MonthViewEditor extends StatelessWidget {
             firstDayOfWeek: value,
           ),
         ),
+        SwitchListTile.adaptive(
+          value: viewConfiguration.showWeekNumbers,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            showWeekNumbers: value,
+          ),
+          title: const Text('Show Week Numbers'),
+        ),
       ],
     );
   }

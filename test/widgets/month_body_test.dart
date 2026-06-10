@@ -35,7 +35,12 @@ void main() {
     });
 
     // All cases use firstDayOfWeek = DateTime.monday (the default).
-    Future<void> pumpMonthView(WidgetTester tester, DateTime initialDateTime) =>
+    Future<void> pumpMonthView(
+      WidgetTester tester,
+      DateTime initialDateTime, {
+      bool showWeekNumbers = false,
+      CalendarComponents? components,
+    }) =>
         pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
@@ -44,7 +49,9 @@ void main() {
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: displayRange,
               initialDateTime: initialDateTime,
+              showWeekNumbers: showWeekNumbers,
             ),
+            components: components,
             body: const CalendarBody(),
           ),
         );
@@ -93,6 +100,76 @@ void main() {
         find.byType(MonthDayHeader),
         findsNWidgets(rows * DateTime.daysPerWeek),
         reason: 'Each week row should render ${DateTime.daysPerWeek} day headers',
+      );
+    });
+
+    testWidgets('does not render week numbers by default', (tester) async {
+      await pumpMonthView(tester, DateTime(2025, 1));
+
+      expect(
+        find.byType(WeekNumber),
+        findsNothing,
+        reason: 'Week numbers should be hidden in month view unless explicitly enabled',
+      );
+    });
+
+    testWidgets('renders one week number per row when enabled', (tester) async {
+      const rows = 5; // January 2025 → 5 rows
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+      );
+
+      _expectMonthRows(tester, rows);
+
+      expect(
+        find.byType(WeekNumber),
+        findsNWidgets(rows),
+        reason: 'Expected one week number per month row when enabled',
+      );
+    });
+
+    testWidgets('keeps the month grid at 7 day columns when week numbers are enabled', (tester) async {
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+      );
+
+      expect(
+        find.byType(VerticalDivider),
+        findsNWidgets(8),
+        reason: 'Week numbers should use a leading gutter, not an extra day column',
+      );
+    });
+
+    testWidgets('applies custom week number alignment from style', (tester) async {
+      const rows = 5;
+      final components = CalendarComponents(
+        monthComponentStyles: const MonthComponentStyles(
+          bodyStyles: MonthBodyComponentStyles(
+            weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter),
+          ),
+        ),
+      );
+
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+        components: components,
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Align && widget.alignment == Alignment.topCenter,
+          ),
+        ),
+        findsNWidgets(rows),
+        reason: 'Month week numbers should respect the configured vertical alignment',
       );
     });
   });

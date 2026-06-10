@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 
 /// The month header is a simple widget that just displays the day names.
 class MonthHeader extends StatelessWidget {
@@ -17,7 +18,11 @@ class MonthHeader extends StatelessWidget {
     );
 
     // final viewController = calendarController.viewController as MonthViewController;
+    final viewController = calendarController.viewController as MonthViewController;
+    final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
+    final bodyStyles = calendarComponents.monthComponentStyles.bodyStyles;
+    final bodyComponents = calendarComponents.monthComponents.bodyComponents;
     final styles = calendarComponents.monthComponentStyles.headerStyles;
     final components = calendarComponents.monthComponents.headerComponents;
 
@@ -28,17 +33,32 @@ class MonthHeader extends StatelessWidget {
           debugPrint('Warning: The visibleDateTimeRange is null in MonthHeader.');
           return const SizedBox.shrink();
         }
+        final internalVisibleRange = InternalDateTimeRange.fromDateTimeRange(visibleDateTimeRange);
         final style = styles.weekDayHeaderStyle;
+        final showWeekNumbers = viewConfiguration.showWeekNumbers;
+        final numberOfRows = viewConfiguration.pageIndexCalculator.numberOfRowsForRange(internalVisibleRange);
 
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List<Widget>.generate(
-            7,
-            (index) {
-              final date = visibleDateTimeRange.start.add(Duration(days: index));
-              return components.weekDayHeaderBuilder.call(date, style);
-            },
-          ),
+          children: [
+            if (showWeekNumbers)
+              MonthWeekNumberSpacer(
+                visibleRange: internalVisibleRange,
+                numberOfRows: numberOfRows,
+                weekNumberBuilder: bodyComponents.weekNumberBuilder,
+                weekNumberStyle: bodyStyles.weekNumberStyle,
+              ),
+            Expanded(
+              child: Row(
+                children: List<Widget>.generate(
+                  7,
+                  (index) {
+                    final date = visibleDateTimeRange.start.add(Duration(days: index));
+                    return Expanded(child: components.weekDayHeaderBuilder.call(date, style));
+                  },
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

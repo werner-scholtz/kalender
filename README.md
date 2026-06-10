@@ -282,6 +282,18 @@ Shows an entire month at a glance, weeks as rows.
 | -------------------------------------- | ------------ |
 | `MonthViewConfiguration.singleMonth()` | Single month |
 
+Month view can be adjusted with `firstDayOfWeek` and `showWeekNumbers`:
+
+```dart
+MonthViewConfiguration.singleMonth(
+  initialDateTime: DateTime(2025, 1, 1),
+  firstDayOfWeek: DateTime.monday,
+  showWeekNumbers: true,
+)
+```
+
+When `showWeekNumbers` is enabled, the month body adds a leading gutter with one week number per visible row while keeping the day grid at 7 columns.
+
 ### Schedule View
 Presents events in a chronological scrollable list.
 
@@ -825,6 +837,7 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
         bodyComponents: MonthBodyComponents(
           monthDayHeaderBuilder: (date, style) => SizedBox(),
           monthGridBuilder: (style) => SizedBox(),
+          weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
           leftTriggerBuilder: (pageWidth) => SizedBox(),
           rightTriggerBuilder: (pageWidth) => SizedBox(),
           overlayBuilders: OverlayBuilders(

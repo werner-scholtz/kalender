@@ -2,6 +2,7 @@ import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
+import 'package:kalender/src/widgets/components/week_number.dart';
 import 'package:kalender/src/widgets/month/month_body.dart';
 import 'package:kalender/src/widgets/month/month_header.dart';
 
@@ -29,6 +30,9 @@ class MonthBodyComponents {
   /// A function that builds the month day header widget.
   final MonthDayHeaderBuilder monthDayHeaderBuilder;
 
+  /// A function that builds the week number widget.
+  final WeekNumberBuilder weekNumberBuilder;
+
   /// A function that builds the left trigger widget.
   final HorizontalTriggerWidgetBuilder? leftTriggerBuilder;
 
@@ -42,6 +46,7 @@ class MonthBodyComponents {
   const MonthBodyComponents({
     this.monthGridBuilder = MonthGrid.builder,
     this.monthDayHeaderBuilder = MonthDayHeader.builder,
+    this.weekNumberBuilder = WeekNumber.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
     this.overlayBuilders = const OverlayBuilders(),

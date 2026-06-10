@@ -1,5 +1,9 @@
 ## 0.18.5
 
+### Features
+
+- Added optional month-view week numbers via `MonthViewConfiguration.showWeekNumbers`, with customizable `MonthBodyComponents.weekNumberBuilder` and `MonthBodyComponentStyles.weekNumberStyle`.
+
 ### Fixes
 
 - Fixed an issue where the highlighted selection border (`dropTargetTile`) was painted on the wrong tile or missing entirely in month view overlapping events and the "X more" overflow drop-down.

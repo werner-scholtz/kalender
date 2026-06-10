@@ -10,12 +10,16 @@ class MonthViewConfiguration extends ViewConfiguration {
   /// The first day of the week.
   final int firstDayOfWeek;
 
+  /// Whether week numbers should be shown in month view.
+  final bool showWeekNumbers;
+
   MonthViewConfiguration({
     required super.name,
     super.initialDateTime,
     super.initialDateSelectionStrategy,
     super.nowCallback,
     required this.firstDayOfWeek,
+    required this.showWeekNumbers,
     required this.pageIndexCalculator,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
@@ -30,6 +34,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     super.nowCallback,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
+    this.showWeekNumbers = false,
   }) : pageIndexCalculator = MonthIndexCalculator(
           dateTimeRange: displayRange ?? kDefaultRange(),
           firstDayOfWeek: firstDayOfWeek,
@@ -40,6 +45,7 @@ class MonthViewConfiguration extends ViewConfiguration {
     DateTime? selectedDate,
     InitialDateSelectionStrategy? initialDateSelectionStrategy,
     int? firstDayOfWeek,
+    bool? showWeekNumbers,
     EdgeInsets? eventPadding,
   }) {
     return MonthViewConfiguration.singleMonth(
@@ -47,6 +53,7 @@ class MonthViewConfiguration extends ViewConfiguration {
       initialDateTime: initialDateTime ?? initialDateTime,
       initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
+      showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
       displayRange: pageIndexCalculator.dateTimeRange,
     );
   }
@@ -58,12 +65,13 @@ class MonthViewConfiguration extends ViewConfiguration {
     return other is MonthViewConfiguration &&
         other.initialDateTime == initialDateTime &&
         other.pageIndexCalculator == pageIndexCalculator &&
-        other.firstDayOfWeek == firstDayOfWeek;
+        other.firstDayOfWeek == firstDayOfWeek &&
+        other.showWeekNumbers == showWeekNumbers;
   }
 
   @override
   int get hashCode {
-    return Object.hash(initialDateTime, pageIndexCalculator, firstDayOfWeek);
+    return Object.hash(initialDateTime, pageIndexCalculator, firstDayOfWeek, showWeekNumbers);
   }
 }
 

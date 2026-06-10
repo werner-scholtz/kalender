@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/layout_delegates/month_week_number_layout_delegate.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
+import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 
 /// This widget is used to display a month body.
@@ -33,8 +35,16 @@ class MonthBody extends StatelessWidget {
 
     final viewController = calendarController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
+    final showWeekNumbers = viewConfiguration.showWeekNumbers;
     final configuration = this.configuration ?? const MonthBodyConfiguration();
     final pageNavigation = viewConfiguration.pageIndexCalculator;
+    final components = context.components;
+    final monthComponents = components.monthComponents;
+    final monthStyles = components.monthComponentStyles.bodyStyles;
+    final dividerSide = BorderSide(
+      color: monthStyles.monthGridStyle.color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+      width: monthStyles.monthGridStyle.thickness ?? 0,
+    );
 
     return PageView.builder(
       controller: viewController.pageController,
@@ -48,31 +58,49 @@ class MonthBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
+        final grid = MonthGrid.fromContext(context, numberOfRows);
+        final content = Column(
+          children: List.generate(
+            numberOfRows,
+            (index) {
+              final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
+              final visibleDateTimeRange = InternalDateTimeRange(
+                start: start,
+                end: start.add(const Duration(days: DateTime.daysPerWeek)),
+              );
 
-        return Stack(
+              return Expanded(
+                child: MonthWeek(
+                  key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
+                  internalRange: visibleDateTimeRange,
+                  configuration: configuration,
+                  viewController: viewController,
+                ),
+              );
+            },
+          ),
+        );
+
+        return CustomMultiChildLayout(
+          delegate: MonthWeekNumberBodyLayoutDelegate(
+            gutterId: showWeekNumbers ? 0 : null,
+            gridId: 1,
+            contentId: 2,
+          ),
           children: [
-            Positioned.fill(child: MonthGrid.fromContext(context, numberOfRows)),
-            Positioned.fill(
-              child: Column(
-                children: List.generate(
-                  numberOfRows,
-                  (index) {
-                    final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-                    final visibleDateTimeRange =
-                        InternalDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
-
-                    return Expanded(
-                      child: MonthWeek(
-                        key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
-                        internalRange: visibleDateTimeRange,
-                        configuration: configuration,
-                        viewController: viewController,
-                      ),
-                    );
-                  },
+            if (showWeekNumbers)
+              LayoutId(
+                id: 0,
+                child: MonthWeekNumberGutter(
+                  visibleRange: visibleRange,
+                  numberOfRows: numberOfRows,
+                  weekNumberBuilder: monthComponents.bodyComponents.weekNumberBuilder,
+                  weekNumberStyle: monthStyles.weekNumberStyle,
+                  dividerSide: dividerSide,
                 ),
               ),
-            ),
+            LayoutId(id: 1, child: grid),
+            LayoutId(id: 2, child: content),
           ],
         );
       },
