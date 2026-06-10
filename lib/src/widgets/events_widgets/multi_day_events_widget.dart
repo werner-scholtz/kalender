@@ -294,11 +294,20 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
         if (!event.internalRange(location: context.location).overlaps(widget.internalDateTimeRange)) {
           return const SizedBox();
         }
+
+        final previewEvents = widget.events.toList();
+        final selectedEventIndex =
+            previewEvents.indexWhere((item) => item.id == context.calendarController.selectedEventId);
+        if (selectedEventIndex != -1) {
+          previewEvents[selectedEventIndex] = event;
+        } else {
+          previewEvents.insert(0, event);
+        }
+
         final frame = generateMultiDayLayoutFrame(
           visibleDateTimeRange: widget.internalDateTimeRange,
-          events: widget.events,
+          events: previewEvents,
           textDirection: widget.textDirection,
-          // TODO: check
           cache: null,
           location: widget.location,
         );
@@ -322,9 +331,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
               child: event.id == context.calendarController.selectedEventId
                   ? Padding(
                       padding: widget.configuration.eventPadding,
-                      child: context.tileComponents.dropTargetTile
-                              ?.call(context.eventsController.byId(event.id) ?? event) ??
-                          const SizedBox(),
+                      child: context.tileComponents.dropTargetTile?.call(event) ?? const SizedBox(),
                     )
                   : const SizedBox(),
             ),
