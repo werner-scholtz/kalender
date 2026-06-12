@@ -96,6 +96,28 @@ void main() {
       expect(controller.byId(id), isNull);
       expect(controller.events, isNot(contains(event)));
     });
+
+    test('Purges a multi-day event from the index on every spanned date', () {
+      // Spans Jan 10, 11, 12; removal must clear the id from all three date
+      // buckets, not just the start day.
+      final event = CalendarEvent(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 10, 9), end: DateTime.utc(2024, 1, 12, 17)),
+      );
+      controller.addEvent(event);
+      controller.removeEvent(event);
+
+      for (final day in [10, 11, 12]) {
+        final dayRange = InternalDateTimeRange(
+          start: InternalDateTime(2024, 1, day),
+          end: InternalDateTime(2024, 1, day + 1),
+        );
+        expect(
+          controller.eventsFromDateTimeRange(dayRange),
+          isEmpty,
+          reason: 'Jan $day should hold no stale event ids after removal.',
+        );
+      }
+    });
   });
 
   // ─── removeEvents ────────────────────────────────────────────────────────

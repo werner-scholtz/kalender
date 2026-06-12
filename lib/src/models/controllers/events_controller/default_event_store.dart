@@ -123,10 +123,10 @@ class DefaultEventStore extends EventStore {
       final location = locationString == defaultLocation ? null : getLocation(locationString);
       final dates = event.internalRange(location: location).dates();
       for (final date in dates) {
-        locationDateIdMap[locationString]!.update(
-          toKey(date),
-          (value) => value..remove(id),
-        );
+        // Null-safe so a date-key that was never populated is a no-op rather
+        // than throwing (Map.update without ifAbsent would); symmetric with
+        // addEventToLocation's ifAbsent.
+        locationDateIdMap[locationString]![toKey(date)]?.remove(id);
       }
     }
   }
