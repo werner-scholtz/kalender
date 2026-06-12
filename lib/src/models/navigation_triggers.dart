@@ -113,12 +113,14 @@ class ScrollTriggerConfiguration {
     Duration? animationDuration,
     Curve? animationCurve,
     double Function(double pageHeight)? triggerHeight,
+    double Function(double pageHeight)? scrollAmount,
   }) {
     return ScrollTriggerConfiguration(
       triggerDelay: triggerDelay ?? this.triggerDelay,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
       triggerHeight: triggerHeight ?? this.triggerHeight,
+      scrollAmount: scrollAmount ?? this.scrollAmount,
     );
   }
 
