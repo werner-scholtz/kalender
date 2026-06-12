@@ -282,16 +282,21 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
   /// )
   /// ```
   DateTime dateFromPosition(BuildContext context, Offset localPosition) {
-    // TODO: ensure this works as expected.
     final renderBox = context.findRenderObject() as RenderBox;
+
+    // Clip the event to the tile so the column width maps to the days actually
+    // visible in this tile (events can start before / end after the tile).
     final start = event.internalStart(location: context.location);
     final end = event.internalEnd(location: context.location);
     final range = InternalDateTimeRange(
       start: start.isBefore(tileRange.start) ? tileRange.start : start,
       end: end.isAfter(tileRange.end) ? tileRange.end : end,
     );
+
     final numberOfDays = range.dates().length;
-    final dateClicked = localPosition.dx ~/ (renderBox.size.width / numberOfDays);
+    // Clamp so a tap on the trailing edge (dx == width) or just outside the tile
+    // resolves to a day within the visible range rather than one day past it.
+    final dateClicked = (localPosition.dx ~/ (renderBox.size.width / numberOfDays)).clamp(0, numberOfDays - 1);
     final date = InternalDateTime.fromDateTime(range.start.copyWith(day: range.start.day + dateClicked))
         .startOfDay
         .forLocation(location: context.location);

@@ -170,6 +170,36 @@ void main() {
       expect(date.day, equals(15));
     });
 
+    testWidgets('dateFromPosition last column resolves to the end day', (tester) async {
+      final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
+      final context = await pumpHarness(tester, harness);
+      // 3 days across 300px → dx 250 is in the third column (index 2) → Jan 17.
+      final date = harness.dateFromPosition(context, const Offset(250, 0));
+      expect(date.day, equals(17));
+    });
+
+    testWidgets('dateFromPosition clamps a tap on the trailing edge to the last day', (tester) async {
+      final harness = _MultiDayTileHarness(event: event, tileRange: tileRange);
+      final context = await pumpHarness(tester, harness);
+      // dx == width would be column index 3 (one past the 3-day event) without
+      // clamping; it must resolve to the last visible day (Jan 17), not Jan 18.
+      final date = harness.dateFromPosition(context, const Offset(300, 0));
+      expect(date.day, equals(17));
+    });
+
+    testWidgets('dateFromPosition clips an event that overflows the tile on both sides', (tester) async {
+      // Event runs Jan 13 → Jan 20 but the tile only shows Jan 15 → Jan 18, so
+      // the 300px width maps to the 3 visible days (Jan 15, 16, 17).
+      final overflowing = CalendarEvent(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 13, 9), end: DateTime.utc(2024, 1, 20, 18)),
+      );
+      final harness = _MultiDayTileHarness(event: overflowing, tileRange: tileRange);
+      final context = await pumpHarness(tester, harness);
+      expect(harness.dateFromPosition(context, const Offset(10, 0)).day, equals(15));
+      expect(harness.dateFromPosition(context, const Offset(150, 0)).day, equals(16));
+      expect(harness.dateFromPosition(context, const Offset(250, 0)).day, equals(17));
+    });
+
     testWidgets('nearbyEvents includes multi-day events by default', (tester) async {
       final selfId = eventsController.addEvent(event);
       final otherMultiDayId = eventsController.addEvent(
