@@ -68,7 +68,7 @@ mixin DragTargetUtilities {
     handleDragDetails(
       details,
       onCreate: (controllerId) {
-        if (controllerId != controllerId) return;
+        if (controllerId != controller.id) return;
 
         final date = calculateCursorDateTime(details.offset);
         if (date == null) return;
@@ -108,7 +108,7 @@ mixin DragTargetUtilities {
     final result = handleDragDetails(
       details,
       onCreate: (controllerId) {
-        if (controllerId != controllerId) return null;
+        if (controllerId != controller.id) return null;
 
         final date = calculateCursorDateTime(details.offset);
         if (date == null) return null;
