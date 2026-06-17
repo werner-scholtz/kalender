@@ -1,3 +1,9 @@
+## 0.18.7
+
+### Fixes
+
+- Fixed a blank page when a `displayRange` spanned exactly one month, and the same off-by-one page count that dropped the final in-range page in the week, custom multi-day, and paginated schedule views (#266).
+
 ## 0.18.6
 
 ### Features
