@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalender Benchmarks</title>
+  <!--
+    Custom dashboard for github-action-benchmark data.
+
+    Source of truth: tools/dashboard/index.html (deployed to gh-pages/dev/bench/index.html by
+    .github/workflows/deploy_dashboard.yml). github-action-benchmark only writes its default
+    index.html when one does not already exist, so this custom page persists; benchmark runs only
+    update the sibling data.js.
+
+    It reads the same `window.BENCHMARK_DATA` and adds three things the default template lacks:
+      1. Human-readable chart titles (display-only; the underlying series keys are untouched so
+         backfilled history is preserved).
+      2. Frame-budget reference lines (60 fps / 120 fps) on every ms-unit chart.
+      3. A consolidated overview trend per suite.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; color: #1f2937; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 32px 0 4px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    .meta { color: #6b7280; font-size: 13px; margin-bottom: 16px; }
+    .legend-note { color: #6b7280; font-size: 12px; margin: 4px 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; }
+    .card.overview { border-color: #c7d2fe; background: #f8faff; }
+    .card h3 { font-size: 14px; margin: 2px 0 8px; font-weight: 600; }
+    .chart-wrap { position: relative; height: 240px; }
+    .empty { color: #6b7280; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0b0e14; color: #e5e7eb; }
+      .card { background: #131722; border-color: #232838; }
+      .card.overview { background: #141a2e; border-color: #2b3a55; }
+      h2 { border-color: #232838; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Kalender Performance Benchmarks</h1>
+  <div class="meta" id="meta"></div>
+  <div class="legend-note">↓ Lower is better on every chart. Dashed lines on millisecond charts mark the per-frame budget: <strong>16.7 ms</strong> (60 fps) and <strong>8.3 ms</strong> (120 fps).</div>
+  <div id="root"></div>
+  <script src="data.js"></script>
+  <script>
+    "use strict";
+
+    // 60 fps and 120 fps per-frame budgets, in milliseconds.
+    var BUDGETS = [
+      { label: "60 fps (16.7 ms)", value: 16.7, color: "#dc2626" },
+      { label: "120 fps (8.3 ms)", value: 8.3, color: "#f59e0b" },
+    ];
+
+    // Explicit friendly titles for the micro-benchmark series keys.
+    var MICRO_LABELS = {
+      "dates x200 / 7d": "Date expansion · 7-day range (×200)",
+      "dates x200 / 30d": "Date expansion · 30-day range (×200)",
+      "dates x200 / 90d": "Date expansion · 90-day range (×200)",
+      "dates x200 / 365d": "Date expansion · 365-day range (×200)",
+      "multiDayFrame / 100ev x 30d": "Multi-day layout · 100 events × 30 days",
+      "multiDayFrame / 300ev x 30d": "Multi-day layout · 300 events × 30 days",
+      "findLongestChain / 60ev": "Overlap chain depth · 60 events",
+      "eventsFromRange / query 1d": "Event query · 1-day window",
+      "eventsFromRange / query 7d": "Event query · 7-day window",
+      "eventsFromRange / query 30d": "Event query · 30-day window",
+    };
+
+    var SCENARIOS = { ten_events_per_day: "10 events/day", fifty_events_per_day: "50 events/day" };
+    var WORKLOADS = {
+      loadingEvents: "loading", navigation: "navigation", scrolling: "scrolling",
+      rescheduling: "rescheduling", resizing: "resizing",
+    };
+
+    function titleCase(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // Frame series keys look like "fifty_events_per_day-week-navigation / avg_build_ms".
+    function frameLabel(name) {
+      var parts = name.split(" / ");
+      var key = parts[0];
+      var seg = key.split("-");
+      if (seg.length < 3) return name;
+      var scenario = SCENARIOS[seg[0]] || seg[0].replace(/_/g, " ");
+      var view = titleCase(seg[1]);
+      var workload = WORKLOADS[seg[2]] || seg[2];
+      return scenario + " · " + view + " · " + workload;
+    }
+
+    function friendlyName(suite, name) {
+      if (MICRO_LABELS[name]) return MICRO_LABELS[name];
+      if (name.indexOf(" / avg_build_ms") !== -1) return frameLabel(name);
+      return name;
+    }
+
+    function median(values) {
+      var v = values.filter(function (x) { return typeof x === "number"; }).sort(function (a, b) { return a - b; });
+      if (!v.length) return null;
+      var m = Math.floor(v.length / 2);
+      return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+    }
+
+    // Collect, for a suite, the ordered run list and a per-series aligned value array.
+    function buildSeries(runs) {
+      var labels = runs.map(function (r) { return (r.commit && r.commit.id ? r.commit.id.slice(0, 7) : "?"); });
+      var commits = runs.map(function (r) { return r.commit || {}; });
+      var order = [];
+      var seen = {};
+      runs.forEach(function (r) {
+        (r.benches || []).forEach(function (b) { if (!seen[b.name]) { seen[b.name] = true; order.push(b.name); } });
+      });
+      var series = {};
+      order.forEach(function (name) {
+        series[name] = runs.map(function (r) {
+          var b = (r.benches || []).find(function (x) { return x.name === name; });
+          return b ? { y: b.value, unit: b.unit, range: b.range, extra: b.extra } : null;
+        });
+      });
+      return { labels: labels, commits: commits, order: order, series: series };
+    }
+
+    var palette = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#0891b2", "#ca8a04", "#dc2626", "#475569"];
+
+    function budgetDatasets(labels) {
+      return BUDGETS.map(function (b) {
+        return {
+          label: b.label, data: labels.map(function () { return b.value; }),
+          borderColor: b.color, borderDash: [6, 4], borderWidth: 1, pointRadius: 0, fill: false, tension: 0,
+        };
+      });
+    }
+
+    function makeChart(canvas, cfg) {
+      // cfg: { labels, points:[{y,range,extra}|null], commits, unit, title, color, isMs }
+      var meta = cfg.points;
+      var datasets = [{
+        label: cfg.title,
+        data: meta.map(function (p) { return p ? p.y : null; }),
+        borderColor: cfg.color, backgroundColor: cfg.color, spanGaps: false, tension: 0.2, pointRadius: 2, fill: false,
+      }];
+      if (cfg.isMs) datasets = datasets.concat(budgetDatasets(cfg.labels));
+
+      new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: { labels: cfg.labels, datasets: datasets },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { display: cfg.isMs, labels: { boxHeight: 2, font: { size: 10 } } },
+            tooltip: {
+              callbacks: {
+                title: function (items) {
+                  var c = cfg.commits[items[0].dataIndex] || {};
+                  return c.id ? c.id.slice(0, 7) + (c.message ? " — " + c.message : "") : "";
+                },
+                label: function (item) {
+                  if (item.datasetIndex > 0) return item.dataset.label; // budget line
+                  var p = meta[item.dataIndex];
+                  if (!p) return "";
+                  var s = cfg.title + ": " + (Math.round(p.y * 1000) / 1000) + " " + (p.unit || cfg.unit || "");
+                  if (p.range) s += " (" + p.range + ")";
+                  return s;
+                },
+                afterBody: function (items) {
+                  var p = meta[items[0].dataIndex];
+                  return p && p.extra ? p.extra.split(" ") .reduce(function (acc, tok) { // wrap extra a little
+                    if (!acc.length || (acc[acc.length - 1] + " " + tok).length > 42) acc.push(tok); else acc[acc.length - 1] += " " + tok;
+                    return acc;
+                  }, []) : [];
+                },
+                footer: function () { return "↓ lower is better"; },
+              },
+            },
+          },
+          scales: {
+            x: { title: { display: true, text: "commit" }, ticks: { maxRotation: 0, autoSkip: true } },
+            y: { title: { display: true, text: cfg.unit || "" }, beginAtZero: true },
+          },
+        },
+      });
+    }
+
+    function overviewPoints(suiteName, built, runs) {
+      // Frame (ms) → median of all ms benches per run (absolute). Otherwise → normalised
+      // index: mean of value/firstSeenValue across metrics, ×100 (unit-agnostic).
+      var anyMs = built.order.some(function (n) {
+        return runs.some(function (r) { return (r.benches || []).some(function (b) { return b.name === n && b.unit === "ms"; }); });
+      });
+      if (anyMs) {
+        var pts = runs.map(function (r) {
+          var vals = (r.benches || []).filter(function (b) { return b.unit === "ms"; }).map(function (b) { return b.value; });
+          var m = median(vals);
+          return m == null ? null : { y: m, unit: "ms" };
+        });
+        return { points: pts, unit: "ms", title: "Overview · median build time", isMs: true };
+      }
+      var baseline = {};
+      built.order.forEach(function (n) {
+        for (var i = 0; i < built.series[n].length; i++) { if (built.series[n][i]) { baseline[n] = built.series[n][i].y; break; } }
+      });
+      var pts2 = runs.map(function (r, i) {
+        var ratios = [];
+        built.order.forEach(function (n) {
+          var p = built.series[n][i];
+          if (p && baseline[n]) ratios.push(p.y / baseline[n]);
+        });
+        if (!ratios.length) return null;
+        var mean = ratios.reduce(function (a, b) { return a + b; }, 0) / ratios.length;
+        return { y: Math.round(mean * 1000) / 10, unit: "% of baseline" };
+      });
+      return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit", isMs: false };
+    }
+
+    function render() {
+      var data = window.BENCHMARK_DATA;
+      var root = document.getElementById("root");
+      if (!data || !data.entries) { root.innerHTML = '<p class="empty">No benchmark data found.</p>'; return; }
+
+      var lu = data.lastUpdate ? new Date(data.lastUpdate).toUTCString() : "unknown";
+      document.getElementById("meta").innerHTML =
+        "Last updated " + lu + " · <a href=\"" + (data.repoUrl || "#") + "\">" + (data.repoUrl || "") + "</a>";
+
+      Object.keys(data.entries).forEach(function (suiteName) {
+        var runs = data.entries[suiteName] || [];
+        var h2 = document.createElement("h2");
+        h2.textContent = suiteName + " (" + runs.length + " runs)";
+        root.appendChild(h2);
+
+        if (!runs.length) {
+          var p = document.createElement("p"); p.className = "empty"; p.textContent = "No data."; root.appendChild(p); return;
+        }
+
+        var built = buildSeries(runs);
+
+        // Overview card (full width row of its own).
+        var ov = overviewPoints(suiteName, built, runs);
+        var ovCard = document.createElement("div");
+        ovCard.className = "card overview";
+        ovCard.innerHTML = '<h3>' + ov.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
+        root.appendChild(ovCard);
+        makeChart(ovCard.querySelector("canvas"), {
+          labels: built.labels, points: ov.points, commits: built.commits, unit: ov.unit, title: ov.title,
+          color: "#4f46e5", isMs: ov.isMs,
+        });
+
+        // Per-metric grid.
+        var grid = document.createElement("div");
+        grid.className = "grid";
+        root.appendChild(grid);
+        built.order.forEach(function (name, idx) {
+          var pts = built.series[name];
+          var firstPt = pts.find(function (p) { return p; }) || {};
+          var unit = firstPt.unit || "";
+          var card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = '<h3>' + friendlyName(suiteName, name) + '</h3><div class="chart-wrap"><canvas></canvas></div>';
+          grid.appendChild(card);
+          makeChart(card.querySelector("canvas"), {
+            labels: built.labels, points: pts, commits: built.commits, unit: unit,
+            title: friendlyName(suiteName, name), color: palette[idx % palette.length], isMs: unit === "ms",
+          });
+        });
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>

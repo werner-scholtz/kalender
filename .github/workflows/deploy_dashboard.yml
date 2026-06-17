@@ -1,0 +1,46 @@
+name: Deploy benchmark dashboard
+
+# Deploys the custom benchmark dashboard page to gh-pages/dev/bench/index.html.
+# Decoupled from the benchmark runs so it never races on data.js — it touches
+# only index.html. github-action-benchmark won't overwrite an existing
+# index.html, so once deployed this custom page persists.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tools/dashboard/index.html
+      - .github/workflows/deploy_dashboard.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Share the benchmark gh-pages serialisation so concurrent writes don't collide.
+concurrency:
+  group: benchmarks-gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy dashboard to gh-pages/dev/bench
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          src="$(pwd)/tools/dashboard/index.html"
+          git fetch origin gh-pages
+          git checkout gh-pages
+          mkdir -p dev/bench
+          cp "$src" dev/bench/index.html
+          if git diff --quiet -- dev/bench/index.html; then
+            echo "Dashboard already up to date."
+          else
+            git add dev/bench/index.html
+            git commit -m "Deploy benchmark dashboard"
+            git push origin gh-pages
+            echo "Dashboard deployed."
+          fi
