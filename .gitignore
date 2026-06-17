@@ -32,3 +32,6 @@ build/
 /ios/
 
 /examples/**/pubspec.lock
+# Performance backfill (one-time, local) artifacts
+backfill_results/
+.backfill_wt/
