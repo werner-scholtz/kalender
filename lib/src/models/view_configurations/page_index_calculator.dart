@@ -74,10 +74,15 @@ abstract class PageIndexCalculator {
 
   /// Calculates the page index of the [date].
   ///
-  /// The returned index should be clamped between 0 and the number of pages.
+  /// The returned index should be clamped between 0 and [numberOfPages] minus one.
+  /// [numberOfPages] is a count, while page indices are zero-based, so the last
+  /// valid index is `numberOfPages - 1`.
   int indexFromDate(DateTime date, Location? location);
 
   /// The number of pages that can be displayed.
+  ///
+  /// This is a count (starting at 1), not an index. The last valid page index is
+  /// therefore `numberOfPages - 1`.
   int numberOfPages(Location? location);
 
   /// The adjusted [DateTimeRange] for a specific location.
@@ -113,7 +118,7 @@ class DayIndexCalculator extends PageIndexCalculator {
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
-    return days.clamp(0, numberOfPages(location));
+    return days.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
@@ -186,7 +191,7 @@ class WeekIndexCalculator extends PageIndexCalculator {
       debugPrint('Warning: index is not an integer: $index');
     }
 
-    return index.round().clamp(0, numberOfPages(location));
+    return index.round().clamp(0, numberOfPages(location) - 1);
   }
 
   @override
@@ -196,7 +201,7 @@ class WeekIndexCalculator extends PageIndexCalculator {
     if (numberOfPages.round() != numberOfPages) {
       debugPrint('Warning: numberOfPages is not an integer: $numberOfPages');
     }
-    return (numberOfPages - 1).round();
+    return numberOfPages.round();
   }
 
   @override
@@ -233,14 +238,14 @@ class CustomIndexCalculator extends PageIndexCalculator {
     final startOfDateUtc = startOfDate.startOfDay;
     final internalRange = this.internalRange(location);
     final index = startOfDateUtc.difference(internalRange.start).inDays ~/ numberOfDays;
-    return index.clamp(0, numberOfPages(location));
+    return index.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
   int numberOfPages(Location? location) {
     final internalRange = this.internalRange(location);
     final numberOfDays = internalRange.end.difference(internalRange.start).inDays;
-    return (numberOfDays ~/ this.numberOfDays) - 1;
+    return numberOfDays ~/ this.numberOfDays;
   }
 
   @override
@@ -283,7 +288,7 @@ class FreeScrollFunctions extends PageIndexCalculator {
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
-    return days.clamp(0, numberOfPages(location));
+    return days.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
@@ -334,7 +339,7 @@ class MonthIndexCalculator extends PageIndexCalculator {
     date = InternalDateTime.fromExternal(date, location: location).startOfDay;
     final internalRange = this.internalRange(location);
     final dateTimeRange = InternalDateTimeRange(start: internalRange.start, end: date);
-    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
+    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
   }
 
   /// Returns the number of rows that need to be displayed for the given [range].
@@ -345,7 +350,7 @@ class MonthIndexCalculator extends PageIndexCalculator {
   @override
   int numberOfPages(Location? location) {
     final internalRange = this.internalRange(location);
-    return internalRange.monthDifference - 1;
+    return internalRange.monthDifference;
   }
 
   @override
@@ -408,13 +413,13 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
     date = InternalDateTime.fromExternal(date, location: location).startOfDay;
     final internalRange = this.internalRange(location);
     final dateTimeRange = InternalDateTimeRange(start: internalRange.start, end: date);
-    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location));
+    return dateTimeRange.monthDifference.clamp(0, numberOfPages(location) - 1);
   }
 
   @override
   int numberOfPages(Location? location) {
     final internalRange = this.internalRange(location);
-    return internalRange.monthDifference - 1;
+    return internalRange.monthDifference;
   }
 
   @override
