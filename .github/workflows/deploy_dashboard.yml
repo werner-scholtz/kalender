@@ -16,9 +16,11 @@ on:
 permissions:
   contents: write
 
-# Share the benchmark gh-pages serialisation so concurrent writes don't collide.
+# Must match the group used by performance_profiling.yml so gh-pages writes from
+# the two workflows serialise (a merge to main triggers both); otherwise their
+# concurrent pushes collide with a non-fast-forward rejection.
 concurrency:
-  group: benchmarks-gh-pages
+  group: benchmarks-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
