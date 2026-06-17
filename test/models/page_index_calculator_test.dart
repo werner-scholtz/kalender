@@ -68,18 +68,33 @@ void main() {
         index = calculator.indexFromDate(TZDateTime(location, 2020, 12, 31), location);
         expect(index, 365);
 
+        // range.end is the exclusive end of the range, so it clamps to the last page index.
         index = calculator.indexFromDate(range.end, location);
-        expect(index, 366);
+        expect(index, 365);
       });
 
       test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 366);
+        // 366 days in the 2020 range (leap year) → 366 pages.
+        final numberOfPages = calculator.numberOfPages(location);
+        expect(numberOfPages, 366);
       });
 
       test('test internalRange', () {
         final internalRange = calculator.internalRange(location);
         expect(internalRange, InternalDateTimeRange.fromDateTimeRange(range));
+      });
+
+      // An empty range (start == end) has 0 pages; indexFromDate must not throw
+      // on the negative clamp bound, and should fall back to index 0.
+      test('test indexFromDate for an empty range', () {
+        final emptyRange = DateTimeRange(
+          start: TZDateTime(location, 2020),
+          end: TZDateTime(location, 2020),
+        );
+        final emptyCalculator = DayIndexCalculator(dateTimeRange: emptyRange);
+        expect(emptyCalculator.numberOfPages(location), 0);
+        expect(() => emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), returnsNormally);
+        expect(emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), 0);
       });
     });
 
@@ -139,8 +154,9 @@ void main() {
       });
 
       test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 52);
+        // 53 whole weeks span the adjusted range → 53 pages.
+        final numberOfPages = calculator.numberOfPages(location);
+        expect(numberOfPages, 53);
       });
 
       test('test internalRange', () {
@@ -208,8 +224,9 @@ void main() {
       });
 
       test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 121);
+        // 366 days / 3 days per page → 122 pages.
+        final numberOfPages = calculator.numberOfPages(location);
+        expect(numberOfPages, 122);
       });
 
       test('test internalRange', () {
@@ -278,8 +295,9 @@ void main() {
       });
 
       test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 11);
+        // The range spans 12 calendar months (Jan–Dec 2020), so there are 12 pages.
+        final numberOfPages = calculator.numberOfPages(location);
+        expect(numberOfPages, 12);
       });
 
       test('test internalRange', () {
@@ -288,6 +306,21 @@ void main() {
           internalRange,
           InternalDateTimeRange(start: InternalDateTime(2020), end: InternalDateTime(2021)),
         );
+      });
+
+      // Regression: https://github.com/werner-scholtz/kalender/issues/266
+      // A range spanning exactly one calendar month must report a single page,
+      // otherwise the month view renders nothing.
+      test('test numberOfPages for a single-month range', () {
+        final singleMonth = MonthIndexCalculator(
+          dateTimeRange: DateTimeRange(
+            start: TZDateTime(location, 2020, 5),
+            end: TZDateTime(location, 2020, 5, 31),
+          ),
+          firstDayOfWeek: DateTime.monday,
+        );
+        expect(singleMonth.numberOfPages(location), 1);
+        expect(singleMonth.indexFromDate(TZDateTime(location, 2020, 5, 15), location), 0);
       });
     });
 
@@ -380,8 +413,9 @@ void main() {
       });
 
       test('test numberOfPages', () {
-        final endIndex = calculator.numberOfPages(location);
-        expect(endIndex, 11);
+        // 12 calendar months (Jan–Dec 2020) → 12 pages.
+        final numberOfPages = calculator.numberOfPages(location);
+        expect(numberOfPages, 12);
       });
 
       test('test internalRange', () {

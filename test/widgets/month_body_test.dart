@@ -79,6 +79,32 @@ void main() {
     }
 
     // ---------------------------------------------------------------------------
+    // Regression: https://github.com/werner-scholtz/kalender/issues/266
+    //
+    // A displayRange that spans exactly one calendar month must still render a
+    // page. Previously the single-month page was dropped (itemCount was off by
+    // one), leaving a blank view.
+    // ---------------------------------------------------------------------------
+
+    testWidgets('renders a month when the displayRange spans a single month', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: MonthViewConfiguration.singleMonth(
+            displayRange: DateTimeRange(start: DateTime(2026, 5), end: DateTime(2026, 5, 31)),
+            initialDateTime: DateTime(2026, 5),
+          ),
+          body: const CalendarBody(),
+        ),
+      );
+
+      // May 2026: May 1 is Friday → startOfWeek Apr 27; Apr 27 + 35 days = Jun 1 > May 31 → 5 rows.
+      _expectMonthRows(tester, 5);
+    });
+
+    // ---------------------------------------------------------------------------
     // Per-row structure
     // ---------------------------------------------------------------------------
 
