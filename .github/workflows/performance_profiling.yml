@@ -110,6 +110,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           gh-pages-branch: gh-pages
           benchmark-data-dir-path: dev/bench
+          # Second invocation in this job: reuse the local gh-pages branch the
+          # first step already fetched/updated. Without this the re-fetch is
+          # rejected as non-fast-forward.
+          skip-fetch-gh-pages: true
           auto-push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           save-data-file: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           comment-always: true
