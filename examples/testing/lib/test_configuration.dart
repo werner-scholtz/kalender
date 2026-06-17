@@ -185,4 +185,17 @@ final timeOfDayRanges = [
     start: const TimeOfDay(hour: 20, minute: 0),
     end: const TimeOfDay(hour: 21, minute: 0),
   ),
+
+  /// Additional generated ranges (indices 20–49) so the heavy
+  /// 50-events-per-day scenario has enough distinct slots. Spread across the
+  /// day with overlapping durations to stress the layout/overlap code.
+  ...List.generate(30, (i) {
+    final startMinutes = 5 * 60 + (i * 31) % (15 * 60); // 05:00–20:00, prime step for variety
+    final durationMinutes = 30 + (i % 4) * 30; // 30/60/90/120
+    final endMinutes = startMinutes + durationMinutes;
+    return TimeOfDayRange(
+      start: TimeOfDay(hour: startMinutes ~/ 60, minute: startMinutes % 60),
+      end: TimeOfDay(hour: endMinutes ~/ 60, minute: endMinutes % 60),
+    );
+  }),
 ];

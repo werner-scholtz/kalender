@@ -21,6 +21,7 @@ dependencies:
   universal_platform: ^1.1.0
 
 dev_dependencies:
+  benchmark_harness: ^2.3.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0

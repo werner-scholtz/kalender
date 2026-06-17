@@ -7,8 +7,12 @@ import 'package:flutter_driver/flutter_driver.dart' as driver;
 import 'package:integration_test/integration_test_driver.dart';
 
 enum Scenario {
-  One_Event_Per_Day(1),
-  Ten_Events_Per_Day(10);
+  /// Realistic load.
+  Ten_Events_Per_Day(10),
+
+  /// Heavy load — where regressions in kalender's own layout/build code surface
+  /// above Flutter framework overhead.
+  Fifty_Events_Per_Day(50);
 
   const Scenario(this.numberOfEvents);
   final int numberOfEvents;
@@ -25,125 +29,135 @@ enum ReportKeys { loadingEvents, navigation, scrolling, rescheduling, resizing }
 
 enum Views { week, month, schedule }
 
-const numberOfRuns = 3;
+/// Number of repeats per workload. The summary uses the median across runs, so
+/// more runs tightens the estimate against the ~6% run-to-run noise floor
+/// measured on shared CI. Raised from 3 → 5.
+///
+/// Overridable via `KALENDER_PERF_RUNS` so the one-time historical backfill can
+/// trade precision for speed across many commits.
+final numberOfRuns = int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
+
+/// Build-frame metrics we keep as the actionable signal (lower is better).
+///
+/// Rasterizer metrics are deliberately excluded from the primary signal: under
+/// Xvfb/llvmpipe (software rasterization, no GPU) the `missed_rasterizer_budget`
+/// counter is pure noise (~50% run-to-run) and `avg_rasterizer_time`, while
+/// stable, does not represent real-device GPU performance. The latter is kept
+/// only as a clearly-labelled diagnostic in the `extra` field below.
+const _buildMetric = 'average_frame_build_time_millis';
+const _p90Metric = '90th_percentile_frame_build_time_millis';
+const _p99Metric = '99th_percentile_frame_build_time_millis';
+const _missedBuildMetric = 'missed_frame_build_budget_count';
+const _rasterMetric = 'average_frame_rasterizer_time_millis';
+
+const _trackedMetrics = [_buildMetric, _p90Metric, _p99Metric, _missedBuildMetric, _rasterMetric];
 
 Future<void> main() {
   return integrationDriver(
     responseDataCallback: (data) async {
-      if (data != null) {
-        final average = {};
+      if (data == null) {
+        print('❌ No profiling data received');
+        return;
+      }
 
-        final keys = [
-          for (var run = 1; run <= numberOfRuns; run++)
-            for (final scenario in Scenario.values)
-              for (var view in Views.values)
-                for (var key in ReportKeys.values)
-                  scenario.getReportKey(view, key, run),
-        ];
+      // Collect every metric value per base key (scenario-view-workload) across
+      // all runs, so we can take a robust median rather than a weighted mean.
+      final byBaseKey = <String, Map<String, List<num>>>{};
 
-        print('\n=== Performance Profiling Summary ===');
-        print('Total expected reports: ${keys.length}');
-        print('Available data keys: ${data.keys.length}');
-        print('\nProcessing reports...\n');
+      for (var run = 1; run <= numberOfRuns; run++) {
+        for (final scenario in Scenario.values) {
+          for (final view in Views.values) {
+            for (final key in ReportKeys.values) {
+              final reportKey = scenario.getReportKey(view, key, run);
+              final raw = data[reportKey];
+              if (raw == null) continue;
 
-        for (final key in keys) {
-          print('Processing: $key');
-          if (!data.containsKey(key) || data[key] == null) {
-            print('❌ Missing data for key: $key');
-            continue;
+              final timeline = driver.Timeline.fromJson(raw as Map<String, dynamic>);
+              final summary = driver.TimelineSummary.summarize(timeline);
+
+              // Keep the raw timeline + summary as a debugging artifact.
+              await summary.writeTimelineToFile(reportKey, pretty: true, includeSummary: true);
+
+              final base = Scenario.baseKeyFromReportKey(reportKey);
+              final metrics = byBaseKey.putIfAbsent(base, () => {});
+              for (final metric in _trackedMetrics) {
+                final value = summary.summaryJson[metric];
+                if (value is num) {
+                  metrics.putIfAbsent(metric, () => <num>[]).add(value);
+                }
+              }
+            }
           }
+        }
+      }
 
-          print((data[key] as Map<String, dynamic>).length);
+      // Emit github-action-benchmark `customSmallerIsBetter` entries. We chart a
+      // single headline series per base key (median average-build-time) to keep
+      // the dashboard readable; the remaining metrics ride along in `extra`.
+      final results = <Map<String, dynamic>>[];
+      for (final entry in byBaseKey.entries) {
+        final base = entry.key;
+        final metrics = entry.value;
 
-          final timeline = driver.Timeline.fromJson(
-            data[key] as Map<String, dynamic>,
-          );
-          final timelineSummary = driver.TimelineSummary.summarize(timeline);
-          final frameCount = timeline.events?.length ?? 0;
-          await timelineSummary.writeTimelineToFile(
-            key,
-            pretty: true,
-            includeSummary: true,
-          );
-          final metricsStr =
-              '\n- Avg Build: ${timelineSummary.summaryJson['average_frame_build_time_millis']}ms'
-              '\n- 90th Build: ${timelineSummary.summaryJson['90th_percentile_frame_build_time_millis']}ms'
-              '\n- 99th Build: ${timelineSummary.summaryJson['99th_percentile_frame_build_time_millis']}ms'
-              '\n- Worst Build: ${timelineSummary.summaryJson['worst_frame_build_time_millis']}ms'
-              '\n- Missed Build Budget: ${timelineSummary.summaryJson['missed_frame_build_budget_count']}'
-              '\n- Avg Rasterizer: ${timelineSummary.summaryJson['average_frame_rasterizer_time_millis']}ms'
-              '\n- 90th Rasterizer: ${timelineSummary.summaryJson['90th_percentile_frame_rasterizer_time_millis']}ms'
-              '\n- 99th Rasterizer: ${timelineSummary.summaryJson['99th_percentile_frame_rasterizer_time_millis']}ms'
-              '\n- Worst Rasterizer: ${timelineSummary.summaryJson['worst_frame_rasterizer_time_millis']}ms'
-              '\n- Missed Rasterizer Budget: ${timelineSummary.summaryJson['missed_frame_rasterizer_budget_count']}'
-              '\n- Frame Count: ${timelineSummary.summaryJson['frame_count']}'
-              '\n- Rasterizer Count: ${timelineSummary.summaryJson['frame_rasterizer_count']}'
-              '\n- New Gen GC Count: ${timelineSummary.summaryJson['new_gen_gc_count']}'
-              '\n- Old Gen GC Count: ${timelineSummary.summaryJson['old_gen_gc_count']}';
+        final buildValues = metrics[_buildMetric];
+        if (buildValues == null || buildValues.isEmpty) continue;
 
-          final summary = {
-            'average_frame_build_time_millis':
-                timelineSummary.summaryJson['average_frame_build_time_millis'],
-            '90th_percentile_frame_build_time_millis': timelineSummary
-                .summaryJson['90th_percentile_frame_build_time_millis'],
-            '99th_percentile_frame_build_time_millis': timelineSummary
-                .summaryJson['99th_percentile_frame_build_time_millis'],
-            'worst_frame_build_time_millis':
-                timelineSummary.summaryJson['worst_frame_build_time_millis'],
-            'missed_frame_build_budget_count':
-                timelineSummary.summaryJson['missed_frame_build_budget_count'],
-            'average_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['average_frame_rasterizer_time_millis'],
-            'stddev_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['stddev_frame_rasterizer_time_millis'],
-            '90th_percentile_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['90th_percentile_frame_rasterizer_time_millis'],
-            '99th_percentile_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['99th_percentile_frame_rasterizer_time_millis'],
-            'worst_frame_rasterizer_time_millis': timelineSummary
-                .summaryJson['worst_frame_rasterizer_time_millis'],
-            'missed_frame_rasterizer_budget_count': timelineSummary
-                .summaryJson['missed_frame_rasterizer_budget_count'],
-            'frame_count': timelineSummary.summaryJson['frame_count'],
-            'frame_rasterizer_count':
-                timelineSummary.summaryJson['frame_rasterizer_count'],
-            'new_gen_gc_count': timelineSummary.summaryJson['new_gen_gc_count'],
-            'old_gen_gc_count': timelineSummary.summaryJson['old_gen_gc_count'],
-          };
+        final avgBuild = _median(buildValues);
+        final iqr = _iqr(buildValues);
 
-          final baseKey = Scenario.baseKeyFromReportKey(key);
-          var current = average[baseKey];
-
-          if (current != null) {
-            current = _calculateAverage(current, summary);
-          } else {
-            current = summary;
-          }
-
-          average[baseKey] = current;
-
-          print('✅ Processed: $key ($frameCount events)$metricsStr');
+        String fmt(String metric, {String suffix = 'ms', int fraction = 2}) {
+          final values = metrics[metric];
+          if (values == null || values.isEmpty) return 'n/a';
+          final median = _median(values);
+          return suffix == 'ms' ? '${median.toStringAsFixed(fraction)}ms' : '${median.round()}';
         }
 
-        final summaryFile = File('performance_summary.json');
-        const encoder = JsonEncoder.withIndent('  ');
-        await summaryFile.writeAsString(encoder.convert(average));
-      } else {
-        print('❌ No profiling data received');
+        final extra = 'p90_build=${fmt(_p90Metric)} '
+            'p99_build=${fmt(_p99Metric)} '
+            'missed_build=${fmt(_missedBuildMetric, suffix: 'count')} '
+            'avg_raster_sw=${fmt(_rasterMetric)} '
+            '(runs=${buildValues.length})';
+
+        results.add({
+          'name': '$base / avg_build_ms',
+          'unit': 'ms',
+          'value': avgBuild,
+          'range': '± ${iqr.toStringAsFixed(2)}',
+          'extra': extra,
+        });
+
+        print('✅ $base  avg_build=${avgBuild.toStringAsFixed(2)}ms (±${iqr.toStringAsFixed(2)})  $extra');
       }
+
+      final output = File('build/frame_results.json');
+      output.parent.createSync(recursive: true);
+      output.writeAsStringSync(const JsonEncoder.withIndent('  ').convert(results));
+      print('\nWrote ${results.length} frame results to ${output.path}');
     },
   );
 }
 
-Map<String, dynamic> _calculateAverage(
-  Map<String, dynamic> a,
-  Map<String, dynamic> b,
-) {
-  final result = <String, dynamic>{};
-  a.forEach((key, value) {
-    if (b.containsKey(key) && value is num && b[key] is num) {
-      result[key] = (value + b[key]) / 2;
-    }
-  });
-  return result;
+/// Median of [values] (non-mutating).
+double _median(List<num> values) {
+  final sorted = [...values]..sort();
+  final n = sorted.length;
+  if (n == 0) return 0;
+  final mid = n ~/ 2;
+  return n.isOdd ? sorted[mid].toDouble() : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+/// Interquartile range (Q3 − Q1) of [values], a robust spread estimate.
+double _iqr(List<num> values) {
+  final sorted = [...values]..sort();
+  if (sorted.length < 2) return 0;
+
+  double quantile(double p) {
+    final index = p * (sorted.length - 1);
+    final lo = index.floor();
+    final hi = index.ceil();
+    if (lo == hi) return sorted[lo].toDouble();
+    return sorted[lo] + (sorted[hi] - sorted[lo]) * (index - lo);
+  }
+
+  return quantile(0.75) - quantile(0.25);
 }

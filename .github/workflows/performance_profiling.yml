@@ -1,16 +1,28 @@
-name: Performance Profiling Tests
+name: Performance Benchmarks
 
 on:
   push:
     branches: [main]
-  # TODO: this should not always run for prs.
+  # PRs only run when labelled `profile` (see the job-level `if` below), so this
+  # does not run for every PR.
   pull_request:
     branches: [main]
-  # Allow manual trigger
   workflow_dispatch:
 
+# Required so github-action-benchmark can push results to gh-pages and comment
+# on pull requests.
+permissions:
+  contents: write
+  pull-requests: write
+
+# Serialise runs that may push to gh-pages so concurrent main pushes don't
+# conflict on the data file.
+concurrency:
+  group: benchmarks-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  performance-profiling:
+  benchmark:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'profile')
     runs-on: ubuntu-latest
 
@@ -20,6 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
+
       - name: Install Linux dependencies
         run: |
           sudo apt-get update -y
@@ -29,7 +42,15 @@ jobs:
           sudo apt-get install -y libegl1-mesa-dev libgl1-mesa-dev libgles2-mesa-dev
           sudo apt-get install -y mesa-common-dev
 
-      - name: Get Flutter dependencies
+      # --- Micro-benchmarks (pure Dart, low noise — the primary signal) --------
+      - name: Get package dependencies
+        run: flutter pub get
+
+      - name: Run micro-benchmarks
+        run: flutter test benchmark/micro_benchmark_test.dart
+
+      # --- Frame profiling (flutter drive, higher noise — supplementary) -------
+      - name: Get example dependencies
         working-directory: ./examples/testing
         run: flutter pub get
 
@@ -39,7 +60,7 @@ jobs:
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           sleep 3
 
-      - name: Run performance profiling tests
+      - name: Run frame profiling
         working-directory: ./examples/testing
         env:
           DISPLAY: :99
@@ -50,166 +71,52 @@ jobs:
             --profile \
             -d linux
 
-      - name: List generated files
-        working-directory: ./examples/testing
-        run: |
-          echo "Generated performance files:"
-          find . -name "*.timeline_summary.json" -o -name "*.timeline.json" | head -20
-
-      - name: Upload performance reports
+      - name: Upload raw timelines
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: performance-reports-${{ github.run_number }}
-          path: |
-            examples/testing/build/*.timeline.json
-            examples/testing/performance_summary.json
+          name: timelines-${{ github.run_number }}
+          path: examples/testing/build/*.timeline.json
           retention-days: 30
 
-      - name: Commit performance summary to branch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Configure git
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          # Fetch the performance-results branch
-          git fetch origin performance-results:performance-results || echo "Branch doesn't exist yet"
-
-          # Switch to performance-results branch
-          git checkout performance-results || git checkout --orphan performance-results
-
-          # Download existing performance summary as baseline (if it exists)
-          if git show HEAD:performance_summary.json > baseline_performance.json 2>/dev/null; then
-            echo "✅ Downloaded existing performance summary as baseline"
-          else
-            echo "ℹ️ No existing performance summary found - this will be the first baseline"
-            echo "{}" > baseline_performance.json
-          fi
-
-          # Copy the new performance summary
-          cp examples/testing/performance_summary.json "performance_summary.json"
-
-          echo "🔍 Running performance comparison and dashboard generation..."
-
-          # Copy the comparison script from the original branch
-          git show ${{ github.sha }}:tools/compare_performance.py > compare_performance.py
-
-          python3 compare_performance.py \
-            --current performance_summary.json \
-            --baseline baseline_performance.json \
-            --output performance_comparison.md \
-            --history-file performance_history.json \
-            --chart-output performance_chart.svg \
-            --readme-output README.md \
-            --history-limit 50 \
-            --run-number "${{ github.run_number }}" \
-            --commit-sha "${{ github.sha }}" \
-            --verbose
-
-          # Clean up the temporary script
-          rm compare_performance.py
-
-          echo "✅ Performance comparison and dashboard generation completed"
-
-          # Add and commit files
-          if [ -f "performance_summary.json" ]; then
-            git add -f "performance_summary.json"
-            git add -f performance_comparison.md performance_history.json performance_chart.svg README.md
-            echo "📊 Added performance comparison, history, chart, and README"
-
-            # Create commit with meaningful message
-            COMMIT_MSG="Performance data for $(date +%Y-%m-%d) - Commit ${{ github.sha }}"
-            COMMIT_MSG="$COMMIT_MSG
-
-          Includes comparison report, history, chart, and README dashboard"
-
-            git commit -m "$COMMIT_MSG"
-            git push origin performance-results
-
-            echo "✅ Performance summary committed to performance-results branch"
-          else
-            echo "❌ No performance summary file found"
-          fi
-
-          # Clean up temporary files
-          rm -f baseline_performance.json
-
-      - name: Download baseline performance data
-        if: github.event_name == 'pull_request'
-        run: |
-          # Try to download the latest performance summary from main branch
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -H "Accept: application/vnd.github.v3.raw" \
-               -o baseline_performance.json \
-               "https://api.github.com/repos/${{ github.repository }}/contents/performance_summary.json?ref=performance-results" \
-               || echo "No baseline performance data found"
-
-      - name: Compare performance and generate report
-        if: github.event_name == 'pull_request'
-        run: |
-          python3 tools/compare_performance.py \
-            --current examples/testing/performance_summary.json \
-            --baseline baseline_performance.json \
-            --output performance_report.md \
-            --verbose
-
-      - name: Comment PR with performance results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v7
+      # --- Publish to the dashboard at gh-pages/dev/bench ----------------------
+      # Comment-only: fail-on-alert is false, so regressions are surfaced in a PR
+      # comment but never block the build. Alert thresholds sit above the
+      # measured noise floors (micro is far tighter than frame). On main we
+      # persist (auto-push); on PRs we only compare + comment (save-data-file
+      # false) so PR runs never mutate the stored history.
+      - name: Store micro-benchmark results
+        uses: benchmark-action/github-action-benchmark@v1
         with:
-          script: |
-            const fs = require('fs');
+          name: Kalender Micro-benchmarks
+          tool: customSmallerIsBetter
+          output-file-path: build/micro_results.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench
+          auto-push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          save-data-file: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          comment-always: true
+          fail-on-alert: false
+          alert-threshold: '125%'
+          summary-always: true
 
-            let comment = '## 📊 Performance Test Results\n\n';
-
-            try {
-              if (fs.existsSync('performance_report.md')) {
-                const report = fs.readFileSync('performance_report.md', 'utf8');
-                comment += report;
-              } else {
-                comment += 'Performance profiling completed but no comparison data available.\n';
-              }
-
-              comment += '\n---\n';
-              comment += `*Performance test run: ${context.runNumber}*\n`;
-              comment += `*Commit: ${context.sha.substring(0, 7)}*`;
-
-              // Find existing performance comment and update it, or create new one
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-              });
-
-              const botComment = comments.find(comment => 
-                comment.user.type === 'Bot' && 
-                comment.body.includes('📊 Performance Test Results')
-              );
-
-              if (botComment) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: botComment.id,
-                  body: comment
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: comment
-                });
-              }
-            } catch (error) {
-              console.error('Error posting comment:', error);
-
-              // Fallback: post simple comment
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: '📊 Performance profiling completed. Check the workflow artifacts for detailed results.'
-              });
-            }
+      - name: Store frame profiling results
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Kalender Frame Profiling
+          tool: customSmallerIsBetter
+          output-file-path: examples/testing/build/frame_results.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench
+          # Second invocation in this job: reuse the local gh-pages branch the
+          # first step already fetched/updated. Without this the re-fetch is
+          # rejected as non-fast-forward.
+          skip-fetch-gh-pages: true
+          auto-push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          save-data-file: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          comment-always: true
+          fail-on-alert: false
+          alert-threshold: '150%'
+          summary-always: true
