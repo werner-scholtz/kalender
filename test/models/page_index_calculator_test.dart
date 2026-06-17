@@ -83,6 +83,19 @@ void main() {
         final internalRange = calculator.internalRange(location);
         expect(internalRange, InternalDateTimeRange.fromDateTimeRange(range));
       });
+
+      // An empty range (start == end) has 0 pages; indexFromDate must not throw
+      // on the negative clamp bound, and should fall back to index 0.
+      test('test indexFromDate for an empty range', () {
+        final emptyRange = DateTimeRange(
+          start: TZDateTime(location, 2020),
+          end: TZDateTime(location, 2020),
+        );
+        final emptyCalculator = DayIndexCalculator(dateTimeRange: emptyRange);
+        expect(emptyCalculator.numberOfPages(location), 0);
+        expect(() => emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), returnsNormally);
+        expect(emptyCalculator.indexFromDate(TZDateTime(location, 2020), location), 0);
+      });
     });
 
     group('WeekIndexCalculator for $location', () {

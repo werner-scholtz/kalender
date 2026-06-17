@@ -118,7 +118,10 @@ class DayIndexCalculator extends PageIndexCalculator {
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
-    return days.clamp(0, numberOfPages(location) - 1);
+    // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1
+    // would be a negative upper bound and make clamp throw.
+    final pageCount = numberOfPages(location);
+    return pageCount == 0 ? 0 : days.clamp(0, pageCount - 1);
   }
 
   @override
@@ -288,7 +291,10 @@ class FreeScrollFunctions extends PageIndexCalculator {
     final startOfRange = internalRange(location).start;
     // Calculate the difference in days between the two dates.
     final days = startOfDate.difference(startOfRange).inDays;
-    return days.clamp(0, numberOfPages(location) - 1);
+    // Guard against an empty range (numberOfPages == 0), where numberOfPages - 1
+    // would be a negative upper bound and make clamp throw.
+    final pageCount = numberOfPages(location);
+    return pageCount == 0 ? 0 : days.clamp(0, pageCount - 1);
   }
 
   @override
