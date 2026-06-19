@@ -72,18 +72,30 @@ class CalendarEvent {
   /// The date range as a [DateTimeRange].
   DateTimeRange get dateTimeRange => DateTimeRange(start: start, end: end);
 
+  /// Cache of [internalRange] results, keyed by `location?.name` (`null` →
+  /// default/local). [start] and [end] are `final`, so the converted range is
+  /// stable for the lifetime of this instance. The conversion ([TZDateTime.from]/
+  /// [DateTime.toLocal]) is otherwise recomputed on every call across the event
+  /// store, controller filtering, sort comparators and layout — making this the
+  /// hottest cross-cutting path.
+  final Map<String?, InternalDateTimeRange> _internalRangeCache = {};
+
   /// The start as an [InternalDateTime], adjusted for [location].
-  InternalDateTime internalStart({Location? location}) => InternalDateTime.fromExternal(start, location: location);
+  InternalDateTime internalStart({Location? location}) => internalRange(location: location).start;
 
   /// The end as an [InternalDateTime], adjusted for [location].
-  InternalDateTime internalEnd({Location? location}) => InternalDateTime.fromExternal(end, location: location);
+  InternalDateTime internalEnd({Location? location}) => internalRange(location: location).end;
 
   /// The full range as an [InternalDateTimeRange], adjusted for [location].
-  InternalDateTimeRange internalRange({Location? location}) =>
-      InternalDateTimeRange(start: internalStart(location: location), end: internalEnd(location: location));
+  InternalDateTimeRange internalRange({Location? location}) {
+    return _internalRangeCache[location?.name] ??= InternalDateTimeRange(
+      start: InternalDateTime.fromExternal(start, location: location),
+      end: InternalDateTime.fromExternal(end, location: location),
+    );
+  }
 
   /// Total duration (UTC-based).
-  Duration get duration => dateTimeRange.duration;
+  Duration get duration => end.difference(start);
 
   /// Whether this event spans more than one day.
   bool get isMultiDayEvent => duration.inDays > 0;

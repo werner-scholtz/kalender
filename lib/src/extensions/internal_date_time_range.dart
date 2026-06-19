@@ -40,20 +40,17 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
 
     // Iterate through the dates, incrementing by one day at a time.
     var current = dates.last;
-    while (current.isBefore(end) || (inclusive && current.isAtSameMomentAs(end))) {
-      // Increment using date components (DST-safe)
+    while (true) {
+      // Increment using date components (DST-safe).
       final next = current.copyWith(day: current.day + 1);
 
-      // Add the next date to the list if it's within the range.
-      if (next.isBefore(end) || (inclusive && next.isAtSameMomentAs(end))) {
-        dates.add(next);
-        current = next;
-      } else if (inclusive && next.isAtSameMomentAs(end)) {
-        dates.add(next);
-        current = next;
-      } else {
-        break;
-      }
+      // Stop once we pass the end. When [inclusive], the end itself is allowed
+      // (`next <= end`); otherwise it is exclusive (`next < end`).
+      final withinRange = inclusive ? !next.isAfter(end) : next.isBefore(end);
+      if (!withinRange) break;
+
+      dates.add(next);
+      current = next;
     }
 
     return dates;

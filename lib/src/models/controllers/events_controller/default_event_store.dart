@@ -163,10 +163,11 @@ class DefaultEventStore extends EventStore {
     }
 
     final days = dateTimeRange.dates();
+    final dateIds = locationDateIdMap[locationString]!;
     final eventIds = <String>{};
     for (final day in days) {
-      final dateIds = locationDateIdMap[locationString]!;
-      eventIds.addAll(dateIds[toKey(day)] ?? {});
+      final ids = dateIds[toKey(day)];
+      if (ids != null) eventIds.addAll(ids);
     }
 
     return eventIds;

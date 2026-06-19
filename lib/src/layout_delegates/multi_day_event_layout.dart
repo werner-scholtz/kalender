@@ -67,6 +67,13 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
+  // Map each visible date to its column index so per-event lookups are O(1)
+  // instead of a linear `indexOf` scan. The map already encodes text direction
+  // (via [visibleDates]), so callers just look the date up directly.
+  final dateColumn = <InternalDateTime, int>{
+    for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i,
+  };
+
   // Sort the events.
   final sortedEvents = events.toList()
     ..sort(
@@ -97,7 +104,7 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // columns without any events do not trigger spurious overflow buttons when
   // maxNumberOfRows is 0.
   final columnRowMap = <int, int>{
-    for (final date in visibleDates) visibleDates.indexOf(date): -1,
+    for (var i = 0; i < visibleDates.length; i++) i: -1,
   };
 
   for (final event in sortedEvents) {
@@ -112,19 +119,20 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
           internalRange.end == internalRange.end.startOfDay ? internalRange.end.startOfDay : internalRange.end.endOfDay,
     );
 
-    // Find all the columns that the event will appear on.
+    // Find all the columns that the event will appear on, in ascending (visual)
+    // order. [dateColumn] already encodes text direction, so we map each spanned
+    // date to its column index and sort.
     final columns = <int>[];
-    // Take the text direction into account so that the columns are in the correct order.
-    final dates = textDirection == TextDirection.ltr ? range.dates() : range.dates().reversed.toList();
-    for (final date in dates) {
-      final index = visibleDates.indexOf(date);
+    for (final date in range.dates()) {
+      final index = dateColumn[date];
 
       // If the date is not in the visible dates, we skip it.
-      if (index == -1) continue;
+      if (index == null) continue;
 
       // Add the index to the columns list.
       columns.add(index);
     }
+    columns.sort();
 
     // Create a preliminary layout information for the event.
     final preliminaryLayout = EventLayoutInformation.preliminary(id: event.id, columns: columns);
