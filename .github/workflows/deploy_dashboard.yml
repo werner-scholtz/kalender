@@ -16,11 +16,13 @@ on:
 permissions:
   contents: write
 
-# Must match the group used by performance_profiling.yml so gh-pages writes from
-# the two workflows serialise (a merge to main triggers both); otherwise their
-# concurrent pushes collide with a non-fast-forward rejection.
+# Own concurrency group — deliberately NOT shared with performance_profiling.yml.
+# Sharing a group made the two workflows cancel each other: when a benchmark run
+# holds the group and a dashboard change lands, GitHub cancels the pending deploy.
+# A dedicated group keeps deploys from being cancelled; the rare race with a
+# benchmark gh-pages push is handled by the fetch+retry loop below instead.
 concurrency:
-  group: benchmarks-${{ github.ref }}
+  group: deploy-dashboard-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -33,19 +35,32 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin gh-pages
-          git checkout gh-pages
-          mkdir -p dev/bench
-          # Read the dashboard straight out of the triggering commit's tree.
-          # `git checkout gh-pages` swaps the working tree to the orphan branch,
-          # which has no tools/dashboard/, so reading from the object store via
-          # `git show` (rather than a working-tree path) is what survives it.
-          git show "$GITHUB_SHA":tools/dashboard/index.html > dev/bench/index.html
-          if git diff --quiet -- dev/bench/index.html; then
-            echo "Dashboard already up to date."
-          else
+          # Capture the dashboard from the triggering commit before switching
+          # branches: `git checkout gh-pages` swaps the working tree to the orphan
+          # branch (no tools/dashboard/), so reading from the object store via
+          # `git show` is what survives it.
+          git show "$GITHUB_SHA":tools/dashboard/index.html > "$RUNNER_TEMP/index.html"
+
+          # Re-fetch and retry on push rejection. A benchmark run may push data.js
+          # to gh-pages concurrently; rebasing onto the latest tip each attempt
+          # lets our index.html-only change apply cleanly (different file).
+          for attempt in 1 2 3 4 5; do
+            git fetch origin gh-pages
+            git checkout -B gh-pages origin/gh-pages
+            mkdir -p dev/bench
+            cp "$RUNNER_TEMP/index.html" dev/bench/index.html
+            if git diff --quiet -- dev/bench/index.html; then
+              echo "Dashboard already up to date."
+              exit 0
+            fi
             git add dev/bench/index.html
             git commit -m "Deploy benchmark dashboard"
-            git push origin gh-pages
-            echo "Dashboard deployed."
-          fi
+            if git push origin gh-pages; then
+              echo "Dashboard deployed."
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt/5); re-fetching and retrying..."
+            sleep 3
+          done
+          echo "Failed to deploy dashboard after 5 attempts."
+          exit 1
