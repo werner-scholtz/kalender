@@ -33,11 +33,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          src="$(pwd)/tools/dashboard/index.html"
           git fetch origin gh-pages
           git checkout gh-pages
           mkdir -p dev/bench
-          cp "$src" dev/bench/index.html
+          # Read the dashboard straight out of the triggering commit's tree.
+          # `git checkout gh-pages` swaps the working tree to the orphan branch,
+          # which has no tools/dashboard/, so reading from the object store via
+          # `git show` (rather than a working-tree path) is what survives it.
+          git show "$GITHUB_SHA":tools/dashboard/index.html > dev/bench/index.html
           if git diff --quiet -- dev/bench/index.html; then
             echo "Dashboard already up to date."
           else

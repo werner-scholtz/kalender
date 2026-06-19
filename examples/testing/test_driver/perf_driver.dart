@@ -33,8 +33,8 @@ enum Views { week, month, schedule }
 /// more runs tightens the estimate against the ~6% run-to-run noise floor
 /// measured on shared CI. Raised from 3 → 5.
 ///
-/// Overridable via `KALENDER_PERF_RUNS` so the one-time historical backfill can
-/// trade precision for speed across many commits.
+/// Overridable via `KALENDER_PERF_RUNS` to trade precision for speed when
+/// running locally.
 final numberOfRuns = int.tryParse(Platform.environment['KALENDER_PERF_RUNS'] ?? '') ?? 5;
 
 /// Build-frame metrics we keep as the actionable signal (lower is better).
