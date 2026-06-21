@@ -96,10 +96,23 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
   List<CalendarEvent> _events = [];
 
+  /// Whether timed tiles may render. Only relevant when
+  /// [MultiDayBodyConfiguration.deferTileRenderingAbove] is set: a freshly mounted
+  /// dense column renders no tiles on its first frame, then flips this `true` on the
+  /// next frame so the tiles build off the navigation-transition frame. Latches `true`
+  /// — event updates to an already-ready column always render immediately.
+  bool _ready = false;
+
   @override
   void initState() {
     _update();
     widget.eventsController.addListener(_update);
+    // Only schedule the deferral flip when the opt-in option is enabled.
+    if (widget.configuration.deferTileRenderingAbove != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_ready) setState(() => _ready = true);
+      });
+    }
     super.initState();
   }
 
@@ -164,9 +177,17 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     final controller = context.calendarController;
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
+
+    // Opt-in deferral: on a freshly mounted dense column, skip the timed tiles for
+    // one frame so the navigation transition lands instantly; they fill in next frame.
+    // Disabled (null threshold) or sparse/already-ready columns render immediately.
+    final threshold = widget.configuration.deferTileRenderingAbove;
+    final deferTiles = threshold != null && !_ready && _events.length > threshold;
+    final renderedEvents = deferTiles ? const <CalendarEvent>[] : _events;
+
     final eventsWidget = CustomMultiChildLayout(
       delegate: layoutStrategy.call(
-        _events,
+        renderedEvents,
         widget.date,
         widget.viewConfiguration.timeOfDayRange,
         context.heightPerMinute,
@@ -174,7 +195,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
         widget.cache,
         context.location,
       ),
-      children: _events.indexed
+      children: renderedEvents.indexed
           .map(
             (item) => LayoutId(
               id: item.$1,

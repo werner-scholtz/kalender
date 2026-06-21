@@ -261,6 +261,16 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 ///
 /// TODO: Depricate this in 1.0.0 and use [VerticalConfiguration] instead.
 class MultiDayBodyConfiguration extends VerticalConfiguration {
+  /// Defers building a day column's timed event tiles by one frame when the column
+  /// first mounts with more than this many tiles.
+  ///
+  /// Opt-in performance option (default `null` = disabled, no behaviour change).
+  /// When set, navigating to a dense day/week lands the grid instantly and the
+  /// timed tiles fill in on the next frame instead of janking the transition.
+  /// Columns at or below the threshold, and any subsequent event updates to an
+  /// already-mounted column, render immediately.
+  final int? deferTileRenderingAbove;
+
   /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayBodyConfiguration({
     super.showMultiDayEvents,
@@ -271,6 +281,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     super.minimumTileHeight,
     super.pageTriggerConfiguration,
     super.scrollTriggerConfiguration,
+    this.deferTileRenderingAbove,
   });
 
   /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
@@ -283,6 +294,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     ScrollPhysics? scrollPhysics,
     ScrollPhysics? pageScrollPhysics,
     double? minimumTileHeight,
+    int? deferTileRenderingAbove,
   }) {
     return MultiDayBodyConfiguration(
       showMultiDayEvents: showMultiDayEvents ?? this.showMultiDayEvents,
@@ -293,6 +305,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
       minimumTileHeight: minimumTileHeight ?? this.minimumTileHeight,
+      deferTileRenderingAbove: deferTileRenderingAbove ?? this.deferTileRenderingAbove,
     );
   }
 }
