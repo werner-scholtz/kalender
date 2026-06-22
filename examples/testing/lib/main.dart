@@ -65,10 +65,6 @@ class _HomeState extends State<Home> {
           multiDayTileComponents: _tileComponents,
           monthTileComponents: _multiDayTileComponents,
           scheduleTileComponents: _scheduleTileComponents,
-          // Opt into deferred tile rendering so the perf benchmark exercises it.
-          // Dense day columns (> 20 timed tiles) build their tiles one frame after
-          // the navigation transition. NOTE: experiment config — not for merge as-is.
-          multiDayBodyConfiguration: const MultiDayBodyConfiguration(deferTileRenderingAbove: 20),
         ),
       ),
     );
