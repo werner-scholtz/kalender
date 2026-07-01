@@ -515,6 +515,94 @@ void main() {
       expect(calendarController.internalDateTimeRange.value, isNotNull);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // Vertical scroll / zoom preservation across view switches (#249)
+  // ---------------------------------------------------------------------------
+  group('Vertical scroll & zoom preservation (#249)', () {
+    MultiDayViewController multiDay() => calendarController.viewController as MultiDayViewController;
+
+    MonthViewConfiguration month() => MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange);
+    MultiDayViewConfiguration week({bool preserve = true}) => MultiDayViewConfiguration.week(
+          name: 'Week',
+          displayRange: calendarRange,
+          preserveVerticalScrollOnViewChange: preserve,
+        );
+
+    testWidgets('restores scroll position across Week → Month → Week (default)', (tester) async {
+      await pumpCalendarView(tester, config: week(), withBody: true);
+
+      // Scroll down to a non-zero offset (initialTimeOfDay is midnight → offset 0).
+      multiDay().scrollController.jumpTo(200);
+      await tester.pump();
+      final offsetBefore = multiDay().scrollController.offset;
+      final todBefore = calendarController.visibleTimeOfDay.value;
+      expect(offsetBefore, greaterThan(0));
+      expect(todBefore, isNotNull);
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(), withBody: true);
+
+      expect(multiDay().scrollController.offset, closeTo(offsetBefore, 1.0));
+      expect(calendarController.visibleTimeOfDay.value, equals(todBefore));
+    });
+
+    testWidgets('resets scroll position when preserveVerticalScrollOnViewChange is false', (tester) async {
+      await pumpCalendarView(tester, config: week(preserve: false), withBody: true);
+
+      multiDay().scrollController.jumpTo(200);
+      await tester.pump();
+      expect(multiDay().scrollController.offset, greaterThan(0));
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(preserve: false), withBody: true);
+
+      // Back to the configured initialTimeOfDay (midnight → offset 0).
+      expect(multiDay().scrollController.offset, closeTo(0, 1.0));
+    });
+
+    testWidgets('restores zoom (heightPerMinute) across Week → Month → Week', (tester) async {
+      await pumpCalendarView(tester, config: week(), withBody: true);
+
+      multiDay().heightPerMinute.value = 1.5;
+      await tester.pump();
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(), withBody: true);
+
+      expect(multiDay().heightPerMinute.value, equals(1.5));
+    });
+
+    testWidgets('visibleTimeOfDay is non-null in a multi-day view and null in month', (tester) async {
+      await pumpCalendarView(tester, config: week(), withBody: true);
+      expect(calendarController.visibleTimeOfDay.value, isNotNull);
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      expect(calendarController.visibleTimeOfDay.value, isNull);
+    });
+
+    testWidgets('onScrollPositionChanged fires with the visible time-of-day on scroll', (tester) async {
+      final reported = <TimeOfDay>[];
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          key: calendarViewKey,
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: week(),
+          callbacks: CalendarCallbacks(onScrollPositionChanged: reported.add),
+          body: const CalendarBody(),
+        ),
+      );
+
+      // Scroll to 02:00 → offset = 120 minutes * defaultHeightPerMinute (0.7) = 84px.
+      multiDay().scrollController.jumpTo(120 * 0.7);
+      await tester.pump();
+
+      expect(reported, isNotEmpty);
+      expect(reported.last, equals(const TimeOfDay(hour: 2, minute: 0)));
+    });
+  });
 }
 
 InternalDateTime _alwaysReturnJanuaryStrategy({
