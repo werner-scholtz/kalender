@@ -526,6 +526,7 @@ void main() {
       ZoomTransition zoom = ZoomTransition.preserve,
       DateTransition date = DateTransition.carryFocus,
       ScrollResolver? scrollResolver,
+      ZoomResolver? zoomResolver,
       DateResolver? dateResolver,
     }) =>
         MultiDayViewConfiguration.week(
@@ -535,6 +536,7 @@ void main() {
           zoomTransition: zoom,
           dateTransition: date,
           scrollResolver: scrollResolver,
+          zoomResolver: zoomResolver,
           dateResolver: dateResolver,
         );
 
@@ -581,6 +583,73 @@ void main() {
       await pumpCalendarView(tester, config: day, withBody: true);
 
       expect(visibleStart(), equals(InternalDateTime(2024, 6, 15)));
+    });
+
+    testWidgets('ScrollTransition.restorePerView restores the view\'s own last time-of-day', (tester) async {
+      final day = MultiDayViewConfiguration.singleDay(
+        name: 'Day',
+        displayRange: calendarRange,
+        scrollTransition: ScrollTransition.restorePerView,
+      );
+      final wk = week(scroll: ScrollTransition.restorePerView);
+
+      // Day scrolled to 03:00.
+      await pumpCalendarView(tester, config: day, withBody: true);
+      multiDay().scrollController.jumpTo(180 * 0.7);
+      await tester.pump();
+
+      // Week scrolled somewhere else (05:00) — a different per-view position.
+      await pumpCalendarView(tester, config: wk, withBody: true);
+      multiDay().scrollController.jumpTo(300 * 0.7);
+      await tester.pump();
+
+      // Returning to Day restores Day's own 03:00, not Week's 05:00.
+      await pumpCalendarView(tester, config: day, withBody: true);
+      expect(calendarController.visibleTimeOfDay.value, equals(const TimeOfDay(hour: 3, minute: 0)));
+    });
+
+    testWidgets('ZoomTransition.reset returns to initialHeightPerMinute on switch', (tester) async {
+      final wk = week(zoom: ZoomTransition.reset);
+      await pumpCalendarView(tester, config: wk, withBody: true);
+      multiDay().heightPerMinute.value = 1.5; // zoom in
+      await tester.pump();
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: wk, withBody: true);
+
+      // Back to the configured default (0.7), not the 1.5 we set.
+      expect(multiDay().heightPerMinute.value, equals(defaultHeightPerMinute));
+    });
+
+    testWidgets('ZoomTransition.restorePerView restores the view\'s own last zoom', (tester) async {
+      final day = MultiDayViewConfiguration.singleDay(
+        name: 'Day',
+        displayRange: calendarRange,
+        zoomTransition: ZoomTransition.restorePerView,
+      );
+      final wk = week(zoom: ZoomTransition.restorePerView);
+
+      await pumpCalendarView(tester, config: day, withBody: true);
+      multiDay().heightPerMinute.value = 2.0;
+      await tester.pump();
+
+      await pumpCalendarView(tester, config: wk, withBody: true);
+      multiDay().heightPerMinute.value = 0.9;
+      await tester.pump();
+
+      await pumpCalendarView(tester, config: day, withBody: true);
+      expect(multiDay().heightPerMinute.value, equals(2.0));
+    });
+
+    testWidgets('zoomResolver overrides the zoom transition', (tester) async {
+      double fixedZoom(ViewTransitionContext transition) => 1.7;
+      final wk = week(zoomResolver: fixedZoom);
+      await pumpCalendarView(tester, config: wk, withBody: true);
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: wk, withBody: true);
+
+      expect(multiDay().heightPerMinute.value, equals(1.7));
     });
 
     testWidgets('scrollResolver overrides the scroll transition', (tester) async {
