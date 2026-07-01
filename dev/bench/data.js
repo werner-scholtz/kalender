@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782895530176,
+  "lastUpdate": 1782898329957,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -3177,6 +3177,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3634.8321678321677,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "04964ee42c5efd30c9fc7d27105bd64677452e04",
+          "message": "Merge pull request #275 from werner-scholtz/254-timezone-today-detection\n\nfix(month)!: localize monthDayHeaderBuilder date (v0.19.0) + timezone today-detection coverage",
+          "timestamp": "2026-07-01T11:13:44+02:00",
+          "tree_id": "b31e771c87acedc82d8f4a3371fb63708033db8b",
+          "url": "https://github.com/werner-scholtz/kalender/commit/04964ee42c5efd30c9fc7d27105bd64677452e04"
+        },
+        "date": 1782898326408,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 175.56221157259495,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 702.52825,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2071.664,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8147.908,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 4225.366,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 16610.647540983606,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 252.08654680719158,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 110.99356223175965,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 771.5265,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3295.688155922039,
             "unit": "us"
           }
         ]
