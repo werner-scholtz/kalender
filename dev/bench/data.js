@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782898332365,
+  "lastUpdate": 1782899465962,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -3251,6 +3251,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3295.688155922039,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "26b537ee8ddc1c69ccd1dfddbaf5ec4b510bd17d",
+          "message": "Merge pull request #276 from werner-scholtz/235-generate-frame-regression-test\n\ntest(#235): month-view custom generateMultiDayLayoutFrame regression coverage",
+          "timestamp": "2026-07-01T11:33:20+02:00",
+          "tree_id": "8351696225144752f73d5dce79e03c068fb0bbec",
+          "url": "https://github.com/werner-scholtz/kalender/commit/26b537ee8ddc1c69ccd1dfddbaf5ec4b510bd17d"
+        },
+        "date": 1782899463779,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 169.51350889192886,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 673.974,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1973.392803598201,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7738.359550561798,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 4569.737078651686,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 18217.782608695652,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 247.59863608183508,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 120.66601202896771,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 845.07825,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3586.1853146853146,
             "unit": "us"
           }
         ]
