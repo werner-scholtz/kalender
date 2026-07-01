@@ -1,3 +1,9 @@
+## 0.18.8
+
+### Tests
+
+- Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261) [#254](https://github.com/werner-scholtz/kalender/issues/254)
+
 ## 0.18.7
 
 ### Fixes
