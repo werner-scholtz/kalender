@@ -63,9 +63,13 @@ abstract class ScheduleViewController extends ViewController with ScheduleMap {
   void clear() => clearPage(currentPage);
 
   /// Find the initial scroll index for the given date.
+  ///
+  /// Normalizes with the view's [location] (matching how the map is keyed and how
+  /// [indexFromDateTime]/[closestIndex] look up), and never writes a fallback back
+  /// into the authoritative date→index map.
   int initialScrollIndex(DateTime date) {
-    final asUtc = InternalDateTime.fromDateTime(date).startOfDay;
-    return dateTimeItemIndex(currentPage)[asUtc] ??= closestIndex(asUtc);
+    final normalized = InternalDateTime.fromExternal(date, location: location).startOfDay;
+    return dateTimeItemIndex(currentPage)[normalized] ?? closestIndex(normalized);
   }
 
   /// Animate to the given index.

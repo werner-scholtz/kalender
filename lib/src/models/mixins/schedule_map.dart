@@ -120,23 +120,27 @@ mixin ScheduleMap {
     return dateTimeFirstItemIndex[date];
   }
 
-  /// Find the index closest to the given date.
+  /// Find the index of the row whose date is closest to [date].
+  ///
+  /// Distances are measured against the first row of each date, so the result
+  /// points at the start of the nearest day rather than an arbitrary event
+  /// within it. This handles targets before the first day, after the last day,
+  /// and in between uniformly. Ties resolve to the earlier date.
   int closestIndexForPage(int pageIndex, DateTime date) {
-    date = InternalDateTime.fromExternal(date, location: location).startOfDay;
+    final target = InternalDateTime.fromExternal(date, location: location).startOfDay;
     final dateTimeFirstItemIndex = dateTimeItemIndex(pageIndex);
     if (dateTimeFirstItemIndex.isEmpty) return 0;
 
-    final itemIndexDateTimeForPage = itemIndexDateTime(pageIndex);
-    final lastDate = dateTimeFirstItemIndex.keys.last;
-    final firstDate = dateTimeFirstItemIndex.keys.first;
-    if (date.isAfter(lastDate)) {
-      return itemIndexDateTimeForPage.keys.last;
-    } else if (date.isBefore(firstDate)) {
-      return itemIndexDateTimeForPage.keys.first;
-    } else {
-      // If the date is in between, we need to find the closest index.
-      return itemIndexDateTimeForPage.entries.reduce((a, b) => (a.value.isBefore(b.value) ? a : b)).key;
+    var closestIndex = dateTimeFirstItemIndex.values.first;
+    Duration? closestDelta;
+    for (final entry in dateTimeFirstItemIndex.entries) {
+      final delta = entry.key.difference(target).abs();
+      if (closestDelta == null || delta < closestDelta) {
+        closestDelta = delta;
+        closestIndex = entry.value;
+      }
     }
+    return closestIndex;
   }
 
   /// A map of all the pageIndexes to MonthIndices.
