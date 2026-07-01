@@ -245,6 +245,7 @@ const defaultFirstDayOfWeek = DateTime.monday;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);
 const defaultHeightPerMinute = 0.7;
+const defaultPreserveVerticalScrollOnViewChange = true;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);

@@ -39,6 +39,20 @@ class MultiDayViewConfiguration extends ViewConfiguration {
   /// The initial heightPerMinute (zoom level).
   final double initialHeightPerMinute;
 
+  /// Whether the vertical scroll position (time-of-day) should be preserved when
+  /// the [CalendarView] switches between view configurations.
+  ///
+  /// When `true` (the default), switching away from and back to a multi-day view
+  /// (e.g. Week → Month → Week) restores the scroll position the user was last
+  /// looking at instead of resetting to [initialTimeOfDay]. The zoom level
+  /// ([initialHeightPerMinute] / `heightPerMinute`) is carried over as well,
+  /// because the scroll offset only maps back to the same time-of-day when the
+  /// zoom is the same.
+  ///
+  /// Set to `false` to always reset to [initialTimeOfDay] and
+  /// [initialHeightPerMinute] on a view change.
+  final bool preserveVerticalScrollOnViewChange;
+
   MultiDayViewConfiguration({
     required super.name,
     super.initialDateTime,
@@ -51,6 +65,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.type,
     required this.initialTimeOfDay,
     required this.initialHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   }) : assert(
           firstDayOfWeek >= 1 && firstDayOfWeek <= 7,
           'First day of week must be a valid week day number\n'
@@ -68,6 +83,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         numberOfDays = 1,
         type = MultiDayViewType.singleDay,
@@ -85,6 +101,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.numberOfDays = 7,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.week,
         pageIndexCalculator = PageIndexCalculator.week(
@@ -103,6 +120,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.numberOfDays = 5,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.workWeek,
@@ -120,6 +138,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     this.firstDayOfWeek = defaultFirstDayOfWeek,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         type = MultiDayViewType.custom,
         pageIndexCalculator = PageIndexCalculator.custom(displayRange ?? kDefaultRange(), numberOfDays);
@@ -135,6 +154,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     required this.numberOfDays,
     this.initialTimeOfDay = defaultInitialTimeOfDay,
     this.initialHeightPerMinute = defaultHeightPerMinute,
+    this.preserveVerticalScrollOnViewChange = defaultPreserveVerticalScrollOnViewChange,
   })  : timeOfDayRange = timeOfDayRange ?? TimeOfDayRange.allDay(),
         firstDayOfWeek = defaultFirstDayOfWeek,
         type = MultiDayViewType.freeScroll,
@@ -150,6 +170,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     int? numberOfDays,
     int? firstDayOfWeek,
     TimeOfDay? initialTimeOfDay,
+    bool? preserveVerticalScrollOnViewChange,
   }) {
     final name0 = name ?? this.name;
     final selectedDate0 = initialDateTime ?? this.initialDateTime;
@@ -159,6 +180,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     final displayRange0 = displayRange ?? dateTimeRange;
     final firstDayOfWeek0 = firstDayOfWeek ?? this.firstDayOfWeek;
     final initialTimeOfDay0 = initialTimeOfDay ?? this.initialTimeOfDay;
+    final preserveVerticalScrollOnViewChange0 =
+        preserveVerticalScrollOnViewChange ?? this.preserveVerticalScrollOnViewChange;
 
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
@@ -170,6 +193,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
           initialTimeOfDay: initialTimeOfDay0,
+          preserveVerticalScrollOnViewChange: preserveVerticalScrollOnViewChange0,
         ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
           name: name0,
@@ -180,6 +204,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           displayRange: displayRange0,
           firstDayOfWeek: firstDayOfWeek0,
           initialTimeOfDay: initialTimeOfDay0,
+          preserveVerticalScrollOnViewChange: preserveVerticalScrollOnViewChange0,
         ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
           name: name0,
@@ -189,6 +214,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           timeOfDayRange: timeOfDayRange0,
           displayRange: displayRange0,
           initialTimeOfDay: initialTimeOfDay0,
+          preserveVerticalScrollOnViewChange: preserveVerticalScrollOnViewChange0,
         ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
           name: name0,
@@ -200,6 +226,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           firstDayOfWeek: firstDayOfWeek0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
           initialTimeOfDay: initialTimeOfDay0,
+          preserveVerticalScrollOnViewChange: preserveVerticalScrollOnViewChange0,
         ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
           name: name0,
@@ -210,6 +237,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           displayRange: displayRange0,
           numberOfDays: numberOfDays ?? this.numberOfDays,
           initialTimeOfDay: initialTimeOfDay0,
+          preserveVerticalScrollOnViewChange: preserveVerticalScrollOnViewChange0,
         ),
     };
   }

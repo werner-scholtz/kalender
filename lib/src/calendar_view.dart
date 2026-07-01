@@ -69,6 +69,15 @@ class CalendarView extends StatefulWidget {
 class CalendarViewState extends State<CalendarView> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController _viewController;
+
+  /// The last known vertical scroll offset / zoom of a [MultiDayViewController].
+  ///
+  /// These persist across view-configuration changes (they live on the state, not
+  /// the disposable controller) so the scroll position and zoom can be restored
+  /// even after a round-trip through a view that has no vertical scroll (e.g.
+  /// Week → Month → Week). See [MultiDayViewConfiguration.preserveVerticalScrollOnViewChange].
+  double? _rememberedScrollOffset;
+  double? _rememberedHeightPerMinute;
   // TODO: update this to be a valueNotifier.
   late dynamic _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
@@ -104,10 +113,17 @@ class CalendarViewState extends State<CalendarView> {
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
-      // Preserve the current height per minute (zoom level) when only the location changed.
-      final oldHeightPerMinute = _viewController is MultiDayViewController
-          ? (_viewController as MultiDayViewController).heightPerMinute.value
-          : null;
+      // Remember the current vertical scroll offset / zoom so it can be restored
+      // when returning to a multi-day view. These are kept even when switching to a
+      // view without vertical scroll (e.g. Month), so a Week → Month → Week
+      // round-trip still restores the position.
+      if (_viewController is MultiDayViewController) {
+        final multiDay = _viewController as MultiDayViewController;
+        _rememberedHeightPerMinute = multiDay.heightPerMinute.value;
+        if (multiDay.scrollController.hasClients) {
+          _rememberedScrollOffset = multiDay.scrollController.offset;
+        }
+      }
 
       // Use selectedDate if available, otherwise use the initial date selection strategy
       final initialDate = widget.viewConfiguration.initialDateTime != null
@@ -117,13 +133,17 @@ class CalendarViewState extends State<CalendarView> {
               newViewConfiguration: widget.viewConfiguration,
             );
 
-      // Create the new view controller.
-      _viewController = _createViewController(initialDate: initialDate);
+      // Restore the remembered scroll offset / zoom only when the new view is a
+      // multi-day view that opts into preservation.
+      final newConfig = widget.viewConfiguration;
+      final preserve = newConfig is MultiDayViewConfiguration && newConfig.preserveVerticalScrollOnViewChange;
 
-      // Restore the zoom level if the new controller is also a MultiDayViewController.
-      if (oldHeightPerMinute != null && _viewController is MultiDayViewController) {
-        (_viewController as MultiDayViewController).heightPerMinute.value = oldHeightPerMinute;
-      }
+      // Create the new view controller.
+      _viewController = _createViewController(
+        initialDate: initialDate,
+        initialScrollOffset: preserve ? _rememberedScrollOffset : null,
+        initialHeightPerMinute: preserve ? _rememberedHeightPerMinute : null,
+      );
 
       // Dispose the old view controller if it exists.
       widget.calendarController.viewController?.dispose();
@@ -160,7 +180,11 @@ class CalendarViewState extends State<CalendarView> {
   }
 
   /// Create the [ViewController] based on the [ViewConfiguration].
-  ViewController _createViewController({required InternalDateTime initialDate}) {
+  ViewController _createViewController({
+    required InternalDateTime initialDate,
+    double? initialScrollOffset,
+    double? initialHeightPerMinute,
+  }) {
     final viewConfiguration = widget.viewConfiguration;
 
     return switch (viewConfiguration.runtimeType) {
@@ -169,6 +193,8 @@ class CalendarViewState extends State<CalendarView> {
           visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate,
+          initialScrollOffset: initialScrollOffset,
+          initialHeightPerMinute: initialHeightPerMinute,
           location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController(
