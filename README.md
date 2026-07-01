@@ -1065,7 +1065,7 @@ MultiDayViewConfiguration.week(
 The callback's return value is used for:
 - Positioning the time indicator on the calendar grid.
 - Determining which day is "today" for header highlighting (`DayHeader`, `MonthDayHeader`, `ScheduleDate`).
-- Evaluating `EmptyDayBehavior.showToday` in schedule views.
+- Evaluating `EmptyDayBehavior.showOnlyToday` in schedule views.
 
 Any `DateTime` subtype works — `DateTime.now()`, `DateTime.now().toUtc()`, or `TZDateTime.now(location)` for a specific timezone.
 

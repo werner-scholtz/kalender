@@ -48,6 +48,20 @@ MultiDayViewConfiguration.week(
 )
 ```
 
+### `EmptyDayBehavior.showToday` renamed to `showOnlyToday`
+
+`EmptyDayBehavior.showToday` has been renamed to `EmptyDayBehavior.showOnlyToday`. The behaviour is unchanged — among empty days, only today is shown — the new name just removes the ambiguity (it never showed *all* empty days plus today).
+
+**Before:**
+```dart
+ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.showToday)
+```
+
+**After:**
+```dart
+ScheduleBodyConfiguration(emptyDay: EmptyDayBehavior.showOnlyToday)
+```
+
 ### `initialDateSelectionStrategy` replaced by per-dimension view-transition controls
 
 `ViewConfiguration.initialDateSelectionStrategy` has been removed. How a view switch transfers state is now expressed per dimension:
