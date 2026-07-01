@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782892281955,
+  "lastUpdate": 1782895527811,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -3103,6 +3103,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3210.7946026986506,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6f2f92af6fbacea01c90cabefac6287f4af1c2dc",
+          "message": "Merge pull request #274 from werner-scholtz/261-investigate-weird-time-indicator-behaviour\n\ntest: regression coverage for time-indicator behaviour (#261) + 0.18.8",
+          "timestamp": "2026-07-01T10:27:26+02:00",
+          "tree_id": "0dd046cac9be400303392b247249692576e554dc",
+          "url": "https://github.com/werner-scholtz/kalender/commit/6f2f92af6fbacea01c90cabefac6287f4af1c2dc"
+        },
+        "date": 1782895525254,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 167.39815200199783,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 682.34975,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2030.6875,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7867.966292134832,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 4618.770786516854,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 18157.848214285714,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 243.17737820434942,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 120.72672,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 854.4815,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3634.8321678321677,
             "unit": "us"
           }
         ]
