@@ -3,8 +3,12 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The month day header builder.
+///
+/// The [date] is provided as a wall-clock [DateTime] in the calendar's
+/// configured location (via `.forLocation()`), so consumer comparisons against
+/// `DateTime.now()` behave correctly. See #248.
 typedef MonthDayHeaderBuilder = Widget Function(
-  InternalDateTime date,
+  DateTime date,
   MonthDayHeaderStyle? style,
 );
 
@@ -32,11 +36,11 @@ class MonthDayHeader extends StatelessWidget {
   /// Key applied to the [IconButton] when the date is today.
   static const todayKey = ValueKey('MonthDayHeader.today');
 
-  final InternalDateTime date;
+  final DateTime date;
   final MonthDayHeaderStyle? style;
 
   const MonthDayHeader({super.key, required this.date, this.style});
-  static MonthDayHeader builder(InternalDateTime date, MonthDayHeaderStyle? style) {
+  static MonthDayHeader builder(DateTime date, MonthDayHeaderStyle? style) {
     return MonthDayHeader(date: date, style: style);
   }
 
@@ -44,13 +48,14 @@ class MonthDayHeader extends StatelessWidget {
     final components = context.components;
     final dayHeader = components.monthComponents.bodyComponents.monthDayHeaderBuilder;
     final style = components.monthComponentStyles.bodyStyles.monthDayHeaderStyle;
-    return dayHeader(date, style);
+    return dayHeader(date.forLocation(location: context.location), style);
   }
 
   @override
   Widget build(BuildContext context) {
     final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
-    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final isToday = now != null ? localDate.isToday(now: now) : localDate.isToday(location: context.location);
     final button = isToday
         ? IconButton.filled(
             key: todayKey,
