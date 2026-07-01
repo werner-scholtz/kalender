@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782890101963,
+  "lastUpdate": 1782891171812,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -2955,6 +2955,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3541.4895104895104,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2117fa746d1d5eaf8eb5113d161220406834a50d",
+          "message": "Merge pull request #273 from werner-scholtz/255-calendarview-with-multidayportaloverlaybuttonstyle-has-always-numberofhiddenrows-0\n\ntest(month): regression coverage for #255 overflow button with no events",
+          "timestamp": "2026-07-01T09:03:44+02:00",
+          "tree_id": "2ffa3a09ffa9e6434e129474ea7d412d19e0fcb5",
+          "url": "https://github.com/werner-scholtz/kalender/commit/2117fa746d1d5eaf8eb5113d161220406834a50d"
+        },
+        "date": 1782891168853,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 176.13488047461175,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 700.06575,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2090.577,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8132.672,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 2244.245,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 8964.059322033898,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 230.17689489351957,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 56.32041514532961,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 387.407846183725,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 1675.0817091454273,
             "unit": "us"
           }
         ]
