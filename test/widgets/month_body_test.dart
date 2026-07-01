@@ -198,5 +198,68 @@ void main() {
         reason: 'Month week numbers should respect the configured vertical alignment',
       );
     });
+
+    // ---------------------------------------------------------------------------
+    // Regression: https://github.com/werner-scholtz/kalender/issues/255
+    //
+    // A month view showed a "+N more" overflow button (MultiDayPortalOverlayButton)
+    // even when there were no events. A large tileHeight forces MonthBody to compute
+    // maxNumberOfVerticalEvents == 0 (floor(cellHeight / tileHeight) - 1, clamped to
+    // 0), which is the exact condition that used to produce the spurious buttons.
+    //
+    // Unlike the MultiDayEventLayoutWidget-level tests in
+    // test/layout/multi_day_event_layout_test.dart, these drive the full CalendarView
+    // month path so MonthBody itself derives the max from the cell height.
+    // ---------------------------------------------------------------------------
+
+    // A tileHeight far larger than any week-row height guarantees max == 0.
+    const tallTileHeight = 1000.0;
+
+    Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) =>
+        pumpAndSettleWithMaterialApp(
+          tester,
+          CalendarView(
+            eventsController: eventsController,
+            calendarController: calendarController,
+            viewConfiguration: MonthViewConfiguration.singleMonth(
+              displayRange: displayRange,
+              initialDateTime: initialDateTime,
+            ),
+            body: const CalendarBody(
+              monthBodyConfiguration: MonthBodyConfiguration(tileHeight: tallTileHeight),
+            ),
+          ),
+        );
+
+    testWidgets('shows no overflow button in month view when there are no events (#255)', (tester) async {
+      // eventsController is empty – do not add any events.
+      await pumpShortCellMonthView(tester, DateTime(2025, 1));
+
+      // The month renders, but with zero events there must be no overflow buttons,
+      // even though maxNumberOfVerticalEvents is 0.
+      expect(find.byType(MonthBody), findsOneWidget);
+      expect(find.byType(MultiDayPortalOverlayButton), findsNothing);
+    });
+
+    testWidgets('shows exactly one overflow button for a single event when max is 0 (#255)', (tester) async {
+      // A single-day event on Jan 15, 2025 (within the displayed month).
+      eventsController.addEvent(
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 1, 15, 9),
+            end: DateTime(2025, 1, 15, 10),
+          ),
+        ),
+      );
+
+      await pumpShortCellMonthView(tester, DateTime(2025, 1));
+
+      // With max == 0 the single event is hidden behind exactly one overflow button;
+      // every other (empty) day must stay button-free.
+      expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
+
+      final button = tester.widget<MultiDayPortalOverlayButton>(find.byType(MultiDayPortalOverlayButton));
+      expect(button.numberOfHiddenRows, greaterThan(0));
+    });
   });
 }

@@ -2,7 +2,8 @@
 
 ### Fixes
 
-- Fixed a blank page when a `displayRange` spanned exactly one month, and the same off-by-one page count that dropped the final in-range page in the week, custom multi-day, and paginated schedule views (#266).
+- Fixed a blank page when a `displayRange` spanned exactly one month, and the same off-by-one page count that dropped the final in-range page in the week, custom multi-day, and paginated schedule views. [#266](https://github.com/werner-scholtz/kalender/issues/266)
+- Fixed the month view showing a "+N more" overflow button when there were no events, and on very short row heights. Added end-to-end regression coverage. [#255](https://github.com/werner-scholtz/kalender/issues/255)
 
 ## 0.18.6
 
