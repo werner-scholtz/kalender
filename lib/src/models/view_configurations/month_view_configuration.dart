@@ -16,7 +16,8 @@ class MonthViewConfiguration extends ViewConfiguration {
   MonthViewConfiguration({
     required super.name,
     super.initialDateTime,
-    super.initialDateSelectionStrategy,
+    super.dateTransition,
+    super.dateResolver,
     super.nowCallback,
     required this.firstDayOfWeek,
     required this.showWeekNumbers,
@@ -30,7 +31,8 @@ class MonthViewConfiguration extends ViewConfiguration {
   MonthViewConfiguration.singleMonth({
     super.name = 'Month',
     super.initialDateTime,
-    super.initialDateSelectionStrategy = kDefaultToMonthly,
+    super.dateTransition,
+    super.dateResolver,
     super.nowCallback,
     DateTimeRange? displayRange,
     this.firstDayOfWeek = defaultFirstDayOfWeek,
@@ -43,7 +45,8 @@ class MonthViewConfiguration extends ViewConfiguration {
   MonthViewConfiguration copyWith({
     String? name,
     DateTime? selectedDate,
-    InitialDateSelectionStrategy? initialDateSelectionStrategy,
+    DateTransition? dateTransition,
+    DateResolver? dateResolver,
     int? firstDayOfWeek,
     bool? showWeekNumbers,
     EdgeInsets? eventPadding,
@@ -51,7 +54,8 @@ class MonthViewConfiguration extends ViewConfiguration {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
       initialDateTime: initialDateTime ?? initialDateTime,
-      initialDateSelectionStrategy: initialDateSelectionStrategy ?? this.initialDateSelectionStrategy,
+      dateTransition: dateTransition ?? this.dateTransition,
+      dateResolver: dateResolver ?? this.dateResolver,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
       displayRange: pageIndexCalculator.dateTimeRange,

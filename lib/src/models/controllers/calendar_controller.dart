@@ -42,6 +42,18 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   /// The [CalendarEvent]s that are currently visible.
   final visibleEvents = ValueNotifier<Set<CalendarEvent>>({});
 
+  /// The [TimeOfDay] currently aligned with the top of the visible viewport.
+  ///
+  /// This reflects the vertical scroll position of a multi-day view (day/week/etc)
+  /// and updates as the user scrolls or zooms. It is `null` when the attached view
+  /// has no vertical scroll (e.g. month or schedule views).
+  final visibleTimeOfDay = ValueNotifier<TimeOfDay?>(null);
+
+  /// The multi-day view's [MultiDayViewController.visibleTimeOfDay] source that is
+  /// currently being forwarded into [visibleTimeOfDay], and its listener.
+  ValueNotifier<TimeOfDay?>? _visibleTimeOfDaySource;
+  VoidCallback? _visibleTimeOfDayForwarder;
+
   /// The event currently being focused on.
   final selectedEvent = ValueNotifier<CalendarEvent?>(null);
   String? _selectedEventId;
@@ -88,12 +100,34 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
     visibleDateTimeRange.value = null;
     visibleDateTimeRange.value = newRange;
 
+    // Forward the visible time-of-day from multi-day views; null for views without
+    // vertical scroll (month/schedule).
+    if (viewController is MultiDayViewController) {
+      final source = viewController.visibleTimeOfDay;
+      void forwarder() => visibleTimeOfDay.value = source.value;
+      source.addListener(forwarder);
+      _visibleTimeOfDaySource = source;
+      _visibleTimeOfDayForwarder = forwarder;
+      visibleTimeOfDay.value = source.value;
+    } else {
+      visibleTimeOfDay.value = null;
+    }
+
     notifyListeners();
   }
 
   /// Detach the [ViewController] from this [CalendarController].
   void detach() {
+    _detachVisibleTimeOfDay();
+    visibleTimeOfDay.value = null;
     _viewController = null;
+  }
+
+  void _detachVisibleTimeOfDay() {
+    final forwarder = _visibleTimeOfDayForwarder;
+    if (forwarder != null) _visibleTimeOfDaySource?.removeListener(forwarder);
+    _visibleTimeOfDaySource = null;
+    _visibleTimeOfDayForwarder = null;
   }
 
   /// Jump to the given [DateTime].
@@ -183,6 +217,8 @@ class CalendarController extends ChangeNotifier with CalendarNavigationFunctions
   @override
   void dispose() {
     _internalDateTimeRange.removeListener(_updateVisibleDateTimeRange);
+    _detachVisibleTimeOfDay();
+    visibleTimeOfDay.dispose();
     super.dispose();
   }
 }
