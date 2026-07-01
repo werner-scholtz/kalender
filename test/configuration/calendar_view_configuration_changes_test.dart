@@ -68,7 +68,7 @@ void main() {
         config: MultiDayViewConfiguration.singleDay(
           name: 'Day View',
           initialDateTime: selectedDate,
-          initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
+          dateResolver: _alwaysReturnJanuaryResolver,
           displayRange: calendarRange,
         ),
       );
@@ -116,7 +116,7 @@ void main() {
         tester,
         config: MultiDayViewConfiguration.singleDay(
           name: 'Day View',
-          initialDateSelectionStrategy: _alwaysReturnJanuaryStrategy,
+          dateResolver: _alwaysReturnJanuaryResolver,
           displayRange: calendarRange,
         ),
       );
@@ -129,12 +129,9 @@ void main() {
       ViewController? capturedOldController;
       ViewConfiguration? capturedNewConfig;
 
-      InternalDateTime capturingStrategy({
-        required ViewController oldViewController,
-        required ViewConfiguration newViewConfiguration,
-      }) {
-        capturedOldController = oldViewController;
-        capturedNewConfig = newViewConfiguration;
+      InternalDateTime capturingResolver(ViewTransitionContext context) {
+        capturedOldController = context.oldViewController;
+        capturedNewConfig = context.newViewConfiguration;
         return _fixedDate;
       }
 
@@ -147,7 +144,7 @@ void main() {
 
       final dailyConfig = MultiDayViewConfiguration.singleDay(
         name: 'Day',
-        initialDateSelectionStrategy: capturingStrategy,
+        dateResolver: capturingResolver,
         displayRange: calendarRange,
       );
       await pumpCalendarView(tester, config: dailyConfig);
@@ -515,12 +512,125 @@ void main() {
       expect(calendarController.internalDateTimeRange.value, isNotNull);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // View-transition policy: scroll / zoom / date across switches (#249)
+  // ---------------------------------------------------------------------------
+  group('View-transition policy (#249)', () {
+    MultiDayViewController multiDay() => calendarController.viewController as MultiDayViewController;
+    MonthViewConfiguration month() => MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange);
+    InternalDateTime? visibleStart() => calendarController.internalDateTimeRange.value?.start.startOfDay;
+
+    MultiDayViewConfiguration week({
+      ScrollTransition scroll = ScrollTransition.preserve,
+      ZoomTransition zoom = ZoomTransition.preserve,
+      DateTransition date = DateTransition.carryFocus,
+      ScrollResolver? scrollResolver,
+      DateResolver? dateResolver,
+    }) =>
+        MultiDayViewConfiguration.week(
+          name: 'Week',
+          displayRange: calendarRange,
+          scrollTransition: scroll,
+          zoomTransition: zoom,
+          dateTransition: date,
+          scrollResolver: scrollResolver,
+          dateResolver: dateResolver,
+        );
+
+    testWidgets('defaults preserve scroll + zoom across Week → Month → Week', (tester) async {
+      await pumpCalendarView(tester, config: week(), withBody: true);
+      multiDay().scrollController.jumpTo(120 * 0.7); // 02:00 at default heightPerMinute.
+      multiDay().heightPerMinute.value = 1.2;
+      await tester.pump();
+      final todBefore = calendarController.visibleTimeOfDay.value;
+      expect(todBefore, isNotNull);
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(), withBody: true);
+
+      expect(calendarController.visibleTimeOfDay.value, equals(todBefore));
+      expect(multiDay().heightPerMinute.value, equals(1.2));
+    });
+
+    testWidgets('ScrollTransition.reset returns to initialTimeOfDay on switch', (tester) async {
+      await pumpCalendarView(tester, config: week(scroll: ScrollTransition.reset), withBody: true);
+      multiDay().scrollController.jumpTo(120 * 0.7);
+      await tester.pump();
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(scroll: ScrollTransition.reset), withBody: true);
+
+      // initialTimeOfDay is midnight → offset 0.
+      expect(multiDay().scrollController.offset, closeTo(0, 1.0));
+    });
+
+    testWidgets('DateTransition.restorePerView reopens the view\'s own last date', (tester) async {
+      final day = MultiDayViewConfiguration.singleDay(
+        name: 'Day',
+        displayRange: calendarRange,
+        dateTransition: DateTransition.restorePerView,
+      );
+      await pumpCalendarView(tester, config: day, withBody: true);
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      calendarController.jumpToDate(DateTime(2024, 9, 10)); // navigate month elsewhere
+      await tester.pumpAndSettle();
+      await pumpCalendarView(tester, config: day, withBody: true);
+
+      expect(visibleStart(), equals(InternalDateTime(2024, 6, 15)));
+    });
+
+    testWidgets('scrollResolver overrides the scroll transition', (tester) async {
+      TimeOfDay fixedNine(ViewTransitionContext ctx) => const TimeOfDay(hour: 9, minute: 0);
+      await pumpCalendarView(tester, config: week(scrollResolver: fixedNine), withBody: true);
+
+      await pumpCalendarView(tester, config: month(), withBody: true);
+      await pumpCalendarView(tester, config: week(scrollResolver: fixedNine), withBody: true);
+
+      // 09:00 * defaultHeightPerMinute (0.7) = 540 * 0.7 = 378px.
+      expect(multiDay().scrollController.offset, closeTo(540 * 0.7, 1.0));
+      expect(calendarController.visibleTimeOfDay.value, equals(const TimeOfDay(hour: 9, minute: 0)));
+    });
+
+    testWidgets('visibleTimeOfDay is non-null in multi-day and null in month; onScrollPositionChanged fires',
+        (tester) async {
+      final reported = <TimeOfDay>[];
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          key: calendarViewKey,
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: week(),
+          callbacks: CalendarCallbacks(onScrollPositionChanged: reported.add),
+          body: const CalendarBody(),
+        ),
+      );
+      expect(calendarController.visibleTimeOfDay.value, isNotNull);
+
+      multiDay().scrollController.jumpTo(120 * 0.7); // 02:00
+      await tester.pump();
+      expect(reported.last, equals(const TimeOfDay(hour: 2, minute: 0)));
+
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          key: calendarViewKey,
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: month(),
+          body: const CalendarBody(),
+        ),
+      );
+      expect(calendarController.visibleTimeOfDay.value, isNull);
+    });
+  });
 }
 
-InternalDateTime _alwaysReturnJanuaryStrategy({
-  required ViewController oldViewController,
-  required ViewConfiguration newViewConfiguration,
-}) {
+InternalDateTime _alwaysReturnJanuaryResolver(ViewTransitionContext context) {
   return _fixedDate;
 }
 
