@@ -2,13 +2,20 @@
 
 ### Breaking Changes
 
-- `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` (via `.forLocation()`) instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. This fixes incorrect `DateTime.now()` comparisons in custom month-view day headers. Custom `monthDayHeaderBuilder` implementations must change their `date` parameter type from `InternalDateTime` to `DateTime` — see [MIGRATION.md](MIGRATION.md#v018x--v0190). [#248](https://github.com/werner-scholtz/kalender/issues/248)
+- `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. [#248](https://github.com/werner-scholtz/kalender/issues/248)
+- Replaced `ViewConfiguration.initialDateSelectionStrategy` with per-dimension view-transition options: `dateTransition` on all views, and `scrollTransition` / `zoomTransition` on `MultiDayViewConfiguration`, each with an optional resolver for custom logic. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+- View switches now preserve the vertical scroll (time-of-day) and zoom by default instead of resetting to `initialTimeOfDay`; opt out with `ScrollTransition.reset` / `ZoomTransition.reset`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+
+### Features
+
+- Added `restorePerView` transitions so each view can reopen its own last date, scroll, and zoom. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+- Added `CalendarController.visibleTimeOfDay` and the `CalendarCallbacks.onScrollPositionChanged` callback. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 
 ### Tests
 
-- Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261)
-- Added end-to-end `CalendarView` today-highlighting coverage (month + multi-day headers, month boundaries, and the `#251` neighbour-day repro), run across the timezone matrix. [#254](https://github.com/werner-scholtz/kalender/issues/254) [#251](https://github.com/werner-scholtz/kalender/issues/251)
-- Added end-to-end `CalendarView` month-view regression coverage for a custom `generateMultiDayLayoutFrame`, confirming the generic-variance crash fixed by the de-genericization in `0.16.0` cannot recur. [#235](https://github.com/werner-scholtz/kalender/issues/235)
+- Added end-to-end `CalendarView` regression coverage for the time indicator, run across the timezone matrix. [#261](https://github.com/werner-scholtz/kalender/issues/261)
+- Added end-to-end `CalendarView` today-highlighting coverage, run across the timezone matrix. [#254](https://github.com/werner-scholtz/kalender/issues/254) [#251](https://github.com/werner-scholtz/kalender/issues/251)
+- Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 
 ## 0.18.7
 

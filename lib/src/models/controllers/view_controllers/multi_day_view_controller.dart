@@ -8,6 +8,8 @@ class MultiDayViewController extends ViewController {
     required super.visibleDateTimeRange,
     required this.visibleEvents,
     InternalDateTime? initialDate,
+    TimeOfDay? initialTimeOfDayOverride,
+    double? initialHeightPerMinute,
     super.location,
   }) {
     final pageIndexCalculator = viewConfiguration.pageIndexCalculator;
@@ -20,7 +22,7 @@ class MultiDayViewController extends ViewController {
     headerController = _controllerGroup.create(viewportFraction: viewPortFraction, initialPage: initialPage);
 
     numberOfPages = pageIndexCalculator.numberOfPages(location);
-    heightPerMinute = ValueNotifier<double>(viewConfiguration.initialHeightPerMinute);
+    heightPerMinute = ValueNotifier<double>(initialHeightPerMinute ?? viewConfiguration.initialHeightPerMinute);
 
     final range = pageIndexCalculator.dateTimeRangeFromIndex(initialPage, location);
 
@@ -33,16 +35,22 @@ class MultiDayViewController extends ViewController {
       visibleDateTimeRange.value = range;
     }
 
-    // Calculate the scroll offset so that the initialTimeOfDay is aligned with the top.
-    final initialTimeOfDay = viewConfiguration.initialTimeOfDay.toInternalDateTime(now);
+    // Align the top of the viewport with the initial time-of-day. The override
+    // (e.g. a time-of-day preserved across a view switch) takes precedence over
+    // the view's configured initialTimeOfDay.
+    final topOfDay = (initialTimeOfDayOverride ?? viewConfiguration.initialTimeOfDay).toInternalDateTime(now);
     final dayStart = viewConfiguration.timeOfDayRange.start.toInternalDateTime(now);
-    final timeDifference = initialTimeOfDay.difference(dayStart);
-    final initialScrollOffset = timeDifference.inMinutes * (heightPerMinute.value);
-    scrollController = ScrollController(initialScrollOffset: initialScrollOffset);
+    final scrollOffset = topOfDay.difference(dayStart).inMinutes * heightPerMinute.value;
+    scrollController = ScrollController(initialScrollOffset: scrollOffset);
+    // Seed the visible time-of-day from the initial offset, since a ScrollController
+    // does not necessarily notify its listeners when it first attaches.
+    visibleTimeOfDay.value = _timeOfDayFromOffset(scrollOffset);
 
     visibleEvents.value = {};
 
     pageController.addListener(_offsetListener);
+    scrollController.addListener(_updateVisibleTimeOfDay);
+    heightPerMinute.addListener(_updateVisibleTimeOfDay);
   }
 
   @override
@@ -73,11 +81,33 @@ class MultiDayViewController extends ViewController {
   /// This is a value notifier that updates when the page is scrolled.
   ValueNotifier<double> pageOffset = ValueNotifier<double>(0.0);
 
+  /// The [TimeOfDay] currently aligned with the top of the visible viewport.
+  ///
+  /// Updates as the view is scrolled vertically or zoomed. It is `null` until the
+  /// [scrollController] has been attached to a scroll view.
+  final ValueNotifier<TimeOfDay?> visibleTimeOfDay = ValueNotifier<TimeOfDay?>(null);
+
   @override
   final ValueNotifier<Set<CalendarEvent>> visibleEvents;
 
   void _offsetListener() =>
       pageOffset.value = pageController.position.pixels / pageController.position.viewportDimension;
+
+  /// Converts a vertical scroll [offset] (in pixels) to the [TimeOfDay] aligned
+  /// with the top of the viewport, using the current zoom level and time range.
+  TimeOfDay _timeOfDayFromOffset(double offset) {
+    final perMinute = heightPerMinute.value;
+    final minutesFromStart = perMinute <= 0 ? 0 : (offset / perMinute).round();
+    final start = viewConfiguration.timeOfDayRange.start;
+    final totalMinutes = (start.hour * 60 + start.minute + minutesFromStart).clamp(0, Duration.minutesPerDay - 1);
+    return TimeOfDay(hour: totalMinutes ~/ 60, minute: totalMinutes % 60);
+  }
+
+  /// Recomputes [visibleTimeOfDay] from the current scroll offset and zoom level.
+  void _updateVisibleTimeOfDay() {
+    if (!scrollController.hasClients) return;
+    visibleTimeOfDay.value = _timeOfDayFromOffset(scrollController.offset);
+  }
 
   @override
   Future<void> animateToDate(
@@ -189,6 +219,9 @@ class MultiDayViewController extends ViewController {
     headerController.dispose();
     pageController.removeListener(_offsetListener);
     _controllerGroup.dispose();
+    scrollController.removeListener(_updateVisibleTimeOfDay);
     scrollController.dispose();
+    heightPerMinute.removeListener(_updateVisibleTimeOfDay);
+    visibleTimeOfDay.dispose();
   }
 }

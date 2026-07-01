@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
-import 'package:kalender/src/models/initial_date_selection_strategy.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
+import 'package:kalender/src/models/view_transition.dart';
 
 export 'package:kalender/kalender_extensions.dart';
 
@@ -30,7 +30,8 @@ abstract class ViewConfiguration {
   const ViewConfiguration({
     required this.name,
     this.initialDateTime,
-    this.initialDateSelectionStrategy = kDefaultInitialDateSelectionStrategy,
+    this.dateTransition = DateTransition.carryFocus,
+    this.dateResolver,
     this.nowCallback,
   });
 
@@ -39,16 +40,21 @@ abstract class ViewConfiguration {
 
   /// The selected date to start the view from.
   ///
-  /// If this is provided, it will take precedence over the initial date selection strategy.
-  /// When null, the view will use the initialDateSelectionStrategy for transition behavior.
+  /// If this is provided, it takes precedence over [dateResolver] / [dateTransition]
+  /// when switching between view configurations.
   final DateTime? initialDateTime;
 
-  /// The strategy used for determining initial date when transitioning between view configurations.
+  /// How the visible date is chosen when switching to this view from another.
   ///
-  /// This determines how the calendar chooses which date to display when switching
-  /// between different view types (daily, weekly, monthly, schedule).
-  /// Defaults to [kDefaultInitialDateSelectionStrategy] which follows specific rules for each transition type.
-  final InitialDateSelectionStrategy initialDateSelectionStrategy;
+  /// Defaults to [DateTransition.carryFocus]. Overridden by [dateResolver] when
+  /// that is provided, and by [initialDateTime] when that is set.
+  final DateTransition dateTransition;
+
+  /// An optional resolver for the visible date on a view switch.
+  ///
+  /// When non-null it overrides [dateTransition], allowing arbitrary logic (e.g.
+  /// "snap to the next business day"). See [kCarryFocusDate] to reuse the default.
+  final DateResolver? dateResolver;
 
   /// An optional callback that overrides how the calendar resolves "now".
   ///

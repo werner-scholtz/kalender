@@ -57,6 +57,12 @@ class CalendarCallbacks {
   /// The callback for when the calendar page is changed.
   final OnPageChanged? onPageChanged;
 
+  /// The callback for when the vertical scroll position of a multi-day view changes.
+  ///
+  /// The provided [TimeOfDay] is the time currently aligned with the top of the
+  /// visible viewport. Only fires for views with vertical scroll (day/week/etc).
+  final OnScrollPositionChanged? onScrollPositionChanged;
+
   /// TODO: Check how these interact with the [Draggable] and [LongPressDraggable]s.
 
   /// The callback for when a user taps on the calendar.
@@ -117,6 +123,7 @@ class CalendarCallbacks {
     this.onEventCreateWithDetail,
     this.onEventCreated,
     this.onPageChanged,
+    this.onScrollPositionChanged,
     this.onTapped,
     this.onTappedWithDetail,
     this.onSecondaryTapped,
@@ -136,6 +143,7 @@ class CalendarCallbacks {
   bool get hasOnSecondaryLongPressed => onSecondaryLongPressed != null || onSecondaryLongPressedWithDetail != null;
   bool get hasOnTapped => onTapped != null || onTappedWithDetail != null;
   bool get hasOnSecondaryTapped => onSecondaryTapped != null || onSecondaryTappedWithDetail != null;
+  bool get hasOnScrollPositionChanged => onScrollPositionChanged != null;
 
   CalendarCallbacks copyWith({
     OnEventTapped? onEventTapped,
@@ -148,6 +156,7 @@ class CalendarCallbacks {
     OnEventChange? onEventChange,
     OnEventChanged? onEventChanged,
     OnPageChanged? onPageChanged,
+    OnScrollPositionChanged? onScrollPositionChanged,
     OnTapped? onTapped,
     OnTappedWithDetails? onTappedWithDetail,
     OnTapped? onSecondaryTapped,
@@ -169,6 +178,7 @@ class CalendarCallbacks {
       onEventChange: onEventChange ?? this.onEventChange,
       onEventChanged: onEventChanged ?? this.onEventChanged,
       onPageChanged: onPageChanged ?? this.onPageChanged,
+      onScrollPositionChanged: onScrollPositionChanged ?? this.onScrollPositionChanged,
       onTapped: onTapped ?? this.onTapped,
       onTappedWithDetail: onTappedWithDetail ?? this.onTappedWithDetail,
       onSecondaryTapped: onSecondaryTapped ?? this.onSecondaryTapped,
@@ -237,6 +247,11 @@ typedef OnEventCreated = void Function(CalendarEvent event);
 ///
 /// [dateTimeRange] is the range of dates that can be displayed in the new page.
 typedef OnPageChanged = void Function(DateTimeRange dateTimeRange);
+
+/// The callback for when the vertical scroll position of a multi-day view changes.
+///
+/// [visibleTimeOfDay] is the time currently aligned with the top of the viewport.
+typedef OnScrollPositionChanged = void Function(TimeOfDay visibleTimeOfDay);
 
 /// The callback for when a user taps on an empty space in the calendar.
 ///

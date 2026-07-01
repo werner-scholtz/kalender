@@ -28,6 +28,63 @@ MonthComponents(
 
 The received `date` is already in the calendar's configured location, so any manual `.forLocation()` conversion inside the builder is no longer needed.
 
+### Default behaviour change: scroll & zoom are now preserved across view switches
+
+> [!IMPORTANT]
+> This changes what an unchanged calendar does on a view switch, even if you never touch the new API.
+
+| On switching view type (e.g. Week → Month → Week) | Before (`0.18.x`) | Now (`0.19.0`) |
+|---|---|---|
+| Vertical scroll (time-of-day) | **Reset** to `initialTimeOfDay` every time | **Preserved** (`ScrollTransition.preserve`) |
+| Zoom (`heightPerMinute`) | Preserved only between *adjacent* multi-day views; lost through a non-scrolling view (e.g. Month) | **Preserved**, including across a round-trip through Month (`ZoomTransition.preserve`) |
+| Visible date | Carried forward from the outgoing view | Unchanged (`DateTransition.carryFocus`) |
+
+To restore the old "always reset the scroll on a view change" behaviour:
+
+```dart
+MultiDayViewConfiguration.week(
+  scrollTransition: ScrollTransition.reset,
+  zoomTransition: ZoomTransition.reset, // if you also relied on zoom resetting
+)
+```
+
+### `initialDateSelectionStrategy` replaced by per-dimension view-transition controls
+
+`ViewConfiguration.initialDateSelectionStrategy` has been removed. How a view switch transfers state is now expressed per dimension:
+
+- **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default) or `restorePerView` — plus an optional `dateResolver` for custom logic.
+- **Scroll / zoom** (`MultiDayViewConfiguration` only): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView` — plus optional `scrollResolver` / `zoomResolver`.
+
+A custom `initialDateSelectionStrategy` becomes a `dateResolver`. The signature changes from named parameters to a single `ViewTransitionContext`, and the built-in `kDefaultTo*` helpers now take the outgoing `ViewController` directly (or use `kCarryFocusDate(transition)`).
+
+**Before:**
+```dart
+InternalDateTime myStrategy({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) => nextBusinessDay(oldViewController.visibleDateTimeRange.value!.start);
+
+MultiDayViewConfiguration.week(initialDateSelectionStrategy: myStrategy)
+```
+
+**After:**
+```dart
+InternalDateTime myResolver(ViewTransitionContext transition) =>
+    nextBusinessDay(kCarryFocusDate(transition));
+
+MultiDayViewConfiguration.week(dateResolver: myResolver)
+```
+
+Common intents map directly to enum values:
+
+```dart
+// Reopen each view where it last was (Day → Month → Day restores the day):
+MultiDayViewConfiguration.singleDay(dateTransition: DateTransition.restorePerView)
+
+// Always reset the scroll to initialTimeOfDay on a view change:
+MultiDayViewConfiguration.week(scrollTransition: ScrollTransition.reset)
+```
+
 ## v0.16.x → v0.17.0
 
 ### Input mode replaces platform-based mobile/desktop split

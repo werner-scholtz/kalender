@@ -250,7 +250,12 @@ callbacks: CalendarCallbacks(
 
 ## Views
 
-Switch between views by passing a different `ViewConfiguration` to `CalendarView`. When switching, the `initialDateSelectionStrategy` on the view configuration determines which date becomes visible.
+Switch between views by passing a different `ViewConfiguration` to `CalendarView`. What carries over on a switch is controlled per dimension:
+
+- **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
+- **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView`.
+
+For arbitrary logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver` (each overrides the matching enum); `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
 All configurations accept:
 - `displayRange` — the total date range the calendar can navigate within (e.g. Jan 2024 – Dec 2025). Defaults to ± 1 year from today.
@@ -332,6 +337,7 @@ Presents events in a chronological scrollable list.
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueNotifier<DateTimeRange>`      | The currently visible date range                       |
+| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views; `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
 
@@ -602,6 +608,10 @@ CalendarCallbacks(
 
   // Called when the visible page changes.
   onPageChanged: (visibleDateTimeRange) {},
+
+  // Called when the vertical scroll position of a multi-day view changes.
+  // 'visibleTimeOfDay' is the time aligned with the top of the viewport.
+  onScrollPositionChanged: (visibleTimeOfDay) {},
 
   // Called when the user taps an empty area (day / week body).
   onTapped: (date) {},

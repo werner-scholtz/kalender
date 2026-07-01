@@ -69,6 +69,15 @@ class CalendarView extends StatefulWidget {
 class CalendarViewState extends State<CalendarView> {
   /// The [ViewController] that will be used by the children of the [CalendarView].
   late ViewController _viewController;
+
+  /// A snapshot of what each view last displayed, keyed by its configuration
+  /// `name`, plus the most recent multi-day snapshot. These persist across
+  /// view-configuration changes (they live on the state, not the disposable
+  /// controllers) so the transition policy can restore date / time-of-day / zoom
+  /// even after a round-trip through a view without scroll (e.g. Week → Month →
+  /// Week). See [ViewConfiguration.dateTransition] and friends.
+  final Map<String, ViewSnapshot> _viewHistory = {};
+  ViewSnapshot? _lastMultiDaySnapshot;
   // TODO: update this to be a valueNotifier.
   late dynamic _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
@@ -104,26 +113,42 @@ class CalendarViewState extends State<CalendarView> {
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
-      // Preserve the current height per minute (zoom level) when only the location changed.
-      final oldHeightPerMinute = _viewController is MultiDayViewController
-          ? (_viewController as MultiDayViewController).heightPerMinute.value
-          : null;
+      // Snapshot the outgoing view so its date / time-of-day / zoom can be
+      // restored on a later switch. The snapshot is kept even when switching to a
+      // view without vertical scroll (e.g. Month), so a Week → Month → Week
+      // round-trip still restores the position.
+      _snapshotOutgoingView(_viewController);
 
-      // Use selectedDate if available, otherwise use the initial date selection strategy
-      final initialDate = widget.viewConfiguration.initialDateTime != null
-          ? InternalDateTime.fromDateTime(widget.viewConfiguration.initialDateTime!)
-          : widget.viewConfiguration.initialDateSelectionStrategy(
-              oldViewController: _viewController,
-              newViewConfiguration: widget.viewConfiguration,
-            );
+      final newConfig = widget.viewConfiguration;
+      final context = ViewTransitionContext(
+        oldViewController: _viewController,
+        newViewConfiguration: newConfig,
+        byView: _viewHistory,
+        lastMultiDay: _lastMultiDaySnapshot,
+      );
+
+      // Resolve the date: explicit initialDateTime wins, then the resolver, then
+      // the enum policy.
+      final initialDate = newConfig.initialDateTime != null
+          ? InternalDateTime.fromDateTime(newConfig.initialDateTime!)
+          : (newConfig.dateResolver?.call(context) ?? _resolveDate(newConfig.dateTransition, context));
+
+      // Resolve the vertical state (multi-day views only): resolver wins, else enum.
+      TimeOfDay? initialTimeOfDay;
+      double? initialHeightPerMinute;
+      if (newConfig is MultiDayViewConfiguration) {
+        initialTimeOfDay =
+            newConfig.scrollResolver?.call(context) ?? _resolveScroll(newConfig.scrollTransition, context);
+        initialHeightPerMinute =
+            newConfig.zoomResolver?.call(context) ?? _resolveZoom(newConfig.zoomTransition, context);
+      }
 
       // Create the new view controller.
-      _viewController = _createViewController(initialDate: initialDate);
-
-      // Restore the zoom level if the new controller is also a MultiDayViewController.
-      if (oldHeightPerMinute != null && _viewController is MultiDayViewController) {
-        (_viewController as MultiDayViewController).heightPerMinute.value = oldHeightPerMinute;
-      }
+      _viewController = _createViewController(
+        initialDate: initialDate,
+        initialTimeOfDay: initialTimeOfDay,
+        initialHeightPerMinute: initialHeightPerMinute,
+      );
 
       // Dispose the old view controller if it exists.
       widget.calendarController.viewController?.dispose();
@@ -159,8 +184,57 @@ class CalendarViewState extends State<CalendarView> {
     super.dispose();
   }
 
+  /// Snapshot the outgoing view's current state, keyed by its config `name`.
+  void _snapshotOutgoingView(ViewController controller) {
+    final range = controller.visibleDateTimeRange.value;
+    if (range == null) return;
+
+    final config = controller.viewConfiguration;
+    final date = config is MonthViewConfiguration ? InternalDateTime.fromDateTime(range.dominantMonthDate) : range.start;
+
+    final multiDay = controller is MultiDayViewController ? controller : null;
+    final snapshot = ViewSnapshot(
+      date: date,
+      timeOfDay: multiDay?.visibleTimeOfDay.value,
+      heightPerMinute: multiDay?.heightPerMinute.value,
+    );
+
+    _viewHistory[config.name] = snapshot;
+    if (multiDay != null) _lastMultiDaySnapshot = snapshot;
+  }
+
+  InternalDateTime _resolveDate(DateTransition transition, ViewTransitionContext context) {
+    return switch (transition) {
+      DateTransition.carryFocus => kCarryFocusDate(context),
+      DateTransition.restorePerView =>
+        _viewHistory[context.newViewConfiguration.name]?.date ?? kCarryFocusDate(context),
+    };
+  }
+
+  TimeOfDay? _resolveScroll(ScrollTransition transition, ViewTransitionContext context) {
+    return switch (transition) {
+      ScrollTransition.preserve => _lastMultiDaySnapshot?.timeOfDay,
+      ScrollTransition.reset => null,
+      ScrollTransition.restorePerView =>
+        _viewHistory[context.newViewConfiguration.name]?.timeOfDay ?? _lastMultiDaySnapshot?.timeOfDay,
+    };
+  }
+
+  double? _resolveZoom(ZoomTransition transition, ViewTransitionContext context) {
+    return switch (transition) {
+      ZoomTransition.preserve => _lastMultiDaySnapshot?.heightPerMinute,
+      ZoomTransition.reset => null,
+      ZoomTransition.restorePerView =>
+        _viewHistory[context.newViewConfiguration.name]?.heightPerMinute ?? _lastMultiDaySnapshot?.heightPerMinute,
+    };
+  }
+
   /// Create the [ViewController] based on the [ViewConfiguration].
-  ViewController _createViewController({required InternalDateTime initialDate}) {
+  ViewController _createViewController({
+    required InternalDateTime initialDate,
+    TimeOfDay? initialTimeOfDay,
+    double? initialHeightPerMinute,
+  }) {
     final viewConfiguration = widget.viewConfiguration;
 
     return switch (viewConfiguration.runtimeType) {
@@ -169,6 +243,8 @@ class CalendarViewState extends State<CalendarView> {
           visibleDateTimeRange: widget.calendarController.internalDateTimeRange,
           visibleEvents: widget.calendarController.visibleEvents,
           initialDate: initialDate,
+          initialTimeOfDayOverride: initialTimeOfDay,
+          initialHeightPerMinute: initialHeightPerMinute,
           location: widget.location,
         ),
       const (MonthViewConfiguration) => MonthViewController(

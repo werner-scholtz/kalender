@@ -174,6 +174,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
   void initState() {
     super.initState();
     _initialPage();
+    widget.viewController.visibleTimeOfDay.addListener(_onVisibleTimeOfDayChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.eventsController.addListener(_currentPage);
     });
@@ -182,6 +183,10 @@ class _MultiDayPageState extends State<MultiDayPage> {
   @override
   void didUpdateWidget(covariant MultiDayPage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.viewController != widget.viewController) {
+      oldWidget.viewController.visibleTimeOfDay.removeListener(_onVisibleTimeOfDayChanged);
+      widget.viewController.visibleTimeOfDay.addListener(_onVisibleTimeOfDayChanged);
+    }
     if (oldWidget.location != widget.location) {
       setState(() {});
     }
@@ -190,7 +195,15 @@ class _MultiDayPageState extends State<MultiDayPage> {
   @override
   void dispose() {
     widget.eventsController.removeListener(_currentPage);
+    widget.viewController.visibleTimeOfDay.removeListener(_onVisibleTimeOfDayChanged);
     super.dispose();
+  }
+
+  /// Forwards the multi-day view's visible time-of-day to the [CalendarCallbacks].
+  void _onVisibleTimeOfDayChanged() {
+    final visibleTimeOfDay = widget.viewController.visibleTimeOfDay.value;
+    if (visibleTimeOfDay == null) return;
+    context.callbacks?.onScrollPositionChanged?.call(visibleTimeOfDay);
   }
 
   void _initialPage() => _updateVisibleEvents(widget.viewController.initialPage, widget.location);
