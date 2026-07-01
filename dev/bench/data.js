@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782891174058,
+  "lastUpdate": 1782892279437,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -3029,6 +3029,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 1675.0817091454273,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "distinct": true,
+          "id": "a56aea6e58bebd53d4e59dd7c9aa1c87f763aa00",
+          "message": "chore: relocate dev tooling out of tools/ and exclude it from the package\n\n- tool/test_timezones_linux.dart: moved from tools/ to the idiomatic Dart\n  tool/ directory (dev script, not part of the package or test suite).\n- benchmark/dashboard/index.html: moved from tools/dashboard/ to sit next to\n  the benchmark harness it visualizes; deploy_dashboard.yml paths updated.\n- .pubignore: exclude tool/, benchmark/, and pub_login.sh so dev-only files\n  no longer ship to pub.dev consumers.\n- CONTRIBUTING.md: point to the new tool/ path.\n\ntools/ is now removed entirely.\n\nCo-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+          "timestamp": "2026-07-01T09:20:27+02:00",
+          "tree_id": "8a6002070a8bb6a6867ffb0f07fab45b3739ed1b",
+          "url": "https://github.com/werner-scholtz/kalender/commit/a56aea6e58bebd53d4e59dd7c9aa1c87f763aa00"
+        },
+        "date": 1782892276729,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 173.26667236662107,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 692.3035,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2051.038,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7992.852,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 4076.682,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 16315.112,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 246.054113885131,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 106.06914864494935,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 761.866,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3210.7946026986506,
             "unit": "us"
           }
         ]
