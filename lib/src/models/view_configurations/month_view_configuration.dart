@@ -68,6 +68,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
     return other is MonthViewConfiguration &&
         other.initialDateTime == initialDateTime &&
+        other.dateTransition == dateTransition &&
         other.pageIndexCalculator == pageIndexCalculator &&
         other.firstDayOfWeek == firstDayOfWeek &&
         other.showWeekNumbers == showWeekNumbers;
@@ -75,7 +76,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
   @override
   int get hashCode {
-    return Object.hash(initialDateTime, pageIndexCalculator, firstDayOfWeek, showWeekNumbers);
+    return Object.hash(initialDateTime, dateTransition, pageIndexCalculator, firstDayOfWeek, showWeekNumbers);
   }
 }
 
