@@ -78,6 +78,12 @@ class CalendarViewState extends State<CalendarView> {
   /// Week → Month → Week). See [MultiDayViewConfiguration.preserveVerticalScrollOnViewChange].
   double? _rememberedScrollOffset;
   double? _rememberedHeightPerMinute;
+
+  /// The last visible date each view showed, keyed by its view configuration's
+  /// `name`. Persisted on the state (survives view-configuration changes) so
+  /// history-aware strategies like [kRestoreLastVisitedDate] can restore a view's
+  /// own last-visited date. See [ViewConfiguration.initialDateSelectionStrategy].
+  final Map<String, InternalDateTime> _lastVisibleDatePerView = {};
   // TODO: update this to be a valueNotifier.
   late dynamic _locale = widget.locale;
   late final _location = ValueNotifier<Location?>(widget.location);
@@ -125,12 +131,23 @@ class CalendarViewState extends State<CalendarView> {
         }
       }
 
+      // Record the outgoing view's current date under its config name so
+      // history-aware strategies can restore each view's own last-visited date.
+      final oldRange = _viewController.visibleDateTimeRange.value;
+      if (oldRange != null) {
+        final oldConfig = _viewController.viewConfiguration;
+        _lastVisibleDatePerView[oldConfig.name] = oldConfig is MonthViewConfiguration
+            ? InternalDateTime.fromDateTime(oldRange.dominantMonthDate)
+            : oldRange.start;
+      }
+
       // Use selectedDate if available, otherwise use the initial date selection strategy
       final initialDate = widget.viewConfiguration.initialDateTime != null
           ? InternalDateTime.fromDateTime(widget.viewConfiguration.initialDateTime!)
           : widget.viewConfiguration.initialDateSelectionStrategy(
               oldViewController: _viewController,
               newViewConfiguration: widget.viewConfiguration,
+              lastVisibleDates: _lastVisibleDatePerView,
             );
 
       // Restore the remembered scroll offset / zoom only when the new view is a
