@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1782908749579,
+  "lastUpdate": 1782915347650,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -3399,6 +3399,80 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3235.146926536732,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "distinct": true,
+          "id": "ec6a29d473ffb0f46d562a0186c74b4029df4ea5",
+          "message": "ci(perf): skip benchmark rebuild for dashboard and docs changes\n\nThe benchmark workflow ran on every push to main, so dashboard-only or\ndocs-only commits re-ran the full suite and appended a flat data point for\na commit that changed no library code. Add paths-ignore for the static\ndashboard page, its deploy workflow, and markdown so history only records\ncommits that can actually move the numbers.\n\nCo-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>",
+          "timestamp": "2026-07-01T14:46:00+02:00",
+          "tree_id": "1e6e4aaad025e0e6cafd68b8b64e0d730751f7ba",
+          "url": "https://github.com/werner-scholtz/kalender/commit/ec6a29d473ffb0f46d562a0186c74b4029df4ea5"
+        },
+        "date": 1782915343722,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 176.52767175572518,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 696.5905,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2055.905,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7958.516,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 4129.982,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 16330.952,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 251.51024770526845,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 106.93962537629614,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 743.3925,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3161.1394302848576,
             "unit": "us"
           }
         ]
