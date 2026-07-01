@@ -276,14 +276,15 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
 
         switch (widget.configuration.emptyDay) {
           case EmptyDayBehavior.show:
-            viewController.addItem(item: EmptyItem(), date: date);
+            // Record the empty day as the first (only) row of its date so it can
+            // be scrolled/animated to directly (#253).
+            viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
             continue;
 
-          case EmptyDayBehavior.showToday:
-            // TODO: check that this works as expected.
+          case EmptyDayBehavior.showOnlyToday:
             final now = widget.viewController.viewConfiguration.nowCallback?.call();
             if (internalDate.isToday(location: widget.location, now: now)) {
-              viewController.addItem(item: EmptyItem(), date: date);
+              viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
             }
             continue;
 
@@ -362,9 +363,14 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
           initialScrollIndex: viewController.initialScrollIndex(viewController.initialDate),
           physics: widget.configuration.scrollPhysics,
           itemBuilder: (context, index) {
-            // TODO: Check that this is still working as expected.
             final item = viewController.item(index);
             final date = viewController.dateTimeFromIndex(index)!;
+
+            // A fixed-width leading slot shared by every row, so the event tiles
+            // line up regardless of whether the row shows a date (and independent
+            // of day name / digits / locale / text scale).
+            final leadingWidth = widget.configuration.leadingWidth;
+            Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
             late final leading =
                 components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), styles.scheduleDateStyle);
@@ -378,7 +384,8 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
-                leading: leading,
+                minLeadingWidth: 0,
+                leading: leadingSlot(leading),
                 title: tileComponents.emptyItemBuilder?.call(InternalDateTime.fromDateTime(date).dayRange),
               );
               return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
@@ -387,7 +394,8 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
               final event = eventsController.byId(item.eventId)!;
 
               final child = ListTile(
-                leading: showDate ? leading : const SizedBox(width: 32),
+                minLeadingWidth: 0,
+                leading: leadingSlot(showDate ? leading : null),
                 title: ScheduleEventTile(
                   key: ScheduleEventTile.tileKey(event.id),
                   event: event,
