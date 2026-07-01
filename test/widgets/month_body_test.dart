@@ -261,5 +261,92 @@ void main() {
       final button = tester.widget<MultiDayPortalOverlayButton>(find.byType(MultiDayPortalOverlayButton));
       expect(button.numberOfHiddenRows, greaterThan(0));
     });
+
+    // ---------------------------------------------------------------------------
+    // #235: a custom generateMultiDayLayoutFrame supplied to MonthBodyConfiguration
+    // ---------------------------------------------------------------------------
+    // Supplying a custom generateMultiDayLayoutFrame to MonthBodyConfiguration used
+    // to throw a `_TypeError` at build time because the generator carried a `<T>`
+    // type parameter that no longer matched the (now non-generic) typedef:
+    //
+    //   type '(... => MultiDayLayoutFrame<Todo>)' is not a subtype of type
+    //   '(... => MultiDayLayoutFrame<Object?>)?'
+    //
+    // The generics were removed in 0.16.0, so the crash is structurally impossible.
+    // These tests lock that in at the exact layer the reporter hit — a custom
+    // generator wired through MonthBodyConfiguration in a full CalendarView month
+    // view. The explicit closure signature (matching the current typedef) is itself
+    // the regression guard: a return to a generic typedef would fail to compile.
+    group('custom generateMultiDayLayoutFrame (#235)', () {
+      late bool invoked;
+
+      // A generator with the exact signature of the current typedef, delegating to
+      // the real default implementation.
+      MultiDayLayoutFrame customFrame({
+        required InternalDateTimeRange visibleDateTimeRange,
+        required List<CalendarEvent> events,
+        required TextDirection textDirection,
+        required Location? location,
+        MultiDayLayoutFrameCache? cache,
+      }) {
+        invoked = true;
+        return defaultMultiDayFrameGenerator(
+          visibleDateTimeRange: visibleDateTimeRange,
+          events: events,
+          textDirection: textDirection,
+          location: location,
+          cache: cache,
+        );
+      }
+
+      Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) =>
+          pumpAndSettleWithMaterialApp(
+            tester,
+            CalendarView(
+              eventsController: eventsController,
+              calendarController: calendarController,
+              viewConfiguration: MonthViewConfiguration.singleMonth(
+                displayRange: displayRange,
+                initialDateTime: initialDateTime,
+              ),
+              body: CalendarBody(
+                monthBodyConfiguration: MonthBodyConfiguration(generateMultiDayLayoutFrame: customFrame),
+              ),
+            ),
+          );
+
+      setUp(() => invoked = false);
+
+      testWidgets('renders month view without error and is invoked', (tester) async {
+        final event = CalendarEvent(
+          dateTimeRange: DateTimeRange(
+            start: DateTime(2025, 1, 15, 9),
+            end: DateTime(2025, 1, 15, 10),
+          ),
+        );
+        eventsController.addEvent(event);
+
+        await pumpWithCustomFrame(tester, DateTime(2025, 1));
+
+        // The core #235 assertion: no `_TypeError` (or anything else) during build.
+        expect(tester.takeException(), isNull);
+        // The custom generator was actually used, and its frame was consumed to
+        // render the event tile.
+        expect(invoked, isTrue, reason: 'custom generateMultiDayLayoutFrame should be called');
+        expect(find.byType(MonthBody), findsOneWidget);
+        // Month events render as MultiDayEventTile (keyed 'MultiDayEventTile-<id>').
+        expect(find.byKey(Key('MultiDayEventTile-${event.id}')), findsOneWidget);
+      });
+
+      testWidgets('renders without error when there are no events', (tester) async {
+        // eventsController is empty – exercises the empty-list path through a custom
+        // generator.
+        await pumpWithCustomFrame(tester, DateTime(2025, 1));
+
+        expect(tester.takeException(), isNull);
+        expect(invoked, isTrue, reason: 'custom generateMultiDayLayoutFrame should be called');
+        expect(find.byType(MonthBody), findsOneWidget);
+      });
+    });
   });
 }

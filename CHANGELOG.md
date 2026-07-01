@@ -8,6 +8,7 @@
 
 - Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261)
 - Added end-to-end `CalendarView` today-highlighting coverage (month + multi-day headers, month boundaries, and the `#251` neighbour-day repro), run across the timezone matrix. [#254](https://github.com/werner-scholtz/kalender/issues/254) [#251](https://github.com/werner-scholtz/kalender/issues/251)
+- Added end-to-end `CalendarView` month-view regression coverage for a custom `generateMultiDayLayoutFrame`, confirming the generic-variance crash fixed by the de-genericization in `0.16.0` cannot recur. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 
 ## 0.18.7
 
