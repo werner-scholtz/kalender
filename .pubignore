@@ -7,4 +7,6 @@ __pycache__/
 test/
 readme_assets/
 examples/
-tools/
+tool/
+benchmark/
+pub_login.sh

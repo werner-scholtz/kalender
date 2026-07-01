@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
     paths:
-      - tools/dashboard/index.html
+      - benchmark/dashboard/index.html
       - .github/workflows/deploy_dashboard.yml
   workflow_dispatch:
 
@@ -37,9 +37,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Capture the dashboard from the triggering commit before switching
           # branches: `git checkout gh-pages` swaps the working tree to the orphan
-          # branch (no tools/dashboard/), so reading from the object store via
+          # branch (no benchmark/dashboard/), so reading from the object store via
           # `git show` is what survives it.
-          git show "$GITHUB_SHA":tools/dashboard/index.html > "$RUNNER_TEMP/index.html"
+          git show "$GITHUB_SHA":benchmark/dashboard/index.html > "$RUNNER_TEMP/index.html"
 
           # Re-fetch and retry on push rejection. A benchmark run may push data.js
           # to gh-pages concurrently; rebasing onto the latest tip each attempt

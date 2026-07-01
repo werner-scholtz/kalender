@@ -27,7 +27,7 @@ flutter test
 - Add or update tests where appropriate. You can run the full timezone matrix locally on Linux with:
 
 ```bash
-dart tools/test_timezones_linux.dart
+dart tool/test_timezones_linux.dart
 ```
 
 ## Reporting issues
