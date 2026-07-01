@@ -100,6 +100,33 @@ class MultiDayViewEditor extends StatelessWidget {
             ),
           ],
         ),
+        DropDownEditor<DateTransition>(
+          label: 'Date on view change',
+          value: viewConfiguration.dateTransition,
+          items: DateTransition.values,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            dateTransition: value,
+          ),
+          itemToString: (value) => value.name,
+        ),
+        DropDownEditor<ScrollTransition>(
+          label: 'Scroll on view change',
+          value: viewConfiguration.scrollTransition,
+          items: ScrollTransition.values,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            scrollTransition: value,
+          ),
+          itemToString: (value) => value.name,
+        ),
+        DropDownEditor<ZoomTransition>(
+          label: 'Zoom on view change',
+          value: viewConfiguration.zoomTransition,
+          items: ZoomTransition.values,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            zoomTransition: value,
+          ),
+          itemToString: (value) => value.name,
+        ),
       ],
     );
   }
@@ -127,6 +154,15 @@ class MonthViewEditor extends StatelessWidget {
             showWeekNumbers: value,
           ),
           title: const Text('Show Week Numbers'),
+        ),
+        DropDownEditor<DateTransition>(
+          label: 'Date on view change',
+          value: viewConfiguration.dateTransition,
+          items: DateTransition.values,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            dateTransition: value,
+          ),
+          itemToString: (value) => value.name,
         ),
       ],
     );
