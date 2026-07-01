@@ -3,6 +3,12 @@ name: Performance Benchmarks
 on:
   push:
     branches: [main]
+    # Skip benchmark rebuilds for changes that cannot move the numbers (the static
+    # dashboard page, its deploy workflow, and docs) so history stays meaningful.
+    paths-ignore:
+      - 'benchmark/dashboard/**'
+      - '.github/workflows/deploy_dashboard.yml'
+      - '**/*.md'
   # PRs only run when labelled `profile` (see the job-level `if` below), so this
   # does not run for every PR.
   pull_request:
