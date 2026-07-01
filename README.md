@@ -332,6 +332,7 @@ Presents events in a chronological scrollable list.
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
 | `visibleDateTimeRange` | `ValueNotifier<DateTimeRange>`      | The currently visible date range                       |
+| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views; `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
 
@@ -602,6 +603,10 @@ CalendarCallbacks(
 
   // Called when the visible page changes.
   onPageChanged: (visibleDateTimeRange) {},
+
+  // Called when the vertical scroll position of a multi-day view changes.
+  // 'visibleTimeOfDay' is the time aligned with the top of the viewport.
+  onScrollPositionChanged: (visibleTimeOfDay) {},
 
   // Called when the user taps an empty area (day / week body).
   onTapped: (date) {},

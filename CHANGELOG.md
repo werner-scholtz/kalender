@@ -4,6 +4,11 @@
 
 - `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` (via `.forLocation()`) instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. This fixes incorrect `DateTime.now()` comparisons in custom month-view day headers. Custom `monthDayHeaderBuilder` implementations must change their `date` parameter type from `InternalDateTime` to `DateTime` — see [MIGRATION.md](MIGRATION.md#v018x--v0190). [#248](https://github.com/werner-scholtz/kalender/issues/248)
 
+### Features
+
+- The vertical scroll position (time-of-day) and zoom (`heightPerMinute`) of a multi-day view are now preserved when switching between view types (e.g. Week → Month → Week) instead of resetting to `initialTimeOfDay`. This is on by default; set `MultiDayViewConfiguration.preserveVerticalScrollOnViewChange: false` to restore the previous reset-on-switch behaviour. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+- Added `CalendarController.visibleTimeOfDay` (a `ValueNotifier<TimeOfDay?>` reflecting the time aligned with the top of the viewport, `null` for views without vertical scroll) and a `CalendarCallbacks.onScrollPositionChanged` callback, so consumers can observe/persist the vertical scroll position. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+
 ### Tests
 
 - Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261)

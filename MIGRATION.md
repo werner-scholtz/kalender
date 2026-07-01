@@ -28,6 +28,16 @@ MonthComponents(
 
 The received `date` is already in the calendar's configured location, so any manual `.forLocation()` conversion inside the builder is no longer needed.
 
+### Vertical scroll & zoom now persist across view switches
+
+Switching between view types (e.g. Week → Month → Week) now restores the vertical scroll position (time-of-day) and zoom (`heightPerMinute`) of the multi-day view, instead of resetting to `initialTimeOfDay`. This is the new default. If you relied on the old behaviour (always resetting to `initialTimeOfDay` on a view change), opt out per view configuration:
+
+```dart
+MultiDayViewConfiguration.week(
+  preserveVerticalScrollOnViewChange: false,
+)
+```
+
 ## v0.16.x → v0.17.0
 
 ### Input mode replaces platform-based mobile/desktop split
