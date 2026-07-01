@@ -38,6 +38,36 @@ MultiDayViewConfiguration.week(
 )
 ```
 
+### `InitialDateSelectionStrategy` gains a `lastVisibleDates` parameter
+
+Custom `initialDateSelectionStrategy` implementations must accept the new `lastVisibleDates` argument (the last visible date each view showed, keyed by configuration `name`). Existing logic can simply ignore it.
+
+**Before:**
+```dart
+InternalDateTime myStrategy({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+}) { ... }
+```
+
+**After:**
+```dart
+InternalDateTime myStrategy({
+  required ViewController oldViewController,
+  required ViewConfiguration newViewConfiguration,
+  required Map<String, InternalDateTime> lastVisibleDates,
+}) { ... }
+```
+
+To have each view restore its own last-visited date (matched by `name`) instead of carrying the current date forward, use the built-in `kRestoreLastVisitedDate`:
+
+```dart
+MultiDayViewConfiguration.singleDay(
+  name: 'Day',
+  initialDateSelectionStrategy: kRestoreLastVisitedDate,
+)
+```
+
 ## v0.16.x → v0.17.0
 
 ### Input mode replaces platform-based mobile/desktop split

@@ -3,11 +3,13 @@
 ### Breaking Changes
 
 - `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` (via `.forLocation()`) instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. This fixes incorrect `DateTime.now()` comparisons in custom month-view day headers. Custom `monthDayHeaderBuilder` implementations must change their `date` parameter type from `InternalDateTime` to `DateTime` — see [MIGRATION.md](MIGRATION.md#v018x--v0190). [#248](https://github.com/werner-scholtz/kalender/issues/248)
+- `InitialDateSelectionStrategy` now receives an additional `lastVisibleDates` argument (the last visible date per view, keyed by configuration `name`). Custom strategy implementations must add a `required Map<String, InternalDateTime> lastVisibleDates` parameter — see [MIGRATION.md](MIGRATION.md#v018x--v0190). [#249](https://github.com/werner-scholtz/kalender/issues/249)
 
 ### Features
 
 - The vertical scroll position (time-of-day) and zoom (`heightPerMinute`) of a multi-day view are now preserved when switching between view types (e.g. Week → Month → Week) instead of resetting to `initialTimeOfDay`. This is on by default; set `MultiDayViewConfiguration.preserveVerticalScrollOnViewChange: false` to restore the previous reset-on-switch behaviour. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `CalendarController.visibleTimeOfDay` (a `ValueNotifier<TimeOfDay?>` reflecting the time aligned with the top of the viewport, `null` for views without vertical scroll) and a `CalendarCallbacks.onScrollPositionChanged` callback, so consumers can observe/persist the vertical scroll position. [#249](https://github.com/werner-scholtz/kalender/issues/249)
+- Added the `kRestoreLastVisitedDate` initial-date strategy: instead of carrying the current date forward, each view restores the last date it displayed (matched by configuration `name`) — so, e.g., Day → Month → Day reopens the day you last had in the Day view. Opt in per view via `initialDateSelectionStrategy: kRestoreLastVisitedDate`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 
 ### Tests
 

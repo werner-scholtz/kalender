@@ -252,6 +252,8 @@ callbacks: CalendarCallbacks(
 
 Switch between views by passing a different `ViewConfiguration` to `CalendarView`. When switching, the `initialDateSelectionStrategy` on the view configuration determines which date becomes visible.
 
+By default the strategy *carries the current focus* forward (the date you were on follows you into the new view). To instead have each view remember and restore its own last-visited date — e.g. Day → Month → Day reopens the day you last had in the Day view — set `initialDateSelectionStrategy: kRestoreLastVisitedDate` on the relevant configurations (views are matched by their `name`, so give each a distinct name).
+
 All configurations accept:
 - `displayRange` — the total date range the calendar can navigate within (e.g. Jan 2024 – Dec 2025). Defaults to ± 1 year from today.
 - `initialDateTime` — the date to show on first render. Defaults to `DateTime.now()`.
