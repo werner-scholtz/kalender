@@ -1,5 +1,33 @@
 # Migration Guide
 
+## v0.18.x → v0.19.0
+
+### `monthDayHeaderBuilder` receives a localized `DateTime`
+
+`monthDayHeaderBuilder` now provides a localized wall-clock `DateTime` (via `.forLocation()`), consistent with `dayHeaderBuilder`, instead of a UTC-flagged `InternalDateTime`. This fixes incorrect "today" comparisons against `DateTime.now()` in custom month-view day headers ([#248](https://github.com/werner-scholtz/kalender/issues/248)).
+
+This only affects custom `monthDayHeaderBuilder` implementations that annotate the `date` parameter. Change the type from `InternalDateTime` to `DateTime`:
+
+**Before:**
+```dart
+MonthComponents(
+  bodyComponents: MonthBodyComponents(
+    monthDayHeaderBuilder: (InternalDateTime date, style) => MyHeader(date),
+  ),
+)
+```
+
+**After:**
+```dart
+MonthComponents(
+  bodyComponents: MonthBodyComponents(
+    monthDayHeaderBuilder: (DateTime date, style) => MyHeader(date),
+  ),
+)
+```
+
+The received `date` is already in the calendar's configured location, so any manual `.forLocation()` conversion inside the builder is no longer needed.
+
 ## v0.16.x → v0.17.0
 
 ### Input mode replaces platform-based mobile/desktop split

@@ -1,8 +1,13 @@
-## 0.18.8
+## 0.19.0
+
+### Breaking Changes
+
+- `monthDayHeaderBuilder` now receives a localized wall-clock `DateTime` (via `.forLocation()`) instead of a UTC-flagged `InternalDateTime`, matching `dayHeaderBuilder`. This fixes incorrect `DateTime.now()` comparisons in custom month-view day headers. Custom `monthDayHeaderBuilder` implementations must change their `date` parameter type from `InternalDateTime` to `DateTime` — see [MIGRATION.md](MIGRATION.md#v018x--v0190). [#248](https://github.com/werner-scholtz/kalender/issues/248)
 
 ### Tests
 
-- Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261) [#254](https://github.com/werner-scholtz/kalender/issues/254)
+- Added end-to-end `CalendarView` regression coverage for the time indicator (correct day column, hidden on off-page days), run across the timezone matrix. Confirms the timezone `isSameDay`/today-detection fix from `0.18.0` resolves the reported time-indicator behaviour. [#261](https://github.com/werner-scholtz/kalender/issues/261)
+- Added end-to-end `CalendarView` today-highlighting coverage (month + multi-day headers, month boundaries, and the `#251` neighbour-day repro), run across the timezone matrix. [#254](https://github.com/werner-scholtz/kalender/issues/254) [#251](https://github.com/werner-scholtz/kalender/issues/251)
 
 ## 0.18.7
 
