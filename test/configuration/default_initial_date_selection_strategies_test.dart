@@ -103,37 +103,37 @@ void main() {
       final newConfig = MonthViewConfiguration.singleMonth(displayRange: range);
 
       test('from Month  → dominantMonthDate of visible range', () {
-        final result = kDefaultToMonthly(oldViewController: buildMonth(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildMonth(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dominantJanuary, reason: 'Month → Month: expected $dominantJanuary but got $result');
       });
 
       test('from Week   → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Week → Month: expected $monthOrWeekStart but got $result');
       });
 
       test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'WorkWeek → Month: expected $monthOrWeekStart but got $result');
       });
 
       test('from Day → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Day → Month: expected $dayStart but got $result');
       });
 
       test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, customMultiStart, reason: 'Custom(3) → Month: expected $customMultiStart but got $result');
       });
 
       test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Custom(1) → Month: expected $dayStart but got $result');
       });
 
       test('from Schedule → visible-range start', () {
-        final result = kDefaultToMonthly(oldViewController: buildSchedule(), newViewConfiguration: newConfig);
+        final result = kDefaultToMonthly(oldViewController: buildSchedule(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, scheduleStart, reason: 'Schedule → Month: expected $scheduleStart but got $result');
       });
     });
@@ -144,37 +144,37 @@ void main() {
       final newConfig = MultiDayViewConfiguration.week(displayRange: range);
 
       test('from Month    → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildMonth(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildMonth(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Month → Week: expected $monthOrWeekStart but got $result');
       });
 
       test('from Week     → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Week → Week: expected $monthOrWeekStart but got $result');
       });
 
       test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'WorkWeek → Week: expected $monthOrWeekStart but got $result');
       });
 
       test('from Day → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Day → Week: expected $dayStart but got $result');
       });
 
       test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, customMultiStart, reason: 'Custom(3) → Week: expected $customMultiStart but got $result');
       });
 
       test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Custom(1) → Week: expected $dayStart but got $result');
       });
 
       test('from Schedule → visible-range start', () {
-        final result = kDefaultToWeekly(oldViewController: buildSchedule(), newViewConfiguration: newConfig);
+        final result = kDefaultToWeekly(oldViewController: buildSchedule(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, scheduleStart, reason: 'Schedule → Week: expected $scheduleStart but got $result');
       });
     });
@@ -185,37 +185,37 @@ void main() {
       final newConfig = MultiDayViewConfiguration.singleDay(displayRange: range);
 
       test('from Month  → dominantMonthDate of visible range', () {
-        final result = kDefaultToDaily(oldViewController: buildMonth(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildMonth(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dominantJanuary, reason: 'Month → Day: expected $dominantJanuary but got $result');
       });
 
       test('from Week   → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Week → Day: expected $monthOrWeekStart but got $result');
       });
 
       test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'WorkWeek → Day: expected $monthOrWeekStart but got $result');
       });
 
       test('from Day → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Day → Day: expected $dayStart but got $result');
       });
 
       test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, customMultiStart, reason: 'Custom(3) → Day: expected $customMultiStart but got $result');
       });
 
       test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Custom(1) → Day: expected $dayStart but got $result');
       });
 
       test('from Schedule → visible-range start', () {
-        final result = kDefaultToDaily(oldViewController: buildSchedule(), newViewConfiguration: newConfig);
+        final result = kDefaultToDaily(oldViewController: buildSchedule(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, scheduleStart, reason: 'Schedule → Day: expected $scheduleStart but got $result');
       });
     });
@@ -226,37 +226,37 @@ void main() {
       final newConfig = ScheduleViewConfiguration.continuous(displayRange: range);
 
       test('from Month    → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildMonth(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildMonth(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Month → Schedule: expected $monthOrWeekStart but got $result');
       });
 
       test('from Week     → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'Week → Schedule: expected $monthOrWeekStart but got $result');
       });
 
       test('from WorkWeek → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildWorkWeek(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, monthOrWeekStart, reason: 'WorkWeek → Schedule: expected $monthOrWeekStart but got $result');
       });
 
       test('from Day → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Day → Schedule: expected $dayStart but got $result');
       });
 
       test('from Custom(3) → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildCustomMultiDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, customMultiStart, reason: 'Custom(3) → Schedule: expected $customMultiStart but got $result');
       });
 
       test('from Custom(1) → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildCustomSingleDay(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, dayStart, reason: 'Custom(1) → Schedule: expected $dayStart but got $result');
       });
 
       test('from Schedule → visible-range start', () {
-        final result = kDefaultToSchedule(oldViewController: buildSchedule(), newViewConfiguration: newConfig);
+        final result = kDefaultToSchedule(oldViewController: buildSchedule(), newViewConfiguration: newConfig, lastVisibleDates: const {});
         expect(result, scheduleStart, reason: 'Schedule → Schedule: expected $scheduleStart but got $result');
       });
     });
@@ -275,56 +275,56 @@ void main() {
       test('→ MonthViewConfiguration routes to kDefaultToMonthly', () {
         final cfg = MonthViewConfiguration.singleMonth(displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToMonthly(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToMonthly(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ week MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.week(displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ workWeek MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.workWeek(displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ custom(3) MultiDayViewConfiguration routes to kDefaultToWeekly', () {
         final cfg = MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToWeekly(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ singleDay MultiDayViewConfiguration routes to kDefaultToDaily', () {
         final cfg = MultiDayViewConfiguration.singleDay(displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToDaily(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToDaily(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ custom(1) MultiDayViewConfiguration routes to kDefaultToDaily', () {
         final cfg = MultiDayViewConfiguration.custom(numberOfDays: 1, displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToDaily(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToDaily(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
 
       test('→ ScheduleViewConfiguration routes to kDefaultToSchedule', () {
         final cfg = ScheduleViewConfiguration.continuous(displayRange: range);
         expect(
-          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg),
-          kDefaultToSchedule(oldViewController: src(), newViewConfiguration: cfg),
+          kDefaultInitialDateSelectionStrategy(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
+          kDefaultToSchedule(oldViewController: src(), newViewConfiguration: cfg, lastVisibleDates: const {}),
         );
       });
     });

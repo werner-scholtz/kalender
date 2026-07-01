@@ -132,6 +132,7 @@ void main() {
       InternalDateTime capturingStrategy({
         required ViewController oldViewController,
         required ViewConfiguration newViewConfiguration,
+        required Map<String, InternalDateTime> lastVisibleDates,
       }) {
         capturedOldController = oldViewController;
         capturedNewConfig = newViewConfiguration;
@@ -603,11 +604,99 @@ void main() {
       expect(reported.last, equals(const TimeOfDay(hour: 2, minute: 0)));
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // Per-view date restore via kRestoreLastVisitedDate (#249)
+  // ---------------------------------------------------------------------------
+  group('Per-view date restore (#249)', () {
+    MultiDayViewConfiguration dayRestore() => MultiDayViewConfiguration.singleDay(
+          name: 'Day',
+          displayRange: calendarRange,
+          initialDateSelectionStrategy: kRestoreLastVisitedDate,
+        );
+    MonthViewConfiguration monthRestore() => MonthViewConfiguration.singleMonth(
+          name: 'Month',
+          displayRange: calendarRange,
+          initialDateSelectionStrategy: kRestoreLastVisitedDate,
+        );
+
+    InternalDateTime? visibleStart() => calendarController.internalDateTimeRange.value?.start.startOfDay;
+
+    testWidgets('restores the Day view\'s own last date after Day → Month → Day', (tester) async {
+      await pumpCalendarView(tester, config: dayRestore(), withBody: true);
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(tester, config: monthRestore(), withBody: true);
+      await pumpCalendarView(tester, config: dayRestore(), withBody: true);
+
+      expect(visibleStart(), equals(InternalDateTime(2024, 6, 15)));
+    });
+
+    testWidgets('each view keeps its own date (navigating Month does not move Day)', (tester) async {
+      await pumpCalendarView(tester, config: dayRestore(), withBody: true);
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(tester, config: monthRestore(), withBody: true);
+      // Navigate the month view elsewhere.
+      calendarController.jumpToDate(DateTime(2024, 9, 10));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(tester, config: dayRestore(), withBody: true);
+
+      // Day restores its own last date, not the month's navigation.
+      expect(visibleStart(), equals(InternalDateTime(2024, 6, 15)));
+    });
+
+    testWidgets('falls back to the default strategy on first visit to a view', (tester) async {
+      // Start in month, then switch to a Day view never shown before.
+      await pumpCalendarView(tester, config: monthRestore(), withBody: true);
+      calendarController.jumpToDate(DateTime(2024, 6, 1));
+      await tester.pumpAndSettle();
+      final monthRange = calendarController.internalDateTimeRange.value;
+
+      await pumpCalendarView(tester, config: dayRestore(), withBody: true);
+
+      // No Day history yet → falls back to carry-focus (dominantMonthDate).
+      expect(visibleStart(), equals(InternalDateTime.fromDateTime(monthRange!.dominantMonthDate)));
+    });
+
+    testWidgets('default strategy still carries focus (regression guard)', (tester) async {
+      // Using the default strategy, Month → Day yields dominantMonthDate, not the
+      // last Day date — confirming the new behaviour is opt-in only.
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 15));
+      await tester.pumpAndSettle();
+
+      await pumpCalendarView(
+        tester,
+        config: MonthViewConfiguration.singleMonth(name: 'Month', displayRange: calendarRange),
+        withBody: true,
+      );
+      calendarController.jumpToDate(DateTime(2024, 6, 1));
+      await tester.pumpAndSettle();
+      final monthRange = calendarController.internalDateTimeRange.value;
+
+      await pumpCalendarView(
+        tester,
+        config: MultiDayViewConfiguration.singleDay(name: 'Day', displayRange: calendarRange),
+        withBody: true,
+      );
+
+      expect(visibleStart(), equals(InternalDateTime.fromDateTime(monthRange!.dominantMonthDate)));
+    });
+  });
 }
 
 InternalDateTime _alwaysReturnJanuaryStrategy({
   required ViewController oldViewController,
   required ViewConfiguration newViewConfiguration,
+  required Map<String, InternalDateTime> lastVisibleDates,
 }) {
   return _fixedDate;
 }
