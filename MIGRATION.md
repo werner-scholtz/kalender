@@ -55,7 +55,7 @@ MultiDayViewConfiguration.week(
 - **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default) or `restorePerView` — plus an optional `dateResolver` for custom logic.
 - **Scroll / zoom** (`MultiDayViewConfiguration` only): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView` — plus optional `scrollResolver` / `zoomResolver`.
 
-A custom `initialDateSelectionStrategy` becomes a `dateResolver`. The signature changes from named parameters to a single `ViewTransitionContext`, and the built-in `kDefaultTo*` helpers now take the outgoing `ViewController` directly (or use `kCarryFocusDate(context)`).
+A custom `initialDateSelectionStrategy` becomes a `dateResolver`. The signature changes from named parameters to a single `ViewTransitionContext`, and the built-in `kDefaultTo*` helpers now take the outgoing `ViewController` directly (or use `kCarryFocusDate(transition)`).
 
 **Before:**
 ```dart
@@ -69,8 +69,8 @@ MultiDayViewConfiguration.week(initialDateSelectionStrategy: myStrategy)
 
 **After:**
 ```dart
-InternalDateTime myResolver(ViewTransitionContext ctx) =>
-    nextBusinessDay(kCarryFocusDate(ctx));
+InternalDateTime myResolver(ViewTransitionContext transition) =>
+    nextBusinessDay(kCarryFocusDate(transition));
 
 MultiDayViewConfiguration.week(dateResolver: myResolver)
 ```

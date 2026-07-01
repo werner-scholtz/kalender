@@ -255,7 +255,7 @@ Switch between views by passing a different `ViewConfiguration` to `CalendarView
 - **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
 - **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView`.
 
-For arbitrary logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver` (each overrides the matching enum); `kCarryFocusDate(context)` gives you the default carry-focus date to build on.
+For arbitrary logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver` (each overrides the matching enum); `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
 All configurations accept:
 - `displayRange` — the total date range the calendar can navigate within (e.g. Jan 2024 – Dec 2025). Defaults to ± 1 year from today.

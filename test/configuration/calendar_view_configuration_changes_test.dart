@@ -129,9 +129,9 @@ void main() {
       ViewController? capturedOldController;
       ViewConfiguration? capturedNewConfig;
 
-      InternalDateTime capturingResolver(ViewTransitionContext context) {
-        capturedOldController = context.oldViewController;
-        capturedNewConfig = context.newViewConfiguration;
+      InternalDateTime capturingResolver(ViewTransitionContext transition) {
+        capturedOldController = transition.oldViewController;
+        capturedNewConfig = transition.newViewConfiguration;
         return _fixedDate;
       }
 
@@ -584,7 +584,7 @@ void main() {
     });
 
     testWidgets('scrollResolver overrides the scroll transition', (tester) async {
-      TimeOfDay fixedNine(ViewTransitionContext ctx) => const TimeOfDay(hour: 9, minute: 0);
+      TimeOfDay fixedNine(ViewTransitionContext transition) => const TimeOfDay(hour: 9, minute: 0);
       await pumpCalendarView(tester, config: week(scrollResolver: fixedNine), withBody: true);
 
       await pumpCalendarView(tester, config: month(), withBody: true);
@@ -630,7 +630,7 @@ void main() {
   });
 }
 
-InternalDateTime _alwaysReturnJanuaryResolver(ViewTransitionContext context) {
+InternalDateTime _alwaysReturnJanuaryResolver(ViewTransitionContext transition) {
   return _fixedDate;
 }
 

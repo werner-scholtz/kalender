@@ -41,15 +41,15 @@ enum ZoomTransition {
 }
 
 /// Resolves the initial date for the incoming view. Overrides [DateTransition].
-typedef DateResolver = InternalDateTime Function(ViewTransitionContext context);
+typedef DateResolver = InternalDateTime Function(ViewTransitionContext transition);
 
 /// Resolves the initial time-of-day for the incoming multi-day view. Overrides
 /// [ScrollTransition]. Return `null` to use the view's `initialTimeOfDay`.
-typedef ScrollResolver = TimeOfDay? Function(ViewTransitionContext context);
+typedef ScrollResolver = TimeOfDay? Function(ViewTransitionContext transition);
 
 /// Resolves the initial zoom (`heightPerMinute`) for the incoming multi-day view.
 /// Overrides [ZoomTransition]. Return `null` to use `initialHeightPerMinute`.
-typedef ZoomResolver = double? Function(ViewTransitionContext context);
+typedef ZoomResolver = double? Function(ViewTransitionContext transition);
 
 /// A snapshot of what a view was displaying, captured when it is switched away
 /// from. Used to restore per-view state on a later switch.
@@ -95,10 +95,10 @@ class ViewTransitionContext {
 /// Routes to [kDefaultToMonthly] / [kDefaultToWeekly] / [kDefaultToDaily] /
 /// [kDefaultToSchedule] based on the view being switched *to*. Exposed so a
 /// custom [DateResolver] can build on the default behaviour, e.g.
-/// `dateResolver: (ctx) => nextBusinessDay(kCarryFocusDate(ctx))`.
-InternalDateTime kCarryFocusDate(ViewTransitionContext context) {
-  final old = context.oldViewController;
-  return switch (context.newViewConfiguration) {
+/// `dateResolver: (transition) => nextBusinessDay(kCarryFocusDate(transition))`.
+InternalDateTime kCarryFocusDate(ViewTransitionContext transition) {
+  final old = transition.oldViewController;
+  return switch (transition.newViewConfiguration) {
     MonthViewConfiguration _ => kDefaultToMonthly(old),
     ScheduleViewConfiguration _ => kDefaultToSchedule(old),
     final MultiDayViewConfiguration config => switch (config.type) {
