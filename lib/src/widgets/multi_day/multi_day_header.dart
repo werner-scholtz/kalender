@@ -255,7 +255,7 @@ class _FreeScrollHeader extends StatelessWidget {
       ///
       /// To do this the header would need to display a single page and not multiple. see viewport fraction.
       content: ExpandablePageView(
-        key: UniqueKey(),
+        key: ObjectKey(viewController.headerController),
         controller: viewController.headerController,
         itemCount: viewController.numberOfPages,
         itemBuilder: (context, index) {
