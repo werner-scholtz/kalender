@@ -28,6 +28,7 @@
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Added regression coverage that a selected month-view event's focus aligns to its own row. [#233](https://github.com/werner-scholtz/kalender/issues/233)
 
 ## 0.18.7
 
