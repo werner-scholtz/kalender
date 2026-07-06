@@ -58,6 +58,7 @@ class MonthBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
+        final focusMonthStart = pageNavigation.monthStartFromIndex(index, context.location);
         final grid = MonthGrid.fromContext(context, numberOfRows);
         final content = Column(
           children: List.generate(
@@ -75,6 +76,7 @@ class MonthBody extends StatelessWidget {
                   internalRange: visibleDateTimeRange,
                   configuration: configuration,
                   viewController: viewController,
+                  focusMonthStart: focusMonthStart,
                 ),
               );
             },
@@ -115,11 +117,17 @@ class MonthWeek extends StatelessWidget {
   final InternalDateTimeRange internalRange;
   final HorizontalConfiguration configuration;
   final ViewController viewController;
+
+  /// The first day of the focused month, used to determine which cells belong
+  /// to an adjacent month.
+  final InternalDateTime focusMonthStart;
+
   const MonthWeek({
     super.key,
     required this.internalRange,
     required this.configuration,
     required this.viewController,
+    required this.focusMonthStart,
   });
 
   @override
@@ -129,6 +137,22 @@ class MonthWeek extends StatelessWidget {
 
     return Stack(
       children: [
+        // Background layer: one cell per day, behind the day numbers and events.
+        Positioned.fill(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final date in internalRange.dates())
+                Expanded(
+                  child: MonthDayCell.fromContext(
+                    context,
+                    date,
+                    isInFocusedMonth: date.month == focusMonthStart.month && date.year == focusMonthStart.year,
+                  ),
+                ),
+            ],
+          ),
+        ),
         Positioned.fill(
           child: MultiDayDraggable(
             key: ValueKey('MultiDayDraggable-${internalRange.start.toIso8601String()}'),

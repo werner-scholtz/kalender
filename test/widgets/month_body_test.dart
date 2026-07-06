@@ -79,6 +79,48 @@ void main() {
     }
 
     // ---------------------------------------------------------------------------
+    // #140: a monthDayCellBuilder is invoked once per day cell so consumers can
+    // style individual days (e.g. gray out days outside the focused month). Each
+    // call reports the cell's date and whether it belongs to the focused month.
+    // ---------------------------------------------------------------------------
+
+    testWidgets('monthDayCellBuilder is called per day with focused-month flags', (tester) async {
+      final byDate = <DateTime, MonthDayCellDetails>{};
+
+      final components = CalendarComponents(
+        monthComponents: MonthComponents(
+          bodyComponents: MonthBodyComponents(
+            monthDayCellBuilder: (details) {
+              byDate[DateTime(details.date.year, details.date.month, details.date.day)] = details;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      // January 2025 grid: Mon Dec 30 2024 → 35 cells = 2 leading (Dec 30, 31),
+      // 31 focused (all of January), 2 trailing (Feb 1, 2).
+      await pumpMonthView(tester, DateTime(2025, 1), components: components);
+
+      expect(byDate.length, 35, reason: 'One call per cell in the 5-row grid');
+      expect(byDate[DateTime(2024, 12, 30)]?.isInFocusedMonth, isFalse, reason: 'Leading adjacent-month day');
+      expect(byDate[DateTime(2024, 12, 31)]?.isInFocusedMonth, isFalse);
+      expect(byDate[DateTime(2025, 1, 1)]?.isInFocusedMonth, isTrue);
+      expect(byDate[DateTime(2025, 1, 31)]?.isInFocusedMonth, isTrue);
+      expect(byDate[DateTime(2025, 2, 1)]?.isInFocusedMonth, isFalse, reason: 'Trailing adjacent-month day');
+      expect(
+        byDate.values.where((d) => !d.isInFocusedMonth).length,
+        4,
+        reason: '2 leading + 2 trailing days fall outside the focused month',
+      );
+      expect(
+        byDate.values.where((d) => d.isInFocusedMonth).length,
+        31,
+        reason: 'All 31 days of January are in the focused month',
+      );
+    });
+
+    // ---------------------------------------------------------------------------
     // Regression: https://github.com/werner-scholtz/kalender/issues/266
     //
     // A displayRange that spans exactly one calendar month must still render a
@@ -215,8 +257,7 @@ void main() {
     // A tileHeight far larger than any week-row height guarantees max == 0.
     const tallTileHeight = 1000.0;
 
-    Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) =>
-        pumpAndSettleWithMaterialApp(
+    Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
             eventsController: eventsController,
@@ -299,8 +340,7 @@ void main() {
         );
       }
 
-      Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) =>
-          pumpAndSettleWithMaterialApp(
+      Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
             tester,
             CalendarView(
               eventsController: eventsController,

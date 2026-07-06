@@ -12,6 +12,7 @@
 - Added `restorePerView` transitions so each view can reopen its own last date, scroll, and zoom. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `CalendarController.visibleTimeOfDay` and the `CalendarCallbacks.onScrollPositionChanged` callback. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `ScheduleBodyConfiguration.leadingWidth` to control the schedule view's date-column width. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- Added `MonthBodyComponents.monthDayCellBuilder` to style individual month-view day cells; each call reports the cell's date, whether it is today, and whether it falls in the focused month (so adjacent-month days can be styled differently). [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ### Fixes
 
@@ -28,6 +29,7 @@
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Added coverage that `monthDayCellBuilder` is invoked per day with the correct focused-month flags. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ## 0.18.7
 
