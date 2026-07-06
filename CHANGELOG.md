@@ -17,10 +17,8 @@
 
 - Fixed schedule view event tiles not lining up; every row now shares a fixed-width leading column whether or not it shows a date. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Fixed the continuous schedule view scrolling to the wrong position when today has no events; the initial scroll and `animateToDateTime` now target today, or the nearest day when it is hidden. [#253](https://github.com/werner-scholtz/kalender/issues/253)
-
-### Fixes
-
 - Fixed the free-scroll multi-day header "wobbling" (re-animating its height) whenever a calendar item changed; its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
+- Fixed the free-scroll multi-day header clipping days that have more events than the leading day; the header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
 
 ### Tests
 
@@ -29,6 +27,7 @@
 - Added continuous schedule regression coverage for row alignment and the no-events-today scroll target. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
+- Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
 
 ## 0.18.7
 

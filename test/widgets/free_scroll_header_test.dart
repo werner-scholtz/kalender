@@ -87,5 +87,78 @@ void main() {
             'UniqueKey() each build would recreate it and reset measured heights.',
       );
     });
+
+    // Regression for the FreeScroll header clipping busier days: each day is its
+    // own page (viewportFraction 1/numberOfDays) and several are visible at once,
+    // but the header used to size itself to the *current* page only. A day with
+    // two stacked multi-day events was clipped whenever it was not the leading
+    // page. The header must instead fit the tallest day currently in view.
+    Future<double> pumpAndMeasureHeader(WidgetTester tester, DateTime initialDate) async {
+      // Fresh controllers per pump so each starts at its own initial date.
+      eventsController = DefaultEventsController();
+      calendarController = CalendarController();
+
+      final base = DateTime(2025, 3, 24); // Monday
+      // Two overlapping multi-day events give 25 Mar a single row, 26 Mar two
+      // rows (both events), and 27 Mar a single row.
+      eventsController.addEvents([
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(
+            start: base.add(const Duration(days: 1)),
+            end: base.add(const Duration(days: 3)),
+          ),
+        ),
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(
+            start: base.add(const Duration(days: 2)),
+            end: base.add(const Duration(days: 4)),
+          ),
+        ),
+      ]);
+
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        CalendarView(
+          eventsController: eventsController,
+          calendarController: calendarController,
+          viewConfiguration: MultiDayViewConfiguration.freeScroll(
+            numberOfDays: 3,
+            initialDateTime: initialDate,
+            displayRange: DateTimeRange(start: base, end: base.add(const Duration(days: 21))),
+          ),
+          callbacks: callbacks,
+          header: CalendarHeader(multiDayTileComponents: tileComponents),
+          body: CalendarBody(
+            multiDayTileComponents: tileComponents,
+            monthTileComponents: tileComponents,
+            scheduleTileComponents: scheduleTileComponents,
+          ),
+        ),
+      );
+
+      return tester.getSize(find.byType(ExpandablePageView)).height;
+    }
+
+    testWidgets('fits the tallest visible day, not just the leading page', (tester) async {
+      final base = DateTime(2025, 3, 24);
+      // 26 Mar (two rows) as the leading page.
+      final heightAsLeading = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 2)));
+      // 26 Mar visible as a trailing page (leading is 25 Mar, a single row).
+      final heightAsTrailing = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 1)));
+      // A window of empty days for a single-row baseline.
+      final heightEmpty = await pumpAndMeasureHeader(tester, base.add(const Duration(days: 12)));
+
+      expect(
+        heightAsTrailing,
+        greaterThan(heightEmpty),
+        reason: 'The header should grow to fit the two-row day while it is in view.',
+      );
+      expect(
+        heightAsTrailing,
+        closeTo(heightAsLeading, 0.5),
+        reason: 'Header height must not depend on whether the tallest visible day '
+            'is the leading page; sizing to the current page only clips trailing days.',
+      );
+    });
   });
 }
