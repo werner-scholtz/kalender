@@ -103,11 +103,17 @@ void main() {
       // rows (both events), and 27 Mar a single row.
       eventsController.addEvents([
         CalendarEvent(
-            dateTimeRange:
-                DateTimeRange(start: base.add(const Duration(days: 1)), end: base.add(const Duration(days: 3)))),
+          dateTimeRange: DateTimeRange(
+            start: base.add(const Duration(days: 1)),
+            end: base.add(const Duration(days: 3)),
+          ),
+        ),
         CalendarEvent(
-            dateTimeRange:
-                DateTimeRange(start: base.add(const Duration(days: 2)), end: base.add(const Duration(days: 4)))),
+          dateTimeRange: DateTimeRange(
+            start: base.add(const Duration(days: 2)),
+            end: base.add(const Duration(days: 4)),
+          ),
+        ),
       ]);
 
       await pumpAndSettleWithMaterialApp(
