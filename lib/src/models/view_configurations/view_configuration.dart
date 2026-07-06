@@ -15,7 +15,7 @@ export 'package:kalender/kalender_extensions.dart';
 /// - Position the time indicator on the calendar grid.
 /// - Determine which day is "today" for header highlighting
 ///   ([DayHeader], [MonthDayHeader], [ScheduleDate]).
-/// - Evaluate [EmptyDayBehavior.showToday] in schedule views.
+/// - Evaluate [EmptyDayBehavior.showOnlyToday] in schedule views.
 ///
 /// Any [DateTime] subtype works:
 /// - [DateTime.now] — uses the system's local wall-clock time.
@@ -66,7 +66,7 @@ abstract class ViewConfiguration {
   /// - **"Today" highlighting** — the default [DayHeader], [MonthDayHeader],
   ///   and [ScheduleDate] widgets use this to decide which day receives the
   ///   filled-button highlight.
-  /// - **Schedule empty-day logic** — [EmptyDayBehavior.showToday] uses this
+  /// - **Schedule empty-day logic** — [EmptyDayBehavior.showOnlyToday] uses this
   ///   to decide whether an empty day should still be shown.
   ///
   /// This is useful when the calendar displays events in UTC but should
@@ -254,7 +254,7 @@ const defaultHeightPerMinute = 0.7;
 const defaultHorizontalPadding = EdgeInsets.only(left: 0, right: 4);
 
 const kDefaultMultiDayEventPadding = EdgeInsets.only(left: 0, right: 4, bottom: 2);
-const kDefaultEmptyDayBehavior = EmptyDayBehavior.showToday;
+const kDefaultEmptyDayBehavior = EmptyDayBehavior.showOnlyToday;
 DateTimeRange kDefaultRange() {
   final now = DateTime.now();
   return DateTimeRange(start: DateTime(now.year - 2), end: DateTime(now.year + 2));

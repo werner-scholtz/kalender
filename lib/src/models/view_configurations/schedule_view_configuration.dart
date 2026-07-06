@@ -13,13 +13,13 @@ enum ScheduleViewType {
 
 /// The default behavior for empty days in the schedule view.
 enum EmptyDayBehavior {
-  /// Show empty days in the schedule view.
+  /// Show every empty day in the schedule view.
   show,
 
-  /// Show today in the schedule view, even if it does not have any events.
-  showToday,
+  /// Show only today when it has no events; all other empty days are hidden.
+  showOnlyToday,
 
-  /// Hide empty days in the schedule view.
+  /// Hide every empty day in the schedule view.
   hide,
 }
 
@@ -63,10 +63,18 @@ class ScheduleViewConfiguration extends ViewConfiguration {
         viewType = ScheduleViewType.paginated;
 }
 
+/// The default width of the leading (date) column in the schedule view.
+///
+/// A fixed width keeps every row's event tile aligned regardless of whether the
+/// row shows a date, and independent of the day name, day-number digits, locale,
+/// or text scale.
+const kDefaultScheduleLeadingWidth = 56.0;
+
 class ScheduleBodyConfiguration {
   /// Creates a new [ScheduleBodyConfiguration].
   ScheduleBodyConfiguration({
     this.emptyDay = kDefaultEmptyDayBehavior,
+    this.leadingWidth = kDefaultScheduleLeadingWidth,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     this.scrollPhysics,
@@ -75,10 +83,14 @@ class ScheduleBodyConfiguration {
         scrollTriggerConfiguration = scrollTriggerConfiguration ?? ScrollTriggerConfiguration();
 
   /// The behavior of empty days in the schedule view.
-  /// - [EmptyDayBehavior.show]: Show empty days in the schedule view.
-  /// - [EmptyDayBehavior.showToday]: Show today in the schedule view.
-  /// - [EmptyDayBehavior.hide]: Hide empty days in the schedule view.
+  /// - [EmptyDayBehavior.show]: Show every empty day in the schedule view.
+  /// - [EmptyDayBehavior.showOnlyToday]: Show only today when it has no events.
+  /// - [EmptyDayBehavior.hide]: Hide every empty day in the schedule view.
   final EmptyDayBehavior emptyDay;
+
+  /// The width of the leading (date) column, shared by every row so the event
+  /// tiles line up. Defaults to [kDefaultScheduleLeadingWidth].
+  final double leadingWidth;
 
   /// The configuration for the page navigation triggers.
   final PageTriggerConfiguration pageTriggerConfiguration;
@@ -95,6 +107,7 @@ class ScheduleBodyConfiguration {
   /// Creates a copy of this [MultiDayHeaderConfiguration] with the given fields replaced by the new values.
   ScheduleBodyConfiguration copyWith({
     EmptyDayBehavior? emptyDay,
+    double? leadingWidth,
     PageTriggerConfiguration? pageTriggerConfiguration,
     ScrollTriggerConfiguration? scrollTriggerConfiguration,
     ScrollPhysics? scrollPhysics,
@@ -102,6 +115,7 @@ class ScheduleBodyConfiguration {
   }) {
     return ScheduleBodyConfiguration(
       emptyDay: emptyDay ?? this.emptyDay,
+      leadingWidth: leadingWidth ?? this.leadingWidth,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
       scrollTriggerConfiguration: scrollTriggerConfiguration ?? this.scrollTriggerConfiguration,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
@@ -115,6 +129,7 @@ class ScheduleBodyConfiguration {
 
     return other is ScheduleBodyConfiguration &&
         other.emptyDay == emptyDay &&
+        other.leadingWidth == leadingWidth &&
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
         other.scrollTriggerConfiguration == scrollTriggerConfiguration &&
         other.scrollPhysics == scrollPhysics &&
@@ -125,6 +140,7 @@ class ScheduleBodyConfiguration {
   int get hashCode {
     return Object.hash(
       emptyDay,
+      leadingWidth,
       pageTriggerConfiguration,
       scrollTriggerConfiguration,
       scrollPhysics,
