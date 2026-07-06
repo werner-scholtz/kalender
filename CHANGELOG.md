@@ -11,11 +11,16 @@
 - Added `restorePerView` transitions so each view can reopen its own last date, scroll, and zoom. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `CalendarController.visibleTimeOfDay` and the `CalendarCallbacks.onScrollPositionChanged` callback. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 
+### Fixes
+
+- Fixed the free-scroll multi-day header "wobbling" (re-animating its height) whenever a calendar item changed; its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
+
 ### Tests
 
 - Added end-to-end `CalendarView` regression coverage for the time indicator, run across the timezone matrix. [#261](https://github.com/werner-scholtz/kalender/issues/261)
 - Added end-to-end `CalendarView` today-highlighting coverage, run across the timezone matrix. [#254](https://github.com/werner-scholtz/kalender/issues/254) [#251](https://github.com/werner-scholtz/kalender/issues/251)
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
+- Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 
 ## 0.18.7
 
