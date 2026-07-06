@@ -78,9 +78,8 @@ class DayHeader extends StatelessWidget {
       style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
     );
 
-    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
-    final isToday = now != null ? localDate.isToday(now: now) : localDate.isToday(location: context.location);
+    final isToday = context.isToday(localDate);
     final button = isToday
         ? IconButton.filled(key: todayKey, onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);

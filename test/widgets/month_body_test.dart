@@ -120,6 +120,14 @@ void main() {
       );
     });
 
+    testWidgets('builds no day-cell background layer without a custom builder', (tester) async {
+      // Default components: the background layer is skipped entirely, so no
+      // MonthDayCell widgets (and no per-cell today/localization work) are built.
+      await pumpMonthView(tester, DateTime(2025, 1));
+
+      expect(find.byType(MonthDayCell), findsNothing);
+    });
+
     // ---------------------------------------------------------------------------
     // Regression: https://github.com/werner-scholtz/kalender/issues/266
     //

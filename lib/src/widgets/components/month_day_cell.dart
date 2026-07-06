@@ -7,11 +7,13 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 /// The builder is called once per cell with [MonthDayCellDetails] describing the
 /// cell's date, whether it is today, and whether it belongs to the focused month
 /// (as opposed to a leading/trailing day from an adjacent month). The returned
-/// widget is painted behind the day's number and events, so it is well suited to
-/// styling the cell background — for example graying out adjacent-month days. See
-/// [#140](https://github.com/werner-scholtz/kalender/issues/140).
+/// widget is painted behind the grid, the day's number and the events, so it is
+/// well suited to styling the cell background — for example graying out
+/// adjacent-month days. See [#140](https://github.com/werner-scholtz/kalender/issues/140).
 ///
-/// The default builder renders nothing, leaving the cell background unchanged.
+/// This is a background layer and does not receive pointer events — the event
+/// and drag layers sit above it. The default builder renders nothing, leaving
+/// the cell background unchanged.
 typedef MonthDayCellBuilder = Widget Function(MonthDayCellDetails details);
 
 /// Details describing a single day cell, passed to a [MonthDayCellBuilder].
@@ -54,12 +56,10 @@ class MonthDayCell extends StatelessWidget {
     required bool isInFocusedMonth,
   }) {
     final builder = context.components.monthComponents.bodyComponents.monthDayCellBuilder;
-    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
-    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
     return builder(
       MonthDayCellDetails(
         date: date.forLocation(location: context.location),
-        isToday: isToday,
+        isToday: context.isToday(date),
         isInFocusedMonth: isInFocusedMonth,
       ),
     );
