@@ -28,6 +28,26 @@ MonthComponents(
 
 The received `date` is already in the calendar's configured location, so any manual `.forLocation()` conversion inside the builder is no longer needed.
 
+### `monthGridBuilder` receives the grid's `DateTimeRange`
+
+`monthGridBuilder` now takes a third parameter: the `DateTimeRange` the grid covers. It is a localized wall-clock range spanning the full grid — including the leading and trailing days from adjacent months — so, together with `numberOfRows` (7 columns per row), a custom grid can resolve the date of every cell (e.g. to gray out days outside the focused month). See [#140](https://github.com/werner-scholtz/kalender/issues/140).
+
+This only affects custom `monthGridBuilder` implementations. Add the parameter:
+
+**Before:**
+```dart
+MonthBodyComponents(
+  monthGridBuilder: (style, numberOfRows) => MyGrid(style, numberOfRows),
+)
+```
+
+**After:**
+```dart
+MonthBodyComponents(
+  monthGridBuilder: (style, numberOfRows, visibleDateTimeRange) => MyGrid(style, numberOfRows, visibleDateTimeRange),
+)
+```
+
 ### Default behaviour change: scroll & zoom are now preserved across view switches
 
 > [!IMPORTANT]

@@ -79,6 +79,44 @@ void main() {
     }
 
     // ---------------------------------------------------------------------------
+    // #140: the MonthGridBuilder receives the grid's date range so a builder can
+    // resolve each cell's date (e.g. to style adjacent-month days). The range is
+    // a localized DateTimeRange covering the full grid, including leading/trailing
+    // days from neighbouring months.
+    // ---------------------------------------------------------------------------
+
+    testWidgets('MonthGridBuilder receives the grid date range and row count', (tester) async {
+      int? rows;
+      DateTimeRange? range;
+
+      final components = CalendarComponents(
+        monthComponents: MonthComponents(
+          bodyComponents: MonthBodyComponents(
+            monthGridBuilder: (style, numberOfRows, visibleDateTimeRange) {
+              rows = numberOfRows;
+              range = visibleDateTimeRange;
+              return MonthGrid(style: style, numberOfRows: numberOfRows, visibleDateTimeRange: visibleDateTimeRange);
+            },
+          ),
+        ),
+      );
+
+      // January 2025: Jan 1 is a Wednesday, so the grid starts on Monday Dec 30
+      // 2024 (a leading adjacent-month day) and spans 5 rows = 35 days.
+      await pumpMonthView(tester, DateTime(2025, 1), components: components);
+
+      expect(rows, 5, reason: 'January 2025 is a 5-row month');
+      expect(range, isNotNull);
+      expect(
+        (range!.start.year, range!.start.month, range!.start.day),
+        (2024, 12, 30),
+        reason: 'Grid should start on the Monday of the week containing Jan 1, in the previous month',
+      );
+      expect(range!.duration.inDays, 35, reason: 'Grid spans numberOfRows * 7 days');
+      expect(range!.end.month, 2, reason: 'Grid should extend into the following month (trailing days)');
+    });
+
+    // ---------------------------------------------------------------------------
     // Regression: https://github.com/werner-scholtz/kalender/issues/266
     //
     // A displayRange that spans exactly one calendar month must still render a
@@ -215,8 +253,7 @@ void main() {
     // A tileHeight far larger than any week-row height guarantees max == 0.
     const tallTileHeight = 1000.0;
 
-    Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) =>
-        pumpAndSettleWithMaterialApp(
+    Future<void> pumpShortCellMonthView(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
           tester,
           CalendarView(
             eventsController: eventsController,
@@ -299,8 +336,7 @@ void main() {
         );
       }
 
-      Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) =>
-          pumpAndSettleWithMaterialApp(
+      Future<void> pumpWithCustomFrame(WidgetTester tester, DateTime initialDateTime) => pumpAndSettleWithMaterialApp(
             tester,
             CalendarView(
               eventsController: eventsController,

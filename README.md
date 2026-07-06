@@ -847,7 +847,7 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
         ),
         bodyComponents: MonthBodyComponents(
           monthDayHeaderBuilder: (date, style) => SizedBox(),
-          monthGridBuilder: (style) => SizedBox(),
+          monthGridBuilder: (style, numberOfRows, visibleDateTimeRange) => SizedBox(),
           weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
           leftTriggerBuilder: (pageWidth) => SizedBox(),
           rightTriggerBuilder: (pageWidth) => SizedBox(),

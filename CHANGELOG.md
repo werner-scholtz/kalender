@@ -6,6 +6,7 @@
 - Replaced `ViewConfiguration.initialDateSelectionStrategy` with per-dimension view-transition options: `dateTransition` on all views, and `scrollTransition` / `zoomTransition` on `MultiDayViewConfiguration`, each with an optional resolver for custom logic. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - View switches now preserve the vertical scroll (time-of-day) and zoom by default instead of resetting to `initialTimeOfDay`; opt out with `ScrollTransition.reset` / `ZoomTransition.reset`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Renamed `EmptyDayBehavior.showToday` to `EmptyDayBehavior.showOnlyToday`, since it shows only today among empty days. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- `monthGridBuilder` now receives the grid's `DateTimeRange` (a localized wall-clock range covering the full grid, including adjacent-month days) alongside `numberOfRows`, so custom grids can resolve each cell's date. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ### Features
 
@@ -28,6 +29,7 @@
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Added coverage that `monthGridBuilder` receives the grid's date range and row count. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ## 0.18.7
 

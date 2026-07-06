@@ -58,7 +58,7 @@ class MonthBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
-        final grid = MonthGrid.fromContext(context, numberOfRows);
+        final grid = MonthGrid.fromContext(context, numberOfRows, visibleRange);
         final content = Column(
           children: List.generate(
             numberOfRows,
