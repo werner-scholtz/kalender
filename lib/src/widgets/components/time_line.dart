@@ -16,16 +16,42 @@ typedef TimeLineBuilder = Widget Function(
   ValueNotifier<DateTimeRange<DateTime>?> visibleDateTimeRange,
 );
 
-/// The prototype time line builder.
+/// Resolves the width of the timeline gutter.
 ///
-/// The [heightPerMinute] is the height of each minute.
-/// The [timeOfDayRange] is the range of time that the time line will be displayed for.
-/// The [style] is used to style the time line.
-typedef PrototypeTimeLineBuilder = Widget Function(
-  double heightPerMinute,
+/// The same width is used by the multi-day body, header and drag overlay, so that
+/// their day columns stay aligned. The [style] is the already-resolved (non-null)
+/// [TimelineStyle] from the component styles.
+///
+/// See [defaultTimelineWidth] for the default implementation.
+typedef TimelineWidthBuilder = double Function(
+  BuildContext context,
   TimeOfDayRange timeOfDayRange,
-  TimelineStyle? style,
+  TimelineStyle style,
 );
+
+/// The default [TimelineWidthBuilder].
+///
+/// Returns [TimelineStyle.width] when set, otherwise measures the width of the
+/// widest label ("23:59", or the result of [TimelineStyle.stringBuilder]) plus the
+/// horizontal text padding. Honors the ambient [MediaQuery.textScaler] so the
+/// gutter reserves enough room for scaled text.
+double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange, TimelineStyle style) {
+  if (style.width != null) return style.width!;
+
+  final textStyle = style.textStyle ?? Theme.of(context).textTheme.labelMedium!;
+  final padding = style.textPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 36);
+  const displayTime = TimeOfDay(hour: 23, minute: 59);
+  final text = style.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: textStyle),
+    maxLines: 1,
+    textDirection: style.textDirection ?? TextDirection.ltr,
+    textScaler: MediaQuery.textScalerOf(context),
+  )..layout();
+
+  return painter.width + padding.horizontal;
+}
 
 /// The style of the [TimeLine] widget.
 class TimelineStyle {
@@ -44,6 +70,12 @@ class TimelineStyle {
   /// The padding of the text.
   final EdgeInsets? textPadding;
 
+  /// An explicit width for the timeline gutter.
+  ///
+  /// When set, the gutter uses this width directly. When null, the width is
+  /// measured from the widest label plus [textPadding].
+  final double? width;
+
   /// The function that will be used to build the string.
   final String Function(TimeOfDay timeOfDay)? stringBuilder;
 
@@ -60,6 +92,7 @@ class TimelineStyle {
     this.textOverflow,
     this.stringBuilder,
     this.textPadding,
+    this.width,
     this.startDecoration,
     this.endDecoration,
   });
@@ -287,39 +320,5 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
         ],
       ),
     );
-  }
-}
-
-/// A widget that displays a prototype time line.
-class PrototypeTimeline extends TimeLine {
-  const PrototypeTimeline({
-    super.key,
-    required super.timeOfDayRange,
-    required super.heightPerMinute,
-    required super.eventBeingDragged,
-    required super.visibleDateTimeRange,
-    required super.style,
-  });
-
-  static PrototypeTimeline prototypeBuilder(
-    double heightPerMinute,
-    TimeOfDayRange timeOfDayRange,
-    TimelineStyle? style,
-  ) {
-    return PrototypeTimeline(
-      heightPerMinute: heightPerMinute,
-      timeOfDayRange: timeOfDayRange,
-      style: style,
-      eventBeingDragged: ValueNotifier(null),
-      visibleDateTimeRange: ValueNotifier(DateTimeRange(start: DateTime(2024, 1, 1), end: DateTime(2024, 1, 2))),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = this.textStyle(context);
-    final textPadding = this.textPadding(context);
-    final largestTextSize = this.largestTextSize(context, textStyle, textPadding);
-    return SizedBox(width: largestTextSize.width);
   }
 }

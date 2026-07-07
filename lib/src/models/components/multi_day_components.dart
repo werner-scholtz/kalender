@@ -60,13 +60,17 @@ class MultiDayBodyComponents {
 
   /// A function that builds the timeline widget.
   ///
-  /// If you override this, you must ensure that you also override the [prototypeTimeLine] builder,
-  /// and ensure that the two widgets resolve to the same width.
-  /// Otherwise, you might encounter alignment issues between the header and body.
+  /// The gutter width is decided by [timelineWidth] (not by this widget), so the
+  /// header, body and drag overlay always align. Build the timeline to fill the
+  /// width [timelineWidth] resolves to.
   final TimeLineBuilder timeline;
 
-  /// A function that builds the prototype timeline widget.
-  final PrototypeTimeLineBuilder prototypeTimeLine;
+  /// Resolves the width of the timeline gutter.
+  ///
+  /// This single value is used by the body, the header and the drag overlay, so
+  /// their day columns stay aligned regardless of how [timeline] is customized.
+  /// Defaults to [defaultTimelineWidth].
+  final TimelineWidthBuilder timelineWidth;
 
   /// A function that builds the day separator widget.
   final DaySeparatorBuilder daySeparator;
@@ -90,7 +94,7 @@ class MultiDayBodyComponents {
   const MultiDayBodyComponents({
     this.hourLines = HourLines.builder,
     this.timeline = TimeLine.builder,
-    this.prototypeTimeLine = PrototypeTimeline.prototypeBuilder,
+    this.timelineWidth = defaultTimelineWidth,
     this.daySeparator = DaySeparator.builder,
     this.timeIndicator = TimeIndicator.builder,
     this.leftTriggerBuilder,

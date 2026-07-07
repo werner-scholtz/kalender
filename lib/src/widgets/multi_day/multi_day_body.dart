@@ -40,6 +40,9 @@ class MultiDayBody extends StatelessWidget {
   /// The key used to identify the [SingleChildScrollView] of the [MultiDayBody].
   static const singleChildScrollViewKey = ValueKey('singleChildScrollViewKey');
 
+  /// The key used to identify the timeline gutter of the [MultiDayBody].
+  static const timelineKey = ValueKey('MultiDayBody.timeline');
+
   @override
   Widget build(BuildContext context) {
     final controller = context.calendarController;
@@ -58,6 +61,12 @@ class MultiDayBody extends StatelessWidget {
     // Calculate the height of the page.
     final pageHeight = context.heightPerMinute * timeOfDayRange.duration.inMinutes;
 
+    // The single source of truth for the timeline gutter width, shared with the
+    // header and drag overlay so their day columns stay aligned.
+    final bodyStyles = context.components.multiDayComponentStyles.bodyStyles;
+    final bodyComponents = context.components.multiDayComponents.bodyComponents;
+    final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, bodyStyles.timelineStyle);
+
     return Stack(
       children: [
         Scrollbar(
@@ -71,7 +80,13 @@ class MultiDayBody extends StatelessWidget {
               child: Row(
                 children: [
                   // The timeline is always on the left side of the page, but should not scroll with the pageview.
-                  SizedBox(height: pageHeight, child: TimeLine.fromContext(context, timeOfDayRange)),
+                  // Its width is fixed to the shared timeline width so it aligns with the header and drag overlay.
+                  SizedBox(
+                    key: timelineKey,
+                    width: timelineWidth,
+                    height: pageHeight,
+                    child: TimeLine.fromContext(context, timeOfDayRange),
+                  ),
                   Expanded(
                     child: Stack(
                       children: [
