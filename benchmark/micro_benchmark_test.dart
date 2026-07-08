@@ -98,6 +98,38 @@ class _MultiDayFrameBenchmark extends _KalenderBenchmark {
   }
 }
 
+/// `defaultMultiDayFrameGenerator` with dense single-day events, matching the
+/// month/week header layout at a realistic event density (50 events per day).
+/// This is the path behind the reported month/week navigation jank.
+class _MultiDayFrameDenseBenchmark extends _KalenderBenchmark {
+  _MultiDayFrameDenseBenchmark(this.eventsPerDay, this.days)
+      : super('multiDayFrame / ${eventsPerDay}ev-per-day x ${days}d');
+  final int eventsPerDay;
+  final int days;
+  late InternalDateTimeRange range;
+  late List<CalendarEvent> events;
+
+  @override
+  void setup() {
+    range = InternalDateTimeRange(
+      start: benchmarkStart,
+      end: benchmarkStart.add(Duration(days: days)),
+    );
+    events = generateDayEvents(start: benchmarkStart, days: days, eventsPerDay: eventsPerDay);
+  }
+
+  @override
+  void run() {
+    final frame = defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: range,
+      events: events,
+      textDirection: TextDirection.ltr,
+      location: null,
+    );
+    _sink ^= frame.hashCode;
+  }
+}
+
 /// `findLongestChain` — DFS overlap-depth used to size side-by-side tiles;
 /// flagged in-code as "expensive, use sparingly".
 class _LongestChainBenchmark extends _KalenderBenchmark {
@@ -161,6 +193,8 @@ void main() {
       _DatesBenchmark(365),
       _MultiDayFrameBenchmark(100, 30),
       _MultiDayFrameBenchmark(300, 30),
+      _MultiDayFrameDenseBenchmark(50, 7), // week at 50 events/day
+      _MultiDayFrameDenseBenchmark(50, 35), // month at 50 events/day
       _LongestChainBenchmark(60),
       _EventQueryBenchmark(1),
       _EventQueryBenchmark(7),

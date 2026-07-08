@@ -67,116 +67,129 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   // Take the text direction into account to determine the order of the dates.
   final visibleDates = textDirection == TextDirection.ltr ? dates : dates.reversed.toList();
 
-  // Sort the events.
-  final sortedEvents = events.toList()
-    ..sort(
-      eventComparator ??
-          (a, b) {
-            // Sort by duration (descending)
-            final comparison = b.duration.compareTo(a.duration);
-            if (comparison != 0) return comparison;
-
-            final aStart = a.internalStart(location: location);
-            final bRange = b.internalRange(location: location);
-            final bStart = bRange.end == bRange.end.startOfDay ? bRange.end.startOfDay : bRange.end.endOfDay;
-
-            // Sort by start time (ascending) if durations are equal
-            return aStart.compareTo(bStart);
-          },
+  // Precompute each event's internal range and sort keys once. The sort runs its
+  // comparator O(N log N) times, and the old comparator recomputed timezone
+  // conversions (internalStart/internalRange) on every call. That dominated the
+  // cost when many events share a duration, because the tie-breaker then runs on
+  // almost every comparison.
+  final entries = <_FrameEntry>[];
+  for (final event in events) {
+    final range = event.internalRange(location: location);
+    // Round the end to the end of the day unless it already sits on a day
+    // boundary, so the final day of the event is included.
+    final roundedEnd = range.end == range.end.startOfDay ? range.end.startOfDay : range.end.endOfDay;
+    entries.add(
+      _FrameEntry(
+        event: event,
+        start: range.start,
+        roundedEnd: roundedEnd,
+        durationMicroseconds: event.duration.inMicroseconds,
+      ),
     );
+  }
+
+  // Sort the events.
+  if (eventComparator != null) {
+    entries.sort((a, b) => eventComparator(a.event, b.event));
+  } else {
+    entries.sort((a, b) {
+      // Sort by duration (descending).
+      final comparison = b.durationMicroseconds.compareTo(a.durationMicroseconds);
+      if (comparison != 0) return comparison;
+
+      // Sort by start time (ascending) if durations are equal. Compares the
+      // start of a against the rounded end of b, preserving the previous order.
+      return a.start.compareTo(b.roundedEnd);
+    });
+  }
+
+  final sortedEvents = [for (final entry in entries) entry.event];
 
   // A list containing the layout information for each event.
   final layoutInfo = <EventLayoutInformation>[];
-  final rowInfo = <int, List<EventLayoutInformation>>{};
+
+  // The columns occupied by each row, indexed by row. A column is added once an
+  // event is placed on that row so later events can find the first row whose
+  // columns do not clash with them. This replaces re-scanning every placed
+  // event on every row (the previous O(N^2) inner loop).
+  final rowColumns = <Set<int>>[];
 
   // The maximum number of rows needed to layout all the events.
   var maxRow = 0;
+
+  // Maps each visible date to its column index so column lookups are O(1)
+  // instead of a linear search per event per day.
+  final columnForDate = <InternalDateTime, int>{
+    for (var i = 0; i < visibleDates.length; i++) visibleDates[i]: i,
+  };
 
   // A map that contains the number of rows for each of the columns.
   // Initialised to -1 (sentinel: no event assigned to this column yet) so that
   // columns without any events do not trigger spurious overflow buttons when
   // maxNumberOfRows is 0.
   final columnRowMap = <int, int>{
-    for (final date in visibleDates) visibleDates.indexOf(date): -1,
+    for (var i = 0; i < visibleDates.length; i++) i: -1,
   };
 
-  for (final event in sortedEvents) {
-    final internalRange = event.internalRange(location: location);
+  for (final entry in entries) {
+    final event = entry.event;
 
-    // Create a range that rounds the start and end dates to the start and end of the day.
-    final range = InternalDateTimeRange(
-      start: internalRange.start,
-      // If the end date is the start of the day, we use the start of the day otherwise
-      // we use the end of the day so that the day is included.
-      end:
-          internalRange.end == internalRange.end.startOfDay ? internalRange.end.startOfDay : internalRange.end.endOfDay,
-    );
+    // The range with the end rounded to the end of the day (precomputed above).
+    final range = InternalDateTimeRange(start: entry.start, end: entry.roundedEnd);
 
     // Find all the columns that the event will appear on.
     final columns = <int>[];
     // Take the text direction into account so that the columns are in the correct order.
     final dates = textDirection == TextDirection.ltr ? range.dates() : range.dates().reversed.toList();
     for (final date in dates) {
-      final index = visibleDates.indexOf(date);
+      final index = columnForDate[date];
 
       // If the date is not in the visible dates, we skip it.
-      if (index == -1) continue;
+      if (index == null) continue;
 
       // Add the index to the columns list.
       columns.add(index);
     }
 
-    // Create a preliminary layout information for the event.
-    final preliminaryLayout = EventLayoutInformation.preliminary(id: event.id, columns: columns);
+    // An event with no visible columns cannot be laid out.
+    if (columns.isEmpty) continue;
 
-    // From all the existing layout info, find overlaps and determine the first available row.
+    // The event spans a contiguous range of columns, so overlap only depends on
+    // its first and last column.
+    final start = columns.first < columns.last ? columns.first : columns.last;
+    final end = columns.first < columns.last ? columns.last : columns.first;
 
-    // List to store events that overlap with the current event.
-    final overlaps = <EventLayoutInformation>[];
-    // Tracks the highest row index occupied by overlapping events.
-    var highestRow = 0;
-    // Tracks the highest row index selected during overlap checks.
-    var selectedRow = 0;
-    // Stores the first row index that does not overlap with any other event.
-    int? firstAvailableRow;
-
-    // Iterate through all rows from 0 to maxRow to find overlaps and available rows.
-    for (var row = 0; row <= maxRow; row++) {
-      // Flag to indicate if the current row has any overlaps.
-      var hasOverlap = false;
-
-      // Get the layout information for the current row.
-      final layoutInformationForRow = rowInfo[row] ?? <EventLayoutInformation>[];
-
-      // Check each existing layout information in the row for overlaps with the current event.
-      for (final info in layoutInformationForRow) {
-        if (preliminaryLayout.overlaps(info)) {
-          // Add the overlapping event to the overlaps list.
-          overlaps.add(info);
-          // Update the highest row index if the current event's row is greater.
-          if (info.row > highestRow) highestRow = info.row;
-
-          // Update the selected row index if the current event's row is greater.
-          if (info.row > selectedRow) selectedRow = info.row;
-
-          // If the current event overlaps with the current row, mark it as having an overlap.
-          if (info.row == row) hasOverlap = true;
+    // Find the first row whose occupied columns do not clash with this event.
+    var rowToUse = -1;
+    for (var row = 0; row < rowColumns.length; row++) {
+      final occupied = rowColumns[row];
+      var fits = true;
+      for (var column = start; column <= end; column++) {
+        if (occupied.contains(column)) {
+          fits = false;
+          break;
         }
       }
-
-      // If no overlap is found for the current row and no available row has been set yet,
-      // assign the current row as the first available row and break the loop.
-      if (!hasOverlap) {
-        firstAvailableRow = row;
+      if (fits) {
+        rowToUse = row;
         break;
       }
     }
 
-    // If no row with space is found, use the next open row.
-    final rowToUse = firstAvailableRow ?? highestRow + 1;
+    // If no existing row has space, use a new row.
+    if (rowToUse == -1) {
+      rowToUse = rowColumns.length;
+      rowColumns.add(<int>{});
+    }
+
+    // Mark this event's columns as occupied on the chosen row.
+    final occupied = rowColumns[rowToUse];
+    for (var column = start; column <= end; column++) {
+      occupied.add(column);
+    }
 
     // Create the final layout information for the event.
-    final layout = preliminaryLayout.copyWith(row: rowToUse);
+    final layout = EventLayoutInformation(id: event.id, row: rowToUse, columns: columns);
 
     // Update the max row.
     maxRow = max(maxRow, layout.row);
@@ -187,7 +200,6 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     }
 
     layoutInfo.add(layout);
-    rowInfo.update(rowToUse, (value) => [...value, layout], ifAbsent: () => [layout]);
   }
 
   final frame = MultiDayLayoutFrame(
@@ -204,6 +216,29 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
   }
 
   return frame;
+}
+
+/// An event plus the values [defaultMultiDayFrameGenerator] needs while sorting
+/// and placing it. Computed once per event so the sort comparator and layout
+/// loop reuse them instead of recomputing timezone conversions.
+class _FrameEntry {
+  _FrameEntry({
+    required this.event,
+    required this.start,
+    required this.roundedEnd,
+    required this.durationMicroseconds,
+  });
+
+  final CalendarEvent event;
+
+  /// The event start as an [InternalDateTime].
+  final InternalDateTime start;
+
+  /// The event end rounded to the end of the day (unless it sits on a day boundary).
+  final InternalDateTime roundedEnd;
+
+  /// The event duration in microseconds, used as the primary sort key.
+  final int durationMicroseconds;
 }
 
 /// A cache for [MultiDayLayoutFrame]s.
