@@ -23,6 +23,7 @@
 - Fixed the free-scroll multi-day header clipping days that have more events than the leading day; the header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
 - Fixed the multi-day/week header drifting out of alignment with the body when the timeline used a custom `stringBuilder` or width; the gutter width now has a single source. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - The timeline gutter width now accounts for the text scale factor, so it no longer under-sizes when text is enlarged. [#180](https://github.com/werner-scholtz/kalender/issues/180)
+- The timeline gutter now measures every label across the day rather than a single sample, so a custom label format whose widest entry is not at 23:59 no longer clips. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 
 ### Tests
 

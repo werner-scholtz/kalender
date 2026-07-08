@@ -77,6 +77,23 @@ void main() {
     expectAligned(tester);
   });
 
+  testWidgets('measures every label, so the widest hour fits even when it is not 23:59', (tester) async {
+    // A stringBuilder whose widest output is at noon, not at 23:59. Sampling
+    // only 23:59 (which here returns the short 'x') would under-size the gutter
+    // and clip the noon label. Measuring all labels must accommodate it.
+    const wide = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'; // 40 chars
+    String labels(TimeOfDay time) => time.hour == 12 ? wide : 'x';
+
+    await pumpWeek(tester, components: withTimelineStyle(TimelineStyle(stringBuilder: labels)));
+
+    expect(
+      gutterWidth(tester),
+      greaterThan(150),
+      reason: 'Gutter must fit the widest label from any hour, not just the 23:59 sample',
+    );
+    expectAligned(tester);
+  });
+
   testWidgets('explicit TimelineStyle.width drives the gutter and stays aligned', (tester) async {
     await pumpWeek(tester, components: withTimelineStyle(const TimelineStyle(width: 100)));
 

@@ -31,26 +31,45 @@ typedef TimelineWidthBuilder = double Function(
 
 /// The default [TimelineWidthBuilder].
 ///
-/// Returns [TimelineStyle.width] when set, otherwise measures the width of the
-/// widest label ("23:59", or the result of [TimelineStyle.stringBuilder]) plus the
-/// horizontal text padding. Honors the ambient [MediaQuery.textScaler] so the
-/// gutter reserves enough room for scaled text.
+/// Returns [TimelineStyle.width] when set. Otherwise it measures every label the
+/// timeline can show across the day and uses the widest, plus the horizontal
+/// text padding. Measuring all labels (rather than a single sample) keeps the
+/// gutter correct regardless of the locale's time format, the hour's digit
+/// count, and any custom [TimelineStyle.stringBuilder]. Honors the ambient
+/// [MediaQuery.textScaler] so it reserves enough room for scaled text.
 double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange, TimelineStyle style) {
   if (style.width != null) return style.width!;
 
   final textStyle = style.textStyle ?? Theme.of(context).textTheme.labelMedium!;
   final padding = style.textPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 36);
-  const displayTime = TimeOfDay(hour: 23, minute: 59);
-  final text = style.stringBuilder?.call(displayTime) ?? displayTime.format(context);
 
   final painter = TextPainter(
-    text: TextSpan(text: text, style: textStyle),
     maxLines: 1,
     textDirection: style.textDirection ?? TextDirection.ltr,
     textScaler: MediaQuery.textScalerOf(context),
-  )..layout();
+  );
 
-  return painter.width + padding.horizontal;
+  // With the default label the minute slot is always two digits, so one minute
+  // value per hour is representative. A custom stringBuilder can vary per
+  // minute, so sample every 5-minute mark the timeline can show (its finest
+  // segment is 5 minutes).
+  const defaultMinutes = [59];
+  const customMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+  final minutes = style.stringBuilder == null ? defaultMinutes : customMinutes;
+
+  var widest = 0.0;
+  for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
+    for (final minute in minutes) {
+      final time = TimeOfDay(hour: hour, minute: minute);
+      final text = style.stringBuilder?.call(time) ?? time.format(context);
+      painter.text = TextSpan(text: text, style: textStyle);
+      painter.layout();
+      if (painter.width > widest) widest = painter.width;
+    }
+  }
+  painter.dispose();
+
+  return widest + padding.horizontal;
 }
 
 /// The style of the [TimeLine] widget.
