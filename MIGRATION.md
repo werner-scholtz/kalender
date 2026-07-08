@@ -2,6 +2,37 @@
 
 ## v0.18.x → v0.19.0
 
+### Timeline gutter width is now a single value (`prototypeTimeLine` removed)
+
+The multi-day body, header and drag overlay previously worked out the left timeline gutter width in separate places, which could drift apart and misalign the header (see [#180](https://github.com/werner-scholtz/kalender/issues/180)). They now share one width, resolved by `MultiDayBodyComponents.timelineWidth`.
+
+`MultiDayBodyComponents.prototypeTimeLine`, the `PrototypeTimeline` widget, and the `PrototypeTimeLineBuilder` typedef have been removed.
+
+**If you only set `bodyStyles.timelineStyle`** (including a custom `stringBuilder`): no change needed — the header and body now always match.
+
+**If you overrode `prototypeTimeLine`:** return the width as a `double` from `timelineWidth` instead of building a widget.
+
+**Before:**
+```dart
+MultiDayBodyComponents(
+  prototypeTimeLine: (heightPerMinute, timeOfDayRange, style) => const SizedBox(width: 80),
+)
+```
+
+**After:**
+```dart
+MultiDayBodyComponents(
+  timelineWidth: (context, timeOfDayRange, style) => 80,
+)
+```
+
+**If you provide a fully custom `timeline` widget:** the body now fixes the gutter to `timelineWidth`, so you no longer need to make your widget's width match by hand. Build the timeline to fill the given width, and set the width with either `TimelineStyle(width: …)` or a `timelineWidth` builder.
+
+A new `TimelineStyle.width` field lets you set the gutter width directly without a builder:
+```dart
+MultiDayBodyComponentStyles(timelineStyle: TimelineStyle(width: 72))
+```
+
 ### `monthDayHeaderBuilder` receives a localized `DateTime`
 
 `monthDayHeaderBuilder` now provides a localized wall-clock `DateTime` (via `.forLocation()`), consistent with `dayHeaderBuilder`, instead of a UTC-flagged `InternalDateTime`. This fixes incorrect "today" comparisons against `DateTime.now()` in custom month-view day headers ([#248](https://github.com/werner-scholtz/kalender/issues/248)).

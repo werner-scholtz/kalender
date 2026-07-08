@@ -5,8 +5,9 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 /// The widget used for the MultiDayHeader.
 ///
-/// This widget uses the [TimeLine] to determine the size of the [leading].
-/// It uses the [content] and [leading] to determine the height of the [MultiDayHeaderWidget].
+/// It offsets the [content] by the timeline gutter width (resolved via
+/// [MultiDayBodyComponents.timelineWidth]) and sizes the [leading] to that width,
+/// so the header's day columns align with the body's day columns.
 class MultiDayHeaderWidget extends StatelessWidget {
   /// The content that will be displayed in the [MultiDayHeaderWidget].
   final Widget content;
@@ -14,8 +15,8 @@ class MultiDayHeaderWidget extends StatelessWidget {
   /// The leading widget that will be displayed in the [MultiDayHeaderWidget].
   final Widget leading;
 
-  /// The prototype timeline widget that will be used to display the timeline.
-  final Widget? prototypeTimelineOverride;
+  /// Overrides the resolved timeline gutter width. Intended for tests.
+  final double? timelineWidthOverride;
 
   /// Creates a MultiDayHeaderWidget.
   /// This widget is used to display the header of the MultiDayView.
@@ -23,41 +24,39 @@ class MultiDayHeaderWidget extends StatelessWidget {
     super.key,
     required this.content,
     required this.leading,
-    this.prototypeTimelineOverride,
+    this.timelineWidthOverride,
   });
 
   @override
   Widget build(BuildContext context) {
-    var timeline = prototypeTimelineOverride;
-    if (timeline == null) {
-      // Create the timeline widget.
+    final double timelineWidth;
+    final override = timelineWidthOverride;
+    if (override != null) {
+      timelineWidth = override;
+    } else {
       final calendarComponents = context.components;
       final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
       final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
-      final timelineStyle = bodyStyles.timelineStyle;
-      const heightPerMinute = 1.0;
-      final timeOfDayRange = TimeOfDayRange.allDay();
-      timeline = bodyComponents.prototypeTimeLine.call(heightPerMinute, timeOfDayRange, timelineStyle);
+      timelineWidth = bodyComponents.timelineWidth(context, TimeOfDayRange.allDay(), bodyStyles.timelineStyle);
     }
 
     return _MultiDayHeaderWidget(
-      prototypeTimeLine: LayoutId(id: 1, child: timeline),
-      leading: LayoutId(id: 2, child: leading),
-      content: LayoutId(id: 3, child: content),
+      timelineWidth: timelineWidth,
+      leading: LayoutId(id: 1, child: leading),
+      content: LayoutId(id: 2, child: content),
     );
   }
 }
 
 class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
   _MultiDayHeaderWidget({
-    required this.prototypeTimeLine,
+    required this.timelineWidth,
     required this.leading,
     required this.content,
-    // required this.maxHeight,
-  }) : super(children: [content, prototypeTimeLine, leading]);
+  }) : super(children: [content, leading]);
 
-  /// The widget that will be used to display the timeline.
-  final Widget prototypeTimeLine;
+  /// The width of the timeline gutter that the content is offset by.
+  final double timelineWidth;
 
   /// The widget that will be used to display the leading widget.
   final Widget leading;
@@ -67,12 +66,14 @@ class _MultiDayHeaderWidget extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _RenderMultiDayHeaderWidget(Directionality.maybeOf(context));
+    return _RenderMultiDayHeaderWidget(Directionality.maybeOf(context), timelineWidth);
   }
 
   @override
   void updateRenderObject(context, covariant _RenderMultiDayHeaderWidget renderObject) {
-    renderObject.textDirection = Directionality.maybeOf(context);
+    renderObject
+      ..textDirection = Directionality.maybeOf(context)
+      ..timelineWidth = timelineWidth;
   }
 }
 
@@ -80,7 +81,9 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
-  _RenderMultiDayHeaderWidget(TextDirection? textDirection) : _textDirection = textDirection;
+  _RenderMultiDayHeaderWidget(TextDirection? textDirection, double timelineWidth)
+      : _textDirection = textDirection,
+        _timelineWidth = timelineWidth;
 
   TextDirection? get textDirection => _textDirection;
   TextDirection? _textDirection;
@@ -89,6 +92,16 @@ class _RenderMultiDayHeaderWidget extends RenderBox
       return;
     }
     _textDirection = value;
+    markNeedsLayout();
+  }
+
+  double get timelineWidth => _timelineWidth;
+  double _timelineWidth;
+  set timelineWidth(double value) {
+    if (_timelineWidth == value) {
+      return;
+    }
+    _timelineWidth = value;
     markNeedsLayout();
   }
 
@@ -102,12 +115,8 @@ class _RenderMultiDayHeaderWidget extends RenderBox
   @override
   void performLayout() {
     final content = firstChild!;
-    final timeline = childAfter(content)!;
-    final leading = childAfter(timeline)!;
-
-    // Layout the timeline to get the width.
-    timeline.layout(const BoxConstraints(maxHeight: 10), parentUsesSize: true);
-    final timelineWidth = timeline.size.width;
+    final leading = childAfter(content)!;
+    final timelineWidth = this.timelineWidth;
 
     // Layout the content to get the height.
     content.layout(BoxConstraints(maxWidth: constraints.maxWidth - timelineWidth), parentUsesSize: true);
@@ -134,9 +143,9 @@ class _RenderMultiDayHeaderWidget extends RenderBox
       TextDirection.rtl => const Offset(0, 0),
     };
 
-    // Setup the parent data for the timeline.
-    final leadingContentParentData = (leading.parentData! as MultiChildLayoutParentData);
-    leadingContentParentData.offset = switch (textDirection!) {
+    // Setup the parent data for the leading.
+    final leadingParentData = (leading.parentData! as MultiChildLayoutParentData);
+    leadingParentData.offset = switch (textDirection!) {
       TextDirection.ltr => const Offset(0, 0),
       TextDirection.rtl => Offset(constraints.maxWidth - timelineWidth, 0),
     };
@@ -151,11 +160,8 @@ class _RenderMultiDayHeaderWidget extends RenderBox
     final contentParentData = content.parentData! as MultiChildLayoutParentData;
     content.paint(context, contentParentData.offset + offset);
 
-    // Do not paint the timeline.
-    final timeline = childAfter(content)!;
-
-    // Paint the timeline.
-    final leading = childAfter(timeline)!;
+    // Paint the leading.
+    final leading = childAfter(content)!;
     final leadingParentData = leading.parentData! as MultiChildLayoutParentData;
     leading.paint(context, leadingParentData.offset + offset);
   }

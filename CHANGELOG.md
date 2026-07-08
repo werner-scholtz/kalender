@@ -6,12 +6,14 @@
 - Replaced `ViewConfiguration.initialDateSelectionStrategy` with per-dimension view-transition options: `dateTransition` on all views, and `scrollTransition` / `zoomTransition` on `MultiDayViewConfiguration`, each with an optional resolver for custom logic. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - View switches now preserve the vertical scroll (time-of-day) and zoom by default instead of resetting to `initialTimeOfDay`; opt out with `ScrollTransition.reset` / `ZoomTransition.reset`. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Renamed `EmptyDayBehavior.showToday` to `EmptyDayBehavior.showOnlyToday`, since it shows only today among empty days. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- Replaced `MultiDayBodyComponents.prototypeTimeLine` with a `timelineWidth` builder that returns the gutter width directly (`double`). The multi-day body, header and drag overlay now share this one width, so customizing the timeline can no longer misalign the header. Removed the `PrototypeTimeline` widget and `PrototypeTimeLineBuilder`. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 
 ### Features
 
 - Added `restorePerView` transitions so each view can reopen its own last date, scroll, and zoom. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `CalendarController.visibleTimeOfDay` and the `CalendarCallbacks.onScrollPositionChanged` callback. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `ScheduleBodyConfiguration.leadingWidth` to control the schedule view's date-column width. [#253](https://github.com/werner-scholtz/kalender/issues/253)
+- Added `TimelineStyle.width` to set an explicit multi-day timeline gutter width. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - Added `MonthBodyComponents.monthDayCellBuilder` to style individual month-view day cells. Each call reports the cell's date, whether it is today, and whether it falls in the focused month (so adjacent-month days can be styled differently). Also added the ready-made `MonthDayCell.shadeAdjacentMonths()` builder, which shades leading/trailing adjacent-month days. Pass a `color` or let it default to a low-opacity `onSurface` overlay that greys them out. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ### Fixes
@@ -20,6 +22,9 @@
 - Fixed the continuous schedule view scrolling to the wrong position when today has no events; the initial scroll and `animateToDateTime` now target today, or the nearest day when it is hidden. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Fixed the free-scroll multi-day header "wobbling" (re-animating its height) whenever a calendar item changed; its paged content now keeps its state across rebuilds instead of being rebuilt from scratch. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Fixed the free-scroll multi-day header clipping days that have more events than the leading day; the header now sizes to the tallest day currently in view. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Fixed the multi-day/week header drifting out of alignment with the body when the timeline used a custom `stringBuilder` or width; the gutter width now has a single source. [#180](https://github.com/werner-scholtz/kalender/issues/180)
+- The timeline gutter width now accounts for the text scale factor, so it no longer under-sizes when text is enlarged. [#180](https://github.com/werner-scholtz/kalender/issues/180)
+- The timeline gutter now measures every label across the day rather than a single sample, so a custom label format whose widest entry is not at 23:59 no longer clips. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 
 ### Tests
 
@@ -29,6 +34,7 @@
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
+- Added regression coverage that the multi-day header and body day columns stay aligned across custom label formats, explicit widths, and right-to-left. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - Added regression coverage that a selected month-view event's focus aligns to its own row. [#233](https://github.com/werner-scholtz/kalender/issues/233)
 - Added coverage that `monthDayCellBuilder` is invoked per day with the correct focused-month flags, and that `MonthDayCell.shadeAdjacentMonths()` shades only the adjacent-month days. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 

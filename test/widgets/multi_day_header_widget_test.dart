@@ -39,11 +39,14 @@ void main() {
           MultiDayHeaderWidget(
             content: SizedBox(height: check.contentHeight, key: const ValueKey('content')),
             leading: SizedBox(width: 48, height: check.leadingHeight, key: const ValueKey('leading')),
-            prototypeTimelineOverride: const SizedBox(width: 48),
+            timelineWidthOverride: 48,
           ),
         );
 
         _expectHeader(tester, check.expectedHeight);
+
+        // The content starts after the 48px gutter and the leading fills it.
+        expect(tester.getTopLeft(_contentFinder).dx, 48, reason: 'Content should be offset by the timeline width');
       });
     }
 
@@ -58,7 +61,7 @@ void main() {
             builder: (context, value, child) => SizedBox(height: value, key: const ValueKey('content')),
           ),
           leading: const SizedBox(width: 48, height: 48, key: ValueKey('leading')),
-          prototypeTimelineOverride: const SizedBox(width: 48),
+          timelineWidthOverride: 48,
         ),
       );
 

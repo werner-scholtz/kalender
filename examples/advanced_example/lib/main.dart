@@ -90,7 +90,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Advanced Example',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const MyHomePage(),
     );
   }
@@ -126,11 +128,14 @@ class _MyHomePageState extends State<MyHomePage> {
         viewConfiguration: _viewConfiguration,
         components: CalendarComponents(),
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
+          onEventTapped: (event, renderBox) =>
+              calendarController.selectEvent(event),
           onEventCreateWithDetail: Event.fromDetail,
           onEventCreated: (event) => eventsController.addEvent(event),
-          onEventChanged: (event, updatedEvent) =>
-              eventsController.updateEvent(event: event, updatedEvent: updatedEvent),
+          onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
+            event: event,
+            updatedEvent: updatedEvent,
+          ),
         ),
         header: Column(
           children: [
@@ -155,7 +160,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 8),
             CalendarHeader(
-              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(showTiles: false),
+              multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
+                showTiles: false,
+              ),
             ),
             const Divider(),
             PeopleWidget(viewConfiguration: _viewConfiguration),
@@ -205,15 +212,23 @@ class PeopleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Needed for proper spacing.
-        PrototypeTimeline.prototypeBuilder(0.7, TimeOfDayRange.allDay(), TimelineStyle()),
+        // Needed for proper spacing — matches the body's timeline gutter width.
+        SizedBox(
+          width: defaultTimelineWidth(
+            context,
+            TimeOfDayRange.allDay(),
+            const TimelineStyle(),
+          ),
+        ),
         ...List.generate(
           viewConfiguration.numberOfDays,
           (index) => Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: people
-                  .map((person) => Expanded(child: PersonWidget(person: person)))
+                  .map(
+                    (person) => Expanded(child: PersonWidget(person: person)),
+                  )
                   .toList(growable: false),
             ),
           ),
