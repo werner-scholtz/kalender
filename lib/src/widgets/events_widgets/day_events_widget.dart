@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -43,6 +44,8 @@ class MultiDayEventsRow extends StatelessWidget {
                 viewConfiguration: viewController.viewConfiguration,
                 cache: viewController.cache,
                 heightPerMinute: context.heightPerMinute,
+                scrollController: viewController.scrollController,
+                calendarController: context.calendarController,
               ),
             ),
           ),
@@ -76,6 +79,16 @@ class DayEventsColumn extends StatefulWidget {
 
   final double heightPerMinute;
 
+  /// The vertical scroll controller of the multi-day body.
+  ///
+  /// Used to only build the event tiles whose time band is within the visible
+  /// scroll window (plus an overscan margin), instead of every event of the day.
+  final ScrollController scrollController;
+
+  /// The calendar controller, used to keep a selected (being dragged/resized)
+  /// event built even when it scrolls out of view.
+  final CalendarController calendarController;
+
   /// Creates a new instance of the [DayEventsColumn] widget.
   const DayEventsColumn({
     super.key,
@@ -86,6 +99,8 @@ class DayEventsColumn extends StatefulWidget {
     required this.location,
     required this.cache,
     required this.heightPerMinute,
+    required this.scrollController,
+    required this.calendarController,
   });
 
   @override
@@ -96,45 +111,148 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   /// The events that are displayed on the day.
   List<CalendarEvent> _events = [];
 
+  /// The (top, bottom) pixel band of each event in [_events], used to decide
+  /// which events fall inside the visible scroll window.
+  List<(double, double)> _bands = const [];
+
+  /// The indices into [_events] whose tiles are currently built. Only events
+  /// within the visible scroll window (plus an overscan margin) are built.
+  Set<int> _visibleIndices = const {};
+
   @override
   void initState() {
-    _update();
-    widget.eventsController.addListener(_update);
     super.initState();
+    _events = _sort(_queryEvents());
+    _bands = _computeBands(_events);
+    _visibleIndices = _computeVisibleIndices();
+    widget.eventsController.addListener(_update);
+    widget.scrollController.addListener(_onViewportChanged);
+    widget.calendarController.selectedEvent.addListener(_onViewportChanged);
+    // The scroll view may not be attached on the first build, in which case
+    // everything is built. Re-cull once it is attached.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _onViewportChanged();
+    });
   }
 
   @override
   void didUpdateWidget(covariant DayEventsColumn oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (oldWidget.scrollController != widget.scrollController) {
+      oldWidget.scrollController.removeListener(_onViewportChanged);
+      widget.scrollController.addListener(_onViewportChanged);
+    }
+    if (oldWidget.calendarController != widget.calendarController) {
+      oldWidget.calendarController.selectedEvent.removeListener(_onViewportChanged);
+      widget.calendarController.selectedEvent.addListener(_onViewportChanged);
+    }
+
     final didUpdateLocation = oldWidget.location != widget.location;
     final didUpdateHeightPerMinute = oldWidget.heightPerMinute != widget.heightPerMinute;
 
     if (didUpdateLocation || didUpdateHeightPerMinute) {
       widget.cache.clearAll();
-      _update();
+      setState(() {
+        _events = _sort(_queryEvents());
+        _bands = _computeBands(_events);
+        _visibleIndices = _computeVisibleIndices();
+      });
     }
   }
 
   @override
   void dispose() {
     widget.eventsController.removeListener(_update);
+    widget.scrollController.removeListener(_onViewportChanged);
+    widget.calendarController.selectedEvent.removeListener(_onViewportChanged);
     super.dispose();
   }
 
-  void _update() {
-    final sortedEvents = _sort(
-      widget.eventsController.eventsFromDateTimeRange(
-        InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
-        includeDayEvents: true,
-        includeMultiDayEvents: widget.configuration.showMultiDayEvents,
-        location: widget.location,
-      ),
+  /// Queries the events for this day from the controller.
+  Iterable<CalendarEvent> _queryEvents() {
+    return widget.eventsController.eventsFromDateTimeRange(
+      InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
+      includeDayEvents: true,
+      includeMultiDayEvents: widget.configuration.showMultiDayEvents,
+      location: widget.location,
     );
+  }
+
+  void _update() {
+    final sortedEvents = _sort(_queryEvents());
 
     if (_needsLayout(sortedEvents)) {
-      setState(() => _events = sortedEvents);
+      setState(() {
+        _events = sortedEvents;
+        _bands = _computeBands(sortedEvents);
+        _visibleIndices = _computeVisibleIndices();
+      });
     }
+  }
+
+  /// Recomputes the visible events as the scroll position (or selection)
+  /// changes, and rebuilds only when the set actually changes.
+  void _onViewportChanged() {
+    final next = _computeVisibleIndices();
+    if (!setEquals(next, _visibleIndices)) {
+      setState(() => _visibleIndices = next);
+    }
+  }
+
+  /// Computes the (top, bottom) pixel band of each event, matching the layout
+  /// delegate's geometry so culling lines up with what is actually drawn.
+  List<(double, double)> _computeBands(List<CalendarEvent> events) {
+    if (events.isEmpty) return const [];
+    final delegate = widget.configuration.eventLayoutStrategy(
+      const [],
+      widget.date,
+      widget.viewConfiguration.timeOfDayRange,
+      widget.heightPerMinute,
+      widget.configuration.minimumTileHeight,
+      widget.cache,
+      widget.location,
+    );
+    return [
+      for (final event in events)
+        (delegate.calculateDistanceFromStart(event), delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event)),
+    ];
+  }
+
+  /// The indices of the events whose band intersects the visible scroll window
+  /// (plus an overscan margin). Falls back to all events when the scroll view is
+  /// not attached yet.
+  Set<int> _computeVisibleIndices() {
+    final controller = widget.scrollController;
+    if (!controller.hasClients || controller.positions.length != 1) {
+      return {for (var i = 0; i < _events.length; i++) i};
+    }
+
+    final position = controller.position;
+    // The viewport/pixels are not available until the scroll view has been laid
+    // out. Until then build everything; the post-frame callback re-culls.
+    if (!position.hasViewportDimension || !position.hasPixels) {
+      return {for (var i = 0; i < _events.length; i++) i};
+    }
+    final overscan = position.viewportDimension * 0.5;
+    final windowTop = position.pixels - overscan;
+    final windowBottom = position.pixels + position.viewportDimension + overscan;
+
+    final visible = <int>{};
+    for (var i = 0; i < _bands.length; i++) {
+      final (top, bottom) = _bands[i];
+      if (bottom >= windowTop && top <= windowBottom) visible.add(i);
+    }
+
+    // Keep a selected (being dragged/resized) event built even when it scrolls
+    // out of view, so the interaction is not interrupted.
+    final selectedId = widget.calendarController.selectedEventId;
+    if (selectedId != null) {
+      final index = _events.indexWhere((event) => event.id == selectedId);
+      if (index != -1) visible.add(index);
+    }
+
+    return visible;
   }
 
   /// Checks if the layout of the events has changed.
@@ -164,6 +282,9 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     final controller = context.calendarController;
 
     final layoutStrategy = widget.configuration.eventLayoutStrategy;
+    // The tile range is the same for every tile in this column, so compute it
+    // once instead of allocating a new range per event.
+    final tileRange = InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange);
     final eventsWidget = CustomMultiChildLayout(
       delegate: layoutStrategy.call(
         _events,
@@ -174,20 +295,22 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
         widget.cache,
         context.location,
       ),
-      children: _events.indexed
-          .map(
-            (item) => LayoutId(
-              id: item.$1,
-              key: DayEventTile.tileKey(item.$2.id),
-              child: DayEventTile(
-                event: item.$2,
-                tileComponents: context.tileComponents,
-                dateTimeRange: InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
-                resizeAxis: Axis.vertical,
-              ),
+      // Only build the tiles within the visible scroll window. The delegate
+      // still receives every event (above) so overlap widths stay correct even
+      // when an overlapping partner is culled.
+      children: [
+        for (final index in _visibleIndices)
+          LayoutId(
+            id: index,
+            key: DayEventTile.tileKey(_events[index].id),
+            child: DayEventTile(
+              event: _events[index],
+              tileComponents: context.tileComponents,
+              dateTimeRange: tileRange,
+              resizeAxis: Axis.vertical,
             ),
-          )
-          .toList(),
+          ),
+      ],
     );
 
     return Stack(

@@ -394,11 +394,13 @@ class OverlapLayoutDelegate extends EventLayoutDelegate {
           xOffset = size.width - width;
         }
 
-        // Layout the tile.
-        layoutChild(data.id, BoxConstraints.tightFor(width: width, height: data.height));
-
-        // Position the tile.
-        positionChild(data.id, Offset(xOffset, data.top));
+        // Layout and position the tile if it was built. The width math above
+        // still runs for every event (including culled ones) so on-screen tiles
+        // keep the correct width even when an overlapping partner is off-screen.
+        if (hasChild(data.id)) {
+          layoutChild(data.id, BoxConstraints.tightFor(width: width, height: data.height));
+          positionChild(data.id, Offset(xOffset, data.top));
+        }
 
         // Add the layout data to the list.
         layoutData.add(EventLayoutData(left: xOffset, right: size.width, verticalLayoutData: data));
@@ -482,21 +484,25 @@ class SideBySideLayoutDelegate extends EventLayoutDelegate {
           tileWidth = size.width - tileXOffset;
         }
 
-        // Layout the tile.
-        layoutChild(
-          id,
-          BoxConstraints.tightFor(
-            width: tileWidth,
-            height: data.height,
-          ),
-        );
+        // Layout the tile if it was built. The offset/width math still runs for
+        // every event (including culled ones) so on-screen tiles stay aligned
+        // with off-screen overlapping partners.
+        if (hasChild(id)) {
+          layoutChild(
+            id,
+            BoxConstraints.tightFor(
+              width: tileWidth,
+              height: data.height,
+            ),
+          );
+        }
 
         tiles[id] = Offset(tileXOffset, data.top);
         tileWidths[id] = tileWidth;
       }
 
       for (final tile in tiles.entries) {
-        positionChild(tile.key, tile.value);
+        if (hasChild(tile.key)) positionChild(tile.key, tile.value);
       }
     }
   }
