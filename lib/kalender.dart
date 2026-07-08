@@ -48,6 +48,7 @@ export 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';
 export 'package:kalender/src/widgets/components/day_header.dart';
 export 'package:kalender/src/widgets/components/day_separator.dart';
 export 'package:kalender/src/widgets/components/hour_lines.dart';
+export 'package:kalender/src/widgets/components/month_day_cell.dart';
 export 'package:kalender/src/widgets/components/month_day_header.dart';
 export 'package:kalender/src/widgets/components/month_grid.dart';
 export 'package:kalender/src/widgets/components/multi_day_overlay.dart';

@@ -54,6 +54,7 @@ class _CalendarContentState extends State<CalendarContent> {
                 child: ListenableBuilder(
                   listenable: Listenable.merge([
                     context.configuration.viewConfigurationNotifier,
+                    context.configuration.shadeAdjacentMonthNotifier,
                     context.location,
                   ]),
                   builder: (context, _) => CalendarView(
@@ -181,6 +182,8 @@ class _CalendarContentState extends State<CalendarContent> {
       monthComponents: MonthComponents(
         bodyComponents: MonthBodyComponents(
           weekNumberBuilder: _buildWeekNumberText,
+          monthDayCellBuilder:
+              context.configuration.shadeAdjacentMonth ? MonthDayCell.shadeAdjacentMonths() : MonthDayCell.builder,
         ),
       ),
       monthComponentStyles: MonthComponentStyles(

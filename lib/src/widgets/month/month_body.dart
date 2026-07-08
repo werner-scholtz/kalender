@@ -59,31 +59,43 @@ class MonthBody extends StatelessWidget {
         final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
         final numberOfRows = pageNavigation.numberOfRowsForRange(visibleRange);
         final grid = MonthGrid.fromContext(context, numberOfRows);
-        final content = Column(
-          children: List.generate(
-            numberOfRows,
-            (index) {
-              final start = visibleRange.start.add(Duration(days: index * DateTime.daysPerWeek));
-              final visibleDateTimeRange = InternalDateTimeRange(
-                start: start,
-                end: start.add(const Duration(days: DateTime.daysPerWeek)),
-              );
 
-              return Expanded(
+        // The date range of each week row, shared by the content and background.
+        final weekRanges = List.generate(numberOfRows, (row) {
+          final start = visibleRange.start.add(Duration(days: row * DateTime.daysPerWeek));
+          return InternalDateTimeRange(start: start, end: start.add(const Duration(days: DateTime.daysPerWeek)));
+        });
+
+        final content = Column(
+          children: [
+            for (final weekRange in weekRanges)
+              Expanded(
                 child: MonthWeek(
-                  key: ValueKey('MonthWeek-${visibleDateTimeRange.start.toIso8601String()}'),
-                  internalRange: visibleDateTimeRange,
+                  key: ValueKey('MonthWeek-${weekRange.start.toIso8601String()}'),
+                  internalRange: weekRange,
                   configuration: configuration,
                   viewController: viewController,
                 ),
-              );
-            },
-          ),
+              ),
+          ],
         );
+
+        // Only build the per-day background when a custom cell builder is set, so
+        // the default month view does no extra per-cell work. It is painted below
+        // the grid (see the layout delegate) so cell backgrounds do not cover the
+        // grid lines.
+        final hasCellBuilder = monthComponents.bodyComponents.monthDayCellBuilder != MonthDayCell.builder;
+        final background = hasCellBuilder
+            ? _MonthDayCellBackground(
+                weekRanges: weekRanges,
+                focusMonthStart: pageNavigation.monthStartFromIndex(index, context.location),
+              )
+            : null;
 
         return CustomMultiChildLayout(
           delegate: MonthWeekNumberBodyLayoutDelegate(
             gutterId: showWeekNumbers ? 0 : null,
+            backgroundId: background != null ? 3 : null,
             gridId: 1,
             contentId: 2,
           ),
@@ -99,6 +111,7 @@ class MonthBody extends StatelessWidget {
                   dividerSide: dividerSide,
                 ),
               ),
+            if (background != null) LayoutId(id: 3, child: background),
             LayoutId(id: 1, child: grid),
             LayoutId(id: 2, child: content),
           ],
@@ -176,6 +189,41 @@ class MonthWeek extends StatelessWidget {
             rightPageTrigger: components.monthComponents.bodyComponents.rightTriggerBuilder,
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// A non-interactive background layer that renders one [MonthDayCell] per day.
+///
+/// Built only when a custom [MonthBodyComponents.monthDayCellBuilder] is set, and
+/// painted below the grid and the day content so cell styling sits behind them.
+class _MonthDayCellBackground extends StatelessWidget {
+  final List<InternalDateTimeRange> weekRanges;
+  final InternalDateTime focusMonthStart;
+
+  const _MonthDayCellBackground({required this.weekRanges, required this.focusMonthStart});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (final weekRange in weekRanges)
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final date in weekRange.dates())
+                  Expanded(
+                    child: MonthDayCell.fromContext(
+                      context,
+                      date,
+                      isInFocusedMonth: date.month == focusMonthStart.month && date.year == focusMonthStart.year,
+                    ),
+                  ),
+              ],
+            ),
+          ),
       ],
     );
   }

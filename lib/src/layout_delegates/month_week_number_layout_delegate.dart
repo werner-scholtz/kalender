@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
   final int? gutterId;
+  final int? backgroundId;
   final int gridId;
   final int contentId;
 
   MonthWeekNumberBodyLayoutDelegate({
     required this.gutterId,
+    this.backgroundId,
     required this.gridId,
     required this.contentId,
   });
@@ -32,6 +34,13 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
     final contentConstraints =
         BoxConstraints.tight(Size((size.width - gutterWidth).clamp(0.0, size.width), size.height));
 
+    // The background occupies the same rect as the content but is painted first,
+    // so it sits below the grid lines and the day content.
+    if (backgroundId != null && hasChild(backgroundId!)) {
+      layoutChild(backgroundId!, contentConstraints);
+      positionChild(backgroundId!, Offset(gutterWidth, 0));
+    }
+
     layoutChild(gridId, contentConstraints);
     positionChild(gridId, Offset(gutterWidth, 0));
 
@@ -41,7 +50,10 @@ class MonthWeekNumberBodyLayoutDelegate extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(covariant MonthWeekNumberBodyLayoutDelegate oldDelegate) {
-    return gutterId != oldDelegate.gutterId || gridId != oldDelegate.gridId || contentId != oldDelegate.contentId;
+    return gutterId != oldDelegate.gutterId ||
+        backgroundId != oldDelegate.backgroundId ||
+        gridId != oldDelegate.gridId ||
+        contentId != oldDelegate.contentId;
   }
 }
 
