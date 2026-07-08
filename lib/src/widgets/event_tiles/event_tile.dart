@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/resize_handle.dart';
 import 'package:kalender/src/widgets/event_tiles/tile.dart';
 import 'package:kalender/src/widgets/event_tiles/tile_draggable.dart';
@@ -96,11 +97,17 @@ abstract class EventTile extends StatelessWidget {
       ),
     );
 
+    // Only build the resize handle scaffolding when resizing is actually
+    // enabled. It carries a mouse region, a selection listener and a size read
+    // per tile, so skipping it for read-only calendars avoids that per-tile
+    // cost entirely.
+    final showResizeHandles = resizeAxis != null && context.interaction.allowResizing;
+
     return TileGestureDetector(
       gestureDetectorKey: gestureKey,
       onTapUp: onTapUp,
       onSecondaryTapUp: onSecondaryTapUp,
-      child: (resizeAxis == null)
+      child: !showResizeHandles
           ? draggable
           : Stack(
               children: [
