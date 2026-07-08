@@ -12,7 +12,7 @@
 - Added `restorePerView` transitions so each view can reopen its own last date, scroll, and zoom. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `CalendarController.visibleTimeOfDay` and the `CalendarCallbacks.onScrollPositionChanged` callback. [#249](https://github.com/werner-scholtz/kalender/issues/249)
 - Added `ScheduleBodyConfiguration.leadingWidth` to control the schedule view's date-column width. [#253](https://github.com/werner-scholtz/kalender/issues/253)
-- Added `MonthBodyComponents.monthDayCellBuilder` to style individual month-view day cells; each call reports the cell's date, whether it is today, and whether it falls in the focused month (so adjacent-month days can be styled differently). [#140](https://github.com/werner-scholtz/kalender/issues/140)
+- Added `MonthBodyComponents.monthDayCellBuilder` to style individual month-view day cells. Each call reports the cell's date, whether it is today, and whether it falls in the focused month (so adjacent-month days can be styled differently). Also added the ready-made `MonthDayCell.shadeAdjacentMonths()` builder, which shades leading/trailing adjacent-month days. Pass a `color` or let it default to a low-opacity `onSurface` overlay that greys them out. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ### Fixes
 

@@ -128,6 +128,41 @@ void main() {
       expect(find.byType(MonthDayCell), findsNothing);
     });
 
+    testWidgets('shadeAdjacentMonths shades only adjacent-month days', (tester) async {
+      // MonthDayCell.shadeAdjacentMonths() paints the 4 adjacent-month days
+      // (2 leading Dec + 2 trailing Feb) with a low-opacity onSurface overlay by
+      // default and leaves the 31 focused days as the empty MonthDayCell.
+      final components = CalendarComponents(
+        monthComponents: MonthComponents(
+          bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths()),
+        ),
+      );
+
+      await pumpMonthView(tester, DateTime(2025, 1), components: components);
+
+      final shade =
+          Theme.of(tester.element(find.byType(MonthDayCell).first)).colorScheme.onSurface.withValues(alpha: 0.08);
+      final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == shade).length;
+
+      expect(shaded, 4, reason: '2 leading + 2 trailing adjacent-month days are shaded');
+      expect(find.byType(MonthDayCell), findsNWidgets(31), reason: 'Focused days render the empty MonthDayCell');
+    });
+
+    testWidgets('shadeAdjacentMonths uses a custom color when given', (tester) async {
+      const custom = Color(0xFF123456);
+      final components = CalendarComponents(
+        monthComponents: MonthComponents(
+          bodyComponents: MonthBodyComponents(monthDayCellBuilder: MonthDayCell.shadeAdjacentMonths(color: custom)),
+        ),
+      );
+
+      await pumpMonthView(tester, DateTime(2025, 1), components: components);
+
+      final shaded = tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where((box) => box.color == custom).length;
+
+      expect(shaded, 4, reason: 'The 4 adjacent-month days use the provided color');
+    });
+
     // ---------------------------------------------------------------------------
     // Regression: https://github.com/werner-scholtz/kalender/issues/266
     //

@@ -182,7 +182,8 @@ class _CalendarContentState extends State<CalendarContent> {
       monthComponents: MonthComponents(
         bodyComponents: MonthBodyComponents(
           weekNumberBuilder: _buildWeekNumberText,
-          monthDayCellBuilder: context.configuration.shadeAdjacentMonth ? _buildMonthDayCell(cs) : MonthDayCell.builder,
+          monthDayCellBuilder:
+              context.configuration.shadeAdjacentMonth ? MonthDayCell.shadeAdjacentMonths() : MonthDayCell.builder,
         ),
       ),
       monthComponentStyles: MonthComponentStyles(
@@ -191,15 +192,6 @@ class _CalendarContentState extends State<CalendarContent> {
         ),
       ),
     );
-  }
-
-  /// Shades adjacent-month days and tints today, demonstrating #140.
-  MonthDayCellBuilder _buildMonthDayCell(ColorScheme cs) {
-    return (details) {
-      if (details.isToday) return ColoredBox(color: cs.primary.withAlpha(30));
-      if (!details.isInFocusedMonth) return ColoredBox(color: cs.onSurface.withAlpha(12));
-      return const SizedBox.shrink();
-    };
   }
 
   Widget _buildWeekNumberText(DateTimeRange visibleDateTimeRange, WeekNumberStyle? style) {
