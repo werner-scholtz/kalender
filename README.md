@@ -847,7 +847,10 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
         ),
         bodyComponents: MonthBodyComponents(
           monthDayHeaderBuilder: (date, style) => SizedBox(),
-          monthGridBuilder: (style) => SizedBox(),
+          // Custom per-cell background, or use the ready-made
+          // MonthDayCell.shadeAdjacentMonths() to shade adjacent-month days.
+          monthDayCellBuilder: (details) => SizedBox(),
+          monthGridBuilder: (style, numberOfRows) => SizedBox(),
           weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
           leftTriggerBuilder: (pageWidth) => SizedBox(),
           rightTriggerBuilder: (pageWidth) => SizedBox(),

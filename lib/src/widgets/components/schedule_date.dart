@@ -56,8 +56,7 @@ class ScheduleDate extends StatelessWidget {
       style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
     );
 
-    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
-    final isToday = now != null ? date.isToday(now: now) : date.isToday(location: context.location);
+    final isToday = context.isToday(date);
     final button = isToday
         ? IconButton.filled(
             key: todayKey,

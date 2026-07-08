@@ -107,6 +107,14 @@ class MonthBodyEditor extends StatelessWidget {
           itemToString: (value) =>
               "L: ${value.left.toInt()}, R: ${value.right.toInt()}, T: ${value.top.toInt()}, B: ${value.bottom.toInt()}",
         ),
+        ValueListenableBuilder<bool>(
+          valueListenable: demoConfiguration.shadeAdjacentMonthNotifier,
+          builder: (context, value, _) => SwitchListTile.adaptive(
+            title: const Text('Shade adjacent-month days'),
+            value: value,
+            onChanged: (value) => demoConfiguration.shadeAdjacentMonth = value,
+          ),
+        ),
         InteractionEditorWidget(interaction: interaction),
       ],
     );

@@ -323,11 +323,18 @@ class MonthIndexCalculator extends PageIndexCalculator {
   /// Creates a [MonthIndexCalculator] with the given [dateTimeRange] and [firstDayOfWeek].
   MonthIndexCalculator({required super.dateTimeRange, required this.firstDayOfWeek});
 
+  /// The first day of the focused month shown on the page at [index].
+  ///
+  /// This is the month the page represents; the grid also renders leading and
+  /// trailing days from the adjacent months around it.
+  InternalDateTime monthStartFromIndex(int index, Location? location) {
+    final internalStart = internalRange(location).start;
+    return InternalDateTime.fromDateTime(internalStart.copyWith(month: internalStart.month + index));
+  }
+
   @override
   InternalDateTimeRange dateTimeRangeFromIndex(int index, Location? location) {
-    final internalRange = this.internalRange(location);
-    final internalStart = internalRange.start;
-    final startOfMonth = InternalDateTime.fromDateTime(internalStart.copyWith(month: internalStart.month + index));
+    final startOfMonth = monthStartFromIndex(index, location);
 
     var start = startOfMonth.startOfWeek(firstDayOfWeek: firstDayOfWeek);
     if (start.isAfter(startOfMonth)) start = InternalDateTime.fromDateTime(start.subtract(const Duration(days: 7)));

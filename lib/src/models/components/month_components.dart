@@ -1,4 +1,5 @@
 import 'package:kalender/src/models/components/components.dart';
+import 'package:kalender/src/widgets/components/month_day_cell.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
 import 'package:kalender/src/widgets/components/week_day_header.dart';
@@ -30,6 +31,12 @@ class MonthBodyComponents {
   /// A function that builds the month day header widget.
   final MonthDayHeaderBuilder monthDayHeaderBuilder;
 
+  /// A function that builds the background of each day cell.
+  ///
+  /// Called once per cell; use it to style individual days, e.g. to gray out
+  /// days that fall outside the focused month. Defaults to an empty cell.
+  final MonthDayCellBuilder monthDayCellBuilder;
+
   /// A function that builds the week number widget.
   final WeekNumberBuilder weekNumberBuilder;
 
@@ -46,6 +53,7 @@ class MonthBodyComponents {
   const MonthBodyComponents({
     this.monthGridBuilder = MonthGrid.builder,
     this.monthDayHeaderBuilder = MonthDayHeader.builder,
+    this.monthDayCellBuilder = MonthDayCell.builder,
     this.weekNumberBuilder = WeekNumber.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,

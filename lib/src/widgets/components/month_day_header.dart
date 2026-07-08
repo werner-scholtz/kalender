@@ -53,9 +53,8 @@ class MonthDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = context.calendarController.viewController?.viewConfiguration.nowCallback?.call();
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
-    final isToday = now != null ? localDate.isToday(now: now) : localDate.isToday(location: context.location);
+    final isToday = context.isToday(localDate);
     final button = isToday
         ? IconButton.filled(
             key: todayKey,

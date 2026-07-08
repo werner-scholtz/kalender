@@ -98,6 +98,16 @@ class DemoConfiguration extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether to shade the leading/trailing adjacent-month days in month view,
+  /// demonstrating `MonthBodyComponents.monthDayCellBuilder`.
+  ValueNotifier<bool> shadeAdjacentMonthNotifier = ValueNotifier(true);
+  bool get shadeAdjacentMonth => shadeAdjacentMonthNotifier.value;
+  set shadeAdjacentMonth(bool value) {
+    if (shadeAdjacentMonthNotifier.value == value) return;
+    shadeAdjacentMonthNotifier.value = value;
+    notifyListeners();
+  }
+
   bool get isMobile => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
 
   @override
