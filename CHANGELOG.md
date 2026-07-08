@@ -15,6 +15,7 @@
 - Added `ScheduleBodyConfiguration.leadingWidth` to control the schedule view's date-column width. [#253](https://github.com/werner-scholtz/kalender/issues/253)
 - Added `TimelineStyle.width` to set an explicit multi-day timeline gutter width. [#180](https://github.com/werner-scholtz/kalender/issues/180)
 - Added `MonthBodyComponents.monthDayCellBuilder` to style individual month-view day cells. Each call reports the cell's date, whether it is today, and whether it falls in the focused month (so adjacent-month days can be styled differently). Also added the ready-made `MonthDayCell.shadeAdjacentMonths()` builder, which shades leading/trailing adjacent-month days. Pass a `color` or let it default to a low-opacity `onSurface` overlay that greys them out. [#140](https://github.com/werner-scholtz/kalender/issues/140)
+- Added `eventPadding` to `MonthBodyConfiguration` (forwarded from the constructor and through `copyWith`), so month event tiles can be spaced like `MultiDayHeaderConfiguration` already allows. [#252](https://github.com/werner-scholtz/kalender/issues/252)
 
 ### Fixes
 
