@@ -1,281 +1,363 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes" />
-    <style>
-      html {
-        font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-        -webkit-font-smoothing: antialiased;
-        background-color: #fff;
-        font-size: 16px;
-      }
-      body {
-        color: #4a4a4a;
-        margin: 8px;
-        font-size: 1em;
-        font-weight: 400;
-      }
-      header {
-        margin-bottom: 8px;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      a {
-        color: #3273dc;
-        cursor: pointer;
-        text-decoration: none;
-      }
-      a:hover {
-        color: #000;
-      }
-      button {
-        color: #fff;
-        background-color: #3298dc;
-        border-color: transparent;
-        cursor: pointer;
-        text-align: center;
-      }
-      button:hover {
-        background-color: #2793da;
-        flex: none;
-      }
-      .spacer {
-        flex: auto;
-      }
-      .small {
-        font-size: 0.75rem;
-      }
-      footer {
-        margin-top: 16px;
-        display: flex;
-        align-items: center;
-      }
-      .header-label {
-        margin-right: 4px;
-      }
-      .benchmark-set {
-        margin: 8px 0;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      .benchmark-title {
-        font-size: 3rem;
-        font-weight: 600;
-        word-break: break-word;
-        text-align: center;
-      }
-      .benchmark-graphs {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        flex-wrap: wrap;
-        width: 100%;
-      }
-      .benchmark-chart {
-        max-width: 1000px;
-      }
-    </style>
-    <title>Benchmarks</title>
-  </head>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalender Benchmarks</title>
+  <!--
+    Custom dashboard for github-action-benchmark data.
 
-  <body>
-    <header id="header">
-      <div class="header-item">
-        <strong class="header-label">Last Update:</strong>
-        <span id="last-update"></span>
-      </div>
-      <div class="header-item">
-        <strong class="header-label">Repository:</strong>
-        <a id="repository-link" rel="noopener"></a>
-      </div>
-    </header>
-    <main id="main"></main>
-    <footer>
-      <button id="dl-button">Download data as JSON</button>
-      <div class="spacer"></div>
-      <div class="small">Powered by <a rel="noopener" href="https://github.com/marketplace/actions/continuous-benchmark">github-action-benchmark</a></div>
-    </footer>
+    Source of truth: benchmark/dashboard/index.html (deployed to gh-pages/dev/bench/index.html by
+    .github/workflows/deploy_dashboard.yml). github-action-benchmark only writes its default
+    index.html when one does not already exist, so this custom page persists; benchmark runs only
+    update the sibling data.js.
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.2/dist/Chart.min.js"></script>
-    <script src="data.js"></script>
-    <script id="main-script">
-      'use strict';
-      (function() {
-        // Colors from https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
-        const toolColors = {
-          cargo: '#dea584',
-          go: '#00add8',
-          benchmarkjs: '#f1e05a',
-          benchmarkluau: '#000080',
-          pytest: '#3572a5',
-          googlecpp: '#f34b7d',
-          catch2: '#f34b7d',
-          julia: '#a270ba',
-          jmh: '#b07219',
-          benchmarkdotnet: '#178600',
-          customBiggerIsBetter: '#38ff38',
-          customSmallerIsBetter: '#ff3838',
-          _: '#333333'
+    It reads the same `window.BENCHMARK_DATA` and adds four things the default template lacks:
+      1. Human-readable chart titles (display-only; the underlying series keys are untouched so
+         backfilled history is preserved).
+      2. Frame-budget reference lines (60 fps / 120 fps) on every ms-unit chart.
+      3. A consolidated overview trend per suite.
+      4. Frame charts grouped by view · workload, with one line per event-count scenario, so the
+         same operation (e.g. Week · loading) is compared across 10 vs 50 events/day on one chart.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; color: #1f2937; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 32px 0 4px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    .meta { color: #6b7280; font-size: 13px; margin-bottom: 16px; }
+    .legend-note { color: #6b7280; font-size: 12px; margin: 4px 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; }
+    .card.overview { border-color: #c7d2fe; background: #f8faff; }
+    .card h3 { font-size: 14px; margin: 2px 0 8px; font-weight: 600; }
+    .chart-wrap { position: relative; height: 240px; }
+    .empty { color: #6b7280; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0b0e14; color: #e5e7eb; }
+      .card { background: #131722; border-color: #232838; }
+      .card.overview { background: #141a2e; border-color: #2b3a55; }
+      h2 { border-color: #232838; }
+    }
+    /* Floating DOM tooltip — lives outside the (short) chart canvas so it never covers the plot. */
+    #chart-tooltip {
+      position: absolute; pointer-events: none; z-index: 30; opacity: 0;
+      transition: opacity .1s ease; max-width: 340px;
+      background: rgba(17, 20, 29, .97); color: #e5e7eb; border: 1px solid #2b3242;
+      border-radius: 6px; padding: 8px 10px; font-size: 12px; line-height: 1.35;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .4);
+    }
+    #chart-tooltip .tt-title { font-weight: 600; margin-bottom: 4px; }
+    #chart-tooltip .tt-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+    #chart-tooltip .tt-swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+    #chart-tooltip .tt-extra { margin-left: 16px; color: #9aa4b2; }
+    #chart-tooltip .tt-footer { margin-top: 6px; color: #9aa4b2; }
+  </style>
+</head>
+<body>
+  <h1>Kalender Performance Benchmarks</h1>
+  <div class="meta" id="meta"></div>
+  <div class="legend-note">↓ Lower is better on every chart. Dashed lines on millisecond charts mark the per-frame budget: <strong>16.7 ms</strong> (60 fps) and <strong>8.3 ms</strong> (120 fps).</div>
+  <div id="root"></div>
+  <script src="data.js"></script>
+  <script>
+    "use strict";
+
+    // 60 fps and 120 fps per-frame budgets, in milliseconds.
+    var BUDGETS = [
+      { label: "60 fps (16.7 ms)", value: 16.7, color: "#dc2626" },
+      { label: "120 fps (8.3 ms)", value: 8.3, color: "#f59e0b" },
+    ];
+
+    // Explicit friendly titles for the micro-benchmark series keys.
+    var MICRO_LABELS = {
+      "dates x200 / 7d": "Date expansion · 7-day range (×200)",
+      "dates x200 / 30d": "Date expansion · 30-day range (×200)",
+      "dates x200 / 90d": "Date expansion · 90-day range (×200)",
+      "dates x200 / 365d": "Date expansion · 365-day range (×200)",
+      "multiDayFrame / 100ev x 30d": "Multi-day layout · 100 events × 30 days",
+      "multiDayFrame / 300ev x 30d": "Multi-day layout · 300 events × 30 days",
+      "findLongestChain / 60ev": "Overlap chain depth · 60 events",
+      "eventsFromRange / query 1d": "Event query · 1-day window",
+      "eventsFromRange / query 7d": "Event query · 7-day window",
+      "eventsFromRange / query 30d": "Event query · 30-day window",
+    };
+
+    var SCENARIOS = { ten_events_per_day: "10 events/day", fifty_events_per_day: "50 events/day" };
+    var WORKLOADS = {
+      loadingEvents: "loading", navigation: "navigation", scrolling: "scrolling",
+      rescheduling: "rescheduling", resizing: "resizing",
+    };
+    // Line colour per event-count scenario, so a scenario reads the same across every frame chart.
+    // Kept clear of the budget-line colours (red / amber) below.
+    var SCENARIO_COLORS = { ten_events_per_day: "#2563eb", fifty_events_per_day: "#7c3aed" };
+
+    function titleCase(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // Frame series keys look like "fifty_events_per_day-week-navigation / avg_build_ms". Returns the
+    // parsed dimensions, or null for anything that is not a frame series.
+    function parseFrameKey(name) {
+      if (name.indexOf(" / avg_build_ms") === -1) return null;
+      var seg = name.split(" / ")[0].split("-");
+      if (seg.length < 3) return null;
+      return { scenarioKey: seg[0], view: seg[1], workload: seg.slice(2).join("-") };
+    }
+
+    function friendlyName(suite, name) {
+      return MICRO_LABELS[name] || name;
+    }
+
+    function median(values) {
+      var v = values.filter(function (x) { return typeof x === "number"; }).sort(function (a, b) { return a - b; });
+      if (!v.length) return null;
+      var m = Math.floor(v.length / 2);
+      return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+    }
+
+    // Collect, for a suite, the ordered run list and a per-series aligned value array.
+    function buildSeries(runs) {
+      var labels = runs.map(function (r) { return (r.commit && r.commit.id ? r.commit.id.slice(0, 7) : "?"); });
+      var commits = runs.map(function (r) { return r.commit || {}; });
+      var order = [];
+      var seen = {};
+      runs.forEach(function (r) {
+        (r.benches || []).forEach(function (b) { if (!seen[b.name]) { seen[b.name] = true; order.push(b.name); } });
+      });
+      var series = {};
+      order.forEach(function (name) {
+        series[name] = runs.map(function (r) {
+          var b = (r.benches || []).find(function (x) { return x.name === name; });
+          return b ? { y: b.value, unit: b.unit, range: b.range, extra: b.extra } : null;
+        });
+      });
+      return { labels: labels, commits: commits, order: order, series: series };
+    }
+
+    var palette = ["#2563eb", "#059669", "#7c3aed", "#db2777", "#0891b2", "#ca8a04", "#dc2626", "#475569"];
+
+    // Render the tooltip as a floating DOM node docked to the side of the chart, so it never
+    // overlaps the plot (a canvas tooltip is clipped to the short chart and would cover the data).
+    function externalTooltip(context) {
+      var el = document.getElementById("chart-tooltip");
+      if (!el) { el = document.createElement("div"); el.id = "chart-tooltip"; document.body.appendChild(el); }
+      var tt = context.tooltip;
+      if (!tt || tt.opacity === 0) { el.style.opacity = 0; return; }
+
+      var html = "";
+      if (tt.title && tt.title.length) html += '<div class="tt-title">' + tt.title.join(" ") + "</div>";
+      (tt.body || []).forEach(function (b, i) {
+        var color = (tt.labelColors[i] || {}).borderColor || "#888";
+        var lines = b.lines || [];
+        if (!lines.length) return;
+        html += '<div class="tt-row"><span class="tt-swatch" style="background:' + color + '"></span><span>' + lines[0] + "</span></div>";
+        // afterLabel output lands in b.after (and beforeLabel in b.before); render as detail lines.
+        var extras = lines.slice(1).concat(b.before || []).concat(b.after || []);
+        extras.forEach(function (line) {
+          var extra = String(line).trim();
+          if (extra) html += '<div class="tt-extra">' + extra + "</div>";
+        });
+      });
+      if (tt.footer && tt.footer.length) html += '<div class="tt-footer">' + tt.footer.join(" ") + "</div>";
+      el.innerHTML = html;
+
+      // Dock to the right of the chart; flip to the left when there is no room.
+      var rect = context.chart.canvas.getBoundingClientRect();
+      el.style.opacity = 1;
+      var ttW = el.offsetWidth, ttH = el.offsetHeight, gap = 10;
+      var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+      var left = rect.right + gap;
+      if (left + ttW > vw - 4) left = rect.left - ttW - gap;
+      if (left < 4) left = Math.max(4, rect.right - ttW);
+      var top = rect.top + tt.caretY - ttH / 2;
+      if (top < 4) top = 4;
+      if (top + ttH > vh - 4) top = vh - ttH - 4;
+      el.style.left = (left + window.scrollX) + "px";
+      el.style.top = (top + window.scrollY) + "px";
+    }
+
+    function budgetDatasets(labels) {
+      return BUDGETS.map(function (b) {
+        return {
+          label: b.label, data: labels.map(function () { return b.value; }),
+          borderColor: b.color, borderDash: [6, 4], borderWidth: 1, pointRadius: 0, fill: false, tension: 0,
         };
+      });
+    }
 
-        function init() {
-          function collectBenchesPerTestCase(entries) {
-            const map = new Map();
-            for (const entry of entries) {
-              const {commit, date, tool, benches} = entry;
-              for (const bench of benches) {
-                const result = { commit, date, tool, bench };
-                const arr = map.get(bench.name);
-                if (arr === undefined) {
-                  map.set(bench.name, [result]);
-                } else {
-                  arr.push(result);
-                }
-              }
-            }
-            return map;
-          }
+    function makeChart(canvas, cfg) {
+      // cfg: { labels, commits, unit, title, isMs, series:[{label, points:[{y,unit,range,extra}|null], color}] }
+      var multi = cfg.series.length > 1;
+      var datasets = cfg.series.map(function (s) {
+        return {
+          label: s.label,
+          data: s.points.map(function (p) { return p ? p.y : null; }),
+          borderColor: s.color, backgroundColor: s.color, spanGaps: false, tension: 0.2, pointRadius: 2, fill: false,
+          _meta: s.points,
+        };
+      });
+      if (cfg.isMs) {
+        datasets = datasets.concat(budgetDatasets(cfg.labels).map(function (d) { d._budget = true; return d; }));
+      }
 
-          const data = window.BENCHMARK_DATA;
-
-          // Render header
-          document.getElementById('last-update').textContent = new Date(data.lastUpdate).toString();
-          const repoLink = document.getElementById('repository-link');
-          repoLink.href = data.repoUrl;
-          repoLink.textContent = data.repoUrl;
-
-          // Render footer
-          document.getElementById('dl-button').onclick = () => {
-            const dataUrl = 'data:,' + JSON.stringify(data, null, 2);
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = 'benchmark_data.json';
-            a.click();
-          };
-
-          // Prepare data points for charts
-          return Object.keys(data.entries).map(name => ({
-            name,
-            dataSet: collectBenchesPerTestCase(data.entries[name]),
-          }));
-        }
-
-        function renderAllChars(dataSets) {
-
-          function renderGraph(parent, name, dataset) {
-            const canvas = document.createElement('canvas');
-            canvas.className = 'benchmark-chart';
-            parent.appendChild(canvas);
-
-            const color = toolColors[dataset.length > 0 ? dataset[0].tool : '_'];
-            const data = {
-              labels: dataset.map(d => d.commit.id.slice(0, 7)),
-              datasets: [
-                {
-                  label: name,
-                  data: dataset.map(d => d.bench.value),
-                  borderColor: color,
-                  backgroundColor: color + '60', // Add alpha for #rrggbbaa
-                }
-              ],
-            };
-            const options = {
-              scales: {
-                xAxes: [
-                  {
-                    scaleLabel: {
-                      display: true,
-                      labelString: 'commit',
-                    },
-                  }
-                ],
-                yAxes: [
-                  {
-                    scaleLabel: {
-                      display: true,
-                      labelString: dataset.length > 0 ? dataset[0].bench.unit : '',
-                    },
-                    ticks: {
-                      beginAtZero: true,
-                    }
-                  }
-                ],
+      new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: { labels: cfg.labels, datasets: datasets },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { display: cfg.isMs || multi, labels: { boxHeight: 2, font: { size: 10 } } },
+            tooltip: {
+              enabled: false,
+              external: externalTooltip,
+              filter: function (item) { return !item.dataset._budget; }, // budget lines are constant refs
+              callbacks: {
+                title: function (items) {
+                  var c = cfg.commits[items[0].dataIndex] || {};
+                  return c.id ? c.id.slice(0, 7) + (c.message ? " — " + c.message : "") : "";
+                },
+                label: function (item) {
+                  var p = (item.dataset._meta || [])[item.dataIndex];
+                  if (!p) return "";
+                  var s = item.dataset.label + ": " + (Math.round(p.y * 1000) / 1000) + " " + (p.unit || cfg.unit || "");
+                  if (p.range) s += " (" + p.range + ")";
+                  return s;
+                },
+                afterLabel: function (item) {
+                  var p = (item.dataset._meta || [])[item.dataIndex];
+                  return p && p.extra ? "  " + p.extra : "";
+                },
+                footer: function () { return "↓ lower is better"; },
               },
-              tooltips: {
-                callbacks: {
-                  afterTitle: items => {
-                    const {index} = items[0];
-                    const data = dataset[index];
-                    return '\n' + data.commit.message + '\n\n' + data.commit.timestamp + ' committed by @' + data.commit.committer.username + '\n';
-                  },
-                  label: item => {
-                    let label = item.value;
-                    const { range, unit } = dataset[item.index].bench;
-                    label += ' ' + unit;
-                    if (range) {
-                      label += ' (' + range + ')';
-                    }
-                    return label;
-                  },
-                  afterLabel: item => {
-                    const { extra } = dataset[item.index].bench;
-                    return extra ? '\n' + extra : '';
-                  }
-                }
-              },
-              onClick: (_mouseEvent, activeElems) => {
-                if (activeElems.length === 0) {
-                  return;
-                }
-                // XXX: Undocumented. How can we know the index?
-                const index = activeElems[0]._index;
-                const url = dataset[index].commit.url;
-                window.open(url, '_blank');
-              },
-            };
+            },
+          },
+          scales: {
+            x: { title: { display: true, text: "commit" }, ticks: { maxRotation: 0, autoSkip: true } },
+            y: { title: { display: true, text: cfg.unit || "" }, beginAtZero: true },
+          },
+        },
+      });
+    }
 
-            new Chart(canvas, {
-              type: 'line',
-              data,
-              options,
+    // Group a suite's series into cards: frame series collapse into one card per view · workload
+    // (one line per event-count scenario); everything else stays a single-line card.
+    function buildCards(suiteName, built) {
+      var cards = [];
+      var groupIndex = {};
+      var paletteIdx = 0;
+      built.order.forEach(function (name) {
+        var pts = built.series[name];
+        var firstPt = pts.find(function (p) { return p; }) || {};
+        var unit = firstPt.unit || "";
+        var fk = parseFrameKey(name);
+        if (fk) {
+          var groupKey = fk.view + "-" + fk.workload;
+          if (groupIndex[groupKey] === undefined) {
+            groupIndex[groupKey] = cards.length;
+            cards.push({
+              title: titleCase(fk.view) + " · " + (WORKLOADS[fk.workload] || fk.workload),
+              series: [], isMs: unit === "ms", unit: unit,
             });
           }
+          var card = cards[groupIndex[groupKey]];
+          card.series.push({
+            label: SCENARIOS[fk.scenarioKey] || fk.scenarioKey.replace(/_/g, " "),
+            points: pts,
+            color: SCENARIO_COLORS[fk.scenarioKey] || palette[card.series.length % palette.length],
+          });
+        } else {
+          cards.push({
+            title: friendlyName(suiteName, name),
+            series: [{ label: friendlyName(suiteName, name), points: pts, color: palette[paletteIdx++ % palette.length] }],
+            isMs: unit === "ms", unit: unit,
+          });
+        }
+      });
+      return cards;
+    }
 
-          function renderBenchSet(name, benchSet, main) {
-            const setElem = document.createElement('div');
-            setElem.className = 'benchmark-set';
-            main.appendChild(setElem);
+    function overviewPoints(suiteName, built, runs) {
+      // Frame (ms) → median of all ms benches per run (absolute). Otherwise → normalised
+      // index: mean of value/firstSeenValue across metrics, ×100 (unit-agnostic).
+      var anyMs = built.order.some(function (n) {
+        return runs.some(function (r) { return (r.benches || []).some(function (b) { return b.name === n && b.unit === "ms"; }); });
+      });
+      if (anyMs) {
+        var pts = runs.map(function (r) {
+          var vals = (r.benches || []).filter(function (b) { return b.unit === "ms"; }).map(function (b) { return b.value; });
+          var m = median(vals);
+          return m == null ? null : { y: m, unit: "ms" };
+        });
+        return { points: pts, unit: "ms", title: "Overview · median build time", isMs: true };
+      }
+      var baseline = {};
+      built.order.forEach(function (n) {
+        for (var i = 0; i < built.series[n].length; i++) { if (built.series[n][i]) { baseline[n] = built.series[n][i].y; break; } }
+      });
+      var pts2 = runs.map(function (r, i) {
+        var ratios = [];
+        built.order.forEach(function (n) {
+          var p = built.series[n][i];
+          if (p && baseline[n]) ratios.push(p.y / baseline[n]);
+        });
+        if (!ratios.length) return null;
+        var mean = ratios.reduce(function (a, b) { return a + b; }, 0) / ratios.length;
+        return { y: Math.round(mean * 1000) / 10, unit: "% of baseline" };
+      });
+      return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit", isMs: false };
+    }
 
-            const nameElem = document.createElement('h1');
-            nameElem.className = 'benchmark-title';
-            nameElem.textContent = name;
-            setElem.appendChild(nameElem);
+    function render() {
+      var data = window.BENCHMARK_DATA;
+      var root = document.getElementById("root");
+      if (!data || !data.entries) { root.innerHTML = '<p class="empty">No benchmark data found.</p>'; return; }
 
-            const graphsElem = document.createElement('div');
-            graphsElem.className = 'benchmark-graphs';
-            setElem.appendChild(graphsElem);
+      var lu = data.lastUpdate ? new Date(data.lastUpdate).toUTCString() : "unknown";
+      document.getElementById("meta").innerHTML =
+        "Last updated " + lu + " · <a href=\"" + (data.repoUrl || "#") + "\">" + (data.repoUrl || "") + "</a>";
 
-            for (const [benchName, benches] of benchSet.entries()) {
-              renderGraph(graphsElem, benchName, benches)
-            }
-          }
+      Object.keys(data.entries).forEach(function (suiteName) {
+        var runs = data.entries[suiteName] || [];
+        var h2 = document.createElement("h2");
+        h2.textContent = suiteName + " (" + runs.length + " runs)";
+        root.appendChild(h2);
 
-          const main = document.getElementById('main');
-          for (const {name, dataSet} of dataSets) {
-            renderBenchSet(name, dataSet, main);
-          }
+        if (!runs.length) {
+          var p = document.createElement("p"); p.className = "empty"; p.textContent = "No data."; root.appendChild(p); return;
         }
 
-        renderAllChars(init()); // Start
-      })();
-    </script>
-  </body>
+        var built = buildSeries(runs);
+
+        // Overview card (full width row of its own).
+        var ov = overviewPoints(suiteName, built, runs);
+        var ovCard = document.createElement("div");
+        ovCard.className = "card overview";
+        ovCard.innerHTML = '<h3>' + ov.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
+        root.appendChild(ovCard);
+        makeChart(ovCard.querySelector("canvas"), {
+          labels: built.labels, commits: built.commits, unit: ov.unit, title: ov.title, isMs: ov.isMs,
+          series: [{ label: ov.title, points: ov.points, color: "#4f46e5" }],
+        });
+
+        // Per-metric grid — frame series grouped by view · workload, one line per scenario.
+        var grid = document.createElement("div");
+        grid.className = "grid";
+        root.appendChild(grid);
+        buildCards(suiteName, built).forEach(function (card) {
+          var el = document.createElement("div");
+          el.className = "card";
+          el.innerHTML = '<h3>' + card.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
+          grid.appendChild(el);
+          makeChart(el.querySelector("canvas"), {
+            labels: built.labels, commits: built.commits, unit: card.unit,
+            title: card.title, isMs: card.isMs, series: card.series,
+          });
+        });
+      });
+    }
+
+    render();
+  </script>
+</body>
 </html>
