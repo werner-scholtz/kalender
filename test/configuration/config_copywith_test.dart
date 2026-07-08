@@ -40,6 +40,7 @@ void main() {
         horizontalPadding: EdgeInsets.all(5),
         showMultiDayEvents: false,
         minimumTileHeight: 12,
+        keepPagesAlive: true,
       );
 
       test('preserves untouched fields when copying another', () {
@@ -47,11 +48,17 @@ void main() {
         expect(copy.horizontalPadding, const EdgeInsets.all(5));
         expect(copy.showMultiDayEvents, false);
         expect(copy.minimumTileHeight, 12);
+        expect(copy.keepPagesAlive, true);
       });
 
       test('updates the copied field', () {
         expect(config.copyWith(horizontalPadding: const EdgeInsets.all(9)).horizontalPadding, const EdgeInsets.all(9));
         expect(config.copyWith(minimumTileHeight: 30).minimumTileHeight, 30);
+        expect(config.copyWith(keepPagesAlive: false).keepPagesAlive, false);
+      });
+
+      test('keepPagesAlive defaults to false', () {
+        expect(const MultiDayBodyConfiguration().keepPagesAlive, false);
       });
     });
 

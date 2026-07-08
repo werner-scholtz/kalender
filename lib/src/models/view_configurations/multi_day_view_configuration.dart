@@ -347,6 +347,17 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 ///
 /// TODO: Depricate this in 1.0.0 and use [VerticalConfiguration] instead.
 class MultiDayBodyConfiguration extends VerticalConfiguration {
+  /// Whether to keep visited pages alive so navigating back to them does not
+  /// rebuild their content.
+  ///
+  /// Off by default. When enabled, each page you navigate to is cached and
+  /// reused, so navigating back to it is close to free instead of rebuilding
+  /// every event tile. The trade-off is memory: cached pages stay in memory for
+  /// the lifetime of the view, so this grows with the number of distinct pages
+  /// visited. Prefer it for views where the user moves back and forth between a
+  /// small set of pages.
+  final bool keepPagesAlive;
+
   /// Creates a new [MultiDayHeaderConfiguration].
   const MultiDayBodyConfiguration({
     super.showMultiDayEvents,
@@ -357,6 +368,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     super.minimumTileHeight,
     super.pageTriggerConfiguration,
     super.scrollTriggerConfiguration,
+    this.keepPagesAlive = false,
   });
 
   /// Creates a copy of this [MultiDayBodyConfiguration] with the given fields replaced by the new values.
@@ -369,6 +381,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
     ScrollPhysics? scrollPhysics,
     ScrollPhysics? pageScrollPhysics,
     double? minimumTileHeight,
+    bool? keepPagesAlive,
   }) {
     return MultiDayBodyConfiguration(
       showMultiDayEvents: showMultiDayEvents ?? this.showMultiDayEvents,
@@ -379,6 +392,7 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       pageScrollPhysics: pageScrollPhysics ?? this.pageScrollPhysics,
       minimumTileHeight: minimumTileHeight ?? this.minimumTileHeight,
+      keepPagesAlive: keepPagesAlive ?? this.keepPagesAlive,
     );
   }
 }

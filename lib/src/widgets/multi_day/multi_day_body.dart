@@ -270,7 +270,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
       itemBuilder: (context, index) {
         // Calculate the visible date time range for the current page index.
         final visibleRange = _pageNavigation.dateTimeRangeFromIndex(index, context.location);
-        return Stack(
+        final page = Stack(
           key: MultiDayPage.contentKey,
           clipBehavior: Clip.none,
           children: [
@@ -304,7 +304,33 @@ class _MultiDayPageState extends State<MultiDayPage> {
             ),
           ],
         );
+
+        // Optionally keep the page alive so navigating back to it reuses its
+        // built content instead of rebuilding every tile.
+        return widget.configuration.keepPagesAlive ? _KeepAlivePage(child: page) : page;
       },
     );
+  }
+}
+
+/// Keeps its [child] alive within a lazily-built page view, so a page that
+/// scrolls out of view is not disposed and rebuilt when it comes back.
+class _KeepAlivePage extends StatefulWidget {
+  const _KeepAlivePage({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_KeepAlivePage> createState() => _KeepAlivePageState();
+}
+
+class _KeepAlivePageState extends State<_KeepAlivePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
