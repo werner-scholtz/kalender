@@ -85,6 +85,7 @@ class MonthBodyConfiguration extends HorizontalConfiguration {
     super.generateMultiDayLayoutFrame,
     super.pageTriggerConfiguration,
     super.tileHeight,
+    super.eventPadding,
   }) : super(showTiles: true, maximumNumberOfVerticalEvents: null, allowSingleDayEvents: true);
 
   @override
@@ -100,6 +101,7 @@ class MonthBodyConfiguration extends HorizontalConfiguration {
     return MonthBodyConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
       generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
+      eventPadding: eventPadding ?? this.eventPadding,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
   }
