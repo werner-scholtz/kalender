@@ -116,7 +116,13 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final controller = context.calendarController;
-        controller.visibleEvents.value = {...controller.visibleEvents.value, ..._events};
+        // Only publish when the merged set actually adds something. Assigning a
+        // fresh set every build would notify listeners on every build (a
+        // ValueNotifier compares sets by identity), causing needless rebuilds.
+        final current = controller.visibleEvents.value;
+        if (_events.any((event) => !current.contains(event))) {
+          controller.visibleEvents.value = {...current, ..._events};
+        }
       }
     });
 

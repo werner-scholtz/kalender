@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/mixins/schedule_map.dart';
@@ -348,7 +349,14 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
         return eventsController.byId(eventId);
       });
 
-      viewController.visibleEvents.value = events.nonNulls.toSet();
+      // Only publish when the set actually changed. A ValueNotifier compares
+      // sets by identity, so assigning a fresh set every scroll frame would
+      // notify listeners on every frame even when the visible events are the
+      // same, causing needless rebuilds during a scroll or page change.
+      final visibleEvents = events.nonNulls.toSet();
+      if (!const SetEquality<CalendarEvent>().equals(viewController.visibleEvents.value, visibleEvents)) {
+        viewController.visibleEvents.value = visibleEvents;
+      }
     }
   }
 
