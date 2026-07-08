@@ -11,12 +11,12 @@
 
 # Kalender
 
-A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Schedule views — featuring drag-and-drop rescheduling, event resizing, timezone support, and full control over appearance and behavior.
+A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Schedule views. It supports drag-and-drop rescheduling, event resizing, timezones, and full control over appearance and behavior.
 
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
 > [!WARNING]
-> This package is still in development — API changes may occur before version 1.0.0.
+> This package is still in development. API changes may occur before version 1.0.0.
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 * **Views:** Day, Multi-day, Month and Schedule. [find out more](#views)
 * **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](#custom-events)
-* **Tile components:** Fully customize event tiles — stationary, dragging, feedback, and resize handles. [find out more](#tile-components)
+* **Tile components:** Fully customize event tiles: stationary, dragging, feedback, and resize handles. [find out more](#tile-components)
 * **Reschedule:** Drag and drop events between days and times.
 * **Resize:** Resize events with input-precision-aware handles (mouse/stylus/trackpad vs touch).
 * **Controllers:** Manage your calendar with dedicated controllers. [find out more](#controllers)
@@ -52,11 +52,11 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 * **Event layout:** Built-in strategies or bring your own. [find out more](#event-layout)
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](#location)
-* **Now callback:** Override what "now" means for the time indicator and today highlighting — useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](#now-callback)
+* **Now callback:** Override what "now" means for the time indicator and today highlighting. Useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](#now-callback)
 
 ## Preview
 
-See all views — desktop & mobile, light & dark — in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
+See all views, desktop and mobile, light and dark, in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
 
 ---
 
@@ -91,7 +91,7 @@ flutter pub add intl
 
 ## Quick Start
 
-The minimal setup — using only the base `CalendarEvent` class with no custom fields:
+The minimal setup, using only the base `CalendarEvent` class with no custom fields:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -215,7 +215,7 @@ Because `==` and `hashCode` include your custom fields, the calendar will detect
 
 ### `layoutEquals`
 
-Only override `layoutEquals` when a custom property changes the *size or position* of the tile — for example, a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, and `interaction`, which is sufficient for most cases.
+Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, and `interaction`, which is sufficient for most cases.
 
 ### Accessing custom fields in tile builders
 
@@ -252,14 +252,14 @@ callbacks: CalendarCallbacks(
 
 Switch between views by passing a different `ViewConfiguration` to `CalendarView`. What carries over on a switch is controlled per dimension:
 
-- **Date** (all views): `dateTransition` — `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
-- **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition` — `preserve` (default), `reset`, or `restorePerView`.
+- **Date** (all views): `dateTransition`. Use `DateTransition.carryFocus` (default, follows your current date) or `DateTransition.restorePerView` (each view reopens its own last date, matched by `name`).
+- **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition`. Use `preserve` (default), `reset`, or `restorePerView`.
 
-For arbitrary logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver` (each overrides the matching enum); `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
+For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
 All configurations accept:
-- `displayRange` — the total date range the calendar can navigate within (e.g. Jan 2024 – Dec 2025). Defaults to ± 1 year from today.
-- `initialDateTime` — the date to show on first render. Defaults to `DateTime.now()`.
+- `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to one year either side of today.
+- `initialDateTime`: the date to show on first render. Defaults to `DateTime.now()`.
 
 ```dart
 MultiDayViewConfiguration.week(
@@ -274,12 +274,12 @@ MultiDayViewConfiguration.week(
 ### MultiDay View
 Displays one or more days with time on the vertical axis.
 
-| Constructor                                 | Description           |
-| ------------------------------------------- | --------------------- |
-| `MultiDayViewConfiguration.singleDay()`     | Single day            |
-| `MultiDayViewConfiguration.week()`          | Full 7-day week       |
-| `MultiDayViewConfiguration.workWeek()`      | Monday – Friday       |
-| `MultiDayViewConfiguration.custom(days: n)` | Custom number of days |
+| Constructor                                         | Description           |
+| --------------------------------------------------- | --------------------- |
+| `MultiDayViewConfiguration.singleDay()`             | Single day            |
+| `MultiDayViewConfiguration.week()`                  | Full 7-day week       |
+| `MultiDayViewConfiguration.workWeek()`              | Monday to Friday      |
+| `MultiDayViewConfiguration.custom(numberOfDays: n)` | Custom number of days |
 
 ### Month View
 Shows an entire month at a glance, weeks as rows.
@@ -336,8 +336,8 @@ Presents events in a chronological scrollable list.
 
 | Notifier               | Type                                | Description                                            |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------ |
-| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange>`      | The currently visible date range                       |
-| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views; `null` otherwise) |
+| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange?>`     | The currently visible date range                       |
+| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
 | `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
 | `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
 
@@ -348,7 +348,7 @@ Presents events in a chronological scrollable list.
 - `animateToDate(date)` / `animateToDateTime(dateTime)`
 - `animateToEvent(event)`
 
-> Internally the controller delegates to a [`ViewController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/view_controller.dart) — `MultiDayViewController`, `MonthViewController`, or `ScheduleViewController` — depending on the active `ViewConfiguration`.
+> Internally the controller delegates to a [`ViewController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/view_controller.dart) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
 
 ---
 
@@ -451,7 +451,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 > **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `CalendarCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget receives events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
 
 <details>
-  <summary>DayEventTileUtils — for day / multi-day body tiles</summary>
+  <summary>DayEventTileUtils (day / multi-day body tiles)</summary>
 
   ```dart
   class CustomDayEventTile extends StatelessWidget with DayEventTileUtils {
@@ -496,7 +496,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
       );
     }
 
-    // Static factory — pass directly to TileComponents.tileBuilder.
+    // Static factory. Pass directly to TileComponents.tileBuilder.
     static Widget builder(CalendarEvent event, DateTimeRange tileRange) =>
         CustomDayEventTile(
           event: event,
@@ -507,7 +507,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 </details>
 
 <details>
-  <summary>MultiDayEventTileUtils — for month view / multi-day header tiles</summary>
+  <summary>MultiDayEventTileUtils (month view / multi-day header tiles)</summary>
 
   ```dart
   class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils {
@@ -573,7 +573,7 @@ CalendarCallbacks(
   // Called when an event tile is tapped.
   onEventTapped: (event, renderBox) {},
 
-  // Called when an event tile is tapped — includes tap position detail.
+  // Called when an event tile is tapped. Includes tap position detail.
   // The 'detail' parameter provides the tap location and its exact calculated 'DateTime'
   // position based on the tapped position within the event UI.
   onEventTappedWithDetail: (event, renderBox, detail) {},
@@ -593,7 +593,7 @@ CalendarCallbacks(
     return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
   },
 
-  // Called after a new event has been committed — add it to your controller here.
+  // Called after a new event has been committed. Add it to your controller here.
   onEventCreated: (event) => eventsController.addEvent(event),
 
   // Called just before a rescheduled / resized event is applied.
@@ -650,12 +650,12 @@ CalendarCallbacks(
 | View     | Header config class           | Body config class           |
 | -------- | ----------------------------- | --------------------------- |
 | MultiDay | `MultiDayHeaderConfiguration` | `MultiDayBodyConfiguration` |
-| Month    | —                             | `MonthBodyConfiguration`    |
-| Schedule | —                             | `ScheduleBodyConfiguration` |
+| Month    | None                          | `MonthBodyConfiguration`    |
+| Schedule | None                          | `ScheduleBodyConfiguration` |
 
 Both also accept:
-- `interaction: CalendarInteraction` — toggling resize / reschedule / create.
-- `snapping: CalendarSnapping` — (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
+- `interaction: CalendarInteraction`: toggling resize / reschedule / create.
+- `snapping: CalendarSnapping`: (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
 
 ### Interaction & Snapping
 
@@ -668,9 +668,9 @@ CalendarBody(
     // Tap to create (default) or long-press to create:
     createEventGesture: CreateEventGesture.tap,
     // Input mode affects resize handle positioning and visibility:
-    //   auto (default) — detects dynamically from pointer events
-    //   precise         — mouse, stylus, trackpad (full-width handles, hover-to-show)
-    //   imprecise       — touch/finger (corner handles, selection-to-show)
+    //   auto (default): detects dynamically from pointer events
+    //   precise:        mouse, stylus, trackpad (full-width handles, hover-to-show)
+    //   imprecise:      touch/finger (corner handles, selection-to-show)
     inputMode: InputMode.auto,
     // Opt-in to horizontal resize handles in imprecise/touch mode (default: false):
     allowHorizontalImpreciseResize: false,
@@ -699,7 +699,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
       tileHeight: 24,
       generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator,
       maximumNumberOfVerticalEvents: null,
-      eventPadding: EdgeInsets.zero,
+      eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
       pageTriggerConfiguration: PageTriggerConfiguration(),
     ),
   )
@@ -733,6 +733,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
     monthBodyConfiguration: MonthBodyConfiguration(
       tileHeight: 24,
       generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator,
+      eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
       pageTriggerConfiguration: PageTriggerConfiguration(),
     ),
   )
@@ -823,7 +824,7 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
           hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
           timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
           daySeparator: (style) => CustomWidget(),
-          timeIndicator: (timeOfDayRange, heightPerMinute, timelineWidth, style) => CustomWidget(),
+          timeIndicator: (timeOfDayRange, heightPerMinute, style, location) => CustomWidget(),
           leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
           rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
           topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
@@ -896,7 +897,7 @@ Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 | `overlapLayoutStrategy`    | Tiles stack on top of each other (default) |
 | `sideBySideLayoutStrategy` | Tiles placed side by side                  |
 
-To create a custom strategy, subclass `EventLayoutDelegate` — see [`CustomSideBySideLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
+To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
 
 Here's a minimal skeleton:
 
@@ -1070,7 +1071,7 @@ The callback's return value is used for:
 - Determining which day is "today" for header highlighting (`DayHeader`, `MonthDayHeader`, `ScheduleDate`).
 - Evaluating `EmptyDayBehavior.showOnlyToday` in schedule views.
 
-Any `DateTime` subtype works — `DateTime.now()`, `DateTime.now().toUtc()`, or `TZDateTime.now(location)` for a specific timezone.
+Any `DateTime` subtype works: `DateTime.now()`, `DateTime.now().toUtc()`, or `TZDateTime.now(location)` for a specific timezone.
 
 When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.
 
@@ -1082,4 +1083,4 @@ Contributions are welcome! Please open an issue or pull request on [GitHub](http
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
