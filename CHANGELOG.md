@@ -29,7 +29,8 @@
 - Added end-to-end month-view regression coverage for a custom `generateMultiDayLayoutFrame`. [#235](https://github.com/werner-scholtz/kalender/issues/235)
 - Added regression coverage that the free-scroll header keeps its paged content's state across rebuilds. [#282](https://github.com/werner-scholtz/kalender/pull/282)
 - Added regression coverage that the free-scroll header fits the tallest visible day rather than only the leading page. [#283](https://github.com/werner-scholtz/kalender/pull/283)
-- Added coverage that `monthDayCellBuilder` is invoked per day with the correct focused-month flags. [#140](https://github.com/werner-scholtz/kalender/issues/140)
+- Added regression coverage that a selected month-view event's focus aligns to its own row. [#233](https://github.com/werner-scholtz/kalender/issues/233)
+- Added coverage that `monthDayCellBuilder` is invoked per day with the correct focused-month flags, and that `MonthDayCell.shadeAdjacentMonths()` shades only the adjacent-month days. [#140](https://github.com/werner-scholtz/kalender/issues/140)
 
 ## 0.18.7
 
