@@ -1,3 +1,24 @@
+## 0.19.1
+
+### Features
+
+- Added `MultiDayBodyConfiguration.keepPagesAlive` (default `false`). When enabled, each visited multi-day page is kept alive and reused, so navigating back to it skips rebuilding every event tile. It is opt-in because cached pages stay in memory for the lifetime of the view. [#293](https://github.com/werner-scholtz/kalender/pull/293)
+
+### Fixes
+
+- Fixed back-to-back events (one ending exactly when the next begins) rendering as overlapping at some zoom levels. An event's top and bottom now come from one shared time-to-pixel conversion, so touching tiles line up exactly instead of splitting on a rounding difference. [#291](https://github.com/werner-scholtz/kalender/pull/291)
+
+### Performance
+
+- Sped up multi-day frame generation. [#289](https://github.com/werner-scholtz/kalender/pull/289)
+- The `visibleEvents` notifier now only publishes when the set of visible events actually changes, avoiding redundant work for listeners. [#290](https://github.com/werner-scholtz/kalender/pull/290)
+- The day view now builds only the event tiles within the visible scroll window (plus an overscan margin) instead of every event of the day, and skips the resize-handle scaffolding when resizing is disabled. [#292](https://github.com/werner-scholtz/kalender/pull/292)
+
+### Tests
+
+- Added a regression sweep that back-to-back events stay in separate groups across a wide range of zoom levels, start offsets and durations. [#291](https://github.com/werner-scholtz/kalender/pull/291)
+- Added coverage that off-screen day tiles are culled and rebuilt when scrolled into view, and that a partially visible tile stays built. [#292](https://github.com/werner-scholtz/kalender/pull/292)
+
 ## 0.19.0
 
 ### Breaking Changes
