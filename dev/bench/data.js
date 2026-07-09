@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783585575271,
+  "lastUpdate": 1783589559838,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4159,6 +4159,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3329.9235382308843,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "243ce58c5f438220675582f030aa6b0defc635b6",
+          "message": "Merge pull request #292 from werner-scholtz/perf/lazy-day-column\n\nperf: cull off-screen day tiles and skip resize handles when disabled",
+          "timestamp": "2026-07-09T11:14:26+02:00",
+          "tree_id": "f711ca64c159233d76644d448de8cd344ebf4469",
+          "url": "https://github.com/werner-scholtz/kalender/commit/243ce58c5f438220675582f030aa6b0defc635b6"
+        },
+        "date": 1783589556005,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 170.10306166451056,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 684.396,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2044.199,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8094.614232209738,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 723.5115,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2221.127,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2440.231,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12196.191616766468,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 242.30394596516174,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 112.04866024823106,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 781.1265,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3358.575712143928,
             "unit": "us"
           }
         ]
