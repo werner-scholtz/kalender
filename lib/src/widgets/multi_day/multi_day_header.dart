@@ -11,9 +11,12 @@ import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
 /// The multi-day header decides which header to display the:
 /// - [_SingleDayHeader] this is used for a body that only displays a single day.
 /// - [_MultiDayHeader] this is used for a body that displays multiple days.
-/// - [_FreeScrollHeader] this is a special case for a body that scrolls freely (WIP/Not working)
+/// - [_FreeScrollHeader] this is used for a body that scrolls freely.
 ///
-/// All Header widgets make use of the [ExpandablePageView] to set the Height of the header, this is so they can resize dynamically.
+/// The single-day and multi-day headers use an [ExpandablePageView] to size the
+/// header to the current page. The free-scroll header instead renders one
+/// continuous band (see [_FreeScrollMultiDayBand]) so multi-day events can span
+/// day columns.
 class MultiDayHeader extends StatelessWidget {
   /// The [MultiDayHeaderConfiguration] that will be used by the [MultiDayHeader].
   final HorizontalConfiguration? configuration;
@@ -218,7 +221,11 @@ class _MultiDayHeader extends StatelessWidget {
   }
 }
 
-/// TODO: Fix and Ensure this works.
+/// A header for the free-scroll body.
+///
+/// Unlike the paged headers, the multi-day events here are drawn as one
+/// continuous band (see [_FreeScrollMultiDayBand]) so an event spanning several
+/// days renders as a single tile instead of being split across per-day pages.
 class _FreeScrollHeader extends StatelessWidget {
   final MultiDayViewController viewController;
   final HorizontalConfiguration configuration;
@@ -233,8 +240,6 @@ class _FreeScrollHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewConfiguration = viewController.viewConfiguration;
-    final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
     final componentStyles = components.multiDayComponentStyles.headerStyles;
 
@@ -242,63 +247,192 @@ class _FreeScrollHeader extends StatelessWidget {
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
-        if (value == null) {
-          debugPrint('Warning: The visibleDateTimeRange is null in FreeScrollHeader.');
-          return const SizedBox.shrink();
-        }
+        if (value == null) return const SizedBox.shrink();
         return headerComponents.weekNumberBuilder.call(value.forLocation(location: context.location), weekNumberStyle);
       },
     );
 
     return MultiDayHeaderWidget(
-      /// TODO: figure out how to get multi-day events to work with FreeScroll.
-      ///
-      /// To do this the header would need to display a single page and not multiple. see viewport fraction.
-      content: ExpandablePageView(
-        key: ObjectKey(viewController.headerController),
-        controller: viewController.headerController,
-        itemCount: viewController.numberOfPages,
-        itemBuilder: (context, index) {
-          final visibleRange = pageNavigation.dateTimeRangeFromIndex(index, context.location);
-          final visibleDates = visibleRange.dates();
-
-          return Column(
-            children: [
-              WeekDayHeaders(
-                dates: visibleDates,
-                dayHeaderBuilder: DayHeader.fromContext,
-              ),
-              if (configuration.showTiles)
-                Stack(
-                  children: [
-                    Positioned.fill(child: MultiDayDraggable(internalRange: visibleRange)),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: configuration.tileHeight),
-                      child: MultiDayEventWidget(
-                        eventsController: context.eventsController,
-                        internalDateTimeRange: visibleRange,
-                        configuration: configuration,
-                        multiDayCache: viewController.multiDayCache,
-                        maxNumberOfVerticalEvents: null,
-                        overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: HorizontalDragTarget(
-                        visibleDateTimeRange: visibleRange,
-                        configuration: configuration,
-                        leftPageTrigger: headerComponents.leftTriggerBuilder,
-                        rightPageTrigger: headerComponents.rightTriggerBuilder,
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          );
-        },
+      content: _FreeScrollMultiDayBand(
+        viewController: viewController,
+        configuration: configuration,
+        components: components,
       ),
       leading: weekNumberWidget,
+    );
+  }
+}
+
+/// The continuous weekday-label and multi-day-event band for the free-scroll
+/// header.
+///
+/// The free-scroll body pages one day at a time (viewport fraction
+/// `1 / numberOfDays`), so a per-page multi-day band would clip each day and
+/// split a spanning event. Instead this renders the visible days (plus a buffer
+/// on each side) as one strip and slides it to follow the body's scroll, so a
+/// multi-day event is a single tile positioned across its day columns.
+///
+/// Only the visible window is rendered, so the strip stays small regardless of
+/// how large the display range is. The horizontal position is derived from
+/// [MultiDayViewController.pageOffset] and applied synchronously in [build], so
+/// re-anchoring the window and its offset compensation happen on the same frame
+/// (no visible jump).
+class _FreeScrollMultiDayBand extends StatefulWidget {
+  final MultiDayViewController viewController;
+  final HorizontalConfiguration configuration;
+  final CalendarComponents components;
+
+  const _FreeScrollMultiDayBand({
+    required this.viewController,
+    required this.configuration,
+    required this.components,
+  });
+
+  @override
+  State<_FreeScrollMultiDayBand> createState() => _FreeScrollMultiDayBandState();
+}
+
+class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
+  double _dayWidth = 0;
+  int _numberOfDays = 1;
+  int _numberOfPages = 1;
+
+  /// The absolute day index of the first day of the currently rendered window.
+  int? _domainStart;
+
+  /// Extra days rendered on each side of the visible window so tiles that scroll
+  /// in are already laid out.
+  int get _bufferDays => _numberOfDays;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.viewController.pageOffset.addListener(_maybeReanchor);
+  }
+
+  @override
+  void didUpdateWidget(covariant _FreeScrollMultiDayBand oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.viewController != widget.viewController) {
+      oldWidget.viewController.pageOffset.removeListener(_maybeReanchor);
+      widget.viewController.pageOffset.addListener(_maybeReanchor);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.viewController.pageOffset.removeListener(_maybeReanchor);
+    super.dispose();
+  }
+
+  /// The current leftmost visible day as a fractional absolute day index.
+  ///
+  /// Falls back to the view's initial page until the page controller is
+  /// attached, because it does not notify [MultiDayViewController.pageOffset] on
+  /// first attach.
+  double _currentPage() {
+    final controller = widget.viewController.pageController;
+    if (controller.hasClients && controller.positions.length == 1 && controller.position.hasPixels) {
+      return controller.page ?? widget.viewController.initialPage.toDouble();
+    }
+    return widget.viewController.initialPage.toDouble();
+  }
+
+  int _clampStart(int start) {
+    if (start < 0) return 0;
+    final maxStart = _numberOfPages - 1;
+    return start > maxStart ? maxStart : start;
+  }
+
+  /// Re-anchors the rendered window when the leftmost visible day changes. The
+  /// continuous motion itself is applied in [build], so there is nothing to
+  /// correct afterwards.
+  void _maybeReanchor() {
+    if (_dayWidth == 0) return;
+    final desiredStart = _clampStart(_currentPage().floor() - _bufferDays);
+    if (_domainStart == null || desiredStart != _domainStart) {
+      setState(() => _domainStart = desiredStart);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewController = widget.viewController;
+    final viewConfiguration = viewController.viewConfiguration;
+    final pageNavigation = viewConfiguration.pageIndexCalculator;
+    _numberOfDays = viewConfiguration.numberOfDays;
+    _numberOfPages = viewController.numberOfPages;
+
+    final headerComponents = widget.components.multiDayComponents.headerComponents;
+    final componentStyles = widget.components.multiDayComponentStyles.headerStyles;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final pageWidth = constraints.maxWidth;
+        final dayWidth = pageWidth / _numberOfDays;
+        _dayWidth = dayWidth;
+
+        final start = _domainStart ??= _clampStart(_currentPage().floor() - _bufferDays);
+        final maxCount = _numberOfPages - start;
+        final requested = _numberOfDays + 2 * _bufferDays;
+        final domainCount = requested > maxCount ? maxCount : (requested < 1 ? 1 : requested);
+
+        final rangeStart = pageNavigation.dateTimeRangeFromIndex(start, context.location).start;
+        final rangeEnd = pageNavigation.dateTimeRangeFromIndex(start + domainCount - 1, context.location).end;
+        final windowRange = InternalDateTimeRange(start: rangeStart, end: rangeEnd);
+        final windowDates = windowRange.dates();
+        final bandWidth = domainCount * dayWidth;
+
+        // Re-anchor once the real scroll position is known (the page controller
+        // may not be attached on the first frames).
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _maybeReanchor();
+        });
+
+        // Built once per window, not on every scroll frame.
+        final content = SizedBox(
+          width: bandWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              WeekDayHeaders(dates: windowDates, dayHeaderBuilder: DayHeader.fromContext),
+              if (widget.configuration.showTiles)
+                ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: widget.configuration.tileHeight),
+                  child: MultiDayEventWidget(
+                    eventsController: context.eventsController,
+                    internalDateTimeRange: windowRange,
+                    configuration: widget.configuration,
+                    multiDayCache: viewController.multiDayCache,
+                    maxNumberOfVerticalEvents: null,
+                    overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
+                    overlayStyles: componentStyles.overlayStyles ?? widget.components.overlayStyles,
+                  ),
+                ),
+            ],
+          ),
+        );
+
+        // A non-scrolling horizontal viewport sizes its height to the content,
+        // lets the strip exceed the viewport width, and clips. The strip is
+        // parked at offset 0; the translate below does the windowing. Computing
+        // the translate here (not in a post-frame callback) keeps it in lockstep
+        // with a re-anchor so pages do not flicker.
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          child: ValueListenableBuilder<double>(
+            valueListenable: viewController.pageOffset,
+            child: content,
+            builder: (context, _, child) {
+              final maxTranslate = bandWidth - pageWidth;
+              final raw = (_currentPage() - start) * dayWidth;
+              final translate = maxTranslate <= 0 ? 0.0 : raw.clamp(0.0, maxTranslate);
+              return Transform.translate(offset: Offset(-translate, 0), child: child);
+            },
+          ),
+        );
+      },
     );
   }
 }
