@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783585572881,
+  "lastUpdate": 1783585575271,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -14954,6 +14954,198 @@ window.BENCHMARK_DATA = {
             "range": "± 0.28",
             "unit": "ms",
             "extra": "p90_build=1.13ms p99_build=12.81ms missed_build=1 avg_raster_sw=8.07ms (runs=5)"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "faf96205878a671c295fd5715b5e359e34df4029",
+          "message": "Merge pull request #291 from werner-scholtz/perf/overlap-rounding\n\nfix: back-to-back events no longer render as overlapping at some zooms",
+          "timestamp": "2026-07-09T09:58:55+02:00",
+          "tree_id": "c4108a76312aaf63606407536432071b7562d0fd",
+          "url": "https://github.com/werner-scholtz/kalender/commit/faf96205878a671c295fd5715b5e359e34df4029"
+        },
+        "date": 1783585575017,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "ten_events_per_day-week-loadingEvents / avg_build_ms",
+            "value": 1.5647333333333333,
+            "range": "± 0.09",
+            "unit": "ms",
+            "extra": "p90_build=4.49ms p99_build=8.97ms missed_build=0 avg_raster_sw=6.81ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-navigation / avg_build_ms",
+            "value": 10.182466666666667,
+            "range": "± 0.36",
+            "unit": "ms",
+            "extra": "p90_build=28.48ms p99_build=33.55ms missed_build=4 avg_raster_sw=11.30ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-scrolling / avg_build_ms",
+            "value": 2.1514285714285712,
+            "range": "± 0.65",
+            "unit": "ms",
+            "extra": "p90_build=2.50ms p99_build=4.11ms missed_build=0 avg_raster_sw=11.94ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-rescheduling / avg_build_ms",
+            "value": 1.1289484536082477,
+            "range": "± 0.13",
+            "unit": "ms",
+            "extra": "p90_build=2.53ms p99_build=3.87ms missed_build=0 avg_raster_sw=12.44ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-week-resizing / avg_build_ms",
+            "value": 0.6999565217391305,
+            "range": "± 0.16",
+            "unit": "ms",
+            "extra": "p90_build=2.51ms p99_build=3.49ms missed_build=0 avg_raster_sw=11.49ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-loadingEvents / avg_build_ms",
+            "value": 8.542720000000001,
+            "range": "± 0.88",
+            "unit": "ms",
+            "extra": "p90_build=25.21ms p99_build=27.52ms missed_build=7 avg_raster_sw=10.07ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-navigation / avg_build_ms",
+            "value": 17.4839,
+            "range": "± 2.71",
+            "unit": "ms",
+            "extra": "p90_build=43.55ms p99_build=54.45ms missed_build=4 avg_raster_sw=10.33ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-rescheduling / avg_build_ms",
+            "value": 1.3990291262135919,
+            "range": "± 0.07",
+            "unit": "ms",
+            "extra": "p90_build=3.96ms p99_build=8.65ms missed_build=0 avg_raster_sw=9.81ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-month-resizing / avg_build_ms",
+            "value": 0.5305217391304348,
+            "range": "± 0.09",
+            "unit": "ms",
+            "extra": "p90_build=0.32ms p99_build=4.51ms missed_build=0 avg_raster_sw=6.71ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-loadingEvents / avg_build_ms",
+            "value": 6.891892857142857,
+            "range": "± 0.89",
+            "unit": "ms",
+            "extra": "p90_build=22.70ms p99_build=28.02ms missed_build=6 avg_raster_sw=7.44ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-navigation / avg_build_ms",
+            "value": 29.61863636363636,
+            "range": "± 4.73",
+            "unit": "ms",
+            "extra": "p90_build=47.88ms p99_build=67.48ms missed_build=9 avg_raster_sw=8.01ms (runs=5)"
+          },
+          {
+            "name": "ten_events_per_day-schedule-rescheduling / avg_build_ms",
+            "value": 1.0381891891891895,
+            "range": "± 0.15",
+            "unit": "ms",
+            "extra": "p90_build=2.49ms p99_build=12.03ms missed_build=1 avg_raster_sw=7.56ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-loadingEvents / avg_build_ms",
+            "value": 17.001954545454545,
+            "range": "± 0.96",
+            "unit": "ms",
+            "extra": "p90_build=52.92ms p99_build=75.01ms missed_build=7 avg_raster_sw=17.86ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-navigation / avg_build_ms",
+            "value": 51.4655,
+            "range": "± 13.32",
+            "unit": "ms",
+            "extra": "p90_build=102.63ms p99_build=102.63ms missed_build=1 avg_raster_sw=32.89ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-scrolling / avg_build_ms",
+            "value": 1.489047619047619,
+            "range": "± 0.21",
+            "unit": "ms",
+            "extra": "p90_build=1.81ms p99_build=4.91ms missed_build=0 avg_raster_sw=6.30ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-rescheduling / avg_build_ms",
+            "value": 0.1294311926605505,
+            "range": "± 0",
+            "unit": "ms",
+            "extra": "p90_build=0.15ms p99_build=0.17ms missed_build=0 avg_raster_sw=5.32ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-week-resizing / avg_build_ms",
+            "value": 0.13221052631578947,
+            "range": "± 0",
+            "unit": "ms",
+            "extra": "p90_build=0.15ms p99_build=0.17ms missed_build=0 avg_raster_sw=5.55ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-loadingEvents / avg_build_ms",
+            "value": 8.228604651162788,
+            "range": "± 0.98",
+            "unit": "ms",
+            "extra": "p90_build=20.60ms p99_build=34.91ms missed_build=14 avg_raster_sw=9.10ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-navigation / avg_build_ms",
+            "value": 20.2789,
+            "range": "± 0.59",
+            "unit": "ms",
+            "extra": "p90_build=51.12ms p99_build=68.98ms missed_build=4 avg_raster_sw=11.00ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-rescheduling / avg_build_ms",
+            "value": 1.8004565217391302,
+            "range": "± 0.2",
+            "unit": "ms",
+            "extra": "p90_build=5.15ms p99_build=10.27ms missed_build=0 avg_raster_sw=9.82ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-month-resizing / avg_build_ms",
+            "value": 0.7729565217391305,
+            "range": "± 0.11",
+            "unit": "ms",
+            "extra": "p90_build=2.62ms p99_build=7.05ms missed_build=0 avg_raster_sw=7.01ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-loadingEvents / avg_build_ms",
+            "value": 5.100116883116882,
+            "range": "± 0.3",
+            "unit": "ms",
+            "extra": "p90_build=14.58ms p99_build=17.68ms missed_build=6 avg_raster_sw=8.34ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-navigation / avg_build_ms",
+            "value": 25.381923076923083,
+            "range": "± 1.94",
+            "unit": "ms",
+            "extra": "p90_build=42.68ms p99_build=48.67ms missed_build=10 avg_raster_sw=8.10ms (runs=5)"
+          },
+          {
+            "name": "fifty_events_per_day-schedule-rescheduling / avg_build_ms",
+            "value": 1.1607578947368413,
+            "range": "± 0.04",
+            "unit": "ms",
+            "extra": "p90_build=1.56ms p99_build=17.09ms missed_build=2 avg_raster_sw=8.64ms (runs=5)"
           }
         ]
       }
