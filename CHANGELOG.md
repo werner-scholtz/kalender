@@ -19,11 +19,6 @@
 - Added a regression sweep that back-to-back events stay in separate groups across a wide range of zoom levels, start offsets and durations. [#291](https://github.com/werner-scholtz/kalender/pull/291)
 - Added coverage that off-screen day tiles are culled and rebuilt when scrolled into view, and that a partially visible tile stays built. [#292](https://github.com/werner-scholtz/kalender/pull/292)
 
-### Internal
-
-- Removed the 60/120 fps budget lines from the benchmark dashboard, since the frame numbers come from a shared CI runner of unknown and varying spec. The millisecond charts now read as relative trends between commits. [#294](https://github.com/werner-scholtz/kalender/pull/294)
-- The demo-site deploy now preserves the `dev/bench` benchmark data.
-
 ## 0.19.0
 
 ### Breaking Changes
