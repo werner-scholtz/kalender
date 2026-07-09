@@ -9,10 +9,14 @@ import 'package:kalender/kalender.dart';
 // used a single conversion, so their boundaries differed by a floating point
 // hair and the 0.1px rounding could split them the wrong way.
 void main() {
+  // Use local wall-clock times. With location null the layout converts event
+  // times to the system timezone, so building the events in local time keeps
+  // them on the delegate's date on any machine. UTC times would shift to a
+  // different day under a non-UTC timezone and the events would be clamped out.
   CalendarEvent event(int startSeconds, int endSeconds) => CalendarEvent(
         dateTimeRange: DateTimeRange(
-          start: DateTime.utc(2024, 1, 1).add(Duration(seconds: startSeconds)),
-          end: DateTime.utc(2024, 1, 1).add(Duration(seconds: endSeconds)),
+          start: DateTime(2024, 1, 1).add(Duration(seconds: startSeconds)),
+          end: DateTime(2024, 1, 1).add(Duration(seconds: endSeconds)),
         ),
       );
 
