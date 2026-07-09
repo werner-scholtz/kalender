@@ -68,7 +68,11 @@ class MultiDayViewController extends ViewController {
   /// The page controller used by the view.
   late final LinkedPageController pageController;
 
-  /// The page controller used by the header. (Linked to [pageController])
+  /// The page controller for the paged single-day and multi-day headers, linked
+  /// to [pageController] so the header and body scroll together.
+  ///
+  /// The free-scroll header does not use it. It renders one continuous band and
+  /// derives its position from [pageOffset] instead.
   late final LinkedPageController headerController;
 
   /// The scroll controller used by the view.
