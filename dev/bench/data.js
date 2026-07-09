@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783584408178,
+  "lastUpdate": 1783585572881,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4075,6 +4075,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 1707.3163418290856,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "faf96205878a671c295fd5715b5e359e34df4029",
+          "message": "Merge pull request #291 from werner-scholtz/perf/overlap-rounding\n\nfix: back-to-back events no longer render as overlapping at some zooms",
+          "timestamp": "2026-07-09T09:58:55+02:00",
+          "tree_id": "c4108a76312aaf63606407536432071b7562d0fd",
+          "url": "https://github.com/werner-scholtz/kalender/commit/faf96205878a671c295fd5715b5e359e34df4029"
+        },
+        "date": 1783585569236,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 176.83814159292035,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 711.55625,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2088.118,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8229.304,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 736.6025,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2254.258,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2442.193,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12497.86875,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 248.70557061868377,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 110.11024862189223,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 776.26,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3329.9235382308843,
             "unit": "us"
           }
         ]
