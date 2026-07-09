@@ -12,12 +12,11 @@
     index.html when one does not already exist, so this custom page persists; benchmark runs only
     update the sibling data.js.
 
-    It reads the same `window.BENCHMARK_DATA` and adds four things the default template lacks:
+    It reads the same `window.BENCHMARK_DATA` and adds three things the default template lacks:
       1. Human-readable chart titles (display-only; the underlying series keys are untouched so
          backfilled history is preserved).
-      2. Frame-budget reference lines (60 fps / 120 fps) on every ms-unit chart.
-      3. A consolidated overview trend per suite.
-      4. Frame charts grouped by view · workload, with one line per event-count scenario, so the
+      2. A consolidated overview trend per suite.
+      3. Frame charts grouped by view · workload, with one line per event-count scenario, so the
          same operation (e.g. Week · loading) is compared across 10 vs 50 events/day on one chart.
   -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -58,17 +57,11 @@
 <body>
   <h1>Kalender Performance Benchmarks</h1>
   <div class="meta" id="meta"></div>
-  <div class="legend-note">↓ Lower is better on every chart. Dashed lines on millisecond charts mark the per-frame budget: <strong>16.7 ms</strong> (60 fps) and <strong>8.3 ms</strong> (120 fps).</div>
+  <div class="legend-note">↓ Lower is better on every chart. Frame timings come from a shared GitHub runner (<code>ubuntu-latest</code>) whose hardware is unknown and varies between runs, and a CI VM is not a real device. Read the millisecond charts as relative trends between commits, not as absolute frame rates. The micro-benchmarks are the primary signal.</div>
   <div id="root"></div>
   <script src="data.js"></script>
   <script>
     "use strict";
-
-    // 60 fps and 120 fps per-frame budgets, in milliseconds.
-    var BUDGETS = [
-      { label: "60 fps (16.7 ms)", value: 16.7, color: "#dc2626" },
-      { label: "120 fps (8.3 ms)", value: 8.3, color: "#f59e0b" },
-    ];
 
     // Explicit friendly titles for the micro-benchmark series keys.
     var MICRO_LABELS = {
@@ -90,7 +83,6 @@
       rescheduling: "rescheduling", resizing: "resizing",
     };
     // Line colour per event-count scenario, so a scenario reads the same across every frame chart.
-    // Kept clear of the budget-line colours (red / amber) below.
     var SCENARIO_COLORS = { ten_events_per_day: "#2563eb", fifty_events_per_day: "#7c3aed" };
 
     function titleCase(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -176,17 +168,8 @@
       el.style.top = (top + window.scrollY) + "px";
     }
 
-    function budgetDatasets(labels) {
-      return BUDGETS.map(function (b) {
-        return {
-          label: b.label, data: labels.map(function () { return b.value; }),
-          borderColor: b.color, borderDash: [6, 4], borderWidth: 1, pointRadius: 0, fill: false, tension: 0,
-        };
-      });
-    }
-
     function makeChart(canvas, cfg) {
-      // cfg: { labels, commits, unit, title, isMs, series:[{label, points:[{y,unit,range,extra}|null], color}] }
+      // cfg: { labels, commits, unit, title, series:[{label, points:[{y,unit,range,extra}|null], color}] }
       var multi = cfg.series.length > 1;
       var datasets = cfg.series.map(function (s) {
         return {
@@ -196,9 +179,6 @@
           _meta: s.points,
         };
       });
-      if (cfg.isMs) {
-        datasets = datasets.concat(budgetDatasets(cfg.labels).map(function (d) { d._budget = true; return d; }));
-      }
 
       new Chart(canvas.getContext("2d"), {
         type: "line",
@@ -207,11 +187,10 @@
           responsive: true, maintainAspectRatio: false,
           interaction: { mode: "index", intersect: false },
           plugins: {
-            legend: { display: cfg.isMs || multi, labels: { boxHeight: 2, font: { size: 10 } } },
+            legend: { display: multi, labels: { boxHeight: 2, font: { size: 10 } } },
             tooltip: {
               enabled: false,
               external: externalTooltip,
-              filter: function (item) { return !item.dataset._budget; }, // budget lines are constant refs
               callbacks: {
                 title: function (items) {
                   var c = cfg.commits[items[0].dataIndex] || {};
@@ -257,7 +236,7 @@
             groupIndex[groupKey] = cards.length;
             cards.push({
               title: titleCase(fk.view) + " · " + (WORKLOADS[fk.workload] || fk.workload),
-              series: [], isMs: unit === "ms", unit: unit,
+              series: [], unit: unit,
             });
           }
           var card = cards[groupIndex[groupKey]];
@@ -270,7 +249,7 @@
           cards.push({
             title: friendlyName(suiteName, name),
             series: [{ label: friendlyName(suiteName, name), points: pts, color: palette[paletteIdx++ % palette.length] }],
-            isMs: unit === "ms", unit: unit,
+            unit: unit,
           });
         }
       });
@@ -289,7 +268,7 @@
           var m = median(vals);
           return m == null ? null : { y: m, unit: "ms" };
         });
-        return { points: pts, unit: "ms", title: "Overview · median build time", isMs: true };
+        return { points: pts, unit: "ms", title: "Overview · median build time" };
       }
       var baseline = {};
       built.order.forEach(function (n) {
@@ -305,7 +284,7 @@
         var mean = ratios.reduce(function (a, b) { return a + b; }, 0) / ratios.length;
         return { y: Math.round(mean * 1000) / 10, unit: "% of baseline" };
       });
-      return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit", isMs: false };
+      return { points: pts2, unit: "% of baseline", title: "Overview · relative to first commit" };
     }
 
     function render() {
@@ -336,7 +315,7 @@
         ovCard.innerHTML = '<h3>' + ov.title + '</h3><div class="chart-wrap"><canvas></canvas></div>';
         root.appendChild(ovCard);
         makeChart(ovCard.querySelector("canvas"), {
-          labels: built.labels, commits: built.commits, unit: ov.unit, title: ov.title, isMs: ov.isMs,
+          labels: built.labels, commits: built.commits, unit: ov.unit, title: ov.title,
           series: [{ label: ov.title, points: ov.points, color: "#4f46e5" }],
         });
 
@@ -351,7 +330,7 @@
           grid.appendChild(el);
           makeChart(el.querySelector("canvas"), {
             labels: built.labels, commits: built.commits, unit: card.unit,
-            title: card.title, isMs: card.isMs, series: card.series,
+            title: card.title, series: card.series,
           });
         });
       });
