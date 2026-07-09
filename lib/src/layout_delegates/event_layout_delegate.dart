@@ -158,6 +158,19 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     return height;
   }
 
+  /// The pixel offset of [instant] from the top of the day.
+  ///
+  /// Both the top and bottom of an event are derived from this single
+  /// conversion. Computing them the same way is what guarantees that two
+  /// back-to-back events (where one ends exactly when the next begins) get
+  /// bit-identical boundaries, so they never register as overlapping because of
+  /// floating point differences.
+  double _offsetFromDayStart(InternalDateTime instant) {
+    final dateStart = timeOfDayRange.start.toInternalDateTime(date);
+    final difference = instant.difference(dateStart);
+    return difference.inSeconds * heightPerMinute / 60;
+  }
+
   /// Calculates the distance from the start of the day to the start of the [event].
   ///
   /// [event] - The event to calculate the distance from.
@@ -165,10 +178,7 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   /// * Note: this takes into account the [TimeOfDayRange] of the [EventLayoutDelegate].
   double calculateDistanceFromStart(CalendarEvent event) {
     final eventStart = event.internalRange(location: location).dateTimeRangeOnDate(date)?.start ?? date.startOfDay;
-    final dateStart = timeOfDayRange.start.toInternalDateTime(date);
-    final difference = eventStart.difference(dateStart);
-    final height = difference.inSeconds * heightPerMinute / 60;
-    return height;
+    return _offsetFromDayStart(eventStart);
   }
 
   /// This is used to sort the vertical layout data after calculation.
@@ -213,9 +223,20 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
   }
 
   VerticalLayoutData _calculateSingleEventLayout(int id, Size size, CalendarEvent event) {
-    var top = calculateDistanceFromStart(event);
-    final height = calculateHeight(event);
-    var bottom = top + height;
+    final range = event.internalRange(location: location).dateTimeRangeOnDate(date);
+    final eventStart = range?.start ?? date.startOfDay;
+    final eventEnd = range?.end ?? date.startOfDay;
+
+    var top = _offsetFromDayStart(eventStart);
+    // Derive the bottom from the end instant with the same conversion as the
+    // top (not top + height), so a touching neighbour's top matches this bottom
+    // exactly and they are never treated as overlapping.
+    var bottom = _offsetFromDayStart(eventEnd);
+
+    // Enforce the minimum tile height as a floor on the rendered height.
+    if (minimumTileHeight != null && bottom - top < minimumTileHeight!) {
+      bottom = top + minimumTileHeight!;
+    }
 
     final overlap = size.height - bottom;
     // Check if the event is outside the bounds of the widget.
