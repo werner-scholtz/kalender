@@ -448,7 +448,10 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
               final maxTranslate = bandWidth - pageWidth;
               final raw = (_currentPage() - start) * dayWidth;
               final translate = maxTranslate <= 0 ? 0.0 : raw.clamp(0.0, maxTranslate);
-              return Transform.translate(offset: Offset(-translate, 0), child: child);
+              // In right-to-left the day columns are mirrored, so scrolling
+              // forward moves the strip the other way.
+              final sign = Directionality.of(context) == TextDirection.rtl ? 1.0 : -1.0;
+              return Transform.translate(offset: Offset(sign * translate, 0), child: child);
             },
           ),
         );
