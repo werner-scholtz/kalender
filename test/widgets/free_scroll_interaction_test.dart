@@ -30,6 +30,8 @@ void main() {
     modifyEventGesture: CreateEventGesture.tap,
   );
 
+  MultiDayViewController viewController() => calendarController.viewController as MultiDayViewController;
+
   Future<void> pumpFreeScroll(WidgetTester tester, CalendarCallbacks callbacks) {
     return pumpAndSettleWithMaterialApp(
       tester,
@@ -110,5 +112,43 @@ void main() {
 
     expect(changedBefore, isNotNull, reason: 'dragging a multi-day tile should reschedule it');
     expect(changedAfter, isNotNull, reason: 'the reschedule should be confirmed');
+  });
+
+  testWidgets('dragging an event to the viewport edge scrolls to adjacent days', (tester) async {
+    final id = eventsController.addEvent(
+      CalendarEvent(
+        dateTimeRange: DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
+      ),
+    );
+
+    await pumpFreeScroll(
+      tester,
+      CalendarCallbacks(
+        onEventChange: (event) => event,
+        onEventChanged: (_, __) {},
+      ),
+    );
+
+    final controller = viewController().pageController;
+    final pageBefore = controller.page ?? 0;
+
+    final tile = find.byKey(MultiDayEventTile.tileKey(id));
+    expect(tile, findsOneWidget);
+    final headerRect = tester.getRect(find.byType(CalendarHeader));
+    final tileCenter = tester.getCenter(tile);
+
+    // Start a reschedule drag and hold it over the right viewport edge.
+    final gesture = await tester.startGesture(tileCenter);
+    await tester.pump();
+    await gesture.moveTo(Offset(headerRect.right - 2, tileCenter.dy));
+    await tester.pump(); // the edge trigger's drag target starts its timer
+    // The trigger fires after its 750ms delay, then the page animates (300ms).
+    await tester.pump(const Duration(milliseconds: 800));
+    await tester.pump(const Duration(milliseconds: 350));
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    final pageAfter = viewController().pageController.page ?? 0;
+    expect(pageAfter, greaterThan(pageBefore), reason: 'holding a drag at the edge should scroll toward it');
   });
 }

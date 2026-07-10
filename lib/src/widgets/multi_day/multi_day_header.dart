@@ -4,6 +4,7 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/drag_targets/horizontal_drag_target.dart';
 import 'package:kalender/src/widgets/draggable/multi_day_draggable.dart';
 import 'package:kalender/src/widgets/events_widgets/multi_day_events_widget.dart';
+import 'package:kalender/src/widgets/internal_components/cursor_navigation_trigger.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart';
 import 'package:kalender/src/widgets/internal_components/multi_day_header_layout.dart';
 import 'package:kalender/src/widgets/internal_components/week_day_headers.dart';
@@ -419,8 +420,11 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                       child: HorizontalDragTarget(
                         visibleDateTimeRange: windowRange,
                         configuration: widget.configuration,
-                        leftPageTrigger: headerComponents.leftTriggerBuilder,
-                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                        // The page-edge triggers are anchored to the viewport
+                        // below, not to this window-wide (translated) target,
+                        // so disable the built-in ones here.
+                        leftPageTrigger: (_) => const SizedBox.shrink(),
+                        rightPageTrigger: (_) => const SizedBox.shrink(),
                       ),
                     ),
                   ],
@@ -434,7 +438,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
         // parked at offset 0; the translate below does the windowing. Computing
         // the translate here (not in a post-frame callback) keeps it in lockstep
         // with a re-anchor so pages do not flicker.
-        return SingleChildScrollView(
+        final band = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const NeverScrollableScrollPhysics(),
           child: ValueListenableBuilder<double>(
@@ -447,6 +451,38 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
               return Transform.translate(offset: Offset(-translate, 0), child: child);
             },
           ),
+        );
+
+        if (!widget.configuration.showTiles) return band;
+
+        // Page-edge auto-scroll: while a drag hovers the viewport edge, advance
+        // to the adjacent day. These triggers are anchored to the viewport (not
+        // the translated strip), so they stay reachable at the visible edge.
+        final pageTrigger = widget.configuration.pageTriggerConfiguration;
+        final triggerWidth = pageWidth / 50;
+        Widget edgeTrigger({required bool leading}) {
+          final builder = leading ? headerComponents.leftTriggerBuilder : headerComponents.rightTriggerBuilder;
+          return CursorNavigationTrigger(
+            triggerDelay: pageTrigger.triggerDelay,
+            onTrigger: () => leading
+                ? viewController.animateToPreviousPage(
+                    duration: pageTrigger.animationDuration,
+                    curve: pageTrigger.animationCurve,
+                  )
+                : viewController.animateToNextPage(
+                    duration: pageTrigger.animationDuration,
+                    curve: pageTrigger.animationCurve,
+                  ),
+            child: builder?.call(pageWidth) ?? ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+          );
+        }
+
+        return Stack(
+          children: [
+            band,
+            PositionedDirectional(start: 0, top: 0, bottom: 0, child: edgeTrigger(leading: true)),
+            PositionedDirectional(end: 0, top: 0, bottom: 0, child: edgeTrigger(leading: false)),
+          ],
         );
       },
     );
