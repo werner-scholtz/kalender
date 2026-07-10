@@ -8,7 +8,7 @@ class PageTriggerConfiguration {
     this.triggerDelay = const Duration(milliseconds: 750),
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOut,
-    double Function(double pageWidth)? triggerWidth,
+    this.triggerWidth,
   }) : assert(
           animationDuration <= triggerDelay,
           'The animation duration must be less or equal to the page trigger delay.',
@@ -17,7 +17,8 @@ class PageTriggerConfiguration {
   const PageTriggerConfiguration.defaultConfiguration()
       : triggerDelay = const Duration(milliseconds: 750),
         animationDuration = const Duration(milliseconds: 300),
-        animationCurve = Curves.easeInOut;
+        animationCurve = Curves.easeInOut,
+        triggerWidth = null;
 
   /// The widget that is rendered above the top page trigger.
   final Duration triggerDelay;
@@ -27,6 +28,10 @@ class PageTriggerConfiguration {
 
   /// The curve of the page animation.
   final Curve animationCurve;
+
+  /// Width of the edge strip that triggers a page change, given the page width.
+  /// Defaults to `pageWidth / 50` when null.
+  final double Function(double pageWidth)? triggerWidth;
 
   /// Creates a copy of this [PageTriggerConfiguration] but with the given fields replaced with the new values.
   PageTriggerConfiguration copyWith({
@@ -39,6 +44,7 @@ class PageTriggerConfiguration {
       triggerDelay: triggerDelay ?? this.triggerDelay,
       animationDuration: animationDuration ?? this.animationDuration,
       animationCurve: animationCurve ?? this.animationCurve,
+      triggerWidth: triggerWidth ?? this.triggerWidth,
     );
   }
 
@@ -49,7 +55,8 @@ class PageTriggerConfiguration {
     return other is PageTriggerConfiguration &&
         other.triggerDelay == triggerDelay &&
         other.animationDuration == animationDuration &&
-        other.animationCurve == animationCurve;
+        other.animationCurve == animationCurve &&
+        other.triggerWidth == triggerWidth;
   }
 
   @override
@@ -58,6 +65,7 @@ class PageTriggerConfiguration {
       triggerDelay,
       animationDuration,
       animationCurve,
+      triggerWidth,
     );
   }
 }

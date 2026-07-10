@@ -26,9 +26,10 @@ class CursorNavigationTrigger extends StatefulWidget {
   ///
   /// [forward] picks the direction: `true` goes to the next page, `false` to the
   /// previous one. Both use the delay, duration, and curve from [configuration].
-  /// When no [builder] is given it falls back to an edge strip [pageWidth] / 50
-  /// wide. The trigger is meant to sit inside a [Positioned] that pins its top
-  /// and bottom, so the fallback only sets a width.
+  /// When no [builder] is given it falls back to an edge strip sized by
+  /// [configuration]'s `triggerWidth` (or [pageWidth] / 50 by default). The
+  /// trigger is meant to sit inside a [Positioned] that pins its top and bottom,
+  /// so the fallback only sets a width.
   factory CursorNavigationTrigger.page({
     Key? key,
     required PageTriggerConfiguration configuration,
@@ -37,6 +38,7 @@ class CursorNavigationTrigger extends StatefulWidget {
     required double pageWidth,
     HorizontalTriggerWidgetBuilder? builder,
   }) {
+    final triggerWidth = configuration.triggerWidth?.call(pageWidth) ?? pageWidth / 50;
     return CursorNavigationTrigger(
       key: key,
       triggerDelay: configuration.triggerDelay,
@@ -49,7 +51,7 @@ class CursorNavigationTrigger extends StatefulWidget {
               duration: configuration.animationDuration,
               curve: configuration.animationCurve,
             ),
-      child: builder?.call(pageWidth) ?? ConstrainedBox(constraints: BoxConstraints.expand(width: pageWidth / 50)),
+      child: builder?.call(pageWidth) ?? ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
     );
   }
 
