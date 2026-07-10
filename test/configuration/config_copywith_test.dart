@@ -87,5 +87,20 @@ void main() {
         expect(config.copyWith(numberOfDays: 5).numberOfDays, 5);
       });
     });
+
+    group('PageTriggerConfiguration', () {
+      double half(double pageWidth) => pageWidth / 2;
+      final config = PageTriggerConfiguration(triggerDelay: const Duration(seconds: 1), triggerWidth: half);
+
+      test('preserves triggerWidth when copying another field', () {
+        final copy = config.copyWith(triggerDelay: const Duration(seconds: 2));
+        expect(copy.triggerWidth, same(half));
+        expect(copy.triggerWidth!(100), 50);
+      });
+
+      test('updates the copied field', () {
+        expect(config.copyWith(triggerWidth: (w) => 40).triggerWidth!(100), 40);
+      });
+    });
   });
 }

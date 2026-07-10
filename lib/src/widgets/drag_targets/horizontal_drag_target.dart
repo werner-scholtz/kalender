@@ -135,25 +135,20 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
             // Check if the candidateData is null.
             if (candidateData.firstOrNull == null) return const SizedBox();
 
-            final triggerWidth = pageWidth / 50;
-            final pageAnimationDuration = pageTrigger.animationDuration;
-            final pageTriggerDelay = pageTrigger.triggerDelay;
-            final pageAnimationCurve = pageTrigger.animationCurve;
-
-            final rightTrigger = CursorNavigationTrigger(
-              triggerDelay: pageTriggerDelay,
-              onTrigger: () =>
-                  viewController.animateToNextPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
-              child: widget.rightPageTrigger?.call(pageWidth) ??
-                  ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+            final rightTrigger = CursorNavigationTrigger.page(
+              configuration: pageTrigger,
+              viewController: viewController,
+              forward: true,
+              pageWidth: pageWidth,
+              builder: widget.rightPageTrigger,
             );
 
-            final leftTrigger = CursorNavigationTrigger(
-              triggerDelay: pageTriggerDelay,
-              onTrigger: () =>
-                  viewController.animateToPreviousPage(duration: pageAnimationDuration, curve: pageAnimationCurve),
-              child: widget.leftPageTrigger?.call(pageWidth) ??
-                  ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+            final leftTrigger = CursorNavigationTrigger.page(
+              configuration: pageTrigger,
+              viewController: viewController,
+              forward: false,
+              pageWidth: pageWidth,
+              builder: widget.leftPageTrigger,
             );
 
             return Stack(

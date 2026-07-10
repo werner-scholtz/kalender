@@ -207,25 +207,20 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
         if (candidateData.firstOrNull == null) return const SizedBox();
         final components = context.components.multiDayComponents.bodyComponents;
 
-        final triggerWidth = pageWidth / 50;
-        final rightTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTrigger.triggerDelay,
-          onTrigger: () => viewController.animateToNextPage(
-            duration: pageTrigger.animationDuration,
-            curve: pageTrigger.animationCurve,
-          ),
-          child:
-              components.rightTriggerBuilder?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+        final rightTrigger = CursorNavigationTrigger.page(
+          configuration: pageTrigger,
+          viewController: viewController,
+          forward: true,
+          pageWidth: pageWidth,
+          builder: components.rightTriggerBuilder,
         );
 
-        final leftTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTrigger.triggerDelay,
-          onTrigger: () => viewController.animateToPreviousPage(
-            duration: pageTrigger.animationDuration,
-            curve: pageTrigger.animationCurve,
-          ),
-          child:
-              components.leftTriggerBuilder?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+        final leftTrigger = CursorNavigationTrigger.page(
+          configuration: pageTrigger,
+          viewController: viewController,
+          forward: false,
+          pageWidth: pageWidth,
+          builder: components.leftTriggerBuilder,
         );
 
         final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;

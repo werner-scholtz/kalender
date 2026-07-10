@@ -462,21 +462,13 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
         // to the adjacent day. These triggers are anchored to the viewport (not
         // the translated strip), so they stay reachable at the visible edge.
         final pageTrigger = widget.configuration.pageTriggerConfiguration;
-        final triggerWidth = pageWidth / 50;
         Widget edgeTrigger({required bool leading}) {
-          final builder = leading ? headerComponents.leftTriggerBuilder : headerComponents.rightTriggerBuilder;
-          return CursorNavigationTrigger(
-            triggerDelay: pageTrigger.triggerDelay,
-            onTrigger: () => leading
-                ? viewController.animateToPreviousPage(
-                    duration: pageTrigger.animationDuration,
-                    curve: pageTrigger.animationCurve,
-                  )
-                : viewController.animateToNextPage(
-                    duration: pageTrigger.animationDuration,
-                    curve: pageTrigger.animationCurve,
-                  ),
-            child: builder?.call(pageWidth) ?? ConstrainedBox(constraints: BoxConstraints.expand(width: triggerWidth)),
+          return CursorNavigationTrigger.page(
+            configuration: pageTrigger,
+            viewController: viewController,
+            forward: !leading,
+            pageWidth: pageWidth,
+            builder: leading ? headerComponents.leftTriggerBuilder : headerComponents.rightTriggerBuilder,
           );
         }
 

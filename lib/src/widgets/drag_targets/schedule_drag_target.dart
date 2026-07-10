@@ -99,23 +99,20 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
         final pageTrigger = widget.pageTriggerConfiguration;
         final scrollTrigger = widget.scrollTriggerConfiguration;
 
-        late final triggerWidth = pageWidth / 50;
-        late final rightTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTrigger.triggerDelay,
-          onTrigger: () => viewController.animateToNextPage(
-            duration: pageTrigger.animationDuration,
-            curve: pageTrigger.animationCurve,
-          ),
-          child: widget.rightPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+        late final rightTrigger = CursorNavigationTrigger.page(
+          configuration: pageTrigger,
+          viewController: viewController,
+          forward: true,
+          pageWidth: pageWidth,
+          builder: widget.rightPageTrigger,
         );
 
-        late final leftTrigger = CursorNavigationTrigger(
-          triggerDelay: pageTrigger.triggerDelay,
-          onTrigger: () => viewController.animateToPreviousPage(
-            duration: pageTrigger.animationDuration,
-            curve: pageTrigger.animationCurve,
-          ),
-          child: widget.leftPageTrigger?.call(pageWidth) ?? SizedBox(width: triggerWidth, height: viewPortHeight),
+        late final leftTrigger = CursorNavigationTrigger.page(
+          configuration: pageTrigger,
+          viewController: viewController,
+          forward: false,
+          pageWidth: pageWidth,
+          builder: widget.leftPageTrigger,
         );
 
         final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
