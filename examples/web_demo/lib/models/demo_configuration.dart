@@ -38,7 +38,7 @@ class DemoConfiguration extends ChangeNotifier {
     MonthViewConfiguration.singleMonth(displayRange: _displayRange),
     ScheduleViewConfiguration.continuous(name: "Schedule", displayRange: _displayRange),
     ScheduleViewConfiguration.paginated(name: "Paginated Schedule", displayRange: _displayRange),
-    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll (WIP)", displayRange: _displayRange),
+    MultiDayViewConfiguration.freeScroll(numberOfDays: 3, name: "FreeScroll", displayRange: _displayRange),
   ];
 
   /// The body configuration of the calendar.

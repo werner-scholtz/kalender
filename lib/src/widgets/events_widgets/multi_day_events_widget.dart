@@ -240,7 +240,13 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       _dateTimeRange = widget.internalDateTimeRange;
 
       if (shouldUpdateCache) {
-        widget.multiDayCache?.removeCache(_dateTimeRange);
+        // The events, configuration, and text direction apply to every range,
+        // not just the current one, so a change invalidates every cached frame.
+        // The paged headers rebuild each range in its own widget, but the
+        // free-scroll band is a single widget whose range moves as it scrolls.
+        // Dropping only the current range would leave stale frames for the
+        // windows it scrolls back to, so clear the whole cache.
+        widget.multiDayCache?.clearAll();
       }
 
       setState(() {
