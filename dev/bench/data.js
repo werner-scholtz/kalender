@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783677248652,
+  "lastUpdate": 1783678909979,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4915,6 +4915,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3338.4992503748126,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3e3bec7127ae0c3c3b7de98d94b9f6500a8be41",
+          "message": "Merge pull request #309 from werner-scholtz/demo/short-event-readability\n\ndemo: keep short event titles legible at the default zoom",
+          "timestamp": "2026-07-10T12:03:39+02:00",
+          "tree_id": "5a881d5a032a10a4ebc61a5c479fea12d972816b",
+          "url": "https://github.com/werner-scholtz/kalender/commit/b3e3bec7127ae0c3c3b7de98d94b9f6500a8be41"
+        },
+        "date": 1783678906692,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 169.0926476838079,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 700.66625,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2014.107196401799,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7865.445692883895,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 815.0855,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2502.125,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2763.175,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 14134.20979020979,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 242.3681519357195,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 127.02557018952778,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 886.15475,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3790.2027972027972,
             "unit": "us"
           }
         ]
