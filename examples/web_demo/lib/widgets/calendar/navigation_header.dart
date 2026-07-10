@@ -41,7 +41,12 @@ class NavigationHeader extends StatelessWidget {
           child: Row(
             spacing: isTouch ? 2.0 : 4.0,
             children: [
+              // The date label sits alone on the left, before the Spacer, so
+              // navigating (which only changes its text) grows it into empty
+              // space instead of pushing the buttons around. The navigation
+              // controls live in the right-hand cluster.
               HeaderDateButton(controller: controller, compact: maxW < 500),
+              const Spacer(),
               if (showNav) ...[
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
@@ -55,7 +60,6 @@ class NavigationHeader extends StatelessWidget {
                 ),
               ],
               if (!isTouch) TodayButton(controller: controller, compact: isCompact),
-              const Spacer(),
               if (showLocation) LocationMenu(useChips: useChips),
               ViewMenu(
                 viewConfigurations: viewConfigurations,
