@@ -351,27 +351,16 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     // Ignore vertical direction resizing.
     if (!direction.vertical) return null;
 
-    final internalRange = event.internalRange(location: context.location);
-
-    // A vertical resize only changes the time of day, never the day. The
-    // cursor's date comes from its horizontal position, so dragging sideways
-    // (for example starting from the right edge of a column) could otherwise
-    // pull the edge onto the previous day. Pin the cursor to the day of the edge
-    // being dragged, shifting by whole days so the wall-clock time (midnight
-    // included) is preserved.
-    final edge = direction == ResizeDirection.top ? internalRange.start : internalRange.end;
-    final dayShift = edge.startOfDay.difference(cursorDateTime.startOfDay);
-    final pinnedCursor = cursorDateTime.add(dayShift);
-
     // Add now to the snap points.
     late final now = InternalDateTime.fromExternal(DateTime.now(), location: context.location);
     if (snapToTimeIndicator) addSnapPoint(now);
 
-    final cursorSnapPoint = findSnapPoint(pinnedCursor, snapRange) ?? pinnedCursor;
+    final cursorSnapPoint = findSnapPoint(cursorDateTime, snapRange) ?? cursorDateTime;
 
     // Remove now from the snap points.
     if (snapToTimeIndicator) removeSnapPoint(now);
 
+    final internalRange = event.internalRange(location: context.location);
     final dateTimeRange = switch (direction) {
       ResizeDirection.top => calculateDateTimeRangeFromStart(internalRange, cursorSnapPoint),
       ResizeDirection.bottom => calculateDateTimeRangeFromEnd(internalRange, cursorSnapPoint),

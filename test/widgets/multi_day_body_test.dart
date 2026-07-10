@@ -179,6 +179,53 @@ void main() {
           expect(eventsController.events.length, 2, reason: 'There should be 2 events');
         });
       }
+
+      // Regression: a vertical resize took its day from the cursor's horizontal
+      // position, and the drag anchored to the handle's left edge (the column
+      // boundary), so the smallest sideways drift flipped the event to the
+      // neighbouring day. The handle now anchors to the pointer, so a small
+      // drift stays in the same column while a deliberate move still changes the
+      // day.
+      testWidgets('bottom-handle resize with a small horizontal drift keeps the event on its day', (tester) async {
+        // Week view, with the event on a middle day so it has a column on
+        // either side.
+        final weekConfiguration = viewConfigurations[1];
+        final id = eventsController.addEvent(
+          CalendarEvent(
+            dateTimeRange: DateTimeRange(
+              start: start.copyWith(day: start.day + 2, hour: 10),
+              end: start.copyWith(day: start.day + 2, hour: 12),
+            ),
+          ),
+        );
+
+        await pumpCalendarView(tester, weekConfiguration);
+
+        final tile = find.byKey(DayEventTile.tileKey(id));
+        expect(tile, findsOneWidget, reason: 'the event tile should be rendered');
+
+        final gesture = await tester.createMouseGesture();
+        await tester.hoverOn(tile, gesture);
+
+        final bottomHandle = find.descendant(
+          of: tile,
+          matching: find.byKey(ResizeHandles.endResizeDraggableKey(id)),
+        );
+        expect(bottomHandle, findsOneWidget, reason: 'the bottom resize handle should be rendered');
+
+        final before = eventsController.events.firstWhere((event) => event.id == id).dateTimeRange;
+
+        // Drag the handle down, with a small leftward drift that stays inside
+        // the event's own column.
+        await tester.dragFrom(tester.getCenter(bottomHandle), const Offset(-20, 40));
+        await tester.pumpAndSettle();
+
+        final after = eventsController.events.firstWhere((event) => event.id == id).dateTimeRange;
+        expect(after.start, equals(before.start), reason: 'a bottom resize leaves the start untouched');
+        expect(after.end.isAfter(before.end), isTrue, reason: 'the end should extend downward');
+        expect(after.start.day, equals(before.start.day), reason: 'the event must stay on its own day');
+        expect(after.end.day, equals(before.start.day), reason: 'the end must not spill onto the previous day');
+      });
     });
 
     group('Imprecise Gesture Tests', () {
