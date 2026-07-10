@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783663050518,
+  "lastUpdate": 1783664152704,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4411,6 +4411,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3753.722027972028,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3d9ed953c3b47fe453de55699a94521efabc029",
+          "message": "Merge pull request #301 from werner-scholtz/feat/freescroll-cleanup\n\ntest: verify the free-scroll overflow portal and clarify headerController",
+          "timestamp": "2026-07-10T07:54:01+02:00",
+          "tree_id": "72056815a321c37d19c4e88b94bc7f3e686f6423",
+          "url": "https://github.com/werner-scholtz/kalender/commit/b3d9ed953c3b47fe453de55699a94521efabc029"
+        },
+        "date": 1783664149803,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 173.11570247933884,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 693.9635,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2061.484,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7992.704,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 712.62,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2204.188,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2375.308,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 11934.299401197604,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 241.99332241401032,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.87235695654587,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 762.271,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3272.8500749625186,
             "unit": "us"
           }
         ]
