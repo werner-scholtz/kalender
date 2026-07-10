@@ -4,10 +4,13 @@ on:
   push:
     branches: [main]
     # Skip benchmark rebuilds for changes that cannot move the numbers (the static
-    # dashboard page, its deploy workflow, and docs) so history stays meaningful.
+    # dashboard page, its deploy workflow, the web demo, and docs) so history
+    # stays meaningful. The `examples/testing` harness that the frame profiling
+    # drives is deliberately not ignored.
     paths-ignore:
       - 'benchmark/dashboard/**'
       - '.github/workflows/deploy_dashboard.yml'
+      - 'examples/web_demo/**'
       - '**/*.md'
   # PRs only run when labelled `profile` (see the job-level `if` below), so this
   # does not run for every PR.
@@ -29,7 +32,12 @@ concurrency:
 
 jobs:
   benchmark:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'profile')
+    # Empty "web demo" rebuild commits change no files, so the path filter above
+    # does not catch them. Skip those pushes here too.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && !contains(github.event.head_commit.message, 'web demo')) ||
+      contains(github.event.pull_request.labels.*.name, 'profile')
     runs-on: ubuntu-latest
 
     env:
