@@ -55,6 +55,30 @@ class CursorNavigationTrigger extends StatefulWidget {
     );
   }
 
+  /// A scroll trigger that nudges the view along its scroll axis while a drag
+  /// hovers it.
+  ///
+  /// The actual scrolling is left to [onTrigger] because the body scrolls by
+  /// pixels while the schedule scrolls by item index. This only shares the
+  /// delay from [configuration] and the default strip ([triggerHeight] tall,
+  /// [width] wide) used when no [builder] is given.
+  factory CursorNavigationTrigger.scroll({
+    Key? key,
+    required ScrollTriggerConfiguration configuration,
+    required void Function() onTrigger,
+    required double viewPortHeight,
+    required double triggerHeight,
+    required double width,
+    VerticalTriggerWidgetBuilder? builder,
+  }) {
+    return CursorNavigationTrigger(
+      key: key,
+      triggerDelay: configuration.triggerDelay,
+      onTrigger: onTrigger,
+      child: builder?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: width),
+    );
+  }
+
   @override
   State<CursorNavigationTrigger> createState() => _CursorNavigationTriggerState();
 }
