@@ -45,7 +45,7 @@ class EventTile extends BaseEventTile {
         border: Border(left: BorderSide(color: color, width: 3)),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           title(context),
           style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w500),

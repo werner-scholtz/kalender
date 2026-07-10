@@ -89,8 +89,9 @@ List<CalendarEvent> generateEvents(BuildContext context) {
     final isWeekend = weekday == DateTime.saturday || weekday == DateTime.sunday;
 
     if (!isWeekend) {
-      // The daily standup anchors every weekday morning.
-      events.add(timed(day, 9, 0, const Duration(minutes: 15), 'Daily standup', _standupColor));
+      // The daily standup anchors every weekday morning. Kept at 30 minutes so
+      // its title stays legible at the default zoom.
+      events.add(timed(day, 9, 0, const Duration(minutes: 30), 'Daily standup', _standupColor));
 
       // A weekly rhythm that repeats on the same day each week.
       if (weekday == DateTime.monday) {
