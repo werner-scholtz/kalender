@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783668352407,
+  "lastUpdate": 1783673928173,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4747,6 +4747,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 2920.88,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dda55746da2f27c81839a85fe7a7e4bf5e4fe3f4",
+          "message": "Merge pull request #307 from werner-scholtz/demo/navigation-header-layout\n\ndemo: stop the navigation buttons jumping when paging",
+          "timestamp": "2026-07-10T10:40:27+02:00",
+          "tree_id": "43ff07ef5c8b91061b7f00b05672fafa8f4e1783",
+          "url": "https://github.com/werner-scholtz/kalender/commit/dda55746da2f27c81839a85fe7a7e4bf5e4fe3f4"
+        },
+        "date": 1783673924273,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 174.8372749735263,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 698.8525,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2071.096,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8049.372,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 720.17925,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2211.284,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2387.998,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12137.229885057472,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 236.32272619330325,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 108.20384745190685,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 762.92225,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3280.7391304347825,
             "unit": "us"
           }
         ]
