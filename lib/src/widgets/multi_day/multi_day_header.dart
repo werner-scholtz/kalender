@@ -389,7 +389,10 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
           if (mounted) _maybeReanchor();
         });
 
-        // Built once per window, not on every scroll frame.
+        // Built once per window, not on every scroll frame. The multi-day band
+        // layers a create-by-drag target behind the events and a drop/resize
+        // target in front, both over the window range so their day<->pixel
+        // mapping matches the events (same as the paged headers).
         final content = SizedBox(
           width: bandWidth,
           child: Column(
@@ -397,17 +400,30 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
             children: [
               WeekDayHeaders(dates: windowDates, dayHeaderBuilder: DayHeader.fromContext),
               if (widget.configuration.showTiles)
-                ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: widget.configuration.tileHeight),
-                  child: MultiDayEventWidget(
-                    eventsController: context.eventsController,
-                    internalDateTimeRange: windowRange,
-                    configuration: widget.configuration,
-                    multiDayCache: viewController.multiDayCache,
-                    maxNumberOfVerticalEvents: null,
-                    overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
-                    overlayStyles: componentStyles.overlayStyles ?? widget.components.overlayStyles,
-                  ),
+                Stack(
+                  children: [
+                    Positioned.fill(child: MultiDayDraggable(internalRange: windowRange)),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: widget.configuration.tileHeight),
+                      child: MultiDayEventWidget(
+                        eventsController: context.eventsController,
+                        internalDateTimeRange: windowRange,
+                        configuration: widget.configuration,
+                        multiDayCache: viewController.multiDayCache,
+                        maxNumberOfVerticalEvents: null,
+                        overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
+                        overlayStyles: componentStyles.overlayStyles ?? widget.components.overlayStyles,
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: HorizontalDragTarget(
+                        visibleDateTimeRange: windowRange,
+                        configuration: widget.configuration,
+                        leftPageTrigger: headerComponents.leftTriggerBuilder,
+                        rightPageTrigger: headerComponents.rightTriggerBuilder,
+                      ),
+                    ),
+                  ],
                 ),
             ],
           ),
