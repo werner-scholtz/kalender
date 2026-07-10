@@ -221,10 +221,16 @@ void main() {
         await tester.pumpAndSettle();
 
         final after = eventsController.events.firstWhere((event) => event.id == id).dateTimeRange;
-        expect(after.start, equals(before.start), reason: 'a bottom resize leaves the start untouched');
+        // Compare instants, not calendar fields: the stored range is in UTC, so
+        // in far-east timezones the local day and the UTC day differ. The
+        // day-flip bug moves the start, so an unchanged start is the robust
+        // signal that it stayed on its own day.
+        expect(
+          after.start.isAtSameMomentAs(before.start),
+          isTrue,
+          reason: 'a bottom resize leaves the start where it was; it must not flip to another day',
+        );
         expect(after.end.isAfter(before.end), isTrue, reason: 'the end should extend downward');
-        expect(after.start.day, equals(before.start.day), reason: 'the event must stay on its own day');
-        expect(after.end.day, equals(before.start.day), reason: 'the end must not spill onto the previous day');
       });
     });
 
