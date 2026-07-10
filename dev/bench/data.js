@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783664155036,
+  "lastUpdate": 1783666157152,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -4495,6 +4495,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3272.8500749625186,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "82ea80e7c037f98b40b322fcd79b891efd818658",
+          "message": "Merge pull request #303 from werner-scholtz/fix/actions-node24\n\nci: move GitHub actions off deprecated Node.js 20",
+          "timestamp": "2026-07-10T08:29:51+02:00",
+          "tree_id": "603c88e734dc984d1c6b27c11e3b2a6fddf4aae2",
+          "url": "https://github.com/werner-scholtz/kalender/commit/82ea80e7c037f98b40b322fcd79b891efd818658"
+        },
+        "date": 1783666153343,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 175.06520591341078,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 698.47175,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2080.871,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8077.23595505618,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 730.288,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2227.689,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2453.4975,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12233.059880239522,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 244.4389503098044,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.13529936447765,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 769.34,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3299.329835082459,
             "unit": "us"
           }
         ]
