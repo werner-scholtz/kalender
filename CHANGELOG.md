@@ -1,3 +1,13 @@
+## 0.20.0
+
+### Fixes
+
+- Fixed free-scroll multi-day events disappearing after scrolling back to a day before the event's start. The multi-day layout cache is keyed by date range and is shared across the free-scroll band's moving window, so a window cached before an event existed kept returning an event-less frame. Changing events now clears the whole cache instead of only the visible window. [#306](https://github.com/werner-scholtz/kalender/pull/306)
+
+### Tests
+
+- Added coverage that a free-scroll multi-day event stays visible when scrolling back to windows that were cached before the event was created. [#306](https://github.com/werner-scholtz/kalender/pull/306)
+
 ## 0.19.1
 
 ### Features
