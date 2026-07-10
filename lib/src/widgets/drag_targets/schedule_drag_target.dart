@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
@@ -116,47 +118,36 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
         );
 
         final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
-        final topScrollTrigger = CursorNavigationTrigger(
-          triggerDelay: scrollTrigger.triggerDelay,
-          onTrigger: () {
-            if (!viewController.hasInitialized) return;
+        CursorNavigationTrigger scrollTrig(bool forward, VerticalTriggerWidgetBuilder? builder) {
+          return CursorNavigationTrigger.scroll(
+            configuration: scrollTrigger,
+            onTrigger: () {
+              if (!viewController.hasInitialized) return;
 
-            final positions = viewController.itemPositionsListener!.itemPositions.value;
-            if (positions.isEmpty) return;
-            final first = positions.reduce((value, element) => value.index < element.index ? value : element).index;
+              final positions = viewController.itemPositionsListener!.itemPositions.value;
+              if (positions.isEmpty) return;
 
-            final targetIndex = first - 1;
-            if (targetIndex < 0) return;
+              // The item nearest the edge we are scrolling toward, then one past it.
+              final indices = positions.map((position) => position.index);
+              final edge = forward ? indices.reduce(max) : indices.reduce(min);
+              final targetIndex = forward ? edge + 1 : edge - 1;
+              if (targetIndex < 0 || targetIndex >= viewController.itemCount) return;
 
-            viewController.itemScrollController!.scrollTo(
-              index: targetIndex,
-              duration: scrollTrigger.animationDuration,
-              curve: scrollTrigger.animationCurve,
-            );
-          },
-          child: widget.topScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
-        );
+              viewController.itemScrollController!.scrollTo(
+                index: targetIndex,
+                duration: scrollTrigger.animationDuration,
+                curve: scrollTrigger.animationCurve,
+              );
+            },
+            viewPortHeight: viewPortHeight,
+            triggerHeight: triggerHeight,
+            width: pageWidth,
+            builder: builder,
+          );
+        }
 
-        final bottomScrollTrigger = CursorNavigationTrigger(
-          triggerDelay: scrollTrigger.triggerDelay,
-          onTrigger: () {
-            if (!viewController.hasInitialized) return;
-
-            final positions = viewController.itemPositionsListener!.itemPositions.value;
-            if (positions.isEmpty) return;
-
-            final last = positions.reduce((value, element) => value.index > element.index ? value : element).index;
-            final targetIndex = last + 1;
-            if (targetIndex >= viewController.itemCount) return;
-
-            viewController.itemScrollController!.scrollTo(
-              index: targetIndex,
-              duration: scrollTrigger.animationDuration,
-              curve: scrollTrigger.animationCurve,
-            );
-          },
-          child: widget.bottomScrollTrigger?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
-        );
+        final topScrollTrigger = scrollTrig(false, widget.topScrollTrigger);
+        final bottomScrollTrigger = scrollTrig(true, widget.bottomScrollTrigger);
 
         return Stack(
           children: [

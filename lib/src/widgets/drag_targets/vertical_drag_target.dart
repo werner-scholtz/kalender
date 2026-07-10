@@ -225,27 +225,23 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
 
         final triggerHeight = scrollTrigger.triggerHeight?.call(viewPortHeight) ?? viewPortHeight / 20;
         final scrollAmount = scrollTrigger.scrollAmount?.call(viewPortHeight) ?? viewPortHeight / 2.5;
-        final topScrollTrigger = CursorNavigationTrigger(
-          triggerDelay: scrollTrigger.triggerDelay,
-          onTrigger: () => scrollController.animateTo(
-            scrollController.offset - scrollAmount,
-            duration: scrollTrigger.animationDuration,
-            curve: scrollTrigger.animationCurve,
-          ),
-          child:
-              components.topTriggerBuilder?.call(viewPortHeight) ?? SizedBox(height: triggerHeight, width: pageWidth),
-        );
+        CursorNavigationTrigger scrollTrig(bool forward, VerticalTriggerWidgetBuilder? builder) {
+          return CursorNavigationTrigger.scroll(
+            configuration: scrollTrigger,
+            onTrigger: () => scrollController.animateTo(
+              scrollController.offset + (forward ? scrollAmount : -scrollAmount),
+              duration: scrollTrigger.animationDuration,
+              curve: scrollTrigger.animationCurve,
+            ),
+            viewPortHeight: viewPortHeight,
+            triggerHeight: triggerHeight,
+            width: pageWidth,
+            builder: builder,
+          );
+        }
 
-        final bottomScrollTrigger = CursorNavigationTrigger(
-          triggerDelay: scrollTrigger.triggerDelay,
-          onTrigger: () => scrollController.animateTo(
-            scrollController.offset + scrollAmount,
-            duration: scrollTrigger.animationDuration,
-            curve: scrollTrigger.animationCurve,
-          ),
-          child: components.bottomTriggerBuilder?.call(viewPortHeight) ??
-              SizedBox(height: triggerHeight, width: pageWidth),
-        );
+        final topScrollTrigger = scrollTrig(false, components.topTriggerBuilder);
+        final bottomScrollTrigger = scrollTrig(true, components.bottomTriggerBuilder);
 
         return Stack(
           children: [
