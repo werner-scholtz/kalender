@@ -14,7 +14,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       # For Flutter package
       - uses: dart-lang/setup-dart@v1

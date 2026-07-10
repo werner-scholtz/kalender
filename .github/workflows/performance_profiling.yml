@@ -36,7 +36,7 @@ jobs:
       DISPLAY: :99
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
 
       - name: Install Linux dependencies
@@ -78,7 +78,7 @@ jobs:
             -d linux
 
       - name: Upload raw timelines
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: timelines-${{ github.run_number }}

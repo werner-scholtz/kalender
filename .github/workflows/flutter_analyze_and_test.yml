@@ -15,7 +15,7 @@ jobs:
   analyze: # Separate job for analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
 
       - name: Remove examples folder.
@@ -51,7 +51,7 @@ jobs:
           'UTC'
         ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
 
       - name: Set Time Zone
