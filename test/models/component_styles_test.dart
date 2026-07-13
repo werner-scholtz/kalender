@@ -366,7 +366,9 @@ void main() {
 
     test('equality', () {
       expect(
-          a, const MultiDayOverlayStyle(dayNameTextStyle: TextStyle(fontSize: 10), headerPadding: EdgeInsets.all(4)));
+        a,
+        const MultiDayOverlayStyle(dayNameTextStyle: TextStyle(fontSize: 10), headerPadding: EdgeInsets.all(4)),
+      );
       expect(a == b, false);
     });
   });
