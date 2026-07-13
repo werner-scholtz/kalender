@@ -1,12 +1,19 @@
 ## 0.20.0
 
+### Features
+
+- Multi-day and all-day events now render in the free-scroll view as a single tile spanning the day columns, instead of being split at each page boundary. They support the same interactions as the paged headers: create by dragging across the header, reschedule, resize, auto-scroll when a drag reaches the viewport edge, right-to-left layout, and the "+N more" overflow. [#78](https://github.com/werner-scholtz/kalender/issues/78) [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#299](https://github.com/werner-scholtz/kalender/pull/299) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301)
+
 ### Fixes
 
+- `PageTriggerConfiguration.triggerWidth` is now applied. It was accepted but ignored, and `copyWith` dropped it, so the edge strip that starts a page change while dragging was always `pageWidth / 50`. That is still the default, but it can now be set. [#302](https://github.com/werner-scholtz/kalender/pull/302)
 - Fixed free-scroll multi-day events disappearing after scrolling back to a day before the event's start. The multi-day layout cache is keyed by date range and is shared across the free-scroll band's moving window, so a window cached before an event existed kept returning an event-less frame. Changing events now clears the whole cache instead of only the visible window. [#306](https://github.com/werner-scholtz/kalender/pull/306)
 - Fixed an event jumping to a neighbouring day when resizing it by its top or bottom edge. The resize handle anchored the drag to the column's edge, so the smallest sideways movement flipped the day. It now follows the pointer, so a small drift no longer changes the day while a deliberate drag across columns still does. [#312](https://github.com/werner-scholtz/kalender/pull/312)
 
 ### Tests
 
+- Added free-scroll multi-day coverage: spanning tiles render as one tile and stay single while scrolling, create-by-drag, reschedule and edge auto-scroll work in the band, right-to-left renders and scrolls the right way, and the "+N more" overflow opens. [#297](https://github.com/werner-scholtz/kalender/pull/297) [#298](https://github.com/werner-scholtz/kalender/pull/298) [#300](https://github.com/werner-scholtz/kalender/pull/300) [#301](https://github.com/werner-scholtz/kalender/pull/301)
+- Added coverage that dragging an event to the viewport edge advances the page in the paged header and body, and scrolls the body vertically. [#302](https://github.com/werner-scholtz/kalender/pull/302) [#304](https://github.com/werner-scholtz/kalender/pull/304)
 - Added coverage that a free-scroll multi-day event stays visible when scrolling back to windows that were cached before the event was created. [#306](https://github.com/werner-scholtz/kalender/pull/306)
 - Added coverage that resizing an event's bottom edge with a small horizontal drift keeps it on its own day. [#312](https://github.com/werner-scholtz/kalender/pull/312)
 
