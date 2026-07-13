@@ -4,6 +4,11 @@
 
 - All component style classes (`DayHeaderStyle`, `TimelineStyle`, `HourLinesStyle`, and the rest) now support `copyWith`, `merge`, `lerp`, and value equality. This is groundwork for the upcoming theme extension. [#314](https://github.com/werner-scholtz/kalender/pull/314)
 - Added `KalenderThemeData`, a `ThemeExtension` with one field per component style, and `KalenderTheme.of(context)`, which resolves it against centralized Material 3 defaults. Register it on `ThemeData.extensions` to style every calendar in the app, with animated theme changes supported. [#315](https://github.com/werner-scholtz/kalender/pull/315)
+- The component widgets now resolve their appearance as widget style over theme extension over Material 3 defaults, so a registered `KalenderThemeData` takes effect everywhere. Two defaults changed on purpose: the time indicator line uses the color scheme's error color instead of always red, and the day number text in the month body and schedule view defaults to `bodyMedium` instead of being unstyled. [#316](https://github.com/werner-scholtz/kalender/pull/316)
+
+### Fixes
+
+- `MultiDayOverlayStyle.eventPadding` is now applied to each event in the overlay. It was ignored, and `eventsPadding` was used for both the event list and each individual event. [#316](https://github.com/werner-scholtz/kalender/pull/316)
 
 ## 0.20.0
 
