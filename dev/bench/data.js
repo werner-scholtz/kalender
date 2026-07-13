@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1783679993516,
+  "lastUpdate": 1783927128331,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -5083,6 +5083,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3806.1311188811187,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a48f0409fe124331d5718e64bd04a7994bdf12c5",
+          "message": "Merge pull request #312 from werner-scholtz/fix/vertical-resize-day-jump\n\nfix: keep vertical resize from flipping to a neighbouring day",
+          "timestamp": "2026-07-13T09:00:47+02:00",
+          "tree_id": "bc7dd2b9e32ea8d143b62881ef1ee756cf26e8b3",
+          "url": "https://github.com/werner-scholtz/kalender/commit/a48f0409fe124331d5718e64bd04a7994bdf12c5"
+        },
+        "date": 1783927125094,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 167.74877583201925,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 686.778,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2002.711,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7798.0374531835205,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 803.37725,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2480.8,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2714.74125,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 14010.489932885906,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 240.9958521410272,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 128.5553583168968,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 883.52975,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3784.3094405594406,
             "unit": "us"
           }
         ]
