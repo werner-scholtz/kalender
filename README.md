@@ -274,12 +274,13 @@ MultiDayViewConfiguration.week(
 ### MultiDay View
 Displays one or more days with time on the vertical axis.
 
-| Constructor                                         | Description           |
-| --------------------------------------------------- | --------------------- |
-| `MultiDayViewConfiguration.singleDay()`             | Single day            |
-| `MultiDayViewConfiguration.week()`                  | Full 7-day week       |
-| `MultiDayViewConfiguration.workWeek()`              | Monday to Friday      |
-| `MultiDayViewConfiguration.custom(numberOfDays: n)` | Custom number of days |
+| Constructor                                             | Description                                    |
+| -------------------------------------------------------- | ---------------------------------------------- |
+| `MultiDayViewConfiguration.singleDay()`                  | Single day                                     |
+| `MultiDayViewConfiguration.week()`                       | Full 7-day week                                |
+| `MultiDayViewConfiguration.workWeek()`                   | Monday to Friday                               |
+| `MultiDayViewConfiguration.custom(numberOfDays: n)`      | Custom number of days                          |
+| `MultiDayViewConfiguration.freeScroll(numberOfDays: n)`  | Scrolls freely across days, without page snaps |
 
 ### Month View
 Shows an entire month at a glance, weeks as rows.
