@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -115,6 +117,92 @@ class TimelineStyle {
     this.startDecoration,
     this.endDecoration,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  TimelineStyle copyWith({
+    TextStyle? textStyle,
+    TextDirection? textDirection,
+    TextAlign? textAlign,
+    TextOverflow? textOverflow,
+    String Function(TimeOfDay timeOfDay)? stringBuilder,
+    EdgeInsets? textPadding,
+    double? width,
+    Decoration? startDecoration,
+    Decoration? endDecoration,
+  }) {
+    return TimelineStyle(
+      textStyle: textStyle ?? this.textStyle,
+      textDirection: textDirection ?? this.textDirection,
+      textAlign: textAlign ?? this.textAlign,
+      textOverflow: textOverflow ?? this.textOverflow,
+      stringBuilder: stringBuilder ?? this.stringBuilder,
+      textPadding: textPadding ?? this.textPadding,
+      width: width ?? this.width,
+      startDecoration: startDecoration ?? this.startDecoration,
+      endDecoration: endDecoration ?? this.endDecoration,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  TimelineStyle merge(TimelineStyle? other) {
+    if (other == null) return this;
+    return TimelineStyle(
+      textStyle: other.textStyle ?? textStyle,
+      textDirection: other.textDirection ?? textDirection,
+      textAlign: other.textAlign ?? textAlign,
+      textOverflow: other.textOverflow ?? textOverflow,
+      stringBuilder: other.stringBuilder ?? stringBuilder,
+      textPadding: other.textPadding ?? textPadding,
+      width: other.width ?? width,
+      startDecoration: other.startDecoration ?? startDecoration,
+      endDecoration: other.endDecoration ?? endDecoration,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static TimelineStyle? lerp(TimelineStyle? a, TimelineStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return TimelineStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      textDirection: t < 0.5 ? a?.textDirection : b?.textDirection,
+      textAlign: t < 0.5 ? a?.textAlign : b?.textAlign,
+      textOverflow: t < 0.5 ? a?.textOverflow : b?.textOverflow,
+      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
+      textPadding: EdgeInsets.lerp(a?.textPadding, b?.textPadding, t),
+      width: lerpDouble(a?.width, b?.width, t),
+      startDecoration: Decoration.lerp(a?.startDecoration, b?.startDecoration, t),
+      endDecoration: Decoration.lerp(a?.endDecoration, b?.endDecoration, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TimelineStyle &&
+        other.textStyle == textStyle &&
+        other.textDirection == textDirection &&
+        other.textAlign == textAlign &&
+        other.textOverflow == textOverflow &&
+        other.stringBuilder == stringBuilder &&
+        other.textPadding == textPadding &&
+        other.width == width &&
+        other.startDecoration == startDecoration &&
+        other.endDecoration == endDecoration;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        textStyle,
+        textDirection,
+        textAlign,
+        textOverflow,
+        stringBuilder,
+        textPadding,
+        width,
+        startDecoration,
+        endDecoration,
+      );
 }
 
 /// A mixin that provides utility methods for the [TimeLine] and [HourLines] widget.

@@ -70,6 +70,80 @@ class MultiDayOverlayStyle {
     this.eventsPadding,
     this.eventPadding,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  MultiDayOverlayStyle copyWith({
+    String Function(DateTime date)? dayNameBuilder,
+    TextStyle? dayNameTextStyle,
+    TextStyle? dateTextStyle,
+    Icon? closeIcon,
+    EdgeInsets? headerPadding,
+    EdgeInsets? eventsPadding,
+    EdgeInsets? eventPadding,
+  }) {
+    return MultiDayOverlayStyle(
+      dayNameBuilder: dayNameBuilder ?? this.dayNameBuilder,
+      dayNameTextStyle: dayNameTextStyle ?? this.dayNameTextStyle,
+      dateTextStyle: dateTextStyle ?? this.dateTextStyle,
+      closeIcon: closeIcon ?? this.closeIcon,
+      headerPadding: headerPadding ?? this.headerPadding,
+      eventsPadding: eventsPadding ?? this.eventsPadding,
+      eventPadding: eventPadding ?? this.eventPadding,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  MultiDayOverlayStyle merge(MultiDayOverlayStyle? other) {
+    if (other == null) return this;
+    return MultiDayOverlayStyle(
+      dayNameBuilder: other.dayNameBuilder ?? dayNameBuilder,
+      dayNameTextStyle: other.dayNameTextStyle ?? dayNameTextStyle,
+      dateTextStyle: other.dateTextStyle ?? dateTextStyle,
+      closeIcon: other.closeIcon ?? closeIcon,
+      headerPadding: other.headerPadding ?? headerPadding,
+      eventsPadding: other.eventsPadding ?? eventsPadding,
+      eventPadding: other.eventPadding ?? eventPadding,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static MultiDayOverlayStyle? lerp(MultiDayOverlayStyle? a, MultiDayOverlayStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return MultiDayOverlayStyle(
+      dayNameBuilder: t < 0.5 ? a?.dayNameBuilder : b?.dayNameBuilder,
+      dayNameTextStyle: TextStyle.lerp(a?.dayNameTextStyle, b?.dayNameTextStyle, t),
+      dateTextStyle: TextStyle.lerp(a?.dateTextStyle, b?.dateTextStyle, t),
+      closeIcon: t < 0.5 ? a?.closeIcon : b?.closeIcon,
+      headerPadding: EdgeInsets.lerp(a?.headerPadding, b?.headerPadding, t),
+      eventsPadding: EdgeInsets.lerp(a?.eventsPadding, b?.eventsPadding, t),
+      eventPadding: EdgeInsets.lerp(a?.eventPadding, b?.eventPadding, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayOverlayStyle &&
+        other.dayNameBuilder == dayNameBuilder &&
+        other.dayNameTextStyle == dayNameTextStyle &&
+        other.dateTextStyle == dateTextStyle &&
+        other.closeIcon == closeIcon &&
+        other.headerPadding == headerPadding &&
+        other.eventsPadding == eventsPadding &&
+        other.eventPadding == eventPadding;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        dayNameBuilder,
+        dayNameTextStyle,
+        dateTextStyle,
+        closeIcon,
+        headerPadding,
+        eventsPadding,
+        eventPadding,
+      );
 }
 
 class MultiDayOverlay extends StatelessWidget {

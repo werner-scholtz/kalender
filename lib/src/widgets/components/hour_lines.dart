@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -35,6 +37,57 @@ class HourLinesStyle {
     this.indent,
     this.endIndent,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  HourLinesStyle copyWith({
+    Color? color,
+    double? thickness,
+    double? indent,
+    double? endIndent,
+  }) {
+    return HourLinesStyle(
+      color: color ?? this.color,
+      thickness: thickness ?? this.thickness,
+      indent: indent ?? this.indent,
+      endIndent: endIndent ?? this.endIndent,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  HourLinesStyle merge(HourLinesStyle? other) {
+    if (other == null) return this;
+    return HourLinesStyle(
+      color: other.color ?? color,
+      thickness: other.thickness ?? thickness,
+      indent: other.indent ?? indent,
+      endIndent: other.endIndent ?? endIndent,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static HourLinesStyle? lerp(HourLinesStyle? a, HourLinesStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return HourLinesStyle(
+      color: Color.lerp(a?.color, b?.color, t),
+      thickness: lerpDouble(a?.thickness, b?.thickness, t),
+      indent: lerpDouble(a?.indent, b?.indent, t),
+      endIndent: lerpDouble(a?.endIndent, b?.endIndent, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is HourLinesStyle &&
+        other.color == color &&
+        other.thickness == thickness &&
+        other.indent == indent &&
+        other.endIndent == endIndent;
+  }
+
+  @override
+  int get hashCode => Object.hash(color, thickness, indent, endIndent);
 }
 
 /// A widget that displays lines for each hour based on the [timeOfDayRange] and [heightPerMinute].

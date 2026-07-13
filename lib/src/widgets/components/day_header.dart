@@ -43,6 +43,62 @@ class DayHeaderStyle {
     this.numberStringBuilder,
     this.stringBuilder,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  DayHeaderStyle copyWith({
+    TextStyle? textStyle,
+    TextStyle? numberTextStyle,
+    MainAxisAlignment? mainAxisAlignment,
+    String Function(DateTime date)? numberStringBuilder,
+    String Function(DateTime date)? stringBuilder,
+  }) {
+    return DayHeaderStyle(
+      textStyle: textStyle ?? this.textStyle,
+      numberTextStyle: numberTextStyle ?? this.numberTextStyle,
+      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
+      numberStringBuilder: numberStringBuilder ?? this.numberStringBuilder,
+      stringBuilder: stringBuilder ?? this.stringBuilder,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  DayHeaderStyle merge(DayHeaderStyle? other) {
+    if (other == null) return this;
+    return DayHeaderStyle(
+      textStyle: other.textStyle ?? textStyle,
+      numberTextStyle: other.numberTextStyle ?? numberTextStyle,
+      mainAxisAlignment: other.mainAxisAlignment ?? mainAxisAlignment,
+      numberStringBuilder: other.numberStringBuilder ?? numberStringBuilder,
+      stringBuilder: other.stringBuilder ?? stringBuilder,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static DayHeaderStyle? lerp(DayHeaderStyle? a, DayHeaderStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return DayHeaderStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
+      mainAxisAlignment: t < 0.5 ? a?.mainAxisAlignment : b?.mainAxisAlignment,
+      numberStringBuilder: t < 0.5 ? a?.numberStringBuilder : b?.numberStringBuilder,
+      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DayHeaderStyle &&
+        other.textStyle == textStyle &&
+        other.numberTextStyle == numberTextStyle &&
+        other.mainAxisAlignment == mainAxisAlignment &&
+        other.numberStringBuilder == numberStringBuilder &&
+        other.stringBuilder == stringBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, numberTextStyle, mainAxisAlignment, numberStringBuilder, stringBuilder);
 }
 
 /// A widget that displays the name of the day and the day number of the week.

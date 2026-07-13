@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
@@ -21,6 +23,42 @@ class MonthGridStyle {
 
   /// The thickness of the month grid lines.
   final double? thickness;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  MonthGridStyle copyWith({Color? color, double? thickness}) {
+    return MonthGridStyle(
+      color: color ?? this.color,
+      thickness: thickness ?? this.thickness,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  MonthGridStyle merge(MonthGridStyle? other) {
+    if (other == null) return this;
+    return MonthGridStyle(
+      color: other.color ?? color,
+      thickness: other.thickness ?? thickness,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static MonthGridStyle? lerp(MonthGridStyle? a, MonthGridStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return MonthGridStyle(
+      color: Color.lerp(a?.color, b?.color, t),
+      thickness: lerpDouble(a?.thickness, b?.thickness, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthGridStyle && other.color == color && other.thickness == thickness;
+  }
+
+  @override
+  int get hashCode => Object.hash(color, thickness);
 }
 
 /// A widget that displays the month grid.

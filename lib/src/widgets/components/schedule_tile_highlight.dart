@@ -20,6 +20,33 @@ class ScheduleTileHighlightStyle {
 
   /// The [BoxDecoration] used to style the highlight.
   final BoxDecoration? decoration;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  ScheduleTileHighlightStyle copyWith({BoxDecoration? decoration}) {
+    return ScheduleTileHighlightStyle(decoration: decoration ?? this.decoration);
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  ScheduleTileHighlightStyle merge(ScheduleTileHighlightStyle? other) {
+    if (other == null) return this;
+    return ScheduleTileHighlightStyle(decoration: other.decoration ?? decoration);
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static ScheduleTileHighlightStyle? lerp(ScheduleTileHighlightStyle? a, ScheduleTileHighlightStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return ScheduleTileHighlightStyle(decoration: BoxDecoration.lerp(a?.decoration, b?.decoration, t));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScheduleTileHighlightStyle && other.decoration == decoration;
+  }
+
+  @override
+  int get hashCode => decoration.hashCode;
 }
 
 /// A widget that highlights the list item if the date is within the given dateTimeRange.

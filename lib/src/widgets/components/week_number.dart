@@ -36,6 +36,62 @@ class WeekNumberStyle {
 
   /// The alignment of the week number within its available cell.
   final AlignmentGeometry? alignment;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  WeekNumberStyle copyWith({
+    TextStyle? textStyle,
+    VisualDensity? visualDensity,
+    String? tooltip,
+    EdgeInsets? padding,
+    AlignmentGeometry? alignment,
+  }) {
+    return WeekNumberStyle(
+      textStyle: textStyle ?? this.textStyle,
+      visualDensity: visualDensity ?? this.visualDensity,
+      tooltip: tooltip ?? this.tooltip,
+      padding: padding ?? this.padding,
+      alignment: alignment ?? this.alignment,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  WeekNumberStyle merge(WeekNumberStyle? other) {
+    if (other == null) return this;
+    return WeekNumberStyle(
+      textStyle: other.textStyle ?? textStyle,
+      visualDensity: other.visualDensity ?? visualDensity,
+      tooltip: other.tooltip ?? tooltip,
+      padding: other.padding ?? padding,
+      alignment: other.alignment ?? alignment,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static WeekNumberStyle? lerp(WeekNumberStyle? a, WeekNumberStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return WeekNumberStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      visualDensity: t < 0.5 ? a?.visualDensity : b?.visualDensity,
+      tooltip: t < 0.5 ? a?.tooltip : b?.tooltip,
+      padding: EdgeInsets.lerp(a?.padding, b?.padding, t),
+      alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is WeekNumberStyle &&
+        other.textStyle == textStyle &&
+        other.visualDensity == visualDensity &&
+        other.tooltip == tooltip &&
+        other.padding == padding &&
+        other.alignment == alignment;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, visualDensity, tooltip, padding, alignment);
 }
 
 /// A widget that displays the week number.
