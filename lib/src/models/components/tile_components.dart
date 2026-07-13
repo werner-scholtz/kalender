@@ -35,6 +35,10 @@ class TileComponents {
   final DragAnchorStrategy? dragAnchorStrategy;
 
   /// The dragAnchorStrategy used by the resize handles.
+  ///
+  /// Defaults to a pointer anchor for vertical resizing. Setting
+  /// `childDragAnchorStrategy` makes a vertical resize flip to the neighbouring
+  /// day on the smallest sideways move.
   final DragAnchorStrategy? resizeDragAnchorStrategy;
 
   /// The widget that positions and sizes the resize handles.

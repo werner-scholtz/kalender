@@ -200,14 +200,21 @@ class ResizeHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resizeHandle = direction == ResizeDirection.left || direction == ResizeDirection.right
-        ? tileComponents.horizontalResizeHandle
-        : tileComponents.verticalResizeHandle;
+    final isVertical = direction == ResizeDirection.top || direction == ResizeDirection.bottom;
+    final resizeHandle = isVertical ? tileComponents.verticalResizeHandle : tileComponents.horizontalResizeHandle;
+
+    // Anchor a vertical resize to the pointer so the target day follows the
+    // cursor itself. With childDragAnchorStrategy the drag reports the handle's
+    // top-left, which for a full-width vertical handle is the column's left
+    // edge, so the day flipped to the previous column on the smallest sideways
+    // move. A caller-provided resizeDragAnchorStrategy still wins.
+    final anchorStrategy =
+        tileComponents.resizeDragAnchorStrategy ?? (isVertical ? pointerDragAnchorStrategy : childDragAnchorStrategy);
 
     return Draggable<Resize>(
       data: data,
       feedback: const SizedBox(),
-      dragAnchorStrategy: tileComponents.resizeDragAnchorStrategy ?? childDragAnchorStrategy,
+      dragAnchorStrategy: anchorStrategy,
       onDragStarted: () {
         context.calendarController.selectEvent(event, internal: true);
         context.callbacks?.onEventChange?.call(event);
