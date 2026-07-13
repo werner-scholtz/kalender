@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:web_demo/utils.dart';
 
 ThemeData buildAppTheme(Brightness brightness) {
   final colorScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF6366F1), brightness: brightness);
+  final lineColor = colorScheme.outlineVariant.withAlpha(60);
+  final mutedText = TextStyle(color: colorScheme.onSurfaceVariant);
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
+    extensions: [
+      KalenderThemeData(
+        dayHeaderStyle: DayHeaderStyle(textStyle: mutedText, numberTextStyle: mutedText),
+        hourLinesStyle: HourLinesStyle(color: lineColor),
+        daySeparatorStyle: DaySeparatorStyle(color: lineColor),
+        monthGridStyle: MonthGridStyle(color: lineColor),
+      ),
+    ],
     iconTheme: IconThemeData(size: isTouch ? 22.0 : 18.0, color: colorScheme.onSurfaceVariant),
     appBarTheme: AppBarTheme(
       elevation: 0,

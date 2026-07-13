@@ -162,33 +162,15 @@ class _CalendarContentState extends State<CalendarContent> {
     );
   }
 
+  // The colors and text styles live in the app theme as a KalenderThemeData
+  // extension (see theme.dart). Only widget builders are wired up here.
   CalendarComponents _components(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final lineColor = cs.outlineVariant.withAlpha(60);
-    final mutedText = TextStyle(color: cs.onSurfaceVariant);
     return CalendarComponents(
-      multiDayComponentStyles: MultiDayComponentStyles(
-        headerStyles: MultiDayHeaderComponentStyles(
-          dayHeaderStyle: DayHeaderStyle(
-            textStyle: mutedText,
-            numberTextStyle: mutedText,
-          ),
-        ),
-        bodyStyles: MultiDayBodyComponentStyles(
-          hourLinesStyle: HourLinesStyle(color: lineColor),
-          daySeparatorStyle: DaySeparatorStyle(color: lineColor),
-        ),
-      ),
       monthComponents: MonthComponents(
         bodyComponents: MonthBodyComponents(
           weekNumberBuilder: _buildWeekNumberText,
           monthDayCellBuilder:
               context.configuration.shadeAdjacentMonth ? MonthDayCell.shadeAdjacentMonths() : MonthDayCell.builder,
-        ),
-      ),
-      monthComponentStyles: MonthComponentStyles(
-        bodyStyles: MonthBodyComponentStyles(
-          monthGridStyle: MonthGridStyle(color: lineColor),
         ),
       ),
     );

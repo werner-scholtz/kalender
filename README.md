@@ -30,6 +30,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 - [Tile Components](#tile-components)
 - [Callbacks](#callbacks)
 - [Configuration & Interaction](#configuration--interaction)
+- [Theming](#theming)
 - [Appearance / Custom Components](#appearance--custom-components)
 - [Event Layout](#event-layout)
 - [Locale](#locale)
@@ -798,9 +799,37 @@ Wrap your `CalendarView` with this widget to enable Ctrl+scroll zooming.
 
 ---
 
+## Theming
+
+Out of the box the calendar follows your app's Material 3 theme: line colors, text styles, and the rest are derived from the ambient `ColorScheme` and `TextTheme`.
+
+To change how every calendar in the app looks, register a `KalenderThemeData` on your theme. Any field you leave out keeps its Material 3 default.
+
+```dart
+MaterialApp(
+  theme: ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+    extensions: [
+      KalenderThemeData(
+        hourLinesStyle: HourLinesStyle(thickness: 2),
+        timeIndicatorStyle: TimeIndicatorStyle(lineColor: Colors.pink),
+      ),
+    ],
+  ),
+)
+```
+
+Styles resolve in three layers, most specific first:
+
+1. A style passed to a single calendar through `CalendarComponents` (see [Appearance](#appearance--custom-components)).
+2. The `KalenderThemeData` registered on the theme.
+3. The Material 3 defaults.
+
+Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app.
+
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets.
+Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets. Styles passed here apply to that one `CalendarView` and win over the [theme](#theming).
 
 Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/schedule_components.dart).
 
