@@ -267,6 +267,7 @@ class MultiDayOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
+    final style = (KalenderTheme.of(context).multiDayOverlayStyle ?? const MultiDayOverlayStyle()).merge(this.style);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -289,28 +290,28 @@ class MultiDayOverlay extends StatelessWidget {
                       height: headerHeight,
                       width: width,
                       child: Padding(
-                        padding: style?.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
+                        padding: style.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
                         child: Stack(
                           children: [
                             Align(
                               alignment: Alignment.topCenter,
                               child: Text(
-                                style?.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
-                                style: style?.dayNameTextStyle,
+                                style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
+                                style: style.dayNameTextStyle,
                               ),
                             ),
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: IconButton.filledTonal(
                                 onPressed: () {},
-                                icon: Text(date.day.toString(), style: style?.dateTextStyle),
+                                icon: Text(date.day.toString(), style: style.dateTextStyle),
                               ),
                             ),
                             Align(
                               alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
                               child: IconButton.filledTonal(
                                 onPressed: portalController.hide,
-                                icon: style?.closeIcon ?? const Icon(Icons.close),
+                                icon: style.closeIcon ?? const Icon(Icons.close),
                                 key: MultiDayOverlay.getCloseButtonKey(date),
                               ),
                             ),
@@ -319,14 +320,14 @@ class MultiDayOverlay extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: style?.eventsPadding ?? const EdgeInsets.all(4.0),
+                      padding: style.eventsPadding ?? const EdgeInsets.all(4.0),
                       child: Stack(
                         children: [
                           ListBody(
                             children: [
                               for (final event in events)
                                 Padding(
-                                  padding: style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
+                                  padding: style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
                                   child: SizedBox(
                                     height: tileHeight,
                                     child: overlayTileBuilder(
@@ -347,7 +348,7 @@ class MultiDayOverlay extends StatelessWidget {
                               final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
                               if (eventIndex == -1) return const SizedBox();
 
-                              final eventPadding = style?.eventsPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
+                              final eventPadding = style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
                               final verticalPadding = eventPadding.vertical;
 
                               return Positioned(

@@ -65,7 +65,9 @@ class MultiDayBody extends StatelessWidget {
     // header and drag overlay so their day columns stay aligned.
     final bodyStyles = context.components.multiDayComponentStyles.bodyStyles;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, bodyStyles.timelineStyle);
+    final timelineStyle =
+        (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(bodyStyles.timelineStyle);
+    final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, timelineStyle);
 
     return Stack(
       children: [

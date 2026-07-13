@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The schedule tile highlight builder.
 ///
@@ -86,12 +87,14 @@ class ScheduleTileHighlight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style =
+        (KalenderTheme.of(context).scheduleTileHighlightStyle ?? const ScheduleTileHighlightStyle()).merge(this.style);
     return ValueListenableBuilder(
       valueListenable: dateTimeRange,
       builder: (context, value, child) {
         if (value != null && date.isWithin(value)) {
           return DecoratedBox(
-            decoration: style.decoration ?? BoxDecoration(color: Theme.of(context).colorScheme.primary.withAlpha(50)),
+            decoration: style.decoration ?? const BoxDecoration(),
             child: child!,
           );
         } else {

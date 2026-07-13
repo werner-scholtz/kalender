@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The day header builder.
 ///
@@ -129,9 +130,11 @@ class DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = (KalenderTheme.of(context).dayHeaderStyle ?? const DayHeaderStyle()).merge(this.style);
+
     final numberText = Text(
-      style?.numberStringBuilder?.call(date) ?? date.day.toString(),
-      style: style?.numberTextStyle ?? Theme.of(context).textTheme.bodyMedium,
+      style.numberStringBuilder?.call(date) ?? date.day.toString(),
+      style: style.numberTextStyle,
     );
 
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
@@ -141,13 +144,13 @@ class DayHeader extends StatelessWidget {
         : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
 
     final dayName = Text(
-      style?.stringBuilder?.call(localDate) ?? localDate.dayNameShortLocalized(context.locale),
-      style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
+      style.stringBuilder?.call(localDate) ?? localDate.dayNameShortLocalized(context.locale),
+      style: style.textStyle,
     );
 
     return Center(
       child: Column(
-        mainAxisAlignment: style?.mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisAlignment: style.mainAxisAlignment ?? MainAxisAlignment.start,
         children: [button, dayName],
       ),
     );

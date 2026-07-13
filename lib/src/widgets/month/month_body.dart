@@ -41,9 +41,11 @@ class MonthBody extends StatelessWidget {
     final components = context.components;
     final monthComponents = components.monthComponents;
     final monthStyles = components.monthComponentStyles.bodyStyles;
+    final monthGridStyle =
+        (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(monthStyles.monthGridStyle);
     final dividerSide = BorderSide(
-      color: monthStyles.monthGridStyle.color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
-      width: monthStyles.monthGridStyle.thickness ?? 0,
+      color: monthGridStyle.color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+      width: monthGridStyle.thickness ?? 0,
     );
 
     return PageView.builder(

@@ -215,7 +215,10 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
     );
     return [
       for (final event in events)
-        (delegate.calculateDistanceFromStart(event), delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event)),
+        (
+          delegate.calculateDistanceFromStart(event),
+          delegate.calculateDistanceFromStart(event) + delegate.calculateHeight(event)
+        ),
     ];
   }
 
