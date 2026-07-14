@@ -231,9 +231,9 @@ void main() {
     const b = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 20), buttonSize: Size(40, 40));
 
     test('copyWith', () {
-      final copy = a.copyWith(numberTextStyle: const TextStyle(fontSize: 8), padding: const EdgeInsets.all(2));
+      final copy = a.copyWith(numberTextStyle: const TextStyle(fontSize: 8), margin: const EdgeInsets.all(2));
       expect(copy.numberTextStyle, const TextStyle(fontSize: 8));
-      expect(copy.padding, const EdgeInsets.all(2));
+      expect(copy.margin, const EdgeInsets.all(2));
       expect(copy.textStyle, a.textStyle);
       expect(copy.buttonSize, a.buttonSize);
     });

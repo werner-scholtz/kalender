@@ -20,7 +20,7 @@ class MonthDayHeaderStyle {
     this.stringBuilder,
     this.numberTextStyle,
     this.buttonSize,
-    this.padding,
+    this.margin,
   });
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the name of the day.
@@ -33,11 +33,12 @@ class MonthDayHeaderStyle {
   final TextStyle? numberTextStyle;
 
   /// The size of the day number button, which is also the today highlight.
+  /// When null, the button keeps its natural size.
   final Size? buttonSize;
 
-  /// The padding around the day number button. This keeps the button clear of
+  /// The margin around the day number button. This keeps the button clear of
   /// the gridline above it and the event tiles below it.
-  final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   /// Creates a copy of this style with the given fields replaced with the new values.
   MonthDayHeaderStyle copyWith({
@@ -45,14 +46,14 @@ class MonthDayHeaderStyle {
     String Function(DateTime date)? stringBuilder,
     TextStyle? numberTextStyle,
     Size? buttonSize,
-    EdgeInsets? padding,
+    EdgeInsets? margin,
   }) {
     return MonthDayHeaderStyle(
       textStyle: textStyle ?? this.textStyle,
       stringBuilder: stringBuilder ?? this.stringBuilder,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
       buttonSize: buttonSize ?? this.buttonSize,
-      padding: padding ?? this.padding,
+      margin: margin ?? this.margin,
     );
   }
 
@@ -64,7 +65,7 @@ class MonthDayHeaderStyle {
       stringBuilder: other.stringBuilder ?? stringBuilder,
       numberTextStyle: other.numberTextStyle ?? numberTextStyle,
       buttonSize: other.buttonSize ?? buttonSize,
-      padding: other.padding ?? padding,
+      margin: other.margin ?? margin,
     );
   }
 
@@ -76,7 +77,7 @@ class MonthDayHeaderStyle {
       stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
       buttonSize: Size.lerp(a?.buttonSize, b?.buttonSize, t),
-      padding: EdgeInsets.lerp(a?.padding, b?.padding, t),
+      margin: EdgeInsets.lerp(a?.margin, b?.margin, t),
     );
   }
 
@@ -89,11 +90,11 @@ class MonthDayHeaderStyle {
         other.stringBuilder == stringBuilder &&
         other.numberTextStyle == numberTextStyle &&
         other.buttonSize == buttonSize &&
-        other.padding == padding;
+        other.margin == margin;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle, buttonSize, padding);
+  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle, buttonSize, margin);
 }
 
 /// A widget that displays the day number.
@@ -124,25 +125,26 @@ class MonthDayHeader extends StatelessWidget {
     final numberText = Text(date.day.toString(), style: style.numberTextStyle);
     final buttonSize = style.buttonSize;
     final constraints = buttonSize == null ? null : BoxConstraints.tight(buttonSize);
+    final buttonPadding = buttonSize == null ? null : EdgeInsets.zero;
     final button = isToday
         ? IconButton.filled(
             key: todayKey,
             onPressed: null,
             icon: numberText,
             visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
+            padding: buttonPadding,
             constraints: constraints,
           )
         : IconButton(
             onPressed: null,
             icon: numberText,
             visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
+            padding: buttonPadding,
             constraints: constraints,
           );
 
     return Padding(
-      padding: style.padding ?? EdgeInsets.zero,
+      padding: style.margin ?? EdgeInsets.zero,
       child: button,
     );
   }
