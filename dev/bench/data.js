@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784009785606,
+  "lastUpdate": 1784011403731,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -5503,6 +5503,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3236.634182908546,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1e007f67b3d8814c31c19913d0a13e11cffccb45",
+          "message": "Merge pull request #320 from werner-scholtz/tweak/today-highlight-size\n\ntweak: float the month-view today highlight off the gridlines",
+          "timestamp": "2026-07-14T08:24:15+02:00",
+          "tree_id": "b6b0c9f3274c7a9e4ec0c47e49367b6037a1ac6d",
+          "url": "https://github.com/werner-scholtz/kalender/commit/1e007f67b3d8814c31c19913d0a13e11cffccb45"
+        },
+        "date": 1784011400527,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 174.63595564941923,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 704.66825,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2071.156,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8274.236,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 701.7145,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2177.85,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2422.382,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 11904.143678160919,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 238.486673012851,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.30169491525423,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 758.188,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3222.928,
             "unit": "us"
           }
         ]
