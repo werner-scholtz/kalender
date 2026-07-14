@@ -3,6 +3,7 @@
 ### Features
 
 - All component style classes (`DayHeaderStyle`, `TimelineStyle`, `HourLinesStyle`, and the rest) now support `copyWith`, `merge`, `lerp`, and value equality. This is groundwork for the upcoming theme extension. [#314](https://github.com/werner-scholtz/kalender/pull/314)
+- Added `KalenderThemeData`, a `ThemeExtension` with one field per component style, and `KalenderTheme.of(context)`, which resolves it against centralized Material 3 defaults. Register it on `ThemeData.extensions` to style every calendar in the app, with animated theme changes supported. [#315](https://github.com/werner-scholtz/kalender/pull/315)
 
 ## 0.20.0
 
