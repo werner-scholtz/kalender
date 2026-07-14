@@ -19,6 +19,8 @@ class MonthDayHeaderStyle {
     this.textStyle,
     this.stringBuilder,
     this.numberTextStyle,
+    this.buttonSize,
+    this.margin,
   });
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the name of the day.
@@ -30,16 +32,28 @@ class MonthDayHeaderStyle {
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
 
+  /// The size of the day number button, which is also the today highlight.
+  /// When null, the button keeps its natural size.
+  final Size? buttonSize;
+
+  /// The margin around the day number button. This keeps the button clear of
+  /// the gridline above it and the event tiles below it.
+  final EdgeInsets? margin;
+
   /// Creates a copy of this style with the given fields replaced with the new values.
   MonthDayHeaderStyle copyWith({
     TextStyle? textStyle,
     String Function(DateTime date)? stringBuilder,
     TextStyle? numberTextStyle,
+    Size? buttonSize,
+    EdgeInsets? margin,
   }) {
     return MonthDayHeaderStyle(
       textStyle: textStyle ?? this.textStyle,
       stringBuilder: stringBuilder ?? this.stringBuilder,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
+      buttonSize: buttonSize ?? this.buttonSize,
+      margin: margin ?? this.margin,
     );
   }
 
@@ -50,6 +64,8 @@ class MonthDayHeaderStyle {
       textStyle: other.textStyle ?? textStyle,
       stringBuilder: other.stringBuilder ?? stringBuilder,
       numberTextStyle: other.numberTextStyle ?? numberTextStyle,
+      buttonSize: other.buttonSize ?? buttonSize,
+      margin: other.margin ?? margin,
     );
   }
 
@@ -60,6 +76,8 @@ class MonthDayHeaderStyle {
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
       stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
+      buttonSize: Size.lerp(a?.buttonSize, b?.buttonSize, t),
+      margin: EdgeInsets.lerp(a?.margin, b?.margin, t),
     );
   }
 
@@ -70,11 +88,13 @@ class MonthDayHeaderStyle {
     return other is MonthDayHeaderStyle &&
         other.textStyle == textStyle &&
         other.stringBuilder == stringBuilder &&
-        other.numberTextStyle == numberTextStyle;
+        other.numberTextStyle == numberTextStyle &&
+        other.buttonSize == buttonSize &&
+        other.margin == margin;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle);
+  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle, buttonSize, margin);
 }
 
 /// A widget that displays the day number.
@@ -102,25 +122,30 @@ class MonthDayHeader extends StatelessWidget {
     final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
     final isToday = context.isToday(localDate);
+    final numberText = Text(date.day.toString(), style: style.numberTextStyle);
+    final buttonSize = style.buttonSize;
+    final constraints = buttonSize == null ? null : BoxConstraints.tight(buttonSize);
+    final buttonPadding = buttonSize == null ? null : EdgeInsets.zero;
     final button = isToday
         ? IconButton.filled(
             key: todayKey,
             onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
+            icon: numberText,
             visualDensity: VisualDensity.compact,
+            padding: buttonPadding,
+            constraints: constraints,
           )
         : IconButton(
             onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
+            icon: numberText,
             visualDensity: VisualDensity.compact,
+            padding: buttonPadding,
+            constraints: constraints,
           );
 
-    return button;
+    return Padding(
+      padding: style.margin ?? EdgeInsets.zero,
+      child: button,
+    );
   }
 }

@@ -40,6 +40,8 @@ void main() {
           expect(theme.dayHeaderStyle?.textStyle, textTheme.bodySmall);
           expect(theme.dayHeaderStyle?.numberTextStyle, textTheme.bodyMedium);
           expect(theme.monthDayHeaderStyle?.numberTextStyle, textTheme.bodyMedium);
+          expect(theme.monthDayHeaderStyle?.buttonSize, null);
+          expect(theme.monthDayHeaderStyle?.margin, const EdgeInsets.symmetric(vertical: 2));
           expect(theme.scheduleDateStyle?.numberTextStyle, textTheme.bodyMedium);
           expect(theme.timelineStyle?.textPadding, const EdgeInsets.symmetric(horizontal: 8, vertical: 36));
           expect(theme.monthGridStyle?.thickness, 0);
