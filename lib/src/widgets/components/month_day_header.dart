@@ -97,30 +97,37 @@ class MonthDayHeader extends StatelessWidget {
     return dayHeader(date.forLocation(location: context.location), style);
   }
 
+  /// The width and height of the day number button.
+  static const _buttonSize = 28.0;
+
   @override
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
     final isToday = context.isToday(localDate);
+    final numberText = Text(date.day.toString(), style: style.numberTextStyle);
+    const constraints = BoxConstraints.tightFor(width: _buttonSize, height: _buttonSize);
     final button = isToday
         ? IconButton.filled(
             key: todayKey,
             onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
+            icon: numberText,
             visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: constraints,
           )
         : IconButton(
             onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
+            icon: numberText,
             visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: constraints,
           );
 
-    return button;
+    // Keeps the today pill clear of the gridline above and the event tiles below.
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: button,
+    );
   }
 }
