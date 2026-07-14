@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
@@ -28,6 +30,57 @@ class DaySeparatorStyle {
     this.topIndent,
     this.bottomIndent,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  DaySeparatorStyle copyWith({
+    Color? color,
+    double? width,
+    double? topIndent,
+    double? bottomIndent,
+  }) {
+    return DaySeparatorStyle(
+      color: color ?? this.color,
+      width: width ?? this.width,
+      topIndent: topIndent ?? this.topIndent,
+      bottomIndent: bottomIndent ?? this.bottomIndent,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  DaySeparatorStyle merge(DaySeparatorStyle? other) {
+    if (other == null) return this;
+    return DaySeparatorStyle(
+      color: other.color ?? color,
+      width: other.width ?? width,
+      topIndent: other.topIndent ?? topIndent,
+      bottomIndent: other.bottomIndent ?? bottomIndent,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static DaySeparatorStyle? lerp(DaySeparatorStyle? a, DaySeparatorStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return DaySeparatorStyle(
+      color: Color.lerp(a?.color, b?.color, t),
+      width: lerpDouble(a?.width, b?.width, t),
+      topIndent: lerpDouble(a?.topIndent, b?.topIndent, t),
+      bottomIndent: lerpDouble(a?.bottomIndent, b?.bottomIndent, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DaySeparatorStyle &&
+        other.color == color &&
+        other.width == width &&
+        other.topIndent == topIndent &&
+        other.bottomIndent == bottomIndent;
+  }
+
+  @override
+  int get hashCode => Object.hash(color, width, topIndent, bottomIndent);
 }
 
 /// A widget that displays a separator between days.

@@ -29,6 +29,52 @@ class MonthDayHeaderStyle {
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  MonthDayHeaderStyle copyWith({
+    TextStyle? textStyle,
+    String Function(DateTime date)? stringBuilder,
+    TextStyle? numberTextStyle,
+  }) {
+    return MonthDayHeaderStyle(
+      textStyle: textStyle ?? this.textStyle,
+      stringBuilder: stringBuilder ?? this.stringBuilder,
+      numberTextStyle: numberTextStyle ?? this.numberTextStyle,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  MonthDayHeaderStyle merge(MonthDayHeaderStyle? other) {
+    if (other == null) return this;
+    return MonthDayHeaderStyle(
+      textStyle: other.textStyle ?? textStyle,
+      stringBuilder: other.stringBuilder ?? stringBuilder,
+      numberTextStyle: other.numberTextStyle ?? numberTextStyle,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static MonthDayHeaderStyle? lerp(MonthDayHeaderStyle? a, MonthDayHeaderStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return MonthDayHeaderStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
+      numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthDayHeaderStyle &&
+        other.textStyle == textStyle &&
+        other.stringBuilder == stringBuilder &&
+        other.numberTextStyle == numberTextStyle;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle);
 }
 
 /// A widget that displays the day number.

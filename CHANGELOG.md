@@ -1,3 +1,9 @@
+## 0.21.0
+
+### Features
+
+- All component style classes (`DayHeaderStyle`, `TimelineStyle`, `HourLinesStyle`, and the rest) now support `copyWith`, `merge`, `lerp`, and value equality. This is groundwork for the upcoming theme extension. [#314](https://github.com/werner-scholtz/kalender/pull/314)
+
 ## 0.20.0
 
 ### Features

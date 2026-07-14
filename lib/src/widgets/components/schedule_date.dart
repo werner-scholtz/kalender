@@ -30,6 +30,52 @@ class ScheduleDateStyle {
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  ScheduleDateStyle copyWith({
+    TextStyle? textStyle,
+    String Function(DateTime date)? stringBuilder,
+    TextStyle? numberTextStyle,
+  }) {
+    return ScheduleDateStyle(
+      textStyle: textStyle ?? this.textStyle,
+      stringBuilder: stringBuilder ?? this.stringBuilder,
+      numberTextStyle: numberTextStyle ?? this.numberTextStyle,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  ScheduleDateStyle merge(ScheduleDateStyle? other) {
+    if (other == null) return this;
+    return ScheduleDateStyle(
+      textStyle: other.textStyle ?? textStyle,
+      stringBuilder: other.stringBuilder ?? stringBuilder,
+      numberTextStyle: other.numberTextStyle ?? numberTextStyle,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static ScheduleDateStyle? lerp(ScheduleDateStyle? a, ScheduleDateStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return ScheduleDateStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
+      numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScheduleDateStyle &&
+        other.textStyle == textStyle &&
+        other.stringBuilder == stringBuilder &&
+        other.numberTextStyle == numberTextStyle;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle);
 }
 
 /// A widget that displays the name of the day and the day number of the week.

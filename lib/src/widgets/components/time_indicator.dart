@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -37,6 +38,57 @@ class TimeIndicatorStyle {
     this.circleColor,
     this.circleSize,
   });
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  TimeIndicatorStyle copyWith({
+    Color? lineColor,
+    double? thickness,
+    Color? circleColor,
+    Size? circleSize,
+  }) {
+    return TimeIndicatorStyle(
+      lineColor: lineColor ?? this.lineColor,
+      thickness: thickness ?? this.thickness,
+      circleColor: circleColor ?? this.circleColor,
+      circleSize: circleSize ?? this.circleSize,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  TimeIndicatorStyle merge(TimeIndicatorStyle? other) {
+    if (other == null) return this;
+    return TimeIndicatorStyle(
+      lineColor: other.lineColor ?? lineColor,
+      thickness: other.thickness ?? thickness,
+      circleColor: other.circleColor ?? circleColor,
+      circleSize: other.circleSize ?? circleSize,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b].
+  static TimeIndicatorStyle? lerp(TimeIndicatorStyle? a, TimeIndicatorStyle? b, double t) {
+    if (identical(a, b)) return a;
+    return TimeIndicatorStyle(
+      lineColor: Color.lerp(a?.lineColor, b?.lineColor, t),
+      thickness: lerpDouble(a?.thickness, b?.thickness, t),
+      circleColor: Color.lerp(a?.circleColor, b?.circleColor, t),
+      circleSize: Size.lerp(a?.circleSize, b?.circleSize, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TimeIndicatorStyle &&
+        other.lineColor == lineColor &&
+        other.thickness == thickness &&
+        other.circleColor == circleColor &&
+        other.circleSize == circleSize;
+  }
+
+  @override
+  int get hashCode => Object.hash(lineColor, thickness, circleColor, circleSize);
 }
 
 /// A widget that displays the current time as a line and a circle.

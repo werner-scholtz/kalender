@@ -25,6 +25,61 @@ class MultiDayPortalOverlayButtonStyle {
   final String Function(int numberOfHiddenRows)? stringBuilder;
 
   const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder, this.textOverflow});
+
+  /// Creates a copy of this style with the given fields replaced with the new values.
+  MultiDayPortalOverlayButtonStyle copyWith({
+    TextStyle? textStyle,
+    EdgeInsetsGeometry? textPadding,
+    TextOverflow? textOverflow,
+    String Function(int numberOfHiddenRows)? stringBuilder,
+  }) {
+    return MultiDayPortalOverlayButtonStyle(
+      textStyle: textStyle ?? this.textStyle,
+      textPadding: textPadding ?? this.textPadding,
+      textOverflow: textOverflow ?? this.textOverflow,
+      stringBuilder: stringBuilder ?? this.stringBuilder,
+    );
+  }
+
+  /// Returns a copy of this style where the non-null fields of [other] replace the matching fields.
+  MultiDayPortalOverlayButtonStyle merge(MultiDayPortalOverlayButtonStyle? other) {
+    if (other == null) return this;
+    return MultiDayPortalOverlayButtonStyle(
+      textStyle: other.textStyle ?? textStyle,
+      textPadding: other.textPadding ?? textPadding,
+      textOverflow: other.textOverflow ?? textOverflow,
+      stringBuilder: other.stringBuilder ?? stringBuilder,
+    );
+  }
+
+  /// Linearly interpolates between [a] and [b]. Fields that cannot be interpolated switch at the midpoint.
+  static MultiDayPortalOverlayButtonStyle? lerp(
+    MultiDayPortalOverlayButtonStyle? a,
+    MultiDayPortalOverlayButtonStyle? b,
+    double t,
+  ) {
+    if (identical(a, b)) return a;
+    return MultiDayPortalOverlayButtonStyle(
+      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
+      textPadding: EdgeInsetsGeometry.lerp(a?.textPadding, b?.textPadding, t),
+      textOverflow: t < 0.5 ? a?.textOverflow : b?.textOverflow,
+      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayPortalOverlayButtonStyle &&
+        other.textStyle == textStyle &&
+        other.textPadding == textPadding &&
+        other.textOverflow == textOverflow &&
+        other.stringBuilder == stringBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(textStyle, textPadding, textOverflow, stringBuilder);
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {
