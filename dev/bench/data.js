@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784007643602,
+  "lastUpdate": 1784008673732,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -5335,6 +5335,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3635.277972027972,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8469a77cb52585f1671a9f3421f5cbb2bf10cf98",
+          "message": "Merge pull request #319 from werner-scholtz/fix/land-theme-extension\n\nfix: land the theme extension on main",
+          "timestamp": "2026-07-14T07:37:12+02:00",
+          "tree_id": "2715e3e2726c73d28e5f6ff84ca9d51b74a5d51c",
+          "url": "https://github.com/werner-scholtz/kalender/commit/8469a77cb52585f1671a9f3421f5cbb2bf10cf98"
+        },
+        "date": 1784008668105,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 117.96987423223165,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 502.036496350365,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1456.108,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 5735.538461538462,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 274.03610009572,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 855.182,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 875.78225,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 4383.576,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 151.81078624450842,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 32.24471541991893,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 220.3645425019599,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 947.03475,
             "unit": "us"
           }
         ]
