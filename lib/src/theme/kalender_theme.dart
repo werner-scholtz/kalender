@@ -139,6 +139,10 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
       monthDayHeaderStyle: MonthDayHeaderStyle(
         textStyle: textTheme.bodySmall,
         numberTextStyle: textTheme.bodyMedium,
+        // Sized and padded so the today highlight floats clear of the
+        // gridline above it and the event tiles below it.
+        buttonSize: const Size(28, 28),
+        padding: const EdgeInsets.symmetric(vertical: 2),
       ),
       weekDayHeaderStyle: WeekDayHeaderStyle(
         textStyle: textTheme.bodySmall,

@@ -227,29 +227,35 @@ void main() {
   });
 
   group('MonthDayHeaderStyle', () {
-    const a = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10));
-    const b = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 20));
+    const a = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20));
+    const b = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 20), buttonSize: Size(40, 40));
 
     test('copyWith', () {
-      final copy = a.copyWith(numberTextStyle: const TextStyle(fontSize: 8));
+      final copy = a.copyWith(numberTextStyle: const TextStyle(fontSize: 8), padding: const EdgeInsets.all(2));
       expect(copy.numberTextStyle, const TextStyle(fontSize: 8));
+      expect(copy.padding, const EdgeInsets.all(2));
       expect(copy.textStyle, a.textStyle);
+      expect(copy.buttonSize, a.buttonSize);
     });
 
     test('merge', () {
-      final merged = a.merge(const MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 9)));
+      final merged =
+          a.merge(const MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 9), buttonSize: Size(30, 30)));
       expect(merged.numberTextStyle, const TextStyle(fontSize: 9));
+      expect(merged.buttonSize, const Size(30, 30));
       expect(merged.textStyle, a.textStyle);
       expect(a.merge(null), a);
     });
 
     test('lerp', () {
-      expect(MonthDayHeaderStyle.lerp(a, b, 0.5)!.textStyle?.fontSize, 15);
+      final mid = MonthDayHeaderStyle.lerp(a, b, 0.5)!;
+      expect(mid.textStyle?.fontSize, 15);
+      expect(mid.buttonSize, const Size(30, 30));
       expect(MonthDayHeaderStyle.lerp(null, null, 0.5), null);
     });
 
     test('equality', () {
-      expect(a, const MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10)));
+      expect(a, const MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20)));
       expect(a == b, false);
     });
   });
