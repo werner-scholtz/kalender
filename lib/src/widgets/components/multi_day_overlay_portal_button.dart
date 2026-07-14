@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The builder used to create the button for the [MultiDayPortalOverlayButton].
 ///
@@ -105,14 +106,17 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style =
+        (KalenderTheme.of(context).multiDayPortalOverlayButtonStyle ?? const MultiDayPortalOverlayButtonStyle())
+            .merge(this.style);
     return InkWell(
       onTap: portalController.show,
       child: Padding(
-        padding: style?.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
+        padding: style.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
         child: Text(
-          style?.stringBuilder?.call(numberOfHiddenRows) ?? '$numberOfHiddenRows more',
-          style: style?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
-          overflow: style?.textOverflow ?? TextOverflow.ellipsis,
+          style.stringBuilder?.call(numberOfHiddenRows) ?? '$numberOfHiddenRows more',
+          style: style.textStyle,
+          overflow: style.textOverflow,
           key: textKey,
         ),
       ),

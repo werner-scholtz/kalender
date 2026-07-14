@@ -190,7 +190,8 @@ class CalendarViewState extends State<CalendarView> {
     if (range == null) return;
 
     final config = controller.viewConfiguration;
-    final date = config is MonthViewConfiguration ? InternalDateTime.fromDateTime(range.dominantMonthDate) : range.start;
+    final date =
+        config is MonthViewConfiguration ? InternalDateTime.fromDateTime(range.dominantMonthDate) : range.start;
 
     final multiDay = controller is MultiDayViewController ? controller : null;
     final snapshot = ViewSnapshot(

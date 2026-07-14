@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 // TODO: update
 
@@ -97,9 +98,10 @@ class ScheduleDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = (KalenderTheme.of(context).scheduleDateStyle ?? const ScheduleDateStyle()).merge(this.style);
     final text = Text(
-      style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale).characters.take(3).toString(),
-      style: style?.textStyle ?? Theme.of(context).textTheme.bodySmall,
+      style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale).characters.take(3).toString(),
+      style: style.textStyle,
     );
 
     final isToday = context.isToday(date);
@@ -109,7 +111,7 @@ class ScheduleDate extends StatelessWidget {
             onPressed: null,
             icon: Text(
               date.day.toString(),
-              style: style?.numberTextStyle,
+              style: style.numberTextStyle,
             ),
             visualDensity: VisualDensity.compact,
           )
@@ -117,7 +119,7 @@ class ScheduleDate extends StatelessWidget {
             onPressed: null,
             icon: Text(
               date.day.toString(),
-              style: style?.numberTextStyle,
+              style: style.numberTextStyle,
             ),
             visualDensity: VisualDensity.compact,
           );

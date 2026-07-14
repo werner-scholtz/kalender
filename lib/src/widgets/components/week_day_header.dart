@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The week day header builder.
 ///
@@ -90,9 +91,9 @@ class WeekDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = style?.padding ?? const EdgeInsets.symmetric(vertical: 2);
-    final textStyle = style?.textStyle ?? Theme.of(context).textTheme.bodySmall;
-    final dateText = style?.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
-    return Padding(padding: padding, child: Center(child: Text(dateText, style: textStyle)));
+    final style = (KalenderTheme.of(context).weekDayHeaderStyle ?? const WeekDayHeaderStyle()).merge(this.style);
+    final padding = style.padding ?? const EdgeInsets.symmetric(vertical: 2);
+    final dateText = style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
+    return Padding(padding: padding, child: Center(child: Text(dateText, style: style.textStyle)));
   }
 }

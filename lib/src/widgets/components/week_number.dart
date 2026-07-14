@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The week number builder.
 ///
@@ -116,19 +117,20 @@ class WeekNumber extends StatelessWidget {
     final (start, end) = internalDateTime.weekNumbers;
     final weekNumber = start.toString() + ((end == null) ? '' : ' - $end');
 
-    final padding = weekNumberStyle?.padding ?? const EdgeInsets.symmetric(horizontal: 4);
+    final style = (KalenderTheme.of(context).weekNumberStyle ?? const WeekNumberStyle()).merge(weekNumberStyle);
+    final padding = style.padding ?? const EdgeInsets.symmetric(horizontal: 4);
 
     return Align(
-      alignment: weekNumberStyle?.alignment ?? Alignment.center,
+      alignment: style.alignment ?? Alignment.center,
       child: Padding(
         padding: padding,
         child: IconButton.filledTonal(
-          tooltip: weekNumberStyle?.tooltip ?? 'Week Number',
+          tooltip: style.tooltip,
           onPressed: null,
-          visualDensity: weekNumberStyle?.visualDensity ?? VisualDensity.compact,
+          visualDensity: style.visualDensity ?? VisualDensity.compact,
           icon: Text(
             weekNumber,
-            style: weekNumberStyle?.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+            style: style.textStyle,
           ),
         ),
       ),

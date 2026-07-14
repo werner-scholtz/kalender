@@ -2,6 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The day separator builder.
 ///
@@ -99,10 +100,11 @@ class DaySeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
-    final width = style?.width ?? 1;
-    final topIndent = style?.topIndent ?? 0;
-    final bottomIndent = style?.bottomIndent ?? 0;
+    final style = (KalenderTheme.of(context).daySeparatorStyle ?? const DaySeparatorStyle()).merge(this.style);
+    final color = style.color;
+    final width = style.width ?? 1;
+    final topIndent = style.topIndent ?? 0;
+    final bottomIndent = style.bottomIndent ?? 0;
 
     return Container(
       margin: EdgeInsetsDirectional.only(start: topIndent, end: bottomIndent),

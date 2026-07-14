@@ -210,30 +210,35 @@ mixin TimeLineUtils {
   /// The style of the timeline.
   TimelineStyle? get timelineStyle;
 
+  /// The theme's timeline style overlaid with [timelineStyle].
+  TimelineStyle effectiveStyle(BuildContext context) =>
+      (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(timelineStyle);
+
   /// The [TextStyle] that will be used for the text.
-  TextStyle textStyle(BuildContext context) => timelineStyle?.textStyle ?? Theme.of(context).textTheme.labelMedium!;
+  TextStyle textStyle(BuildContext context) =>
+      effectiveStyle(context).textStyle ?? Theme.of(context).textTheme.labelMedium!;
 
   /// The [TextDirection] that will be used for the text.
-  TextDirection textDirection(BuildContext context) => timelineStyle?.textDirection ?? TextDirection.ltr;
+  TextDirection textDirection(BuildContext context) => effectiveStyle(context).textDirection ?? TextDirection.ltr;
 
   /// The [EdgeInsets] that will be used for the text.
   EdgeInsets textPadding(BuildContext context) =>
-      timelineStyle?.textPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 36);
+      effectiveStyle(context).textPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 36);
 
   /// The [Size] of the largest text.
   Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = TimeOfDay(hour: 23, minute: 59);
-    final text = timelineStyle?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
-    final textSize = _textSize(text, textStyle);
+    final text = effectiveStyle(context).stringBuilder?.call(displayTime) ?? displayTime.format(context);
+    final textSize = _textSize(text, textStyle, textDirection(context));
     return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
   }
 
   /// Returns the [Size] of the text.
-  Size _textSize(String text, TextStyle? style) {
+  Size _textSize(String text, TextStyle? style, TextDirection textDirection) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
-      textDirection: timelineStyle?.textDirection ?? TextDirection.ltr,
+      textDirection: textDirection,
     )..layout(minWidth: 0, maxWidth: double.infinity);
 
     return textPainter.size;
@@ -321,6 +326,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
   @override
   Widget build(BuildContext context) {
+    final style = effectiveStyle(context);
     final textStyle = this.textStyle(context);
     final textDirection = this.textDirection(context);
     final textPadding = this.textPadding(context);
@@ -340,7 +346,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
       // The time to display is the next hour.
       final displayTime = range.start;
-      final text = style?.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+      final text = style.stringBuilder?.call(displayTime) ?? displayTime.format(context);
 
       return Positioned(
         top: pos - textXOffset,
@@ -351,8 +357,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
             text,
             style: textStyle,
             textDirection: textDirection,
-            textAlign: style?.textAlign,
-            overflow: style?.textOverflow,
+            textAlign: style.textAlign,
+            overflow: style.textOverflow,
           ),
         ),
       );
@@ -387,27 +393,22 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
             final startTime = TimeOfDay.fromDateTime(start);
             final endTime = TimeOfDay.fromDateTime(end);
-            final startText = style?.stringBuilder?.call(startTime) ?? startTime.format(context);
-            final endText = style?.stringBuilder?.call(endTime) ?? endTime.format(context);
-
-            late final decoration = BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            );
+            final startText = style.stringBuilder?.call(startTime) ?? startTime.format(context);
+            final endText = style.stringBuilder?.call(endTime) ?? endTime.format(context);
 
             return Stack(
               children: [
                 Positioned(
                   top: startTop,
                   child: Container(
-                    decoration: style?.startDecoration ?? decoration,
+                    decoration: style.startDecoration,
                     child: Center(child: Text(startText)),
                   ),
                 ),
                 Positioned(
                   top: endTop,
                   child: Container(
-                    decoration: style?.endDecoration ?? decoration,
+                    decoration: style.endDecoration,
                     child: Center(child: Text(endText)),
                   ),
                 ),

@@ -213,11 +213,12 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     if (!showIndicator) return const SizedBox.shrink();
     final top = now.difference(startTime).inMinutes * widget.heightPerMinute;
 
-    final lineColor = widget.style?.lineColor ?? Colors.red;
-    final thickness = widget.style?.thickness ?? 1;
+    final style = (KalenderTheme.of(context).timeIndicatorStyle ?? const TimeIndicatorStyle()).merge(widget.style);
+    final lineColor = style.lineColor ?? Theme.of(context).colorScheme.error;
+    final thickness = style.thickness ?? 1;
 
-    final circleWidth = (widget.style?.circleSize?.width) ?? 10;
-    final circleHeight = (widget.style?.circleSize?.height) ?? 10;
+    final circleWidth = style.circleSize?.width ?? 10;
+    final circleHeight = style.circleSize?.height ?? 10;
 
     // This ignore pointer is needed so that users can interact with the event tiles and other components that are behind the time indicator.
     return IgnorePointer(
@@ -241,7 +242,7 @@ class _TimeIndicatorState extends State<TimeIndicator> {
             height: circleHeight,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: widget.style?.circleColor ?? lineColor,
+                color: style.circleColor ?? lineColor,
                 shape: BoxShape.circle,
               ),
             ),

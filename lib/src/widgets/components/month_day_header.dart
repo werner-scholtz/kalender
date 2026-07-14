@@ -99,6 +99,7 @@ class MonthDayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
     final isToday = context.isToday(localDate);
     final button = isToday
@@ -107,7 +108,7 @@ class MonthDayHeader extends StatelessWidget {
             onPressed: null,
             icon: Text(
               date.day.toString(),
-              style: style?.numberTextStyle,
+              style: style.numberTextStyle,
             ),
             visualDensity: VisualDensity.compact,
           )
@@ -115,7 +116,7 @@ class MonthDayHeader extends StatelessWidget {
             onPressed: null,
             icon: Text(
               date.day.toString(),
-              style: style?.numberTextStyle,
+              style: style.numberTextStyle,
             ),
             visualDensity: VisualDensity.compact,
           );

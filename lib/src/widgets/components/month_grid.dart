@@ -2,6 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The month grid builder.
 ///
@@ -80,8 +81,9 @@ class MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thickness = style?.thickness ?? 0;
-    final color = style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
+    final style = (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(this.style);
+    final thickness = style.thickness ?? 0;
+    final color = style.color;
     return Stack(
       children: <Widget>[
         Row(

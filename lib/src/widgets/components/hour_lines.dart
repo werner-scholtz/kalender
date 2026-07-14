@@ -145,10 +145,11 @@ class HourLines extends StatelessWidget with TimeLineUtils {
       segmentDuration(timeOfDayRange, heightPerMinute, timelineItemSize.height),
     );
 
-    final thickness = style?.thickness ?? 1;
-    final color = style?.color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
-    final indent = style?.indent ?? 0;
-    final endIndent = style?.endIndent ?? 0;
+    final style = (KalenderTheme.of(context).hourLinesStyle ?? const HourLinesStyle()).merge(this.style);
+    final thickness = style.thickness ?? 1;
+    final color = style.color;
+    final indent = style.indent ?? 0;
+    final endIndent = style.endIndent ?? 0;
 
     var previousXPosition = 0.0;
     final positionedLines = segments.map((e) {
