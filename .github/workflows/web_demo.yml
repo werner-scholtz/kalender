@@ -16,7 +16,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+
+      # Pinned on purpose. Unpinned, this builds with whatever stable is that
+      # day, so a toolchain change can break the demo with no commit to point
+      # at. That is how the timezone dropdown broke: dart2wasm dropped
+      # dart:html, and the conditional import silently fell through to a stub.
+      # Bump this deliberately.
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+          channel: stable
+
       - run: flutter build web --release --wasm --base-href /kalender/
         shell: bash
         working-directory: examples/web_demo
