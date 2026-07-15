@@ -3,7 +3,8 @@
 ### Features
 
 - `MultiDayOverlayStyle` gained `cardTheme`, `closeButtonStyle`, `barrierColor`, `width`, and `headerHeight`, so the overlay card, its close button, and the area behind it can be styled to match the rest of the app. The card and button take Flutter's own `CardThemeData` and `ButtonStyle`. All of them default to null, so the stock appearance is unchanged. [#325](https://github.com/werner-scholtz/kalender/pull/325)
-- The date in the overlay header is a plain label instead of a button that did nothing when tapped. It is styled by the existing `MultiDayOverlayStyle.dateTextStyle`, which now defaults to `headlineSmall`. This removes the tonal circle that used to sit behind the day number. [#325](https://github.com/werner-scholtz/kalender/pull/325)
+- The date in the overlay header no longer looks like a button that does nothing when tapped, and it is highlighted when it is today, like the day number in every other view. [#325](https://github.com/werner-scholtz/kalender/pull/325) [#328](https://github.com/werner-scholtz/kalender/pull/328)
+- The today highlight is now tonal in every view, instead of grey. It is drawn with a disabled button so that it is not tappable, and a disabled button paints itself in the disabled colors, which made the highlight read as "unavailable" rather than "today". The day header, month day header, schedule date, and multi-day overlay all share one implementation now, so they cannot drift apart. [#328](https://github.com/werner-scholtz/kalender/pull/328)
 
 ### Fixes
 

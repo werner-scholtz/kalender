@@ -156,7 +156,7 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
       ),
       multiDayOverlayStyle: MultiDayOverlayStyle(
         closeIcon: const Icon(Icons.close),
-        dateTextStyle: textTheme.headlineSmall,
+        dateTextStyle: textTheme.bodyMedium,
         headerPadding: const EdgeInsets.symmetric(vertical: 8),
         eventsPadding: const EdgeInsets.all(4),
         eventPadding: const EdgeInsets.symmetric(vertical: 2),

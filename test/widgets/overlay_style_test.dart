@@ -19,6 +19,7 @@ void main() {
     KalenderThemeData? extension,
     MultiDayOverlayStyle? style,
     CardThemeData? appCardTheme,
+    NowCallback? nowCallback,
   }) async {
     final dpi = tester.view.devicePixelRatio;
     tester.view.physicalSize = Size(800 * dpi, 600 * dpi);
@@ -41,6 +42,7 @@ void main() {
             viewConfiguration: MonthViewConfiguration.singleMonth(
               displayRange: year2025DisplayRange,
               initialDateTime: DateTime(2025, 1, 15),
+              nowCallback: nowCallback,
             ),
             components: CalendarComponents(
               monthComponentStyles: MonthComponentStyles(
@@ -188,19 +190,24 @@ void main() {
     });
   });
 
+  // The date used to be an IconButton.filledTonal with `onPressed: () {}` — an
+  // enabled button that did nothing. It is disabled now, and the filled variant
+  // is reserved for today, matching DayHeader, MonthDayHeader and ScheduleDate.
   group('the date in the header', () {
-    testWidgets('is a plain label, not a button that does nothing', (tester) async {
+    /// The IconButton the day number sits in.
+    IconButton dateButton(WidgetTester tester) {
+      return tester.widget<IconButton>(
+        find.ancestor(
+          of: find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
+          matching: find.byType(IconButton),
+        ),
+      );
+    }
+
+    testWidgets('is not interactive', (tester) async {
       await openOverlay(tester);
 
-      final header = find.byKey(MultiDayOverlay.getOverlayCardKey(day));
-      final dateText = find.descendant(of: header, matching: find.text('15'));
-      expect(dateText, findsOne, reason: 'the day number should render');
-
-      expect(
-        find.ancestor(of: dateText, matching: find.byType(IconButton)),
-        findsNothing,
-        reason: 'the date used to be a filled tonal IconButton with an empty onPressed',
-      );
+      expect(dateButton(tester).onPressed, isNull, reason: 'it is a label, it should offer nothing to press');
     });
 
     testWidgets('uses dateTextStyle', (tester) async {
@@ -210,6 +217,36 @@ void main() {
         find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
       );
       expect(text.style?.fontSize, 33);
+    });
+
+    testWidgets('is highlighted when the date is today', (tester) async {
+      await openOverlay(tester, nowCallback: () => DateTime(2025, 1, 15, 10));
+
+      expect(find.byKey(MultiDayOverlay.todayKey), findsOne);
+      expect(
+        find.descendant(of: find.byKey(MultiDayOverlay.todayKey), matching: find.text('15')),
+        findsOne,
+        reason: 'the highlight should be on the overlay\'s own date',
+      );
+      expect(dateButton(tester).onPressed, isNull, reason: 'the highlight is still not interactive');
+    });
+
+    testWidgets('is not highlighted when the date is not today', (tester) async {
+      await openOverlay(tester, nowCallback: () => DateTime(2025, 1, 16, 10));
+
+      expect(find.byKey(MultiDayOverlay.todayKey), findsNothing);
+      expect(
+        find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
+        findsOne,
+        reason: 'the date should still render, just without the highlight',
+      );
+    });
+
+    testWidgets('follows the now callback rather than the real clock', (tester) async {
+      // A neighbouring day being "today" must not highlight this overlay.
+      await openOverlay(tester, nowCallback: () => DateTime(2025, 1, 14, 23, 59));
+
+      expect(find.byKey(MultiDayOverlay.todayKey), findsNothing);
     });
   });
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
 /// The month day header builder.
 ///
@@ -121,31 +122,15 @@ class MonthDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
-    final isToday = context.isToday(localDate);
-    final numberText = Text(date.day.toString(), style: style.numberTextStyle);
-    final buttonSize = style.buttonSize;
-    final constraints = buttonSize == null ? null : BoxConstraints.tight(buttonSize);
-    final buttonPadding = buttonSize == null ? null : EdgeInsets.zero;
-    final button = isToday
-        ? IconButton.filled(
-            key: todayKey,
-            onPressed: null,
-            icon: numberText,
-            visualDensity: VisualDensity.compact,
-            padding: buttonPadding,
-            constraints: constraints,
-          )
-        : IconButton(
-            onPressed: null,
-            icon: numberText,
-            visualDensity: VisualDensity.compact,
-            padding: buttonPadding,
-            constraints: constraints,
-          );
 
     return Padding(
       padding: style.margin ?? EdgeInsets.zero,
-      child: button,
+      child: DayNumber(
+        number: Text(date.day.toString(), style: style.numberTextStyle),
+        isToday: context.isToday(localDate),
+        todayKey: todayKey,
+        size: style.buttonSize,
+      ),
     );
   }
 }

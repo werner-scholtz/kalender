@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
+import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
 /// The day header builder.
 ///
@@ -138,10 +139,11 @@ class DayHeader extends StatelessWidget {
     );
 
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
-    final isToday = context.isToday(localDate);
-    final button = isToday
-        ? IconButton.filled(key: todayKey, onPressed: null, icon: numberText, visualDensity: VisualDensity.compact)
-        : IconButton(onPressed: null, icon: numberText, visualDensity: VisualDensity.compact);
+    final button = DayNumber(
+      number: numberText,
+      isToday: context.isToday(localDate),
+      todayKey: todayKey,
+    );
 
     final dayName = Text(
       style.stringBuilder?.call(localDate) ?? localDate.dayNameShortLocalized(context.locale),

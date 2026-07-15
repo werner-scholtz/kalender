@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
+import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
 // TODO: update
 
@@ -104,25 +105,11 @@ class ScheduleDate extends StatelessWidget {
       style: style.textStyle,
     );
 
-    final isToday = context.isToday(date);
-    final button = isToday
-        ? IconButton.filled(
-            key: todayKey,
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          )
-        : IconButton(
-            onPressed: null,
-            icon: Text(
-              date.day.toString(),
-              style: style.numberTextStyle,
-            ),
-            visualDensity: VisualDensity.compact,
-          );
+    final button = DayNumber(
+      number: Text(date.day.toString(), style: style.numberTextStyle),
+      isToday: context.isToday(date),
+      todayKey: todayKey,
+    );
 
     return FittedBox(
       fit: BoxFit.scaleDown,
