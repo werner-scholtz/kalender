@@ -377,6 +377,72 @@ void main() {
       );
       expect(a == b, false);
     });
+
+    group('card, button, barrier and size fields', () {
+      const wide = MultiDayOverlayStyle(
+        cardTheme: CardThemeData(color: Color(0xFF000000), elevation: 2),
+        barrierColor: Color(0xFF000000),
+        width: 100,
+        headerHeight: 40,
+      );
+      const narrow = MultiDayOverlayStyle(
+        cardTheme: CardThemeData(color: Color(0xFFFFFFFF), elevation: 4),
+        barrierColor: Color(0xFFFFFFFF),
+        width: 200,
+        headerHeight: 80,
+      );
+
+      test('copyWith', () {
+        final copy = wide.copyWith(width: 300, barrierColor: const Color(0xFF00FF00));
+        expect(copy.width, 300);
+        expect(copy.barrierColor, const Color(0xFF00FF00));
+        expect(copy.headerHeight, 40, reason: 'untouched fields are kept');
+        expect(copy.cardTheme, wide.cardTheme);
+      });
+
+      test('merge', () {
+        final merged = wide.merge(const MultiDayOverlayStyle(width: 250));
+        expect(merged.width, 250);
+        expect(merged.headerHeight, 40, reason: 'the other style leaves this null, so it is kept');
+        expect(merged.barrierColor, wide.barrierColor);
+      });
+
+      test('lerp', () {
+        final mid = MultiDayOverlayStyle.lerp(wide, narrow, 0.5)!;
+        expect(mid.width, 150);
+        expect(mid.headerHeight, 60);
+        expect(mid.cardTheme?.elevation, 3);
+        expect(mid.barrierColor, Color.lerp(wide.barrierColor, narrow.barrierColor, 0.5));
+      });
+
+      test('lerp keeps cardTheme null when neither side sets one', () {
+        final mid = MultiDayOverlayStyle.lerp(a, b, 0.5)!;
+        expect(mid.cardTheme, isNull, reason: 'CardThemeData.lerp never returns null, so this has to be guarded');
+      });
+
+      test('closeButtonStyle lerps', () {
+        final mid = MultiDayOverlayStyle.lerp(
+          const MultiDayOverlayStyle(closeButtonStyle: ButtonStyle(elevation: WidgetStatePropertyAll(0))),
+          const MultiDayOverlayStyle(closeButtonStyle: ButtonStyle(elevation: WidgetStatePropertyAll(10))),
+          0.5,
+        )!;
+        expect(mid.closeButtonStyle?.elevation?.resolve({}), 5);
+      });
+
+      test('equality', () {
+        expect(
+          wide,
+          const MultiDayOverlayStyle(
+            cardTheme: CardThemeData(color: Color(0xFF000000), elevation: 2),
+            barrierColor: Color(0xFF000000),
+            width: 100,
+            headerHeight: 40,
+          ),
+        );
+        expect(wide == narrow, false);
+        expect(wide == wide.copyWith(width: 999), false);
+      });
+    });
   });
 
   group('MultiDayPortalOverlayButtonStyle', () {

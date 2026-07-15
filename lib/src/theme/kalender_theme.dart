@@ -154,11 +154,12 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
       scheduleTileHighlightStyle: ScheduleTileHighlightStyle(
         decoration: BoxDecoration(color: colorScheme.primary.withAlpha(50)),
       ),
-      multiDayOverlayStyle: const MultiDayOverlayStyle(
-        closeIcon: Icon(Icons.close),
-        headerPadding: EdgeInsets.symmetric(vertical: 8),
-        eventsPadding: EdgeInsets.all(4),
-        eventPadding: EdgeInsets.symmetric(vertical: 2),
+      multiDayOverlayStyle: MultiDayOverlayStyle(
+        closeIcon: const Icon(Icons.close),
+        dateTextStyle: textTheme.headlineSmall,
+        headerPadding: const EdgeInsets.symmetric(vertical: 8),
+        eventsPadding: const EdgeInsets.all(4),
+        eventPadding: const EdgeInsets.symmetric(vertical: 2),
       ),
       multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
         textStyle: textTheme.bodyMedium,
