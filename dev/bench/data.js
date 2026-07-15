@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784107932295,
+  "lastUpdate": 1784109774960,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -6007,6 +6007,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3235.04047976012,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "31da8478e129940e726a2140438e0af318da9888",
+          "message": "Merge pull request #331 from werner-scholtz/fix/overlay-header-height-clamp\n\nfix: stop a tall headerHeight overflowing the overlay card",
+          "timestamp": "2026-07-15T11:44:24+02:00",
+          "tree_id": "5ab6a19b149421a0cec7e7c93cded3572e204838",
+          "url": "https://github.com/werner-scholtz/kalender/commit/31da8478e129940e726a2140438e0af318da9888"
+        },
+        "date": 1784109771828,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 168.88979420411593,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 678.35125,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 1996.8200899550225,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7786.790262172284,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 820.01025,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2492.1175,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2762.755,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 13801.577181208053,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 241.1168068348685,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 127.16983232905423,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 910.9985,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3828.4667832167834,
             "unit": "us"
           }
         ]
