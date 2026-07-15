@@ -14,8 +14,11 @@ import 'package:web_demo/widgets/toolbar/view_type_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:web_demo/widgets/toolbar/warning_button.dart';
 
+// js_interop rather than html: dart:html does not exist under dart2wasm, so a
+// --wasm build fell through to the stub and never loaded the timezone data.
+// js_interop is defined for both dart2js and dart2wasm, and never on the vm.
 import 'timezone/stub.dart'
-    if (dart.library.html) 'timezone/browser.dart'
+    if (dart.library.js_interop) 'timezone/browser.dart'
     if (dart.library.io) 'timezone/standalone.dart';
 
 void main() async {
