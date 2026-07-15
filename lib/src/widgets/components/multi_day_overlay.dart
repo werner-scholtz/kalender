@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/multi_day_overlay_tile.dart';
+import 'package:kalender/src/widgets/internal_components/day_number.dart';
 import 'package:kalender/src/widgets/internal_components/pass_through_pointer.dart';
 
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
@@ -327,6 +328,9 @@ class MultiDayOverlay extends StatelessWidget {
     return Key('multi_day_overlay_barrier_${date.millisecondsSinceEpoch}');
   }
 
+  /// Key applied to the [IconButton] when the date is today.
+  static const todayKey = ValueKey('MultiDayOverlay.today');
+
   /// Calculates where the overlay card would ideally sit, and how wide it is.
   ///
   /// The anchor lines the card's event list up with the day cell's event area,
@@ -417,7 +421,11 @@ class MultiDayOverlay extends StatelessWidget {
                               ),
                               Align(
                                 alignment: Alignment.bottomCenter,
-                                child: Text(date.day.toString(), style: style.dateTextStyle),
+                                child: DayNumber(
+                                  number: Text(date.day.toString(), style: style.dateTextStyle),
+                                  isToday: context.isToday(date),
+                                  todayKey: todayKey,
+                                ),
                               ),
                               Align(
                                 alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
