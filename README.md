@@ -21,7 +21,6 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 ## Table of Contents
 
 - [Features](#features)
-- [Preview](#preview)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Custom Events](#custom-events)
@@ -54,12 +53,6 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](#location)
 * **Now callback:** Override what "now" means for the time indicator and today highlighting. Useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](#now-callback)
-
-## Preview
-
-See all views, desktop and mobile, light and dark, in the **[Live Demo](https://werner-scholtz.github.io/kalender/)**.
-
----
 
 ## Installation
 
