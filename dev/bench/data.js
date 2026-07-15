@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784105551443,
+  "lastUpdate": 1784106648807,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -5839,6 +5839,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3300.9010494752624,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "24fa1360275d41fa2f7c31765f9e94b9b8f00531",
+          "message": "Merge pull request #328 from werner-scholtz/feat/overlay-today-highlight\n\nfeat: highlight today in the overlay, and make every today highlight tonal",
+          "timestamp": "2026-07-15T10:47:49+02:00",
+          "tree_id": "59c851b6bb36bcbdf90af9fb770dcf00f7367a72",
+          "url": "https://github.com/werner-scholtz/kalender/commit/24fa1360275d41fa2f7c31765f9e94b9b8f00531"
+        },
+        "date": 1784106645950,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 178.7632175885535,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 696.20475,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2059.657,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8008.728,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 717.74975,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2185.121,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2403.037,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12139.502994011977,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 239.77202317606717,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 109.24711613842535,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 761.88925,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3282.0284857571214,
             "unit": "us"
           }
         ]
