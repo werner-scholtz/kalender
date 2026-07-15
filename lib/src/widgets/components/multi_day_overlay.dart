@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -146,6 +148,58 @@ class MultiDayOverlayStyle {
       );
 }
 
+/// Positions the overlay card, keeping all four of its edges inside the overlay.
+///
+/// The card has to be measured before it can be placed, since it is always
+/// taller than the day cell it is anchored to. A [SingleChildLayoutDelegate]
+/// receives the measured size in [getPositionForChild], so the card is placed
+/// and clamped in a single pass.
+class _MultiDayOverlayLayoutDelegate extends SingleChildLayoutDelegate {
+  const _MultiDayOverlayLayoutDelegate({
+    required this.anchorTop,
+    required this.anchorCenterX,
+    required this.width,
+  });
+
+  /// Where the top of the card should sit, before clamping.
+  final double anchorTop;
+
+  /// The horizontal center of the button the card belongs to.
+  final double anchorCenterX;
+
+  /// The width of the card.
+  final double width;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    // The height is deliberately loose. The card has to measure its own height
+    // for the bottom edge to be clamped, and a tight height brings back the
+    // overflow this delegate exists to prevent.
+    return BoxConstraints(minWidth: width, maxWidth: width, maxHeight: constraints.maxHeight);
+  }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    // Pull the card up before pushing it down, so that a card which fills the
+    // overlay is aligned to the top rather than the bottom.
+    var top = anchorTop;
+    if (top + childSize.height > size.height) top = size.height - childSize.height;
+    if (top < 0) top = 0;
+
+    final left =
+        (anchorCenterX - childSize.width / 2).clamp(0.0, math.max(0.0, size.width - childSize.width)).toDouble();
+
+    return Offset(left, top);
+  }
+
+  @override
+  bool shouldRelayout(covariant _MultiDayOverlayLayoutDelegate oldDelegate) {
+    return oldDelegate.anchorTop != anchorTop ||
+        oldDelegate.anchorCenterX != anchorCenterX ||
+        oldDelegate.width != width;
+  }
+}
+
 class MultiDayOverlay extends StatelessWidget {
   /// The date for which the widget is created.
   final InternalDateTime date;
@@ -201,45 +255,28 @@ class MultiDayOverlay extends StatelessWidget {
     return Key('multi_day_overlay_close_button_${date.millisecondsSinceEpoch}');
   }
 
-  /// Calculates the top and left position of the overlay.
-  (double top, double left, double right) _calculatePosition(
+  /// Calculates where the overlay card would ideally sit, and how wide it is.
+  ///
+  /// The anchor lines the card's event list up with the day cell's event area,
+  /// putting the header above it. The card is taller than the cell it is
+  /// anchored to, because it lists every event for the day including the hidden
+  /// ones, so [_MultiDayOverlayLayoutDelegate] clamps the anchor to the
+  /// viewport once the card has been measured.
+  (double anchorTop, double anchorCenterX, double width) _calculateAnchor(
     BoxConstraints constraints,
     double headerHeight,
   ) {
     final portalRenderBox = getOverlayPortalRenderBox();
-
-    final multiDayEventsLayoutRenderBox = getMultiDayEventLayoutRenderBox();
-    final multiDayEventsLayoutSize = multiDayEventsLayoutRenderBox.size;
+    final multiDayEventsLayoutSize = getMultiDayEventLayoutRenderBox().size;
 
     // Get the position of the portal widget.
     final portalWidth = portalRenderBox.size.width;
     final portalPosition = portalRenderBox.localToGlobal(Offset.zero);
 
-    // Calculate the left and top position of the overlay.
-    // Ensure the overlay does not go off the top of the screen.
-    var top = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
-    if (top < 0) top = 0;
+    final anchorTop = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
+    final anchorCenterX = portalPosition.dx + portalWidth / 2;
 
-    // Calculate the left position of the overlay.
-    // Ensure the overlay does not go off the left side of the screen.
-    final maxWidth = _determineWidth(constraints);
-    var left = portalPosition.dx - (maxWidth / 2) + portalWidth / 2;
-    if (left < 0) left = 0;
-
-    // Ensure the overlay does not go off the right side of the screen.
-    var width = maxWidth;
-    final right = left + width;
-    if (right > constraints.maxWidth) {
-      if (left > constraints.maxWidth - maxWidth) {
-        // If there is space on the left side, adjust the left position.
-        left = constraints.maxWidth - maxWidth;
-      } else {
-        // Otherwise, adjust the width to fit within the constraints.
-        width = constraints.maxWidth - left;
-      }
-    }
-
-    return (top, left, width);
+    return (anchorTop, anchorCenterX, _determineWidth(constraints));
   }
 
   /// Determines the width of the overlay based on the constraints.
@@ -272,23 +309,25 @@ class MultiDayOverlay extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final headerHeight = _determineHeaderHeight(constraints);
-        final (top, left, width) = _calculatePosition(constraints, headerHeight);
+        final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, headerHeight);
         return Stack(
           fit: StackFit.expand,
           children: [
             Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: portalController.hide)),
-            Positioned(
-              top: top,
-              left: left,
-              width: width,
+            CustomSingleChildLayout(
+              delegate: _MultiDayOverlayLayoutDelegate(
+                anchorTop: anchorTop,
+                anchorCenterX: anchorCenterX,
+                width: width,
+              ),
               child: Card(
                 key: getOverlayCardKey(date),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   spacing: 8,
                   children: [
                     SizedBox(
                       height: headerHeight,
-                      width: width,
                       child: Padding(
                         padding: style.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
                         child: Stack(
@@ -319,54 +358,63 @@ class MultiDayOverlay extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: style.eventsPadding ?? const EdgeInsets.all(4.0),
-                      child: Stack(
-                        children: [
-                          ListBody(
+                    // Flexible and the scroll view belong together: without
+                    // Flexible the column child keeps an unbounded height and
+                    // never scrolls, and without the scroll view the bounded
+                    // height reaches ListBody, which requires an unbounded one.
+                    Flexible(
+                      child: SingleChildScrollView(
+                        primary: false,
+                        child: Padding(
+                          padding: style.eventsPadding ?? const EdgeInsets.all(4.0),
+                          child: Stack(
                             children: [
-                              for (final event in events)
-                                Padding(
-                                  padding: style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: SizedBox(
-                                    height: tileHeight,
-                                    child: overlayTileBuilder(
-                                      event,
-                                      InternalDateTimeRange.fromDateTimeRange(date.dayRange),
-                                      portalController.hide,
+                              ListBody(
+                                children: [
+                                  for (final event in events)
+                                    Padding(
+                                      padding: style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: SizedBox(
+                                        height: tileHeight,
+                                        child: overlayTileBuilder(
+                                          event,
+                                          InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                          portalController.hide,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                ],
+                              ),
+                              ValueListenableBuilder<CalendarEvent?>(
+                                valueListenable: context.calendarController.selectedEvent,
+                                builder: (context, selectedEvent, child) {
+                                  if (selectedEvent == null) return const SizedBox();
+                                  if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
+
+                                  final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
+                                  if (eventIndex == -1) return const SizedBox();
+
+                                  final eventPadding = style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
+                                  final verticalPadding = eventPadding.vertical;
+
+                                  return Positioned(
+                                    top: eventIndex * (tileHeight + verticalPadding),
+                                    left: 0,
+                                    right: 0,
+                                    height: tileHeight + verticalPadding,
+                                    child: PassThroughPointer(
+                                      child: Padding(
+                                        padding: eventPadding,
+                                        child: context.tileComponents.dropTargetTile?.call(selectedEvent) ??
+                                            const SizedBox(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
-                          ValueListenableBuilder<CalendarEvent?>(
-                            valueListenable: context.calendarController.selectedEvent,
-                            builder: (context, selectedEvent, child) {
-                              if (selectedEvent == null) return const SizedBox();
-                              if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
-
-                              final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
-                              if (eventIndex == -1) return const SizedBox();
-
-                              final eventPadding = style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
-                              final verticalPadding = eventPadding.vertical;
-
-                              return Positioned(
-                                top: eventIndex * (tileHeight + verticalPadding),
-                                left: 0,
-                                right: 0,
-                                height: tileHeight + verticalPadding,
-                                child: PassThroughPointer(
-                                  child: Padding(
-                                    padding: eventPadding,
-                                    child:
-                                        context.tileComponents.dropTargetTile?.call(selectedEvent) ?? const SizedBox(),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
