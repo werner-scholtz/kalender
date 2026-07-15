@@ -1,3 +1,9 @@
+## 0.22.0
+
+### Fixes
+
+- The month view now uses the overlay builders and styles set on `monthComponents`/`monthComponentStyles` instead of letting the global `CalendarComponents.overlayBuilders` and `overlayStyles` shadow them. This matches what `CalendarComponents` documents and what the multi-day header already did. Only apps that set both are affected. [#323](https://github.com/werner-scholtz/kalender/pull/323)
+
 ## 0.21.0
 
 ### Features
