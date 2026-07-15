@@ -146,6 +146,16 @@ void main() {
 
       expect(barrierColor(tester), const Color(0x80123456));
     });
+
+    testWidgets('tapping the barrier dismisses the overlay', (tester) async {
+      await openOverlay(tester, style: const MultiDayOverlayStyle(barrierColor: Color(0x80123456)));
+
+      // The barrier fills the overlay, so tap a corner well clear of the card.
+      await tester.tapAt(const Offset(4, 4));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(MultiDayOverlay.getOverlayCardKey(day)), findsNothing);
+    });
   });
 
   group('MultiDayOverlayStyle.closeButtonStyle', () {
@@ -168,26 +178,50 @@ void main() {
   });
 
   group('MultiDayOverlayStyle.width and headerHeight', () {
+    /// The rendered size of the card.
+    Size cardSize(WidgetTester tester) => tester.getSize(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
+
+    /// The rendered height of the header above the event list.
+    double headerHeight(WidgetTester tester) => tester.getSize(find.byKey(MultiDayOverlay.getHeaderKey(day))).height;
+
     testWidgets('default to the documented values', (tester) async {
       await openOverlay(tester);
 
-      final card = tester.getRect(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
-      expect(card.width, MultiDayOverlay.defaultWidth);
+      expect(cardSize(tester).width, MultiDayOverlay.defaultWidth);
+      expect(headerHeight(tester), MultiDayOverlay.defaultHeaderHeight);
     });
 
     testWidgets('are applied when set', (tester) async {
       await openOverlay(tester, style: const MultiDayOverlayStyle(width: 220, headerHeight: 50));
 
-      final card = tester.getRect(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
-      expect(card.width, 220);
+      expect(cardSize(tester).width, 220);
+      expect(headerHeight(tester), 50, reason: 'headerHeight should reach the header, not just the style object');
     });
 
     testWidgets('the card never gets wider than the space available', (tester) async {
       await openOverlay(tester, style: const MultiDayOverlayStyle(width: 5000));
 
-      final card = tester.getRect(find.byKey(MultiDayOverlay.getOverlayCardKey(day)));
-      expect(card.width, lessThanOrEqualTo(800));
+      // The overlay spans the whole 800-wide view, so the card fills it exactly.
+      expect(cardSize(tester).width, 800);
     });
+
+    // The header does not get the whole overlay height: the card's margin and
+    // the gap below the header come out of it first. Clamping against the full
+    // height let the column overflow by up to that much, so a headerHeight
+    // within ~16px of the view height painted the overflow stripes.
+    for (final requested in [584.0, 585.0, 590.0, 600.0, 5000.0]) {
+      testWidgets('a headerHeight of $requested on a 600 tall view does not overflow', (tester) async {
+        await openOverlay(tester, style: MultiDayOverlayStyle(headerHeight: requested));
+
+        expect(tester.takeException(), isNull, reason: 'the column should not overflow');
+        expect(
+          headerHeight(tester),
+          lessThanOrEqualTo(600),
+          reason: 'the header should be clamped to what is actually available',
+        );
+        expect(cardSize(tester).height, lessThanOrEqualTo(600));
+      });
+    }
   });
 
   // The date used to be an IconButton.filledTonal with `onPressed: () {}` — an
@@ -217,6 +251,16 @@ void main() {
         find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
       );
       expect(text.style?.fontSize, 33);
+    });
+
+    testWidgets('defaults dateTextStyle to bodyMedium, like the other day numbers', (tester) async {
+      await openOverlay(tester);
+
+      final text = tester.widget<Text>(
+        find.descendant(of: find.byKey(MultiDayOverlay.getOverlayCardKey(day)), matching: find.text('15')),
+      );
+      final expected = Theme.of(tester.element(find.byType(CalendarView))).textTheme.bodyMedium;
+      expect(text.style, expected, reason: 'the M3 default should reach the date');
     });
 
     testWidgets('is highlighted when the date is today', (tester) async {

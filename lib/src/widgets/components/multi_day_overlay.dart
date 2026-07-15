@@ -89,7 +89,8 @@ class MultiDayOverlayStyle {
 
   /// The height of the header above the event list.
   ///
-  /// Defaults to [MultiDayOverlay.defaultHeaderHeight].
+  /// Defaults to [MultiDayOverlay.defaultHeaderHeight]. The header is never
+  /// taller than the space available to it.
   final double? headerHeight;
 
   const MultiDayOverlayStyle({
@@ -328,6 +329,12 @@ class MultiDayOverlay extends StatelessWidget {
     return Key('multi_day_overlay_barrier_${date.millisecondsSinceEpoch}');
   }
 
+  /// Returns a [Key] for the card's header, based on the date.
+  static Key getHeaderKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_header_${date.millisecondsSinceEpoch}');
+  }
+
   /// Key applied to the [IconButton] when the date is today.
   static const todayKey = ValueKey('MultiDayOverlay.today');
 
@@ -364,20 +371,36 @@ class MultiDayOverlay extends StatelessWidget {
   static const defaultWidth = 300.0;
 
   /// Determines the height of the header, never taller than the space available.
-  double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style) {
-    return math.min(style.headerHeight ?? defaultHeaderHeight, constraints.maxHeight);
+  ///
+  /// The header does not get the whole overlay: [cardMargin] and the gap between
+  /// the header and the event list come out of it first. Clamping against the
+  /// full height instead lets the column overflow by up to that much.
+  double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style, EdgeInsetsGeometry cardMargin) {
+    final available = constraints.maxHeight - cardMargin.vertical - _columnSpacing;
+    return math.min(style.headerHeight ?? defaultHeaderHeight, math.max(0.0, available));
   }
 
   static const defaultHeaderHeight = 80.0;
+
+  /// The gap between the header and the event list.
+  static const _columnSpacing = 8.0;
+
+  /// The margin a [Card] uses when neither the style nor the theme sets one.
+  ///
+  /// Mirrors the Material default, which [Card] applies inside its own size.
+  static const _defaultCardMargin = EdgeInsets.all(4.0);
 
   @override
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
     final style = (KalenderTheme.of(context).multiDayOverlayStyle ?? const MultiDayOverlayStyle()).merge(this.style);
 
+    final cardTheme = style.cardTheme ?? CardTheme.of(context);
+    final cardMargin = cardTheme.margin ?? _defaultCardMargin;
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final headerHeight = _determineHeaderHeight(constraints, style);
+        final headerHeight = _determineHeaderHeight(constraints, style, cardMargin);
         final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, style, headerHeight);
         return Stack(
           fit: StackFit.expand,
@@ -399,14 +422,15 @@ class MultiDayOverlay extends StatelessWidget {
                 width: width,
               ),
               child: CardTheme(
-                data: style.cardTheme ?? CardTheme.of(context),
+                data: cardTheme,
                 child: Card(
                   key: getOverlayCardKey(date),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    spacing: 8,
+                    spacing: _columnSpacing,
                     children: [
                       SizedBox(
+                        key: getHeaderKey(date),
                         height: headerHeight,
                         child: Padding(
                           padding: style.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
