@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -63,6 +64,33 @@ class MultiDayOverlayStyle {
   /// The padding around each event.
   final EdgeInsets? eventPadding;
 
+  /// The theme applied to the [Card] the overlay is drawn on.
+  ///
+  /// Falls back to the ambient [CardTheme] when null.
+  final CardThemeData? cardTheme;
+
+  /// The [ButtonStyle] used for the close button.
+  ///
+  /// This is merged over the defaults of the filled tonal icon button, so a
+  /// value only has to set the fields it wants to change.
+  final ButtonStyle? closeButtonStyle;
+
+  /// The color drawn behind the card, covering the rest of the calendar.
+  ///
+  /// Transparent when null.
+  final Color? barrierColor;
+
+  /// The width of the card.
+  ///
+  /// Defaults to [MultiDayOverlay.defaultWidth]. The card is never wider than
+  /// the space available to it.
+  final double? width;
+
+  /// The height of the header above the event list.
+  ///
+  /// Defaults to [MultiDayOverlay.defaultHeaderHeight].
+  final double? headerHeight;
+
   const MultiDayOverlayStyle({
     this.dayNameBuilder,
     this.dayNameTextStyle,
@@ -71,6 +99,11 @@ class MultiDayOverlayStyle {
     this.headerPadding,
     this.eventsPadding,
     this.eventPadding,
+    this.cardTheme,
+    this.closeButtonStyle,
+    this.barrierColor,
+    this.width,
+    this.headerHeight,
   });
 
   /// Creates a copy of this style with the given fields replaced with the new values.
@@ -82,6 +115,11 @@ class MultiDayOverlayStyle {
     EdgeInsets? headerPadding,
     EdgeInsets? eventsPadding,
     EdgeInsets? eventPadding,
+    CardThemeData? cardTheme,
+    ButtonStyle? closeButtonStyle,
+    Color? barrierColor,
+    double? width,
+    double? headerHeight,
   }) {
     return MultiDayOverlayStyle(
       dayNameBuilder: dayNameBuilder ?? this.dayNameBuilder,
@@ -91,6 +129,11 @@ class MultiDayOverlayStyle {
       headerPadding: headerPadding ?? this.headerPadding,
       eventsPadding: eventsPadding ?? this.eventsPadding,
       eventPadding: eventPadding ?? this.eventPadding,
+      cardTheme: cardTheme ?? this.cardTheme,
+      closeButtonStyle: closeButtonStyle ?? this.closeButtonStyle,
+      barrierColor: barrierColor ?? this.barrierColor,
+      width: width ?? this.width,
+      headerHeight: headerHeight ?? this.headerHeight,
     );
   }
 
@@ -105,6 +148,11 @@ class MultiDayOverlayStyle {
       headerPadding: other.headerPadding ?? headerPadding,
       eventsPadding: other.eventsPadding ?? eventsPadding,
       eventPadding: other.eventPadding ?? eventPadding,
+      cardTheme: other.cardTheme ?? cardTheme,
+      closeButtonStyle: other.closeButtonStyle ?? closeButtonStyle,
+      barrierColor: other.barrierColor ?? barrierColor,
+      width: other.width ?? width,
+      headerHeight: other.headerHeight ?? headerHeight,
     );
   }
 
@@ -119,6 +167,14 @@ class MultiDayOverlayStyle {
       headerPadding: EdgeInsets.lerp(a?.headerPadding, b?.headerPadding, t),
       eventsPadding: EdgeInsets.lerp(a?.eventsPadding, b?.eventsPadding, t),
       eventPadding: EdgeInsets.lerp(a?.eventPadding, b?.eventPadding, t),
+      // CardThemeData.lerp never returns null, so keep null when neither side
+      // sets a theme rather than inventing an empty one.
+      cardTheme:
+          a?.cardTheme == null && b?.cardTheme == null ? null : CardThemeData.lerp(a?.cardTheme, b?.cardTheme, t),
+      closeButtonStyle: ButtonStyle.lerp(a?.closeButtonStyle, b?.closeButtonStyle, t),
+      barrierColor: Color.lerp(a?.barrierColor, b?.barrierColor, t),
+      width: lerpDouble(a?.width, b?.width, t),
+      headerHeight: lerpDouble(a?.headerHeight, b?.headerHeight, t),
     );
   }
 
@@ -133,7 +189,12 @@ class MultiDayOverlayStyle {
         other.closeIcon == closeIcon &&
         other.headerPadding == headerPadding &&
         other.eventsPadding == eventsPadding &&
-        other.eventPadding == eventPadding;
+        other.eventPadding == eventPadding &&
+        other.cardTheme == cardTheme &&
+        other.closeButtonStyle == closeButtonStyle &&
+        other.barrierColor == barrierColor &&
+        other.width == width &&
+        other.headerHeight == headerHeight;
   }
 
   @override
@@ -145,6 +206,11 @@ class MultiDayOverlayStyle {
         headerPadding,
         eventsPadding,
         eventPadding,
+        cardTheme,
+        closeButtonStyle,
+        barrierColor,
+        width,
+        headerHeight,
       );
 }
 
@@ -255,6 +321,12 @@ class MultiDayOverlay extends StatelessWidget {
     return Key('multi_day_overlay_close_button_${date.millisecondsSinceEpoch}');
   }
 
+  /// Returns a [Key] for the barrier behind the card, based on the date.
+  static Key getBarrierKey(DateTime date) {
+    assert(date.isUtc, 'Date must be in UTC');
+    return Key('multi_day_overlay_barrier_${date.millisecondsSinceEpoch}');
+  }
+
   /// Calculates where the overlay card would ideally sit, and how wide it is.
   ///
   /// The anchor lines the card's event list up with the day cell's event area,
@@ -264,6 +336,7 @@ class MultiDayOverlay extends StatelessWidget {
   /// viewport once the card has been measured.
   (double anchorTop, double anchorCenterX, double width) _calculateAnchor(
     BoxConstraints constraints,
+    MultiDayOverlayStyle style,
     double headerHeight,
   ) {
     final portalRenderBox = getOverlayPortalRenderBox();
@@ -276,27 +349,19 @@ class MultiDayOverlay extends StatelessWidget {
     final anchorTop = portalPosition.dy - multiDayEventsLayoutSize.height - headerHeight;
     final anchorCenterX = portalPosition.dx + portalWidth / 2;
 
-    return (anchorTop, anchorCenterX, _determineWidth(constraints));
+    return (anchorTop, anchorCenterX, _determineWidth(constraints, style));
   }
 
-  /// Determines the width of the overlay based on the constraints.
-  double _determineWidth(BoxConstraints constraints) {
-    if (constraints.maxWidth < 300) {
-      return constraints.maxWidth;
-    } else {
-      return defaultWidth;
-    }
+  /// Determines the width of the overlay, never wider than the space available.
+  double _determineWidth(BoxConstraints constraints, MultiDayOverlayStyle style) {
+    return math.min(style.width ?? defaultWidth, constraints.maxWidth);
   }
 
   static const defaultWidth = 300.0;
 
-  /// Determines the height of the header based on the constraints.
-  double _determineHeaderHeight(BoxConstraints constraints) {
-    if (constraints.maxHeight < 80) {
-      return constraints.maxHeight;
-    } else {
-      return defaultHeaderHeight;
-    }
+  /// Determines the height of the header, never taller than the space available.
+  double _determineHeaderHeight(BoxConstraints constraints, MultiDayOverlayStyle style) {
+    return math.min(style.headerHeight ?? defaultHeaderHeight, constraints.maxHeight);
   }
 
   static const defaultHeaderHeight = 80.0;
@@ -308,116 +373,127 @@ class MultiDayOverlay extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final headerHeight = _determineHeaderHeight(constraints);
-        final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, headerHeight);
+        final headerHeight = _determineHeaderHeight(constraints, style);
+        final (anchorTop, anchorCenterX, width) = _calculateAnchor(constraints, style, headerHeight);
         return Stack(
           fit: StackFit.expand,
           children: [
-            Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: portalController.hide)),
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: portalController.hide,
+                child: ColoredBox(
+                  key: getBarrierKey(date),
+                  color: style.barrierColor ?? Colors.transparent,
+                ),
+              ),
+            ),
             CustomSingleChildLayout(
               delegate: _MultiDayOverlayLayoutDelegate(
                 anchorTop: anchorTop,
                 anchorCenterX: anchorCenterX,
                 width: width,
               ),
-              child: Card(
-                key: getOverlayCardKey(date),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 8,
-                  children: [
-                    SizedBox(
-                      height: headerHeight,
-                      child: Padding(
-                        padding: style.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Text(
-                                style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
-                                style: style.dayNameTextStyle,
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: IconButton.filledTonal(
-                                onPressed: () {},
-                                icon: Text(date.day.toString(), style: style.dateTextStyle),
-                              ),
-                            ),
-                            Align(
-                              alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
-                              child: IconButton.filledTonal(
-                                onPressed: portalController.hide,
-                                icon: style.closeIcon ?? const Icon(Icons.close),
-                                key: MultiDayOverlay.getCloseButtonKey(date),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Flexible and the scroll view belong together: without
-                    // Flexible the column child keeps an unbounded height and
-                    // never scrolls, and without the scroll view the bounded
-                    // height reaches ListBody, which requires an unbounded one.
-                    Flexible(
-                      child: SingleChildScrollView(
-                        primary: false,
+              child: CardTheme(
+                data: style.cardTheme ?? CardTheme.of(context),
+                child: Card(
+                  key: getOverlayCardKey(date),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 8,
+                    children: [
+                      SizedBox(
+                        height: headerHeight,
                         child: Padding(
-                          padding: style.eventsPadding ?? const EdgeInsets.all(4.0),
+                          padding: style.headerPadding ?? const EdgeInsets.symmetric(vertical: 8),
                           child: Stack(
                             children: [
-                              ListBody(
-                                children: [
-                                  for (final event in events)
-                                    Padding(
-                                      padding: style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: SizedBox(
-                                        height: tileHeight,
-                                        child: overlayTileBuilder(
-                                          event,
-                                          InternalDateTimeRange.fromDateTimeRange(date.dayRange),
-                                          portalController.hide,
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  style.dayNameBuilder?.call(date) ?? date.dayNameLocalized(context.locale),
+                                  style: style.dayNameTextStyle,
+                                ),
                               ),
-                              ValueListenableBuilder<CalendarEvent?>(
-                                valueListenable: context.calendarController.selectedEvent,
-                                builder: (context, selectedEvent, child) {
-                                  if (selectedEvent == null) return const SizedBox();
-                                  if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
-
-                                  final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
-                                  if (eventIndex == -1) return const SizedBox();
-
-                                  final eventPadding = style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
-                                  final verticalPadding = eventPadding.vertical;
-
-                                  return Positioned(
-                                    top: eventIndex * (tileHeight + verticalPadding),
-                                    left: 0,
-                                    right: 0,
-                                    height: tileHeight + verticalPadding,
-                                    child: PassThroughPointer(
-                                      child: Padding(
-                                        padding: eventPadding,
-                                        child: context.tileComponents.dropTargetTile?.call(selectedEvent) ??
-                                            const SizedBox(),
-                                      ),
-                                    ),
-                                  );
-                                },
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(date.day.toString(), style: style.dateTextStyle),
+                              ),
+                              Align(
+                                alignment: textDirection == TextDirection.ltr ? Alignment.topRight : Alignment.topLeft,
+                                child: IconButton.filledTonal(
+                                  onPressed: portalController.hide,
+                                  style: style.closeButtonStyle,
+                                  icon: style.closeIcon ?? const Icon(Icons.close),
+                                  key: MultiDayOverlay.getCloseButtonKey(date),
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      // Flexible and the scroll view belong together: without
+                      // Flexible the column child keeps an unbounded height and
+                      // never scrolls, and without the scroll view the bounded
+                      // height reaches ListBody, which requires an unbounded one.
+                      Flexible(
+                        child: SingleChildScrollView(
+                          primary: false,
+                          child: Padding(
+                            padding: style.eventsPadding ?? const EdgeInsets.all(4.0),
+                            child: Stack(
+                              children: [
+                                ListBody(
+                                  children: [
+                                    for (final event in events)
+                                      Padding(
+                                        padding: style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: SizedBox(
+                                          height: tileHeight,
+                                          child: overlayTileBuilder(
+                                            event,
+                                            InternalDateTimeRange.fromDateTimeRange(date.dayRange),
+                                            portalController.hide,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                ValueListenableBuilder<CalendarEvent?>(
+                                  valueListenable: context.calendarController.selectedEvent,
+                                  builder: (context, selectedEvent, child) {
+                                    if (selectedEvent == null) return const SizedBox();
+                                    if (!events.any((e) => e.id == selectedEvent.id)) return const SizedBox();
+
+                                    final eventIndex = events.indexWhere((e) => e.id == selectedEvent.id);
+                                    if (eventIndex == -1) return const SizedBox();
+
+                                    final eventPadding =
+                                        style.eventPadding ?? const EdgeInsets.symmetric(vertical: 2.0);
+                                    final verticalPadding = eventPadding.vertical;
+
+                                    return Positioned(
+                                      top: eventIndex * (tileHeight + verticalPadding),
+                                      left: 0,
+                                      right: 0,
+                                      height: tileHeight + verticalPadding,
+                                      child: PassThroughPointer(
+                                        child: Padding(
+                                          padding: eventPadding,
+                                          child: context.tileComponents.dropTargetTile?.call(selectedEvent) ??
+                                              const SizedBox(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
