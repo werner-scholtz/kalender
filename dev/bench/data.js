@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784104415900,
+  "lastUpdate": 1784105548660,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -5755,6 +5755,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3363.9955022488757,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner@scholtzonline.net",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a5ed3219784945f71995b6ceeec7cde736ca1e8a",
+          "message": "Merge pull request #325 from werner-scholtz/feat/overlay-styling\n\nfeat: let the multi-day overlay card, close button and barrier be styled",
+          "timestamp": "2026-07-15T10:16:47+02:00",
+          "tree_id": "08a0d40f81df4d3b3a5d3cc105d0942c4001d138",
+          "url": "https://github.com/werner-scholtz/kalender/commit/a5ed3219784945f71995b6ceeec7cde736ca1e8a"
+        },
+        "date": 1784105544579,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 173.50059849521205,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 692.35725,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2057.884,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8002.2,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 732.93075,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2231.009,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2429.54,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12097.880239520959,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 239.20417111032114,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 110.65293785310735,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 770.7315,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3300.9010494752624,
             "unit": "us"
           }
         ]
