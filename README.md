@@ -1060,7 +1060,9 @@ CalendarView(
 )
 ```
 
-For the overlay "N more" button text, override the style:
+Day and month names come from `intl`, but the two strings the calendar writes itself default to English. Override them to translate them.
+
+For the overlay "N more" button text:
 
 ```dart
 CalendarView(
@@ -1073,6 +1075,22 @@ CalendarView(
   ),
 )
 ```
+
+For the week number's tooltip, which appears in the month view's week number gutter and in the multi-day header:
+
+```dart
+MaterialApp(
+  theme: ThemeData(
+    extensions: [
+      KalenderThemeData(
+        weekNumberStyle: WeekNumberStyle(tooltip: 'Weeknummer'),
+      ),
+    ],
+  ),
+)
+```
+
+Both can be set either way: on a single `CalendarView` through `CalendarComponents`, or once for the whole app through [`KalenderThemeData`](#theming).
 
 ---
 
