@@ -625,15 +625,25 @@ class CompiledApp {
       _1537: (x0,x1) => { x0.lastIndex = x1 },
       _1538: (o, p) => p in o,
       _1539: (o, p) => o[p],
-      _1542: o => o instanceof Array,
-      _1546: a => a.pop(),
-      _1547: (a, i) => a.splice(i, 1),
-      _1548: (a, s) => a.join(s),
-      _1549: (a, s, e) => a.slice(s, e),
-      _1552: a => a.length,
-      _1554: (a, i) => a[i],
-      _1555: (a, i, v) => a[i] = v,
-      _1557: o => {
+      _1560: () => new AbortController(),
+      _1561: x0 => x0.abort(),
+      _1562: (x0,x1,x2,x3,x4,x5) => ({method: x0,headers: x1,body: x2,credentials: x3,redirect: x4,signal: x5}),
+      _1563: (x0,x1) => globalThis.fetch(x0,x1),
+      _1564: (x0,x1) => x0.get(x1),
+      _1565: (module,f) => finalizeWrapper(f, function(x0,x1,x2) { return module.exports._1565(f,arguments.length,x0,x1,x2) }),
+      _1566: (x0,x1) => x0.forEach(x1),
+      _1567: x0 => x0.getReader(),
+      _1568: x0 => x0.cancel(),
+      _1569: x0 => x0.read(),
+      _1570: o => o instanceof Array,
+      _1574: a => a.pop(),
+      _1575: (a, i) => a.splice(i, 1),
+      _1576: (a, s) => a.join(s),
+      _1577: (a, s, e) => a.slice(s, e),
+      _1580: a => a.length,
+      _1582: (a, i) => a[i],
+      _1583: (a, i, v) => a[i] = v,
+      _1585: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof ArrayBuffer) return 1;
         if (globalThis.SharedArrayBuffer !== undefined &&
@@ -642,86 +652,95 @@ class CompiledApp {
         }
         return 3;
       },
-      _1558: (o, offsetInBytes, lengthInBytes) => {
+      _1586: (o, offsetInBytes, lengthInBytes) => {
         var dst = new ArrayBuffer(lengthInBytes);
         new Uint8Array(dst).set(new Uint8Array(o, offsetInBytes, lengthInBytes));
         return new DataView(dst);
       },
-      _1560: o => {
+      _1588: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Uint8Array) return 1;
         return 2;
       },
-      _1561: (o, start, length) => new Uint8Array(o.buffer, o.byteOffset + start, length),
-      _1562: o => {
+      _1589: (o, start, length) => new Uint8Array(o.buffer, o.byteOffset + start, length),
+      _1590: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Int8Array) return 1;
         return 2;
       },
-      _1563: (o, start, length) => new Int8Array(o.buffer, o.byteOffset + start, length),
-      _1564: o => o instanceof Uint8ClampedArray,
-      _1565: (o, start, length) => new Uint8ClampedArray(o.buffer, o.byteOffset + start, length),
-      _1566: o => o instanceof Uint16Array,
-      _1567: (o, start, length) => new Uint16Array(o.buffer, o.byteOffset + start, length),
-      _1568: o => o instanceof Int16Array,
-      _1569: (o, start, length) => new Int16Array(o.buffer, o.byteOffset + start, length),
-      _1570: o => {
+      _1591: (o, start, length) => new Int8Array(o.buffer, o.byteOffset + start, length),
+      _1592: o => o instanceof Uint8ClampedArray,
+      _1593: (o, start, length) => new Uint8ClampedArray(o.buffer, o.byteOffset + start, length),
+      _1594: o => o instanceof Uint16Array,
+      _1595: (o, start, length) => new Uint16Array(o.buffer, o.byteOffset + start, length),
+      _1596: o => o instanceof Int16Array,
+      _1597: (o, start, length) => new Int16Array(o.buffer, o.byteOffset + start, length),
+      _1598: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Uint32Array) return 1;
         return 2;
       },
-      _1571: (o, start, length) => new Uint32Array(o.buffer, o.byteOffset + start, length),
-      _1572: o => {
+      _1599: (o, start, length) => new Uint32Array(o.buffer, o.byteOffset + start, length),
+      _1600: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Int32Array) return 1;
         return 2;
       },
-      _1573: (o, start, length) => new Int32Array(o.buffer, o.byteOffset + start, length),
-      _1575: (o, start, length) => new BigInt64Array(o.buffer, o.byteOffset + start, length),
-      _1576: o => {
+      _1601: (o, start, length) => new Int32Array(o.buffer, o.byteOffset + start, length),
+      _1603: (o, start, length) => new BigInt64Array(o.buffer, o.byteOffset + start, length),
+      _1604: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Float32Array) return 1;
         return 2;
       },
-      _1577: (o, start, length) => new Float32Array(o.buffer, o.byteOffset + start, length),
-      _1578: o => {
+      _1605: (o, start, length) => new Float32Array(o.buffer, o.byteOffset + start, length),
+      _1606: o => {
         if (o === null || o === undefined) return 0;
         if (o instanceof Float64Array) return 1;
         return 2;
       },
-      _1579: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
-      _1580: (a, i) => a.push(i),
-      _1581: (t, s) => t.set(s),
-      _1583: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
-      _1585: o => o.buffer,
-      _1586: o => o.byteOffset,
-      _1587: Function.prototype.call.bind(Object.getOwnPropertyDescriptor(DataView.prototype, 'byteLength').get),
-      _1588: (b, o) => new DataView(b, o),
-      _1589: (b, o, l) => new DataView(b, o, l),
-      _1590: Function.prototype.call.bind(DataView.prototype.getUint8),
-      _1591: Function.prototype.call.bind(DataView.prototype.setUint8),
-      _1592: Function.prototype.call.bind(DataView.prototype.getInt8),
-      _1593: Function.prototype.call.bind(DataView.prototype.setInt8),
-      _1594: Function.prototype.call.bind(DataView.prototype.getUint16),
-      _1595: Function.prototype.call.bind(DataView.prototype.setUint16),
-      _1596: Function.prototype.call.bind(DataView.prototype.getInt16),
-      _1597: Function.prototype.call.bind(DataView.prototype.setInt16),
-      _1598: Function.prototype.call.bind(DataView.prototype.getUint32),
-      _1599: Function.prototype.call.bind(DataView.prototype.setUint32),
-      _1600: Function.prototype.call.bind(DataView.prototype.getInt32),
-      _1601: Function.prototype.call.bind(DataView.prototype.setInt32),
-      _1604: Function.prototype.call.bind(DataView.prototype.getBigInt64),
-      _1605: Function.prototype.call.bind(DataView.prototype.setBigInt64),
-      _1606: Function.prototype.call.bind(DataView.prototype.getFloat32),
-      _1607: Function.prototype.call.bind(DataView.prototype.setFloat32),
-      _1608: Function.prototype.call.bind(DataView.prototype.getFloat64),
-      _1609: Function.prototype.call.bind(DataView.prototype.setFloat64),
-      _1610: Function.prototype.call.bind(Number.prototype.toString),
-      _1611: Function.prototype.call.bind(BigInt.prototype.toString),
-      _1612: Function.prototype.call.bind(Number.prototype.toString),
-      _1613: (d, digits) => d.toFixed(digits),
-      _1619: () => globalThis.console,
-      _1658: (x0,x1) => x0.error(x1),
+      _1607: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
+      _1608: (a, i) => a.push(i),
+      _1609: (t, s) => t.set(s),
+      _1611: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
+      _1613: o => o.buffer,
+      _1614: o => o.byteOffset,
+      _1615: Function.prototype.call.bind(Object.getOwnPropertyDescriptor(DataView.prototype, 'byteLength').get),
+      _1616: (b, o) => new DataView(b, o),
+      _1617: (b, o, l) => new DataView(b, o, l),
+      _1618: Function.prototype.call.bind(DataView.prototype.getUint8),
+      _1619: Function.prototype.call.bind(DataView.prototype.setUint8),
+      _1620: Function.prototype.call.bind(DataView.prototype.getInt8),
+      _1621: Function.prototype.call.bind(DataView.prototype.setInt8),
+      _1622: Function.prototype.call.bind(DataView.prototype.getUint16),
+      _1623: Function.prototype.call.bind(DataView.prototype.setUint16),
+      _1624: Function.prototype.call.bind(DataView.prototype.getInt16),
+      _1625: Function.prototype.call.bind(DataView.prototype.setInt16),
+      _1626: Function.prototype.call.bind(DataView.prototype.getUint32),
+      _1627: Function.prototype.call.bind(DataView.prototype.setUint32),
+      _1628: Function.prototype.call.bind(DataView.prototype.getInt32),
+      _1629: Function.prototype.call.bind(DataView.prototype.setInt32),
+      _1632: Function.prototype.call.bind(DataView.prototype.getBigInt64),
+      _1633: Function.prototype.call.bind(DataView.prototype.setBigInt64),
+      _1634: Function.prototype.call.bind(DataView.prototype.getFloat32),
+      _1635: Function.prototype.call.bind(DataView.prototype.setFloat32),
+      _1636: Function.prototype.call.bind(DataView.prototype.getFloat64),
+      _1637: Function.prototype.call.bind(DataView.prototype.setFloat64),
+      _1638: Function.prototype.call.bind(Number.prototype.toString),
+      _1639: Function.prototype.call.bind(BigInt.prototype.toString),
+      _1640: Function.prototype.call.bind(Number.prototype.toString),
+      _1641: (d, digits) => d.toFixed(digits),
+      _6096: x0 => x0.signal,
+      _7936: x0 => x0.value,
+      _7938: x0 => x0.done,
+      _8640: x0 => x0.url,
+      _8642: x0 => x0.status,
+      _8644: x0 => x0.statusText,
+      _8645: x0 => x0.headers,
+      _8646: x0 => x0.body,
+      _12274: x0 => x0.name,
+      _13021: () => globalThis.console,
+      _13060: (x0,x1) => x0.error(x1),
 
     };
 
