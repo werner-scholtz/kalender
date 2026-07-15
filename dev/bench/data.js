@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784109777121,
+  "lastUpdate": 1784114538624,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -6091,6 +6091,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3828.4667832167834,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "902d8e83821015a83084a270528049fdea4a73d0",
+          "message": "Merge pull request #334 from werner-scholtz/fix/rtl-month-overflow-date\n\nfix: put the overflow button on the right day in right-to-left layouts",
+          "timestamp": "2026-07-15T13:04:05+02:00",
+          "tree_id": "d8f869bf2416c504931a57daedbe96e563210af3",
+          "url": "https://github.com/werner-scholtz/kalender/commit/902d8e83821015a83084a270528049fdea4a73d0"
+        },
+        "date": 1784114534583,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 168.6011829319814,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 686.2695,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2029.737,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7960.516,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 804.41575,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2471.889,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2696.20875,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 13941.846153846154,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 240.75464016285474,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 128.44150210424087,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 881.18675,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3768.4195804195806,
             "unit": "us"
           }
         ]
