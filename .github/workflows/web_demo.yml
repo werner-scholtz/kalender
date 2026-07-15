@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+          channel: stable
       - run: flutter build web --release --wasm --base-href /kalender/
         shell: bash
         working-directory: examples/web_demo

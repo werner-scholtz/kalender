@@ -15,7 +15,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:web_demo/widgets/toolbar/warning_button.dart';
 
 import 'timezone/stub.dart'
-    if (dart.library.html) 'timezone/browser.dart'
+    if (dart.library.js_interop) 'timezone/browser.dart'
     if (dart.library.io) 'timezone/standalone.dart';
 
 void main() async {
