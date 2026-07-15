@@ -3,6 +3,7 @@
 ### Fixes
 
 - The month view now uses the overlay builders and styles set on `monthComponents`/`monthComponentStyles` instead of letting the global `CalendarComponents.overlayBuilders` and `overlayStyles` shadow them. This matches what `CalendarComponents` documents and what the multi-day header already did. Only apps that set both are affected. [#323](https://github.com/werner-scholtz/kalender/pull/323)
+- The multi-day overlay card no longer runs past the bottom of the view and gets clipped. It was positioned without being measured, so only its top and sides were clamped, which showed up when a day low in the month grid had more events than fit. The card now stays inside the view on all four sides, and its event list scrolls when the card would be taller than the view. [#324](https://github.com/werner-scholtz/kalender/pull/324)
 
 ## 0.21.0
 
