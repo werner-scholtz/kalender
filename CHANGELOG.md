@@ -1,5 +1,10 @@
 ## 0.22.0
 
+### Features
+
+- `MultiDayOverlayStyle` gained `cardTheme`, `closeButtonStyle`, `barrierColor`, `width`, and `headerHeight`, so the overlay card, its close button, and the area behind it can be styled to match the rest of the app. The card and button take Flutter's own `CardThemeData` and `ButtonStyle`. All of them default to null, so the stock appearance is unchanged. [#325](https://github.com/werner-scholtz/kalender/pull/325)
+- The date in the overlay header is a plain label instead of a button that did nothing when tapped. It is styled by the existing `MultiDayOverlayStyle.dateTextStyle`, which now defaults to `headlineSmall`. This removes the tonal circle that used to sit behind the day number. [#325](https://github.com/werner-scholtz/kalender/pull/325)
+
 ### Fixes
 
 - The month view now uses the overlay builders and styles set on `monthComponents`/`monthComponentStyles` instead of letting the global `CalendarComponents.overlayBuilders` and `overlayStyles` shadow them. This matches what `CalendarComponents` documents and what the multi-day header already did. Only apps that set both are affected. [#323](https://github.com/werner-scholtz/kalender/pull/323)
