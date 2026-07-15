@@ -208,6 +208,9 @@ MultiDayLayoutFrame defaultMultiDayFrameGenerator({
     events: sortedEvents,
     totalNumberOfRows: sortedEvents.isEmpty ? 0 : maxRow + 1,
     columnRowMap: columnRowMap,
+    // The columns above were ordered by this, so the frame has to read them
+    // back the same way.
+    textDirection: textDirection,
   );
 
   // Store in cache if provided
@@ -292,17 +295,29 @@ class MultiDayLayoutFrame {
   /// A map that contains the number of rows for each date.
   final Map<int, int> columnRowMap;
 
+  /// The direction the columns run in.
+  ///
+  /// Columns are laid out left to right, so in [TextDirection.rtl] column 0 is
+  /// the last date of [dateTimeRange] rather than the first.
+  final TextDirection textDirection;
+
   const MultiDayLayoutFrame({
     required this.dateTimeRange,
     required this.layoutInfo,
     required this.events,
     required this.totalNumberOfRows,
     required this.columnRowMap,
+    this.textDirection = TextDirection.ltr,
   });
 
   /// Returns the date for the given column index.
-  InternalDateTime dateFromColumn(int column) =>
-      InternalDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: column)));
+  ///
+  /// Reads from the end of the range in [TextDirection.rtl], mirroring the
+  /// column order the frame was laid out with.
+  InternalDateTime dateFromColumn(int column) {
+    final days = textDirection == TextDirection.ltr ? column : dateTimeRange.dates().length - 1 - column;
+    return InternalDateTime.fromDateTime(dateTimeRange.start.add(Duration(days: days)));
+  }
 
   /// Returns the visible events and their layout information based on the provided max number of rows.
   ///
