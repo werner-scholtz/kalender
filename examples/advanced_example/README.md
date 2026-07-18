@@ -1,16 +1,13 @@
-# advanced_example
+# Advanced example
 
-A new Flutter project.
+Shows three techniques that are each reusable on their own:
 
-## Getting Started
+- **Custom event layout.** `CustomSideBySideLayoutDelegate` (`lib/layout_strategy.dart`) splits each day column into a lane per person, wired in through `MultiDayBodyConfiguration.eventLayoutStrategy`.
+- **Zoom.** `ZoomDetector` (`lib/zoom.dart`) changes the height-per-minute on desktop (ctrl + scroll / trackpad pinch) and mobile (two-finger pinch), keeping the scroll position under the pointer.
+- **Tap-location-aware creation.** `Event.fromDetail` builds a new event from the tap detail, so a created event is pre-assigned to the person whose lane was tapped.
 
-This project is a starting point for a Flutter application.
+Run it from this directory:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter run
+```
