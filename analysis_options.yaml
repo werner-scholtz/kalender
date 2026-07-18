@@ -4,6 +4,10 @@ include: package:flutter_lints/flutter.yaml
 # https://dart.dev/guides/language/analysis-options
 
 analyzer:
+  # The examples are standalone apps with their own dependencies and lint config;
+  # they are analyzed by the dedicated analyze-examples CI job, not from here.
+  exclude:
+    - examples/**
   language:
     strict-inference: true
     strict-raw-types: true
