@@ -11,13 +11,6 @@ class RecurringCalendarEvent extends CalendarEvent {
     super.interaction,
   });
 
-  factory RecurringCalendarEvent.fromCalendarEvent(CalendarEvent event, String groupId) {
-    return RecurringCalendarEvent(
-      dateTimeRange: event.internalRange(),
-      groupId: groupId,
-    );
-  }
-
   /// Copy the [CalendarEvent] with the new values.
   @override
   RecurringCalendarEvent copyWith({
@@ -62,7 +55,6 @@ class RecurrenceGroup {
   RecurrenceGroup copyWith({
     List<String>? eventIds,
     Recurrence? recurrence,
-    DateTimeRange? originalRange,
   }) {
     return RecurrenceGroup(
       id: id,
