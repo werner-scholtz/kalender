@@ -40,6 +40,22 @@ abstract class EventsController with ChangeNotifier {
   /// Removes all [CalendarEvent]s from [_events].
   void clearEvents();
 
+  /// Replaces all [CalendarEvent]s with [events] in a single update.
+  ///
+  /// Prefer this over [clearEvents] followed by [addEvents] when swapping the
+  /// whole set, for example after loading a new source. It avoids the
+  /// intermediate empty state and, where the implementation allows, notifies
+  /// listeners once instead of twice.
+  ///
+  /// Returns the id's assigned to the events in order.
+  ///
+  /// The default implementation clears then adds. Subclasses may override to do
+  /// it atomically.
+  List<String> replaceEvents(List<CalendarEvent> events) {
+    clearEvents();
+    return addEvents(events);
+  }
+
   /// Updates an [CalendarEvent].
   ///
   /// The [event] is the event that needs to be changed.
