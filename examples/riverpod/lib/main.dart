@@ -53,11 +53,10 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // These providers never change, so read them; only the selected view
-    // configuration should rebuild this widget.
+    // The controllers never change, so read them; watch only the selected view
+    // configuration, which the calendar needs to rebuild.
     final eventsController = ref.read(eventsProvider);
     final calendarController = ref.read(calendarControllerProvider);
-    final configurations = ref.read(viewConfigurationsProvider);
     final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
@@ -80,22 +79,9 @@ class HomeScreen extends ConsumerWidget {
           elevation: 2,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    DropdownMenu<ViewConfiguration>(
-                      initialSelection: selected,
-                      dropdownMenuEntries: [
-                        for (final config in configurations)
-                          DropdownMenuEntry(value: config, label: config.name),
-                      ],
-                      onSelected: (value) {
-                        if (value != null) ref.read(selectedViewProvider.notifier).select(value);
-                      },
-                    ),
-                  ],
-                ),
+              const Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(children: [ViewSwitcher()]),
               ),
               CalendarHeader(),
             ],
@@ -106,6 +92,28 @@ class HomeScreen extends ConsumerWidget {
           monthBodyConfiguration: MonthBodyConfiguration(),
         ),
       ),
+    );
+  }
+}
+
+/// Dropdown that switches the calendar's view configuration. Rebuilds on its own
+/// when the selection changes.
+class ViewSwitcher extends ConsumerWidget {
+  const ViewSwitcher({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configurations = ref.read(viewConfigurationsProvider);
+    final selected = ref.watch(selectedViewProvider);
+
+    return DropdownMenu<ViewConfiguration>(
+      initialSelection: selected,
+      dropdownMenuEntries: [
+        for (final config in configurations) DropdownMenuEntry(value: config, label: config.name),
+      ],
+      onSelected: (value) {
+        if (value != null) ref.read(selectedViewProvider.notifier).select(value);
+      },
     );
   }
 }
