@@ -1,16 +1,14 @@
-# example
+# Basic example
 
-A new Flutter project.
+A single-screen calendar showing the common building blocks of `kalender`:
 
-## Getting Started
+- All view types (week, day, work week, 3-day, month, schedule) with a dropdown to switch between them.
+- A toolbar with today / previous / next navigation and a month-year label.
+- Sample events, plus create, drag, and resize.
+- A custom `Event` subclass carrying a title and color, and custom tile components.
 
-This project is a starting point for a Flutter application.
+Run it from this directory:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter run
+```
