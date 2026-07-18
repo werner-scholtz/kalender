@@ -53,9 +53,11 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventsController = ref.watch(eventsProvider);
-    final calendarController = ref.watch(calendarControllerProvider);
-    final configurations = ref.watch(viewConfigurationsProvider);
+    // These providers never change, so read them; only the selected view
+    // configuration should rebuild this widget.
+    final eventsController = ref.read(eventsProvider);
+    final calendarController = ref.read(calendarControllerProvider);
+    final configurations = ref.read(viewConfigurationsProvider);
     final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
