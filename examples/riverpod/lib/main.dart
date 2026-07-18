@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kalender/kalender.dart';
 
 void main() {
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,27 +19,53 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Provider for the calendar view.
-final kalenderView = Provider<KalenderView>((ref) => KalenderView());
+/// The shared calendar controller.
+final calendarControllerProvider = Provider<CalendarController>((ref) => CalendarController());
 
-/// Provider for the events controller.
+/// The shared events controller.
 final eventsProvider = Provider<EventsController>((ref) => DefaultEventsController());
+
+/// The view configurations the user can pick from.
+final viewConfigurationsProvider = Provider<List<ViewConfiguration>>((ref) {
+  final now = DateTime.now();
+  final displayRange = DateTimeRange(start: now.copyWith(day: now.day - 365), end: now.copyWith(day: now.day + 365));
+  return [
+    MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
+    MultiDayViewConfiguration.singleDay(displayRange: displayRange),
+    MultiDayViewConfiguration.workWeek(displayRange: displayRange),
+    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
+    MonthViewConfiguration.singleMonth(displayRange: displayRange),
+  ];
+});
+
+/// The currently selected view configuration. Watchers rebuild when [select] runs.
+class SelectedView extends Notifier<ViewConfiguration> {
+  @override
+  ViewConfiguration build() => ref.watch(viewConfigurationsProvider).first;
+
+  void select(ViewConfiguration config) => state = config;
+}
+
+final selectedViewProvider = NotifierProvider<SelectedView, ViewConfiguration>(SelectedView.new);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // The controllers never change, so read them; watch only the selected view
+    // configuration, which the calendar needs to rebuild.
     final eventsController = ref.read(eventsProvider);
-    final view = ref.watch(kalenderView);
+    final calendarController = ref.read(calendarControllerProvider);
+    final selected = ref.watch(selectedViewProvider);
 
     return Scaffold(
       body: CalendarView(
         eventsController: eventsController,
-        calendarController: view.controller,
-        viewConfiguration: view.viewConfiguration,
+        calendarController: calendarController,
+        viewConfiguration: selected,
         callbacks: CalendarCallbacks(
-          onEventTapped: (event, renderBox) => view.controller.selectEvent(event),
+          onEventTapped: (event, renderBox) => calendarController.selectEvent(event),
           onEventCreate: (event) => event,
           onEventCreated: (event) => eventsController.addEvent(event),
           onEventChanged: (event, updatedEvent) => eventsController.updateEvent(
@@ -51,7 +77,15 @@ class HomeScreen extends ConsumerWidget {
           color: Theme.of(context).colorScheme.surface,
           surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
           elevation: 2,
-          child: CalendarHeader(),
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(children: [ViewSwitcher()]),
+              ),
+              CalendarHeader(),
+            ],
+          ),
         ),
         body: CalendarBody(
           multiDayBodyConfiguration: MultiDayBodyConfiguration(showMultiDayEvents: false),
@@ -62,31 +96,24 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class KalenderView with ChangeNotifier {
-  KalenderView();
+/// Dropdown that switches the calendar's view configuration. Rebuilds on its own
+/// when the selection changes.
+class ViewSwitcher extends ConsumerWidget {
+  const ViewSwitcher({super.key});
 
-  /// The controller for the view.
-  final controller = CalendarController();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configurations = ref.read(viewConfigurationsProvider);
+    final selected = ref.watch(selectedViewProvider);
 
-  /// The viewConfiguration to display.
-  late var _viewConfiguration = viewConfigurations[0];
-  ViewConfiguration get viewConfiguration => _viewConfiguration;
-  set viewConfiguration(ViewConfiguration view) {
-    if (_viewConfiguration == view) return;
-    _viewConfiguration = view;
-    notifyListeners();
+    return DropdownMenu<ViewConfiguration>(
+      initialSelection: selected,
+      dropdownMenuEntries: [
+        for (final config in configurations) DropdownMenuEntry(value: config, label: config.name),
+      ],
+      onSelected: (value) {
+        if (value != null) ref.read(selectedViewProvider.notifier).select(value);
+      },
+    );
   }
-
-  /// The [ViewConfiguration] the user can choose.
-  late final viewConfigurations = [
-    MultiDayViewConfiguration.week(displayRange: _displayRange, firstDayOfWeek: 1),
-    MultiDayViewConfiguration.singleDay(displayRange: _displayRange),
-    MultiDayViewConfiguration.workWeek(displayRange: _displayRange),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: _displayRange),
-    MonthViewConfiguration.singleMonth(),
-  ];
-
-  final _now = DateTime.now();
-  late final _displayRange =
-      DateTimeRange(start: _now.copyWith(day: _now.day - 365), end: _now.copyWith(day: _now.day + 365));
 }
