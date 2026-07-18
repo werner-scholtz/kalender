@@ -62,6 +62,14 @@ class DefaultEventsController extends EventsController {
   }
 
   @override
+  List<String> replaceEvents(List<CalendarEvent> events) {
+    eventStore.clear();
+    final ids = events.map(eventStore.addNewEvent).toList();
+    notifyListeners();
+    return ids;
+  }
+
+  @override
   void updateEvent({
     required CalendarEvent event,
     required CalendarEvent updatedEvent,

@@ -1,5 +1,9 @@
 ## 0.23.0
 
+### Features
+
+- `EventsController` gained `replaceEvents`, which swaps the whole event set in one call. `DefaultEventsController` does it atomically: a single notification and no intermediate empty state, which suits reloading events from a source such as an imported `.ics` file. The base class provides a default that clears then adds, so custom controllers keep working unchanged. [#344](https://github.com/werner-scholtz/kalender/pull/344)
+
 ### Fixes
 
 - The "+N more" overflow button is now attributed to the day its events are on in right-to-left layouts. The layout frame orders its columns by text direction, but read them back as if they always ran left to right, so every button landed on the mirrored date. In a right-to-left month view with events on Wednesday the 29th, the buttons appeared on the 30th and 31st. `MultiDayLayoutFrame` gained an optional `textDirection`, which defaults to left to right, so a custom frame generator is unaffected. [#334](https://github.com/werner-scholtz/kalender/pull/334)

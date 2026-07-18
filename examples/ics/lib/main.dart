@@ -88,9 +88,7 @@ class _HomePageState extends State<HomePage> {
 
   void _regenerate(DateTimeRange window) {
     _covered = window;
-    // The controller has no atomic replace, so clear then add.
-    eventsController.clearEvents();
-    eventsController.addEvents(expandEvents(_sources, window));
+    eventsController.replaceEvents(expandEvents(_sources, window));
   }
 
   Future<void> _showExport() async {

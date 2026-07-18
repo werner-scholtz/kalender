@@ -188,6 +188,54 @@ void main() {
     });
   });
 
+  // ─── replaceEvents ───────────────────────────────────────────────────────
+
+  group('replaceEvents', () {
+    test('Swaps the whole set: old events gone, new events present', () {
+      final old = List.generate(3, (i) {
+        final start = DateTime.utc(2024, 6, i + 1, 9);
+        return CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 1))));
+      });
+      controller.addEvents(old);
+
+      final replacement = List.generate(2, (i) {
+        final start = DateTime.utc(2024, 7, i + 1, 9);
+        return CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 1))));
+      });
+      final ids = controller.replaceEvents(replacement);
+
+      expect(ids.length, replacement.length, reason: 'One id per replacement event.');
+      expect(controller.events.length, replacement.length, reason: 'Only the replacement events remain.');
+      for (final event in old) {
+        expect(controller.events, isNot(contains(event)), reason: 'Old events should be gone.');
+      }
+      for (var i = 0; i < ids.length; i++) {
+        expect(controller.byId(ids[i]), replacement[i], reason: 'Replacement event $i is retrievable by its id.');
+      }
+    });
+
+    test('Notifies listeners exactly once', () {
+      controller.addEvents([
+        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))),
+      ]);
+
+      var count = 0;
+      controller.addListener(() => count++);
+      controller.replaceEvents([
+        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 7, 1, 9), end: DateTime.utc(2024, 7, 1, 10))),
+      ]);
+      expect(count, 1, reason: 'A single atomic update, not a clear followed by an add.');
+    });
+
+    test('Replacing with an empty list clears all events', () {
+      controller.addEvents([
+        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))),
+      ]);
+      controller.replaceEvents([]);
+      expect(controller.events, isEmpty);
+    });
+  });
+
   // ─── ChangeNotifier ──────────────────────────────────────────────────────
 
   group('ChangeNotifier', () {
