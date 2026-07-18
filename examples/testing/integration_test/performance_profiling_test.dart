@@ -90,7 +90,7 @@ void main() {
             );
           });
 
-          // // 3. Profile scrolling.
+          // 3. Profile scrolling.
           testWidgets('${scenario.name} Scrolling', skip: view != Views.week, (
             tester,
           ) async {

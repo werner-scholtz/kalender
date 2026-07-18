@@ -1,16 +1,33 @@
 # testing
 
-A new Flutter project.
+A performance harness for `kalender`, not a normal app. It drives the calendar
+through loading, navigation, scrolling, rescheduling, and resizing across the
+week, month, and schedule views at 10 and 50 events per day, and records the
+frame-build times.
 
-## Getting Started
+## Run it
 
-This project is a starting point for a Flutter application.
+From this directory, on a device with a display (Linux desktop shown here):
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+flutter drive \
+  --driver=test_driver/perf_driver.dart \
+  --target=integration_test/performance_profiling_test.dart \
+  --profile \
+  -d linux
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Knobs and output
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- `KALENDER_PERF_RUNS` (default 5) sets how many times each scenario runs. Fewer
+  runs trade precision for speed:
+
+  ```sh
+  KALENDER_PERF_RUNS=3 flutter drive ...
+  ```
+
+- Results are written to `build/frame_results.json` (per scenario, view, and
+  workload: average, p90, and p99 build time, plus missed frames).
+
+The CI workflow `performance_profiling.yml` runs this same harness on pushes to
+`main` that can move the numbers and publishes the results to the dashboard.

@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
 class Home extends StatefulWidget {
   final TestConfiguration? config;
   const Home({super.key, this.config});
-  static Key getTileKey(int id) => Key('tile-$id');
 
   @override
   State<Home> createState() => _HomeState();

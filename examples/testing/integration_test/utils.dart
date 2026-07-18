@@ -1,23 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:testing/test_configuration.dart';
 
 import '../test_driver/perf_driver.dart';
-
-/// Extensions for [WidgetTester] to provide desktop-compatible scrolling utilities.
-extension Test on WidgetTester {
-  Future<void> profile({
-    required IntegrationTestWidgetsFlutterBinding binding,
-    required Future<void> Function() test,
-    required String reportKey,
-  }) {
-    return binding.traceAction(
-      () async => await test.call(),
-      reportKey: reportKey,
-    );
-  }
-}
 
 /// Performs a segmented drag operation to simulate realistic user interaction.
 ///
