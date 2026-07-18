@@ -11,4 +11,15 @@ void main() {
     expect(find.byType(CalendarView), findsOneWidget);
     expect(find.byIcon(Icons.today), findsOneWidget);
   });
+
+  testWidgets('unmounts without error', (tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    // Replacing the tree disposes the calendar; this catches dispose() paths that
+    // touch a deactivated context.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
 }

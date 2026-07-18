@@ -12,4 +12,15 @@ void main() {
     expect(find.byType(CalendarView), findsOneWidget);
     expect(find.byType(DropdownMenu<ViewConfiguration>), findsOneWidget);
   });
+
+  test('selecting a view updates the provider', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final configs = container.read(viewConfigurationsProvider);
+    expect(container.read(selectedViewProvider), configs.first, reason: 'defaults to the first configuration');
+
+    container.read(selectedViewProvider.notifier).select(configs.last);
+    expect(container.read(selectedViewProvider), configs.last, reason: 'selecting updates the state');
+  });
 }
