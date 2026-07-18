@@ -12,6 +12,12 @@ Example showing how recurrence can be implemented.
 
 [Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/recurrence)
 
+### ICS
+
+Example showing how to import and export `.ics` files, including recurring events (`enough_icalendar` + `rrule`).
+
+[Jump to Source](https://github.com/werner-scholtz/kalender/tree/main/examples/ics)
+
 ### Riverpod
 
 Example showing how to use the package with riverpod.
