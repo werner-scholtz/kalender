@@ -1118,6 +1118,24 @@ See the [timezone package](https://pub.dev/packages/timezone) for setup instruct
 
 Changing `location` at runtime automatically updates visible date/time ranges. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
 
+### Events from an external source
+
+When events come from an `.ics` file, a device calendar, or an API, map each source time to the exact instant it represents before building the `CalendarEvent`. The constructor stores the instant as UTC, so what matters is that the `DateTime` you pass points at the right moment.
+
+- **UTC instant** (an `.ics` time ending in `Z`, or an epoch): pass it as-is.
+- **Zoned time** (an IANA `TZID`): build a `TZDateTime` in that zone so the instant is correct.
+
+  ```dart
+  final start = tz.TZDateTime(tz.getLocation('Europe/London'), 2025, 1, 6, 9);
+  final event = CalendarEvent(
+    dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 1))),
+  );
+  ```
+
+- **Floating time** (no zone, common in `.ics`): decide which zone it should mean, usually the calendar's `location`, and build a `TZDateTime` there.
+
+Then set `CalendarView(location:)` to the zone the calendar should display in. The [ics example](https://github.com/werner-scholtz/kalender/tree/main/examples/ics) shows this end to end.
+
 ### Now Callback
 
 By default, the time indicator position and "today" header highlighting are derived from the calendar's `Location`. If your app stores wall-clock times as UTC (e.g. an application where `location: UTC`) but still wants the indicator and today highlight to reflect the user's local time, pass a `NowCallback` on your view configuration:
