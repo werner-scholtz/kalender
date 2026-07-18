@@ -25,25 +25,24 @@ class EventDetailOverlayState extends State<EventDetailOverlay> with SingleTicke
   /// The controller for the overlay portal.
   final controller = OverlayPortalController();
 
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 150),
-  );
-
-  late final CurvedAnimation _curvedAnimation = CurvedAnimation(
-    parent: _animationController,
-    curve: Curves.easeOut,
-    reverseCurve: Curves.easeIn,
-  );
-
-  late final Animation<double> _scaleAnimation = Tween<double>(
-    begin: 0.85,
-    end: 1.0,
-  ).animate(_curvedAnimation);
+  late final AnimationController _animationController;
+  late final CurvedAnimation _curvedAnimation;
+  late final Animation<double> _scaleAnimation;
 
   /// The selected event and its render box.
   CalendarEvent? selectedEvent;
   RenderBox? selectedRenderBox;
+
+  @override
+  void initState() {
+    super.initState();
+    // Build these eagerly. If they were lazy and the overlay was never shown,
+    // the first access would be in dispose(), where the ticker's context lookup
+    // is unsafe.
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    _curvedAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeOut, reverseCurve: Curves.easeIn);
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(_curvedAnimation);
+  }
 
   void createOverlay(CalendarEvent event, RenderBox renderBox) {
     selectedEvent = event;
