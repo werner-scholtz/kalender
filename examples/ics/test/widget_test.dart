@@ -44,6 +44,23 @@ void main() {
     expect(ics, contains('SUMMARY:Weekly'));
   });
 
+  test('expansion is bounded to the window', () {
+    final sources = parseIcs(_sample);
+    // A window in February: the single January event is outside it, and only the
+    // February occurrences of the weekly event should be produced.
+    final window = DateTimeRange(start: DateTime(2025, 2, 1), end: DateTime(2025, 2, 28));
+    final events = expandEvents(sources, window);
+
+    expect(events.any((e) => e.uid == 's@example.com'), isFalse, reason: 'single January event is outside the window');
+
+    // February 2025 Mondays: 3, 10, 17, 24.
+    final weekly = events.where((e) => e.uid == 'w@example.com');
+    expect(weekly.length, 4);
+    for (final event in weekly) {
+      expect(event.dateTimeRange.start.isBefore(window.start), isFalse, reason: 'no instance before the window start');
+    }
+  });
+
   testWidgets('renders the calendar', (tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
