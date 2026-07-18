@@ -3,15 +3,16 @@ name: Performance Benchmarks
 on:
   push:
     branches: [main]
-    # Skip benchmark rebuilds for changes that cannot move the numbers (the static
-    # dashboard page, its deploy workflow, the web demo, and docs) so history
-    # stays meaningful. The `examples/testing` harness that the frame profiling
-    # drives is deliberately not ignored.
-    paths-ignore:
-      - 'benchmark/dashboard/**'
-      - '.github/workflows/deploy_dashboard.yml'
-      - 'examples/web_demo/**'
-      - '**/*.md'
+    # Only run when something that can move the numbers changes: the package, the
+    # micro-benchmark, or the `examples/testing` frame-profiling harness. An
+    # allowlist means new example folders and docs never trigger a run without
+    # anyone maintaining an ignore list.
+    paths:
+      - 'lib/**'
+      - 'benchmark/**'
+      - 'examples/testing/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/performance_profiling.yml'
   # PRs only run when labelled `profile` (see the job-level `if` below), so this
   # does not run for every PR.
   pull_request:
