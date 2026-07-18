@@ -40,7 +40,6 @@ abstract class BaseEventTile extends StatelessWidget {
     required this.tileRange,
   });
 
-  static const defaultColor = Colors.blueGrey;
   Color get color => event.person.color;
   Color textColor(Color color) =>
       color.computeLuminance() > 0.5 ? Colors.black : Colors.white;

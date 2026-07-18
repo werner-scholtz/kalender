@@ -64,6 +64,9 @@ mixin ZoomUtils {
   ///
   double yOffset = 0;
 
+  // Each input maps a gesture delta to a new height-per-minute. Trackpad and
+  // pinch scale multiplicatively (pow(2, log(scale)/n)) so zooming feels even at
+  // any level; the divisor tunes sensitivity. Scroll steps by a fixed amount.
   double scaleTrackpad(PointerPanZoomUpdateEvent event, double height) {
     return height * pow(2, log(event.scale) / 12);
   }
@@ -229,10 +232,6 @@ class ScrollBehaviorNever extends ScrollBehavior {
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) =>
       const NeverScrollableScrollPhysics();
-}
-
-class ZoomIntent extends Intent {
-  const ZoomIntent();
 }
 
 class AllowMultipleGestureRecognizer extends ScaleGestureRecognizer {
