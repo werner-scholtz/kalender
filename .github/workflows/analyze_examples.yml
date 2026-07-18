@@ -1,0 +1,57 @@
+name: Analyze Examples
+
+# Only run when something that could affect the example apps changes: the package
+# they depend on, the examples themselves, the root pubspec, or this workflow.
+on:
+  pull_request:
+    branches: [main, main-wip]
+    paths:
+      - 'lib/**'
+      - 'examples/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/analyze_examples.yml'
+  push:
+    branches: [main, main-wip]
+    paths:
+      - 'lib/**'
+      - 'examples/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/analyze_examples.yml'
+
+jobs:
+  analyze-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - example
+          - advanced_example
+          - recurrence
+          - riverpod
+          - ics
+          - web_demo
+          - testing
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+        shell: bash
+        working-directory: ./examples/${{ matrix.example }}
+
+      - name: Analyze
+        run: flutter analyze
+        shell: bash
+        working-directory: ./examples/${{ matrix.example }}
+
+      # The testing harness runs via `flutter drive`, not `flutter test`, so it
+      # has no unit test directory. Run tests only where one exists.
+      - name: Test
+        run: if [ -d test ]; then flutter test; else echo "no test directory, skipping"; fi
+        shell: bash
+        working-directory: ./examples/${{ matrix.example }}

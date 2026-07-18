@@ -19,7 +19,7 @@ jobs:
       - uses: subosito/flutter-action@v2
 
       # The examples are excluded via analysis_options.yaml (analyzer.exclude) and
-      # verified by the analyze-examples job below.
+      # verified by the separate analyze_examples.yml workflow.
       - name: Install dependencies
         run: flutter pub get
         shell: bash
@@ -34,43 +34,6 @@ jobs:
         run: flutter analyze
         shell: bash
         working-directory: ./
-
-  analyze-examples: # Analyze and test each example app
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        example:
-          - example
-          - advanced_example
-          - recurrence
-          - riverpod
-          - ics
-          - web_demo
-          - testing
-    steps:
-      - uses: actions/checkout@v5
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.44.6
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-        shell: bash
-        working-directory: ./examples/${{ matrix.example }}
-
-      - name: Analyze
-        run: flutter analyze
-        shell: bash
-        working-directory: ./examples/${{ matrix.example }}
-
-      # The testing harness runs via `flutter drive`, not `flutter test`, so it
-      # has no unit test directory. Run tests only where one exists.
-      - name: Test
-        run: if [ -d test ]; then flutter test; else echo "no test directory, skipping"; fi
-        shell: bash
-        working-directory: ./examples/${{ matrix.example }}
 
   test: # Separate job for tests with matrix
     runs-on: ubuntu-latest
