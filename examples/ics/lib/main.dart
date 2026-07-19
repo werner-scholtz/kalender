@@ -52,13 +52,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    calendarController.internalDateTimeRange.addListener(_onVisibleRangeChanged);
+    calendarController.visibleDateTimeRange.addListener(_onVisibleRangeChanged);
     _loadSample();
   }
 
   @override
   void dispose() {
-    calendarController.internalDateTimeRange.removeListener(_onVisibleRangeChanged);
+    calendarController.visibleDateTimeRange.removeListener(_onVisibleRangeChanged);
     eventsController.dispose();
     calendarController.dispose();
     super.dispose();
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onVisibleRangeChanged() {
-    final visible = calendarController.internalDateTimeRange.value?.forLocation();
+    final visible = calendarController.visibleDateTimeRange.value;
     if (visible == null || _sources.isEmpty) return;
     final covered = _covered;
     if (covered != null && !visible.start.isBefore(covered.start) && !visible.end.isAfter(covered.end)) {
