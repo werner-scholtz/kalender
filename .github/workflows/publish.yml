@@ -25,11 +25,6 @@ jobs:
         with:
           channel: 'stable' 
 
-      - name: Remove examples folder.
-        run: rm -rf examples/
-        shell: bash
-        working-directory: ./
-
       - name: Install dependencies
         run: flutter pub get
 
