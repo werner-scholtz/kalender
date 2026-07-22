@@ -16,7 +16,7 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
 > [!WARNING]
-> This package is still in development. API changes may occur before version 1.0.0. So pin the package to a specific version e.g. 0.22.0
+> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range.
 
 ## Table of Contents
 
