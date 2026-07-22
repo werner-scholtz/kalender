@@ -1,37 +1,26 @@
 ## 0.23.0
 
+Nothing in this release stops existing code from compiling. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for what to change.
+
 ### Breaking Changes
 
-Nothing here stops existing code from compiling. Each one changes what an unchanged calendar renders.
+Each of these changes what an unchanged calendar renders.
 
-- The overlay button that stands in for events which do not fit is now labelled `+3` instead of `3 more`. The old label was English with no way for the calendar's locale to reach it, and a plus sign with the count needs no translation. The number is formatted with `intl` for the calendar's locale, so locales with their own numerals read correctly. Set `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` to get the old wording back. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-
-- `MonthDayHeaderStyle.stringBuilder` was declared but never called, so setting it did nothing. Its replacement, `MonthBodyComponents.monthDayHeaderStringBuilder`, is wired up, which means a calendar that set the old field and worked around it having no effect will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-
-- The schedule view abbreviates day names the way the locale does, instead of cutting the full name at three characters. The cut only agrees with the real abbreviation in English, which is why it went unnoticed: German showed `Mit` where it should be `Mi`, Russian `сре` where it should be `ср`, Afrikaans `Woe` where it should be `Wo.`. Every other component that shows a short day name already used `DateFormat.E`, and the schedule view now does too. [#352](https://github.com/werner-scholtz/kalender/pull/352) [#354](https://github.com/werner-scholtz/kalender/pull/354)
-
-- The month body now falls back to `CalendarComponents.overlayBuilders` when `MonthBodyComponents` sets none of its own, so a global overlay builder that was silently ignored in the month view starts applying. `MonthBodyComponents.overlayBuilders` defaulted to an empty `OverlayBuilders` rather than null, and the month body resolves it as "the specific one, otherwise the global one", so the empty default always shadowed the global builders. The multi-day header was never affected. This is the builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+- The overflow button is labelled `+3` instead of `3 more`, with the number formatted for the calendar's locale so locales with their own numerals read correctly. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+- The schedule view abbreviates day names with `DateFormat.E` instead of cutting the full name at three characters, which was only correct in English. German reads `Mi` rather than `Mit`. [#354](https://github.com/werner-scholtz/kalender/pull/354)
+- `MonthDayHeaderStyle.stringBuilder` was declared but never called. Its replacement is wired up, so a calendar that set the old field will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+- `MonthBodyComponents.overlayBuilders` defaults to null, so `CalendarComponents.overlayBuilders` applies in the month view instead of being shadowed by an empty default. The builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
 ### Deprecations
 
-- The string builders moved off the component style classes and onto the matching `*Components` classes, and each one now receives a `BuildContext` as its first argument. They are formatting and localization hooks, not visual style, and since the styles also live inside `KalenderThemeData` they were carrying callbacks into a theme extension, where they cannot interpolate and where an inline lambda breaks the style's value equality on every rebuild. Passing the context also fixes the older problem that a custom builder could not see the calendar's locale while the package's own defaults could. The old fields still work and are honoured whenever the new one is not set. They will be removed in 0.24.0, which is when the styles become interpolatable and comparable again. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+Both are removed in 0.24.0.
 
-  | Old | New |
-  | --- | --- |
-  | `DayHeaderStyle.stringBuilder` | `MultiDayHeaderComponents.dayHeaderStringBuilder` |
-  | `DayHeaderStyle.numberStringBuilder` | `MultiDayHeaderComponents.dayHeaderNumberStringBuilder` |
-  | `TimelineStyle.stringBuilder` | `MultiDayBodyComponents.timelineStringBuilder` |
-  | `MonthDayHeaderStyle.stringBuilder` | `MonthBodyComponents.monthDayHeaderStringBuilder` |
-  | `WeekDayHeaderStyle.stringBuilder` | `MonthHeaderComponents.weekDayHeaderStringBuilder` |
-  | `ScheduleDateStyle.stringBuilder` | `ScheduleComponents.leadingDateStringBuilder` |
-  | `MultiDayPortalOverlayButtonStyle.stringBuilder` | `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` |
-
-- `MonthDayHeaderStyle.textStyle` is deprecated and will be removed in 0.24.0. It has never had any effect: it is documented as styling the day name, but `MonthDayHeader` displays only a day number, which `numberTextStyle` styles. The Material 3 defaults no longer assign it either, so it reads as null rather than as something that is set but ignored. [#352](https://github.com/werner-scholtz/kalender/pull/352) [#354](https://github.com/werner-scholtz/kalender/pull/354)
+- The seven string builders moved from the component style classes to the matching `*Components` classes and gained a `BuildContext` parameter, so a custom builder can read the calendar's locale. The old fields still apply when the new one is not set. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+- `MonthDayHeaderStyle.textStyle` has never had any effect. `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#354](https://github.com/werner-scholtz/kalender/pull/354)
 
 ### Features
 
-- `context.calendarLocale` reads the locale of the enclosing calendar, which is the locale it formats its own dates and times with and not necessarily the app's. It is there so that a custom string builder can format text the same way the calendar does. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-
+- `context.calendarLocale` reads the locale of the enclosing calendar, which is not necessarily the app's. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 - `EventsController` gained `replaceEvents`, which swaps the whole event set in one call. `DefaultEventsController` does it atomically: a single notification and no intermediate empty state, which suits reloading events from a source such as an imported `.ics` file. The base class provides a default that clears then adds, so custom controllers keep working unchanged. [#344](https://github.com/werner-scholtz/kalender/pull/344)
 
 ### Fixes

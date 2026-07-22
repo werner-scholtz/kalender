@@ -1,5 +1,89 @@
 # Migration Guide
 
+## v0.22.x → v0.23.0
+
+Nothing here stops existing code from compiling. The old fields still work and are deprecated, and the changes that need action are ones that alter what the calendar renders.
+
+### String builders moved off the style classes
+
+The `String Function(...)` fields on the component style classes moved to the matching `*Components` class, and each now takes a `BuildContext` as its first argument.
+
+They are formatting hooks, not visual style. Since 0.21.0 the style classes also live inside `KalenderThemeData`, a `ThemeExtension`, where a function field cannot interpolate during a theme animation and an inline lambda breaks the style's value equality on every rebuild. The `BuildContext` closes an older gap too: a custom builder could not read the calendar's locale, while the package's own defaults could.
+
+| Old | New |
+| --- | --- |
+| `DayHeaderStyle.stringBuilder` | `MultiDayHeaderComponents.dayHeaderStringBuilder` |
+| `DayHeaderStyle.numberStringBuilder` | `MultiDayHeaderComponents.dayHeaderNumberStringBuilder` |
+| `TimelineStyle.stringBuilder` | `MultiDayBodyComponents.timelineStringBuilder` |
+| `MonthDayHeaderStyle.stringBuilder` | `MonthBodyComponents.monthDayHeaderStringBuilder` |
+| `WeekDayHeaderStyle.stringBuilder` | `MonthHeaderComponents.weekDayHeaderStringBuilder` |
+| `ScheduleDateStyle.stringBuilder` | `ScheduleComponents.leadingDateStringBuilder` |
+| `MultiDayPortalOverlayButtonStyle.stringBuilder` | `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` |
+
+The old fields are used whenever the new one is not set, so there is no rush. They are removed in 0.24.0.
+
+**Before:**
+```dart
+CalendarComponents(
+  multiDayComponentStyles: MultiDayComponentStyles(
+    headerStyles: MultiDayHeaderComponentStyles(
+      dayHeaderStyle: DayHeaderStyle(
+        stringBuilder: (date) => DateFormat.E('de_DE').format(date),
+      ),
+    ),
+  ),
+)
+```
+
+**After:**
+```dart
+CalendarComponents(
+  multiDayComponents: MultiDayComponents(
+    headerComponents: MultiDayHeaderComponents(
+      dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale).format(date),
+    ),
+  ),
+)
+```
+
+Note the hardcoded locale is gone. `context.calendarLocale` is the locale the calendar formats with, which is not necessarily the app's.
+
+### The overflow button is labelled `+3`
+
+The button standing in for events that do not fit was labelled `3 more`. That was English, with no way for the calendar's locale to reach it. It is now a plus sign and the count, with the number formatted for the locale, so locales with their own numerals read correctly.
+
+To keep the old wording:
+
+```dart
+CalendarComponents(
+  overlayBuilders: OverlayBuilders(
+    multiDayPortalOverlayButtonStringBuilder: (context, count) => '$count more',
+  ),
+)
+```
+
+### Schedule day names use the locale's own abbreviation
+
+The schedule view built its abbreviation by cutting the full day name at three characters, which only matches the real abbreviation in English. German showed `Mit` instead of `Mi`, Russian `сре` instead of `ср`. It now uses `DateFormat.E`, like every other component.
+
+No action needed unless you relied on the three-character width for layout.
+
+### `MonthDayHeaderStyle.stringBuilder` now has an effect
+
+The field was declared but never called, so setting it did nothing. Its replacement, `MonthBodyComponents.monthDayHeaderStringBuilder`, is wired up.
+
+If you set the old field and worked around it doing nothing, the day number will now change. Remove the field, or move the value to the new builder.
+
+### `MonthDayHeaderStyle.textStyle` is deprecated
+
+It is documented as styling the day name, but `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. It has never had any effect. Remove it. The Material 3 defaults no longer assign it either.
+
+### Global overlay builders now apply in the month view
+
+`MonthBodyComponents.overlayBuilders` defaulted to an empty `OverlayBuilders` rather than null, and the month body resolves the specific value before the global one, so the empty default always shadowed `CalendarComponents.overlayBuilders`.
+
+If you set overlay builders globally and worked around them not applying in the month view, that workaround can go.
+
 ## v0.18.x → v0.19.0
 
 ### Timeline gutter width is now a single value (`prototypeTimeLine` removed)
