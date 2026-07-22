@@ -13,10 +13,10 @@
 
 A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Schedule views. It supports drag-and-drop rescheduling, event resizing, timezones, and full control over appearance and behavior.
 
-**[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
+**[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Roadmap](ROADMAP.md)** · **[Migration Guide](MIGRATION.md)**
 
 > [!WARNING]
-> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range.
+> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range. See the [roadmap](ROADMAP.md) for what is still expected to change.
 
 ## Table of Contents
 
