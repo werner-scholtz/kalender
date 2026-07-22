@@ -820,9 +820,9 @@ Styles resolve in three layers, most specific first:
 
 Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app.
 
-### The "+N more" overlay
+### The overflow overlay
 
-The overlay that opens from a "+N more" button is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`, so anything you can do to a `Card` or an `IconButton` you can do here.
+The overlay that opens from the `+3` button, which stands in for events that do not fit, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`, so anything you can do to a `Card` or an `IconButton` you can do here.
 
 ```dart
 KalenderThemeData(
