@@ -9,3 +9,7 @@ readme_assets/
 examples/
 tool/
 benchmark/
+
+# Instructions for coding agents working on this repo, of no use to anyone
+# installing the package.
+AGENTS.md
