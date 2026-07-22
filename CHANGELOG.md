@@ -1,8 +1,18 @@
 ## 0.23.0
 
-### Breaking changes
+### Breaking Changes
 
-- The string builders moved off the component style classes and onto the matching `*Components` classes, and each one now receives a `BuildContext` as its first argument. They are formatting and localization hooks, not visual style, and since the styles also live inside `KalenderThemeData` they were carrying callbacks into a theme extension, where they cannot interpolate and where an inline lambda breaks the style's value equality on every rebuild. Passing the context also fixes the older problem that a custom builder could not see the calendar's locale while the package's own defaults could. The old fields still work and are honoured whenever the new one is not set, but they are deprecated and will be removed in 0.24.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+Nothing here stops existing code from compiling. Each one changes what an unchanged calendar renders.
+
+- The overlay button that stands in for events which do not fit is now labelled `+3` instead of `3 more`. The old label was English with no way for the calendar's locale to reach it, and a plus sign with the count needs no translation. The number is formatted with `intl` for the calendar's locale, so locales with their own numerals read correctly. Set `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` to get the old wording back. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+
+- `MonthDayHeaderStyle.stringBuilder` was declared but never called, so setting it did nothing. Its replacement, `MonthBodyComponents.monthDayHeaderStringBuilder`, is wired up, which means a calendar that set the old field and worked around it having no effect will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+
+- The month body now falls back to `CalendarComponents.overlayBuilders` when `MonthBodyComponents` sets none of its own, so a global overlay builder that was silently ignored in the month view starts applying. `MonthBodyComponents.overlayBuilders` defaulted to an empty `OverlayBuilders` rather than null, and the month body resolves it as "the specific one, otherwise the global one", so the empty default always shadowed the global builders. The multi-day header was never affected. This is the builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
+
+### Deprecations
+
+- The string builders moved off the component style classes and onto the matching `*Components` classes, and each one now receives a `BuildContext` as its first argument. They are formatting and localization hooks, not visual style, and since the styles also live inside `KalenderThemeData` they were carrying callbacks into a theme extension, where they cannot interpolate and where an inline lambda breaks the style's value equality on every rebuild. Passing the context also fixes the older problem that a custom builder could not see the calendar's locale while the package's own defaults could. The old fields still work and are honoured whenever the new one is not set. They will be removed in 0.24.0, which is when the styles become interpolatable and comparable again. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
   | Old | New |
   | --- | --- |
@@ -14,10 +24,6 @@
   | `ScheduleDateStyle.stringBuilder` | `ScheduleComponents.leadingDateStringBuilder` |
   | `MultiDayPortalOverlayButtonStyle.stringBuilder` | `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` |
 
-- The overlay button that stands in for events which do not fit is now labelled `+3` instead of `3 more`. The old label was English with no way for the calendar's locale to reach it, and a plus sign with the count needs no translation. The number is formatted with `intl` for the calendar's locale, so locales with their own numerals read correctly. Set `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` to get the old wording back. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-
-- `MonthDayHeaderStyle.stringBuilder` was declared but never called, so setting it did nothing. Its replacement, `MonthBodyComponents.monthDayHeaderStringBuilder`, is wired up, which means a calendar that set the old field and worked around it having no effect will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
-
 ### Features
 
 - `context.calendarLocale` reads the locale of the enclosing calendar, which is the locale it formats its own dates and times with and not necessarily the app's. It is there so that a custom string builder can format text the same way the calendar does. [#349](https://github.com/werner-scholtz/kalender/pull/349)
@@ -25,8 +31,6 @@
 - `EventsController` gained `replaceEvents`, which swaps the whole event set in one call. `DefaultEventsController` does it atomically: a single notification and no intermediate empty state, which suits reloading events from a source such as an imported `.ics` file. The base class provides a default that clears then adds, so custom controllers keep working unchanged. [#344](https://github.com/werner-scholtz/kalender/pull/344)
 
 ### Fixes
-
-- The month body now falls back to `CalendarComponents.overlayBuilders` when `MonthBodyComponents` sets none of its own. `MonthBodyComponents.overlayBuilders` defaulted to an empty `OverlayBuilders` rather than null, and the month body resolves it as "the specific one, otherwise the global one", so the empty default always shadowed the global builders. The multi-day header was never affected. This is the builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
 - The overflow button is now attributed to the day its events are on in right-to-left layouts. The layout frame orders its columns by text direction, but read them back as if they always ran left to right, so every button landed on the mirrored date. In a right-to-left month view with events on Wednesday the 29th, the buttons appeared on the 30th and 31st. `MultiDayLayoutFrame` gained an optional `textDirection`, which defaults to left to right, so a custom frame generator is unaffected. [#334](https://github.com/werner-scholtz/kalender/pull/334)
 
