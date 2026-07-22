@@ -4,7 +4,7 @@ name: Publish to pub.dev
 on:
   push:
     tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+*' 
+    - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   release:
@@ -14,19 +14,47 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
+      # Full history so the tag can be checked against main.
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # A published version is permanent, so refuse to publish a tag that never
+      # reached main.
+      - name: Check the tag is on main
+        run: |
+          git fetch --no-tags --quiet origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::$GITHUB_REF_NAME does not point at a commit on main"; exit 1; }
+
+      # The version lives in pubspec.yaml but the tag is what triggers this, so
+      # they are easy to get out of step.
+      - name: Check the version matches the tag
+        run: |
+          version=$(grep -m1 '^version:' pubspec.yaml | cut -d' ' -f2)
+          tag="${GITHUB_REF_NAME#v}"
+          [ "$version" = "$tag" ] \
+            || { echo "::error::pubspec.yaml is $version but the tag is $tag"; exit 1; }
 
       # For Flutter package
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-      
+
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' 
+          channel: 'stable'
 
       - name: Install dependencies
         run: flutter pub get
+
+      # The full timezone matrix already ran on main, this is a smoke check that
+      # the tagged commit is the one that passed.
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
 
       - name: Publish
         run: flutter pub publish --force

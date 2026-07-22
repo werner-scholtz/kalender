@@ -183,6 +183,32 @@ Mixins `DayEventTileUtils` and `MultiDayEventTileUtils` provide helper methods f
 
 This is a pre-1.0 package — breaking changes can occur in minor versions. Each breaking release includes a migration guide in [MIGRATION.md](MIGRATION.md).
 
+### Releasing
+
+Publishing is triggered by a tag, not by a merge. Bump `version` in `pubspec.yaml`, merge that to main, then tag the merge commit:
+
+```bash
+git tag v0.23.0 && git push origin v0.23.0
+```
+
+`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
+
+### Pre-releases
+
+To ship a preview of the next version, add a `-dev.N` suffix:
+
+```bash
+git tag v0.24.0-dev.1 && git push origin v0.24.0-dev.1
+```
+
+pub.dev never resolves a pre-release as `latest`, so `dart pub add kalender` is unaffected and people opt in explicitly. This suits breaking releases, where the removals want trying before they are final.
+
+Patching an older release after main has moved on does not need a branch prepared in advance. Cut one from the tag when it is needed:
+
+```bash
+git branch release/0.23.x v0.23.0
+```
+
 Key breaking changes to be aware of:
 - **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.
 - **v0.15.0**: Full timezone support added. `InternalDateTime` classes introduced. `ViewConfiguration.selectedDate` renamed to `initialDateTime`.
