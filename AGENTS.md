@@ -193,6 +193,8 @@ git tag v0.23.0 && git push origin v0.23.0
 
 `publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
 
+The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/), so it always shows the published package rather than whatever is on main. To rebuild it from main instead, push a commit whose message contains `web demo`.
+
 ### Pre-releases
 
 To ship a preview of the next version, add a `-dev.N` suffix:
