@@ -14,6 +14,7 @@ class Event extends CalendarEvent {
   final Person person;
 
   Event({
+    super.id,
     required super.dateTimeRange,
     required this.title,
     required this.person,
@@ -42,14 +43,13 @@ class Event extends CalendarEvent {
     Person? person,
     String? title,
   }) {
-    final newEvent = Event(
+    return Event(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       title: title ?? this.title,
       person: person ?? this.person,
     );
-    newEvent.id = id;
-    return newEvent;
   }
 
   @override

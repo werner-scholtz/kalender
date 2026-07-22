@@ -6,7 +6,14 @@ import 'package:kalender/kalender.dart';
 /// It contains the [title], [description], and [color] of the event.
 class Event extends CalendarEvent {
   /// Creates an [Event].
-  Event({required super.dateTimeRange, required this.title, this.description, this.color, super.interaction});
+  Event({
+    super.id,
+    required super.dateTimeRange,
+    required this.title,
+    this.description,
+    this.color,
+    super.interaction,
+  });
 
   /// The title of the [Event].
   final String title;
@@ -26,12 +33,13 @@ class Event extends CalendarEvent {
     Color? color,
   }) =>
       Event(
+        id: id,
         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
         interaction: interaction ?? this.interaction,
         title: title ?? this.title,
         description: description ?? this.description,
         color: color ?? this.color,
-      )..id = id;
+      );
 
   @override
   operator ==(Object other) {

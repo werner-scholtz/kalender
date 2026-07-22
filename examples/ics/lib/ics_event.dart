@@ -6,6 +6,7 @@ import 'package:kalender/kalender.dart';
 /// One recurring VEVENT expands into many [IcsEvent]s that share a [uid].
 class IcsEvent extends CalendarEvent {
   IcsEvent({
+    super.id,
     required super.dateTimeRange,
     required this.uid,
     required this.title,
@@ -28,7 +29,8 @@ class IcsEvent extends CalendarEvent {
     String? description,
     Color? color,
   }) {
-    final copy = IcsEvent(
+    return IcsEvent(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       uid: uid ?? this.uid,
@@ -36,8 +38,6 @@ class IcsEvent extends CalendarEvent {
       description: description ?? this.description,
       color: color ?? this.color,
     );
-    copy.id = id;
-    return copy;
   }
 
   @override

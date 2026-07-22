@@ -61,6 +61,7 @@ class TestConfiguration {
 /// Represents an event with a title and color.
 class Event extends CalendarEvent {
   Event({
+    super.id,
     required super.dateTimeRange,
     required this.title,
     this.description,
@@ -85,16 +86,14 @@ class Event extends CalendarEvent {
     String? description,
     Color? color,
   }) {
-    final newEvent = Event(
+    return Event(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       title: title ?? this.title,
       description: description ?? this.description,
       color: color ?? this.color,
     );
-    newEvent.id = id;
-
-    return newEvent;
   }
 }
 

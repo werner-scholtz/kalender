@@ -6,6 +6,7 @@ class RecurringCalendarEvent extends CalendarEvent {
   final String groupId;
 
   RecurringCalendarEvent({
+    super.id,
     required this.groupId,
     required super.dateTimeRange,
     super.interaction,
@@ -17,13 +18,12 @@ class RecurringCalendarEvent extends CalendarEvent {
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
   }) {
-    final copy = RecurringCalendarEvent(
+    return RecurringCalendarEvent(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       groupId: groupId,
       interaction: interaction ?? this.interaction,
     );
-    copy.id = id;
-    return copy;
   }
 
   @override

@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
 /// A custom event that extends [CalendarEvent] with a title and color.
 class Event extends CalendarEvent {
   Event({
+    super.id,
     required super.dateTimeRange,
     required this.title,
     this.color,
@@ -53,14 +54,13 @@ class Event extends CalendarEvent {
     String? title,
     Color? color,
   }) {
-    final newEvent = Event(
+    return Event(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       title: title ?? this.title,
       color: color ?? this.color,
     );
-    newEvent.id = id;
-    return newEvent;
   }
 
   @override
