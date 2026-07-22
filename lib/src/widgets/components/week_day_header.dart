@@ -24,6 +24,10 @@ class WeekDayHeaderStyle {
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [WeekDayHeader].
+  @Deprecated(
+    'Moved to MonthHeaderComponents.weekDayHeaderStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(DateTime date)? stringBuilder;
 
   /// The padding around the [WeekDayHeader] widget.
@@ -93,7 +97,9 @@ class WeekDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).weekDayHeaderStyle ?? const WeekDayHeaderStyle()).merge(this.style);
     final padding = style.padding ?? const EdgeInsets.symmetric(vertical: 2);
-    final dateText = style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
+    final stringBuilder = context.components.monthComponents.headerComponents.weekDayHeaderStringBuilder;
+    final dateText =
+        stringBuilder?.call(context, date) ?? style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
     return Padding(padding: padding, child: Center(child: Text(dateText, style: style.textStyle)));
   }
 }

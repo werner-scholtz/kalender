@@ -37,8 +37,8 @@ typedef TimelineWidthBuilder = double Function(
 /// timeline can show across the day and uses the widest, plus the horizontal
 /// text padding. Measuring all labels (rather than a single sample) keeps the
 /// gutter correct regardless of the locale's time format, the hour's digit
-/// count, and any custom [TimelineStyle.stringBuilder]. Honors the ambient
-/// [MediaQuery.textScaler] so it reserves enough room for scaled text.
+/// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
+/// the ambient [MediaQuery.textScaler] so it reserves enough room for scaled text.
 double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange, TimelineStyle style) {
   if (style.width != null) return style.width!;
 
@@ -51,19 +51,22 @@ double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange,
     textScaler: MediaQuery.textScalerOf(context),
   );
 
+  final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
+
   // With the default label the minute slot is always two digits, so one minute
-  // value per hour is representative. A custom stringBuilder can vary per
+  // value per hour is representative. A custom string builder can vary per
   // minute, so sample every 5-minute mark the timeline can show (its finest
   // segment is 5 minutes).
   const defaultMinutes = [59];
   const customMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-  final minutes = style.stringBuilder == null ? defaultMinutes : customMinutes;
+  final hasCustomLabels = stringBuilder != null || style.stringBuilder != null;
+  final minutes = hasCustomLabels ? customMinutes : defaultMinutes;
 
   var widest = 0.0;
   for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
     for (final minute in minutes) {
       final time = TimeOfDay(hour: hour, minute: minute);
-      final text = style.stringBuilder?.call(time) ?? time.format(context);
+      final text = stringBuilder?.call(context, time) ?? style.stringBuilder?.call(time) ?? time.format(context);
       painter.text = TextSpan(text: text, style: textStyle);
       painter.layout();
       if (painter.width > widest) widest = painter.width;
@@ -98,6 +101,10 @@ class TimelineStyle {
   final double? width;
 
   /// The function that will be used to build the string.
+  @Deprecated(
+    'Moved to MultiDayBodyComponents.timelineStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(TimeOfDay timeOfDay)? stringBuilder;
 
   /// The decoration for the event start time.
@@ -214,6 +221,14 @@ mixin TimeLineUtils {
   TimelineStyle effectiveStyle(BuildContext context) =>
       (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(timelineStyle);
 
+  /// The label shown for [time].
+  String timelineString(BuildContext context, TimeOfDay time) {
+    final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
+    return stringBuilder?.call(context, time) ??
+        effectiveStyle(context).stringBuilder?.call(time) ??
+        time.format(context);
+  }
+
   /// The [TextStyle] that will be used for the text.
   TextStyle textStyle(BuildContext context) =>
       effectiveStyle(context).textStyle ?? Theme.of(context).textTheme.labelMedium!;
@@ -228,7 +243,7 @@ mixin TimeLineUtils {
   /// The [Size] of the largest text.
   Size largestTextSize(BuildContext context, TextStyle textStyle, EdgeInsets padding) {
     const displayTime = TimeOfDay(hour: 23, minute: 59);
-    final text = effectiveStyle(context).stringBuilder?.call(displayTime) ?? displayTime.format(context);
+    final text = timelineString(context, displayTime);
     final textSize = _textSize(text, textStyle, textDirection(context));
     return Size(textSize.width + padding.horizontal, textSize.height + padding.vertical);
   }
@@ -346,7 +361,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
       // The time to display is the next hour.
       final displayTime = range.start;
-      final text = style.stringBuilder?.call(displayTime) ?? displayTime.format(context);
+      final text = timelineString(context, displayTime);
 
       return Positioned(
         top: pos - textXOffset,
@@ -393,8 +408,8 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
             final startTime = TimeOfDay.fromDateTime(start);
             final endTime = TimeOfDay.fromDateTime(end);
-            final startText = style.stringBuilder?.call(startTime) ?? startTime.format(context);
-            final endText = style.stringBuilder?.call(endTime) ?? endTime.format(context);
+            final startText = timelineString(context, startTime);
+            final endText = timelineString(context, endTime);
 
             return Stack(
               children: [

@@ -1053,23 +1053,10 @@ CalendarView(
 )
 ```
 
-Day and month names come from `intl`, but the two strings the calendar writes itself default to English. Override them to translate them.
-
-For the overlay "N more" button text:
-
-```dart
-CalendarView(
-  components: CalendarComponents(
-    overlayStyles: OverlayStyles(
-      multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
-        stringBuilder: (n) => '$n something',
-      ),
-    ),
-  ),
-)
-```
-
-For the week number's tooltip, which appears in the month view's week number gutter and in the multi-day header:
+Day and month names come from `intl`. The overlay button that stands in for events
+that do not fit is labelled with a plus sign and the count, `+3`, with the number
+formatted for the calendar's locale, so it needs no translation. The week number's
+tooltip is the one string that still defaults to English:
 
 ```dart
 MaterialApp(
@@ -1083,7 +1070,37 @@ MaterialApp(
 )
 ```
 
-Both can be set either way: on a single `CalendarView` through `CalendarComponents`, or once for the whole app through [`KalenderThemeData`](#theming).
+It can be set either way: on a single `CalendarView` through `CalendarComponents`, or
+once for the whole app through [`KalenderThemeData`](#theming).
+
+### Custom text
+
+Every string the calendar writes can be replaced with a string builder on the
+matching `*Components` class. Each one receives the `BuildContext`, so it can read
+the calendar's own locale with `context.calendarLocale`, which is not necessarily
+the app's locale:
+
+```dart
+CalendarView(
+  locale: 'af_ZA',
+  components: CalendarComponents(
+    multiDayComponents: MultiDayComponents(
+      headerComponents: MultiDayHeaderComponents(
+        dayHeaderStringBuilder: (context, date) => DateFormat.E(context.calendarLocale).format(date),
+      ),
+    ),
+    overlayBuilders: OverlayBuilders(
+      multiDayPortalOverlayButtonStringBuilder: (context, n) => '$n meer',
+    ),
+  ),
+)
+```
+
+The builders are `dayHeaderStringBuilder` and `dayHeaderNumberStringBuilder` on
+`MultiDayHeaderComponents`, `timelineStringBuilder` on `MultiDayBodyComponents`,
+`monthDayHeaderStringBuilder` on `MonthBodyComponents`, `weekDayHeaderStringBuilder`
+on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, and
+`multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
 ---
 

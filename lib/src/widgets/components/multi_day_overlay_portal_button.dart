@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
 
 /// The builder used to create the button for the [MultiDayPortalOverlayButton].
@@ -23,6 +26,10 @@ class MultiDayPortalOverlayButtonStyle {
   final TextOverflow? textOverflow;
 
   /// A function that builds a string based on the number of hidden rows.
+  @Deprecated(
+    'Moved to OverlayBuilders.multiDayPortalOverlayButtonStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(int numberOfHiddenRows)? stringBuilder;
 
   const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder, this.textOverflow});
@@ -91,12 +98,23 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
   final OverlayPortalController portalController;
   final int numberOfHiddenRows;
 
+  /// Builds the button's label. Resolved from the [OverlayBuilders] that apply
+  /// to this view, so it follows the same precedence as [style].
+  final HiddenEventCountStringBuilder? stringBuilder;
+
   const MultiDayPortalOverlayButton({
     super.key,
     required this.portalController,
     required this.numberOfHiddenRows,
     required this.style,
+    this.stringBuilder,
   });
+
+  /// The default label: a plus sign and the count, with the number formatted for
+  /// the calendar's locale so locales with their own numerals read correctly.
+  static String defaultLabel(BuildContext context, int numberOfHiddenRows) {
+    return '+${NumberFormat.decimalPattern(context.locale).format(numberOfHiddenRows)}';
+  }
 
   /// Returns a [Key] for the button based on the date.
   static Key getKey(DateTime date) {
@@ -114,7 +132,9 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
       child: Padding(
         padding: style.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
         child: Text(
-          style.stringBuilder?.call(numberOfHiddenRows) ?? '$numberOfHiddenRows more',
+          stringBuilder?.call(context, numberOfHiddenRows) ??
+              style.stringBuilder?.call(numberOfHiddenRows) ??
+              defaultLabel(context, numberOfHiddenRows),
           style: style.textStyle,
           overflow: style.textOverflow,
           key: textKey,

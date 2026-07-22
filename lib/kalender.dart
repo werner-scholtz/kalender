@@ -45,6 +45,7 @@ export 'package:kalender/src/models/components/multi_day_components.dart';
 export 'package:kalender/src/models/components/multi_day_styles.dart';
 export 'package:kalender/src/models/components/schedule_components.dart';
 export 'package:kalender/src/models/components/schedule_styles.dart';
+export 'package:kalender/src/models/components/string_builders.dart';
 export 'package:kalender/src/models/components/tile_components.dart';
 export 'package:kalender/src/widgets/components/schedule_date.dart';
 export 'package:kalender/src/widgets/components/schedule_tile_highlight.dart';

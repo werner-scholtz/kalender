@@ -1,4 +1,5 @@
 import 'package:kalender/src/models/components/components.dart';
+import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/widgets/components/day_header.dart';
 import 'package:kalender/src/widgets/components/day_separator.dart';
 import 'package:kalender/src/widgets/components/hour_lines.dart';
@@ -29,6 +30,16 @@ class MultiDayHeaderComponents {
   /// A function that builds the day header widget.
   final DayHeaderBuilder dayHeaderBuilder;
 
+  /// Builds the day name displayed under the day number.
+  ///
+  /// Defaults to the short day name in the calendar's locale.
+  final DateStringBuilder? dayHeaderStringBuilder;
+
+  /// Builds the day number displayed by the day header.
+  ///
+  /// Defaults to [DateTime.day].
+  final DateStringBuilder? dayHeaderNumberStringBuilder;
+
   /// A function that builds the week number widget.
   final WeekNumberBuilder weekNumberBuilder;
 
@@ -44,6 +55,8 @@ class MultiDayHeaderComponents {
   /// Creates overrides for the default components used by the [MultiDayHeader].
   const MultiDayHeaderComponents({
     this.dayHeaderBuilder = DayHeader.builder,
+    this.dayHeaderStringBuilder,
+    this.dayHeaderNumberStringBuilder,
     this.weekNumberBuilder = WeekNumber.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
@@ -64,6 +77,13 @@ class MultiDayBodyComponents {
   /// header, body and drag overlay always align. Build the timeline to fill the
   /// width [timelineWidth] resolves to.
   final TimeLineBuilder timeline;
+
+  /// Builds the labels displayed by the timeline.
+  ///
+  /// Defaults to [TimeOfDay.format] in the calendar's locale. The gutter width
+  /// measures every label this can produce, so a builder whose output varies per
+  /// minute still gets a gutter wide enough for it.
+  final TimeOfDayStringBuilder? timelineStringBuilder;
 
   /// Resolves the width of the timeline gutter.
   ///
@@ -94,6 +114,7 @@ class MultiDayBodyComponents {
   const MultiDayBodyComponents({
     this.hourLines = HourLines.builder,
     this.timeline = TimeLine.builder,
+    this.timelineStringBuilder,
     this.timelineWidth = defaultTimelineWidth,
     this.daySeparator = DaySeparator.builder,
     this.timeIndicator = TimeIndicator.builder,
