@@ -5,14 +5,28 @@ on:
     branches:
       - main
       - main-wip
+    # Release tags only. publish.yml allows a pre-release suffix, this does not:
+    # a dev preview goes to pub.dev without redirecting the public demo at it.
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write
 
+# Every run deploys to the same gh-pages branch, and pushing main and then a tag
+# starts two within seconds of each other. Queue them rather than let them
+# interleave.
+concurrency:
+  group: web-demo-deploy
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'web demo')
+    # A release tag always rebuilds, so the demo matches the published package.
+    # On a branch, rebuild only when asked for, since main can be ahead of the
+    # latest release.
+    if: startsWith(github.ref, 'refs/tags/') || contains(github.event.head_commit.message, 'web demo')
 
     steps:
       - uses: actions/checkout@v5
