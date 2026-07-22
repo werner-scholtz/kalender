@@ -1,4 +1,5 @@
 import 'package:kalender/src/models/components/components.dart';
+import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/widgets/components/month_day_cell.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
@@ -31,6 +32,11 @@ class MonthBodyComponents {
   /// A function that builds the month day header widget.
   final MonthDayHeaderBuilder monthDayHeaderBuilder;
 
+  /// Builds the day number displayed by the month day header.
+  ///
+  /// Defaults to [DateTime.day].
+  final DateStringBuilder? monthDayHeaderStringBuilder;
+
   /// A function that builds the background of each day cell.
   ///
   /// Called once per cell; use it to style individual days, e.g. to gray out
@@ -53,11 +59,12 @@ class MonthBodyComponents {
   const MonthBodyComponents({
     this.monthGridBuilder = MonthGrid.builder,
     this.monthDayHeaderBuilder = MonthDayHeader.builder,
+    this.monthDayHeaderStringBuilder,
     this.monthDayCellBuilder = MonthDayCell.builder,
     this.weekNumberBuilder = WeekNumber.builder,
     this.leftTriggerBuilder,
     this.rightTriggerBuilder,
-    this.overlayBuilders = const OverlayBuilders(),
+    this.overlayBuilders,
   });
 }
 
@@ -68,8 +75,14 @@ class MonthHeaderComponents {
   /// A function that builds the week day header widget.
   final WeekDayHeaderBuilder weekDayHeaderBuilder;
 
+  /// Builds the day name displayed by the week day header.
+  ///
+  /// Defaults to the full day name in the calendar's locale.
+  final DateStringBuilder? weekDayHeaderStringBuilder;
+
   /// Creates overrides for the default components used by the [MonthHeader].
   const MonthHeaderComponents({
     this.weekDayHeaderBuilder = WeekDayHeader.builder,
+    this.weekDayHeaderStringBuilder,
   });
 }

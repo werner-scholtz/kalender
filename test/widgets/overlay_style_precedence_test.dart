@@ -10,24 +10,33 @@ import '../utilities.dart';
 // resolved them correctly. CalendarComponents documents that the more specific
 // value wins.
 void main() {
-  /// Builds an [OverlayStyles] whose "+N more" button is labelled with [label],
-  /// which is what these tests read back to see which style was resolved. The
-  /// hidden-event count is left out on purpose, it varies with the cell height.
-  OverlayStyles stylesLabelled(String label) => OverlayStyles(
+  /// Builds an [OverlayStyles] that colours the overflow button's text with
+  /// [color], which is what these tests read back to see which style resolved.
+  OverlayStyles stylesColoured(Color color) => OverlayStyles(
         multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
-          stringBuilder: (numberOfHiddenRows) => label,
+          textStyle: TextStyle(color: color),
         ),
       );
 
-  /// The distinct labels of every rendered "+N more" button.
-  ///
-  /// Adjacent pages are built too, and a neighbouring month's grid can include
-  /// the same day, so more than one button can exist for it.
-  Set<String> buttonLabels(WidgetTester tester) {
+  /// Builds an [OverlayBuilders] whose overflow button is labelled [label]. The
+  /// hidden-event count is left out on purpose, it varies with the cell height.
+  OverlayBuilders buildersLabelled(String label) => OverlayBuilders(
+        multiDayPortalOverlayButtonStringBuilder: (context, numberOfHiddenEvents) => label,
+      );
+
+  /// Every rendered overflow button, of which there can be more than one: adjacent
+  /// pages are built too, and a neighbouring month's grid can include the same day.
+  Iterable<Text> buttonTexts(WidgetTester tester) {
     final texts = tester.widgetList<Text>(find.byKey(MultiDayPortalOverlayButton.textKey));
-    expect(texts, isNotEmpty, reason: 'the day should overflow and show a "+N more" button');
-    return texts.map((text) => text.data!).toSet();
+    expect(texts, isNotEmpty, reason: 'the day should overflow and show an overflow button');
+    return texts;
   }
+
+  /// The distinct text colours of every rendered overflow button.
+  Set<Color?> buttonColors(WidgetTester tester) => buttonTexts(tester).map((text) => text.style?.color).toSet();
+
+  /// The distinct labels of every rendered overflow button.
+  Set<String> buttonLabels(WidgetTester tester) => buttonTexts(tester).map((text) => text.data!).toSet();
 
   /// Adds enough events on [day] to overflow the cell and show the button.
   DefaultEventsController controllerWithOverflowOn(DateTime day) {
@@ -63,20 +72,43 @@ void main() {
       await pumpMonthView(
         tester,
         components: CalendarComponents(
-          overlayStyles: stylesLabelled('global'),
+          overlayStyles: stylesColoured(Colors.red),
           monthComponentStyles: MonthComponentStyles(
-            bodyStyles: MonthBodyComponentStyles(overlayStyles: stylesLabelled('specific')),
+            bodyStyles: MonthBodyComponentStyles(overlayStyles: stylesColoured(Colors.green)),
           ),
         ),
       );
 
-      expect(buttonLabels(tester), {'specific'}, reason: 'the more specific month body style should win');
+      expect(buttonColors(tester), {Colors.green}, reason: 'the more specific month body style should win');
     });
 
     testWidgets('the global style is used when the month body sets none', (tester) async {
-      await pumpMonthView(tester, components: CalendarComponents(overlayStyles: stylesLabelled('global')));
+      await pumpMonthView(tester, components: CalendarComponents(overlayStyles: stylesColoured(Colors.red)));
 
-      expect(buttonLabels(tester), {'global'}, reason: 'the global style should still apply as a fallback');
+      expect(buttonColors(tester), {Colors.red}, reason: 'the global style should still apply as a fallback');
+    });
+
+    testWidgets('the month body builders win over the global builders', (tester) async {
+      await pumpMonthView(
+        tester,
+        components: CalendarComponents(
+          overlayBuilders: buildersLabelled('global'),
+          monthComponents: MonthComponents(
+            bodyComponents: MonthBodyComponents(overlayBuilders: buildersLabelled('specific')),
+          ),
+        ),
+      );
+
+      expect(buttonLabels(tester), {'specific'}, reason: 'the more specific month body builder should win');
+    });
+
+    // MonthBodyComponents.overlayBuilders defaulted to a non-null empty
+    // OverlayBuilders, and the month body resolves it with `?? global`, so the
+    // empty default always shadowed the global builders.
+    testWidgets('the global builders are used when the month body sets none', (tester) async {
+      await pumpMonthView(tester, components: CalendarComponents(overlayBuilders: buildersLabelled('global')));
+
+      expect(buttonLabels(tester), {'global'}, reason: 'the global builder should still apply as a fallback');
     });
   });
 
@@ -104,14 +136,28 @@ void main() {
       await pumpWeekView(
         tester,
         components: CalendarComponents(
-          overlayStyles: stylesLabelled('global'),
+          overlayStyles: stylesColoured(Colors.red),
           multiDayComponentStyles: MultiDayComponentStyles(
-            headerStyles: MultiDayHeaderComponentStyles(overlayStyles: stylesLabelled('specific')),
+            headerStyles: MultiDayHeaderComponentStyles(overlayStyles: stylesColoured(Colors.green)),
           ),
         ),
       );
 
-      expect(buttonLabels(tester), {'specific'}, reason: 'the more specific header style should win');
+      expect(buttonColors(tester), {Colors.green}, reason: 'the more specific header style should win');
+    });
+
+    testWidgets('the header builders win over the global builders', (tester) async {
+      await pumpWeekView(
+        tester,
+        components: CalendarComponents(
+          overlayBuilders: buildersLabelled('global'),
+          multiDayComponents: MultiDayComponents(
+            headerComponents: MultiDayHeaderComponents(overlayBuilders: buildersLabelled('specific')),
+          ),
+        ),
+      );
+
+      expect(buttonLabels(tester), {'specific'}, reason: 'the more specific header builder should win');
     });
   });
 }

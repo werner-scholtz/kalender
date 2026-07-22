@@ -28,6 +28,10 @@ class MonthDayHeaderStyle {
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [MonthDayHeader].
+  @Deprecated(
+    'Moved to MonthBodyComponents.monthDayHeaderStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
@@ -122,11 +126,15 @@ class MonthDayHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).monthDayHeaderStyle ?? const MonthDayHeaderStyle()).merge(this.style);
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final stringBuilder = context.components.monthComponents.bodyComponents.monthDayHeaderStringBuilder;
+    final displayDate = localDate.forLocation(location: context.location);
+    final numberText =
+        stringBuilder?.call(context, displayDate) ?? style.stringBuilder?.call(displayDate) ?? date.day.toString();
 
     return Padding(
       padding: style.margin ?? EdgeInsets.zero,
       child: DayNumber(
-        number: Text(date.day.toString(), style: style.numberTextStyle),
+        number: Text(numberText, style: style.numberTextStyle),
         isToday: context.isToday(localDate),
         todayKey: todayKey,
         size: style.buttonSize,

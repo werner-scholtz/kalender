@@ -28,6 +28,10 @@ class ScheduleDateStyle {
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [ScheduleDate].
+  @Deprecated(
+    'Moved to ScheduleComponents.leadingDateStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the day number of the week.
@@ -100,8 +104,12 @@ class ScheduleDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).scheduleDateStyle ?? const ScheduleDateStyle()).merge(this.style);
+    final stringBuilder = context.components.scheduleComponents.leadingDateStringBuilder;
+    final displayDate = date.forLocation(location: context.location);
     final text = Text(
-      style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale).characters.take(3).toString(),
+      stringBuilder?.call(context, displayDate) ??
+          style.stringBuilder?.call(date) ??
+          date.dayNameLocalized(context.locale).characters.take(3).toString(),
       style: style.textStyle,
     );
 

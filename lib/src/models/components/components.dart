@@ -5,6 +5,7 @@ import 'package:kalender/src/models/components/multi_day_components.dart';
 import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
 import 'package:kalender/src/models/components/schedule_styles.dart';
+import 'package:kalender/src/models/components/string_builders.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
@@ -65,10 +66,17 @@ class OverlayBuilders {
   /// The builder for the multi day overlay portal button.
   final MultiDayPortalOverlayButtonBuilder? multiDayPortalOverlayButtonBuilder;
 
+  /// Builds the label of the multi day overlay portal button.
+  ///
+  /// Defaults to a plus sign followed by the number of hidden events, with the
+  /// number formatted for the calendar's locale.
+  final HiddenEventCountStringBuilder? multiDayPortalOverlayButtonStringBuilder;
+
   const OverlayBuilders({
     this.multiDayOverlayBuilder,
     this.multiDayOverlayPortalBuilder,
     this.multiDayPortalOverlayButtonBuilder,
+    this.multiDayPortalOverlayButtonStringBuilder,
   });
 }
 

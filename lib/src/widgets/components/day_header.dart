@@ -30,11 +30,19 @@ class DayHeaderStyle {
   /// Use this function to customize the string used for the day number.
   ///
   /// By default, the [DateTime.day] is used to get the day number.
+  @Deprecated(
+    'Moved to MultiDayHeaderComponents.dayHeaderNumberStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(DateTime date)? numberStringBuilder;
 
   /// Use this function to customize the sting displayed under the day number.
   ///
   /// By default, the [DateTimeExtensions.dayNameShortLocalized] is used to get the short name of the day in the current locale.
+  @Deprecated(
+    'Moved to MultiDayHeaderComponents.dayHeaderStringBuilder, which also receives a BuildContext. '
+    'Will be removed in 0.24.0.',
+  )
   final String Function(DateTime date)? stringBuilder;
 
   /// Creates a new [DayHeaderStyle].
@@ -132,13 +140,18 @@ class DayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = (KalenderTheme.of(context).dayHeaderStyle ?? const DayHeaderStyle()).merge(this.style);
+    final components = context.components.multiDayComponents.headerComponents;
+
+    final localDate = InternalDateTime.fromExternal(date, location: context.location);
+    final displayDate = localDate.forLocation(location: context.location);
 
     final numberText = Text(
-      style.numberStringBuilder?.call(date) ?? date.day.toString(),
+      components.dayHeaderNumberStringBuilder?.call(context, displayDate) ??
+          style.numberStringBuilder?.call(date) ??
+          date.day.toString(),
       style: style.numberTextStyle,
     );
 
-    final localDate = InternalDateTime.fromExternal(date, location: context.location);
     final button = DayNumber(
       number: numberText,
       isToday: context.isToday(localDate),
@@ -146,7 +159,9 @@ class DayHeader extends StatelessWidget {
     );
 
     final dayName = Text(
-      style.stringBuilder?.call(localDate) ?? localDate.dayNameShortLocalized(context.locale),
+      components.dayHeaderStringBuilder?.call(context, displayDate) ??
+          style.stringBuilder?.call(localDate) ??
+          localDate.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );
 

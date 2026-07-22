@@ -195,9 +195,9 @@ void main() {
       // One overflow button should appear.
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
-      // The button must show '1 more' (one hidden event).
+      // The button must show '+1' (one hidden event).
       final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('1 more'));
+      expect(buttonText, equals('+1'));
     });
 
     testWidgets('Drop target layout uses the selected event span during horizontal resize', (tester) async {
@@ -361,11 +361,11 @@ void main() {
       // Three overflow buttons expected (one per overflowing column).
       expect(find.byType(MultiDayPortalOverlayButton), findsNWidgets(3));
 
-      // Each button must display exactly '1 more'.
+      // Each button must display exactly '+1'.
       for (final element in find.byKey(MultiDayPortalOverlayButton.textKey).evaluate()) {
         final text = (element.widget as Text).data;
         expect(text, isNotNull, reason: 'Button text should not be null');
-        expect(text, equals('1 more'), reason: 'Expected "1 more" but found "$text"');
+        expect(text, equals('+1'), reason: 'Expected "+1" but found "$text"');
       }
     });
 
@@ -432,7 +432,7 @@ void main() {
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
       final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('1 more'));
+      expect(buttonText, equals('+1'));
 
       // Verify vertical ordering: events[1] (earliest start) is topmost,
       // then events[2], then events[0].
@@ -511,7 +511,7 @@ void main() {
       expect(find.byType(MultiDayPortalOverlayButton), findsOneWidget);
 
       final buttonText = (find.byKey(MultiDayPortalOverlayButton.textKey).evaluate().single.widget as Text).data!;
-      expect(buttonText, equals('1 more'));
+      expect(buttonText, equals('+1'));
 
       // Verify vertical ordering by end time (earliest end = topmost row):
       // events[2] ends at 04:00, events[1] at 08:00, events[0] at 12:00.

@@ -127,6 +127,7 @@ class _MultiDayOverlayPortalState extends State<MultiDayOverlayPortal> {
             portalController: _portalController,
             numberOfHiddenRows: widget.numberOfHiddenRows,
             style: widget.overlayStyles?.multiDayPortalOverlayButtonStyle,
+            stringBuilder: widget.overlayBuilders?.multiDayPortalOverlayButtonStringBuilder,
           ),
     );
   }
