@@ -8,6 +8,8 @@ Nothing here stops existing code from compiling. Each one changes what an unchan
 
 - `MonthDayHeaderStyle.stringBuilder` was declared but never called, so setting it did nothing. Its replacement, `MonthBodyComponents.monthDayHeaderStringBuilder`, is wired up, which means a calendar that set the old field and worked around it having no effect will now see the day number change. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
+- The schedule view abbreviates day names the way the locale does, instead of cutting the full name at three characters. The cut only agrees with the real abbreviation in English, which is why it went unnoticed: German showed `Mit` where it should be `Mi`, Russian `сре` where it should be `ср`, Afrikaans `Woe` where it should be `Wo.`. Every other component that shows a short day name already used `DateFormat.E`, and the schedule view now does too. [#352](https://github.com/werner-scholtz/kalender/pull/352)
+
 - The month body now falls back to `CalendarComponents.overlayBuilders` when `MonthBodyComponents` sets none of its own, so a global overlay builder that was silently ignored in the month view starts applying. `MonthBodyComponents.overlayBuilders` defaulted to an empty `OverlayBuilders` rather than null, and the month body resolves it as "the specific one, otherwise the global one", so the empty default always shadowed the global builders. The multi-day header was never affected. This is the builder-side twin of the style-side fix in 0.22.0. [#349](https://github.com/werner-scholtz/kalender/pull/349)
 
 ### Deprecations
@@ -23,6 +25,8 @@ Nothing here stops existing code from compiling. Each one changes what an unchan
   | `WeekDayHeaderStyle.stringBuilder` | `MonthHeaderComponents.weekDayHeaderStringBuilder` |
   | `ScheduleDateStyle.stringBuilder` | `ScheduleComponents.leadingDateStringBuilder` |
   | `MultiDayPortalOverlayButtonStyle.stringBuilder` | `OverlayBuilders.multiDayPortalOverlayButtonStringBuilder` |
+
+- `MonthDayHeaderStyle.textStyle` is deprecated and will be removed in 0.24.0. It has never had any effect: it is documented as styling the day name, but `MonthDayHeader` displays only a day number, which `numberTextStyle` styles. The Material 3 defaults no longer assign it either, so it reads as null rather than as something that is set but ignored. [#352](https://github.com/werner-scholtz/kalender/pull/352)
 
 ### Features
 

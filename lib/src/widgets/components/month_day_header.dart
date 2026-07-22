@@ -24,7 +24,9 @@ class MonthDayHeaderStyle {
     this.margin,
   });
 
-  /// The [TextStyle] used by the [MonthDayHeader] widget to display the name of the day.
+  /// Has never had any effect. [MonthDayHeader] displays only a day number,
+  /// which is styled by [numberTextStyle], and no day name.
+  @Deprecated('Has no effect, MonthDayHeader displays no day name. Will be removed in 0.24.0.')
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [MonthDayHeader].
