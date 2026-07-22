@@ -137,7 +137,6 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
         thickness: 0,
       ),
       monthDayHeaderStyle: MonthDayHeaderStyle(
-        textStyle: textTheme.bodySmall,
         numberTextStyle: textTheme.bodyMedium,
         // Keeps the today highlight clear of the gridline above it and the
         // event tiles below it.

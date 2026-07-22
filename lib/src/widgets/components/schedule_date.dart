@@ -109,7 +109,7 @@ class ScheduleDate extends StatelessWidget {
     final text = Text(
       stringBuilder?.call(context, displayDate) ??
           style.stringBuilder?.call(date) ??
-          date.dayNameLocalized(context.locale).characters.take(3).toString(),
+          date.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );
 
