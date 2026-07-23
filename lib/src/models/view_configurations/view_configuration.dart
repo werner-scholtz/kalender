@@ -96,7 +96,10 @@ abstract class ViewConfiguration {
 
 /// The base class for all vertical views of the calendar.
 abstract class VerticalConfiguration {
-  /// Whether to show events that are longer than 1 day.
+  /// Whether to show multi-day events in the body.
+  ///
+  /// Which events count is decided per event by [CalendarEvent.multiDayRule],
+  /// 24 hours or longer by default.
   final bool showMultiDayEvents;
 
   /// The horizontal padding between events and the edge of the day column.
@@ -190,7 +193,10 @@ abstract class HorizontalConfiguration {
   /// The padding used around events.
   final EdgeInsets eventPadding;
 
-  /// Whether to display events shorter than 24 hours.
+  /// Whether to display single-day events in this horizontal lane.
+  ///
+  /// Which events count is decided per event by [CalendarEvent.multiDayRule],
+  /// shorter than 24 hours by default.
   final bool allowSingleDayEvents;
 
   /// The configuration for the page navigation triggers.

@@ -56,7 +56,7 @@ class VerticalDragTarget extends StatefulWidget {
       onReschedule: (event) {
         // Multi-day events belong in the header, not the body.
         // They should be rescheduled via HorizontalDragTarget, not VerticalDragTarget.
-        if (event.isMultiDayEvent) return false;
+        if (event.spansMultipleDays(location: controller.viewController?.location)) return false;
 
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
@@ -290,7 +290,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
     // Multi-day events belong in the header, not the body.
     // Return null to prevent updating the selection while dragging over this area.
-    if (event.isMultiDayEvent) return null;
+    if (event.spansMultipleDays(location: context.location)) return null;
 
     InternalDateTime start;
 

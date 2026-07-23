@@ -24,6 +24,7 @@ export 'package:kalender/src/models/controllers/events_controller.dart';
 export 'package:kalender/src/models/view_configurations/view_configuration.dart';
 export 'package:kalender/src/models/calendar_callbacks.dart';
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
+export 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 export 'package:kalender/src/models/calendar_interaction.dart';
 export 'package:kalender/src/models/controllers/view_controller.dart';
 export 'package:kalender/src/models/view_transition.dart';

@@ -1,5 +1,47 @@
 # Migration Guide
 
+## v0.23.x → v0.24.0
+
+### `isMultiDayEvent` became `spansMultipleDays`
+
+```dart
+- if (event.isMultiDayEvent) { ... }
++ if (event.spansMultipleDays(location: context.location)) { ... }
+```
+
+The old getter still works and is removed in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location.
+
+The name had to change. Dart rejects a class declaring both a getter and a method called `isMultiDayEvent`, so reusing the name would have meant no deprecation period at all. Worse, `event.isMultiDayEvent` would have kept compiling anywhere a `dynamic` is accepted, silently becoming a function object rather than a boolean.
+
+### Choosing what counts as multi-day
+
+The rule is now a `MultiDayRule` on the event. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behaviour, so nothing renders differently until you change it.
+
+| Rule | Multi-day when |
+| --- | --- |
+| `MultiDayRule.minimumDuration(d)` | the event lasts at least `d` |
+| `MultiDayRule.calendarDays()` | the event covers part of more than one calendar day |
+| `MultiDayRule.always()` | always, for events that are all-day by nature |
+
+Set it for one event:
+
+```dart
+CalendarEvent(dateTimeRange: range, multiDayRule: const MultiDayRule.calendarDays())
+```
+
+Or for your whole app, from the subclass you already have:
+
+```dart
+class Event extends CalendarEvent {
+  Event({required super.dateTimeRange, required this.title})
+      : super(multiDayRule: const MultiDayRule.calendarDays());
+}
+```
+
+For a rule none of these express, override `spansMultipleDays` instead.
+
+`multiDayRule` takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` does not need to do anything, since `super`'s comparison already covers it.
+
 ## v0.22.x → v0.23.0
 
 Nothing here stops existing code from compiling. The old fields still work and are deprecated, and the changes that need action are ones that alter what the calendar renders.

@@ -1,5 +1,13 @@
 ## 0.24.0
 
+### Features
+
+- `MultiDayRule` decides whether an event belongs in the multi-day header or the day timeline. Pass one to `CalendarEvent`, or fix it for a whole app from your subclass's `super` call. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day, and `MultiDayRule.always` suits events that are all-day by nature. [#367](https://github.com/werner-scholtz/kalender/pull/367)
+
+### Deprecations
+
+- `CalendarEvent.isMultiDayEvent` is replaced by `spansMultipleDays(location:)`. The getter could not take a location, so it measured calendar days in UTC. Removed in 0.25.0. See [MIGRATION.md](MIGRATION.md#v023x--v0240). [#367](https://github.com/werner-scholtz/kalender/pull/367)
+
 ### Fixes
 
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four were missing, and both classes reach the calendar through a `ValueNotifier` that uses `==` to decide whether to notify, so changing only `throttleMilliseconds`, `createEventGesture`, `modifyEventGesture` or `allowSingleDayEvents` never reached the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
@@ -7,6 +15,7 @@
 - `ScrollTriggerConfiguration.copyWith` keeps `scrollAmount`. It had no such parameter, so every copy reset the drag-scroll distance to the default. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - Removing an event no longer throws when its date index was never populated for that location. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - Tapping the trailing edge of an event tile resolves to the last visible day instead of one day past it. [#366](https://github.com/werner-scholtz/kalender/pull/366)
+- The two drag-target guards that decide whether an event may be dropped in the header or the body now use the calendar's location. They ignored it, so they could disagree with the rest of the calendar near midnight and across daylight saving changes. [#367](https://github.com/werner-scholtz/kalender/pull/367)
 
 ## 0.23.0
 

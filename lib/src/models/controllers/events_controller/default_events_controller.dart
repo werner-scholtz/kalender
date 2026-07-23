@@ -126,7 +126,7 @@ class DefaultEventsController extends EventsController {
   ) {
     return events.where((event) {
       // If the event is not a multi day event, return false.
-      if (!event.isMultiDayEvent) return false;
+      if (!event.spansMultipleDays(location: location)) return false;
       return event.internalRange(location: location).overlaps(dateTimeRange);
     });
   }
@@ -139,7 +139,7 @@ class DefaultEventsController extends EventsController {
   ) {
     return events.where((event) {
       // If the event is a multi day event, return false.
-      if (event.isMultiDayEvent) return false;
+      if (event.spansMultipleDays(location: location)) return false;
 
       // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event, location);

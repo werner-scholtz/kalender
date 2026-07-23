@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart' show EventInteraction;
 import 'package:kalender/kalender_extensions.dart';
+import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 
 /// Base class for events displayed in the calendar.
 ///
@@ -44,6 +45,14 @@ class CalendarEvent {
   /// Unique identifier. Auto-generated if not provided.
   late String id;
 
+  /// Decides whether this event belongs in the multi-day header lane.
+  ///
+  /// Defaults to [MultiDayRule.minimumDuration] of 24 hours.
+  final MultiDayRule multiDayRule;
+
+  /// The default rule: 24 hours or longer.
+  static const defaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
+
   /// Creates a [CalendarEvent].
   ///
   /// [dateTimeRange] is stored in UTC. A unique [id] is generated if omitted.
@@ -52,10 +61,12 @@ class CalendarEvent {
     String? id,
     required DateTimeRange dateTimeRange,
     EventInteraction? interaction,
+    MultiDayRule? multiDayRule,
   })  : id = id ?? _createUniqueId(),
         start = dateTimeRange.start.toUtc(),
         end = dateTimeRange.end.toUtc(),
-        interaction = interaction ?? EventInteraction.fromCanModify(true);
+        interaction = interaction ?? EventInteraction.fromCanModify(true),
+        multiDayRule = multiDayRule ?? defaultMultiDayRule;
 
   // TODO: consider using a UUID package for more robust ID generation.
   static String _createUniqueId() {
@@ -86,8 +97,19 @@ class CalendarEvent {
   /// Total duration (UTC-based).
   Duration get duration => dateTimeRange.duration;
 
+  /// Whether this event belongs in the multi-day header lane rather than the
+  /// day timeline, with calendar days measured in [location].
+  ///
+  /// Applies [multiDayRule]. Override for a rule no [MultiDayRule] expresses.
+  bool spansMultipleDays({required Location? location}) => multiDayRule.test(this, location: location);
+
   /// Whether this event spans more than one day.
-  bool get isMultiDayEvent => duration.inDays > 0;
+  ///
+  /// Cannot take a location, so it measures calendar days in UTC. That is why
+  /// it is deprecated: rules such as [MultiDayRule.calendarDays] give the wrong
+  /// answer near midnight and across daylight saving changes without one.
+  @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
+  bool get isMultiDayEvent => spansMultipleDays(location: null);
 
   /// All dates this event spans, adjusted for [location].
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
@@ -99,11 +121,13 @@ class CalendarEvent {
   CalendarEvent copyWith({
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
+    MultiDayRule? multiDayRule,
   }) {
     return CalendarEvent(
       id: id,
       dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule ?? this.multiDayRule,
     );
   }
 
@@ -119,12 +143,20 @@ class CalendarEvent {
   bool operator ==(Object other) => other is CalendarEvent && layoutEquals(other);
 
   @override
-  int get hashCode => Object.hash(id, start, end, interaction);
+  int get hashCode => Object.hash(id, start, end, interaction, multiDayRule);
 
-  /// Compares layout-affecting properties ([id], [start], [end], [interaction]).
+  /// Compares layout-affecting properties ([id], [start], [end], [interaction],
+  /// [multiDayRule]).
+  ///
+  /// [multiDayRule] counts because it decides whether the event renders in the
+  /// header or the day timeline.
   ///
   /// Override in subclasses that add properties affecting rendering.
   bool layoutEquals(CalendarEvent other) {
-    return id == other.id && start == other.start && end == other.end && interaction == other.interaction;
+    return id == other.id &&
+        start == other.start &&
+        end == other.end &&
+        interaction == other.interaction &&
+        multiDayRule == other.multiDayRule;
   }
 }
