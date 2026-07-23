@@ -2,6 +2,7 @@
 
 ### Breaking Changes
 
+- kalender no longer re-exports the whole `timezone` package. `Location` and `TZDateTime` still come through, since they appear in kalender's own signatures. Everything else, including `getLocation` and `initializeTimeZones`, now needs `package:timezone` imported directly. [#375](https://github.com/werner-scholtz/kalender/pull/375)
 - The seven string builders deprecated in 0.23.0 are removed from the component style classes. Their replacements on the matching `*Components` classes are unchanged, and each takes a `BuildContext` so it can read the calendar's locale. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for the mapping. [#372](https://github.com/werner-scholtz/kalender/pull/372)
 - `MonthDayHeaderStyle.textStyle` is removed. It never had any effect, since `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#372](https://github.com/werner-scholtz/kalender/pull/372)
 - `EventsController.eventsFromDateTimeRange` takes a required `multiDayRule`, since it is what sorts events into the header and the body. Only affects code implementing `EventsController`; pass the view configuration's rule. [#371](https://github.com/werner-scholtz/kalender/pull/371)

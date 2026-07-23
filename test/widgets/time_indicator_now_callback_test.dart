@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/internal_components/positioned_time_indicator.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
+import 'package:timezone/timezone.dart';
 
 import '../utilities.dart';
 
