@@ -3,6 +3,10 @@
 ### Fixes
 
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four were missing, and both classes reach the calendar through a `ValueNotifier` that uses `==` to decide whether to notify, so changing only `throttleMilliseconds`, `createEventGesture`, `modifyEventGesture` or `allowSingleDayEvents` never reached the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
+- Dragging to create an event no longer reacts to a drag that started on a different calendar. The guard compared a variable to itself, so it never rejected anything. [#366](https://github.com/werner-scholtz/kalender/pull/366)
+- `ScrollTriggerConfiguration.copyWith` keeps `scrollAmount`. It had no such parameter, so every copy reset the drag-scroll distance to the default. [#366](https://github.com/werner-scholtz/kalender/pull/366)
+- Removing an event no longer throws when its date index was never populated for that location. [#366](https://github.com/werner-scholtz/kalender/pull/366)
+- Tapping the trailing edge of an event tile resolves to the last visible day instead of one day past it. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 
 ## 0.23.0
 

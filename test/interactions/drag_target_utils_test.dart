@@ -8,11 +8,13 @@ import 'package:timezone/data/latest_10y.dart';
 /// range-math helpers. Members that require a live widget tree throw, so only
 /// the context-free helpers may be called against this harness.
 class _DragUtilsHarness with DragTargetUtilities {
+  _DragUtilsHarness({CalendarController? controller}) : controller = controller ?? CalendarController();
+
   @override
   BuildContext get context => throw UnimplementedError();
 
   @override
-  CalendarController get controller => throw UnimplementedError();
+  final CalendarController controller;
 
   @override
   EventsController get eventsController => throw UnimplementedError();
@@ -144,6 +146,26 @@ void main() {
 
     test('falls back to the payload event when resolveEvent is null', () {
       expect(dispatch(Reschedule(event: eventWithId('payload'))), equals('reschedule:payload'));
+    });
+  });
+
+  // ─── Create guard (foreign controller id) ────────────────────────────────────
+  //
+  // onAcceptWithDetails' onCreate handler must ignore Create payloads from a
+  // *different* controller: the guard returns before reaching
+  // calculateCursorDateTime (which throws in this harness), so a foreign create
+  // completes without touching the widget tree. A regression here (e.g. a
+  // `controllerId != controllerId` self-comparison) would fall through and
+  // throw UnimplementedError.
+
+  group('Create guard ignores a foreign controller id', () {
+    test('onAcceptWithDetails returns normally for a foreign create', () {
+      final host = _DragUtilsHarness();
+      final foreign = Create(controllerId: host.controller.id + 1);
+      expect(
+        () => host.onAcceptWithDetails(DragTargetDetails(data: foreign, offset: Offset.zero)),
+        returnsNormally,
+      );
     });
   });
 }
