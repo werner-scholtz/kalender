@@ -17,18 +17,12 @@ class WeekDayHeaderStyle {
   const WeekDayHeaderStyle({
     this.textStyle,
     this.padding,
-    this.stringBuilder,
   });
 
   /// The [TextStyle] used by the [DateText] widget to display the day of the week.
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [WeekDayHeader].
-  @Deprecated(
-    'Moved to MonthHeaderComponents.weekDayHeaderStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(DateTime date)? stringBuilder;
 
   /// The padding around the [WeekDayHeader] widget.
   final EdgeInsets? padding;
@@ -36,12 +30,10 @@ class WeekDayHeaderStyle {
   /// Creates a copy of this style with the given fields replaced with the new values.
   WeekDayHeaderStyle copyWith({
     TextStyle? textStyle,
-    String Function(DateTime date)? stringBuilder,
     EdgeInsets? padding,
   }) {
     return WeekDayHeaderStyle(
       textStyle: textStyle ?? this.textStyle,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
       padding: padding ?? this.padding,
     );
   }
@@ -51,7 +43,6 @@ class WeekDayHeaderStyle {
     if (other == null) return this;
     return WeekDayHeaderStyle(
       textStyle: other.textStyle ?? textStyle,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
       padding: other.padding ?? padding,
     );
   }
@@ -61,7 +52,6 @@ class WeekDayHeaderStyle {
     if (identical(a, b)) return a;
     return WeekDayHeaderStyle(
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       padding: EdgeInsets.lerp(a?.padding, b?.padding, t),
     );
   }
@@ -72,12 +62,11 @@ class WeekDayHeaderStyle {
 
     return other is WeekDayHeaderStyle &&
         other.textStyle == textStyle &&
-        other.stringBuilder == stringBuilder &&
         other.padding == padding;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, stringBuilder, padding);
+  int get hashCode => Object.hash(textStyle, padding);
 }
 
 /// A widget that displays the name of the day of the week.
@@ -99,7 +88,7 @@ class WeekDayHeader extends StatelessWidget {
     final padding = style.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final stringBuilder = context.components.monthComponents.headerComponents.weekDayHeaderStringBuilder;
     final dateText =
-        stringBuilder?.call(context, date) ?? style.stringBuilder?.call(date) ?? date.dayNameLocalized(context.locale);
+        stringBuilder?.call(context, date) ?? date.dayNameLocalized(context.locale);
     return Padding(padding: padding, child: Center(child: Text(dateText, style: style.textStyle)));
   }
 }

@@ -25,27 +25,18 @@ class MultiDayPortalOverlayButtonStyle {
   /// The text overflow behavior.
   final TextOverflow? textOverflow;
 
-  /// A function that builds a string based on the number of hidden rows.
-  @Deprecated(
-    'Moved to OverlayBuilders.multiDayPortalOverlayButtonStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(int numberOfHiddenRows)? stringBuilder;
-
-  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.stringBuilder, this.textOverflow});
+  const MultiDayPortalOverlayButtonStyle({this.textStyle, this.textPadding, this.textOverflow});
 
   /// Creates a copy of this style with the given fields replaced with the new values.
   MultiDayPortalOverlayButtonStyle copyWith({
     TextStyle? textStyle,
     EdgeInsetsGeometry? textPadding,
     TextOverflow? textOverflow,
-    String Function(int numberOfHiddenRows)? stringBuilder,
   }) {
     return MultiDayPortalOverlayButtonStyle(
       textStyle: textStyle ?? this.textStyle,
       textPadding: textPadding ?? this.textPadding,
       textOverflow: textOverflow ?? this.textOverflow,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
     );
   }
 
@@ -56,7 +47,6 @@ class MultiDayPortalOverlayButtonStyle {
       textStyle: other.textStyle ?? textStyle,
       textPadding: other.textPadding ?? textPadding,
       textOverflow: other.textOverflow ?? textOverflow,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
     );
   }
 
@@ -71,7 +61,6 @@ class MultiDayPortalOverlayButtonStyle {
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
       textPadding: EdgeInsetsGeometry.lerp(a?.textPadding, b?.textPadding, t),
       textOverflow: t < 0.5 ? a?.textOverflow : b?.textOverflow,
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
     );
   }
 
@@ -82,12 +71,11 @@ class MultiDayPortalOverlayButtonStyle {
     return other is MultiDayPortalOverlayButtonStyle &&
         other.textStyle == textStyle &&
         other.textPadding == textPadding &&
-        other.textOverflow == textOverflow &&
-        other.stringBuilder == stringBuilder;
+        other.textOverflow == textOverflow;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, textPadding, textOverflow, stringBuilder);
+  int get hashCode => Object.hash(textStyle, textPadding, textOverflow);
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {
@@ -133,7 +121,6 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
         padding: style.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
         child: Text(
           stringBuilder?.call(context, numberOfHiddenRows) ??
-              style.stringBuilder?.call(numberOfHiddenRows) ??
               defaultLabel(context, numberOfHiddenRows),
           style: style.textStyle,
           overflow: style.textOverflow,

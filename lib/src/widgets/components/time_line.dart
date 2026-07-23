@@ -59,14 +59,14 @@ double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange,
   // segment is 5 minutes).
   const defaultMinutes = [59];
   const customMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-  final hasCustomLabels = stringBuilder != null || style.stringBuilder != null;
+  final hasCustomLabels = stringBuilder != null;
   final minutes = hasCustomLabels ? customMinutes : defaultMinutes;
 
   var widest = 0.0;
   for (var hour = 0; hour < TimeOfDay.hoursPerDay; hour++) {
     for (final minute in minutes) {
       final time = TimeOfDay(hour: hour, minute: minute);
-      final text = stringBuilder?.call(context, time) ?? style.stringBuilder?.call(time) ?? time.format(context);
+      final text = stringBuilder?.call(context, time) ?? time.format(context);
       painter.text = TextSpan(text: text, style: textStyle);
       painter.layout();
       if (painter.width > widest) widest = painter.width;
@@ -101,11 +101,6 @@ class TimelineStyle {
   final double? width;
 
   /// The function that will be used to build the string.
-  @Deprecated(
-    'Moved to MultiDayBodyComponents.timelineStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(TimeOfDay timeOfDay)? stringBuilder;
 
   /// The decoration for the event start time.
   final Decoration? startDecoration;
@@ -118,7 +113,6 @@ class TimelineStyle {
     this.textDirection,
     this.textAlign,
     this.textOverflow,
-    this.stringBuilder,
     this.textPadding,
     this.width,
     this.startDecoration,
@@ -131,7 +125,6 @@ class TimelineStyle {
     TextDirection? textDirection,
     TextAlign? textAlign,
     TextOverflow? textOverflow,
-    String Function(TimeOfDay timeOfDay)? stringBuilder,
     EdgeInsets? textPadding,
     double? width,
     Decoration? startDecoration,
@@ -142,7 +135,6 @@ class TimelineStyle {
       textDirection: textDirection ?? this.textDirection,
       textAlign: textAlign ?? this.textAlign,
       textOverflow: textOverflow ?? this.textOverflow,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
       textPadding: textPadding ?? this.textPadding,
       width: width ?? this.width,
       startDecoration: startDecoration ?? this.startDecoration,
@@ -158,7 +150,6 @@ class TimelineStyle {
       textDirection: other.textDirection ?? textDirection,
       textAlign: other.textAlign ?? textAlign,
       textOverflow: other.textOverflow ?? textOverflow,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
       textPadding: other.textPadding ?? textPadding,
       width: other.width ?? width,
       startDecoration: other.startDecoration ?? startDecoration,
@@ -174,7 +165,6 @@ class TimelineStyle {
       textDirection: t < 0.5 ? a?.textDirection : b?.textDirection,
       textAlign: t < 0.5 ? a?.textAlign : b?.textAlign,
       textOverflow: t < 0.5 ? a?.textOverflow : b?.textOverflow,
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       textPadding: EdgeInsets.lerp(a?.textPadding, b?.textPadding, t),
       width: lerpDouble(a?.width, b?.width, t),
       startDecoration: Decoration.lerp(a?.startDecoration, b?.startDecoration, t),
@@ -191,7 +181,6 @@ class TimelineStyle {
         other.textDirection == textDirection &&
         other.textAlign == textAlign &&
         other.textOverflow == textOverflow &&
-        other.stringBuilder == stringBuilder &&
         other.textPadding == textPadding &&
         other.width == width &&
         other.startDecoration == startDecoration &&
@@ -204,7 +193,6 @@ class TimelineStyle {
         textDirection,
         textAlign,
         textOverflow,
-        stringBuilder,
         textPadding,
         width,
         startDecoration,
@@ -224,9 +212,7 @@ mixin TimeLineUtils {
   /// The label shown for [time].
   String timelineString(BuildContext context, TimeOfDay time) {
     final stringBuilder = context.components.multiDayComponents.bodyComponents.timelineStringBuilder;
-    return stringBuilder?.call(context, time) ??
-        effectiveStyle(context).stringBuilder?.call(time) ??
-        time.format(context);
+    return stringBuilder?.call(context, time) ?? time.format(context);
   }
 
   /// The [TextStyle] that will be used for the text.

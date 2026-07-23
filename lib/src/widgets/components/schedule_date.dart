@@ -20,7 +20,6 @@ class ScheduleDateStyle {
   /// Creates a new [ScheduleDateStyle].
   const ScheduleDateStyle({
     this.textStyle,
-    this.stringBuilder,
     this.numberTextStyle,
   });
 
@@ -28,11 +27,6 @@ class ScheduleDateStyle {
   final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [ScheduleDate].
-  @Deprecated(
-    'Moved to ScheduleComponents.leadingDateStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the [ScheduleDate] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
@@ -40,12 +34,10 @@ class ScheduleDateStyle {
   /// Creates a copy of this style with the given fields replaced with the new values.
   ScheduleDateStyle copyWith({
     TextStyle? textStyle,
-    String Function(DateTime date)? stringBuilder,
     TextStyle? numberTextStyle,
   }) {
     return ScheduleDateStyle(
       textStyle: textStyle ?? this.textStyle,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
     );
   }
@@ -55,7 +47,6 @@ class ScheduleDateStyle {
     if (other == null) return this;
     return ScheduleDateStyle(
       textStyle: other.textStyle ?? textStyle,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
       numberTextStyle: other.numberTextStyle ?? numberTextStyle,
     );
   }
@@ -65,7 +56,6 @@ class ScheduleDateStyle {
     if (identical(a, b)) return a;
     return ScheduleDateStyle(
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
     );
   }
@@ -76,12 +66,11 @@ class ScheduleDateStyle {
 
     return other is ScheduleDateStyle &&
         other.textStyle == textStyle &&
-        other.stringBuilder == stringBuilder &&
         other.numberTextStyle == numberTextStyle;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle);
+  int get hashCode => Object.hash(textStyle, numberTextStyle);
 }
 
 /// A widget that displays the name of the day and the day number of the week.
@@ -108,7 +97,6 @@ class ScheduleDate extends StatelessWidget {
     final displayDate = date.forLocation(location: context.location);
     final text = Text(
       stringBuilder?.call(context, displayDate) ??
-          style.stringBuilder?.call(date) ??
           date.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );

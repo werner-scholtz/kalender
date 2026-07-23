@@ -83,7 +83,7 @@ void main() {
   });
 
   testWidgets('custom stringBuilder shortening labels keeps columns aligned (#180)', (tester) async {
-    await pumpWeek(tester, components: withTimelineStyle(TimelineStyle(stringBuilder: (_) => 'X')));
+    await pumpWeek(tester, components: withTimelineStringBuilder((context, time) => 'X'));
 
     // The gutter shrank to fit the short label ...
     expect(gutterWidth(tester), lessThan(40), reason: 'Short labels should produce a narrow gutter');
@@ -136,22 +136,6 @@ void main() {
       textDirection: TextDirection.rtl,
     );
     expectAligned(tester);
-  });
-
-  testWidgets('the components string builder wins over the deprecated style one', (tester) async {
-    await pumpWeek(
-      tester,
-      components: CalendarComponents(
-        multiDayComponents: MultiDayComponents(
-          bodyComponents: MultiDayBodyComponents(timelineStringBuilder: (context, time) => 'components'),
-        ),
-        multiDayComponentStyles: MultiDayComponentStyles(
-          bodyStyles: MultiDayBodyComponentStyles(timelineStyle: TimelineStyle(stringBuilder: (_) => 'style')),
-        ),
-      ),
-    );
-
-    expect(labelAt(tester, 1), 'components');
   });
 
   // The calendar's own locale, which is not necessarily the app's, was not

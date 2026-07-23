@@ -227,35 +227,32 @@ void main() {
   });
 
   group('MonthDayHeaderStyle', () {
-    const a = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20));
-    const b = MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 20), buttonSize: Size(40, 40));
+    const a = MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20));
+    const b = MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 20), buttonSize: Size(40, 40));
 
     test('copyWith', () {
-      final copy = a.copyWith(numberTextStyle: const TextStyle(fontSize: 8), margin: const EdgeInsets.all(2));
-      expect(copy.numberTextStyle, const TextStyle(fontSize: 8));
+      final copy = a.copyWith(margin: const EdgeInsets.all(2));
       expect(copy.margin, const EdgeInsets.all(2));
-      expect(copy.textStyle, a.textStyle);
+      expect(copy.numberTextStyle, a.numberTextStyle);
       expect(copy.buttonSize, a.buttonSize);
     });
 
     test('merge', () {
-      final merged =
-          a.merge(const MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 9), buttonSize: Size(30, 30)));
-      expect(merged.numberTextStyle, const TextStyle(fontSize: 9));
+      final merged = a.merge(const MonthDayHeaderStyle(buttonSize: Size(30, 30)));
       expect(merged.buttonSize, const Size(30, 30));
-      expect(merged.textStyle, a.textStyle);
+      expect(merged.numberTextStyle, a.numberTextStyle);
       expect(a.merge(null), a);
     });
 
     test('lerp', () {
       final mid = MonthDayHeaderStyle.lerp(a, b, 0.5)!;
-      expect(mid.textStyle?.fontSize, 15);
+      expect(mid.numberTextStyle?.fontSize, 15);
       expect(mid.buttonSize, const Size(30, 30));
       expect(MonthDayHeaderStyle.lerp(null, null, 0.5), null);
     });
 
     test('equality', () {
-      expect(a, const MonthDayHeaderStyle(textStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20)));
+      expect(a, const MonthDayHeaderStyle(numberTextStyle: TextStyle(fontSize: 10), buttonSize: Size(20, 20)));
       expect(a == b, false);
     });
   });
@@ -476,12 +473,5 @@ void main() {
       );
       expect(a == b, false);
     });
-  });
-
-  test('stringBuilder fields keep function identity through copyWith and merge', () {
-    String builder(DateTime date) => 'x';
-    final style = const DayHeaderStyle().copyWith(stringBuilder: builder);
-    expect(style.stringBuilder, builder);
-    expect(const DayHeaderStyle().merge(style).stringBuilder, builder);
   });
 }

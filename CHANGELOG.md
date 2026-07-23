@@ -2,6 +2,8 @@
 
 ### Breaking Changes
 
+- The seven string builders deprecated in 0.23.0 are removed from the component style classes. Their replacements on the matching `*Components` classes are unchanged, and each takes a `BuildContext` so it can read the calendar's locale. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for the mapping. [#372](https://github.com/werner-scholtz/kalender/pull/372)
+- `MonthDayHeaderStyle.textStyle` is removed. It never had any effect, since `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#372](https://github.com/werner-scholtz/kalender/pull/372)
 - `EventsController.eventsFromDateTimeRange` takes a required `multiDayRule`, since it is what sorts events into the header and the body. Only affects code implementing `EventsController`; pass the view configuration's rule. [#371](https://github.com/werner-scholtz/kalender/pull/371)
 - `CalendarEvent.spansMultipleDays` takes a required `defaultRule` alongside `location`, supplied by the calendar from the view configuration. A subclass overriding it must widen its signature to match. [#371](https://github.com/werner-scholtz/kalender/pull/371)
 - `CalendarInteraction.throttleMilliseconds` is removed. Drag updates are now coalesced to one per frame, so they follow the display's refresh rate instead of a fixed 16ms window and are no longer capped at 60 per second on a faster screen. Nothing replaces it: delete the argument. [#368](https://github.com/werner-scholtz/kalender/pull/368)

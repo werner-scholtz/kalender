@@ -2,6 +2,12 @@
 
 ## v0.23.x → v0.24.0
 
+### The deprecated string builders are gone
+
+The seven `String Function(...)` fields on the component style classes, deprecated in 0.23.0, are removed, along with `MonthDayHeaderStyle.textStyle`, which never had any effect.
+
+If you are coming from 0.22.x or earlier and still setting them, the replacement table is under [v0.22.x → v0.23.0](#string-builders-moved-off-the-style-classes) below. Nothing about the replacements changed in this release, so a project already on the `*Components` builders needs no action.
+
 ### `throttleMilliseconds` is gone
 
 ```dart

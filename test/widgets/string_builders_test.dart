@@ -78,44 +78,6 @@ void main() {
       expect(find.text('number'), findsWidgets);
     });
 
-    testWidgets('the deprecated style builders still apply when no components ones are set', (tester) async {
-      await pumpWeek(
-        tester,
-        CalendarComponents(
-          multiDayComponentStyles: MultiDayComponentStyles(
-            headerStyles: MultiDayHeaderComponentStyles(
-              dayHeaderStyle: DayHeaderStyle(
-                stringBuilder: (date) => 'old name',
-                numberStringBuilder: (date) => 'old number',
-              ),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('old name'), findsWidgets);
-      expect(find.text('old number'), findsWidgets);
-    });
-
-    testWidgets('the components builder wins over the deprecated style one', (tester) async {
-      await pumpWeek(
-        tester,
-        CalendarComponents(
-          multiDayComponents: MultiDayComponents(
-            headerComponents: MultiDayHeaderComponents(dayHeaderStringBuilder: (context, date) => 'new'),
-          ),
-          multiDayComponentStyles: MultiDayComponentStyles(
-            headerStyles: MultiDayHeaderComponentStyles(
-              dayHeaderStyle: DayHeaderStyle(stringBuilder: (date) => 'old'),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('new'), findsWidgets);
-      expect(find.text('old'), findsNothing);
-    });
-
     testWidgets('both builders receive the same date', (tester) async {
       final nameDates = <DateTime>[];
       final numberDates = <DateTime>[];
@@ -157,20 +119,6 @@ void main() {
       expect(find.text('wd'), findsWidgets);
     });
 
-    testWidgets('the deprecated style builder still applies', (tester) async {
-      await pumpMonth(
-        tester,
-        CalendarComponents(
-          monthComponentStyles: MonthComponentStyles(
-            headerStyles: MonthHeaderComponentStyles(
-              weekDayHeaderStyle: WeekDayHeaderStyle(stringBuilder: (date) => 'old wd'),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('old wd'), findsWidgets);
-    });
   });
 
   group('MonthDayHeader', () {
@@ -270,33 +218,5 @@ void main() {
       expect(labels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
     });
 
-    testWidgets('the deprecated style builder still applies', (tester) async {
-      await pumpOverflowingWeek(
-        tester,
-        components: CalendarComponents(
-          overlayStyles: OverlayStyles(
-            multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(stringBuilder: (n) => 'old $n'),
-          ),
-        ),
-      );
-
-      expect(labels(tester), everyElement(startsWith('old ')));
-    });
-
-    testWidgets('the components builder wins over the deprecated style one', (tester) async {
-      await pumpOverflowingWeek(
-        tester,
-        components: CalendarComponents(
-          overlayBuilders: OverlayBuilders(
-            multiDayPortalOverlayButtonStringBuilder: (context, n) => 'new $n',
-          ),
-          overlayStyles: OverlayStyles(
-            multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(stringBuilder: (n) => 'old $n'),
-          ),
-        ),
-      );
-
-      expect(labels(tester), everyElement(startsWith('new ')));
-    });
   });
 }
