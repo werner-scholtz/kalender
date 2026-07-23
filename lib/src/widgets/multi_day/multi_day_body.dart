@@ -231,6 +231,7 @@ class _MultiDayPageState extends State<MultiDayPage> {
   void _updateVisibleEvents(int index, Location? location) {
     final events = widget.eventsController.eventsFromDateTimeRange(
       _pageNavigation.dateTimeRangeFromIndex(index, location),
+      multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
       location: location,

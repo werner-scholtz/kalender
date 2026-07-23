@@ -138,7 +138,12 @@ mixin DayEventTileUtils implements EventTileUtils {
       end: eventRangeOnDate.end.add(after),
     );
     final events = eventsController
-        .eventsFromDateTimeRange(range, includeMultiDayEvents: includeMultiDayEvents, location: context.location)
+        .eventsFromDateTimeRange(
+          range,
+          multiDayRule: context.multiDayRule,
+          includeMultiDayEvents: includeMultiDayEvents,
+          location: context.location,
+        )
         .toList();
     if (!includeSelf) events.removeWhere((e) => e.id == event.id);
     return events;
@@ -254,6 +259,7 @@ mixin MultiDayEventTileUtils implements EventTileUtils {
     final events = eventsController
         .eventsFromDateTimeRange(
           searcRange,
+          multiDayRule: context.multiDayRule,
           includeMultiDayEvents: includeMultiDayEvents,
           includeDayEvents: includeDayEvents,
           location: context.location,

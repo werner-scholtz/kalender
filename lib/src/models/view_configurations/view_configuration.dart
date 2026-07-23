@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
+import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/schedule_view_configuration.dart';
@@ -33,10 +34,18 @@ abstract class ViewConfiguration {
     this.dateTransition = DateTransition.carryFocus,
     this.dateResolver,
     this.nowCallback,
+    this.multiDayRule = defaultMultiDayRule,
   });
 
   /// The name of the [ViewConfiguration].
   final String name;
+
+  /// Decides which events belong in the multi-day header rather than the day
+  /// timeline.
+  ///
+  /// Applies to every event this view shows. An individual event can opt out
+  /// with [CalendarEvent.multiDayRule].
+  final MultiDayRule multiDayRule;
 
   /// The selected date to start the view from.
   ///
@@ -98,7 +107,7 @@ abstract class ViewConfiguration {
 abstract class VerticalConfiguration {
   /// Whether to show multi-day events in the body.
   ///
-  /// Which events count is decided per event by [CalendarEvent.multiDayRule],
+  /// Which events count is decided by [ViewConfiguration.multiDayRule],
   /// 24 hours or longer by default.
   final bool showMultiDayEvents;
 
@@ -195,7 +204,7 @@ abstract class HorizontalConfiguration {
 
   /// Whether to display single-day events in this horizontal lane.
   ///
-  /// Which events count is decided per event by [CalendarEvent.multiDayRule],
+  /// Which events count is decided by [ViewConfiguration.multiDayRule],
   /// shorter than 24 hours by default.
   final bool allowSingleDayEvents;
 

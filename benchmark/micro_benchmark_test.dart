@@ -181,7 +181,7 @@ class _EventQueryBenchmark extends _KalenderBenchmark {
   }
 
   @override
-  void run() => _sink ^= controller.eventsFromDateTimeRange(queryRange).length;
+  void run() => _sink ^= controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, queryRange).length;
 }
 
 void main() {

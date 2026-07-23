@@ -266,6 +266,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
       // TODO: this location needs to be passed down properly.
       final events = eventsController.eventsFromDateTimeRange(
         InternalDateTimeRange.fromDateTimeRange(internalDate.dayRange),
+        multiDayRule: widget.viewController.viewConfiguration.multiDayRule,
         location: widget.location,
       );
 

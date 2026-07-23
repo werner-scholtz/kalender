@@ -173,17 +173,26 @@ void main() {
   group('the default rule, minimumDuration(24h)', () {
     test('a short same-day event is not multi-day', () {
       final event = eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 15, 10));
-      expect(event.spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isFalse,
+      );
     });
 
     test('exactly 24h is multi-day', () {
       final event = eventUtc(DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16));
-      expect(event.spansMultipleDays(location: utcLocation), isTrue);
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
     });
 
     test('longer than 24h is multi-day', () {
       final event = eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 17, 9));
-      expect(event.spansMultipleDays(location: utcLocation), isTrue);
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
     });
 
     test('a short event crossing midnight is not multi-day', () {
@@ -192,7 +201,10 @@ void main() {
       // to classify it the other way.
       final event = eventUtc(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
       expect(event.datesSpanned(location: utcLocation), hasLength(2));
-      expect(event.spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isFalse,
+      );
     });
 
     test('matches the duration.inDays > 0 rule it replaced', () {
@@ -211,7 +223,7 @@ void main() {
       for (final range in ranges) {
         final event = eventUtc(range.first, range.last);
         expect(
-          event.spansMultipleDays(location: utcLocation),
+          event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
           equals(event.duration.inDays > 0),
           reason: 'changed for ${range.first} to ${range.last}',
         );
@@ -229,27 +241,82 @@ void main() {
 
     test('a short event crossing midnight is multi-day', () {
       final crossing = event(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
-      expect(crossing.spansMultipleDays(location: utcLocation), isTrue);
+      expect(
+        crossing.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
     });
 
     test('a long event inside one calendar day is not multi-day', () {
       final within = event(DateTime.utc(2024, 1, 15, 8), DateTime.utc(2024, 1, 15, 18));
-      expect(within.spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        within.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isFalse,
+      );
     });
 
     test('a full day stays multi-day so it remains in the header', () {
       final fullDay = event(DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16));
-      expect(fullDay.spansMultipleDays(location: utcLocation), isTrue);
+      expect(
+        fullDay.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
+    });
+  });
+
+  group('the view rule versus the event override', () {
+    final crossing = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
+
+    test('an event with no rule of its own follows the one it is given', () {
+      final event = CalendarEvent(dateTimeRange: crossing);
+      expect(event.multiDayRule, isNull, reason: 'unset means "use the calendar\'s rule"');
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: const MultiDayRule.calendarDays()),
+        isTrue,
+      );
+      expect(
+        event.spansMultipleDays(
+          location: utcLocation,
+          defaultRule: const MultiDayRule.minimumDuration(Duration(hours: 24)),
+        ),
+        isFalse,
+      );
+    });
+
+    test('an event override beats the calendar rule, in both directions', () {
+      final strict = CalendarEvent(dateTimeRange: crossing, multiDayRule: const MultiDayRule.calendarDays());
+      expect(
+        strict.spansMultipleDays(
+          location: utcLocation,
+          defaultRule: const MultiDayRule.minimumDuration(Duration(hours: 24)),
+        ),
+        isTrue,
+        reason: 'the event asked for calendar days',
+      );
+
+      final loose = CalendarEvent(
+        dateTimeRange: crossing,
+        multiDayRule: const MultiDayRule.minimumDuration(Duration(hours: 24)),
+      );
+      expect(
+        loose.spansMultipleDays(location: utcLocation, defaultRule: const MultiDayRule.calendarDays()),
+        isFalse,
+        reason: 'the event asked for a duration threshold',
+      );
     });
   });
 
   group('choosing a rule', () {
     test('per event, via the constructor', () {
       final crossing = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
-      expect(CalendarEvent(dateTimeRange: crossing).spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        CalendarEvent(dateTimeRange: crossing)
+            .spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isFalse,
+      );
       expect(
         CalendarEvent(dateTimeRange: crossing, multiDayRule: const MultiDayRule.calendarDays())
-            .spansMultipleDays(location: utcLocation),
+            .spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
         isTrue,
       );
     });
@@ -258,13 +325,24 @@ void main() {
       final event = _CalendarDayEvent(
         dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1)),
       );
-      expect(event.spansMultipleDays(location: utcLocation), isTrue);
+      expect(
+        event.spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
     });
 
     test('fully custom, by overriding spansMultipleDays', () {
       final fullDay = DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
-      expect(CalendarEvent(dateTimeRange: fullDay).spansMultipleDays(location: utcLocation), isTrue);
-      expect(_StrictMultiDayEvent(dateTimeRange: fullDay).spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        CalendarEvent(dateTimeRange: fullDay)
+            .spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isTrue,
+      );
+      expect(
+        _StrictMultiDayEvent(dateTimeRange: fullDay)
+            .spansMultipleDays(location: utcLocation, defaultRule: defaultMultiDayRule),
+        isFalse,
+      );
     });
 
     test('copyWith carries the rule, and takes no parameter for it', () {
@@ -319,5 +397,7 @@ class _StrictMultiDayEvent extends CalendarEvent {
   _StrictMultiDayEvent({required super.dateTimeRange});
 
   @override
-  bool spansMultipleDays({required Location? location}) => datesSpanned(location: location).length > 1;
+  bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
+    return datesSpanned(location: location).length > 1;
+  }
 }

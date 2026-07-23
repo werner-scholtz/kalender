@@ -36,6 +36,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.dateTransition,
     super.dateResolver,
     super.nowCallback,
+    super.multiDayRule,
     required this.viewType,
     required this.pageIndexCalculator,
   });
@@ -47,6 +48,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.dateTransition,
     super.dateResolver,
     super.nowCallback,
+    super.multiDayRule,
     DateTimeRange? displayRange,
   })  : pageIndexCalculator = PageIndexCalculator.scheduleContinuous(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.continuous;
@@ -58,6 +60,7 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     super.dateTransition,
     super.dateResolver,
     super.nowCallback,
+    super.multiDayRule,
     DateTimeRange? displayRange,
   })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.paginated;

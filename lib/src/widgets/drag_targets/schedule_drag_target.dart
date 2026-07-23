@@ -197,7 +197,7 @@ class _ScheduleDragTargetState extends State<ScheduleDragTarget> with DragTarget
       start: cursorDateTime,
       end: cursorDateTime.add(rangeAsUtc.duration),
     );
-    if (event.spansMultipleDays(location: context.location)) {
+    if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
       final duration = rangeAsUtc.duration;
       final endTime = cursorDateTime.add(duration);
       final newRange = InternalDateTimeRange(start: cursorDateTime, end: endTime);
