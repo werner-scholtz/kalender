@@ -48,15 +48,6 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Installation
 
-### Requirements
-
-| Requirement | Version          |
-| ----------- | ---------------- |
-| Dart SDK    | `>=3.0.0 <4.0.0` |
-| Flutter     | `>=3.22.0`       |
-
-### Dependencies
-
 ```bash
 flutter pub add kalender
 ```
