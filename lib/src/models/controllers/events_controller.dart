@@ -38,7 +38,7 @@ abstract class EventsController with ChangeNotifier {
   /// The events will be removed where [test] returns true.
   void removeWhere(bool Function(String key, CalendarEvent element) test);
 
-  /// Removes all [CalendarEvent]s from [_events].
+  /// Removes all [CalendarEvent]s from the controller.
   void clearEvents();
 
   /// Replaces all [CalendarEvent]s with [events] in a single update.

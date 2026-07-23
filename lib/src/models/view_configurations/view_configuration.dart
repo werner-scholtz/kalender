@@ -98,8 +98,7 @@ abstract class ViewConfiguration {
 
   /// The [DateTimeRange] that the calendar can display.
   ///
-  /// This might be different depending on the location of the calendar view.
-  /// to get the exact range for a location, use: [PageIndexCalculator.displayRangeForLocation]
+  /// The exact range shown can differ by the calendar's location.
   DateTimeRange get dateTimeRange => pageIndexCalculator.dateTimeRange;
 }
 

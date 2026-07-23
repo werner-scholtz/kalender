@@ -38,7 +38,7 @@ typedef TimelineWidthBuilder = double Function(
 /// text padding. Measuring all labels (rather than a single sample) keeps the
 /// gutter correct regardless of the locale's time format, the hour's digit
 /// count, and any custom [MultiDayBodyComponents.timelineStringBuilder]. Honors
-/// the ambient [MediaQuery.textScaler] so it reserves enough room for scaled text.
+/// the ambient [MediaQueryData.textScaler] so it reserves enough room for scaled text.
 double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange, TimelineStyle style) {
   if (style.width != null) return style.width!;
 

@@ -64,7 +64,7 @@ class InternalDateTimeRange extends DateTimeRange<InternalDateTime> {
   /// * If [date] is on the start day → `[start, endOfDay)`.
   /// * If [date] is on the end day → `[startOfDay, end)`.
   /// * If [date] is in between → the full day `[startOfDay, endOfDay)`.
-  /// * If start and end are the same day → returns [this].
+  /// * If start and end are the same day → returns the range unchanged.
   InternalDateTimeRange? dateTimeRangeOnDate(InternalDateTime date) {
     // Adjust the start and end times to the beginning and end of the day.
     final range = InternalDateTimeRange(start: start.startOfDay, end: end.endOfDay);

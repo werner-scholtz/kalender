@@ -11,7 +11,7 @@ import 'package:kalender/src/widgets/internal_components/pass_through_pointer.da
 /// A function that returns a [MultiDayEventOverlayTile] for the multi-day overlay.
 ///
 /// The [event] is the event that is being displayed.
-/// The [dateTimeRange] is the range for which the event is displayed.
+/// The [internalRange] is the range for which the event is displayed.
 /// The [dismissOverlay] is a function that is called when the overlay needs to be dismissed.
 typedef MultiDayOverlayEventTileBuilder = MultiDayEventOverlayTile Function(
   CalendarEvent event,
@@ -28,7 +28,7 @@ typedef RenderBoxCallback = RenderBox Function();
 /// The [events] are all the events that should be displayed for the given [date].
 /// The [tileHeight] is the height of the tile.
 /// The [portalController] is the controller for the overlay portal.
-/// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the [MultiDayEventLayoutWidget].
+/// The [getMultiDayEventLayoutRenderBox] is the function that returns the [RenderBox] for the `MultiDayEventLayoutWidget`.
 /// The [getOverlayPortalRenderBox] is the function that returns the [RenderBox] for the [MultiDayOverlay].
 /// The [overlayTileBuilder] is the builder for the overlay event tile.
 /// The [style] is the style for the overlay.
