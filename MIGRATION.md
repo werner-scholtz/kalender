@@ -21,7 +21,6 @@ The rule is now a `MultiDayRule` on the event. The default is `MultiDayRule.mini
 | --- | --- |
 | `MultiDayRule.minimumDuration(d)` | the event lasts at least `d` |
 | `MultiDayRule.calendarDays()` | the event covers part of more than one calendar day |
-| `MultiDayRule.always()` | always, for events that are all-day by nature |
 
 Set it for one event:
 

@@ -30,12 +30,6 @@ abstract class MultiDayRule {
   /// boundaries fall, so a short event crossing midnight counts.
   const factory MultiDayRule.calendarDays() = CalendarDaysRule;
 
-  /// Always multi-day, whatever the times say.
-  ///
-  /// For events that are all-day by nature rather than by duration, such as an
-  /// `.ics` event with `DTSTART;VALUE=DATE`.
-  const factory MultiDayRule.always() = AlwaysMultiDayRule;
-
   /// Whether [event] is multi-day, with calendar days measured in [location].
   bool test(CalendarEvent event, {required Location? location});
 }
@@ -79,18 +73,4 @@ class CalendarDaysRule extends MultiDayRule {
 
   @override
   int get hashCode => (CalendarDaysRule).hashCode;
-}
-
-/// Always multi-day.
-class AlwaysMultiDayRule extends MultiDayRule {
-  const AlwaysMultiDayRule();
-
-  @override
-  bool test(CalendarEvent event, {required Location? location}) => true;
-
-  @override
-  bool operator ==(Object other) => other is AlwaysMultiDayRule;
-
-  @override
-  int get hashCode => (AlwaysMultiDayRule).hashCode;
 }

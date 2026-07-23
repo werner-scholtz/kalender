@@ -243,16 +243,6 @@ void main() {
     });
   });
 
-  group('MultiDayRule.always', () {
-    test('classifies a two-minute event as multi-day', () {
-      final event = CalendarEvent(
-        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 9), end: DateTime.utc(2024, 1, 15, 9, 2)),
-        multiDayRule: const MultiDayRule.always(),
-      );
-      expect(event.spansMultipleDays(location: utcLocation), isTrue);
-    });
-  });
-
   group('choosing a rule', () {
     test('per event, via the constructor', () {
       final crossing = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
@@ -282,12 +272,12 @@ void main() {
       // which is the documented way to attach data to an event.
       final event = CalendarEvent(
         dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
-        multiDayRule: const MultiDayRule.always(),
+        multiDayRule: const MultiDayRule.calendarDays(),
       );
-      expect(event.copyWith().multiDayRule, const MultiDayRule.always());
+      expect(event.copyWith().multiDayRule, const MultiDayRule.calendarDays());
       expect(
         event.copyWith(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2))),
-        isA<CalendarEvent>().having((e) => e.multiDayRule, 'multiDayRule', const MultiDayRule.always()),
+        isA<CalendarEvent>().having((e) => e.multiDayRule, 'multiDayRule', const MultiDayRule.calendarDays()),
       );
     });
 
@@ -303,7 +293,6 @@ void main() {
   group('MultiDayRule equality', () {
     test('the same rule compares equal', () {
       expect(const MultiDayRule.calendarDays(), const MultiDayRule.calendarDays());
-      expect(const MultiDayRule.always(), const MultiDayRule.always());
       expect(
         const MultiDayRule.minimumDuration(Duration(hours: 24)),
         const MultiDayRule.minimumDuration(Duration(hours: 24)),
@@ -311,7 +300,7 @@ void main() {
     });
 
     test('different rules do not', () {
-      expect(const MultiDayRule.calendarDays(), isNot(const MultiDayRule.always()));
+      expect(const MultiDayRule.calendarDays(), isNot(const MultiDayRule.minimumDuration(Duration(hours: 24))));
       expect(
         const MultiDayRule.minimumDuration(Duration(hours: 24)),
         isNot(const MultiDayRule.minimumDuration(Duration(hours: 12))),
