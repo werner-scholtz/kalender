@@ -194,32 +194,24 @@ abstract class EventLayoutDelegate extends MultiChildLayoutDelegate {
     final currentCache = <int, VerticalLayoutData>{};
     final cache = layoutCache.getCache(date, heightPerMinute, timeOfDayRange);
 
-    if (cache == null) {
-      // If there is no cache, calculate the layout data for each event.
-      for (var i = 0; i < numberOfChildren; i++) {
-        final id = i;
-        final event = events.elementAt(i);
-        final eventHash = event.hashCode;
-        currentCache[eventHash] = _calculateSingleEventLayout(id, size, event);
-      }
-    } else {
-      // If there is a cache, use it to calculate the layout data for each event.
-      for (var i = 0; i < numberOfChildren; i++) {
-        final id = i;
-        final event = events.elementAt(i);
-        final eventHash = event.hashCode;
+    // Collected per child rather than read back out of the cache. The cache is
+    // keyed by event hash, so two equal events share one entry, and using its
+    // values as the result would leave a child with no layout data at all.
+    final layoutData = <VerticalLayoutData>[];
 
-        final cached = cache[eventHash];
-        if (cached == null) {
-          currentCache[eventHash] = _calculateSingleEventLayout(id, size, event);
-        } else {
-          currentCache[eventHash] = cached.copyWith(id: id);
-        }
-      }
+    for (var i = 0; i < numberOfChildren; i++) {
+      final event = events.elementAt(i);
+      final eventHash = event.hashCode;
+
+      final cached = cache?[eventHash];
+      final data = cached == null ? _calculateSingleEventLayout(i, size, event) : cached.copyWith(id: i);
+
+      layoutData.add(data);
+      currentCache[eventHash] = data;
     }
 
     layoutCache.setCache(date, heightPerMinute, timeOfDayRange, currentCache);
-    return sortVerticalLayoutData(currentCache.values.toList());
+    return sortVerticalLayoutData(layoutData);
   }
 
   VerticalLayoutData _calculateSingleEventLayout(int id, Size size, CalendarEvent event) {
