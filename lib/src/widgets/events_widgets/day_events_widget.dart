@@ -405,7 +405,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     }
 
     // If the configuration does not allow multi-day events and the selected event is a multi-day event, clear the state.
-    if (!widget.configuration.showMultiDayEvents && selectedEvent.isMultiDayEvent) {
+    if (!widget.configuration.showMultiDayEvents && selectedEvent.spansMultipleDays(location: widget.location)) {
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;
     }

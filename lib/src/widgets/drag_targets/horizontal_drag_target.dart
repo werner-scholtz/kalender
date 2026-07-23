@@ -45,7 +45,10 @@ class HorizontalDragTarget extends StatefulWidget {
       onReschedule: (event) {
         // If the configuration does not allow single-day events (e.g., multi-day header),
         // reject single-day events. They belong in the body, not the header.
-        if (!configuration.allowSingleDayEvents && !event.isMultiDayEvent) return false;
+        if (!configuration.allowSingleDayEvents &&
+            !event.spansMultipleDays(location: controller.viewController?.location)) {
+          return false;
+        }
         return true;
       },
       onOther: () => false,
@@ -186,7 +189,9 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
-    if (!widget.configuration.allowSingleDayEvents && !event.isMultiDayEvent) return null;
+    if (!widget.configuration.allowSingleDayEvents && !event.spansMultipleDays(location: context.location)) {
+      return null;
+    }
 
     // Calculate the new dateTimeRange for the event.
     final start = event.internalStart(location: context.location);

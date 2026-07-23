@@ -168,50 +168,156 @@ void main() {
     });
   });
 
-  // ─── isMultiDayEvent ─────────────────────────────────────────────────────────
-  //
-  // CHARACTERIZATION of the *current* implementation, which is defined purely on
-  // the UTC `duration.inDays > 0`. This is location-independent and ignores
-  // calendar-day boundaries. The `skip`ped group below records the agreed-upon
-  // *desired* (location/calendar-day-aware) behaviour for when the getter is
-  // reworked — see calendar_event.dart:89 and AGENTS.md "isMultiDayEvent".
+  // ─── spansMultipleDays ───────────────────────────────────────────────────────
 
-  group('isMultiDayEvent (current UTC-duration behaviour)', () {
+  group('the default rule, minimumDuration(24h)', () {
     test('a short same-day event is not multi-day', () {
-      expect(eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 15, 10)).isMultiDayEvent, isFalse);
+      final event = eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 15, 10));
+      expect(event.spansMultipleDays(location: utcLocation), isFalse);
     });
 
-    test('an event of exactly 24h is multi-day (inDays == 1)', () {
-      expect(eventUtc(DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16)).isMultiDayEvent, isTrue);
+    test('exactly 24h is multi-day', () {
+      final event = eventUtc(DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16));
+      expect(event.spansMultipleDays(location: utcLocation), isTrue);
     });
 
-    test('an event longer than 24h is multi-day', () {
-      expect(eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 17, 9)).isMultiDayEvent, isTrue);
+    test('longer than 24h is multi-day', () {
+      final event = eventUtc(DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 17, 9));
+      expect(event.spansMultipleDays(location: utcLocation), isTrue);
     });
 
-    test('a short event crossing midnight is NOT classed as multi-day (known limitation)', () {
-      // 23:00 -> 01:00 next day is only 2h, so inDays == 0, even though it
-      // occupies two calendar days. This is the cross-midnight bug.
+    test('a short event crossing midnight is not multi-day', () {
+      // 2h long, so under the duration rule it stays in the day timeline even
+      // though it occupies two calendar days. Use MultiDayRule.calendarDays()
+      // to classify it the other way.
       final event = eventUtc(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
-      expect(event.isMultiDayEvent, isFalse);
+      expect(event.datesSpanned(location: utcLocation), hasLength(2));
+      expect(event.spansMultipleDays(location: utcLocation), isFalse);
+    });
+
+    test('matches the duration.inDays > 0 rule it replaced', () {
+      // The evidence that swapping the getter for the rule changed no rendering.
+      final ranges = [
+        [DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 15, 10)],
+        [DateTime.utc(2024, 1, 15, 8), DateTime.utc(2024, 1, 15, 18)],
+        [DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1)],
+        [DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16)],
+        [DateTime.utc(2024, 1, 15, 9), DateTime.utc(2024, 1, 17, 9)],
+        [DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 15)],
+        // Spring forward in Europe/Amsterdam, 2024-03-31.
+        [DateTime.utc(2024, 3, 30, 23), DateTime.utc(2024, 3, 31, 22)],
+      ];
+
+      for (final range in ranges) {
+        final event = eventUtc(range.first, range.last);
+        expect(
+          event.spansMultipleDays(location: utcLocation),
+          equals(event.duration.inDays > 0),
+          reason: 'changed for ${range.first} to ${range.last}',
+        );
+      }
     });
   });
 
-  group('isMultiDayEvent (desired location/calendar-day-aware behaviour)', () {
-    test('a short event crossing midnight should be multi-day (spans two calendar days)', () {
-      // 23:00 -> 01:00 next day occupies Jan 15 and Jan 16 in UTC.
-      final event = eventUtc(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
-      expect(event.datesSpanned(location: utcLocation), hasLength(2));
-      expect(event.isMultiDayEvent, isTrue);
+  group('MultiDayRule.calendarDays', () {
+    CalendarEvent event(DateTime start, DateTime end) {
+      return CalendarEvent(
+        dateTimeRange: DateTimeRange(start: start, end: end),
+        multiDayRule: const MultiDayRule.calendarDays(),
+      );
+    }
+
+    test('a short event crossing midnight is multi-day', () {
+      final crossing = event(DateTime.utc(2024, 1, 15, 23), DateTime.utc(2024, 1, 16, 1));
+      expect(crossing.spansMultipleDays(location: utcLocation), isTrue);
     });
 
-    test('a long event within a single calendar day should not be multi-day', () {
-      // A 10-hour event entirely inside one day must remain a single-day event.
-      final event = eventUtc(DateTime.utc(2024, 1, 15, 8), DateTime.utc(2024, 1, 15, 18));
-      expect(event.isMultiDayEvent, isFalse);
+    test('a long event inside one calendar day is not multi-day', () {
+      final within = event(DateTime.utc(2024, 1, 15, 8), DateTime.utc(2024, 1, 15, 18));
+      expect(within.spansMultipleDays(location: utcLocation), isFalse);
     });
-    },
-    skip: 'Desired behaviour: reclassify isMultiDayEvent to be location/calendar-day-aware. '
-        'Un-skip when spansMultipleDays lands with MultiDayRule.calendarDays().',
-  );
+
+    test('a full day stays multi-day so it remains in the header', () {
+      final fullDay = event(DateTime.utc(2024, 1, 15), DateTime.utc(2024, 1, 16));
+      expect(fullDay.spansMultipleDays(location: utcLocation), isTrue);
+    });
+  });
+
+  group('choosing a rule', () {
+    test('per event, via the constructor', () {
+      final crossing = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
+      expect(CalendarEvent(dateTimeRange: crossing).spansMultipleDays(location: utcLocation), isFalse);
+      expect(
+        CalendarEvent(dateTimeRange: crossing, multiDayRule: const MultiDayRule.calendarDays())
+            .spansMultipleDays(location: utcLocation),
+        isTrue,
+      );
+    });
+
+    test('per app, via a subclass that fixes the rule', () {
+      final event = _CalendarDayEvent(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1)),
+      );
+      expect(event.spansMultipleDays(location: utcLocation), isTrue);
+    });
+
+    test('fully custom, by overriding spansMultipleDays', () {
+      final fullDay = DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16));
+      expect(CalendarEvent(dateTimeRange: fullDay).spansMultipleDays(location: utcLocation), isTrue);
+      expect(_StrictMultiDayEvent(dateTimeRange: fullDay).spansMultipleDays(location: utcLocation), isFalse);
+    });
+
+    test('copyWith carries the rule, and takes no parameter for it', () {
+      // A parameter here would invalidate every subclass override of copyWith,
+      // which is the documented way to attach data to an event.
+      final event = CalendarEvent(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
+        multiDayRule: const MultiDayRule.calendarDays(),
+      );
+      expect(event.copyWith().multiDayRule, const MultiDayRule.calendarDays());
+      expect(
+        event.copyWith(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2))),
+        isA<CalendarEvent>().having((e) => e.multiDayRule, 'multiDayRule', const MultiDayRule.calendarDays()),
+      );
+    });
+
+    test('the rule participates in layoutEquals, since it decides the lane', () {
+      final range = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
+      final a = CalendarEvent(id: 'same', dateTimeRange: range);
+      final b = CalendarEvent(id: 'same', dateTimeRange: range, multiDayRule: const MultiDayRule.calendarDays());
+      expect(a.layoutEquals(b), isFalse);
+      expect(a, isNot(equals(b)));
+    });
+  });
+
+  group('MultiDayRule equality', () {
+    test('the same rule compares equal', () {
+      expect(const MultiDayRule.calendarDays(), const MultiDayRule.calendarDays());
+      expect(
+        const MultiDayRule.minimumDuration(Duration(hours: 24)),
+        const MultiDayRule.minimumDuration(Duration(hours: 24)),
+      );
+    });
+
+    test('different rules do not', () {
+      expect(const MultiDayRule.calendarDays(), isNot(const MultiDayRule.minimumDuration(Duration(hours: 24))));
+      expect(
+        const MultiDayRule.minimumDuration(Duration(hours: 24)),
+        isNot(const MultiDayRule.minimumDuration(Duration(hours: 12))),
+      );
+    });
+  });
+}
+
+/// Fixes the rule for a whole app in one place, the way a real subclass would.
+class _CalendarDayEvent extends CalendarEvent {
+  _CalendarDayEvent({required super.dateTimeRange}) : super(multiDayRule: const MultiDayRule.calendarDays());
+}
+
+/// Replaces the rule entirely with a strict "more than one calendar day".
+class _StrictMultiDayEvent extends CalendarEvent {
+  _StrictMultiDayEvent({required super.dateTimeRange});
+
+  @override
+  bool spansMultipleDays({required Location? location}) => datesSpanned(location: location).length > 1;
 }
