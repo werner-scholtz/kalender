@@ -149,6 +149,7 @@ class Event extends CalendarEvent {
   final Color? color;
 
   Event({
+    super.id,
     required super.dateTimeRange,
     required this.title,
     this.description,
@@ -164,16 +165,14 @@ class Event extends CalendarEvent {
     String? description,
     Color? color,
   }) {
-    final updated = Event(
+    return Event(
+      id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
       title: title ?? this.title,
       description: description ?? this.description,
       color: color ?? this.color,
     );
-    // Always carry the existing ID over to the new instance.
-    updated.id = id;
-    return updated;
   }
 
   // Override == and hashCode so that the calendar can detect when an event's

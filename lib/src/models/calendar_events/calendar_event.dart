@@ -11,16 +11,17 @@ import 'package:kalender/kalender_extensions.dart';
 ///
 /// ```dart
 /// class Event extends CalendarEvent {
-///   Event({required super.dateTimeRange, required this.title, super.interaction});
+///   Event({super.id, required super.dateTimeRange, required this.title, super.interaction});
 ///   final String title;
 ///
 ///   @override
 ///   Event copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) =>
 ///       Event(
+///         id: id,
 ///         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
 ///         interaction: interaction ?? this.interaction,
 ///         title: title ?? this.title,
-///       )..id = id;
+///       );
 ///
 ///   @override
 ///   bool operator ==(Object other) =>
@@ -100,9 +101,10 @@ class CalendarEvent {
     EventInteraction? interaction,
   }) {
     return CalendarEvent(
+      id: id,
       dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       interaction: interaction ?? this.interaction,
-    )..id = id;
+    );
   }
 
   @override
