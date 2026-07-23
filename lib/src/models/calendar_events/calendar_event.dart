@@ -117,17 +117,18 @@ class CalendarEvent {
   /// Returns a copy with the given fields replaced.
   ///
   /// The [id] is preserved so that selection and layout lookups continue to
-  /// reference the same logical event.
+  /// reference the same logical event. [multiDayRule] is carried over too, and
+  /// is deliberately not a parameter: adding one here would invalidate every
+  /// subclass's override of this method.
   CalendarEvent copyWith({
     DateTimeRange? dateTimeRange,
     EventInteraction? interaction,
-    MultiDayRule? multiDayRule,
   }) {
     return CalendarEvent(
       id: id,
       dateTimeRange: dateTimeRange ?? DateTimeRange(start: start, end: end),
       interaction: interaction ?? this.interaction,
-      multiDayRule: multiDayRule ?? this.multiDayRule,
+      multiDayRule: multiDayRule,
     );
   }
 

@@ -277,15 +277,17 @@ void main() {
       expect(_StrictMultiDayEvent(dateTimeRange: fullDay).spansMultipleDays(location: utcLocation), isFalse);
     });
 
-    test('copyWith carries the rule', () {
+    test('copyWith carries the rule, and takes no parameter for it', () {
+      // A parameter here would invalidate every subclass override of copyWith,
+      // which is the documented way to attach data to an event.
       final event = CalendarEvent(
         dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
         multiDayRule: const MultiDayRule.always(),
       );
       expect(event.copyWith().multiDayRule, const MultiDayRule.always());
       expect(
-        event.copyWith(multiDayRule: const MultiDayRule.calendarDays()).multiDayRule,
-        const MultiDayRule.calendarDays(),
+        event.copyWith(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2))),
+        isA<CalendarEvent>().having((e) => e.multiDayRule, 'multiDayRule', const MultiDayRule.always()),
       );
     });
 

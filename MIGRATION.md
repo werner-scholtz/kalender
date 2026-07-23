@@ -42,6 +42,8 @@ For a rule none of these express, override `spansMultipleDays` instead.
 
 `multiDayRule` takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` does not need to do anything, since `super`'s comparison already covers it.
 
+Your `copyWith` override needs no change either. `multiDayRule` is deliberately not a parameter on it: adding one to `CalendarEvent.copyWith` would make every subclass override invalid, since an override has to accept every named parameter its supertype accepts. The rule is carried through automatically. Set it in the constructor, and construct a new event on the rare occasion you need to change it.
+
 ## v0.22.x → v0.23.0
 
 Nothing here stops existing code from compiling. The old fields still work and are deprecated, and the changes that need action are ones that alter what the calendar renders.
