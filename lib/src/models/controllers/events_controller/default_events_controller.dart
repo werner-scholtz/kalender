@@ -1,5 +1,6 @@
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/controllers/events_controller.dart';
 import 'package:kalender/src/models/controllers/events_controller/default_event_store.dart';
 
@@ -85,6 +86,7 @@ class DefaultEventsController extends EventsController {
   @override
   Iterable<CalendarEvent> eventsFromDateTimeRange(
     InternalDateTimeRange dateTimeRange, {
+    required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
     Location? location,
@@ -95,9 +97,9 @@ class DefaultEventsController extends EventsController {
     if (includeMultiDayEvents && includeDayEvents) {
       return _allEventsFromDateTimeRange(events, dateTimeRange, location);
     } else if (includeMultiDayEvents) {
-      return _multiDayEventsFromDateTimeRange(events, dateTimeRange, location);
+      return _multiDayEventsFromDateTimeRange(events, dateTimeRange, location, multiDayRule);
     } else if (includeDayEvents) {
-      return _dayEventsFromDateTimeRange(events, dateTimeRange, location);
+      return _dayEventsFromDateTimeRange(events, dateTimeRange, location, multiDayRule);
     } else {
       return [];
     }
@@ -123,10 +125,11 @@ class DefaultEventsController extends EventsController {
     Iterable<CalendarEvent> events,
     InternalDateTimeRange dateTimeRange,
     Location? location,
+    MultiDayRule multiDayRule,
   ) {
     return events.where((event) {
       // If the event is not a multi day event, return false.
-      if (!event.spansMultipleDays(location: location)) return false;
+      if (!event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
       return event.internalRange(location: location).overlaps(dateTimeRange);
     });
   }
@@ -136,10 +139,11 @@ class DefaultEventsController extends EventsController {
     Iterable<CalendarEvent> events,
     InternalDateTimeRange dateTimeRange,
     Location? location,
+    MultiDayRule multiDayRule,
   ) {
     return events.where((event) {
       // If the event is a multi day event, return false.
-      if (event.spansMultipleDays(location: location)) return false;
+      if (event.spansMultipleDays(location: location, defaultRule: multiDayRule)) return false;
 
       // If the event is a zero duration event at the start of the day, we should check for touching.
       final touching = _checkTouching(event, location);

@@ -57,7 +57,11 @@ class VerticalDragTarget extends StatefulWidget {
         // A multi-day event stays in the header, so the time of day range does
         // not constrain it. Accepted so that dropping here commits the date the
         // header has been previewing.
-        if (event.spansMultipleDays(location: controller.viewController?.location)) return true;
+        final isMultiDay = event.spansMultipleDays(
+          location: controller.viewController?.location,
+          defaultRule: controller.viewController?.viewConfiguration.multiDayRule ?? defaultMultiDayRule,
+        );
+        if (isMultiDay) return true;
 
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
@@ -292,7 +296,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     // A multi-day event is laid out in the header, so dragging it across the
     // body can only change which date it starts on. Updating it here is what
     // moves the header's drop target as the cursor crosses day columns.
-    if (event.spansMultipleDays(location: context.location)) {
+    if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
       return rescheduleToDate(event, cursorDateTime);
     }
 

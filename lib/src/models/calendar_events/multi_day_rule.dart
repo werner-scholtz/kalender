@@ -1,6 +1,9 @@
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
 
+/// The rule a calendar uses when nothing overrides it: 24 hours or longer.
+const defaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
+
 /// Decides whether an event belongs in the multi-day header lane rather than
 /// the day timeline.
 ///

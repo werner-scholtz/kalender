@@ -45,13 +45,12 @@ class CalendarEvent {
   /// Unique identifier. Auto-generated if not provided.
   late String id;
 
-  /// Decides whether this event belongs in the multi-day header lane.
+  /// Overrides the calendar's rule for this event alone.
   ///
-  /// Defaults to [MultiDayRule.minimumDuration] of 24 hours.
-  final MultiDayRule multiDayRule;
-
-  /// The default rule: 24 hours or longer.
-  static const defaultMultiDayRule = MultiDayRule.minimumDuration(Duration(hours: 24));
+  /// Null, the default, uses [ViewConfiguration.multiDayRule]. Set it only for
+  /// an event that should be classified differently from the rest, such as one
+  /// that is all-day by nature rather than by duration.
+  final MultiDayRule? multiDayRule;
 
   /// Creates a [CalendarEvent].
   ///
@@ -61,12 +60,11 @@ class CalendarEvent {
     String? id,
     required DateTimeRange dateTimeRange,
     EventInteraction? interaction,
-    MultiDayRule? multiDayRule,
+    this.multiDayRule,
   })  : id = id ?? _createUniqueId(),
         start = dateTimeRange.start.toUtc(),
         end = dateTimeRange.end.toUtc(),
-        interaction = interaction ?? EventInteraction.fromCanModify(true),
-        multiDayRule = multiDayRule ?? defaultMultiDayRule;
+        interaction = interaction ?? EventInteraction.fromCanModify(true);
 
   // TODO: consider using a UUID package for more robust ID generation.
   static String _createUniqueId() {
@@ -100,16 +98,23 @@ class CalendarEvent {
   /// Whether this event belongs in the multi-day header lane rather than the
   /// day timeline, with calendar days measured in [location].
   ///
-  /// Applies [multiDayRule]. Override for a rule no [MultiDayRule] expresses.
-  bool spansMultipleDays({required Location? location}) => multiDayRule.test(this, location: location);
+  /// Applies [multiDayRule] when set, otherwise [defaultRule], which the
+  /// calendar supplies from [ViewConfiguration.multiDayRule].
+  ///
+  /// Override for a rule no [MultiDayRule] expresses.
+  bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
+    return (multiDayRule ?? defaultRule).test(this, location: location);
+  }
 
   /// Whether this event spans more than one day.
   ///
-  /// Cannot take a location, so it measures calendar days in UTC. That is why
-  /// it is deprecated: rules such as [MultiDayRule.calendarDays] give the wrong
-  /// answer near midnight and across daylight saving changes without one.
+  /// Cannot take a location, so it measures calendar days in UTC, and cannot
+  /// see the calendar's [ViewConfiguration.multiDayRule], so it answers as if
+  /// none were set. That is why it is deprecated: rules such as
+  /// [MultiDayRule.calendarDays] give the wrong answer near midnight and across
+  /// daylight saving changes without a location.
   @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
-  bool get isMultiDayEvent => spansMultipleDays(location: null);
+  bool get isMultiDayEvent => spansMultipleDays(location: null, defaultRule: defaultMultiDayRule);
 
   /// All dates this event spans, adjusted for [location].
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();

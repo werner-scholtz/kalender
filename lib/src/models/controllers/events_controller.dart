@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_events/calendar_event.dart';
+import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 
 /// The [EventsController] is used to manage [CalendarEvent]s.
 ///
@@ -74,8 +75,12 @@ abstract class EventsController with ChangeNotifier {
   /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
   /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
   /// The [location] is the current location TODO
+  /// [multiDayRule] decides which events count as multi-day. Pass the current
+  /// view's [ViewConfiguration.multiDayRule]; an event overriding it with
+  /// [CalendarEvent.multiDayRule] takes precedence.
   Iterable<CalendarEvent> eventsFromDateTimeRange(
     InternalDateTimeRange dateTimeRange, {
+    required MultiDayRule multiDayRule,
     bool includeMultiDayEvents = true,
     bool includeDayEvents = true,
     Location? location,

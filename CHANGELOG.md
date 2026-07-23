@@ -2,13 +2,15 @@
 
 ### Breaking Changes
 
+- `EventsController.eventsFromDateTimeRange` takes a required `multiDayRule`, since it is what sorts events into the header and the body. Only affects code implementing `EventsController`; pass the view configuration's rule. [#371](https://github.com/werner-scholtz/kalender/pull/371)
+- `CalendarEvent.spansMultipleDays` takes a required `defaultRule` alongside `location`, supplied by the calendar from the view configuration. A subclass overriding it must widen its signature to match. [#371](https://github.com/werner-scholtz/kalender/pull/371)
 - `CalendarInteraction.throttleMilliseconds` is removed. Drag updates are now coalesced to one per frame, so they follow the display's refresh rate instead of a fixed 16ms window and are no longer capped at 60 per second on a faster screen. Nothing replaces it: delete the argument. [#368](https://github.com/werner-scholtz/kalender/pull/368)
 - `DragTargetUtilities` requires a `mounted` getter. A class applying the mixin to a `State` already satisfies it, so most code needs no change. Anything else has to supply one, because the mixin now defers work to the end of the frame and must know whether its context is still usable. [#368](https://github.com/werner-scholtz/kalender/pull/368)
 
 ### Features
 
 - Dragging a multi-day event down over the body keeps moving its drop target in the header, instead of freezing it until the cursor returns. Releasing over the body commits the date. Only the date changes, so the time of day and duration are untouched. [#369](https://github.com/werner-scholtz/kalender/pull/369)
-- `MultiDayRule` decides whether an event belongs in the multi-day header or the day timeline. Pass one to `CalendarEvent`, or fix it for a whole app from your subclass's `super` call. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. [#367](https://github.com/werner-scholtz/kalender/pull/367)
+- `MultiDayRule` decides which events belong in the multi-day header rather than the day timeline. Set it once on the view configuration. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. A single event can opt out with `CalendarEvent.multiDayRule`, which is otherwise null. [#367](https://github.com/werner-scholtz/kalender/pull/367) [#371](https://github.com/werner-scholtz/kalender/pull/371)
 
 ### Deprecations
 

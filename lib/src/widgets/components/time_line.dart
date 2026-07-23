@@ -392,7 +392,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
 
             // Multi-day events belong in the header, not the body.
             // Don't show timeline tooltips for them.
-            if (eventBeingDragged.spansMultipleDays(location: context.location)) return const SizedBox();
+            if (eventBeingDragged.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) return const SizedBox();
 
             // Ensure that the event is visible.
             final eventRange = eventBeingDragged.internalRange(location: context.location);

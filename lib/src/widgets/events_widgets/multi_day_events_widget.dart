@@ -90,6 +90,7 @@ class _MultiDayEventWidgetState extends State<MultiDayEventWidget> {
     final visibleEvents = widget.eventsController
         .eventsFromDateTimeRange(
           widget.internalDateTimeRange,
+          multiDayRule: context.multiDayRule,
           includeDayEvents: widget.configuration.allowSingleDayEvents,
           includeMultiDayEvents: true,
           location: _locationNotifier?.value,
@@ -302,7 +303,7 @@ class _MultiDayEventLayoutWidgetState extends State<MultiDayEventLayoutWidget> {
       valueListenable: context.calendarController.selectedEvent,
       builder: (context, event, child) {
         if (event == null) return const SizedBox();
-        if (!widget.configuration.allowSingleDayEvents && !event.spansMultipleDays(location: context.location)) {
+        if (!widget.configuration.allowSingleDayEvents && !event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
           return const SizedBox();
         }
         if (!event.internalRange(location: context.location).overlaps(widget.internalDateTimeRange)) {

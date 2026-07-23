@@ -173,6 +173,7 @@ class _DayEventsColumnState extends State<DayEventsColumn> {
   Iterable<CalendarEvent> _queryEvents() {
     return widget.eventsController.eventsFromDateTimeRange(
       InternalDateTimeRange.fromDateTimeRange(widget.date.dayRange),
+      multiDayRule: widget.viewConfiguration.multiDayRule,
       includeDayEvents: true,
       includeMultiDayEvents: widget.configuration.showMultiDayEvents,
       location: widget.location,
@@ -405,7 +406,7 @@ class _DayDropTargetColumnState extends State<DayDropTargetColumn> {
     }
 
     // If the configuration does not allow multi-day events and the selected event is a multi-day event, clear the state.
-    if (!widget.configuration.showMultiDayEvents && selectedEvent.spansMultipleDays(location: widget.location)) {
+    if (!widget.configuration.showMultiDayEvents && selectedEvent.spansMultipleDays(location: widget.location, defaultRule: widget.viewConfiguration.multiDayRule)) {
       if (_selectedEvent != null) setState(() => _selectedEvent = null);
       return;
     }

@@ -38,42 +38,68 @@ The mixin defers move handling to the end of the frame, so it can outlive dispos
 
 ```dart
 - if (event.isMultiDayEvent) { ... }
-+ if (event.spansMultipleDays(location: context.location)) { ... }
++ if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) { ... }
 ```
 
-The old getter still works and is removed in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location.
+`context.multiDayRule` resolves the current view's rule, so inside a calendar it is the shortest way to supply it.
+
+The old getter still works and is removed in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location, and as if no rule were set on the view.
 
 The name had to change. Dart rejects a class declaring both a getter and a method called `isMultiDayEvent`, so reusing the name would have meant no deprecation period at all. Worse, `event.isMultiDayEvent` would have kept compiling anywhere a `dynamic` is accepted, silently becoming a function object rather than a boolean.
 
 ### Choosing what counts as multi-day
 
-The rule is now a `MultiDayRule` on the event. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behaviour, so nothing renders differently until you change it.
+The rule is a `MultiDayRule` on the view configuration. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behaviour, so nothing renders differently until you change it.
 
 | Rule | Multi-day when |
 | --- | --- |
 | `MultiDayRule.minimumDuration(d)` | the event lasts at least `d` |
 | `MultiDayRule.calendarDays()` | the event covers part of more than one calendar day |
 
-Set it for one event:
+Set it once, for the whole calendar:
 
 ```dart
-CalendarEvent(dateTimeRange: range, multiDayRule: const MultiDayRule.calendarDays())
+MultiDayViewConfiguration.week(
+  multiDayRule: const MultiDayRule.calendarDays(),
+)
 ```
 
-Or for your whole app, from the subclass you already have:
+Changing it re-sorts the events you already have. There is no need to rebuild or re-add them.
+
+One event can disagree with the rest, which is the closest the package gets to marking something all-day:
 
 ```dart
-class Event extends CalendarEvent {
-  Event({required super.dateTimeRange, required this.title})
-      : super(multiDayRule: const MultiDayRule.calendarDays());
-}
+CalendarEvent(
+  dateTimeRange: range,
+  multiDayRule: const MultiDayRule.calendarDays(),
+)
 ```
 
-For a rule none of these express, override `spansMultipleDays` instead.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it. Neither does your `copyWith` override: `multiDayRule` is deliberately not a parameter on it, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. The rule is carried through automatically.
 
-`multiDayRule` takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` does not need to do anything, since `super`'s comparison already covers it.
+For a rule none of these express, override `spansMultipleDays`. Note its signature:
 
-Your `copyWith` override needs no change either. `multiDayRule` is deliberately not a parameter on it: adding one to `CalendarEvent.copyWith` would make every subclass override invalid, since an override has to accept every named parameter its supertype accepts. The rule is carried through automatically. Set it in the constructor, and construct a new event on the rare occasion you need to change it.
+```dart
+  @override
+- bool spansMultipleDays({required Location? location}) => ...;
++ bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) => ...;
+```
+
+### `eventsFromDateTimeRange` takes the rule
+
+Only affects you if you implement `EventsController` yourself. The method sorts events into the header and the body, so it needs to know the rule:
+
+```dart
+  Iterable<CalendarEvent> eventsFromDateTimeRange(
+    InternalDateTimeRange dateTimeRange, {
++   required MultiDayRule multiDayRule,
+    bool includeMultiDayEvents = true,
+    bool includeDayEvents = true,
+    Location? location,
+  });
+```
+
+Pass it on to `event.spansMultipleDays(location: location, defaultRule: multiDayRule)`. Callers supply the current view's `ViewConfiguration.multiDayRule`.
 
 ## v0.22.x → v0.23.0
 
