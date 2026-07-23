@@ -7,16 +7,24 @@ typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
 
 mixin DragTargetUtilities {
   BuildContext get context;
+
+  /// Whether [context] is still usable.
+  ///
+  /// Satisfied by [State.mounted]. Checked before any deferred work, since
+  /// reading [State.context] after disposal throws rather than returning null.
+  bool get mounted;
   CalendarController get controller;
   EventsController get eventsController;
   CalendarCallbacks? get callbacks;
   double get dayWidth;
   List<DateTime> get visibleDates;
   bool get multiDayDragTarget;
-  int get throttleMilliseconds => context.interaction.throttleMilliseconds;
 
-  /// The last timestamp when the [onMove] was called.
-  int _lastMoveTimestamp = 0;
+  /// The most recent move, waiting to be processed at the end of the frame.
+  DragTargetDetails<Object?>? _pendingMove;
+
+  /// Whether a callback is already registered for the pending move.
+  bool _moveScheduled = false;
 
   /// A copy of the event being created.
   CalendarEvent? newEvent;
@@ -54,13 +62,27 @@ mixin DragTargetUtilities {
     );
   }
 
-  /// Handle the [DragTarget.onMove] with throttling.
+  /// Handle the [DragTarget.onMove], processing at most one move per frame.
+  ///
+  /// Pointer moves can arrive faster than the display refreshes, and each one
+  /// processed rebuilds the preview. Only the newest is worth drawing, so the
+  /// rest are discarded rather than throttled against the clock.
   void onMove(DragTargetDetails<Object?> details) {
-    // Throttle the move events to prevent excessive updates.
-    final currentTime = DateTime.now().millisecondsSinceEpoch;
-    if (currentTime - _lastMoveTimestamp < throttleMilliseconds) return;
-    _lastMoveTimestamp = currentTime;
-    _processMove(details);
+    _pendingMove = details;
+    if (_moveScheduled) return;
+    _moveScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _moveScheduled = false;
+      final pending = _pendingMove;
+      _pendingMove = null;
+      if (pending == null || !mounted) return;
+      _processMove(pending);
+    });
+
+    // addPostFrameCallback does not schedule a frame, and without one the
+    // pending move would sit unprocessed.
+    WidgetsBinding.instance.scheduleFrame();
   }
 
   /// Handle the [DragTarget.onMove].
@@ -140,6 +162,8 @@ mixin DragTargetUtilities {
       resolveEvent: _resolveEvent,
     );
 
+    _cancelPendingMove();
+
     if (result == null) return;
     final originalEvent = result.$1;
     final updatedEvent = result.$2;
@@ -151,9 +175,17 @@ mixin DragTargetUtilities {
 
   /// Handle the [DragTarget.onLeave]
   void onLeave(Object? details) {
+    _cancelPendingMove();
     controller.deselectEvent();
     newEvent = null;
   }
+
+  /// Drop any move still waiting to be processed.
+  ///
+  /// A move queued during the drag would otherwise be processed after the drop
+  /// has already deselected the event, reselecting it and leaving the preview
+  /// behind as a duplicate of the event it was previewing.
+  void _cancelPendingMove() => _pendingMove = null;
 
   /// Reschedule an event.
   CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime);

@@ -14,6 +14,9 @@ class _DragUtilsHarness with DragTargetUtilities {
   BuildContext get context => throw UnimplementedError();
 
   @override
+  bool get mounted => true;
+
+  @override
   final CalendarController controller;
 
   @override

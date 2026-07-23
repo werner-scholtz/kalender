@@ -2,6 +2,19 @@
 
 ## v0.23.x → v0.24.0
 
+### `throttleMilliseconds` is gone
+
+```dart
+  CalendarInteraction(
+    allowResizing: true,
+-   throttleMilliseconds: 16,
+  )
+```
+
+Delete the argument. Nothing replaces it.
+
+Drag updates are now coalesced to one per frame rather than throttled against the clock, so they follow whatever rate the display refreshes at. The old default of 16ms assumed a 60Hz screen and capped updates at about 62 per second, which is half what a 120Hz display can show. There is no longer a value to choose.
+
 ### `isMultiDayEvent` became `spansMultipleDays`
 
 ```dart

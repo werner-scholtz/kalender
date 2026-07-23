@@ -1,5 +1,9 @@
 ## 0.24.0
 
+### Breaking Changes
+
+- `CalendarInteraction.throttleMilliseconds` is removed. Drag updates are now coalesced to one per frame, so they follow the display's refresh rate instead of a fixed 16ms window and are no longer capped at 60 per second on a faster screen. Nothing replaces it: delete the argument. [#368](https://github.com/werner-scholtz/kalender/pull/368)
+
 ### Features
 
 - `MultiDayRule` decides whether an event belongs in the multi-day header or the day timeline. Pass one to `CalendarEvent`, or fix it for a whole app from your subclass's `super` call. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. [#367](https://github.com/werner-scholtz/kalender/pull/367)

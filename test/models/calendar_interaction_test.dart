@@ -85,7 +85,6 @@ void main() {
         allowResizing: true,
         allowRescheduling: true,
         allowEventCreation: true,
-        throttleMilliseconds: 16,
         inputMode: InputMode.precise,
         allowHorizontalImpreciseResize: false,
         createEventGesture: CreateEventGesture.tap,
@@ -94,13 +93,11 @@ void main() {
 
       final copy = original.copyWith(
         allowResizing: false,
-        throttleMilliseconds: 32,
         inputMode: InputMode.imprecise,
         modifyEventGesture: CreateEventGesture.longPress,
       );
 
       expect(copy.allowResizing, isFalse);
-      expect(copy.throttleMilliseconds, equals(32));
       expect(copy.inputMode, equals(InputMode.imprecise));
       expect(copy.modifyEventGesture, equals(CreateEventGesture.longPress));
       // Untouched fields are preserved.
@@ -113,13 +110,11 @@ void main() {
     test('copyWith with no arguments preserves every field', () {
       final original = CalendarInteraction(
         allowResizing: false,
-        throttleMilliseconds: 99,
         inputMode: InputMode.imprecise,
         createEventGesture: CreateEventGesture.longPress,
       );
       final copy = original.copyWith();
       expect(copy.allowResizing, equals(original.allowResizing));
-      expect(copy.throttleMilliseconds, equals(original.throttleMilliseconds));
       expect(copy.inputMode, equals(original.inputMode));
       expect(copy.createEventGesture, equals(original.createEventGesture));
     });
@@ -132,7 +127,6 @@ void main() {
           allowResizing: true,
           allowRescheduling: true,
           allowEventCreation: true,
-          throttleMilliseconds: 16,
           inputMode: InputMode.precise,
           allowHorizontalImpreciseResize: false,
           createEventGesture: CreateEventGesture.tap,
@@ -148,7 +142,6 @@ void main() {
       'allowResizing': (i) => i.copyWith(allowResizing: false),
       'allowRescheduling': (i) => i.copyWith(allowRescheduling: false),
       'allowEventCreation': (i) => i.copyWith(allowEventCreation: false),
-      'throttleMilliseconds': (i) => i.copyWith(throttleMilliseconds: 999),
       'inputMode': (i) => i.copyWith(inputMode: InputMode.imprecise),
       'allowHorizontalImpreciseResize': (i) => i.copyWith(allowHorizontalImpreciseResize: true),
       'createEventGesture': (i) => i.copyWith(createEventGesture: CreateEventGesture.longPress),

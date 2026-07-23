@@ -105,13 +105,6 @@ class CalendarInteraction {
   static const defaultModifyEventGesture = CreateEventGesture.tap;
   static const defaultMobileModifyEventGesture = CreateEventGesture.longPress;
 
-  /// The number of milliseconds to throttle the interaction events.
-  ///
-  /// This is used to prevent excessive updates during drag operations.
-  /// This can be adjusted based on the performance needs of the application.
-  final int throttleMilliseconds;
-  static const defaultThrottleMilliseconds = 16;
-
   /// The input mode for the calendar.
   ///
   /// This determines how resize handles are positioned and when they become visible.
@@ -146,7 +139,6 @@ class CalendarInteraction {
     this.allowResizing = defaultAllowResizing,
     this.allowRescheduling = defaultAllowRescheduling,
     this.allowEventCreation = defaultAllowEventCreation,
-    this.throttleMilliseconds = defaultThrottleMilliseconds,
     this.inputMode = defaultInputMode,
     this.allowHorizontalImpreciseResize = defaultAllowHorizontalImpreciseResize,
     CreateEventGesture? createEventGesture,
@@ -162,7 +154,6 @@ class CalendarInteraction {
     bool? allowResizing,
     bool? allowRescheduling,
     bool? allowEventCreation,
-    int? throttleMilliseconds,
     InputMode? inputMode,
     bool? allowHorizontalImpreciseResize,
     CreateEventGesture? createEventGesture,
@@ -172,7 +163,6 @@ class CalendarInteraction {
       allowResizing: allowResizing ?? this.allowResizing,
       allowRescheduling: allowRescheduling ?? this.allowRescheduling,
       allowEventCreation: allowEventCreation ?? this.allowEventCreation,
-      throttleMilliseconds: throttleMilliseconds ?? this.throttleMilliseconds,
       inputMode: inputMode ?? this.inputMode,
       allowHorizontalImpreciseResize: allowHorizontalImpreciseResize ?? this.allowHorizontalImpreciseResize,
       createEventGesture: createEventGesture ?? this.createEventGesture,
@@ -188,7 +178,6 @@ class CalendarInteraction {
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
         other.allowEventCreation == allowEventCreation &&
-        other.throttleMilliseconds == throttleMilliseconds &&
         other.inputMode == inputMode &&
         other.allowHorizontalImpreciseResize == allowHorizontalImpreciseResize &&
         other.createEventGesture == createEventGesture &&
@@ -200,7 +189,6 @@ class CalendarInteraction {
         allowResizing,
         allowRescheduling,
         allowEventCreation,
-        throttleMilliseconds,
         inputMode,
         allowHorizontalImpreciseResize,
         createEventGesture,
