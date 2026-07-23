@@ -73,7 +73,7 @@ Because `==` and `hashCode` include your custom fields, the calendar will detect
 
 ### `layoutEquals`
 
-Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, and `interaction`, which is sufficient for most cases.
+Only override `layoutEquals` when a custom property changes the *size or position* of the tile, for example a flag that makes a tile render taller. It is **not** for content-only changes like color or title. The default implementation compares `id`, `dateTimeRange`, `interaction`, and `multiDayRule`, which is sufficient for most cases.
 
 ### Accessing custom fields in tile builders
 
@@ -102,6 +102,29 @@ callbacks: CalendarCallbacks(
   ),
   onEventCreated: (event) => eventsController.addEvent(event),
 ),
+```
+
+---
+
+## Multi-day events
+
+A `MultiDayRule` decides whether an event renders in the multi-day header lane or in the day timeline. The rule is set on the view configuration (see [Views & Interaction](views.md#views)) and defaults to counting events of 24 hours or longer as multi-day.
+
+A single event can override the calendar's rule:
+
+```dart
+CalendarEvent(
+  dateTimeRange: range,
+  multiDayRule: const MultiDayRule.calendarDays(),
+)
+```
+
+`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. It is carried through `copyWith` automatically, so a subclass override needs no extra parameter.
+
+To ask the question yourself, use `spansMultipleDays`:
+
+```dart
+event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)
 ```
 
 ---
@@ -147,6 +170,8 @@ class MyLayoutDelegate extends EventLayoutDelegate {
   void performLayout(Size size) {
     final verticalLayoutData = calculateVerticalLayoutData(size);
     for (final data in verticalLayoutData) {
+      // Events scrolled out of view are culled and have no child to lay out.
+      if (!hasChild(data.id)) continue;
       layoutChild(data.id, BoxConstraints.tightFor(
         width: size.width,
         height: data.height,

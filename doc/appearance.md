@@ -57,7 +57,10 @@ Every aspect of an event tile's appearance and drag behavior can be overridden.
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
 
-    // Customize the position and size of resize handles (extend ResizeHandlePositioner).
+    // The drag anchor strategy used while resizing.
+    resizeDragAnchorStrategy: childDragAnchorStrategy,
+
+    // Position and size the resize handles (a function returning your ResizeHandles subclass).
     resizeHandlePositioner: myResizeHandlePositioner,
 
     // The vertical resize handle widget.
@@ -265,7 +268,7 @@ KalenderThemeData(
 
 Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets. Styles passed here apply to that one `CalendarView` and win over the [theme](#theming).
 
-Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/schedule_components.dart).
+Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/schedule_styles.dart).
 
 <details>
   <summary>MultiDayComponents</summary>
@@ -285,12 +288,15 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
           ),
         ),
         bodyComponents: MultiDayBodyComponents(
-          hourLines: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
-          timeline: (heightPerMinute, timeOfDayRange, style) => CustomWidget(),
+          hourLines: (heightPerMinute, timeOfDayRange, style, timelineStyle) => CustomWidget(),
+          timeline: (heightPerMinute, timeOfDayRange, style, eventBeingDragged, visibleDateTimeRange) =>
+              CustomWidget(),
+          // Sizes the timeline gutter, for example to fit a custom timeline's labels.
+          timelineWidth: (context, timeOfDayRange, style) => 48,
           daySeparator: (style) => CustomWidget(),
           timeIndicator: (timeOfDayRange, heightPerMinute, style, location) => CustomWidget(),
-          leftTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
-          rightTriggerBuilder: (pageHeight) => SizedBox(width: pageHeight / 20),
+          leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+          rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
           topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
           bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
         ),
@@ -337,7 +343,7 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
   CalendarView(
     components: CalendarComponents(
       scheduleComponents: ScheduleComponents(
-        dayHeaderBuilder: (date, style) => Container(),
+        leadingDateBuilder: (date, style) => Container(),
         scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) =>
             Container(child: child),
       ),

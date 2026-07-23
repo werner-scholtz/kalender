@@ -12,8 +12,9 @@ Switch between views by passing a different `ViewConfiguration` to `CalendarView
 For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
 
 All configurations accept:
-- `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to one year either side of today.
+- `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to two years either side of today.
 - `initialDateTime`: the date to show on first render. Defaults to `DateTime.now()`.
+- `multiDayRule`: what counts as a multi-day event and so renders in the multi-day header rather than the day timeline. Defaults to events lasting 24 hours or more (`MultiDayRule.minimumDuration`). `MultiDayRule.calendarDays()` instead counts anything that crosses midnight. A single event can override the rule, see [Multi-day events](events.md#multi-day-events).
 
 ```dart
 MultiDayViewConfiguration.week(
@@ -78,10 +79,12 @@ Presents events in a chronological scrollable list.
 | `removeEvent(event)`                 | Remove a specific event                                                                                                        |
 | `removeEvents(events)`               | Remove a list of events                                                                                                        |
 | `removeWhere(test)`                  | Remove events matching a predicate                                                                                             |
+| `removeById(id)`                     | Remove the event with the given `String` id                                                                                    |
 | `updateEvent({event, updatedEvent})` | Replace an existing event (named parameters)                                                                                   |
+| `replaceEvents(events)`              | Replace every stored event with the given list, returns `List<String>` of ids                                                  |
 | `byId(id)`                           | Return the event with the given `String` id, or `null`                                                                         |
 | `clearEvents()`                      | Remove all events                                                                                                              |
-| `eventsFromDateTimeRange(range)`     | Events occurring during the given range (accepts optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
+| `eventsFromDateTimeRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
 ### CalendarController
 
@@ -210,8 +213,10 @@ CalendarBody(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
-    // Tap to create (default) or long-press to create:
+    // Tap to create (desktop default) or long-press to create (mobile default):
     createEventGesture: CreateEventGesture.tap,
+    // The gesture that starts modifying an existing event, same defaults:
+    modifyEventGesture: CreateEventGesture.tap,
     // Input mode affects resize handle positioning and visibility:
     //   auto (default): detects dynamically from pointer events
     //   precise:        mouse, stylus, trackpad (full-width handles, hover-to-show)
@@ -241,6 +246,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
   CalendarHeader(
     multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
       showTiles: true,
+      allowSingleDayEvents: false,
       tileHeight: 24,
       generateMultiDayLayoutFrame: defaultMultiDayFrameGenerator,
       maximumNumberOfVerticalEvents: null,
@@ -265,6 +271,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
       eventLayoutStrategy: overlapLayoutStrategy,
       scrollPhysics: BouncingScrollPhysics(),
       pageScrollPhysics: BouncingScrollPhysics(),
+      keepPagesAlive: false,
     ),
   )
   ```
@@ -292,6 +299,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
   CalendarBody(
     scheduleBodyConfiguration: ScheduleBodyConfiguration(
       emptyDay: EmptyDayBehavior.hide,
+      leadingWidth: 56,
       pageTriggerConfiguration: PageTriggerConfiguration(),
       scrollTriggerConfiguration: ScrollTriggerConfiguration(),
       scrollPhysics: BouncingScrollPhysics(),
@@ -303,7 +311,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 
 ### Zoom
 
-Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/demo) example shows a full implementation with [`CalendarZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/demo/lib/widgets/zoom.dart).
+Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) example shows a full implementation with [`ZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/web_demo/lib/widgets/calendar/zoom.dart).
 
 Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop:
 
