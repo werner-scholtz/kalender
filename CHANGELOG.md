@@ -2,6 +2,7 @@
 
 ### Breaking Changes
 
+- kalender no longer re-exports the whole `timezone` package. `Location` and `TZDateTime` still come through, since they appear in kalender's own signatures. Everything else, including `getLocation` and `initializeTimeZones`, now needs `package:timezone` imported directly. [#375](https://github.com/werner-scholtz/kalender/pull/375)
 - The seven string builders deprecated in 0.23.0 are removed from the component style classes. Their replacements on the matching `*Components` classes are unchanged, and each takes a `BuildContext` so it can read the calendar's locale. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for the mapping. [#372](https://github.com/werner-scholtz/kalender/pull/372)
 - `MonthDayHeaderStyle.textStyle` is removed. It never had any effect, since `MonthDayHeader` renders only a day number, styled by `numberTextStyle`. [#372](https://github.com/werner-scholtz/kalender/pull/372)
 - Three long-deprecated members are removed. `CalendarCallbacks.onMultiDayTapped`, deprecated in 0.13.0, was never called by anything, so setting it has done nothing since. `DateTimeExtensions.monthNameEnglish` and `dayNameEnglish`, deprecated in 0.10.0, are replaced by `monthNameLocalized('en')` and `dayNameLocalized('en')`. [#374](https://github.com/werner-scholtz/kalender/pull/374)
