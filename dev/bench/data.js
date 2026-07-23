@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784796012066,
+  "lastUpdate": 1784797216447,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -7015,6 +7015,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3828.7814685314684,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz.mail@gmail.com",
+            "name": "Werner",
+            "username": "049er"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c68489d97dd86c717dfec2dcf680ceb3cd932e0d",
+          "message": "Merge pull request #368 from werner-scholtz/refactor/frame-aligned-drag-updates\n\nrefactor: coalesce drag updates per frame and drop throttleMilliseconds",
+          "timestamp": "2026-07-23T10:42:05+02:00",
+          "tree_id": "bcf09b10cdf2be6affce7986c0bae3b558f292fd",
+          "url": "https://github.com/werner-scholtz/kalender/commit/c68489d97dd86c717dfec2dcf680ceb3cd932e0d"
+        },
+        "date": 1784797212734,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 168.54279696714406,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 686.758,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2013.948,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7826.483146067416,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 805.6025,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2500.066,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2743.56625,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 13972.892617449665,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 241.84778165203798,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 125.99186281102892,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 879.7715,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3790.103146853147,
             "unit": "us"
           }
         ]
