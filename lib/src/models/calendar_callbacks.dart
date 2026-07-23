@@ -107,10 +107,6 @@ class CalendarCallbacks {
   /// When overriding this please see [HorizontalDragTarget.onWillAcceptWithDetails] for default behavior.
   final OnWillAcceptWithDetailsHorizontal? onWillAcceptWithDetailsHorizontal;
 
-  /// The callback for when a user taps on a multi-day calendar.
-  @Deprecated('Use onTappedWithDetail or onLongPressedWithDetail instead.')
-  final OnMultiDayTapped? onMultiDayTapped;
-
   /// Creates a set of callbacks for the [CalendarView].
   const CalendarCallbacks({
     this.onEventTapped,
@@ -134,7 +130,6 @@ class CalendarCallbacks {
     this.onSecondaryLongPressedWithDetail,
     this.onWillAcceptWithDetailsVertical,
     this.onWillAcceptWithDetailsHorizontal,
-    this.onMultiDayTapped,
   });
 
   bool get hasOnEventTapped => onEventTapped != null || onEventTappedWithDetail != null;
@@ -165,7 +160,6 @@ class CalendarCallbacks {
     OnLongPressedWithDetails? onLongPressedWithDetail,
     OnLongPressed? onSecondaryLongPressed,
     OnLongPressedWithDetails? onSecondaryLongPressedWithDetail,
-    OnMultiDayTapped? onMultiDayTapped,
   }) {
     return CalendarCallbacks(
       onEventTapped: onEventTapped ?? this.onEventTapped,
@@ -188,7 +182,6 @@ class CalendarCallbacks {
       onSecondaryLongPressed: onSecondaryLongPressed ?? this.onSecondaryLongPressed,
       onSecondaryLongPressedWithDetail: onSecondaryLongPressedWithDetail ?? this.onSecondaryLongPressedWithDetail,
       // ignore: deprecated_member_use_from_same_package
-      onMultiDayTapped: onMultiDayTapped ?? this.onMultiDayTapped,
     );
   }
 }
@@ -336,9 +329,3 @@ class MultiDayDetail extends TapDetail {
   /// Creates a new [MultiDayDetail] with the given date range.
   const MultiDayDetail({required this.dateTimeRange, required super.renderBox, required super.localOffset});
 }
-
-/// TODO: Remove in 1.0.0 as it is deprecated.
-/// The callback for when a user taps on an empty space in a multi-day calendar.
-///
-/// [dateRange] is the range of dates that was tapped.
-typedef OnMultiDayTapped = void Function(DateTimeRange dateRange);
