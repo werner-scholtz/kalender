@@ -15,6 +15,25 @@ Delete the argument. Nothing replaces it.
 
 Drag updates are now coalesced to one per frame rather than throttled against the clock, so they follow whatever rate the display refreshes at. The old default of 16ms assumed a 60Hz screen and capped updates at about 62 per second, which is half what a 120Hz display can show. There is no longer a value to choose.
 
+### `DragTargetUtilities` requires `mounted`
+
+Only affects you if you apply the mixin yourself. A `State` already provides `mounted`, so this is nothing to do:
+
+```dart
+class _MyDragTargetState extends State<MyDragTarget> with DragTargetUtilities { }
+```
+
+Anywhere else, supply it:
+
+```dart
+  class MyDragHandler with DragTargetUtilities {
++   @override
++   bool get mounted => true;
+  }
+```
+
+The mixin defers move handling to the end of the frame, so it can outlive disposal and has to know whether its context is still usable. Reading `State.context` after disposal throws rather than returning null, which is why the check cannot live inside the mixin.
+
 ### `isMultiDayEvent` became `spansMultipleDays`
 
 ```dart
