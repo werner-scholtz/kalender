@@ -210,7 +210,8 @@ void main() {
       final event = eventUtc(DateTime.utc(2024, 1, 15, 8), DateTime.utc(2024, 1, 15, 18));
       expect(event.isMultiDayEvent, isFalse);
     });
-  },
-      skip:
-          'Desired behaviour: reclassify isMultiDayEvent to be location/calendar-day-aware (see calendar_event.dart:89).');
+    },
+    skip: 'Desired behaviour: reclassify isMultiDayEvent to be location/calendar-day-aware. '
+        'Un-skip when spansMultipleDays lands with MultiDayRule.calendarDays().',
+  );
 }

@@ -135,8 +135,10 @@ void main() {
       final live = eventWithId('live');
       CalendarEvent resolve(CalendarEvent _) => live;
 
-      expect(dispatch(Resize(event: eventWithId('stale'), direction: ResizeDirection.top), resolveEvent: resolve),
-          equals('resize:live:top'));
+      expect(
+        dispatch(Resize(event: eventWithId('stale'), direction: ResizeDirection.top), resolveEvent: resolve),
+        equals('resize:live:top'),
+      );
       expect(dispatch(Reschedule(event: eventWithId('stale')), resolveEvent: resolve), equals('reschedule:live'));
     });
 

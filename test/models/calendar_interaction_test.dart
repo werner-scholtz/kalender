@@ -148,43 +148,18 @@ void main() {
       'allowResizing': (i) => i.copyWith(allowResizing: false),
       'allowRescheduling': (i) => i.copyWith(allowRescheduling: false),
       'allowEventCreation': (i) => i.copyWith(allowEventCreation: false),
+      'throttleMilliseconds': (i) => i.copyWith(throttleMilliseconds: 999),
       'inputMode': (i) => i.copyWith(inputMode: InputMode.imprecise),
       'allowHorizontalImpreciseResize': (i) => i.copyWith(allowHorizontalImpreciseResize: true),
+      'createEventGesture': (i) => i.copyWith(createEventGesture: CreateEventGesture.longPress),
+      'modifyEventGesture': (i) => i.copyWith(modifyEventGesture: CreateEventGesture.longPress),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value(make()), isNot(equals(make())));
+        expect(entry.value(make()).hashCode, isNot(equals(make().hashCode)));
       });
     }
-
-    // CHARACTERIZATION: == and hashCode currently ignore throttleMilliseconds,
-    // createEventGesture and modifyEventGesture, so interactions differing only
-    // in those fields compare equal. See the skipped group below for the
-    // arguably-desired behaviour.
-    test('differing throttleMilliseconds does NOT break equality (current behaviour)', () {
-      expect(make().copyWith(throttleMilliseconds: 999), equals(make()));
-    });
-
-    test('differing createEventGesture does NOT break equality (current behaviour)', () {
-      expect(make().copyWith(createEventGesture: CreateEventGesture.longPress), equals(make()));
-    });
   });
-
-  group('CalendarInteraction equality (desired: all copyWith fields participate)', () {
-    CalendarInteraction make() =>
-        CalendarInteraction(throttleMilliseconds: 16, createEventGesture: CreateEventGesture.tap);
-
-    test('differing throttleMilliseconds should break equality', () {
-      expect(make().copyWith(throttleMilliseconds: 999), isNot(equals(make())));
-    });
-
-    test('differing createEventGesture should break equality', () {
-      expect(make().copyWith(createEventGesture: CreateEventGesture.longPress), isNot(equals(make())));
-    });
-  },
-      skip: 'CalendarInteraction.== / hashCode omit throttleMilliseconds and the gesture fields; '
-          'a ValueNotifier<CalendarInteraction> would not notify on those changes. '
-          'Un-skip if == is widened to cover every copyWith field.',
-  );
 
   // ─── EventInteraction ────────────────────────────────────────────────────────
 

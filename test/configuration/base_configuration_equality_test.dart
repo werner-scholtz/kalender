@@ -60,25 +60,11 @@ void main() {
       });
     }
 
-    // CHARACTERIZATION: HorizontalConfiguration.== / hashCode omit
-    // allowSingleDayEvents, so two header configs differing only in that field
-    // compare equal. See the skipped test below for the arguably-desired behaviour.
-    test('differing allowSingleDayEvents does NOT break equality (current behaviour)', () {
-      const a = MultiDayHeaderConfiguration(allowSingleDayEvents: false);
-      const b = MultiDayHeaderConfiguration(allowSingleDayEvents: true);
-      expect(a, equals(b));
-      expect(a.hashCode, equals(b.hashCode));
-    });
-  });
-
-  group('HorizontalConfiguration equality (desired: allowSingleDayEvents participates)', () {
-    test('differing allowSingleDayEvents should break equality', () {
+    test('differing allowSingleDayEvents breaks equality', () {
       const a = MultiDayHeaderConfiguration(allowSingleDayEvents: false);
       const b = MultiDayHeaderConfiguration(allowSingleDayEvents: true);
       expect(a, isNot(equals(b)));
+      expect(a.hashCode, isNot(equals(b.hashCode)));
     });
-  },
-      skip: 'HorizontalConfiguration.== / hashCode omit allowSingleDayEvents (view_configuration.dart). '
-          'Un-skip if the field is added to == / hashCode.',
-  );
+  });
 }
