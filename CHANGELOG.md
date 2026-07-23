@@ -1,3 +1,9 @@
+## 0.24.0
+
+### Fixes
+
+- `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four were missing, and both classes reach the calendar through a `ValueNotifier` that uses `==` to decide whether to notify, so changing only `throttleMilliseconds`, `createEventGesture`, `modifyEventGesture` or `allowSingleDayEvents` never reached the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
+
 ## 0.23.0
 
 Nothing in this release stops existing code from compiling. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for what to change.
