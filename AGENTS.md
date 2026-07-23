@@ -181,7 +181,48 @@ Mixins `DayEventTileUtils` and `MultiDayEventTileUtils` provide helper methods f
 
 ## Versioning & Migration
 
-This is a pre-1.0 package — breaking changes can occur in minor versions. Each breaking release includes a migration guide in [MIGRATION.md](MIGRATION.md).
+This is a pre-1.0 package, so the minor version is the breaking slot. Breaking changes are batched into as few releases as possible rather than dribbled out.
+
+### Breaking changes and deprecations
+
+These are rules, not preferences.
+
+**Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `CalendarInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `CalendarEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
+
+**The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
+
+**Every `@Deprecated` message names the replacement and the removal version.** Both, every time:
+
+```dart
+@Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
+```
+
+A message without a version has no deadline and will sit there for years. Three currently do.
+
+**Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
+
+- Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
+- Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsFromDateTimeRange` break every implementer either way.
+- Adding a member to a public mixin or abstract class, such as `DragTargetUtilities.mounted`.
+
+**Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
+
+**If the version is not tagged yet, amend the existing entries rather than appending.** Someone upgrading should read what the release does, not the history of how it got there.
+
+### Verifying a removal
+
+`flutter analyze` at the root will not catch a break for two separate reasons, and both have bitten:
+
+- `deprecated_member_use_from_same_package` is not enabled, so in-package uses of a deprecated member never warn.
+- `analysis_options.yaml` excludes `examples/**`, so the only consumer-shaped code in the repo is invisible to it.
+
+So always run the examples directly:
+
+```bash
+for d in examples/*/; do (cd "$d" && flutter analyze); done
+```
+
+This is what caught a `copyWith` change in 0.24.0 that broke all seven while the package analyze stayed clean.
 
 ### Releasing
 
