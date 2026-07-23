@@ -83,13 +83,15 @@ CalendarEvent(
 
 `CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it. Neither does your `copyWith` override: `multiDayRule` is deliberately not a parameter on it, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. The rule is carried through automatically.
 
-For a rule none of these express, override `spansMultipleDays`. Note its signature:
+For a rule none of these express, override `spansMultipleDays` rather than implementing `MultiDayRule`. Note its signature:
 
 ```dart
   @override
 - bool spansMultipleDays({required Location? location}) => ...;
 + bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) => ...;
 ```
+
+If you do implement `MultiDayRule`, its one method is `isMultiDay(event, location:)`. The concrete rules behind the two factories are private, so `MultiDayRule` and those factories are the whole surface.
 
 ### `eventsFromDateTimeRange` takes the rule
 

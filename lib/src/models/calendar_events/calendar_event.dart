@@ -103,7 +103,7 @@ class CalendarEvent {
   ///
   /// Override for a rule no [MultiDayRule] expresses.
   bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) {
-    return (multiDayRule ?? defaultRule).test(this, location: location);
+    return (multiDayRule ?? defaultRule).isMultiDay(this, location: location);
   }
 
   /// Whether this event spans more than one day.
