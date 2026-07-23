@@ -193,20 +193,7 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
       return null;
     }
 
-    // Calculate the new dateTimeRange for the event.
-    final start = event.internalStart(location: context.location);
-    final newStartTime = cursorDateTime.copyWith(
-      hour: start.hour,
-      minute: start.minute,
-      second: start.second,
-      millisecond: start.millisecond,
-      microsecond: start.microsecond,
-    );
-    final duration = event.duration;
-    final endTime = newStartTime.add(duration);
-    final newRange = InternalDateTimeRange(start: newStartTime, end: endTime);
-
-    return event.copyWith(dateTimeRange: toLocationDateTimeRange(newRange));
+    return rescheduleToDate(event, cursorDateTime);
   }
 
   @override

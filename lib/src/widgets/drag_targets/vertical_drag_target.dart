@@ -54,9 +54,10 @@ class VerticalDragTarget extends StatefulWidget {
       onCreate: (controllerId) => controllerId == controller.id,
       onResize: (event, direction) => direction.vertical,
       onReschedule: (event) {
-        // Multi-day events belong in the header, not the body.
-        // They should be rescheduled via HorizontalDragTarget, not VerticalDragTarget.
-        if (event.spansMultipleDays(location: controller.viewController?.location)) return false;
+        // A multi-day event stays in the header, so the time of day range does
+        // not constrain it. Accepted so that dropping here commits the date the
+        // header has been previewing.
+        if (event.spansMultipleDays(location: controller.viewController?.location)) return true;
 
         // Check if the event will fit within the time of day range.
         if (!timeOfDayRange.isAllDay && event.duration > timeOfDayRange.duration) return false;
@@ -288,9 +289,12 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
   /// Update the [CalendarEvent] based on the [Offset] delta.
   @override
   CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
-    // Multi-day events belong in the header, not the body.
-    // Return null to prevent updating the selection while dragging over this area.
-    if (event.spansMultipleDays(location: context.location)) return null;
+    // A multi-day event is laid out in the header, so dragging it across the
+    // body can only change which date it starts on. Updating it here is what
+    // moves the header's drop target as the cursor crosses day columns.
+    if (event.spansMultipleDays(location: context.location)) {
+      return rescheduleToDate(event, cursorDateTime);
+    }
 
     InternalDateTime start;
 
