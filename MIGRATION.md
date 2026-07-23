@@ -8,6 +8,25 @@ The seven `String Function(...)` fields on the component style classes, deprecat
 
 If you are coming from 0.22.x or earlier and still setting them, the replacement table is under [v0.22.x → v0.23.0](#string-builders-moved-off-the-style-classes) below. Nothing about the replacements changed in this release, so a project already on the `*Components` builders needs no action.
 
+### The timezone package is no longer re-exported
+
+```dart
++ import 'package:timezone/timezone.dart';
+```
+
+kalender still exports `Location` and `TZDateTime`, since both appear in its own signatures. Everything else from the timezone package, most commonly `getLocation` and `initializeTimeZones`, now needs the direct import above. Add the package to your pubspec if it is not there yet:
+
+```bash
+flutter pub add timezone
+```
+
+If you only ever pass a `Location` into the calendar, nothing changes.
+
+### Three removals that outlived their deprecation window
+
+- `CalendarCallbacks.onMultiDayTapped`: deprecated in 0.13.0 and never called since then, so deleting the argument changes nothing.
+- `DateTimeExtensions.monthNameEnglish` and `dayNameEnglish`: use `monthNameLocalized('en')` and `dayNameLocalized('en')`.
+
 ### `throttleMilliseconds` is gone
 
 ```dart
@@ -44,10 +63,10 @@ The mixin defers move handling to the end of the frame, so it can outlive dispos
 
 ```dart
 - if (event.isMultiDayEvent) { ... }
-+ if (event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) { ... }
++ if (event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)) { ... }
 ```
 
-`context.multiDayRule` resolves the current view's rule, so inside a calendar it is the shortest way to supply it.
+Pass the calendar's `location` and the rule from your view configuration. If you never set one, that rule is `defaultMultiDayRule`.
 
 The old getter still works and is removed in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location, and as if no rule were set on the view.
 
@@ -83,12 +102,11 @@ CalendarEvent(
 
 `CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it. Neither does your `copyWith` override: `multiDayRule` is deliberately not a parameter on it, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. The rule is carried through automatically.
 
-For a rule none of these express, override `spansMultipleDays` rather than implementing `MultiDayRule`. Note its signature:
+For a rule none of these express, override `spansMultipleDays` rather than implementing `MultiDayRule`. Its signature is:
 
 ```dart
-  @override
-- bool spansMultipleDays({required Location? location}) => ...;
-+ bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) => ...;
+@override
+bool spansMultipleDays({required Location? location, required MultiDayRule defaultRule}) => ...;
 ```
 
 If you do implement `MultiDayRule`, its one method is `isMultiDay(event, location:)`. The concrete rules behind the two factories are private, so `MultiDayRule` and those factories are the whole surface.
