@@ -30,28 +30,16 @@ class DayHeaderStyle {
   /// Use this function to customize the string used for the day number.
   ///
   /// By default, the [DateTime.day] is used to get the day number.
-  @Deprecated(
-    'Moved to MultiDayHeaderComponents.dayHeaderNumberStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(DateTime date)? numberStringBuilder;
 
   /// Use this function to customize the sting displayed under the day number.
   ///
   /// By default, the [DateTimeExtensions.dayNameShortLocalized] is used to get the short name of the day in the current locale.
-  @Deprecated(
-    'Moved to MultiDayHeaderComponents.dayHeaderStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(DateTime date)? stringBuilder;
 
   /// Creates a new [DayHeaderStyle].
   const DayHeaderStyle({
     this.textStyle,
     this.numberTextStyle,
     this.mainAxisAlignment,
-    this.numberStringBuilder,
-    this.stringBuilder,
   });
 
   /// Creates a copy of this style with the given fields replaced with the new values.
@@ -59,15 +47,11 @@ class DayHeaderStyle {
     TextStyle? textStyle,
     TextStyle? numberTextStyle,
     MainAxisAlignment? mainAxisAlignment,
-    String Function(DateTime date)? numberStringBuilder,
-    String Function(DateTime date)? stringBuilder,
   }) {
     return DayHeaderStyle(
       textStyle: textStyle ?? this.textStyle,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
-      numberStringBuilder: numberStringBuilder ?? this.numberStringBuilder,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
     );
   }
 
@@ -78,8 +62,6 @@ class DayHeaderStyle {
       textStyle: other.textStyle ?? textStyle,
       numberTextStyle: other.numberTextStyle ?? numberTextStyle,
       mainAxisAlignment: other.mainAxisAlignment ?? mainAxisAlignment,
-      numberStringBuilder: other.numberStringBuilder ?? numberStringBuilder,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
     );
   }
 
@@ -90,8 +72,6 @@ class DayHeaderStyle {
       textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
       numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
       mainAxisAlignment: t < 0.5 ? a?.mainAxisAlignment : b?.mainAxisAlignment,
-      numberStringBuilder: t < 0.5 ? a?.numberStringBuilder : b?.numberStringBuilder,
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
     );
   }
 
@@ -102,13 +82,11 @@ class DayHeaderStyle {
     return other is DayHeaderStyle &&
         other.textStyle == textStyle &&
         other.numberTextStyle == numberTextStyle &&
-        other.mainAxisAlignment == mainAxisAlignment &&
-        other.numberStringBuilder == numberStringBuilder &&
-        other.stringBuilder == stringBuilder;
+        other.mainAxisAlignment == mainAxisAlignment;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, numberTextStyle, mainAxisAlignment, numberStringBuilder, stringBuilder);
+  int get hashCode => Object.hash(textStyle, numberTextStyle, mainAxisAlignment);
 }
 
 /// A widget that displays the name of the day and the day number of the week.
@@ -147,7 +125,6 @@ class DayHeader extends StatelessWidget {
 
     final numberText = Text(
       components.dayHeaderNumberStringBuilder?.call(context, displayDate) ??
-          style.numberStringBuilder?.call(date) ??
           date.day.toString(),
       style: style.numberTextStyle,
     );
@@ -160,7 +137,6 @@ class DayHeader extends StatelessWidget {
 
     final dayName = Text(
       components.dayHeaderStringBuilder?.call(context, displayDate) ??
-          style.stringBuilder?.call(localDate) ??
           localDate.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );

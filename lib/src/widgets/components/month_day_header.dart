@@ -17,8 +17,6 @@ typedef MonthDayHeaderBuilder = Widget Function(
 class MonthDayHeaderStyle {
   /// Creates a new [MonthDayHeaderStyle].
   const MonthDayHeaderStyle({
-    this.textStyle,
-    this.stringBuilder,
     this.numberTextStyle,
     this.buttonSize,
     this.margin,
@@ -26,15 +24,8 @@ class MonthDayHeaderStyle {
 
   /// Has never had any effect. [MonthDayHeader] displays only a day number,
   /// which is styled by [numberTextStyle], and no day name.
-  @Deprecated('Has no effect, MonthDayHeader displays no day name. Will be removed in 0.24.0.')
-  final TextStyle? textStyle;
 
   /// Use this function to customize the sting displayed by the [MonthDayHeader].
-  @Deprecated(
-    'Moved to MonthBodyComponents.monthDayHeaderStringBuilder, which also receives a BuildContext. '
-    'Will be removed in 0.24.0.',
-  )
-  final String Function(DateTime date)? stringBuilder;
 
   /// The [TextStyle] used by the [MonthDayHeader] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
@@ -49,15 +40,11 @@ class MonthDayHeaderStyle {
 
   /// Creates a copy of this style with the given fields replaced with the new values.
   MonthDayHeaderStyle copyWith({
-    TextStyle? textStyle,
-    String Function(DateTime date)? stringBuilder,
     TextStyle? numberTextStyle,
     Size? buttonSize,
     EdgeInsets? margin,
   }) {
     return MonthDayHeaderStyle(
-      textStyle: textStyle ?? this.textStyle,
-      stringBuilder: stringBuilder ?? this.stringBuilder,
       numberTextStyle: numberTextStyle ?? this.numberTextStyle,
       buttonSize: buttonSize ?? this.buttonSize,
       margin: margin ?? this.margin,
@@ -68,8 +55,6 @@ class MonthDayHeaderStyle {
   MonthDayHeaderStyle merge(MonthDayHeaderStyle? other) {
     if (other == null) return this;
     return MonthDayHeaderStyle(
-      textStyle: other.textStyle ?? textStyle,
-      stringBuilder: other.stringBuilder ?? stringBuilder,
       numberTextStyle: other.numberTextStyle ?? numberTextStyle,
       buttonSize: other.buttonSize ?? buttonSize,
       margin: other.margin ?? margin,
@@ -80,8 +65,6 @@ class MonthDayHeaderStyle {
   static MonthDayHeaderStyle? lerp(MonthDayHeaderStyle? a, MonthDayHeaderStyle? b, double t) {
     if (identical(a, b)) return a;
     return MonthDayHeaderStyle(
-      textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
-      stringBuilder: t < 0.5 ? a?.stringBuilder : b?.stringBuilder,
       numberTextStyle: TextStyle.lerp(a?.numberTextStyle, b?.numberTextStyle, t),
       buttonSize: Size.lerp(a?.buttonSize, b?.buttonSize, t),
       margin: EdgeInsets.lerp(a?.margin, b?.margin, t),
@@ -93,15 +76,13 @@ class MonthDayHeaderStyle {
     if (identical(this, other)) return true;
 
     return other is MonthDayHeaderStyle &&
-        other.textStyle == textStyle &&
-        other.stringBuilder == stringBuilder &&
         other.numberTextStyle == numberTextStyle &&
         other.buttonSize == buttonSize &&
         other.margin == margin;
   }
 
   @override
-  int get hashCode => Object.hash(textStyle, stringBuilder, numberTextStyle, buttonSize, margin);
+  int get hashCode => Object.hash(numberTextStyle, buttonSize, margin);
 }
 
 /// A widget that displays the day number.
@@ -131,7 +112,7 @@ class MonthDayHeader extends StatelessWidget {
     final stringBuilder = context.components.monthComponents.bodyComponents.monthDayHeaderStringBuilder;
     final displayDate = localDate.forLocation(location: context.location);
     final numberText =
-        stringBuilder?.call(context, displayDate) ?? style.stringBuilder?.call(displayDate) ?? date.day.toString();
+        stringBuilder?.call(context, displayDate) ?? date.day.toString();
 
     return Padding(
       padding: style.margin ?? EdgeInsets.zero,
