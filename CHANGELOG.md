@@ -14,7 +14,7 @@
 ### Features
 
 - Dragging a multi-day event down over the body keeps moving its drop target in the header, instead of freezing it until the cursor returns. Releasing over the body commits the date. Only the date changes, so the time of day and duration are untouched. [#369](https://github.com/werner-scholtz/kalender/pull/369)
-- `MultiDayRule` decides which events belong in the multi-day header rather than the day timeline. Set it once on the view configuration. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. A single event can opt out with `CalendarEvent.multiDayRule`, which is otherwise null. [#367](https://github.com/werner-scholtz/kalender/pull/367) [#371](https://github.com/werner-scholtz/kalender/pull/371)
+- `MultiDayRule` decides which events belong in the multi-day header rather than the day timeline. Set it once on the view configuration. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. A single event can opt out with `CalendarEvent.multiDayRule`, which is otherwise null. [#367](https://github.com/werner-scholtz/kalender/pull/367) [#371](https://github.com/werner-scholtz/kalender/pull/371) [#376](https://github.com/werner-scholtz/kalender/pull/376)
 
 ### Deprecations
 
@@ -28,6 +28,7 @@
 - Removing an event no longer throws when its date index was never populated for that location. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - Tapping the trailing edge of an event tile resolves to the last visible day instead of one day past it. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - The two drag-target guards that decide whether an event may be dropped in the header or the body now use the calendar's location. They ignored it, so they could disagree with the rest of the calendar near midnight and across daylight saving changes. [#367](https://github.com/werner-scholtz/kalender/pull/367)
+- The vertical layout delegate returns layout data for every event, even when two events share a hash code. A collision used to drop one of them and fail a layout assertion. Not reachable through `DefaultEventsController`, which never produces colliding events. [#370](https://github.com/werner-scholtz/kalender/pull/370)
 
 ## 0.23.0
 
