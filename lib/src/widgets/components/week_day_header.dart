@@ -19,10 +19,8 @@ class WeekDayHeaderStyle {
     this.padding,
   });
 
-  /// The [TextStyle] used by the [DateText] widget to display the day of the week.
+  /// The [TextStyle] used to display the day of the week.
   final TextStyle? textStyle;
-
-  /// Use this function to customize the sting displayed by the [WeekDayHeader].
 
   /// The padding around the [WeekDayHeader] widget.
   final EdgeInsets? padding;

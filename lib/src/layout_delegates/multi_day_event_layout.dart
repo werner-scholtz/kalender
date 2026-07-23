@@ -283,7 +283,7 @@ class MultiDayLayoutFrame {
   /// ex. 1 Week (7 days).
   final InternalDateTimeRange dateTimeRange;
 
-  /// The sorted events for this frame that will be used to generate [MultiDayEventTile]s.
+  /// The sorted events for this frame that will be used to generate `MultiDayEventTile`s.
   final List<CalendarEvent> events;
 
   /// The layout information for each event in this frame.
