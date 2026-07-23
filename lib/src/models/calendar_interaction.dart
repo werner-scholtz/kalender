@@ -182,12 +182,17 @@ class CalendarInteraction {
 
   @override
   operator ==(Object other) {
+    if (identical(this, other)) return true;
+
     return other is CalendarInteraction &&
         other.allowResizing == allowResizing &&
         other.allowRescheduling == allowRescheduling &&
         other.allowEventCreation == allowEventCreation &&
+        other.throttleMilliseconds == throttleMilliseconds &&
         other.inputMode == inputMode &&
-        other.allowHorizontalImpreciseResize == allowHorizontalImpreciseResize;
+        other.allowHorizontalImpreciseResize == allowHorizontalImpreciseResize &&
+        other.createEventGesture == createEventGesture &&
+        other.modifyEventGesture == modifyEventGesture;
   }
 
   @override
@@ -195,8 +200,11 @@ class CalendarInteraction {
         allowResizing,
         allowRescheduling,
         allowEventCreation,
+        throttleMilliseconds,
         inputMode,
         allowHorizontalImpreciseResize,
+        createEventGesture,
+        modifyEventGesture,
       );
 }
 

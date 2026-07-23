@@ -226,7 +226,8 @@ abstract class HorizontalConfiguration {
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
         other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
         other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
-        other.eventPadding == eventPadding;
+        other.eventPadding == eventPadding &&
+        other.allowSingleDayEvents == allowSingleDayEvents;
   }
 
   @override
@@ -238,6 +239,7 @@ abstract class HorizontalConfiguration {
       generateMultiDayLayoutFrame,
       maximumNumberOfVerticalEvents,
       eventPadding,
+      allowSingleDayEvents,
     );
   }
 }
