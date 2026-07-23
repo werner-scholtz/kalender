@@ -296,4 +296,23 @@ mixin DragTargetUtilities {
     if (start.isAfter(end)) (start, end) = (end, start);
     return DateTimeRange(start: start, end: end);
   }
+
+  /// Moves [event] to the date of [cursorDateTime], keeping its time of day and
+  /// duration.
+  ///
+  /// Used where only the date can meaningfully change: the header, and a
+  /// multi-day event dragged across the body.
+  CalendarEvent rescheduleToDate(CalendarEvent event, InternalDateTime cursorDateTime) {
+    final start = event.internalStart(location: context.location);
+    final newStart = cursorDateTime.copyWith(
+      hour: start.hour,
+      minute: start.minute,
+      second: start.second,
+      millisecond: start.millisecond,
+      microsecond: start.microsecond,
+    );
+
+    final range = InternalDateTimeRange(start: newStart, end: newStart.add(event.duration));
+    return event.copyWith(dateTimeRange: toLocationDateTimeRange(range));
+  }
 }

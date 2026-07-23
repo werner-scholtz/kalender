@@ -7,6 +7,7 @@
 
 ### Features
 
+- Dragging a multi-day event down over the body keeps moving its drop target in the header, instead of freezing it until the cursor returns. Releasing over the body commits the date. Only the date changes, so the time of day and duration are untouched. [#369](https://github.com/werner-scholtz/kalender/pull/369)
 - `MultiDayRule` decides whether an event belongs in the multi-day header or the day timeline. Pass one to `CalendarEvent`, or fix it for a whole app from your subclass's `super` call. `MultiDayRule.minimumDuration` is the default at 24 hours and matches the previous behaviour, and `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. [#367](https://github.com/werner-scholtz/kalender/pull/367)
 
 ### Deprecations
