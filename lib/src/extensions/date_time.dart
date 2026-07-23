@@ -46,41 +46,4 @@ extension DateTimeExtensions on DateTime {
   /// print(date.monthNameShortLocalized('fr')); // Output: "janv."
   /// ```
   String monthNameShortLocalized([dynamic locale]) => DateFormat.MMM(locale).format(this);
-
-  /// Gets the month name in English (backwards compatibility).
-  ///
-  /// This method is kept for backwards compatibility but it's recommended
-  /// to use [monthName] or [monthNameLocalized] for better internationalization.
-  @Deprecated('Use monthName or monthNameLocalized or monthNameShortLocalized instead.')
-  String get monthNameEnglish => switch (month) {
-        1 => 'January',
-        2 => 'February',
-        3 => 'March',
-        4 => 'April',
-        5 => 'May',
-        6 => 'June',
-        7 => 'July',
-        8 => 'August',
-        9 => 'September',
-        10 => 'October',
-        11 => 'November',
-        12 => 'December',
-        _ => throw Exception('Invalid month'),
-      };
-
-  /// Gets the day name in English (backwards compatibility).
-  ///
-  /// This method is kept for backwards compatibility but it's recommended
-  /// to use [dayName] or [dayNameLocalized] for better internationalization.
-  @Deprecated('Use dayName or dayNameLocalized or dayNameShortLocalized instead.')
-  String get dayNameEnglish => switch (weekday) {
-        1 => 'Monday',
-        2 => 'Tuesday',
-        3 => 'Wednesday',
-        4 => 'Thursday',
-        5 => 'Friday',
-        6 => 'Saturday',
-        7 => 'Sunday',
-        _ => throw Exception('Invalid weekday'),
-      };
 }

@@ -37,16 +37,6 @@ void main() {
       expect(testDate.monthNameShortLocalized('en'), equals('Jan'));
     });
 
-    test('backwards compatibility - dayNameEnglish still works', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(testDate.dayNameEnglish, equals('Monday'));
-    });
-
-    test('backwards compatibility - monthNameEnglish still works', () {
-      // ignore: deprecated_member_use_from_same_package
-      expect(testDate.monthNameEnglish, equals('January'));
-    });
-
     test('different weekdays in different locales', () {
       final tuesday = DateTime(2024, 1, 16); // Tuesday
       expect(tuesday.dayNameLocalized('en'), equals('Tuesday'));
@@ -61,25 +51,23 @@ void main() {
       expect(february.monthNameLocalized('es'), equals('febrero'));
     });
 
-    test('monthNameEnglish returns the English name for every month', () {
+    test('monthNameLocalized covers every month in English', () {
       const expected = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December',
       ];
       for (var month = 1; month <= 12; month++) {
-        // ignore: deprecated_member_use_from_same_package
-        expect(DateTime(2024, month, 15).monthNameEnglish, equals(expected[month - 1]));
+        expect(DateTime(2024, month, 15).monthNameLocalized('en'), equals(expected[month - 1]));
       }
     });
 
-    test('dayNameEnglish returns the English name for every weekday', () {
+    test('dayNameLocalized covers every weekday in English', () {
       // 2024-01-15 is a Monday, so the week runs Mon..Sun over Jan 15..21.
       const expected = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       for (var i = 0; i < 7; i++) {
         final date = DateTime(2024, 1, 15 + i);
         expect(date.weekday, equals(i + 1));
-        // ignore: deprecated_member_use_from_same_package
-        expect(date.dayNameEnglish, equals(expected[i]));
+        expect(date.dayNameLocalized('en'), equals(expected[i]));
       }
     });
   });
