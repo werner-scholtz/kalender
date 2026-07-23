@@ -30,6 +30,8 @@ flutter test
 dart tool/test_timezones_linux.dart
 ```
 
+- Removing or renaming anything public? The rules for deprecating it, how long it stays, and what to write in the changelog and migration guide are in [AGENTS.md](AGENTS.md#breaking-changes-and-deprecations). They also cover the changes that cannot be deprecated at all.
+
 ## Reporting issues
 
 If you find a bug or have a feature request, open an issue on [GitHub](https://github.com/werner-scholtz/kalender/issues). Include as much detail as you can, Flutter version, platform, a minimal reproduction if possible.
