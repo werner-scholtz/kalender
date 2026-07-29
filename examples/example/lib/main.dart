@@ -90,12 +90,23 @@ class _MyHomePageState extends State<MyHomePage> {
     end: now.copyWith(day: now.day + 365),
   );
 
+  // Without this the day opens at midnight, on hours no one has events in.
+  static const initialTimeOfDay = TimeOfDay(hour: 7, minute: 0);
+
   late ViewConfiguration viewConfiguration = viewConfigurations[0];
   late final viewConfigurations = <ViewConfiguration>[
-    MultiDayViewConfiguration.week(displayRange: displayRange, firstDayOfWeek: 1),
-    MultiDayViewConfiguration.singleDay(displayRange: displayRange),
-    MultiDayViewConfiguration.workWeek(displayRange: displayRange),
-    MultiDayViewConfiguration.custom(numberOfDays: 3, displayRange: displayRange),
+    MultiDayViewConfiguration.week(
+      displayRange: displayRange,
+      firstDayOfWeek: 1,
+      initialTimeOfDay: initialTimeOfDay,
+    ),
+    MultiDayViewConfiguration.singleDay(displayRange: displayRange, initialTimeOfDay: initialTimeOfDay),
+    MultiDayViewConfiguration.workWeek(displayRange: displayRange, initialTimeOfDay: initialTimeOfDay),
+    MultiDayViewConfiguration.custom(
+      numberOfDays: 3,
+      displayRange: displayRange,
+      initialTimeOfDay: initialTimeOfDay,
+    ),
     MonthViewConfiguration.singleMonth(displayRange: displayRange),
     ScheduleViewConfiguration.continuous(displayRange: displayRange),
   ];

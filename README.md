@@ -21,30 +21,25 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 >
 > 1.0.0 is close. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Features
 
-* **Views:** Day, Multi-day, Month and Schedule. [find out more](doc/views.md)
-* **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](doc/events.md#custom-events)
-* **Tile components:** Fully customize event tiles: stationary, dragging, feedback, and resize handles. [find out more](doc/appearance.md#tile-components)
-* **Reschedule:** Drag and drop events between days and times.
-* **Resize:** Resize events with handles that adapt to mouse, stylus, trackpad or touch input.
-* **Controllers:** Manage your calendar with dedicated controllers. [find out more](doc/controllers-and-callbacks.md#controllers)
-* **Callbacks:** React to taps, long presses, event creation and changes. [find out more](doc/controllers-and-callbacks.md#callbacks)
-* **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](doc/interaction.md)
-* **Appearance:** Style default components or supply custom builders. [find out more](doc/appearance.md#appearance--custom-components)
-* **Event layout:** Use a built-in layout strategy or supply your own. [find out more](doc/layout.md)
-* **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](doc/timezones-and-locales.md#locale)
-* **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](doc/timezones-and-locales.md#location)
-* **Now callback:** Override what "now" means for the time indicator and today highlighting. This is useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](doc/timezones-and-locales.md#now-callback)
+| Feature | What you get | Guide |
+| --- | --- | --- |
+| **Views** | Day, Multi-day, Month and Schedule, switched by passing a different configuration. | [Views](doc/views.md) |
+| **Extensible events** | Attach custom data (title, color, anything) by subclassing `CalendarEvent`. | [Events](doc/events.md#custom-events) |
+| **Reschedule** | Drag and drop events between days and times. | [Interaction](doc/interaction.md) |
+| **Resize** | Handles that adapt to mouse, stylus, trackpad or touch input. | [Interaction](doc/interaction.md) |
+| **Snapping** | Snap to an interval, to the time indicator, to other events, or to your own strategy. | [Interaction](doc/interaction.md#interaction--snapping) |
+| **Zoom** | Change the height per minute to zoom the day in and out. | [Interaction](doc/interaction.md#zoom) |
+| **Controllers** | Drive the calendar from code and watch what is on screen. | [Controllers & Callbacks](doc/controllers-and-callbacks.md#controllers) |
+| **Callbacks** | React to taps, long presses, event creation and changes. | [Controllers & Callbacks](doc/controllers-and-callbacks.md#callbacks) |
+| **Tile components** | Customize the stationary, dragging, feedback and resize-handle tiles. | [Appearance](doc/appearance.md#tile-components) |
+| **Theming** | Follows your Material 3 theme, or register a `KalenderThemeData`. | [Appearance](doc/appearance.md#theming) |
+| **Custom components** | Replace any default widget, or restyle it without writing one. | [Appearance](doc/appearance.md#appearance--custom-components) |
+| **Event layout** | Use a built-in layout strategy or supply your own. | [Layout](doc/layout.md) |
+| **Locale** | Localize day and month names via [intl](https://pub.dev/packages/intl), and replace any string. | [Timezones & Locales](doc/timezones-and-locales.md#locale) |
+| **Location** | Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. | [Timezones & Locales](doc/timezones-and-locales.md#location) |
+| **Now callback** | Override what "now" means for the time indicator and today highlighting, for when the calendar's `Location` differs from the user's wall-clock time. | [Timezones & Locales](doc/timezones-and-locales.md#now-callback) |
 
 ## Installation
 
@@ -105,7 +100,10 @@ class _MyCalendarState extends State<MyCalendar> {
     return CalendarView(
       eventsController: eventsController,
       calendarController: calendarController,
-      viewConfiguration: MultiDayViewConfiguration.singleDay(),
+      viewConfiguration: MultiDayViewConfiguration.week(
+        // Without this the day opens at midnight.
+        initialTimeOfDay: const TimeOfDay(hour: 7, minute: 0),
+      ),
       callbacks: CalendarCallbacks(
         onEventCreated: (event) => eventsController.addEvent(event),
       ),
@@ -117,6 +115,21 @@ class _MyCalendarState extends State<MyCalendar> {
 ```
 
 For a real app you almost always want custom fields on your events. See [Custom Events](doc/events.md#custom-events).
+
+---
+
+## Examples
+
+Runnable apps in [`examples/`](examples/README.md):
+
+| Example | Shows |
+| --- | --- |
+| [Basic](https://github.com/werner-scholtz/kalender/tree/main/examples/example) | All view types with a toolbar, sample events, and custom tiles. Start here. |
+| [Advanced](https://github.com/werner-scholtz/kalender/tree/main/examples/advanced_example) | A custom event layout with a lane per person, zoom, and tap-location-aware event creation. |
+| [Recurrence](https://github.com/werner-scholtz/kalender/tree/main/examples/recurrence) | Recurring events built on top of the package, which has no recurrence of its own. |
+| [ICS](https://github.com/werner-scholtz/kalender/tree/main/examples/ics) | Importing and exporting `.ics` files, expanding `RRULE` recurrence lazily over the visible range. |
+| [Riverpod](https://github.com/werner-scholtz/kalender/tree/main/examples/riverpod) | Sharing the controllers and the selected view through providers. |
+| [Web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) | The source behind the [live demo](https://werner-scholtz.github.io/kalender/): every option, theming, locales, and a split view. |
 
 ---
 
