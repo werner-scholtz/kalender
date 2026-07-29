@@ -57,6 +57,34 @@ class FirstDayOfWeekEditor extends StatelessWidget {
   }
 }
 
+/// Selects which events render in the multi-day header rather than the timeline.
+///
+/// The two rules only disagree about events that cross midnight without
+/// reaching 24 hours, such as the on-call shifts in the generated data.
+class MultiDayRuleEditor extends StatelessWidget {
+  final MultiDayRule multiDayRule;
+  final ValueChanged<MultiDayRule> onChanged;
+  const MultiDayRuleEditor({super.key, required this.multiDayRule, required this.onChanged});
+
+  static const _minimumDuration = MultiDayRule.minimumDuration(Duration(hours: 24));
+  static const _calendarDays = MultiDayRule.calendarDays();
+
+  @override
+  Widget build(BuildContext context) {
+    return DropDownEditor<MultiDayRule>(
+      key: Key(context.localeTag),
+      label: context.l10n.multiDayRule,
+      // An unrecognised rule would have no entry to select, so fall back to the
+      // default rather than letting the menu open on nothing.
+      value: multiDayRule == _calendarDays ? _calendarDays : _minimumDuration,
+      items: const [_minimumDuration, _calendarDays],
+      onChanged: onChanged,
+      itemToString: (value) =>
+          value == _calendarDays ? context.l10n.multiDayRuleCalendarDays : context.l10n.multiDayRuleMinimumDuration,
+    );
+  }
+}
+
 class InteractionEditorWidget extends StatelessWidget {
   final ValueNotifier<CalendarInteraction> interaction;
   const InteractionEditorWidget({super.key, required this.interaction});

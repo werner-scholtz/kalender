@@ -57,6 +57,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstDayOfWeek => 'First day of week';
 
   @override
+  String get multiDayRule => 'Multi-day rule';
+
+  @override
+  String get multiDayRuleMinimumDuration => '24 hours or longer';
+
+  @override
+  String get multiDayRuleCalendarDays => 'Crosses midnight';
+
+  @override
   String minutesLabel(Object minutes) {
     return '$minutes minute(s)';
   }

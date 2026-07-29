@@ -27,6 +27,7 @@ const _oneOnOneColor = Color(0xFF06B6D4);
 const _personalColor = Color(0xFF10B981);
 const _wrapUpColor = Color(0xFFF59E0B);
 const _multiDayColor = Color(0xFFEC4899);
+const _overnightColor = Color(0xFF64748B);
 
 /// Titles for the one-off meetings sprinkled through the work week.
 const _oneOffTitles = [
@@ -110,6 +111,16 @@ List<CalendarEvent> generateEvents(BuildContext context) {
       // A personal block a couple of mornings a week.
       if (weekday == DateTime.tuesday || weekday == DateTime.thursday) {
         events.add(timed(day, 7, 0, const Duration(hours: 1), 'Gym', _personalColor));
+      }
+
+      // Runs past midnight without reaching 24 hours, which is the only shape
+      // the two multi-day rules classify differently. Twice a week, so the
+      // rule selector visibly moves events between the header and the timeline.
+      if (weekday == DateTime.tuesday || weekday == DateTime.friday) {
+        events.add(
+          timed(day, 22, 0, const Duration(hours: 4), 'On-call shift', _overnightColor,
+              description: 'Runs to 02:00 the next morning.'),
+        );
       }
 
       // Sprinkle nought to two one-off meetings, leaving some days lighter.
