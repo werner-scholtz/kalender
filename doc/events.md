@@ -121,11 +121,13 @@ CalendarEvent(
 
 `CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. It is carried through `copyWith` automatically, so a subclass override needs no extra parameter.
 
-To ask the question yourself, use `spansMultipleDays`:
+`spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 
 ```dart
 event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)
 ```
+
+The event's own `multiDayRule` takes precedence when set. Otherwise `defaultRule` applies. Pass the calendar's location so that rules measuring calendar days, such as `MultiDayRule.calendarDays`, place midnight in the right timezone.
 
 ---
 
