@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785323423496,
+  "lastUpdate": 1785324545783,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -7939,6 +7939,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3374.9070464767615,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "werner.scholtz@kdab.com",
+            "name": "werner.scholtz",
+            "username": "werner-scholtz"
+          },
+          "distinct": true,
+          "id": "721db64e8ed95be5cc436f27243d1da46f57a28f",
+          "message": "chore: bump version to 0.24.0-dev.2",
+          "timestamp": "2026-07-29T12:50:52+02:00",
+          "tree_id": "c49b26b8873e6e79a6e292aad2b609b57405ea71",
+          "url": "https://github.com/werner-scholtz/kalender/commit/721db64e8ed95be5cc436f27243d1da46f57a28f"
+        },
+        "date": 1785324541137,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 179.62837289053334,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 712.006,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2103.516,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8155.488,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 735.456,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2308.405,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2473.1175,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12520.880239520959,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 239.41624670026397,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 111.92259177723568,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 780.999,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3373.785607196402,
             "unit": "us"
           }
         ]
