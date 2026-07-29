@@ -7,11 +7,15 @@ This is part of the [kalender](../README.md) documentation.
 Kalender uses the [intl](https://pub.dev/packages/intl) package to localize day and month names. Call `initializeDateFormatting()` before `runApp`:
 
 ```dart
+import 'package:intl/date_symbol_data_local.dart';
+
 void main() async {
   await initializeDateFormatting();
   runApp(const MyApp());
 }
 ```
+
+The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. intl compiles in the `en_US` data only, so every other locale needs this call, including `en`. Skipping it throws an error naming the locale that failed and the call to add.
 
 `CalendarView` has a `locale` property that controls day/month name formatting.
 

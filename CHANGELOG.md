@@ -29,6 +29,7 @@
 - Removing an event no longer throws when its date index was never populated for that location. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - Tapping the trailing edge of an event tile resolves to the last visible day instead of one day past it. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - The two drag-target guards that decide whether an event may be dropped in the header or the body now use the calendar's location. They ignored it, so they could disagree with the rest of the calendar near midnight and across daylight saving changes. [#367](https://github.com/werner-scholtz/kalender/pull/367)
+- A calendar using a locale whose intl data was never loaded now reports which locale failed, the `initializeDateFormatting()` call to add and the library it is imported from. It previously surfaced intl's `LocaleDataException` from inside a build, which read as a fault in kalender rather than missing setup.
 - `TileComponents.overlayTileBuilder` is used again by the tiles in the multi-day overflow overlay. It has been ignored since 0.14.0, so the overlay rendered `tileBuilder` instead. [#381](https://github.com/werner-scholtz/kalender/pull/381)
 - The vertical layout delegate returns layout data for every event, even when two events share a hash code. A collision used to drop one of them and fail a layout assertion. Not reachable through `DefaultEventsController`, which never produces colliding events. [#370](https://github.com/werner-scholtz/kalender/pull/370)
 
