@@ -138,7 +138,7 @@ The event's own `multiDayRule` takes precedence when set. Otherwise `defaultRule
 
 ### Vertical layout (Day / MultiDay body)
 
-The package uses [`CustomMultiChildLayout`](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) with an [`EventLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/layout_delegates/event_layout_delegate.dart) to position tiles.
+The package uses [`CustomMultiChildLayout`](https://api.flutter.dev/flutter/widgets/CustomMultiChildLayout-class.html) with an [`EventLayoutDelegate`](https://pub.dev/documentation/kalender/latest/kalender/EventLayoutDelegate-class.html) to position tiles.
 
 Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 
