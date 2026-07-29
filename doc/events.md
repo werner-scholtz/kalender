@@ -19,6 +19,7 @@ class Event extends CalendarEvent {
     this.description,
     this.color,
     super.interaction,
+    super.multiDayRule,
   });
 
   @override
@@ -33,6 +34,8 @@ class Event extends CalendarEvent {
       id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
+      // copyWith has no multiDayRule parameter. Forward it so copies keep the rule.
+      multiDayRule: multiDayRule,
       title: title ?? this.title,
       description: description ?? this.description,
       color: color ?? this.color,
@@ -119,7 +122,7 @@ CalendarEvent(
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. It is carried through `copyWith` automatically, so a subclass override needs no extra parameter.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means the calendar's rule applies. `copyWith` has no `multiDayRule` parameter. A subclass forwards the rule instead: accept `super.multiDayRule` in the constructor and pass `multiDayRule: multiDayRule` when `copyWith` rebuilds, as the [Custom Events](#custom-events) example does. Without that, every drag or resize produces a copy without the rule.
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 

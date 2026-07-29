@@ -42,6 +42,7 @@ class Event extends CalendarEvent {
     required this.title,
     this.color,
     super.interaction,
+    super.multiDayRule,
   });
 
   final String title;
@@ -58,6 +59,7 @@ class Event extends CalendarEvent {
       id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule,
       title: title ?? this.title,
       color: color ?? this.color,
     );
