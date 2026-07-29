@@ -38,6 +38,19 @@ void main() {
       );
     });
 
+    test('a relative src on an img tag becomes a raw link on the tag', () {
+      expect(
+        pinRelativeLinks('<img src="readme_assets/desktop.png" alt="Week view" width="68%" />', repo, tag),
+        '<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/$tag/readme_assets/desktop.png" '
+        'alt="Week view" width="68%" />',
+      );
+    });
+
+    test('an absolute src on an img tag is left alone', () {
+      const absolute = '<img src="https://img.shields.io/pub/v/kalender.svg" alt="pub.dev version">';
+      expect(pinRelativeLinks(absolute, repo, tag), absolute);
+    });
+
     test('anchor-only table of contents links are left alone', () {
       const toc = '- [Features](#features)';
       expect(pinRelativeLinks(toc, repo, tag), toc);
@@ -117,6 +130,13 @@ void main() {
       final problems = leftoverProblems('README.md', 'fine\n[stray](doc/views.md)', repo, allowUnpinnedLinks: false);
       expect(problems, hasLength(1));
       expect(problems.single, startsWith('README.md:2:'));
+    });
+
+    test('reports a relative img src, which markdown image syntax does not cover', () {
+      const content = '<img src="readme_assets/desktop.png" />';
+      final problems = leftoverProblems('README.md', content, repo, allowUnpinnedLinks: false);
+      expect(problems, hasLength(1));
+      expect(problems.single, contains('a relative image survived the rewrite'));
     });
 
     test('reports a main branch reference unless allowed', () {

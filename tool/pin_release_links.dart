@@ -24,6 +24,18 @@ final relativeImage = RegExp(r'!\[([^\]]*)\]\((?!https?://|#)([^)#\s]+)(#[^)]*)?
 /// A relative markdown link, capturing the path and anchor.
 final relativeLink = RegExp(r'\]\((?!https?://|#)([^)#\s]+)(#[^)]*)?\)');
 
+/// An `<img>` tag, so its `src` can be inspected. The README centres images in
+/// HTML rather than markdown, and those are invisible to [relativeImage].
+final htmlImageTag = RegExp(r'<img\b[^>]*>');
+
+/// A relative `src` on an HTML tag, capturing the path.
+final relativeHtmlSrc = RegExp(r'src="(?!https?://|data:|#)([^"]+)"');
+
+/// Whether [content] has an `<img>` tag whose `src` is relative.
+bool hasRelativeHtmlImage(String content) {
+  return htmlImageTag.allMatches(content).any((m) => relativeHtmlSrc.hasMatch(m[0]!));
+}
+
 /// The repository URL from [pubspec], without a trailing `.git`.
 String repositoryUrl(String pubspec) {
   final match = RegExp(r'^repository:\s*(.+?)(?:\.git)?\s*$', multiLine: true).firstMatch(pubspec);
@@ -40,10 +52,18 @@ String packageName(String pubspec) {
 
 /// Rewrites relative links to `blob/<tag>` URLs and relative images to raw
 /// URLs on the tag, matching how pub.dev resolves each kind.
+///
+/// Images are rewritten in both markdown and `<img>` form. `readme_assets/` is
+/// excluded from the published archive, so a relative image that survives is a
+/// broken image on pub.dev.
 String pinRelativeLinks(String content, String repoUrl, String tag) {
   final rawBase = repoUrl.replaceFirst('https://github.com/', 'https://raw.githubusercontent.com/');
   return content
       .replaceAllMapped(relativeImage, (m) => '![${m[1]}]($rawBase/$tag/${m[2]}${m[3] ?? ''})')
+      .replaceAllMapped(
+        htmlImageTag,
+        (m) => m[0]!.replaceAllMapped(relativeHtmlSrc, (src) => 'src="$rawBase/$tag/${src[1]}"'),
+      )
       .replaceAllMapped(relativeLink, (m) => ']($repoUrl/blob/$tag/${m[1]}${m[2] ?? ''})');
 }
 
@@ -101,6 +121,9 @@ List<String> leftoverProblems(
     final line = lines[i];
     if (!allowRelativeLinks && (relativeImage.hasMatch(line) || relativeLink.hasMatch(line))) {
       problems.add('$path:${i + 1}: a relative link survived the rewrite: $line');
+    }
+    if (!allowRelativeLinks && hasRelativeHtmlImage(line)) {
+      problems.add('$path:${i + 1}: a relative image survived the rewrite: $line');
     }
     if (!allowUnpinnedLinks && mainRefs.any(line.contains)) {
       problems.add('$path:${i + 1}: a link still references the main branch: $line');
