@@ -45,9 +45,10 @@ void main() {
     test('the banner image is re-pinned from main to the tag', () {
       expect(
         pinBranchUrls(
-            '<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/banner.png">',
-            repo,
-            tag),
+          '<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/main/readme_assets/banner.png">',
+          repo,
+          tag,
+        ),
         '<img src="https://raw.githubusercontent.com/werner-scholtz/kalender/$tag/readme_assets/banner.png">',
       );
     });
