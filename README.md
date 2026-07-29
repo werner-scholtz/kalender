@@ -17,9 +17,9 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
 > [!WARNING]
-> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range.
+> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range like `^0.24.0`.
 >
-> 1.0.0 is on the horizon. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
+> 1.0.0 is close. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
 ## Table of Contents
 
@@ -36,15 +36,15 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 * **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](doc/events.md#custom-events)
 * **Tile components:** Fully customize event tiles: stationary, dragging, feedback, and resize handles. [find out more](doc/appearance.md#tile-components)
 * **Reschedule:** Drag and drop events between days and times.
-* **Resize:** Resize events with input-precision-aware handles (mouse/stylus/trackpad vs touch).
+* **Resize:** Resize events with handles that adapt to mouse, stylus, trackpad or touch input.
 * **Controllers:** Manage your calendar with dedicated controllers. [find out more](doc/views.md#controllers)
 * **Callbacks:** React to taps, long presses, event creation and changes. [find out more](doc/views.md#callbacks)
 * **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](doc/views.md#configuration--interaction)
 * **Appearance:** Style default components or supply custom builders. [find out more](doc/appearance.md#appearance--custom-components)
-* **Event layout:** Built-in strategies or bring your own. [find out more](doc/events.md#event-layout)
+* **Event layout:** Use a built-in layout strategy or supply your own. [find out more](doc/events.md#event-layout)
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](doc/timezones-and-locales.md#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](doc/timezones-and-locales.md#location)
-* **Now callback:** Override what "now" means for the time indicator and today highlighting. Useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](doc/timezones-and-locales.md#now-callback)
+* **Now callback:** Override what "now" means for the time indicator and today highlighting. This is useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](doc/timezones-and-locales.md#now-callback)
 
 ## Installation
 
