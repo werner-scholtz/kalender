@@ -43,6 +43,18 @@ Displays one or more days with time on the vertical axis.
 | `MultiDayViewConfiguration.custom(numberOfDays: n)`      | Custom number of days                          |
 | `MultiDayViewConfiguration.freeScroll(numberOfDays: n)`  | Scrolls freely across days, without page snaps |
 
+These views also control where the day opens vertically and how tall an hour is:
+
+- `initialTimeOfDay`: the time at the top of the viewport on first render. Defaults to midnight, so set it to the hour your users actually start at or the calendar opens on empty overnight hours.
+- `initialHeightPerMinute`: the starting zoom, in logical pixels per minute. Defaults to `0.7`, giving a 42 pixel hour. Change it later through the controller, see [Zoom](interaction.md#zoom).
+
+```dart
+MultiDayViewConfiguration.week(
+  initialTimeOfDay: const TimeOfDay(hour: 7, minute: 0),
+  initialHeightPerMinute: 0.7,
+)
+```
+
 ## Month View
 Shows an entire month at a glance, weeks as rows.
 
