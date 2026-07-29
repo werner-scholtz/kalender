@@ -87,12 +87,6 @@ ScheduleTileComponents scheduleTileComponents(BuildContext context) {
         ),
       );
     },
-    dropTargetTile: (event) => DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(80), width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-    ),
   );
 }
 

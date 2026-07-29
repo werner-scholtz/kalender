@@ -228,8 +228,6 @@ class _CalendarContentState extends State<CalendarContent> {
 
   ScheduleTileComponents get _scheduleTileComponents => ScheduleTileComponents(
         tileBuilder: (event, range) => MultiDayEventTile.builder(event as Event, range),
-        overlayTileBuilder: (event, range) => MultiDayEventTile.overlayBuilder(event as Event, range),
-        dropTargetTile: (event) => DropTargetTile.builder(event as Event),
         feedbackTileBuilder: (event, size) => FeedbackTile.builder(event as Event, size),
         tileWhenDraggingBuilder: (event) => TileWhenDragging.builder(event as Event),
         dragAnchorStrategy: _dragAnchorStrategy,

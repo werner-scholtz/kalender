@@ -27,6 +27,21 @@ If you only ever pass a `Location` into the calendar, nothing changes.
 - `CalendarCallbacks.onMultiDayTapped`: deprecated in 0.13.0 and never called since then, so deleting the argument changes nothing.
 - `DateTimeExtensions.monthNameEnglish` and `dayNameEnglish`: use `monthNameLocalized('en')` and `dayNameLocalized('en')`.
 
+### `ScheduleTileComponents` drops three parameters that did nothing
+
+```dart
+  ScheduleTileComponents(
+    tileBuilder: MyTile.builder,
+-   dropTargetTile: MyDropTarget.builder,
+-   overlayTileBuilder: MyOverlayTile.builder,
+-   resizeDragAnchorStrategy: childDragAnchorStrategy,
+  )
+```
+
+Delete the arguments. The schedule view has no overflow overlay and cannot resize tiles, so it never read any of them.
+
+The schedule marks the drop target by highlighting the destination row rather than rendering a tile at it. To change that highlight, set `ScheduleComponents.scheduleTileHighlightBuilder` or `ScheduleTileHighlightStyle` on the theme.
+
 ### `throttleMilliseconds` is gone
 
 ```dart
