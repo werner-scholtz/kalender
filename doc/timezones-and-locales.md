@@ -86,6 +86,19 @@ The builders are `dayHeaderStringBuilder` and `dayHeaderNumberStringBuilder` on
 on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, and
 `multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
+The times down the side of a multi-day view are the one case where the default
+does not come from the calendar's `locale`. They use Flutter's `TimeOfDay.format`,
+so they follow the device's 12-hour or 24-hour setting. Fix the format with
+`timelineStringBuilder`:
+
+<!-- snippet: expression -->
+```dart
+MultiDayBodyComponents(
+  timelineStringBuilder: (context, time) =>
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+)
+```
+
 ---
 
 ## Location
