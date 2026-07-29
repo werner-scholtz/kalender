@@ -270,7 +270,7 @@ KalenderThemeData(
 
 Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets. Styles passed here apply to that one `CalendarView` and win over the [theme](#theming).
 
-Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/multi_day_styles.dart), [`MonthComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/month_styles.dart), [`ScheduleComponentStyles`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/components/schedule_styles.dart).
+Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MultiDayComponentStyles-class.html), [`MonthComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MonthComponentStyles-class.html), [`ScheduleComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/ScheduleComponentStyles-class.html).
 
 <details>
   <summary>MultiDayComponents</summary>

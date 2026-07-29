@@ -70,7 +70,7 @@ Presents events in a chronological scrollable list.
 
 ### EventsController
 
-[`EventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller.dart) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/events_controller/default_events_controller.dart) unless you need a custom storage layer.
+[`EventsController`](https://pub.dev/documentation/kalender/latest/kalender/EventsController-class.html) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://pub.dev/documentation/kalender/latest/kalender/DefaultEventsController-class.html) unless you need a custom storage layer.
 
 | Method                               | Description                                                                                                                    |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -88,7 +88,7 @@ Presents events in a chronological scrollable list.
 
 ### CalendarController
 
-[`CalendarController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/calendar_controller.dart) drives a single `CalendarView` widget.
+[`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `CalendarView` widget.
 
 **State notifiers:**
 
@@ -106,7 +106,7 @@ Presents events in a chronological scrollable list.
 - `animateToDate(date)` / `animateToDateTime(dateTime)`
 - `animateToEvent(event)`
 
-> Internally the controller delegates to a [`ViewController`](https://github.com/werner-scholtz/kalender/blob/main/lib/src/models/controllers/view_controller.dart) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
+> Internally the controller delegates to a [`ViewController`](https://pub.dev/documentation/kalender/latest/kalender/ViewController-class.html) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
 
 ---
 
@@ -313,9 +313,12 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 
 Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) example shows a full implementation with [`ZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/web_demo/lib/widgets/calendar/zoom.dart).
 
-Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop:
+Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop. `PointerScrollEvent` and `HardwareKeyboard` are not exported by `material.dart`, so both imports are needed:
 
 ```dart
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+
 class ZoomableCalendar extends StatelessWidget {
   final CalendarController calendarController;
   final Widget child;

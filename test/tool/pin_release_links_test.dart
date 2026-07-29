@@ -3,7 +3,15 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../tool/pin_release_links.dart'
-    show leftoverProblems, pinBranchUrls, pinChangelog, pinRelativeLinks, repositoryUrl;
+    show
+        docFiles,
+        leftoverProblems,
+        packageName,
+        pinBranchUrls,
+        pinChangelog,
+        pinPubDevDocs,
+        pinRelativeLinks,
+        repositoryUrl;
 
 const repo = 'https://github.com/werner-scholtz/kalender';
 const tag = 'v9.9.9';
@@ -61,6 +69,35 @@ void main() {
     });
   });
 
+  group('packageName', () {
+    test('reads the name field', () {
+      expect(packageName('name: kalender\nversion: 0.24.0\n'), 'kalender');
+    });
+  });
+
+  group('pinPubDevDocs', () {
+    test('latest becomes the released version, without the leading v', () {
+      expect(
+        pinPubDevDocs(
+          'https://pub.dev/documentation/kalender/latest/kalender/EventsController-class.html',
+          'kalender',
+          tag,
+        ),
+        'https://pub.dev/documentation/kalender/9.9.9/kalender/EventsController-class.html',
+      );
+    });
+
+    test("another package's latest is left alone, this tag says nothing about its versions", () {
+      const other = 'https://pub.dev/documentation/timezone/latest/timezone/Location-class.html';
+      expect(pinPubDevDocs(other, 'kalender', tag), other);
+    });
+
+    test('a pub.dev package page is left alone', () {
+      const packagePage = 'https://pub.dev/packages/intl';
+      expect(pinPubDevDocs(packagePage, 'kalender', tag), packagePage);
+    });
+  });
+
   group('pinChangelog', () {
     test('rewrites only the relative MIGRATION.md links', () {
       const line = 'See [MIGRATION.md](MIGRATION.md#v023x--v0240) for the mapping. [#372]($repo/pull/372)';
@@ -77,30 +114,95 @@ void main() {
 
   group('leftoverProblems', () {
     test('reports a leftover relative link with its line number', () {
-      final problems = leftoverProblems('README.md', 'fine\n[stray](doc/views.md)', repo, allowMainRefs: false);
+      final problems = leftoverProblems('README.md', 'fine\n[stray](doc/views.md)', repo, allowUnpinnedLinks: false);
       expect(problems, hasLength(1));
       expect(problems.single, startsWith('README.md:2:'));
     });
 
     test('reports a main branch reference unless allowed', () {
       const content = '[a]($repo/blob/main/doc/views.md)';
-      expect(leftoverProblems('README.md', content, repo, allowMainRefs: false), hasLength(1));
-      expect(leftoverProblems('CHANGELOG.md', content, repo, allowMainRefs: true), isEmpty);
+      expect(leftoverProblems('README.md', content, repo, allowUnpinnedLinks: false), hasLength(1));
+      expect(leftoverProblems('CHANGELOG.md', content, repo, allowUnpinnedLinks: true), isEmpty);
+    });
+
+    test('a relative link is allowed when the file keeps them', () {
+      const content = 'see [views](views.md#views)\nand the [index](../README.md)';
+      expect(leftoverProblems('doc/events.md', content, repo, allowUnpinnedLinks: false), hasLength(2));
+      expect(
+        leftoverProblems('doc/events.md', content, repo, allowUnpinnedLinks: false, allowRelativeLinks: true),
+        isEmpty,
+      );
+    });
+
+    test('a main branch reference is still reported when relative links are allowed', () {
+      const content = '[strategy]($repo/blob/main/examples/advanced_example/lib/layout_strategy.dart)';
+      final problems =
+          leftoverProblems('doc/layout.md', content, repo, allowUnpinnedLinks: false, allowRelativeLinks: true);
+      expect(problems, hasLength(1));
+      expect(problems.single, startsWith('doc/layout.md:1:'));
+    });
+  });
+
+  group('docFiles', () {
+    test('lists only markdown, sorted', () {
+      final directory = Directory.systemTemp.createTempSync('doc_files_test');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      File('${directory.path}/views.md').writeAsStringSync('');
+      File('${directory.path}/appearance.md').writeAsStringSync('');
+      File('${directory.path}/notes.txt').writeAsStringSync('');
+
+      expect(
+        docFiles(directory).map((path) => path.split(Platform.pathSeparator).last),
+        ['appearance.md', 'views.md'],
+      );
+    });
+
+    test('an absent directory yields nothing', () {
+      expect(docFiles(Directory('doc_that_does_not_exist')), isEmpty);
+    });
+
+    test('finds the real guides', () {
+      expect(docFiles(), isNotEmpty);
     });
   });
 
   group('repository files', () {
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    final repoUrl = repositoryUrl(pubspec);
+    final package = packageName(pubspec);
+
+    String pinAll(String content) => pinPubDevDocs(pinBranchUrls(content, repoUrl, tag), package, tag);
+
     test('the real README, example README and CHANGELOG rewrite cleanly', () {
-      final repoUrl = repositoryUrl(File('pubspec.yaml').readAsStringSync());
+      final readme = pinRelativeLinks(pinAll(File('README.md').readAsStringSync()), repoUrl, tag);
+      expect(leftoverProblems('README.md', readme, repoUrl, allowUnpinnedLinks: false, package: package), isEmpty);
 
-      final readme = pinRelativeLinks(pinBranchUrls(File('README.md').readAsStringSync(), repoUrl, tag), repoUrl, tag);
-      expect(leftoverProblems('README.md', readme, repoUrl, allowMainRefs: false), isEmpty);
-
-      final example = pinBranchUrls(File('example/README.md').readAsStringSync(), repoUrl, tag);
-      expect(leftoverProblems('example/README.md', example, repoUrl, allowMainRefs: false), isEmpty);
+      final example = pinAll(File('example/README.md').readAsStringSync());
+      expect(
+        leftoverProblems('example/README.md', example, repoUrl, allowUnpinnedLinks: false, package: package),
+        isEmpty,
+      );
 
       final changelog = pinChangelog(File('CHANGELOG.md').readAsStringSync(), repoUrl, tag);
-      expect(leftoverProblems('CHANGELOG.md', changelog, repoUrl, allowMainRefs: true), isEmpty);
+      expect(leftoverProblems('CHANGELOG.md', changelog, repoUrl, allowUnpinnedLinks: true, package: package), isEmpty);
+    });
+
+    test('the real guides rewrite cleanly and keep their relative links', () {
+      for (final path in docFiles()) {
+        final rewritten = pinAll(File(path).readAsStringSync());
+        expect(
+          leftoverProblems(
+            path,
+            rewritten,
+            repoUrl,
+            allowUnpinnedLinks: false,
+            allowRelativeLinks: true,
+            package: package,
+          ),
+          isEmpty,
+          reason: '$path still has an unpinned link after the rewrite',
+        );
+      }
     });
   });
 }
