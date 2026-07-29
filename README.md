@@ -32,16 +32,16 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Features
 
-* **Views:** Day, Multi-day, Month and Schedule. [find out more](doc/views.md#views)
+* **Views:** Day, Multi-day, Month and Schedule. [find out more](doc/views.md)
 * **Extensible events:** Attach custom data (title, color, etc.) by subclassing `CalendarEvent`. [find out more](doc/events.md#custom-events)
 * **Tile components:** Fully customize event tiles: stationary, dragging, feedback, and resize handles. [find out more](doc/appearance.md#tile-components)
 * **Reschedule:** Drag and drop events between days and times.
 * **Resize:** Resize events with handles that adapt to mouse, stylus, trackpad or touch input.
-* **Controllers:** Manage your calendar with dedicated controllers. [find out more](doc/views.md#controllers)
-* **Callbacks:** React to taps, long presses, event creation and changes. [find out more](doc/views.md#callbacks)
-* **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](doc/views.md#configuration--interaction)
+* **Controllers:** Manage your calendar with dedicated controllers. [find out more](doc/controllers-and-callbacks.md#controllers)
+* **Callbacks:** React to taps, long presses, event creation and changes. [find out more](doc/controllers-and-callbacks.md#callbacks)
+* **Configuration:** Fine-grained control over interaction, snapping, scroll physics, and layout. [find out more](doc/interaction.md)
 * **Appearance:** Style default components or supply custom builders. [find out more](doc/appearance.md#appearance--custom-components)
-* **Event layout:** Use a built-in layout strategy or supply your own. [find out more](doc/events.md#event-layout)
+* **Event layout:** Use a built-in layout strategy or supply your own. [find out more](doc/layout.md)
 * **Locale:** Localize day/month names via the [intl](https://pub.dev/packages/intl) package. [find out more](doc/timezones-and-locales.md#locale)
 * **Location:** Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. [find out more](doc/timezones-and-locales.md#location)
 * **Now callback:** Override what "now" means for the time indicator and today highlighting. This is useful when the calendar's `Location` differs from the user's wall-clock time. [find out more](doc/timezones-and-locales.md#now-callback)
@@ -122,11 +122,14 @@ For a real app you almost always want custom fields on your events. See [Custom 
 
 ## Documentation
 
-The detailed guides live in `doc/`:
+The detailed guides live in [`doc/`](doc/README.md):
 
-- [Events](doc/events.md): attach your own data by subclassing `CalendarEvent`, and control how event tiles are laid out.
-- [Views & Interaction](doc/views.md): view configurations, controllers, callbacks, and interaction settings like snapping and zoom.
+- [Views](doc/views.md): the four view families, what carries over when you switch, and each view's configuration class.
+- [Events](doc/events.md): attach your own data by subclassing `CalendarEvent`, and what counts as multi-day.
+- [Interaction](doc/interaction.md): creating, rescheduling, resizing, snapping and zooming.
+- [Controllers & Callbacks](doc/controllers-and-callbacks.md): drive the calendar from code, react to the user, and build a toolbar around it.
 - [Appearance](doc/appearance.md): tile builders, theming, and custom components.
+- [Layout](doc/layout.md): where tiles are placed and sized. Advanced, only needed for a custom strategy.
 - [Timezones & Locales](doc/timezones-and-locales.md): display timezones, localized names, and custom text.
 
 ---

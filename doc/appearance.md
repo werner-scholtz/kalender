@@ -1,6 +1,10 @@
 # Appearance
 
-This is part of the [kalender](../README.md) documentation.
+This is part of the [kalender](README.md) documentation.
+
+What the calendar looks like: event tiles, theming, and replacing the default
+components. For where tiles are placed rather than how they look, see
+[Layout](layout.md).
 
 ## Tile Components
 

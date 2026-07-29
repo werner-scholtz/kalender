@@ -1,8 +1,12 @@
-# Views & Interaction
+# Views
 
-This is part of the [kalender](../README.md) documentation.
+This is part of the [kalender](README.md) documentation.
 
-## Views
+The view configuration decides which calendar you get and how it behaves when you
+switch away from it. For what the user can do inside a view, see
+[Interaction](interaction.md).
+
+## Switching between views
 
 Switch between views by passing a different `ViewConfiguration` to `CalendarView`. What carries over on a switch is controlled per dimension:
 
@@ -10,6 +14,8 @@ Switch between views by passing a different `ViewConfiguration` to `CalendarView
 - **Scroll & zoom** (multi-day views): `scrollTransition` / `zoomTransition`. Use `preserve` (default), `reset`, or `restorePerView`.
 
 For custom logic, provide a `dateResolver` / `scrollResolver` / `zoomResolver`. Each overrides the matching enum. `kCarryFocusDate(transition)` gives you the default carry-focus date to build on.
+
+## Shared options
 
 All configurations accept:
 - `displayRange`: the total date range the calendar can navigate within (e.g. Jan 2024 to Dec 2025). Defaults to two years either side of today.
@@ -26,7 +32,7 @@ MultiDayViewConfiguration.week(
 )
 ```
 
-### MultiDay View
+## MultiDay View
 Displays one or more days with time on the vertical axis.
 
 | Constructor                                             | Description                                    |
@@ -37,7 +43,7 @@ Displays one or more days with time on the vertical axis.
 | `MultiDayViewConfiguration.custom(numberOfDays: n)`      | Custom number of days                          |
 | `MultiDayViewConfiguration.freeScroll(numberOfDays: n)`  | Scrolls freely across days, without page snaps |
 
-### Month View
+## Month View
 Shows an entire month at a glance, weeks as rows.
 
 | Constructor                            | Description  |
@@ -56,7 +62,7 @@ MonthViewConfiguration.singleMonth(
 
 When `showWeekNumbers` is enabled, the month body adds a leading gutter with one week number per visible row while keeping the day grid at 7 columns.
 
-### Schedule View
+## Schedule View
 Presents events in a chronological scrollable list.
 
 | Constructor                              | Description            |
@@ -66,132 +72,7 @@ Presents events in a chronological scrollable list.
 
 ---
 
-## Controllers
-
-### EventsController
-
-[`EventsController`](https://pub.dev/documentation/kalender/latest/kalender/EventsController-class.html) manages and exposes events to the calendar. Typically one instance per app. Use [`DefaultEventsController`](https://pub.dev/documentation/kalender/latest/kalender/DefaultEventsController-class.html) unless you need a custom storage layer.
-
-| Method                               | Description                                                                                                                    |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `addEvent(event)`                    | Add a single event, returns its `String` id                                                                                    |
-| `addEvents(events)`                  | Add multiple events, returns `List<String>` of ids                                                                             |
-| `removeEvent(event)`                 | Remove a specific event                                                                                                        |
-| `removeEvents(events)`               | Remove a list of events                                                                                                        |
-| `removeWhere(test)`                  | Remove events matching a predicate                                                                                             |
-| `removeById(id)`                     | Remove the event with the given `String` id                                                                                    |
-| `updateEvent({event, updatedEvent})` | Replace an existing event (named parameters)                                                                                   |
-| `replaceEvents(events)`              | Replace every stored event with the given list, returns `List<String>` of ids                                                  |
-| `byId(id)`                           | Return the event with the given `String` id, or `null`                                                                         |
-| `clearEvents()`                      | Remove all events                                                                                                              |
-| `eventsFromDateTimeRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
-
-### CalendarController
-
-[`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `CalendarView` widget.
-
-**State notifiers:**
-
-| Notifier               | Type                                | Description                                            |
-| ---------------------- | ----------------------------------- | ------------------------------------------------------ |
-| `visibleDateTimeRange` | `ValueNotifier<DateTimeRange?>`     | The currently visible date range                       |
-| `visibleTimeOfDay`     | `ValueNotifier<TimeOfDay?>`         | Time aligned with the top of the viewport (multi-day views, `null` otherwise) |
-| `visibleEvents`        | `ValueNotifier<Set<CalendarEvent>>` | Events visible on screen                               |
-| `selectedEvent`        | `ValueNotifier<CalendarEvent?>`     | The focused event (shows drop target / resize handles) |
-
-**Navigation methods:**
-
-- `jumpToPage(page)` / `jumpToDate(date)`
-- `animateToNextPage()` / `animateToPreviousPage()`
-- `animateToDate(date)` / `animateToDateTime(dateTime)`
-- `animateToEvent(event)`
-
-> Internally the controller delegates to a [`ViewController`](https://pub.dev/documentation/kalender/latest/kalender/ViewController-class.html) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
-
----
-
-## Callbacks
-
-Pass a `CalendarCallbacks` to `CalendarView` to react to user interactions.
-
-```dart
-CalendarCallbacks(
-  // --- Event interactions ---
-
-  // Called when an event tile is tapped.
-  onEventTapped: (event, renderBox) {},
-
-  // Called when an event tile is tapped. Includes tap position detail.
-  // The 'detail' parameter provides the tap location and its exact calculated 'DateTime'
-  // position based on the tapped position within the event UI.
-  onEventTappedWithDetail: (event, renderBox, detail) {},
-
-  // Called when an event is secondary tapped (right-clicked).
-  onEventSecondaryTapped: (event, renderBox) {},
-  onEventSecondaryTappedWithDetail: (event, renderBox, detail) {},
-
-  // Called before the calendar creates a new event from a gesture.
-  // Return your concrete Event subclass here.
-  onEventCreate: (event) {
-    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
-  },
-
-  // Same as onEventCreate but includes gesture detail (position, renderBox).
-  onEventCreateWithDetail: (event, detail) {
-    return Event(dateTimeRange: event.dateTimeRange, title: 'New Event');
-  },
-
-  // Called after a new event has been committed. Add it to your controller here.
-  onEventCreated: (event) => eventsController.addEvent(event),
-
-  // Called just before a rescheduled / resized event is applied.
-  onEventChange: (event) {},
-
-  // Called after a rescheduled / resized event is applied.
-  onEventChanged: (original, updated) {
-    eventsController.updateEvent(event: original, updatedEvent: updated);
-  },
-
-  // --- Calendar interactions ---
-
-  // Called when the visible page changes.
-  onPageChanged: (visibleDateTimeRange) {},
-
-  // Called when the vertical scroll position of a multi-day view changes.
-  // 'visibleTimeOfDay' is the time aligned with the top of the viewport.
-  onScrollPositionChanged: (visibleTimeOfDay) {},
-
-  // Called when the user taps an empty area (day / week body).
-  onTapped: (date) {},
-  onTappedWithDetail: (detail) {
-    // detail.dateTime or detail.dateTimeRange, plus renderBox & localOffset.
-  },
-
-  // Called when the user secondary taps (right-clicks) an empty area.
-  onSecondaryTapped: (date) {},
-  onSecondaryTappedWithDetail: (detail) {},
-
-  // Called when the user long-presses an empty area.
-  onLongPressed: (date) {},
-  onLongPressedWithDetail: (detail) {},
-
-  // Called when the user secondary long-presses an empty area.
-  onSecondaryLongPressed: (date) {},
-  onSecondaryLongPressedWithDetail: (detail) {},
-
-  // --- Drag-and-drop acceptance ---
-
-  // Day / week vertical drag target. Return false to reject the drop.
-  onWillAcceptWithDetailsVertical: (details, controller, configuration) => true,
-
-  // Month / header horizontal drag target.
-  onWillAcceptWithDetailsHorizontal: (details, controller, configuration) => true,
-)
-```
-
----
-
-## Configuration & Interaction
+## Per-view configuration
 
 `CalendarHeader` and `CalendarBody` accept view-specific configuration objects:
 
@@ -201,41 +82,7 @@ CalendarCallbacks(
 | Month    | None                          | `MonthBodyConfiguration`    |
 | Schedule | None                          | `ScheduleBodyConfiguration` |
 
-Both also accept:
-- `interaction: CalendarInteraction`: toggling resize / reschedule / create.
-- `snapping: CalendarSnapping`: (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
-
-### Interaction & Snapping
-
-```dart
-CalendarBody(
-  interaction: CalendarInteraction(
-    allowResizing: true,
-    allowRescheduling: true,
-    allowEventCreation: true,
-    // Tap to create (desktop default) or long-press to create (mobile default):
-    createEventGesture: CreateEventGesture.tap,
-    // The gesture that starts modifying an existing event, same defaults:
-    modifyEventGesture: CreateEventGesture.tap,
-    // Input mode affects resize handle positioning and visibility:
-    //   auto (default): detects dynamically from pointer events
-    //   precise:        mouse, stylus, trackpad (full-width handles, hover-to-show)
-    //   imprecise:      touch/finger (corner handles, selection-to-show)
-    inputMode: InputMode.auto,
-    // Opt-in to horizontal resize handles in imprecise/touch mode (default: false):
-    allowHorizontalImpreciseResize: false,
-  ),
-  snapping: CalendarSnapping(
-    snapIntervalMinutes: 15,
-    snapToTimeIndicator: true,
-    snapToOtherEvents: true,
-    snapRange: const Duration(minutes: 5),
-    eventSnapStrategy: defaultSnapStrategy,
-  ),
-)
-```
-
-### Configuration details
+Both also accept `interaction` and `snapping`, covered in [Interaction](interaction.md).
 
 Each view has its own configuration class with sensible defaults. Expand the references below for the full set of options.
 
@@ -308,45 +155,3 @@ Each view has its own configuration class with sensible defaults. Expand the ref
   )
   ```
 </details>
-
-### Zoom
-
-Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) example shows a full implementation with [`ZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/web_demo/lib/widgets/calendar/zoom.dart).
-
-Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop. `PointerScrollEvent` and `HardwareKeyboard` are not exported by `material.dart`, so both imports are needed:
-
-```dart
-import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
-
-class ZoomableCalendar extends StatelessWidget {
-  final CalendarController calendarController;
-  final Widget child;
-
-  const ZoomableCalendar({
-    super.key,
-    required this.calendarController,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Listener(
-      onPointerSignal: (event) {
-        if (!HardwareKeyboard.instance.isControlPressed) return;
-        if (event is! PointerScrollEvent) return;
-
-        final viewController = calendarController.viewController;
-        if (viewController is! MultiDayViewController) return;
-
-        final heightPerMinute = viewController.heightPerMinute;
-        final delta = event.scrollDelta.dy.sign * -0.1;
-        heightPerMinute.value = (heightPerMinute.value + delta).clamp(0.5, 2.0);
-      },
-      child: child,
-    );
-  }
-}
-```
-
-Wrap your `CalendarView` with this widget to enable Ctrl+scroll zooming.

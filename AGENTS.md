@@ -29,9 +29,11 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/calendar_view.dart` | Main CalendarView orchestrator widget |
 | `test/` | Unit and widget tests (mirrors `lib/src/` structure) |
 | `test/utilities.dart` | Shared test helpers: `TestProvider`, `wrapWithMaterialApp`, `testWithTimeZones`, `WidgetTesterUtils` |
-| `examples/` | Example Flutter apps (`example/`, `demo/`, `advanced_example/`, `riverpod/`, `recurrence/`, `testing/`, `web_demo/`) |
-| `tool/` | Dev scripts — `test_timezones_linux.dart` replicates CI timezone matrix locally |
-| `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `performance_profiling.yml`, `publish.yml`, `web_demo.yml` |
+| `doc/` | The user-facing guides, indexed by `doc/README.md` |
+| `examples/` | Example Flutter apps (`example/`, `advanced_example/`, `riverpod/`, `recurrence/`, `ics/`, `testing/`, `web_demo/`) |
+| `example/` | README only — the pub.dev Example tab, which links to `examples/` |
+| `tool/` | Dev scripts — `test_timezones_linux.dart` replicates the CI timezone matrix locally, `pin_release_links.dart` pins documentation links at publish |
+| `.github/workflows/` | CI: `flutter_analyze_and_test.yml`, `analyze_examples.yml`, `performance_profiling.yml`, `deploy_dashboard.yml`, `publish.yml`, `web_demo.yml` |
 
 ## Code Style
 
@@ -261,5 +263,10 @@ Key breaking changes to be aware of:
 ## Documentation
 
 - [README.md](README.md) — feature list, quick-start, previews.
+- [doc/README.md](doc/README.md) — index of the guides. One guide per topic: views, events, interaction, controllers and callbacks, appearance, layout, timezones and locales.
 - [MIGRATION.md](MIGRATION.md) — breaking-change migration guides between versions.
 - [CHANGELOG.md](CHANGELOG.md) — version history.
+
+A guide links to a class with its pub.dev API page, not a `lib/src` blob URL.
+`pin_release_links.dart` rewrites both, so a published version keeps linking to
+the documentation it shipped with.
