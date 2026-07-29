@@ -112,7 +112,7 @@ The name had to change. Dart rejects a class declaring both a getter and a metho
 
 ### Choosing what counts as multi-day
 
-The rule is a `MultiDayRule` on the view configuration. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behaviour, so nothing renders differently until you change it.
+The rule is a `MultiDayRule` on the view configuration. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behavior, so nothing renders differently until you change it.
 
 | Rule | Multi-day when |
 | --- | --- |
@@ -138,7 +138,30 @@ CalendarEvent(
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it. Neither does your `copyWith` override: `multiDayRule` is deliberately not a parameter on it, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. The rule is carried through automatically.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it.
+
+`copyWith` takes no `multiDayRule` parameter, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. A subclass has to forward it:
+
+```dart
+  Event({
+    super.id,
+    required super.dateTimeRange,
+    required this.title,
++   super.multiDayRule,
+  });
+
+  @override
+  Event copyWith({DateTimeRange? dateTimeRange, String? title}) {
+    return Event(
+      id: id,
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
++     multiDayRule: multiDayRule,
+      title: title ?? this.title,
+    );
+  }
+```
+
+Without it, every drag or resize produces a copy without the rule.
 
 For a rule none of these express, override `spansMultipleDays` rather than implementing `MultiDayRule`. Its signature is:
 
