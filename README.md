@@ -21,6 +21,15 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 >
 > 1.0.0 is close. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
+<p align="center">
+  <img src="readme_assets/desktop_light.png" alt="Week view on desktop, light theme" width="55%" />
+  <img src="readme_assets/mobile_light.png" alt="Three-day view on mobile, light theme" width="17%" />
+</p>
+<p align="center">
+  <img src="readme_assets/desktop_dark.png" alt="Week view on desktop, dark theme" width="55%" />
+  <img src="readme_assets/mobile_dark.png" alt="Three-day view on mobile, dark theme" width="17%" />
+</p>
+
 ## Features
 
 | Feature | What you get | Guide |
