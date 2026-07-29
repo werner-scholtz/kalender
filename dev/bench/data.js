@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785306278509,
+  "lastUpdate": 1785307643922,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -7603,6 +7603,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3351.014992503748,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1d21818ee77415b33b72fe0ffec2819595c2d05b",
+          "message": "Merge pull request #382 from werner-scholtz/fix/locale-init-error\n\nfeat: name the missing initializeDateFormatting call when locale data is absent",
+          "timestamp": "2026-07-29T08:29:01+02:00",
+          "tree_id": "37c9a1dade7b5d4a2da3fec9f0eb13f64e0742b4",
+          "url": "https://github.com/werner-scholtz/kalender/commit/1d21818ee77415b33b72fe0ffec2819595c2d05b"
+        },
+        "date": 1785307640622,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 171.75129621759456,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 689.5345,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2045.731,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8004.91011235955,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 729.66625,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2231.924,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2450.643,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12354.035928143712,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 243.93876308741173,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 111.15792759051186,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 780.18225,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3355.3718140929536,
             "unit": "us"
           }
         ]
