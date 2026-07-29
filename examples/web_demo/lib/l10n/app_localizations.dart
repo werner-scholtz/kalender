@@ -201,6 +201,24 @@ abstract class AppLocalizations {
   /// **'First day of week'**
   String get firstDayOfWeek;
 
+  /// No description provided for @multiDayRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi-day rule'**
+  String get multiDayRule;
+
+  /// No description provided for @multiDayRuleMinimumDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours or longer'**
+  String get multiDayRuleMinimumDuration;
+
+  /// No description provided for @multiDayRuleCalendarDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Crosses midnight'**
+  String get multiDayRuleCalendarDays;
+
   /// No description provided for @minutesLabel.
   ///
   /// In en, this message translates to:

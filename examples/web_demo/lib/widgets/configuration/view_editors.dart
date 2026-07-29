@@ -60,6 +60,12 @@ class MultiDayViewEditor extends StatelessWidget {
             ),
             itemToString: (value) => value.toString(),
           ),
+        MultiDayRuleEditor(
+          multiDayRule: viewConfiguration.multiDayRule,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            multiDayRule: value,
+          ),
+        ),
         Row(
           children: [
             Flexible(
@@ -163,6 +169,12 @@ class MonthViewEditor extends StatelessWidget {
             dateTransition: value,
           ),
           itemToString: (value) => value.name,
+        ),
+        MultiDayRuleEditor(
+          multiDayRule: viewConfiguration.multiDayRule,
+          onChanged: (value) => context.configuration.viewConfiguration = viewConfiguration.copyWith(
+            multiDayRule: value,
+          ),
         ),
       ],
     );
