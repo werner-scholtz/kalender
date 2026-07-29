@@ -22,6 +22,7 @@ All configurations accept:
 - `initialDateTime`: the date to show on first render. Defaults to `DateTime.now()`.
 - `multiDayRule`: what counts as a multi-day event and so renders in the multi-day header rather than the day timeline. Defaults to events lasting 24 hours or more (`MultiDayRule.minimumDuration`). `MultiDayRule.calendarDays()` instead counts anything that crosses midnight. A single event can override the rule, see [Multi-day events](events.md#multi-day-events).
 
+<!-- snippet: expression -->
 ```dart
 MultiDayViewConfiguration.week(
   displayRange: DateTimeRange(
@@ -48,6 +49,7 @@ These views also control where the day opens vertically and how tall an hour is:
 - `initialTimeOfDay`: the time at the top of the viewport on first render. Defaults to midnight, so set it to the hour your users actually start at or the calendar opens on empty overnight hours.
 - `initialHeightPerMinute`: the starting zoom, in logical pixels per minute. Defaults to `0.7`, giving a 42 pixel hour. Change it later through the controller, see [Zoom](interaction.md#zoom).
 
+<!-- snippet: expression -->
 ```dart
 MultiDayViewConfiguration.week(
   initialTimeOfDay: const TimeOfDay(hour: 7, minute: 0),
@@ -64,6 +66,7 @@ Shows an entire month at a glance, weeks as rows.
 
 Month view can be adjusted with `firstDayOfWeek` and `showWeekNumbers`:
 
+<!-- snippet: expression -->
 ```dart
 MonthViewConfiguration.singleMonth(
   initialDateTime: DateTime(2025, 1, 1),
@@ -101,6 +104,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 <details>
   <summary>MultiDayHeaderConfiguration</summary>
 
+  <!-- snippet: expression -->
   ```dart
   CalendarHeader(
     multiDayHeaderConfiguration: MultiDayHeaderConfiguration(
@@ -119,6 +123,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 <details>
   <summary>MultiDayBodyConfiguration</summary>
 
+  <!-- snippet: expression -->
   ```dart
   CalendarBody(
     multiDayBodyConfiguration: MultiDayBodyConfiguration(
@@ -139,6 +144,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 <details>
   <summary>MonthBodyConfiguration</summary>
 
+  <!-- snippet: expression -->
   ```dart
   CalendarBody(
     monthBodyConfiguration: MonthBodyConfiguration(
@@ -154,6 +160,7 @@ Each view has its own configuration class with sensible defaults. Expand the ref
 <details>
   <summary>ScheduleBodyConfiguration</summary>
 
+  <!-- snippet: expression -->
   ```dart
   CalendarBody(
     scheduleBodyConfiguration: ScheduleBodyConfiguration(

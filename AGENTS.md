@@ -270,3 +270,26 @@ Key breaking changes to be aware of:
 A guide links to a class with its pub.dev API page, not a `lib/src` blob URL.
 `pin_release_links.dart` rewrites both, so a published version keeps linking to
 the documentation it shipped with.
+
+### Snippets in the documentation
+
+Every fenced dart block in `README.md`, `example/README.md` and `doc/*.md` is
+compiled by `tool/analyze_doc_snippets.dart`, which CI runs. Each block needs a
+directive comment above it saying how, and a block without one fails the run:
+
+```markdown
+<!-- snippet: file -->          top-level declarations
+<!-- snippet: statements -->    wrapped in an async function body
+<!-- snippet: expression -->    wrapped in a variable initializer
+<!-- snippet: continues -->     appended to the block above
+<!-- snippet: skip: reason -->  not compiled, reason required
+```
+
+A snippet may assume only `material.dart` and `kalender.dart`. Anything else has
+to be imported in the block itself, so a snippet a reader copies whole actually
+compiles. That rule exists because a wider implied header hid the missing
+`gestures.dart` and `services.dart` in the zoom example for as long as it was
+there. Placeholder identifiers such as the `Event` subclass come from
+`examples/doc_snippets/lib/preamble.dart`, which is analyzed too.
+
+Diagnostics are reported against the markdown line, not the generated file.

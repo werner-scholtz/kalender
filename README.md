@@ -74,6 +74,7 @@ flutter pub add intl
 
 The minimal setup, using only the base `CalendarEvent` class with no custom fields:
 
+<!-- snippet: file -->
 ```dart
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';

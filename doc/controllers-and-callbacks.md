@@ -55,7 +55,15 @@ The calendar draws no toolbar of its own. Switching views, moving between pages
 and showing the current month are all built in your app, using the navigation
 methods above and a `ViewConfiguration` held in state.
 
+<!-- snippet: file -->
 ```dart
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({super.key});
+
+  @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
 class _CalendarScreenState extends State<CalendarScreen> {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
@@ -135,6 +143,7 @@ The [basic example](https://github.com/werner-scholtz/kalender/tree/main/example
 
 Pass a `CalendarCallbacks` to `CalendarView` to react to user interactions.
 
+<!-- snippet: expression -->
 ```dart
 CalendarCallbacks(
   // --- Event interactions ---

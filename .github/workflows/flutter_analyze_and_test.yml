@@ -35,6 +35,24 @@ jobs:
         shell: bash
         working-directory: ./
 
+  doc-snippets: # The code in the README and the guides, which flutter analyze cannot see
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+
+      - name: Install dependencies
+        run: flutter pub get
+        shell: bash
+        working-directory: ./
+
+      # Generates the snippets into examples/doc_snippets and analyzes them, so
+      # it cannot join the analyze_examples.yml matrix, which only runs analyze.
+      - name: Compile the documentation snippets
+        run: dart run tool/analyze_doc_snippets.dart
+        shell: bash
+        working-directory: ./
+
   test: # Separate job for tests with matrix
     runs-on: ubuntu-latest
     strategy:
