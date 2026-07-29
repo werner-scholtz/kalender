@@ -6,6 +6,7 @@ This is part of the [kalender](README.md) documentation.
 
 Kalender uses the [intl](https://pub.dev/packages/intl) package to localize day and month names. Call `initializeDateFormatting()` before `runApp`:
 
+<!-- snippet: file -->
 ```dart
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -19,10 +20,13 @@ The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. The
 
 `CalendarView` has a `locale` property that controls day/month name formatting.
 
+<!-- snippet: expression -->
 ```dart
 CalendarView(
   locale: 'af_ZA',
-  // ...
+  eventsController: eventsController,
+  calendarController: calendarController,
+  viewConfiguration: viewConfiguration,
 )
 ```
 
@@ -31,6 +35,7 @@ that do not fit is labelled with a plus sign and the count, `+3`, with the numbe
 formatted for the calendar's locale, so it needs no translation. The week number's
 tooltip is the one string that still defaults to English:
 
+<!-- snippet: expression -->
 ```dart
 MaterialApp(
   theme: ThemeData(
@@ -53,9 +58,15 @@ matching `*Components` class. Each one receives the `BuildContext`, so it can re
 the calendar's own locale with `context.calendarLocale`, which is not necessarily
 the app's locale:
 
+<!-- snippet: expression -->
 ```dart
+import 'package:intl/intl.dart';
+
 CalendarView(
   locale: 'af_ZA',
+  eventsController: eventsController,
+  calendarController: calendarController,
+  viewConfiguration: viewConfiguration,
   components: CalendarComponents(
     multiDayComponents: MultiDayComponents(
       headerComponents: MultiDayHeaderComponents(
@@ -75,12 +86,26 @@ The builders are `dayHeaderStringBuilder` and `dayHeaderNumberStringBuilder` on
 on `MonthHeaderComponents`, `leadingDateStringBuilder` on `ScheduleComponents`, and
 `multiDayPortalOverlayButtonStringBuilder` on `OverlayBuilders`.
 
+The times down the side of a multi-day view are the one case where the default
+does not come from the calendar's `locale`. They use Flutter's `TimeOfDay.format`,
+so they follow the device's 12-hour or 24-hour setting. Fix the format with
+`timelineStringBuilder`:
+
+<!-- snippet: expression -->
+```dart
+MultiDayBodyComponents(
+  timelineStringBuilder: (context, time) =>
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+)
+```
+
 ---
 
 ## Location
 
 `CalendarView` accepts a `Location` from the [timezone](https://pub.dev/packages/timezone) package. The `CalendarEvent` constructor automatically converts `dateTimeRange` values to UTC, so events are always stored in UTC internally and converted to the given location for display.
 
+<!-- snippet: expression -->
 ```dart
 import 'package:timezone/timezone.dart' as tz;
 
@@ -94,7 +119,10 @@ CalendarView(
 
 Pre-initialize `DefaultEventsController` with the locations you expect to query for best performance:
 
+<!-- snippet: statements -->
 ```dart
+import 'package:timezone/timezone.dart' as tz;
+
 final eventsController = DefaultEventsController(
   locations: [
     tz.getLocation('America/New_York'),
@@ -115,7 +143,10 @@ When events come from an `.ics` file, a device calendar, or an API, map each sou
 - **UTC instant** (an `.ics` time ending in `Z`, or an epoch): pass it as-is.
 - **Zoned time** (an IANA `TZID`): build a `TZDateTime` in that zone so the instant is correct.
 
+  <!-- snippet: statements -->
   ```dart
+  import 'package:timezone/timezone.dart' as tz;
+
   final start = tz.TZDateTime(tz.getLocation('Europe/London'), 2025, 1, 6, 9);
   final event = CalendarEvent(
     dateTimeRange: DateTimeRange(start: start, end: start.add(const Duration(hours: 1))),
@@ -130,6 +161,7 @@ Then set `CalendarView(location:)` to the zone the calendar should display in. T
 
 By default, the time indicator position and "today" header highlighting are derived from the calendar's `Location`. If your app stores wall-clock times as UTC (e.g. an application where `location: UTC`) but still wants the indicator and today highlight to reflect the user's local time, pass a `NowCallback` on your view configuration:
 
+<!-- snippet: expression -->
 ```dart
 MultiDayViewConfiguration.week(
   nowCallback: () => DateTime.now(), // system local time

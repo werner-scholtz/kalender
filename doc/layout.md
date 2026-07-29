@@ -24,6 +24,7 @@ To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideByS
 
 Here's a minimal skeleton:
 
+<!-- snippet: file -->
 ```dart
 class MyLayoutDelegate extends EventLayoutDelegate {
   MyLayoutDelegate({
@@ -62,6 +63,7 @@ class MyLayoutDelegate extends EventLayoutDelegate {
 
 Then create your strategy function:
 
+<!-- snippet: continues -->
 ```dart
 EventLayoutDelegate myLayoutStrategy(
   Iterable<CalendarEvent> events,
@@ -90,6 +92,7 @@ Events are placed in a grid of rows × columns (rows = concurrent events, column
 
 The default generator sorts events by duration then start date. Supply an `eventComparator` to change the order:
 
+<!-- snippet: expression -->
 ```dart
 CalendarBody(
   monthBodyConfiguration: MonthBodyConfiguration(

@@ -16,6 +16,7 @@ For schedule views, use `ScheduleTileComponents` instead (passed via `CalendarBo
 
 For most apps a plain `tileBuilder` is all you need:
 
+<!-- snippet: expression -->
 ```dart
 CalendarBody(
   multiDayTileComponents: TileComponents(
@@ -41,6 +42,7 @@ Every aspect of an event tile's appearance and drag behavior can be overridden.
 <details>
   <summary>TileComponents reference</summary>
 
+  <!-- snippet: expression -->
   ```dart
   TileComponents(
     // Required: the stationary event tile.
@@ -83,6 +85,7 @@ Schedule view tiles have a different set of builders since they are laid out in 
 <details>
   <summary>ScheduleTileComponents reference</summary>
 
+  <!-- snippet: expression -->
   ```dart
   ScheduleTileComponents(
     // Required: the stationary event tile.
@@ -112,6 +115,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 <details>
   <summary>DayEventTileUtils (day / multi-day body tiles)</summary>
 
+  <!-- snippet: file -->
   ```dart
   class CustomDayEventTile extends StatelessWidget with DayEventTileUtils {
     @override
@@ -168,6 +172,7 @@ For tiles that need to know the exact tapped time or find nearby events, use the
 <details>
   <summary>MultiDayEventTileUtils (month view / multi-day header tiles)</summary>
 
+  <!-- snippet: file -->
   ```dart
   class CustomMultiDayEventTile extends StatelessWidget with MultiDayEventTileUtils {
     @override
@@ -227,6 +232,7 @@ Out of the box the calendar follows your app's Material 3 theme: line colors, te
 
 To change how every calendar in the app looks, register a `KalenderThemeData` on your theme. Any field you leave out keeps its Material 3 default.
 
+<!-- snippet: expression -->
 ```dart
 MaterialApp(
   theme: ThemeData(
@@ -253,6 +259,7 @@ Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `l
 
 The overlay that opens from the `+3` button, which stands in for events that do not fit, is themed the same way. Its card and close button take Flutter's own `CardThemeData` and `ButtonStyle`, so anything you can do to a `Card` or an `IconButton` you can do here.
 
+<!-- snippet: expression -->
 ```dart
 KalenderThemeData(
   multiDayOverlayStyle: MultiDayOverlayStyle(
@@ -279,33 +286,32 @@ Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalende
 <details>
   <summary>MultiDayComponents</summary>
 
+  <!-- snippet: expression -->
   ```dart
-  CalendarView(
-    components: CalendarComponents(
-      multiDayComponents: MultiDayComponents(
-        headerComponents: MultiDayHeaderComponents(
-          dayHeaderBuilder: (date, style) => CustomWidget(),
-          weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
-          leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-          rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-          overlayBuilders: OverlayBuilders(
-            multiDayPortalOverlayButtonBuilder:
-                (portalController, numberOfHiddenRows, style) => SizedBox(),
-          ),
+  CalendarComponents(
+    multiDayComponents: MultiDayComponents(
+      headerComponents: MultiDayHeaderComponents(
+        dayHeaderBuilder: (date, style) => CustomWidget(),
+        weekNumberBuilder: (visibleDateTimeRange, style) => CustomWidget(),
+        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        overlayBuilders: OverlayBuilders(
+          multiDayPortalOverlayButtonBuilder:
+              (portalController, numberOfHiddenRows, style) => SizedBox(),
         ),
-        bodyComponents: MultiDayBodyComponents(
-          hourLines: (heightPerMinute, timeOfDayRange, style, timelineStyle) => CustomWidget(),
-          timeline: (heightPerMinute, timeOfDayRange, style, eventBeingDragged, visibleDateTimeRange) =>
-              CustomWidget(),
-          // Sizes the timeline gutter, for example to fit a custom timeline's labels.
-          timelineWidth: (context, timeOfDayRange, style) => 48,
-          daySeparator: (style) => CustomWidget(),
-          timeIndicator: (timeOfDayRange, heightPerMinute, style, location) => CustomWidget(),
-          leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-          rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
-          topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-          bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
-        ),
+      ),
+      bodyComponents: MultiDayBodyComponents(
+        hourLines: (heightPerMinute, timeOfDayRange, style, timelineStyle) => CustomWidget(),
+        timeline: (heightPerMinute, timeOfDayRange, style, eventBeingDragged, visibleDateTimeRange) =>
+            CustomWidget(),
+        // Sizes the timeline gutter, for example to fit a custom timeline's labels.
+        timelineWidth: (context, timeOfDayRange, style) => 48,
+        daySeparator: (style) => CustomWidget(),
+        timeIndicator: (timeOfDayRange, heightPerMinute, style, location) => CustomWidget(),
+        leftTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        rightTriggerBuilder: (pageWidth) => SizedBox(width: pageWidth / 20),
+        topTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
+        bottomTriggerBuilder: (viewPortHeight) => SizedBox(height: viewPortHeight / 20),
       ),
     ),
   )
@@ -315,26 +321,25 @@ Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalende
 <details>
   <summary>MonthComponents</summary>
 
+  <!-- snippet: expression -->
   ```dart
-  CalendarView(
-    components: CalendarComponents(
-      monthComponents: MonthComponents(
-        headerComponents: MonthHeaderComponents(
-          weekDayHeaderBuilder: (date, style) => SizedBox(),
-        ),
-        bodyComponents: MonthBodyComponents(
-          monthDayHeaderBuilder: (date, style) => SizedBox(),
-          // Custom per-cell background, or use the ready-made
-          // MonthDayCell.shadeAdjacentMonths() to shade adjacent-month days.
-          monthDayCellBuilder: (details) => SizedBox(),
-          monthGridBuilder: (style, numberOfRows) => SizedBox(),
-          weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
-          leftTriggerBuilder: (pageWidth) => SizedBox(),
-          rightTriggerBuilder: (pageWidth) => SizedBox(),
-          overlayBuilders: OverlayBuilders(
-            multiDayPortalOverlayButtonBuilder:
-                (portalController, numberOfHiddenRows, style) => SizedBox(),
-          ),
+  CalendarComponents(
+    monthComponents: MonthComponents(
+      headerComponents: MonthHeaderComponents(
+        weekDayHeaderBuilder: (date, style) => SizedBox(),
+      ),
+      bodyComponents: MonthBodyComponents(
+        monthDayHeaderBuilder: (date, style) => SizedBox(),
+        // Custom per-cell background, or use the ready-made
+        // MonthDayCell.shadeAdjacentMonths() to shade adjacent-month days.
+        monthDayCellBuilder: (details) => SizedBox(),
+        monthGridBuilder: (style, numberOfRows) => SizedBox(),
+        weekNumberBuilder: (visibleDateTimeRange, style) => SizedBox(),
+        leftTriggerBuilder: (pageWidth) => SizedBox(),
+        rightTriggerBuilder: (pageWidth) => SizedBox(),
+        overlayBuilders: OverlayBuilders(
+          multiDayPortalOverlayButtonBuilder:
+              (portalController, numberOfHiddenRows, style) => SizedBox(),
         ),
       ),
     ),
@@ -345,23 +350,22 @@ Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalende
 <details>
   <summary>ScheduleComponents</summary>
 
+  <!-- snippet: expression -->
   ```dart
-  CalendarView(
-    components: CalendarComponents(
-      scheduleComponents: ScheduleComponents(
-        // The date column shown beside the first row of each day.
-        leadingDateBuilder: (date, style) => Container(),
+  CalendarComponents(
+    scheduleComponents: ScheduleComponents(
+      // The date column shown beside the first row of each day.
+      leadingDateBuilder: (date, style) => Container(),
 
-        // Wraps a row to highlight it as the drop target during a drag.
-        scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) =>
-            Container(child: child),
+      // Wraps a row to highlight it as the drop target during a drag.
+      scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) =>
+          Container(child: child),
 
-        // Optional: builder for days with no events.
-        emptyItemBuilder: (tileRange) => Container(),
+      // Optional: builder for days with no events.
+      emptyItemBuilder: (tileRange) => Container(),
 
-        // Optional: builder for the month heading rows.
-        monthItemBuilder: (monthRange) => Container(),
-      ),
+      // Optional: builder for the month heading rows.
+      monthItemBuilder: (monthRange) => Container(),
     ),
   )
   ```

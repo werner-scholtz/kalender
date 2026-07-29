@@ -30,6 +30,14 @@ flutter test
 dart tool/test_timezones_linux.dart
 ```
 
+- Adding or changing a code sample in the README or the guides? Every fenced dart block carries a directive comment saying how it is compiled, and CI compiles them all:
+
+```bash
+dart run tool/analyze_doc_snippets.dart
+```
+
+A block without a directive fails the run, so a new snippet cannot go in unchecked. `tool/analyze_doc_snippets.dart` documents the directives at the top.
+
 - Removing or renaming anything public? The rules for deprecating it, how long it stays, and what to write in the changelog and migration guide are in [AGENTS.md](AGENTS.md#breaking-changes-and-deprecations). They also cover the changes that cannot be deprecated at all.
 
 ## Reporting issues

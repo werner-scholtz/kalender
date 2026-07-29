@@ -10,6 +10,7 @@ on screen, see [Layout](layout.md). For what they look like, see
 
 Since v0.16.0, `CalendarEvent` is no longer generic. The idiomatic way to attach custom data (title, color, description, etc.) is to **extend** `CalendarEvent` directly.
 
+<!-- snippet: file -->
 ```dart
 class Event extends CalendarEvent {
   final String title;
@@ -70,6 +71,7 @@ class Event extends CalendarEvent {
 
 Use `eventsController.updateEvent()` to replace an existing event with an updated copy:
 
+<!-- snippet: statements -->
 ```dart
 final original = eventsController.byId(someId)! as Event;
 final updated = original.copyWith(title: 'Updated Title', color: Colors.red);
@@ -86,29 +88,35 @@ Only override `layoutEquals` when a custom property changes the *size or positio
 
 Cast the event to your subclass. A convenience getter keeps the cast to one place:
 
+<!-- snippet: expression -->
 ```dart
-tileBuilder: (event, tileRange) {
-  final myEvent = event as Event;
-  return Container(
-    color: myEvent.color ?? Colors.blue,
-    child: Text(myEvent.title),
-  );
-},
+TileComponents(
+  tileBuilder: (event, tileRange) {
+    final myEvent = event as Event;
+    return Container(
+      color: myEvent.color ?? Colors.blue,
+      child: Text(myEvent.title),
+    );
+  },
+)
 ```
 
 ### Returning your subclass on event creation
 
 Use `onEventCreate` to intercept the bare `CalendarEvent` created by a gesture and return a fully typed instance:
 
+Pass this as `CalendarView.callbacks`:
+
+<!-- snippet: expression -->
 ```dart
-callbacks: CalendarCallbacks(
+CalendarCallbacks(
   onEventCreate: (event) => Event(
     dateTimeRange: event.dateTimeRange,
     title: 'New Event',
     color: Colors.blue,
   ),
   onEventCreated: (event) => eventsController.addEvent(event),
-),
+)
 ```
 
 ---
@@ -119,6 +127,7 @@ A `MultiDayRule` decides whether an event renders in the multi-day header lane o
 
 A single event can override the calendar's rule:
 
+<!-- snippet: expression -->
 ```dart
 CalendarEvent(
   dateTimeRange: range,
@@ -130,6 +139,7 @@ CalendarEvent(
 
 `spansMultipleDays` returns whether an event counts as multi-day, applying the same rules the calendar does:
 
+<!-- snippet: expression -->
 ```dart
 event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)
 ```

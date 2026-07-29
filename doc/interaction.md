@@ -16,6 +16,7 @@ different things in its header than in its body.
 - `interaction: CalendarInteraction`: toggling resize / reschedule / create.
 - `snapping: CalendarSnapping`: (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
 
+<!-- snippet: expression -->
 ```dart
 CalendarBody(
   interaction: CalendarInteraction(
@@ -52,6 +53,7 @@ Zoom the calendar in and out by changing the `heightPerMinute` value on the `Mul
 
 Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop. `PointerScrollEvent` and `HardwareKeyboard` are not exported by `material.dart`, so both imports are needed:
 
+<!-- snippet: file -->
 ```dart
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';

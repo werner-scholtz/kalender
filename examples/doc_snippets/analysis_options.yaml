@@ -1,0 +1,11 @@
+# The generated snippets are checked for whether they compile, not for style, so
+# no lint set is included. Analyzer errors and warnings are the signal.
+analyzer:
+  errors:
+    # Every snippet gets the same import header, so most of it is unused in most
+    # of them. That says nothing about whether the snippet compiles.
+    unnecessary_import: ignore
+    unused_element: ignore
+    unused_import: ignore
+    unused_local_variable: ignore
+    unused_shown_name: ignore

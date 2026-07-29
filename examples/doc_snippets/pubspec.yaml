@@ -1,0 +1,15 @@
+name: doc_snippets
+description: Compiles the Dart snippets extracted from the README and the doc/ guides.
+publish_to: none
+version: 0.0.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: '>=0.19.0 <0.23.0'
+  kalender:
+    path: ../..
+  timezone: '>=0.11.0 <0.12.0'

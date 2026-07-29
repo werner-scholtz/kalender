@@ -3,6 +3,7 @@
 A complete calendar, using only the base `CalendarEvent` class with no custom fields.
 Tapping an empty slot creates an event, and events can be dragged and resized.
 
+<!-- snippet: file -->
 ```dart
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
