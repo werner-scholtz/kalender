@@ -26,13 +26,10 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 
 ### Fixes
 
-- `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four were missing, and both classes reach the calendar through a `ValueNotifier` that uses `==` to decide whether to notify, so changing only `throttleMilliseconds`, `createEventGesture`, `modifyEventGesture` or `allowSingleDayEvents` never reached the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
-- Dragging to create an event no longer reacts to a drag that started on a different calendar. The guard compared a variable to itself, so it never rejected anything. [#366](https://github.com/werner-scholtz/kalender/pull/366)
-- `ScrollTriggerConfiguration.copyWith` keeps `scrollAmount`. It had no such parameter, so every copy reset the drag-scroll distance to the default. [#366](https://github.com/werner-scholtz/kalender/pull/366)
-- `MultiDayViewConfiguration.copyWith` and `MonthViewConfiguration.copyWith` keep `multiDayRule`, and take a parameter to change it. Every copy reset the rule to the default, so a calendar that set one lost it as soon as any other field changed. `MonthViewConfiguration.copyWith` also keeps `nowCallback` and no longer takes an `eventPadding` parameter, which set nothing.
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four fields were missing, so changing only one of them never updated the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
 - Dragging to create an event no longer reacts to a drag that started on a different calendar. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - `ScrollTriggerConfiguration.copyWith` keeps `scrollAmount` instead of resetting it to the default. [#366](https://github.com/werner-scholtz/kalender/pull/366)
+- `MultiDayViewConfiguration.copyWith` and `MonthViewConfiguration.copyWith` keep `multiDayRule` instead of resetting it to the default, and take a parameter to change it. `MonthViewConfiguration.copyWith` also keeps `nowCallback` and no longer takes an `eventPadding` parameter, which set nothing. [#387](https://github.com/werner-scholtz/kalender/pull/387)
 - Removing an event no longer throws when its date index was never populated for that location. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - Tapping the trailing edge of an event tile resolves to the last visible day instead of one day past it. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - The two drag-target guards that decide whether an event may be dropped in the header or the body now use the calendar's location, so they agree with the rest of the calendar near midnight and across daylight saving changes. [#367](https://github.com/werner-scholtz/kalender/pull/367)
