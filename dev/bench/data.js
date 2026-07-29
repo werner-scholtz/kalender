@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1784806849250,
+  "lastUpdate": 1785306275654,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -7519,6 +7519,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3807.323426573427,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2b09ad3166ae7730098d5bd60ac13471a1b3b666",
+          "message": "Merge pull request #381 from werner-scholtz/fix/overlay-tile-builder\n\nfix: restore overlayTileBuilder and drop the dead ScheduleTileComponents parameters",
+          "timestamp": "2026-07-29T08:05:49+02:00",
+          "tree_id": "13a185bad83733a7a1cf3ca253226d0827425906",
+          "url": "https://github.com/werner-scholtz/kalender/commit/2b09ad3166ae7730098d5bd60ac13471a1b3b666"
+        },
+        "date": 1785306271111,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 171.94490096012456,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 689.07975,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2094.331,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 7991.156,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 725.9725,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2252.715,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2481.9275,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12689.3875,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 242.96161369193155,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 113.6414052402773,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 786.73825,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3351.014992503748,
             "unit": "us"
           }
         ]
