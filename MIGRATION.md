@@ -138,7 +138,30 @@ CalendarEvent(
 )
 ```
 
-`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it. Neither does your `copyWith` override: `multiDayRule` is deliberately not a parameter on it, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. The rule is carried through automatically.
+`CalendarEvent.multiDayRule` is null unless you set it, and null means "use the calendar's rule". It takes part in `layoutEquals`, so two events differing only in their rule are not equal. A subclass overriding `layoutEquals` needs no change, since `super`'s comparison already covers it.
+
+`copyWith` takes no `multiDayRule` parameter, because adding one to `CalendarEvent.copyWith` would make every subclass override invalid. A subclass has to forward it:
+
+```dart
+  Event({
+    super.id,
+    required super.dateTimeRange,
+    required this.title,
++   super.multiDayRule,
+  });
+
+  @override
+  Event copyWith({DateTimeRange? dateTimeRange, String? title}) {
+    return Event(
+      id: id,
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
++     multiDayRule: multiDayRule,
+      title: title ?? this.title,
+    );
+  }
+```
+
+Without it, every drag or resize produces a copy without the rule.
 
 For a rule none of these express, override `spansMultipleDays` rather than implementing `MultiDayRule`. Its signature is:
 

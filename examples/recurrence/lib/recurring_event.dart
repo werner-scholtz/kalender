@@ -10,6 +10,7 @@ class RecurringCalendarEvent extends CalendarEvent {
     required this.groupId,
     required super.dateTimeRange,
     super.interaction,
+    super.multiDayRule,
   });
 
   /// Copy the [CalendarEvent] with the new values.
@@ -23,6 +24,7 @@ class RecurringCalendarEvent extends CalendarEvent {
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       groupId: groupId,
       interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule,
     );
   }
 

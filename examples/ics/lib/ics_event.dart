@@ -13,6 +13,7 @@ class IcsEvent extends CalendarEvent {
     required this.color,
     this.description,
     super.interaction,
+    super.multiDayRule,
   });
 
   final String uid;
@@ -33,6 +34,7 @@ class IcsEvent extends CalendarEvent {
       id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule,
       uid: uid ?? this.uid,
       title: title ?? this.title,
       description: description ?? this.description,

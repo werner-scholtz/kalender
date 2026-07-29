@@ -19,6 +19,7 @@ class Event extends CalendarEvent {
     required this.title,
     required this.person,
     super.interaction,
+    super.multiDayRule,
   });
 
   factory Event.fromDetail(CalendarEvent calendarEvent, TapDetail detail) {
@@ -47,6 +48,7 @@ class Event extends CalendarEvent {
       id: id,
       dateTimeRange: dateTimeRange ?? this.dateTimeRange,
       interaction: interaction ?? this.interaction,
+      multiDayRule: multiDayRule,
       title: title ?? this.title,
       person: person ?? this.person,
     );

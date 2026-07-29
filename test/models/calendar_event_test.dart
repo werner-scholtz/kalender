@@ -360,6 +360,22 @@ void main() {
       );
     });
 
+    test('a subclass keeps the rule when its copyWith forwards it', () {
+      // The pattern the Custom Events guide documents. Dropping `multiDayRule`
+      // from the rebuild loses the rule on the first drag or resize.
+      final event = _DataEvent(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 1, 15), end: DateTime.utc(2024, 1, 16)),
+        title: 'Night shift',
+        multiDayRule: const MultiDayRule.calendarDays(),
+      );
+
+      final moved = event.copyWith(
+        dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 2), end: DateTime.utc(2024, 2, 2)),
+      );
+      expect(moved.multiDayRule, const MultiDayRule.calendarDays());
+      expect(moved.title, 'Night shift');
+    });
+
     test('the rule participates in layoutEquals, since it decides the lane', () {
       final range = DateTimeRange(start: DateTime.utc(2024, 1, 15, 23), end: DateTime.utc(2024, 1, 16, 1));
       final a = CalendarEvent(id: 'same', dateTimeRange: range);
@@ -391,6 +407,28 @@ void main() {
 /// Fixes the rule for a whole app in one place, the way a real subclass would.
 class _CalendarDayEvent extends CalendarEvent {
   _CalendarDayEvent({required super.dateTimeRange}) : super(multiDayRule: const MultiDayRule.calendarDays());
+}
+
+/// Attaches data the way the Custom Events guide shows, forwarding the rule.
+class _DataEvent extends CalendarEvent {
+  _DataEvent({
+    super.id,
+    required super.dateTimeRange,
+    required this.title,
+    super.multiDayRule,
+  });
+
+  final String title;
+
+  @override
+  _DataEvent copyWith({DateTimeRange? dateTimeRange, EventInteraction? interaction, String? title}) {
+    return _DataEvent(
+      id: id,
+      dateTimeRange: dateTimeRange ?? this.dateTimeRange,
+      multiDayRule: multiDayRule,
+      title: title ?? this.title,
+    );
+  }
 }
 
 /// Replaces the rule entirely with a strict "more than one calendar day".
