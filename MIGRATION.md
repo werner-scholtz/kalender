@@ -42,6 +42,29 @@ Delete the arguments. The schedule view has no overflow overlay and cannot resiz
 
 The schedule marks the drop target by highlighting the destination row rather than rendering a tile at it. To change that highlight, set `ScheduleComponents.scheduleTileHighlightBuilder` or `ScheduleTileHighlightStyle` on the theme.
 
+### `emptyItemBuilder` and `monthItemBuilder` moved to `ScheduleComponents`
+
+```dart
+  CalendarBody(
+    scheduleTileComponents: ScheduleTileComponents(
+      tileBuilder: MyTile.builder,
+-     emptyItemBuilder: (tileRange) => MyEmptyItem(),
+-     monthItemBuilder: (monthRange) => MyMonthItem(),
+    ),
+  )
+
+  CalendarView(
+    components: CalendarComponents(
+      scheduleComponents: ScheduleComponents(
++       emptyItemBuilder: (tileRange) => MyEmptyItem(),
++       monthItemBuilder: (monthRange) => MyMonthItem(),
+      ),
+    ),
+  )
+```
+
+These two build list rows rather than event tiles, so they now live with the other schedule row builders. Signatures and defaults are unchanged.
+
 ### `throttleMilliseconds` is gone
 
 ```dart

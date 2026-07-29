@@ -38,11 +38,13 @@ void main() {
     NowCallback? nowCallback,
     DateTime? initialDate,
     Location? location,
+    CalendarComponents? components,
   }) {
     return CalendarView(
       eventsController: eventsController,
       calendarController: calendarController,
       location: location,
+      components: components,
       viewConfiguration: ScheduleViewConfiguration.continuous(
         displayRange: DateTimeRange(start: DateTime(2025), end: DateTime(2026)),
         initialDateTime: initialDate,
@@ -199,4 +201,45 @@ void main() {
       expect(controller.indexFromDateTime(DateTime(2025, 1, 15)), isNull);
     });
   });
+
+  group('ScheduleComponents builders', () {
+    testWidgets('monthItemBuilder replaces the default month header', (tester) async {
+      eventsController.addEvents([eventAt(DateTime(2025, 1, 15), 9)]);
+
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        buildSchedule(
+          emptyDay: EmptyDayBehavior.hide,
+          initialDate: DateTime(2025, 1, 15),
+          nowCallback: () => DateTime(2025, 1, 15, 10),
+          components: CalendarComponents(
+            scheduleComponents: const ScheduleComponents(monthItemBuilder: _customMonthItem),
+          ),
+        ),
+      );
+
+      expect(find.text('custom month'), findsWidgets);
+      expect(find.text('January'), findsNothing);
+    });
+
+    testWidgets('emptyItemBuilder replaces the default empty day row', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        buildSchedule(
+          emptyDay: EmptyDayBehavior.showOnlyToday,
+          initialDate: DateTime(2025, 1, 15),
+          nowCallback: () => DateTime(2025, 1, 15, 10),
+          components: CalendarComponents(
+            scheduleComponents: const ScheduleComponents(emptyItemBuilder: _customEmptyItem),
+          ),
+        ),
+      );
+
+      expect(find.text('custom empty'), findsOneWidget);
+    });
+  });
 }
+
+Widget _customMonthItem(DateTimeRange monthRange) => const Text('custom month');
+
+Widget _customEmptyItem(DateTimeRange tileRange) => const Text('custom empty');
