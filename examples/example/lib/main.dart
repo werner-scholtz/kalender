@@ -224,9 +224,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   ScheduleTileComponents _scheduleTileComponents() {
-    final scheme = Theme.of(context).colorScheme;
-    final radius = BorderRadius.circular(8);
-
     return ScheduleTileComponents(
       tileBuilder: (event, tileRange) => Card(
         margin: const EdgeInsets.symmetric(vertical: 1),
@@ -234,12 +231,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Padding(
           padding: const EdgeInsets.all(4),
           child: Text((event is Event) ? event.title : ''),
-        ),
-      ),
-      dropTargetTile: (event) => DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: scheme.onSurface.withAlpha(80), width: 2),
-          borderRadius: radius,
         ),
       ),
     );

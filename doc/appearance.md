@@ -81,27 +81,35 @@ Schedule view tiles have a different set of builders since they are laid out in 
 
   ```dart
   ScheduleTileComponents(
+    // Required: the stationary event tile.
     tileBuilder: (event, tileRange) => Container(),
+
+    // Optional: shown in place of the tile while it is being dragged.
     tileWhenDraggingBuilder: (event) => Container(),
+
+    // Optional: the tile that follows the cursor / finger during a drag.
     feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
-    dropTargetTile: (event) => Container(),
+
+    // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
 
-    // Builder for days with no events.
+    // Optional: builder for days with no events.
     emptyItemBuilder: (tileRange) => Container(),
 
-    // Builder for the month heading rows.
+    // Optional: builder for the month heading rows.
     monthItemBuilder: (monthRange) => Container(),
   )
   ```
 </details>
+
+Schedule tiles cannot be resized, so `ScheduleTileComponents` takes no resize handles. It also takes no `dropTargetTile`: during a drag the schedule marks the destination by highlighting the row, built by `ScheduleComponents.scheduleTileHighlightBuilder` and styled by `ScheduleTileHighlightStyle`.
 
 ### Advanced tiles with event-tile utilities
 
 For tiles that need to know the exact tapped time or find nearby events, use the provided mixins.
 
 > [!TIP]
-> **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `CalendarCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget receives events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
+> **Disabling the calendar's built-in tap detector:** The calendar only wraps event tiles in a `GestureDetector` when `onEventTapped` or `onEventTappedWithDetail` is provided in `CalendarCallbacks`. If you omit both callbacks, the wrapper is skipped and a `GestureDetector` inside your custom tile widget can receive events unobstructed. This is the intended pattern when using `DayEventTileUtils` or `MultiDayEventTileUtils`.
 
 <details>
   <summary>DayEventTileUtils (day / multi-day body tiles)</summary>

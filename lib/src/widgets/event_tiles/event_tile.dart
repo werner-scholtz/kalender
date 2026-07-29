@@ -80,6 +80,11 @@ abstract class EventTile extends StatelessWidget {
   /// Each tile type provides a unique key pattern for testing and debugging.
   Key get gestureKey;
 
+  /// The builder used to render the tile content.
+  ///
+  /// Subclasses override this to select a different builder from [tileComponents].
+  TileBuilder get effectiveTileBuilder => tileComponents.tileBuilder;
+
   @override
   Widget build(BuildContext context) {
     final draggable = TileDraggable(
@@ -91,7 +96,7 @@ abstract class EventTile extends StatelessWidget {
       dismissOverlay: dismissOverlay,
       child: Tile(
         initialEvent: event,
-        tileBuilder: tileComponents.tileBuilder,
+        tileBuilder: effectiveTileBuilder,
         tileWhenDraggingBuilder: tileComponents.tileWhenDraggingBuilder,
         dateTimeRange: dateTimeRange,
       ),

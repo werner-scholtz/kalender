@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart'
-    show CalendarEvent, MultiDayBody, MonthBody, ScheduleBody, ResizeHandlePositioner;
+    show CalendarEvent, MultiDayBody, MonthBody, ScheduleBody, ResizeHandlePositioner, ScheduleComponents;
 import 'package:kalender/src/widgets/components/default_tile_components.dart';
 
 /// The components used by the [MultiDayBody]/[MonthBody] to render the event tiles.
@@ -37,7 +37,7 @@ class TileComponents {
   /// The dragAnchorStrategy used by the resize handles.
   ///
   /// Defaults to a pointer anchor for vertical resizing. Setting
-  /// `childDragAnchorStrategy` makes a vertical resize flip to the neighbouring
+  /// `childDragAnchorStrategy` makes a vertical resize flip to the neighboring
   /// day on the smallest sideways move.
   final DragAnchorStrategy? resizeDragAnchorStrategy;
 
@@ -87,15 +87,23 @@ class ScheduleTileComponents extends TileComponents {
   Widget? get verticalResizeHandle => null;
   @override
   Widget? get horizontalResizeHandle => null;
+  @override
+  DragAnchorStrategy? get resizeDragAnchorStrategy => null;
+
+  /// The schedule view has no overflow overlay.
+  @override
+  TileBuilder? get overlayTileBuilder => null;
+
+  /// The schedule view marks the drop target by highlighting the row, built by
+  /// [ScheduleComponents.scheduleTileHighlightBuilder].
+  @override
+  TileDropTargetBuilder? get dropTargetTile => null;
 
   const ScheduleTileComponents({
     required super.tileBuilder,
-    super.dropTargetTile,
     super.tileWhenDraggingBuilder,
     super.feedbackTileBuilder,
-    super.overlayTileBuilder,
     super.dragAnchorStrategy,
-    super.resizeDragAnchorStrategy,
     this.emptyItemBuilder,
     this.monthItemBuilder,
   });

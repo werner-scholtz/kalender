@@ -24,8 +24,6 @@ TileComponents get multiDayTileComponents {
 ScheduleTileComponents get scheduleTileComponents {
   return ScheduleTileComponents(
     tileBuilder: MultiDayEventTile.builder,
-    overlayTileBuilder: OverlayEventTile.builder,
-    dropTargetTile: DropTargetTile.builder,
     feedbackTileBuilder: FeedbackTile.builder,
     tileWhenDraggingBuilder: TileWhenDragging.builder,
   );
