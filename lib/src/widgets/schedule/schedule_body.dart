@@ -386,21 +386,21 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             late final highlightStyle = styles.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
-            late final tileComponents = context.tileComponents as ScheduleTileComponents;
             if (item is MonthItem) {
               final locale = context.locale;
-              return tileComponents.monthItemBuilder?.call(InternalDateTime.fromDateTime(date).monthRange) ??
+              return components.monthItemBuilder?.call(InternalDateTime.fromDateTime(date).monthRange) ??
                   ListTile(title: Text(date.monthNameLocalized(locale)));
             } else if (item is EmptyItem) {
               final child = ListTile(
                 minLeadingWidth: 0,
                 leading: leadingSlot(leading),
-                title: tileComponents.emptyItemBuilder?.call(InternalDateTime.fromDateTime(date).dayRange),
+                title: components.emptyItemBuilder?.call(InternalDateTime.fromDateTime(date).dayRange),
               );
               return highlightBuilder(date, viewController.highlightedDateTimeRange, highlightStyle, child);
             } else if (item is EventItem) {
               final showDate = item.isFirst;
               final event = eventsController.byId(item.eventId)!;
+              final tileComponents = context.tileComponents as ScheduleTileComponents;
 
               final child = ListTile(
                 minLeadingWidth: 0,

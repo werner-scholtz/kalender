@@ -92,17 +92,11 @@ Schedule view tiles have a different set of builders since they are laid out in 
 
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
-
-    // Optional: builder for days with no events.
-    emptyItemBuilder: (tileRange) => Container(),
-
-    // Optional: builder for the month heading rows.
-    monthItemBuilder: (monthRange) => Container(),
   )
   ```
 </details>
 
-Schedule tiles cannot be resized, so `ScheduleTileComponents` takes no resize handles. It also takes no `dropTargetTile`: during a drag the schedule marks the destination by highlighting the row, built by `ScheduleComponents.scheduleTileHighlightBuilder` and styled by `ScheduleTileHighlightStyle`.
+Schedule tiles cannot be resized, so `ScheduleTileComponents` takes no resize handles. It also takes no `dropTargetTile`: during a drag the schedule marks the destination by highlighting the row, built by `ScheduleComponents.scheduleTileHighlightBuilder` and styled by `ScheduleTileHighlightStyle`. The empty-day and month heading rows are list rows rather than event tiles, so their builders live on [`ScheduleComponents`](#appearance--custom-components) as well.
 
 ### Advanced tiles with event-tile utilities
 
@@ -351,9 +345,18 @@ Style classes: [`MultiDayComponentStyles`](https://github.com/werner-scholtz/kal
   CalendarView(
     components: CalendarComponents(
       scheduleComponents: ScheduleComponents(
+        // The date column shown beside the first row of each day.
         leadingDateBuilder: (date, style) => Container(),
+
+        // Wraps a row to highlight it as the drop target during a drag.
         scheduleTileHighlightBuilder: (date, dateTimeRange, style, child) =>
             Container(child: child),
+
+        // Optional: builder for days with no events.
+        emptyItemBuilder: (tileRange) => Container(),
+
+        // Optional: builder for the month heading rows.
+        monthItemBuilder: (monthRange) => Container(),
       ),
     ),
   )

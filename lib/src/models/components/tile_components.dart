@@ -75,12 +75,6 @@ class TileComponents {
 
 /// The components used by the [ScheduleBody] to render the event tiles.
 class ScheduleTileComponents extends TileComponents {
-  /// The builder for the empty day.
-  final EmptyItemBuilder? emptyItemBuilder;
-
-  /// The builder for the month tile.
-  final MonthItemBuilder? monthItemBuilder;
-
   @override
   ResizeHandlePositioner? get resizeHandlePositioner => null;
   @override
@@ -104,8 +98,6 @@ class ScheduleTileComponents extends TileComponents {
     super.tileWhenDraggingBuilder,
     super.feedbackTileBuilder,
     super.dragAnchorStrategy,
-    this.emptyItemBuilder,
-    this.monthItemBuilder,
   });
 
   static ScheduleTileComponents defaultComponents() {
@@ -148,13 +140,3 @@ typedef FeedbackTileBuilder = Widget Function(
 typedef TileDropTargetBuilder = Widget Function(
   CalendarEvent event,
 );
-
-/// The builder for the empty item.
-///
-/// [tileRange] is the [DateTimeRange] of the ListTile where this widget will be displayed.
-typedef EmptyItemBuilder = Widget Function(DateTimeRange tileRange);
-
-/// The builder for the month item.
-///
-/// [monthRange] is the [DateTimeRange] of the month.
-typedef MonthItemBuilder = Widget Function(DateTimeRange monthRange);
