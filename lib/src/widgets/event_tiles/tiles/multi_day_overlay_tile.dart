@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/calendar_callbacks.dart';
+import 'package:kalender/src/models/components/tile_components.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/widgets/event_tiles/event_tile.dart';
 
@@ -22,6 +23,9 @@ class MultiDayEventOverlayTile extends EventTile {
 
   /// A key used to identify the gesture detector.
   static Key gestureDetectorKey(String eventId) => Key('MultiDayOverlayEventTile-GestureDetector-$eventId');
+
+  @override
+  TileBuilder get effectiveTileBuilder => tileComponents.overlayTileBuilder ?? tileComponents.tileBuilder;
 
   @override
   EventTileOnTapUp? get onTapUp => (details, context) {
