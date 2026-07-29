@@ -1,6 +1,6 @@
 # Timezones & Locales
 
-This is part of the [kalender](../README.md) documentation.
+This is part of the [kalender](README.md) documentation.
 
 ## Locale
 
