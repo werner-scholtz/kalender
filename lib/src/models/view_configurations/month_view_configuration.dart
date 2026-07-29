@@ -49,17 +49,20 @@ class MonthViewConfiguration extends ViewConfiguration {
     DateTime? selectedDate,
     DateTransition? dateTransition,
     DateResolver? dateResolver,
+    NowCallback? nowCallback,
     int? firstDayOfWeek,
     bool? showWeekNumbers,
-    EdgeInsets? eventPadding,
+    MultiDayRule? multiDayRule,
   }) {
     return MonthViewConfiguration.singleMonth(
       name: name ?? this.name,
       initialDateTime: initialDateTime ?? initialDateTime,
       dateTransition: dateTransition ?? this.dateTransition,
       dateResolver: dateResolver ?? this.dateResolver,
+      nowCallback: nowCallback ?? this.nowCallback,
       firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       showWeekNumbers: showWeekNumbers ?? this.showWeekNumbers,
+      multiDayRule: multiDayRule ?? this.multiDayRule,
       displayRange: pageIndexCalculator.dateTimeRange,
     );
   }
@@ -73,12 +76,20 @@ class MonthViewConfiguration extends ViewConfiguration {
         other.dateTransition == dateTransition &&
         other.pageIndexCalculator == pageIndexCalculator &&
         other.firstDayOfWeek == firstDayOfWeek &&
-        other.showWeekNumbers == showWeekNumbers;
+        other.showWeekNumbers == showWeekNumbers &&
+        other.multiDayRule == multiDayRule;
   }
 
   @override
   int get hashCode {
-    return Object.hash(initialDateTime, dateTransition, pageIndexCalculator, firstDayOfWeek, showWeekNumbers);
+    return Object.hash(
+      initialDateTime,
+      dateTransition,
+      pageIndexCalculator,
+      firstDayOfWeek,
+      showWeekNumbers,
+      multiDayRule,
+    );
   }
 }
 

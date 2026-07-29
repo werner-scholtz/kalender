@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/layout_delegates/event_layout_delegate.dart';
 import 'package:kalender/src/layout_delegates/multi_day_event_layout.dart';
+import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 import 'package:kalender/src/models/navigation_triggers.dart';
 import 'package:kalender/src/models/view_configurations/page_index_calculator.dart';
 import 'package:kalender/src/models/view_configurations/view_configuration.dart';
@@ -208,6 +209,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     ScrollResolver? scrollResolver,
     ZoomTransition? zoomTransition,
     ZoomResolver? zoomResolver,
+    MultiDayRule? multiDayRule,
   }) {
     final name0 = name ?? this.name;
     final selectedDate0 = initialDateTime ?? this.initialDateTime;
@@ -222,6 +224,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
     final scrollResolver0 = scrollResolver ?? this.scrollResolver;
     final zoomTransition0 = zoomTransition ?? this.zoomTransition;
     final zoomResolver0 = zoomResolver ?? this.zoomResolver;
+    final multiDayRule0 = multiDayRule ?? this.multiDayRule;
 
     return switch (type) {
       MultiDayViewType.singleDay => MultiDayViewConfiguration.singleDay(
@@ -238,6 +241,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           scrollResolver: scrollResolver0,
           zoomTransition: zoomTransition0,
           zoomResolver: zoomResolver0,
+          multiDayRule: multiDayRule0,
         ),
       MultiDayViewType.week => MultiDayViewConfiguration.week(
           name: name0,
@@ -253,6 +257,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           scrollResolver: scrollResolver0,
           zoomTransition: zoomTransition0,
           zoomResolver: zoomResolver0,
+          multiDayRule: multiDayRule0,
         ),
       MultiDayViewType.workWeek => MultiDayViewConfiguration.workWeek(
           name: name0,
@@ -267,6 +272,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           scrollResolver: scrollResolver0,
           zoomTransition: zoomTransition0,
           zoomResolver: zoomResolver0,
+          multiDayRule: multiDayRule0,
         ),
       MultiDayViewType.custom => MultiDayViewConfiguration.custom(
           name: name0,
@@ -283,6 +289,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           scrollResolver: scrollResolver0,
           zoomTransition: zoomTransition0,
           zoomResolver: zoomResolver0,
+          multiDayRule: multiDayRule0,
         ),
       MultiDayViewType.freeScroll => MultiDayViewConfiguration.freeScroll(
           name: name0,
@@ -298,6 +305,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
           scrollResolver: scrollResolver0,
           zoomTransition: zoomTransition0,
           zoomResolver: zoomResolver0,
+          multiDayRule: multiDayRule0,
         ),
     };
   }
@@ -316,6 +324,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.dateTimeRange == dateTimeRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
+        other.multiDayRule == multiDayRule &&
         other.pageIndexCalculator == pageIndexCalculator;
   }
 
@@ -331,6 +340,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       dateTimeRange,
       numberOfDays,
       firstDayOfWeek,
+      multiDayRule,
       pageIndexCalculator,
     );
   }
