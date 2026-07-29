@@ -127,7 +127,7 @@ CalendarEvent(
 event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)
 ```
 
-The event's own `multiDayRule` takes precedence when set, otherwise `defaultRule` applies. Pass the calendar's location so that rules measuring calendar days, such as `MultiDayRule.calendarDays`, place midnight in the right timezone.
+The event's own `multiDayRule` takes precedence when set. Otherwise `defaultRule` applies. Pass the calendar's location so that rules measuring calendar days, such as `MultiDayRule.calendarDays`, place midnight in the right timezone.
 
 ---
 

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-/// Formats [date] and replaces intl's uninitialized locale data error with one
-/// that names the setup step and the library it comes from.
+/// Formats [date] and replaces intl's uninitialized locale data error with one that names the setup step and the
+/// library it comes from.
 ///
-/// The format is built inside the guard because intl resolves its locale data
-/// lazily, so either the construction or the format call can fail.
+/// The format is built inside the guard because intl resolves its locale data lazily, so either the construction or
+/// the format call can fail.
 String _formatLocalized(DateFormat Function() format, DateTime date, dynamic locale) {
   try {
     return format().format(date);
@@ -41,10 +41,8 @@ extension DateTimeExtensions on DateTime {
   /// The [locale] parameter allows you to specify the desired locale.
   /// If not provided, it uses the system locale.
   ///
-  /// Requires `initializeDateFormatting()` from
-  /// `package:intl/date_symbol_data_local.dart` to have been awaited, unless
-  /// [locale] is null or `en_US`. Throws a [FlutterError] naming the missing
-  /// call otherwise.
+  /// Requires `initializeDateFormatting()` from `package:intl/date_symbol_data_local.dart` to have been awaited,
+  /// unless [locale] is null or `en_US`. Throws a [FlutterError] naming the missing call otherwise.
   ///
   /// Example:
   /// ```dart

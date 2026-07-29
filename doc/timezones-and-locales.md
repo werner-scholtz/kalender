@@ -15,7 +15,7 @@ void main() async {
 }
 ```
 
-The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. intl compiles in the `en_US` data only, so every other locale needs this call, including `en`. Skipping it throws an error naming the locale that failed and the call to add.
+The function comes from `date_symbol_data_local.dart`, not from `intl.dart`. The intl package compiles in the `en_US` data only, so every other locale needs this call, including `en`. Without it, kalender throws an error naming the locale that failed and the call to add.
 
 `CalendarView` has a `locale` property that controls day/month name formatting.
 
