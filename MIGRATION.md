@@ -112,7 +112,7 @@ The name had to change. Dart rejects a class declaring both a getter and a metho
 
 ### Choosing what counts as multi-day
 
-The rule is a `MultiDayRule` on the view configuration. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behaviour, so nothing renders differently until you change it.
+The rule is a `MultiDayRule` on the view configuration. The default is `MultiDayRule.minimumDuration(Duration(hours: 24))`, which is exactly the previous behavior, so nothing renders differently until you change it.
 
 | Rule | Multi-day when |
 | --- | --- |
