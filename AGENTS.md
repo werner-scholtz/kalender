@@ -232,7 +232,9 @@ Publishing is triggered by a tag, not by a merge. Bump `version` in `pubspec.yam
 git tag v0.23.0 && git push origin v0.23.0
 ```
 
-`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
+`publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
+
+The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md and CHANGELOG.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner to keep the publish validator's clean-git check meaningful and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md`.
 
 The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/), so it always shows the published package rather than whatever is on main. To rebuild it from main instead, push a commit whose message contains `web demo`.
 

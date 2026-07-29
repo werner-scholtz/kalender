@@ -56,5 +56,19 @@ jobs:
       - name: Test
         run: flutter test
 
+      # pub.dev renders README.md, CHANGELOG.md and example/README.md from the
+      # archive and resolves their links against the moving main branch. Rewrite
+      # them to the tag so a published version keeps linking to its own docs.
+      # The commit exists only in this runner and is never pushed. It keeps the
+      # git state clean so the dry run below stays warning-free and strict.
+      - name: Pin repository links to the tag
+        run: |
+          dart run tool/pin_release_links.dart "$GITHUB_REF_NAME"
+          git -c user.name=github-actions -c user.email=github-actions@github.com \
+            commit --all --message "Pin repository links to $GITHUB_REF_NAME" --quiet
+
+      - name: Dry-run publish
+        run: flutter pub publish --dry-run
+
       - name: Publish
         run: flutter pub publish --force
