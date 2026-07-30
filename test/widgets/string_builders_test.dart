@@ -118,7 +118,6 @@ void main() {
 
       expect(find.text('wd'), findsWidgets);
     });
-
   });
 
   group('MonthDayHeader', () {
@@ -217,6 +216,5 @@ void main() {
 
       expect(labels(tester), everyElement(matches(RegExp(r'^\+\d+$'))));
     });
-
   });
 }

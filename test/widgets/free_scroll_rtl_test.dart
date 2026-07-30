@@ -84,7 +84,10 @@ void main() {
 
   testWidgets('RTL: scrolling forward moves the tile toward the start side (right)', (tester) async {
     final id = eventsController.addEvent(
-      CalendarEvent(dateTimeRange: DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4)))),
+      CalendarEvent(
+        dateTimeRange:
+            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+      ),
     );
 
     await pump(tester, TextDirection.rtl);

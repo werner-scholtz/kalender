@@ -53,8 +53,18 @@ void main() {
 
     test('monthNameLocalized covers every month in English', () {
       const expected = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
       for (var month = 1; month <= 12; month++) {
         expect(DateTime(2024, month, 15).monthNameLocalized('en'), equals(expected[month - 1]));

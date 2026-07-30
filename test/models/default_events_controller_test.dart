@@ -239,20 +239,26 @@ void main() {
 
     test('Notifies listeners exactly once', () {
       controller.addEvents([
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))),
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10)),
+        ),
       ]);
 
       var count = 0;
       controller.addListener(() => count++);
       controller.replaceEvents([
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 7, 1, 9), end: DateTime.utc(2024, 7, 1, 10))),
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 7, 1, 9), end: DateTime.utc(2024, 7, 1, 10)),
+        ),
       ]);
       expect(count, 1, reason: 'A single atomic update, not a clear followed by an add.');
     });
 
     test('Replacing with an empty list clears all events', () {
       controller.addEvents([
-        CalendarEvent(dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10))),
+        CalendarEvent(
+          dateTimeRange: DateTimeRange(start: DateTime.utc(2024, 6, 1, 9), end: DateTime.utc(2024, 6, 1, 10)),
+        ),
       ]);
       controller.replaceEvents([]);
       expect(controller.events, isEmpty);
@@ -382,7 +388,10 @@ void main() {
         start: InternalDateTime(2024, 12, 20),
         end: InternalDateTime(2024, 12, 21),
       );
-      expect(controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, oldRange), isNot(contains(updatedEvent)));
+      expect(
+        controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, oldRange),
+        isNot(contains(updatedEvent)),
+      );
       expect(controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, newRange), contains(updatedEvent));
     });
 
@@ -392,7 +401,12 @@ void main() {
       final event = CalendarEvent(dateTimeRange: DateTimeRange(start: start, end: end));
       controller.addEvent(event);
       final range = InternalDateTimeRange(start: InternalDateTime(2024, 9, 5), end: InternalDateTime(2024, 9, 6));
-      final result = controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, includeMultiDayEvents: false, includeDayEvents: false);
+      final result = controller.eventsFromDateTimeRange(
+        multiDayRule: defaultMultiDayRule,
+        range,
+        includeMultiDayEvents: false,
+        includeDayEvents: false,
+      );
       expect(result, isEmpty);
     });
   });
@@ -412,13 +426,26 @@ void main() {
           start: InternalDateTime.fromExternal(start, location: location),
           end: InternalDateTime.fromExternal(end, location: location),
         );
-        expect(controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location), contains(event));
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeDayEvents: false),
+          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location),
+          contains(event),
+        );
+        expect(
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeDayEvents: false,
+          ),
           isEmpty,
         );
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeMultiDayEvents: false),
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeMultiDayEvents: false,
+          ),
           contains(event),
         );
       });
@@ -434,13 +461,26 @@ void main() {
           start: InternalDateTime.fromExternal(start, location: location),
           end: InternalDateTime.fromExternal(end, location: location),
         );
-        expect(controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location), contains(event));
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeDayEvents: false),
+          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location),
           contains(event),
         );
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeMultiDayEvents: false),
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeDayEvents: false,
+          ),
+          contains(event),
+        );
+        expect(
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeMultiDayEvents: false,
+          ),
           isEmpty,
         );
       });
@@ -456,13 +496,26 @@ void main() {
           start: InternalDateTime.fromExternal(start, location: location),
           end: InternalDateTime.fromExternal(end, location: location),
         );
-        expect(controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location), contains(event));
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeDayEvents: false),
+          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location),
+          contains(event),
+        );
+        expect(
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeDayEvents: false,
+          ),
           isEmpty,
         );
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, range, location: location, includeMultiDayEvents: false),
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            range,
+            location: location,
+            includeMultiDayEvents: false,
+          ),
           contains(event),
         );
       });
@@ -518,11 +571,21 @@ void main() {
           contains(updatedEvent),
         );
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, newRange, location: location, includeDayEvents: false),
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            newRange,
+            location: location,
+            includeDayEvents: false,
+          ),
           contains(updatedEvent),
         );
         expect(
-          controller.eventsFromDateTimeRange(multiDayRule: defaultMultiDayRule, newRange, location: location, includeMultiDayEvents: false),
+          controller.eventsFromDateTimeRange(
+            multiDayRule: defaultMultiDayRule,
+            newRange,
+            location: location,
+            includeMultiDayEvents: false,
+          ),
           isEmpty,
         );
       });

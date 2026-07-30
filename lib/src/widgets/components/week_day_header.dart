@@ -58,9 +58,7 @@ class WeekDayHeaderStyle {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is WeekDayHeaderStyle &&
-        other.textStyle == textStyle &&
-        other.padding == padding;
+    return other is WeekDayHeaderStyle && other.textStyle == textStyle && other.padding == padding;
   }
 
   @override
@@ -85,8 +83,7 @@ class WeekDayHeader extends StatelessWidget {
     final style = (KalenderTheme.of(context).weekDayHeaderStyle ?? const WeekDayHeaderStyle()).merge(this.style);
     final padding = style.padding ?? const EdgeInsets.symmetric(vertical: 2);
     final stringBuilder = context.components.monthComponents.headerComponents.weekDayHeaderStringBuilder;
-    final dateText =
-        stringBuilder?.call(context, date) ?? date.dayNameLocalized(context.locale);
+    final dateText = stringBuilder?.call(context, date) ?? date.dayNameLocalized(context.locale);
     return Padding(padding: padding, child: Center(child: Text(dateText, style: style.textStyle)));
   }
 }

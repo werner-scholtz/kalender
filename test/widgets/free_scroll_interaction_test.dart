@@ -88,7 +88,8 @@ void main() {
     // A 3-day event inside the first visible week.
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+        dateTimeRange:
+            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
       ),
     );
 
@@ -117,7 +118,8 @@ void main() {
   testWidgets('dragging an event to the viewport edge scrolls to adjacent days', (tester) async {
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
+        dateTimeRange:
+            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 3))),
       ),
     );
 

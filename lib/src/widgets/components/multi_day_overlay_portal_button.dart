@@ -120,8 +120,7 @@ class MultiDayPortalOverlayButton extends StatelessWidget {
       child: Padding(
         padding: style.textPadding ?? const EdgeInsets.symmetric(horizontal: 4.0),
         child: Text(
-          stringBuilder?.call(context, numberOfHiddenRows) ??
-              defaultLabel(context, numberOfHiddenRows),
+          stringBuilder?.call(context, numberOfHiddenRows) ?? defaultLabel(context, numberOfHiddenRows),
           style: style.textStyle,
           overflow: style.textOverflow,
           key: textKey,

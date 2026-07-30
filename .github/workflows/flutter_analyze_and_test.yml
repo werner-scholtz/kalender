@@ -25,12 +25,19 @@ jobs:
         shell: bash
         working-directory: ./
 
+      # Uses the width from analysis_options.yaml. The examples have their own
+      # and are formatted by the analyze_examples.yml workflow.
       - name: Formatting check
+        run: dart format --output=none --set-exit-if-changed lib test tool benchmark
+        shell: bash
+        working-directory: ./
+
+      - name: Analyze (dart)
         run: dart analyze
         shell: bash
         working-directory: ./
 
-      - name: Analyze
+      - name: Analyze (flutter)
         run: flutter analyze
         shell: bash
         working-directory: ./
