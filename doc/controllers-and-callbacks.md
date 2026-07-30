@@ -27,6 +27,9 @@ did. Together they are how the calendar connects to the rest of your app.
 | `clearEvents()`                      | Remove all events                                                                                                              |
 | `eventsFromDateTimeRange(range)`     | Events occurring during the given range (requires the view's `multiDayRule`, plus optional `includeMultiDayEvents`, `includeDayEvents`, and `location` filters) |
 
+`eventsFromDateTimeRange` takes an `InternalDateTimeRange`, not a `DateTimeRange`.
+Convert with `InternalDateTimeRange.fromDateTimeRange(range)`.
+
 ### CalendarController
 
 [`CalendarController`](https://pub.dev/documentation/kalender/latest/kalender/CalendarController-class.html) drives a single `CalendarView` widget.
@@ -47,7 +50,43 @@ did. Together they are how the calendar connects to the rest of your app.
 - `animateToDate(date)` / `animateToDateTime(dateTime)`
 - `animateToEvent(event)`
 
+**Selection methods:** `selectEvent(event)` focuses an event from code, which is
+what draws its drop target and resize handles. `deselectEvent()` clears it. Both
+drive the `selectedEvent` notifier above.
+
 > Internally the controller delegates to a [`ViewController`](https://pub.dev/documentation/kalender/latest/kalender/ViewController-class.html) (`MultiDayViewController`, `MonthViewController`, or `ScheduleViewController`) depending on the active `ViewConfiguration`.
+
+### Disposing
+
+Both controllers hold listeners, so dispose them with the widget that owns them.
+
+<!-- snippet: file -->
+```dart
+class MyCalendar extends StatefulWidget {
+  const MyCalendar({super.key});
+
+  @override
+  State<MyCalendar> createState() => _MyCalendarState();
+}
+
+class _MyCalendarState extends State<MyCalendar> {
+  final eventsController = DefaultEventsController();
+  final calendarController = CalendarController();
+
+  @override
+  void dispose() {
+    calendarController.dispose();
+    eventsController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+```
+
+An `EventsController` shared across screens belongs to whatever owns it for the
+life of the app, and is disposed there rather than in a single screen.
 
 ### Building the surrounding UI
 
@@ -67,6 +106,13 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   final eventsController = DefaultEventsController();
   final calendarController = CalendarController();
+
+  @override
+  void dispose() {
+    calendarController.dispose();
+    eventsController.dispose();
+    super.dispose();
+  }
 
   late final viewConfigurations = <ViewConfiguration>[
     MultiDayViewConfiguration.week(),

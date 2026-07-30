@@ -5,7 +5,7 @@ it covers the choice every calendar has to make first.
 
 | Guide | Covers |
 | --- | --- |
-| [Views](views.md) | The four view families, what carries over when you switch, and each view's configuration class. |
+| [Views](views.md) | The three view families, what carries over when you switch, and each view's configuration class. |
 | [Events](events.md) | Attaching your own data by subclassing `CalendarEvent`, updating events, and what counts as multi-day. |
 | [Interaction](interaction.md) | Creating, rescheduling, resizing, snapping and zooming. |
 | [Controllers & Callbacks](controllers-and-callbacks.md) | Driving the calendar from code, reacting to what the user did, and building a toolbar around it. |
