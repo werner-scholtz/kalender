@@ -98,6 +98,13 @@ class _MyCalendarState extends State<MyCalendar> {
   final calendarController = CalendarController();
 
   @override
+  void dispose() {
+    calendarController.dispose();
+    eventsController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CalendarView(
       eventsController: eventsController,
@@ -139,7 +146,7 @@ Runnable apps in [`examples/`](examples/README.md):
 
 The detailed guides live in [`doc/`](doc/README.md):
 
-- [Views](doc/views.md): the four view families, what carries over when you switch, and each view's configuration class.
+- [Views](doc/views.md): the three view families, what carries over when you switch, and each view's configuration class.
 - [Events](doc/events.md): attach your own data by subclassing `CalendarEvent`, and what counts as multi-day.
 - [Interaction](doc/interaction.md): creating, rescheduling, resizing, snapping and zooming.
 - [Controllers & Callbacks](doc/controllers-and-callbacks.md): drive the calendar from code, react to the user, and build a toolbar around it.
