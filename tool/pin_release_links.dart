@@ -53,9 +53,9 @@ String packageName(String pubspec) {
 /// Rewrites relative links to `blob/<tag>` URLs and relative images to raw
 /// URLs on the tag, matching how pub.dev resolves each kind.
 ///
-/// Images are rewritten in both markdown and `<img>` form. `readme_assets/` is
-/// excluded from the published archive, so a relative image that survives is a
-/// broken image on pub.dev.
+/// Images are rewritten in both markdown and `<img>` form. pub.dev resolves a
+/// README image against the repository rather than the archive, so a relative
+/// image that survives shows the default branch instead of the tag.
 String pinRelativeLinks(String content, String repoUrl, String tag) {
   final rawBase = repoUrl.replaceFirst('https://github.com/', 'https://raw.githubusercontent.com/');
   return content
