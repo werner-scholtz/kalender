@@ -27,6 +27,7 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 ### Fixes
 
 - `CalendarInteraction` and `HorizontalConfiguration` compare every field in `==`. Four fields were missing, so changing only one of them never updated the calendar. [#364](https://github.com/werner-scholtz/kalender/pull/364)
+- `CalendarSnapping` compares `eventSnapStrategy` in `==` and carries it through `copyWith`, which now takes it as a parameter. Changing only the strategy on a live calendar had no effect, and `copyWith` reset a custom strategy to `defaultSnapStrategy`. Pass a top-level or static function, since an inline closure now makes every rebuild read as a change. [#402](https://github.com/werner-scholtz/kalender/pull/402)
 - Dragging to create an event no longer reacts to a drag that started on a different calendar. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - `ScrollTriggerConfiguration.copyWith` keeps `scrollAmount` instead of resetting it to the default. [#366](https://github.com/werner-scholtz/kalender/pull/366)
 - `MultiDayViewConfiguration.copyWith` and `MonthViewConfiguration.copyWith` keep `multiDayRule` instead of resetting it to the default, and take a parameter to change it. `MonthViewConfiguration.copyWith` also keeps `nowCallback` and no longer takes an `eventPadding` parameter, which set nothing. [#387](https://github.com/werner-scholtz/kalender/pull/387)

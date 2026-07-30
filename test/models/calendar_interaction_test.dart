@@ -217,6 +217,18 @@ void main() {
       expect(copy.snapRange, equals(const Duration(minutes: 15)));
     });
 
+    test('copyWith preserves a custom eventSnapStrategy', () {
+      const original = CalendarSnapping(eventSnapStrategy: _noSnapStrategy);
+      final copy = original.copyWith(snapIntervalMinutes: 30);
+      expect(copy.eventSnapStrategy, same(_noSnapStrategy));
+    });
+
+    test('copyWith replaces eventSnapStrategy when given one', () {
+      const original = CalendarSnapping();
+      final copy = original.copyWith(eventSnapStrategy: _noSnapStrategy);
+      expect(copy.eventSnapStrategy, same(_noSnapStrategy));
+    });
+
     test('identical configurations are equal with matching hashCodes', () {
       expect(const CalendarSnapping(), equals(const CalendarSnapping()));
       expect(const CalendarSnapping().hashCode, equals(const CalendarSnapping().hashCode));
@@ -227,10 +239,22 @@ void main() {
       'snapToTimeIndicator': const CalendarSnapping(snapToTimeIndicator: false),
       'snapToOtherEvents': const CalendarSnapping(snapToOtherEvents: false),
       'snapRange': const CalendarSnapping(snapRange: Duration(minutes: 30)),
+      'eventSnapStrategy': const CalendarSnapping(eventSnapStrategy: _noSnapStrategy),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value, isNot(equals(const CalendarSnapping())));
+        expect(entry.value.hashCode, isNot(equals(const CalendarSnapping().hashCode)));
       });
     }
   });
+}
+
+/// A strategy that snaps nothing, so it is distinguishable from
+/// [defaultSnapStrategy].
+InternalDateTime _noSnapStrategy(
+  InternalDateTime cursorDate,
+  InternalDateTime startOfDay,
+  int snapIntervalMinutes,
+) {
+  return cursorDate;
 }

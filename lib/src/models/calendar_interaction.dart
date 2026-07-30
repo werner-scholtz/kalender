@@ -311,6 +311,10 @@ class CalendarSnapping {
   /// The strategy used to snap events to specific intervals.
   ///
   /// This strategy is only used by the multi-day body.
+  ///
+  /// Takes part in `==`, so pass a top-level or static function. An inline
+  /// closure is a new object on every build, which makes each rebuild look like
+  /// a change.
   final EventSnapStrategy eventSnapStrategy;
 
   /// Creates a new [CalendarSnapping] instance with the specified settings.
@@ -331,22 +335,27 @@ class CalendarSnapping {
     bool? snapToTimeIndicator,
     bool? snapToOtherEvents,
     Duration? snapRange,
+    EventSnapStrategy? eventSnapStrategy,
   }) {
     return CalendarSnapping(
       snapIntervalMinutes: snapIntervalMinutes ?? this.snapIntervalMinutes,
       snapToTimeIndicator: snapToTimeIndicator ?? this.snapToTimeIndicator,
       snapToOtherEvents: snapToOtherEvents ?? this.snapToOtherEvents,
       snapRange: snapRange ?? this.snapRange,
+      eventSnapStrategy: eventSnapStrategy ?? this.eventSnapStrategy,
     );
   }
 
   @override
   operator ==(Object other) {
+    if (identical(this, other)) return true;
+
     return other is CalendarSnapping &&
         other.snapIntervalMinutes == snapIntervalMinutes &&
         other.snapToTimeIndicator == snapToTimeIndicator &&
         other.snapToOtherEvents == snapToOtherEvents &&
-        other.snapRange == snapRange;
+        other.snapRange == snapRange &&
+        other.eventSnapStrategy == eventSnapStrategy;
   }
 
   @override
@@ -355,5 +364,6 @@ class CalendarSnapping {
         snapToTimeIndicator,
         snapToOtherEvents,
         snapRange,
+        eventSnapStrategy,
       );
 }
