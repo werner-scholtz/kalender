@@ -26,8 +26,6 @@ class ScheduleDateStyle {
   /// The [TextStyle] used by the [ScheduleDate] widget to display the name of the day.
   final TextStyle? textStyle;
 
-  /// Use this function to customize the sting displayed by the [ScheduleDate].
-
   /// The [TextStyle] used by the [ScheduleDate] widget to display the day number of the week.
   final TextStyle? numberTextStyle;
 

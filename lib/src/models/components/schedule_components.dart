@@ -10,7 +10,7 @@ class ScheduleComponents {
 
   /// Builds the day name displayed above the day number.
   ///
-  /// Defaults to the first three characters of the day name in the calendar's locale.
+  /// Defaults to the short day name in the calendar's locale.
   final DateStringBuilder? leadingDateStringBuilder;
 
   /// A function that builds the highlight tile widget.

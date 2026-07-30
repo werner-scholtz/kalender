@@ -46,8 +46,7 @@ enum InputMode {
 }
 
 /// The [CreateEventGesture] is used to differentiate between the different ways to create an event.
-///
-/// TODO: Rename this to EventInteractionGesture.
+// TODO: Rename this to EventInteractionGesture.
 enum CreateEventGesture {
   /// Creates event on tap gesture.
   tap,
@@ -235,10 +234,7 @@ class EventInteraction {
     this.allowRescheduling = true,
   });
 
-  /// Creates an [EventInteraction] from the now deprecated [canModify] property.
-  ///
-  /// This constructor maintains backward compatibility by setting all interaction
-  /// permissions based on a single boolean value.
+  /// Creates an [EventInteraction] with every permission set to [canModify].
   EventInteraction.fromCanModify(bool canModify)
       : allowStartResize = canModify,
         allowEndResize = canModify,
