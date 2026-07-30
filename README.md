@@ -12,7 +12,7 @@
 
 # Kalender
 
-A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Schedule views. It supports drag-and-drop rescheduling, event resizing, timezones, and full control over appearance and behavior.
+A highly customizable Flutter calendar widget with Day, Multi-day, Month and Schedule views. It supports drag-and-drop rescheduling, event resizing, timezones, and full control over appearance and behavior.
 
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
@@ -32,23 +32,14 @@ A highly customizable Flutter calendar widget with Day, MultiDay, Month, and Sch
 
 ## Features
 
-| Feature | What you get | Guide |
-| --- | --- | --- |
-| **Views** | Day, Multi-day, Month and Schedule, switched by passing a different configuration. | [Views](doc/views.md) |
-| **Extensible events** | Attach custom data (title, color, anything) by subclassing `CalendarEvent`. | [Events](doc/events.md#custom-events) |
-| **Reschedule** | Drag and drop events between days and times. | [Interaction](doc/interaction.md) |
-| **Resize** | Handles that adapt to mouse, stylus, trackpad or touch input. | [Interaction](doc/interaction.md) |
-| **Snapping** | Snap to an interval, to the time indicator, to other events, or to your own strategy. | [Interaction](doc/interaction.md#interaction--snapping) |
-| **Zoom** | Change the height per minute to zoom the day in and out. | [Interaction](doc/interaction.md#zoom) |
-| **Controllers** | Drive the calendar from code and watch what is on screen. | [Controllers & Callbacks](doc/controllers-and-callbacks.md#controllers) |
-| **Callbacks** | React to taps, long presses, event creation and changes. | [Controllers & Callbacks](doc/controllers-and-callbacks.md#callbacks) |
-| **Tile components** | Customize the stationary, dragging, feedback and resize-handle tiles. | [Appearance](doc/appearance.md#tile-components) |
-| **Theming** | Follows your Material 3 theme, or register a `KalenderThemeData`. | [Appearance](doc/appearance.md#theming) |
-| **Custom components** | Replace any default widget, or restyle it without writing one. | [Appearance](doc/appearance.md#appearance--custom-components) |
-| **Event layout** | Use a built-in layout strategy or supply your own. | [Layout](doc/layout.md) |
-| **Locale** | Localize day and month names via [intl](https://pub.dev/packages/intl), and replace any string. | [Timezones & Locales](doc/timezones-and-locales.md#locale) |
-| **Location** | Timezone-aware display via the [timezone](https://pub.dev/packages/timezone) package. | [Timezones & Locales](doc/timezones-and-locales.md#location) |
-| **Now callback** | Override what "now" means for the time indicator and today highlighting, for when the calendar's `Location` differs from the user's wall-clock time. | [Timezones & Locales](doc/timezones-and-locales.md#now-callback) |
+- **Four views, one widget.** Day, Multi-day, Month and Schedule. Swap the configuration and your events, controllers and styling carry over.
+- **Reschedule by hand.** Drag events between days and times, resize with handles that adapt to mouse, stylus, trackpad and touch, and zoom the day in and out.
+- **Snapping that fits your app.** Snap to an interval, to the time indicator, to other events, or to a rule you write.
+- **Your data on every event.** Subclass `CalendarEvent` and read your own fields in every builder. There is no fixed event model to work around.
+- **Driven from code too.** Controllers navigate, jump to a date and expose what is on screen. Callbacks fire on taps, long presses, event creation and changes.
+- **Replaceable, not just configurable.** Swap any default widget for your own, or keep it and restyle it. Follows your Material 3 theme out of the box.
+- **Timezone aware.** Events are stored as UTC and displayed in any IANA location, so a calendar can show a zone the device is not in.
+- **Localized, down to the last string.** Day and month names come from intl, and every piece of text the calendar writes can be replaced.
 
 ## Installation
 
