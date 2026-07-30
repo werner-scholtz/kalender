@@ -73,7 +73,7 @@ final eventsController = DefaultEventsController();
 final calendarController = CalendarController();
 final viewConfiguration = MultiDayViewConfiguration.week();
 
-final location = tz.getLocation('UTC');
+final location = tz.getLocation('Etc/UTC');
 final range =
     DateTimeRange(start: DateTime.utc(2025), end: DateTime.utc(2025, 1, 2));
 final event = CalendarEvent(dateTimeRange: range);

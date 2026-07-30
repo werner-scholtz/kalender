@@ -5,9 +5,8 @@ import 'package:kalender/src/widgets/internal_components/day_number.dart';
 
 /// The month day header builder.
 ///
-/// The [date] is provided as a wall-clock [DateTime] in the calendar's
-/// configured location (via `.forLocation()`), so consumer comparisons against
-/// `DateTime.now()` behave correctly. See #248.
+/// The [date] is a wall-clock [DateTime] in the calendar's configured location,
+/// so comparisons against `DateTime.now()` behave correctly.
 typedef MonthDayHeaderBuilder = Widget Function(
   DateTime date,
   MonthDayHeaderStyle? style,

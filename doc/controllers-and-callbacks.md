@@ -181,7 +181,7 @@ Switching `viewConfiguration` is all a view change takes. What carries over,
 such as the date and scroll position, is set on the configuration itself, see
 [Views](views.md#switching-between-views).
 
-The [basic example](https://github.com/werner-scholtz/kalender/tree/main/examples/example) has a fuller version of this toolbar.
+The [basic example](../examples/example) has a fuller version of this toolbar.
 
 ---
 

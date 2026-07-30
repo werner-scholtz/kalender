@@ -132,7 +132,7 @@ final eventsController = DefaultEventsController(
 );
 ```
 
-See the [timezone package](https://pub.dev/packages/timezone) for setup instructions per platform. The [web demo](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) also provides a working example.
+See the [timezone package](https://pub.dev/packages/timezone) for setup instructions per platform. The [web demo](../examples/web_demo) also provides a working example.
 
 Changing `location` at runtime automatically updates visible date/time ranges. Location identifiers follow the [IANA Time Zone Database](https://www.iana.org/time-zones).
 
@@ -155,7 +155,7 @@ When events come from an `.ics` file, a device calendar, or an API, map each sou
 
 - **Floating time** (no zone, common in `.ics`): decide which zone it should mean, usually the calendar's `location`, and build a `TZDateTime` there.
 
-Then set `CalendarView(location:)` to the zone the calendar should display in. The [ics example](https://github.com/werner-scholtz/kalender/tree/main/examples/ics) shows this end to end.
+Then set `CalendarView(location:)` to the zone the calendar should display in. The [ics example](../examples/ics) shows this end to end.
 
 ### Now Callback
 

@@ -279,7 +279,7 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
         switch (widget.configuration.emptyDay) {
           case EmptyDayBehavior.show:
             // Record the empty day as the first (only) row of its date so it can
-            // be scrolled/animated to directly (#253).
+            // be scrolled or animated to directly.
             viewController.addItem(item: EmptyItem(), date: date, isFirst: true);
             continue;
 

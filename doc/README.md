@@ -15,4 +15,4 @@ it covers the choice every calendar has to make first.
 
 The API reference is on
 [pub.dev](https://pub.dev/documentation/kalender/latest/kalender/kalender-library.html).
-Runnable apps are in [examples](https://github.com/werner-scholtz/kalender/tree/main/examples).
+Runnable apps are in [examples](../examples).

@@ -20,7 +20,7 @@ Built-in strategies (pass via `MultiDayBodyConfiguration.eventLayoutStrategy`):
 | `overlapLayoutStrategy`    | Tiles stack on top of each other (default) |
 | `sideBySideLayoutStrategy` | Tiles placed side by side                  |
 
-To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](https://github.com/werner-scholtz/kalender/blob/main/examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
+To create a custom strategy, subclass `EventLayoutDelegate`. See [`CustomSideBySideLayoutDelegate`](../examples/advanced_example/lib/layout_strategy.dart) in the advanced example.
 
 Here's a minimal skeleton:
 
