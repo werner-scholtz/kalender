@@ -111,8 +111,7 @@ class MonthDayHeader extends StatelessWidget {
     final localDate = InternalDateTime.fromExternal(date, location: context.location);
     final stringBuilder = context.components.monthComponents.bodyComponents.monthDayHeaderStringBuilder;
     final displayDate = localDate.forLocation(location: context.location);
-    final numberText =
-        stringBuilder?.call(context, displayDate) ?? date.day.toString();
+    final numberText = stringBuilder?.call(context, displayDate) ?? date.day.toString();
 
     return Padding(
       padding: style.margin ?? EdgeInsets.zero,

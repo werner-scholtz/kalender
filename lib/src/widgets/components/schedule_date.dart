@@ -62,9 +62,7 @@ class ScheduleDateStyle {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ScheduleDateStyle &&
-        other.textStyle == textStyle &&
-        other.numberTextStyle == numberTextStyle;
+    return other is ScheduleDateStyle && other.textStyle == textStyle && other.numberTextStyle == numberTextStyle;
   }
 
   @override
@@ -94,8 +92,7 @@ class ScheduleDate extends StatelessWidget {
     final stringBuilder = context.components.scheduleComponents.leadingDateStringBuilder;
     final displayDate = date.forLocation(location: context.location);
     final text = Text(
-      stringBuilder?.call(context, displayDate) ??
-          date.dayNameShortLocalized(context.locale),
+      stringBuilder?.call(context, displayDate) ?? date.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );
 

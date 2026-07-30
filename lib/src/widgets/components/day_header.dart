@@ -124,8 +124,7 @@ class DayHeader extends StatelessWidget {
     final displayDate = localDate.forLocation(location: context.location);
 
     final numberText = Text(
-      components.dayHeaderNumberStringBuilder?.call(context, displayDate) ??
-          date.day.toString(),
+      components.dayHeaderNumberStringBuilder?.call(context, displayDate) ?? date.day.toString(),
       style: style.numberTextStyle,
     );
 
@@ -136,8 +135,7 @@ class DayHeader extends StatelessWidget {
     );
 
     final dayName = Text(
-      components.dayHeaderStringBuilder?.call(context, displayDate) ??
-          localDate.dayNameShortLocalized(context.locale),
+      components.dayHeaderStringBuilder?.call(context, displayDate) ?? localDate.dayNameShortLocalized(context.locale),
       style: style.textStyle,
     );
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-
 /// A [DateTimeRange] that uses [InternalDateTime] for timezone-safe display and layout.
 ///
 /// Both [start] and [end] are stored as [InternalDateTime] values, so all

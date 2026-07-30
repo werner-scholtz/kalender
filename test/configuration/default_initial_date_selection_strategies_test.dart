@@ -101,7 +101,6 @@ void main() {
     // ── kDefaultToMonthly ────────────────────────────────────────────────
 
     group('[$location] kDefaultToMonthly', () {
-
       test('from Month  → dominantMonthDate of visible range', () {
         final result = kDefaultToMonthly(buildMonth());
         expect(result, dominantJanuary, reason: 'Month → Month: expected $dominantJanuary but got $result');
@@ -141,7 +140,6 @@ void main() {
     // ── kDefaultToWeekly ─────────────────────────────────────────────────
 
     group('[$location] kDefaultToWeekly', () {
-
       test('from Month    → visible-range start', () {
         final result = kDefaultToWeekly(buildMonth());
         expect(result, monthOrWeekStart, reason: 'Month → Week: expected $monthOrWeekStart but got $result');
@@ -181,7 +179,6 @@ void main() {
     // ── kDefaultToDaily ──────────────────────────────────────────────────
 
     group('[$location] kDefaultToDaily', () {
-
       test('from Month  → dominantMonthDate of visible range', () {
         final result = kDefaultToDaily(buildMonth());
         expect(result, dominantJanuary, reason: 'Month → Day: expected $dominantJanuary but got $result');
@@ -221,7 +218,6 @@ void main() {
     // ── kDefaultToSchedule ───────────────────────────────────────────────
 
     group('[$location] kDefaultToSchedule', () {
-
       test('from Month    → visible-range start', () {
         final result = kDefaultToSchedule(buildMonth());
         expect(result, monthOrWeekStart, reason: 'Month → Schedule: expected $monthOrWeekStart but got $result');

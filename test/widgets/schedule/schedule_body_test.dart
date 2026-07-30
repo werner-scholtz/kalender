@@ -58,8 +58,7 @@ void main() {
 
   ScheduleViewController schedule() => calendarController.viewController as ScheduleViewController;
 
-  double tileLeft(WidgetTester tester, String id) =>
-      tester.getTopLeft(find.byKey(ScheduleEventTile.tileKey(id))).dx;
+  double tileLeft(WidgetTester tester, String id) => tester.getTopLeft(find.byKey(ScheduleEventTile.tileKey(id))).dx;
 
   group('Row alignment', () {
     testWidgets('event tiles on the same day share one left edge', (tester) async {
@@ -85,13 +84,21 @@ void main() {
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        buildSchedule(initialDate: DateTime(2025, 1, 15), nowCallback: () => DateTime(2025, 1, 15, 10), leadingWidth: 56),
+        buildSchedule(
+          initialDate: DateTime(2025, 1, 15),
+          nowCallback: () => DateTime(2025, 1, 15, 10),
+          leadingWidth: 56,
+        ),
       );
       final narrow = tileLeft(tester, ids.first);
 
       await pumpAndSettleWithMaterialApp(
         tester,
-        buildSchedule(initialDate: DateTime(2025, 1, 15), nowCallback: () => DateTime(2025, 1, 15, 10), leadingWidth: 120),
+        buildSchedule(
+          initialDate: DateTime(2025, 1, 15),
+          nowCallback: () => DateTime(2025, 1, 15, 10),
+          leadingWidth: 120,
+        ),
       );
       final wide = tileLeft(tester, ids.first);
 

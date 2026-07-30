@@ -1,6 +1,5 @@
 import 'package:kalender/kalender.dart';
 
-
 /// A [DateTime] subclass that stores date/time components as-is via [DateTime.utc],
 /// bypassing implicit timezone conversions.
 ///

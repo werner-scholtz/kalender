@@ -68,7 +68,8 @@ void main() {
   testWidgets('the spanning tile stays one tile and moves as the view scrolls', (tester) async {
     final id = eventsController.addEvent(
       CalendarEvent(
-        dateTimeRange: DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
+        dateTimeRange:
+            DateTimeRange(start: start.add(const Duration(days: 1)), end: start.add(const Duration(days: 4))),
       ),
     );
 

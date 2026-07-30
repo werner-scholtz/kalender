@@ -192,7 +192,8 @@ class _HorizontalDragTargetState extends State<HorizontalDragTarget> with DragTa
   CalendarEvent? rescheduleEvent(CalendarEvent event, InternalDateTime cursorDateTime) {
     // If the configuration does not allow single-day events (e.g., multi-day header),
     // return null to prevent updating the selection while dragging over this area.
-    if (!widget.configuration.allowSingleDayEvents && !event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
+    if (!widget.configuration.allowSingleDayEvents &&
+        !event.spansMultipleDays(location: context.location, defaultRule: context.multiDayRule)) {
       return null;
     }
 
