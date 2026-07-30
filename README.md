@@ -22,24 +22,25 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 > 1.0.0 is close. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
 <p align="center">
-  <img src="readme_assets/desktop_light.png" alt="Week view on desktop, light theme" width="55%" />
-  <img src="readme_assets/mobile_light.png" alt="Three-day view on mobile, light theme" width="17%" />
+  <img src="readme_assets/desktop_light.png" alt="Week view on desktop, light theme" width="74%" />
+  <img src="readme_assets/mobile_light.png" alt="Three-day view on mobile, light theme" width="23%" />
 </p>
 <p align="center">
-  <img src="readme_assets/desktop_dark.png" alt="Week view on desktop, dark theme" width="55%" />
-  <img src="readme_assets/mobile_dark.png" alt="Three-day view on mobile, dark theme" width="17%" />
+  <img src="readme_assets/desktop_dark.png" alt="Week view on desktop, dark theme" width="74%" />
+  <img src="readme_assets/mobile_dark.png" alt="Three-day view on mobile, dark theme" width="23%" />
 </p>
 
 ## Features
 
-- **Four views, one widget.** Day, Multi-day, Month and Schedule. Swap the configuration and your events, controllers and styling carry over.
-- **Reschedule by hand.** Drag events between days and times, resize with handles that adapt to mouse, stylus, trackpad and touch, and zoom the day in and out.
-- **Snapping that fits your app.** Snap to an interval, to the time indicator, to other events, or to a rule you write.
-- **Your data on every event.** Subclass `CalendarEvent` and read your own fields in every builder. There is no fixed event model to work around.
-- **Driven from code too.** Controllers navigate, jump to a date and expose what is on screen. Callbacks fire on taps, long presses, event creation and changes.
-- **Replaceable, not just configurable.** Swap any default widget for your own, or keep it and restyle it. Follows your Material 3 theme out of the box.
-- **Timezone aware.** Events are stored as UTC and displayed in any IANA location, so a calendar can show a zone the device is not in.
-- **Localized, down to the last string.** Day and month names come from intl, and every piece of text the calendar writes can be replaced.
+- **Four views, one widget.** Day, Multi-day, Month and Schedule.
+- **Reschedule by hand.** Drag, resize and zoom, on mouse, stylus, trackpad or touch.
+- **Snapping you control.** To an interval, the time indicator, other events, or your own rule.
+- **No fixed event model.** Subclass `CalendarEvent` and read your own fields anywhere.
+- **Controllers and callbacks.** Navigate from code, and react to taps, creation and changes.
+- **Replaceable, not just configurable.** Swap any widget, or keep it and restyle it.
+- **Material 3 by default.** Follows your app's theme with no setup.
+- **Timezone aware.** Events stored as UTC, shown in any IANA location.
+- **Localized.** Day and month names from intl, and every string replaceable.
 
 ## Installation
 
