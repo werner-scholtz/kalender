@@ -236,7 +236,7 @@ git tag v0.23.0 && git push origin v0.23.0
 
 `publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
 
-The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md and CHANGELOG.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner to keep the publish validator's clean-git check meaningful and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md`.
+The published archive is not byte-identical to the tag. Before packaging, the workflow runs `dart run tool/pin_release_links.dart <tag>`, which rewrites README.md, example/README.md, CHANGELOG.md and doc/*.md so the pub.dev pages link to the tag's documentation instead of main. The rewrite is committed only inside the runner to keep the publish validator's clean-git check meaningful and is never pushed, so the repository keeps its relative links. To preview the published pages locally, run the script with any release tag, inspect with `git diff`, then restore with `git checkout -- README.md example/README.md CHANGELOG.md doc/`.
 
 The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/), so it always shows the published package rather than whatever is on main. To rebuild it from main instead, push a commit whose message contains `web demo`.
 
@@ -255,6 +255,20 @@ Patching an older release after main has moved on does not need a branch prepare
 ```bash
 git branch release/0.23.x v0.23.0
 ```
+
+### Before 1.0.0
+
+A pre-1.0.0 release can carry unfinished work that a 1.0.0 cannot. Audit these
+before tagging it:
+
+- **TODOs on public API.** Several are renames or removals deferred to 1.0.0,
+  including `CreateEventGesture` to `EventInteractionGesture`, the `renderBox`
+  parameter on `OnEventTapped` and `OnEventTappedWithDetail`, and
+  `MultiDayBodyConfiguration` in favour of `VerticalConfiguration`. Find them
+  with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
+  prose in the API reference, but each one is a decision still owed.
+- **Deprecations past their window.** `CalendarEvent.isMultiDayEvent` is removed
+  in 0.25.0. See [Verifying a removal](#verifying-a-removal).
 
 Key breaking changes to be aware of:
 - **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.

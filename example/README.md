@@ -35,6 +35,13 @@ class _MyCalendarState extends State<MyCalendar> {
   final calendarController = CalendarController();
 
   @override
+  void dispose() {
+    calendarController.dispose();
+    eventsController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CalendarView(
       eventsController: eventsController,

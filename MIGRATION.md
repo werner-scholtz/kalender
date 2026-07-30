@@ -22,7 +22,7 @@ flutter pub add timezone
 
 If you only ever pass a `Location` into the calendar, nothing changes.
 
-### Three removals that outlived their deprecation window
+### Removals that outlived their deprecation window
 
 - `CalendarCallbacks.onMultiDayTapped`: deprecated in 0.13.0 and never called since then, so deleting the argument changes nothing.
 - `DateTimeExtensions.monthNameEnglish` and `dayNameEnglish`: use `monthNameLocalized('en')` and `dayNameLocalized('en')`.
@@ -536,11 +536,11 @@ class MyEvent extends CalendarEvent {
 ```
 
 > [!IMPORTANT]
-> You **must** override `==` and `hashCode` to include your custom fields. The base `CalendarEvent` equality only compares `id`, `dateTimeRange`, and `interaction`. Without the override, calls like `eventsController.updateEvent(event: original, updatedEvent: updated)` will not cause tile rebuilds when only custom fields (title, color, etc.) change.
+> You **must** override `==` and `hashCode` to include your custom fields. The base `CalendarEvent` equality compared only `id`, `dateTimeRange`, and `interaction` at the time of this release, and `multiDayRule` joined it in 0.24.0. Either way it never covers your own fields, so without the override, calls like `eventsController.updateEvent(event: original, updatedEvent: updated)` will not cause tile rebuilds when only custom fields (title, color, etc.) change.
 
 #### `layoutEquals`
 
-`layoutEquals` is used internally to skip expensive layout recalculations. The default implementation compares `id`, `dateTimeRange`, and `interaction` — which is correct for most subclasses. Only override it if a custom property changes the **size or position** of the tile (e.g. a flag that makes a tile render taller). Do **not** override it for content-only changes like color or title.
+`layoutEquals` is used internally to skip expensive layout recalculations. The default implementation compares `id`, `dateTimeRange`, and `interaction`, joined by `multiDayRule` in 0.24.0, which is correct for most subclasses. Only override it if a custom property changes the **size or position** of the tile (e.g. a flag that makes a tile render taller). Do **not** override it for content-only changes like color or title.
 
 ### Event IDs are now `String`
 
