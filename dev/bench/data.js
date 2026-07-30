@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785398460823,
+  "lastUpdate": 1785400146538,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -8443,6 +8443,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3326.0329835082457,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8660c5f8b1d5176a0e3c5715648b51ee31551f57",
+          "message": "Merge pull request #402 from werner-scholtz/fix/calendar-snapping-strategy-equality\n\nfix: CalendarSnapping drops eventSnapStrategy from == and copyWith",
+          "timestamp": "2026-07-30T10:10:40+02:00",
+          "tree_id": "d37a15cd09c4c9f813cc2543d819dd9301f5f6e1",
+          "url": "https://github.com/werner-scholtz/kalender/commit/8660c5f8b1d5176a0e3c5715648b51ee31551f57"
+        },
+        "date": 1785400142570,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 173.17621334247985,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 712.5365,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2088.476,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8071.32,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 731.577,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2236.679,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2420.589,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12403.11875,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 243.38799855404267,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 112.78367949154466,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 779.4095,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3355.0044977511243,
             "unit": "us"
           }
         ]
