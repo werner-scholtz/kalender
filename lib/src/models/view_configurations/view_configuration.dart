@@ -18,10 +18,13 @@ export 'package:kalender/kalender_extensions.dart';
 ///   ([DayHeader], [MonthDayHeader], [ScheduleDate]).
 /// - Evaluate [EmptyDayBehavior.showOnlyToday] in schedule views.
 ///
-/// Any [DateTime] subtype works:
-/// - [DateTime.now] — uses the system's local wall-clock time.
-/// - `() => DateTime.now().toUtc()` — uses the current UTC time.
-/// - `() => TZDateTime.now(location)` — uses the wall-clock time for a specific timezone.
+/// Any [DateTime] subtype works, so the callback can return local time, UTC, or a
+/// `TZDateTime` in a specific zone.
+///
+/// Pass the same function on every build, since this takes part in the view
+/// configuration's equality. A tear-off such as [DateTime.now] is one, as is any
+/// top-level or static function, or a closure stored in a field. A closure
+/// written inline is a new function every build.
 typedef NowCallback = DateTime Function();
 
 /// The base class for all [ViewConfiguration]s.
@@ -96,8 +99,8 @@ abstract class ViewConfiguration {
   /// resolvers are read from the incoming configuration when a view switch
   /// happens, so they are always current. This one is read from the view
   /// controller's configuration, which is fixed when the controller is created,
-  /// so a change has to recreate it. Pass a top-level or static function, since
-  /// an inline closure is a new object on every build.
+  /// so a change has to recreate it. Pass the same function on every build, see
+  /// [NowCallback].
   final NowCallback? nowCallback;
 
   /// The functions for navigating the [PageView].
