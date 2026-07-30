@@ -318,6 +318,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.name == name &&
         other.initialDateTime == initialDateTime &&
         other.dateTransition == dateTransition &&
+        other.nowCallback == nowCallback &&
         other.scrollTransition == scrollTransition &&
         other.zoomTransition == zoomTransition &&
         other.timeOfDayRange == timeOfDayRange &&

@@ -64,6 +64,31 @@ class ScheduleViewConfiguration extends ViewConfiguration {
     DateTimeRange? displayRange,
   })  : pageIndexCalculator = PageIndexCalculator.schedulePaginated(displayRange ?? kDefaultRange()),
         viewType = ScheduleViewType.paginated;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScheduleViewConfiguration &&
+        other.name == name &&
+        other.initialDateTime == initialDateTime &&
+        other.dateTransition == dateTransition &&
+        other.nowCallback == nowCallback &&
+        other.multiDayRule == multiDayRule &&
+        other.viewType == viewType &&
+        other.pageIndexCalculator == pageIndexCalculator;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        name,
+        initialDateTime,
+        dateTransition,
+        nowCallback,
+        multiDayRule,
+        viewType,
+        pageIndexCalculator,
+      );
 }
 
 /// The default width of the leading (date) column in the schedule view.

@@ -91,6 +91,13 @@ abstract class ViewConfiguration {
   ///
   /// When `null` (the default), the calendar uses its configured [Location]
   /// to determine the current time.
+  ///
+  /// Takes part in `==`, unlike [dateResolver] and the multi-day resolvers. The
+  /// resolvers are read from the incoming configuration when a view switch
+  /// happens, so they are always current. This one is read from the view
+  /// controller's configuration, which is fixed when the controller is created,
+  /// so a change has to recreate it. Pass a top-level or static function, since
+  /// an inline closure is a new object on every build.
   final NowCallback? nowCallback;
 
   /// The functions for navigating the [PageView].
