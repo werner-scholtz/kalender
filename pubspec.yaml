@@ -1,6 +1,6 @@
 name: kalender
 description: A highly customizable calendar widget with day, multi-day, month and schedule views, drag-and-drop rescheduling, event resizing, and timezone support.
-version: 0.24.0-dev.5
+version: 0.24.0-dev.6
 repository: https://github.com/werner-scholtz/kalender.git
 issue_tracker: https://github.com/werner-scholtz/kalender/issues
 topics:
@@ -9,18 +9,6 @@ topics:
   - scheduler
   - timezone
   - drag-and-drop
-
-# pub.dev renders these as a gallery on the package page and takes the search
-# result thumbnail from the first one.
-screenshots:
-  - description: Week view on desktop in the light theme, with the time indicator and overlapping events.
-    path: readme_assets/desktop_light.png
-  - description: Week view on desktop in the dark theme.
-    path: readme_assets/desktop_dark.png
-  - description: Three-day view on mobile in the light theme.
-    path: readme_assets/mobile_light.png
-  - description: Three-day view on mobile in the dark theme.
-    path: readme_assets/mobile_dark.png
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
