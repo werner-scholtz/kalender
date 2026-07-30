@@ -38,6 +38,8 @@ CalendarBody(
 ### All TileComponents options
 
 Every aspect of an event tile's appearance and drag behavior can be overridden.
+Only `tileBuilder` is required. Every other field defaults to null, which keeps
+the package's own behavior, so set only what you want to change.
 
 <details>
   <summary>TileComponents reference</summary>
@@ -48,23 +50,20 @@ Every aspect of an event tile's appearance and drag behavior can be overridden.
     // Required: the stationary event tile.
     tileBuilder: (event, tileRange) => Container(),
 
-    // Optional: shown over the calendar in portal overlays instead of tileBuilder.
+    // Shown over the calendar in portal overlays instead of tileBuilder.
     overlayTileBuilder: (event, tileRange) => Container(),
 
-    // Optional: shown in place of the tile while it is being dragged.
+    // Shown in place of the tile while it is being dragged.
     tileWhenDraggingBuilder: (event) => Container(),
 
-    // Optional: the tile that follows the cursor / finger during a drag.
+    // The tile that follows the cursor / finger during a drag.
     feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
 
-    // Optional: rendered beneath the dragged tile to show where it will land.
+    // Rendered beneath the dragged tile to show where it will land.
     dropTargetTile: (event) => Container(),
 
     // The drag anchor strategy used by feedbackTileBuilder.
     dragAnchorStrategy: childDragAnchorStrategy,
-
-    // The drag anchor strategy used while resizing.
-    resizeDragAnchorStrategy: childDragAnchorStrategy,
 
     // Position and size the resize handles (a function returning your ResizeHandles subclass).
     resizeHandlePositioner: myResizeHandlePositioner,
@@ -77,6 +76,12 @@ Every aspect of an event tile's appearance and drag behavior can be overridden.
   )
   ```
 </details>
+
+> [!WARNING]
+> `resizeDragAnchorStrategy` is left out above on purpose. It defaults to a
+> pointer anchor, and setting it to `childDragAnchorStrategy` makes a vertical
+> resize jump to the neighbouring day on the smallest sideways movement. Change
+> it only if you have a reason to.
 
 ### ScheduleTileComponents
 
@@ -91,10 +96,10 @@ Schedule view tiles have a different set of builders since they are laid out in 
     // Required: the stationary event tile.
     tileBuilder: (event, tileRange) => Container(),
 
-    // Optional: shown in place of the tile while it is being dragged.
+    // Shown in place of the tile while it is being dragged.
     tileWhenDraggingBuilder: (event) => Container(),
 
-    // Optional: the tile that follows the cursor / finger during a drag.
+    // The tile that follows the cursor / finger during a drag.
     feedbackTileBuilder: (event, dropTargetWidgetSize) => Container(),
 
     // The drag anchor strategy used by feedbackTileBuilder.

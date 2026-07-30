@@ -123,7 +123,7 @@ CalendarCallbacks(
 
 ## Multi-day events
 
-A `MultiDayRule` decides whether an event renders in the multi-day header lane or in the day timeline. The rule is set on the view configuration (see [Views & Interaction](views.md#views)) and defaults to counting events of 24 hours or longer as multi-day.
+A `MultiDayRule` decides whether an event renders in the multi-day header lane or in the day timeline. The rule is set on the view configuration (see [Shared options](views.md#shared-options)) and defaults to counting events of 24 hours or longer as multi-day.
 
 A single event can override the calendar's rule:
 

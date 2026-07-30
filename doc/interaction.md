@@ -10,11 +10,12 @@ Reacting to what they did is separate, see
 
 ## Interaction & Snapping
 
-`CalendarHeader` and `CalendarBody` both accept these, so a calendar can allow
-different things in its header than in its body.
+`interaction` sets what the user may do. `CalendarHeader` and `CalendarBody` both
+accept it, so a calendar can allow different things in its header than in its
+body. `snapping` is accepted by `CalendarBody` only, and only the multi-day body
+reads it.
 
-- `interaction: CalendarInteraction`: toggling resize / reschedule / create.
-- `snapping: CalendarSnapping`: (body only, MultiDay) snap interval, snap-to-indicator, snap-to-events, custom snap strategy.
+Both blocks below show every option **at its default value**.
 
 <!-- snippet: expression -->
 ```dart
@@ -23,27 +24,52 @@ CalendarBody(
     allowResizing: true,
     allowRescheduling: true,
     allowEventCreation: true,
-    // Tap to create (desktop default) or long-press to create (mobile default):
+    // Tap on desktop, long-press on mobile, when left unset.
     createEventGesture: CreateEventGesture.tap,
-    // The gesture that starts modifying an existing event, same defaults:
+    // The gesture that starts modifying an existing event, same defaults.
     modifyEventGesture: CreateEventGesture.tap,
     // Input mode affects resize handle positioning and visibility:
-    //   auto (default): detects dynamically from pointer events
-    //   precise:        mouse, stylus, trackpad (full-width handles, hover-to-show)
-    //   imprecise:      touch/finger (corner handles, selection-to-show)
+    //   auto:      detects dynamically from pointer events
+    //   precise:   mouse, stylus, trackpad (full-width handles, hover-to-show)
+    //   imprecise: touch/finger (corner handles, selection-to-show)
     inputMode: InputMode.auto,
-    // Opt-in to horizontal resize handles in imprecise/touch mode (default: false):
+    // Opt in to horizontal resize handles in imprecise/touch mode.
     allowHorizontalImpreciseResize: false,
   ),
   snapping: CalendarSnapping(
-    snapIntervalMinutes: 15,
+    snapIntervalMinutes: 10,
     snapToTimeIndicator: true,
     snapToOtherEvents: true,
-    snapRange: const Duration(minutes: 5),
+    snapRange: const Duration(minutes: 15),
     eventSnapStrategy: defaultSnapStrategy,
   ),
 )
 ```
+
+---
+
+## Locking a single event
+
+`CalendarInteraction` applies to the whole calendar. To hold one event in place
+while the rest stay editable, give it an `EventInteraction`. Anything the event
+forbids stays forbidden even where the calendar allows it.
+
+<!-- snippet: expression -->
+```dart
+CalendarEvent(
+  dateTimeRange: range,
+  // Movable, but its start and end are fixed.
+  interaction: EventInteraction(
+    allowStartResize: false,
+    allowEndResize: false,
+    allowRescheduling: true,
+  ),
+)
+```
+
+`EventInteraction.allowNone()` makes an event fully read-only, and
+`EventInteraction.allowAll()` is the default every event gets. A subclass passes
+it through with `super.interaction`, as in [Custom Events](events.md#custom-events).
 
 ---
 
