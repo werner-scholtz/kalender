@@ -322,6 +322,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
         other.scrollTransition == scrollTransition &&
         other.zoomTransition == zoomTransition &&
         other.timeOfDayRange == timeOfDayRange &&
+        other.initialTimeOfDay == initialTimeOfDay &&
+        other.initialHeightPerMinute == initialHeightPerMinute &&
         other.dateTimeRange == dateTimeRange &&
         other.numberOfDays == numberOfDays &&
         other.firstDayOfWeek == firstDayOfWeek &&
@@ -338,6 +340,8 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       scrollTransition,
       zoomTransition,
       timeOfDayRange,
+      initialTimeOfDay,
+      initialHeightPerMinute,
       dateTimeRange,
       numberOfDays,
       firstDayOfWeek,

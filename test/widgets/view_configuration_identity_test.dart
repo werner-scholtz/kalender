@@ -24,6 +24,24 @@ void main() {
         initialDateTime: DateTime(2025, 1, 13),
       );
 
+  MultiDayViewConfiguration weekWith({
+    TimeOfDay? initialTimeOfDay,
+    double? initialHeightPerMinute,
+    NowCallback? nowCallback,
+  }) =>
+      MultiDayViewConfiguration.week(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 13),
+        initialTimeOfDay: initialTimeOfDay ?? const TimeOfDay(hour: 0, minute: 0),
+        initialHeightPerMinute: initialHeightPerMinute ?? 0.7,
+        nowCallback: nowCallback,
+      );
+
+  MonthViewConfiguration monthConfigWith({DateResolver? dateResolver}) => MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        dateResolver: dateResolver,
+      );
+
   MonthViewConfiguration monthConfig() => MonthViewConfiguration.singleMonth(
         displayRange: year2025DisplayRange,
       );
@@ -49,6 +67,30 @@ void main() {
 
     test('the page index calculator behind them', () {
       expect(week().pageIndexCalculator, equals(week().pageIndexCalculator));
+    });
+  });
+
+  group('fields that must break equality', () {
+    // Each of these is read when the view controller is created, so a change to
+    // one has to recreate it.
+    test('initialTimeOfDay', () {
+      expect(week(), isNot(equals(weekWith(initialTimeOfDay: const TimeOfDay(hour: 15, minute: 0)))));
+    });
+
+    test('initialHeightPerMinute', () {
+      expect(week(), isNot(equals(weekWith(initialHeightPerMinute: 1.5))));
+    });
+
+    test('nowCallback', () {
+      expect(week(), isNot(equals(weekWith(nowCallback: _stubNow))));
+    });
+  });
+
+  group('fields that deliberately do not break equality', () {
+    // Resolvers are read from the incoming configuration when a view switch
+    // happens, so they are always current and need not recreate anything.
+    test('dateResolver', () {
+      expect(monthConfig(), equals(monthConfigWith(dateResolver: _stubResolver)));
     });
   });
 
@@ -108,3 +150,6 @@ void main() {
     });
   });
 }
+
+DateTime _stubNow() => DateTime(2025, 1, 14);
+InternalDateTime _stubResolver(ViewTransitionContext transition) => InternalDateTime(2025, 8, 20);
