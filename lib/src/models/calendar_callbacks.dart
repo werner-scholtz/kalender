@@ -10,16 +10,16 @@ import 'package:kalender/src/widgets/drag_targets/vertical_drag_target.dart';
 class CalendarCallbacks {
   /// The callback for when an event is tapped.
   ///
-  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
-  /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
-  /// /// See TODO: add link to event mixins.
+  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled,
+  /// and a gesture detector inside your own tile receives the gesture instead. See [DayEventTileUtils] and
+  /// [MultiDayEventTileUtils] for tiles that resolve the tapped position themselves.
   final OnEventTapped? onEventTapped;
 
   /// The callback for when an event is tapped, with details.
   ///
-  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail],
-  /// Then the [GestureDetector] will not be enabled, and you can use your own gesture detector for event tiles.
-  /// /// See TODO: add link to event mixins.
+  /// If you provide neither [onEventTapped] nor [onEventTappedWithDetail], the [GestureDetector] is not enabled,
+  /// and a gesture detector inside your own tile receives the gesture instead. See [DayEventTileUtils] and
+  /// [MultiDayEventTileUtils] for tiles that resolve the tapped position themselves.
   final OnEventTappedWithDetail? onEventTappedWithDetail;
 
   /// The callback for when an event is secondary tapped.
@@ -63,7 +63,7 @@ class CalendarCallbacks {
   /// visible viewport. Only fires for views with vertical scroll (day/week/etc).
   final OnScrollPositionChanged? onScrollPositionChanged;
 
-  /// TODO: Check how these interact with the [Draggable] and [LongPressDraggable]s.
+  // TODO: Check how these interact with the Draggable and LongPressDraggables.
 
   /// The callback for when a user taps on the calendar.
   final OnTapped? onTapped;
@@ -190,8 +190,7 @@ class CalendarCallbacks {
 ///
 /// The [event] is the event that was tapped.
 /// The [renderBox] is the [RenderBox] of the event tile.
-///
-/// TODO: Remove renderBox in 1.0.0 as it is now included in the [OnEventTappedWithDetail].
+// TODO: Remove renderBox in 1.0.0 as it is now included in the OnEventTappedWithDetail.
 typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
 
 /// The callback for when an event is tapped.
@@ -200,8 +199,7 @@ typedef OnEventTapped = void Function(CalendarEvent event, RenderBox renderBox);
 /// The [renderBox] is the [RenderBox] of the event tile.
 /// The [detail] is the details of the date that was tapped.
 /// - The [detail] can be a [DayDetail] or a [MultiDayDetail].
-///
-/// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
+// TODO: Remove renderBox in 1.0.0 as it is now included in the detail.
 typedef OnEventTappedWithDetail = void Function(
   CalendarEvent event,
   RenderBox renderBox,

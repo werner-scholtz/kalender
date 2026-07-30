@@ -74,7 +74,8 @@ abstract class EventsController with ChangeNotifier {
   /// The [dateTimeRange] is the range of dates to search for events.
   /// The [includeMultiDayEvents] determines if events spanning multiple days should be included.
   /// The [includeDayEvents] determines if events that are shorter than 1 day should be included.
-  /// The [location] is the current location TODO
+  /// The [location] is the calendar's timezone, used to place day boundaries when evaluating [multiDayRule].
+  /// Pass the same one the calendar renders with.
   /// [multiDayRule] decides which events count as multi-day. Pass the current
   /// view's [ViewConfiguration.multiDayRule]; an event overriding it with
   /// [CalendarEvent.multiDayRule] takes precedence.

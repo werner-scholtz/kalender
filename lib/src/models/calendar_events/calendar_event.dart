@@ -12,7 +12,13 @@ import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 ///
 /// ```dart
 /// class Event extends CalendarEvent {
-///   Event({super.id, required super.dateTimeRange, required this.title, super.interaction});
+///   Event({
+///     super.id,
+///     required super.dateTimeRange,
+///     required this.title,
+///     super.interaction,
+///     super.multiDayRule,
+///   });
 ///   final String title;
 ///
 ///   @override
@@ -21,6 +27,8 @@ import 'package:kalender/src/models/calendar_events/multi_day_rule.dart';
 ///         id: id,
 ///         dateTimeRange: dateTimeRange ?? this.dateTimeRange,
 ///         interaction: interaction ?? this.interaction,
+///         // copyWith takes no multiDayRule parameter. Forward it so copies keep the rule.
+///         multiDayRule: multiDayRule,
 ///         title: title ?? this.title,
 ///       );
 ///

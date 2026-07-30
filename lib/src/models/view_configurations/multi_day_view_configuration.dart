@@ -361,7 +361,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
 
 /// The configuration used by the [MultiDayBody].
 ///
-/// TODO: Depricate this in 1.0.0 and use [VerticalConfiguration] instead.
+// TODO: Deprecate this in 1.0.0 and use [VerticalConfiguration] instead.
 class MultiDayBodyConfiguration extends VerticalConfiguration {
   /// Whether to keep visited pages alive so navigating back to them does not
   /// rebuild their content.
