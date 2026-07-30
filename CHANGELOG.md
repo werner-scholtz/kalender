@@ -13,12 +13,13 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 - `ScheduleTileComponents` no longer accepts `dropTargetTile`, `overlayTileBuilder` or `resizeDragAnchorStrategy`. None of them had any effect. Delete the arguments. To style the drop target, use `ScheduleComponents.scheduleTileHighlightBuilder` and `ScheduleTileHighlightStyle`. [#381](https://github.com/werner-scholtz/kalender/pull/381)
 - `ScheduleTileComponents.emptyItemBuilder` and `monthItemBuilder` are moved to `ScheduleComponents`. Set them on `CalendarComponents.scheduleComponents` instead. Signatures and defaults are unchanged. See [MIGRATION.md](MIGRATION.md#v023x--v0240). [#383](https://github.com/werner-scholtz/kalender/pull/383)
 - `CalendarInteraction.throttleMilliseconds` is removed. Drag updates are now combined into one per frame and follow the display's refresh rate. Nothing replaces it. Delete the argument. [#368](https://github.com/werner-scholtz/kalender/pull/368)
-- `DragTargetUtilities` requires a `mounted` getter. A class applying the mixin to a `State` already satisfies it. Anything else must supply one. [#368](https://github.com/werner-scholtz/kalender/pull/368)
+- `DragTargetUtilities` can only be applied to a `State`. It supplies `context` and `mounted` itself instead of requiring them from the host. A class applying the mixin to a `State` needs no change. Anything else no longer compiles. [#368](https://github.com/werner-scholtz/kalender/pull/368)
 
 ### Features
 
 - Dragging a multi-day event down over the body keeps moving its drop target in the header, instead of freezing it until the cursor returns. Releasing over the body applies the date and keeps the time of day and duration. [#369](https://github.com/werner-scholtz/kalender/pull/369)
 - `MultiDayRule` decides which events belong in the multi-day header rather than the day timeline. Set it once on the view configuration. `MultiDayRule.minimumDuration` at 24 hours is the default and matches the previous behavior. `MultiDayRule.calendarDays` treats anything crossing midnight as multi-day. A single event can override the rule with `CalendarEvent.multiDayRule`. [#367](https://github.com/werner-scholtz/kalender/pull/367) [#371](https://github.com/werner-scholtz/kalender/pull/371) [#376](https://github.com/werner-scholtz/kalender/pull/376)
+- In debug builds, a drag or resize asserts that the event's `copyWith` forwarded `id` and `multiDayRule`. `copyWith` takes no parameter for either, so an override that omits them drops them on every copy, silently until selection or multi-day placement goes wrong. The message names the subclass and the argument to add. [#367](https://github.com/werner-scholtz/kalender/pull/367)
 
 ### Deprecations
 
@@ -39,13 +40,23 @@ See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.
 - The two drag-target guards that decide whether an event may be dropped in the header or the body now use the calendar's location, so they agree with the rest of the calendar near midnight and across daylight saving changes. [#367](https://github.com/werner-scholtz/kalender/pull/367)
 - A calendar whose locale has no intl data loaded now names the locale, the `initializeDateFormatting()` call to add and the library it comes from, instead of throwing intl's `LocaleDataException` from inside a build. [#382](https://github.com/werner-scholtz/kalender/pull/382)
 - `TileComponents.overlayTileBuilder` is used again by the tiles in the multi-day overflow overlay. It had been ignored since 0.14.0. [#381](https://github.com/werner-scholtz/kalender/pull/381)
-- The vertical layout delegate returns layout data for every event, even when two events share a hash code. This is not reachable through `DefaultEventsController`. [#370](https://github.com/werner-scholtz/kalender/pull/370)
+- The vertical layout delegate returns layout data for every event, even when two events share a hash code. The layout cache is keyed by that hash, so events sharing one previously left a tile with no layout data. `CalendarEvent.hashCode` is built from `id`, `start`, `end`, `interaction` and `multiDayRule`, so this needs a custom `EventsController` that gives two events the same `id`. [#370](https://github.com/werner-scholtz/kalender/pull/370)
+
+### Tests
+
+- Added equality coverage for the configuration classes: every field of `VerticalConfiguration` and `HorizontalConfiguration` breaks equality when it differs, two configurations built from the same arguments compare equal, and `nowCallback`, `initialTimeOfDay` and `initialHeightPerMinute` take part. [#364](https://github.com/werner-scholtz/kalender/pull/364) [#404](https://github.com/werner-scholtz/kalender/pull/404)
+- Added `copyWith` round-trip coverage for the view and body configurations, so a field that is not being changed survives the copy. [#366](https://github.com/werner-scholtz/kalender/pull/366) [#387](https://github.com/werner-scholtz/kalender/pull/387)
+- Added coverage that the vertical layout delegate returns one entry per child when two events share a hash code, including a subclass whose `hashCode` ignores the id, and when the cache is already warm. [#370](https://github.com/werner-scholtz/kalender/pull/370)
+- Added coverage that a drag or resize asserts when the event's `copyWith` drops `id` or `multiDayRule`, and stays silent for an override that forwards both. [#367](https://github.com/werner-scholtz/kalender/pull/367)
+- Added coverage that `TileComponents.overlayTileBuilder` renders the overflow overlay tiles, and falls back to `tileBuilder` when it is not set. [#381](https://github.com/werner-scholtz/kalender/pull/381)
+- Added coverage that drag moves arriving within one frame coalesce into a single update, that the update uses the newest move, and that a move queued at the moment of the drop is discarded. [#368](https://github.com/werner-scholtz/kalender/pull/368)
+- Added coverage for the multi-day rule on the view configurations, and that dragging a multi-day tile into the body keeps moving its header preview. [#367](https://github.com/werner-scholtz/kalender/pull/367) [#369](https://github.com/werner-scholtz/kalender/pull/369) [#371](https://github.com/werner-scholtz/kalender/pull/371)
 
 ## 0.23.0
 
 Nothing in this release stops existing code from compiling. See [MIGRATION.md](MIGRATION.md#v022x--v0230) for what to change.
 
-### Breaking Changes
+### Behavior Changes
 
 Each of these changes what an unchanged calendar renders.
 

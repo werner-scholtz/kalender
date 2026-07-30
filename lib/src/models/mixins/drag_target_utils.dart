@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 typedef UpdatedEvent = (CalendarEvent, CalendarEvent);
 
-mixin DragTargetUtilities {
-  BuildContext get context;
-
-  /// Whether [context] is still usable.
-  ///
-  /// Satisfied by [State.mounted]. Checked before any deferred work, since
-  /// reading [State.context] after disposal throws rather than returning null.
-  bool get mounted;
+/// Shared drag-target behaviour for the calendar's [DragTarget] states.
+///
+/// Constrained to [State] for [context] and [mounted]. [mounted] is checked
+/// before any deferred work, since reading [State.context] after disposal
+/// throws rather than returning null.
+mixin DragTargetUtilities<T extends StatefulWidget> on State<T> {
   CalendarController get controller;
   EventsController get eventsController;
   CalendarCallbacks? get callbacks;
@@ -313,6 +312,6 @@ mixin DragTargetUtilities {
     );
 
     final range = InternalDateTimeRange(start: newStart, end: newStart.add(event.duration));
-    return event.copyWith(dateTimeRange: toLocationDateTimeRange(range));
+    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(range));
   }
 }

@@ -205,9 +205,11 @@ A message without a version has no deadline and will sit there for years. Three 
 
 - Turning a getter into a method of the same name. Dart rejects declaring both (`duplicate_definition`), so the getter has to vanish the moment the method appears.
 - Adding a named parameter to a method that subclasses override, including optional ones. An override must accept every named parameter its supertype declares, so `copyWith` and `eventsFromDateTimeRange` break every implementer either way.
-- Adding a member to a public mixin or abstract class, such as `DragTargetUtilities.mounted`.
+- Adding a member to a public mixin or abstract class, or narrowing what it can be applied to, such as constraining `DragTargetUtilities` to `State`.
 
 **Record it in both places.** A deprecation gets a `### Deprecations` entry in the changelog naming the removal version. A breaking change gets a `### Breaking Changes` entry plus a section in [MIGRATION.md](MIGRATION.md) showing the before and after.
+
+**`### Breaking Changes` is for code that stops compiling. `### Behavior Changes` is for code that still compiles and renders differently.** They ask the reader for different things: one is "fix your code", the other is "look at your screenshots". Do not put them under one heading. 0.23.0 is the reference for the second kind, 0.24.0 for the first.
 
 **If the version is not tagged yet, amend the existing entries rather than appending.** Someone upgrading should read what the release does, not the history of how it got there.
 

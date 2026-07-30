@@ -75,7 +75,7 @@ it through with `super.interaction`, as in [Custom Events](events.md#custom-even
 
 ## Zoom
 
-Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](https://github.com/werner-scholtz/kalender/tree/main/examples/web_demo) example shows a full implementation with [`ZoomDetector`](https://github.com/werner-scholtz/kalender/blob/main/examples/web_demo/lib/widgets/calendar/zoom.dart).
+Zoom the calendar in and out by changing the `heightPerMinute` value on the `MultiDayViewController`. The [`web_demo`](../examples/web_demo) example shows a full implementation with [`ZoomDetector`](../examples/web_demo/lib/widgets/calendar/zoom.dart).
 
 Here's a minimal example of wiring up zoom with Ctrl+scroll on desktop. `PointerScrollEvent` and `HardwareKeyboard` are not exported by `material.dart`, so both imports are needed:
 

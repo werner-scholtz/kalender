@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:kalender/src/models/calendar_events/checked_copy.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:kalender/src/models/mixins/snap_points.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -343,7 +344,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     // Convert only start and recompute end from the original duration to avoid
     // the DST spring-forward gap collapsing start and end to the same UTC instant.
     final convertedStart = start.forLocation(location: context.location);
-    final updatedEvent = event.copyWith(
+    final updatedEvent = event.checkedCopyWith(
       dateTimeRange: DateTimeRange(start: convertedStart, end: convertedStart.add(duration)),
     );
 
@@ -376,7 +377,7 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
     };
     if (dateTimeRange == null) return null;
 
-    return event.copyWith(dateTimeRange: toLocationDateTimeRange(dateTimeRange));
+    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(dateTimeRange));
   }
 
   @override
@@ -393,6 +394,6 @@ class _VerticalDragTargetState extends State<VerticalDragTarget> with SnapPoints
       range = InternalDateTimeRange(start: cursorDateTime, end: range.start);
     }
 
-    return event.copyWith(dateTimeRange: toLocationDateTimeRange(range));
+    return event.checkedCopyWith(dateTimeRange: toLocationDateTimeRange(range));
   }
 }

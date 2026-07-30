@@ -4,17 +4,19 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/calendar_events/draggable_event.dart';
 import 'package:timezone/data/latest_10y.dart';
 
+class _HarnessWidget extends StatefulWidget {
+  const _HarnessWidget();
+
+  @override
+  State<_HarnessWidget> createState() => _DragUtilsHarness();
+}
+
 /// A minimal [DragTargetUtilities] host used to exercise the mixin's pure
-/// range-math helpers. Members that require a live widget tree throw, so only
-/// the context-free helpers may be called against this harness.
-class _DragUtilsHarness with DragTargetUtilities {
+/// range-math helpers. It is never pumped, so [State.context] throws and
+/// [State.mounted] is false. Only the helpers that touch neither may be called
+/// against this harness.
+class _DragUtilsHarness extends State<_HarnessWidget> with DragTargetUtilities<_HarnessWidget> {
   _DragUtilsHarness({CalendarController? controller}) : controller = controller ?? CalendarController();
-
-  @override
-  BuildContext get context => throw UnimplementedError();
-
-  @override
-  bool get mounted => true;
 
   @override
   final CalendarController controller;
@@ -44,6 +46,9 @@ class _DragUtilsHarness with DragTargetUtilities {
   @override
   InternalDateTime? calculateCursorDateTime(Offset offset, {Offset feedbackWidgetOffset = Offset.zero}) =>
       throw UnimplementedError();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 void main() {

@@ -16,11 +16,6 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 
 **[Live Demo](https://werner-scholtz.github.io/kalender/)** · **[Benchmarks](https://werner-scholtz.github.io/kalender/dev/bench/)** · **[Migration Guide](MIGRATION.md)**
 
-> [!WARNING]
-> This package is still in development. API changes may occur before version 1.0.0, so pin an exact version in your `pubspec.yaml` rather than a caret range like `^0.24.0`.
->
-> 1.0.0 is close. If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
-
 <p align="center">
   <img src="readme_assets/desktop_light.png" alt="Week view on desktop, light theme" width="74%" />
   <img src="readme_assets/mobile_light.png" alt="Three-day view on mobile, light theme" width="23%" />
@@ -39,8 +34,14 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 - **Controllers and callbacks.** Navigate from code, and react to taps, creation and changes.
 - **Replaceable, not just configurable.** Swap any widget, or keep it and restyle it.
 - **Material 3 by default.** Follows your app's theme with no setup.
-- **Timezone aware.** Events stored as UTC, shown in any IANA location.
+- **Timezone aware.** Events stored as UTC, shown in any IANA location. Tested under a matrix of timezones.
 - **Localized.** Day and month names from intl, and every string replaceable.
+- **MIT licensed.** No commercial license to buy.
+
+> [!WARNING]
+> This package is still in development, so breaking changes land in minor releases until 1.0.0. A caret range like `^0.24.0` keeps you on 0.24.x, which is where fixes land. Every minor bump has an entry in the [migration guide](MIGRATION.md).
+>
+> If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
 ## Installation
 
@@ -146,13 +147,13 @@ Runnable apps in [`examples/`](examples/README.md):
 
 The detailed guides live in [`doc/`](doc/README.md):
 
-- [Views](doc/views.md): the three view families, what carries over when you switch, and each view's configuration class.
-- [Events](doc/events.md): attach your own data by subclassing `CalendarEvent`, and what counts as multi-day.
-- [Interaction](doc/interaction.md): creating, rescheduling, resizing, snapping and zooming.
-- [Controllers & Callbacks](doc/controllers-and-callbacks.md): drive the calendar from code, react to the user, and build a toolbar around it.
-- [Appearance](doc/appearance.md): tile builders, theming, and custom components.
-- [Layout](doc/layout.md): where tiles are placed and sized. Advanced, only needed for a custom strategy.
-- [Timezones & Locales](doc/timezones-and-locales.md): display timezones, localized names, and custom text.
+- **[Views](doc/views.md).** Multi-day (day, week, work week, custom day counts, free scroll), month and schedule. What carries over on a view switch: the focused date, the scroll position, the zoom level.
+- **[Events](doc/events.md).** Subclassing `CalendarEvent` to attach your own data, updating events through the controller, and the `MultiDayRule` that puts an event in the multi-day header rather than the day timeline.
+- **[Interaction](doc/interaction.md).** Creating, rescheduling and resizing, set separately for the header and the body and lockable per event. Snapping to an interval, the time indicator, other events, or your own strategy. Zoom driven from the controller.
+- **[Controllers & Callbacks](doc/controllers-and-callbacks.md).** Jumping and animating to a date or an event, switching views, reacting to taps, creation, resizing and rescheduling, and building a navigation toolbar.
+- **[Appearance](doc/appearance.md).** A `ThemeExtension` with Material 3 defaults that follows your app's `ThemeData`, and replacing components outright: event tiles, day headers, the timeline gutter, the time indicator, the multi-day overflow overlay.
+- **[Layout](doc/layout.md).** Where tiles are placed and sized, and how overlapping events share a column. Only needed for a custom layout strategy, such as one lane per person.
+- **[Timezones & Locales](doc/timezones-and-locales.md).** Events stored as UTC and displayed in any IANA location, across daylight saving changes and midnight. Day and month names from intl in the calendar's locale, right-to-left layouts, and replacing any string.
 
 ---
 

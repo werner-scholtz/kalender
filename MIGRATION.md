@@ -1,5 +1,16 @@
 # Migration Guide
 
+Each section covers one upgrade. Versions not listed below need no changes.
+
+| Upgrade | What changes |
+| --- | --- |
+| [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
+| [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
+| v0.19.x → v0.22.x | No changes needed. |
+| [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
+| [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
+| [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
 ## v0.23.x → v0.24.0
 
 ### The deprecated string builders are gone
@@ -78,24 +89,24 @@ Delete the argument. Nothing replaces it.
 
 Drag updates are now coalesced to one per frame rather than throttled against the clock, so they follow whatever rate the display refreshes at. The old default of 16ms assumed a 60Hz screen and capped updates at about 62 per second, which is half what a 120Hz display can show. There is no longer a value to choose.
 
-### `DragTargetUtilities` requires `mounted`
+### `DragTargetUtilities` can only be applied to a `State`
 
-Only affects you if you apply the mixin yourself. A `State` already provides `mounted`, so this is nothing to do:
+Only affects you if you apply the mixin yourself. Applied to a `State`, which is the usual case, nothing changes. The type argument is inferred from the superclass:
 
 ```dart
 class _MyDragTargetState extends State<MyDragTarget> with DragTargetUtilities { }
 ```
 
-Anywhere else, supply it:
+Applied to anything else, it no longer compiles:
 
 ```dart
-  class MyDragHandler with DragTargetUtilities {
-+   @override
-+   bool get mounted => true;
-  }
+- class MyDragHandler with DragTargetUtilities {
+-   @override
+-   BuildContext get context => ...;
+- }
 ```
 
-The mixin defers move handling to the end of the frame, so it can outlive disposal and has to know whether its context is still usable. Reading `State.context` after disposal throws rather than returning null, which is why the check cannot live inside the mixin.
+The mixin defers move handling to the end of the frame, so it can outlive disposal and has to know whether its context is still usable. Reading `State.context` after disposal throws rather than returning null, so the host has to answer `mounted` correctly. `State` already does.
 
 ### `isMultiDayEvent` became `spansMultipleDays`
 
