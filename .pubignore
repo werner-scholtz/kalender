@@ -5,10 +5,13 @@ coverage/
 __pycache__/
 
 test/
-readme_assets/
 examples/
 tool/
 benchmark/
+
+# readme_assets/ is published on purpose: the pubspec `screenshots` entries and
+# the README images both read from it, and pub.dev only serves files that are in
+# the archive.
 
 # Instructions for coding agents working on this repo, of no use to anyone
 # installing the package.
