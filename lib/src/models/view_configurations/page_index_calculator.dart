@@ -140,6 +140,13 @@ class DayIndexCalculator extends PageIndexCalculator {
     final end = internalRange.end.isStartOfDay ? internalRange.end : internalRange.end.endOfDay;
     return InternalDateTimeRange(start: start, end: end);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is DayIndexCalculator && other.dateTimeRange == dateTimeRange;
+
+  @override
+  int get hashCode => Object.hash(DayIndexCalculator, dateTimeRange);
 }
 
 /// Calculates page indices and date ranges for a week view.
@@ -217,6 +224,17 @@ class WeekIndexCalculator extends PageIndexCalculator {
     final end = internalRange.end.endOfWeek(firstDayOfWeek: firstDayOfWeek);
     return InternalDateTimeRange(start: start, end: end);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WeekIndexCalculator &&
+          other.dateTimeRange == dateTimeRange &&
+          other.firstDayOfWeek == firstDayOfWeek &&
+          other.daysToDisplay == daysToDisplay;
+
+  @override
+  int get hashCode => Object.hash(WeekIndexCalculator, dateTimeRange, firstDayOfWeek, daysToDisplay);
 }
 
 /// Calculates page indices and date ranges for a custom multi-day view.
@@ -270,6 +288,14 @@ class CustomIndexCalculator extends PageIndexCalculator {
       return InternalDateTimeRange(start: start, end: adjustedEnd);
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CustomIndexCalculator && other.dateTimeRange == dateTimeRange && other.numberOfDays == numberOfDays;
+
+  @override
+  int get hashCode => Object.hash(CustomIndexCalculator, dateTimeRange, numberOfDays);
 }
 
 /// TODO: see if this can be removed and replaced with [DayIndexCalculator].
@@ -310,6 +336,13 @@ class FreeScrollFunctions extends PageIndexCalculator {
       end: InternalDateTime.fromExternal(dateTimeRange.end, location: location).endOfDay,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is FreeScrollFunctions && other.dateTimeRange == dateTimeRange;
+
+  @override
+  int get hashCode => Object.hash(FreeScrollFunctions, dateTimeRange);
 }
 
 /// Calculates page indices and date ranges for a month view.
@@ -378,6 +411,14 @@ class MonthIndexCalculator extends PageIndexCalculator {
         : internalRange.end.endOfMonth;
     return InternalDateTimeRange(start: start, end: end);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MonthIndexCalculator && other.dateTimeRange == dateTimeRange && other.firstDayOfWeek == firstDayOfWeek;
+
+  @override
+  int get hashCode => Object.hash(MonthIndexCalculator, dateTimeRange, firstDayOfWeek);
 }
 
 /// Calculates page indices and date ranges for a continuous schedule view.
@@ -406,6 +447,13 @@ class ContinuousScheduleIndexCalculator extends PageIndexCalculator {
         internalRange.end.startOfDay == internalRange.end ? internalRange.end.startOfDay : internalRange.end.endOfDay;
     return InternalDateTimeRange(start: start, end: end);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is ContinuousScheduleIndexCalculator && other.dateTimeRange == dateTimeRange;
+
+  @override
+  int get hashCode => Object.hash(ContinuousScheduleIndexCalculator, dateTimeRange);
 }
 
 class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
@@ -447,4 +495,11 @@ class PaginatedScheduleIndexCalculator extends PageIndexCalculator {
         : internalRange.end.endOfMonth;
     return InternalDateTimeRange(start: start, end: end);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is PaginatedScheduleIndexCalculator && other.dateTimeRange == dateTimeRange;
+
+  @override
+  int get hashCode => Object.hash(PaginatedScheduleIndexCalculator, dateTimeRange);
 }

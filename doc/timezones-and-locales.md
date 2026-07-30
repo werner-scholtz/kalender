@@ -164,7 +164,7 @@ By default, the time indicator position and "today" header highlighting are deri
 <!-- snippet: expression -->
 ```dart
 MultiDayViewConfiguration.week(
-  nowCallback: () => DateTime.now(), // system local time
+  nowCallback: DateTime.now, // system local time
 )
 ```
 
@@ -173,6 +173,21 @@ The callback's return value is used for:
 - Determining which day is "today" for header highlighting (`DayHeader`, `MonthDayHeader`, `ScheduleDate`).
 - Evaluating `EmptyDayBehavior.showOnlyToday` in schedule views.
 
-Any `DateTime` subtype works: `DateTime.now()`, `DateTime.now().toUtc()`, or `TZDateTime.now(location)` for a specific timezone.
+Any `DateTime` subtype works, so the callback can return UTC or a `TZDateTime` in a
+specific zone.
+
+`nowCallback` takes part in the view configuration's equality, so pass the same
+function on every build. A tear-off such as `DateTime.now` is one, as is any
+top-level or static function. A closure works too, as long as it is stored
+rather than written inline:
+
+<!-- snippet: file -->
+```dart
+import 'package:timezone/timezone.dart' as tz;
+
+// Created once. Written inline it would be a new function every build, which
+// recreates the view and drops its layout cache.
+final nowInLondon = () => tz.TZDateTime.now(tz.getLocation('Europe/London'));
+```
 
 When `nowCallback` is `null` (the default), the calendar falls back to its `Location`-based behavior.

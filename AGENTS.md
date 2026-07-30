@@ -269,6 +269,15 @@ before tagging it:
   prose in the API reference, but each one is a decision still owed.
 - **Deprecations past their window.** `CalendarEvent.isMultiDayEvent` is removed
   in 0.25.0. See [Verifying a removal](#verifying-a-removal).
+- **Function fields compared with `==`.** `ViewConfiguration.nowCallback`,
+  `CalendarSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
+  and `HorizontalConfiguration.generateMultiDayLayoutFrame` all take part in
+  equality, so a closure written inline is a new function every build and defeats
+  the caching the comparison exists to enable. Accepted for now and documented on
+  each field. The alternative is reading them from the current configuration
+  rather than comparing them, which needs a way for the tree to reach it. Decide
+  before 1.0.0. Tracked with the class conversion in
+  [#380](https://github.com/werner-scholtz/kalender/issues/380).
 
 Key breaking changes to be aware of:
 - **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.

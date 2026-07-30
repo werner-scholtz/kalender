@@ -312,9 +312,10 @@ class CalendarSnapping {
   ///
   /// This strategy is only used by the multi-day body.
   ///
-  /// Takes part in `==`, so pass a top-level or static function. An inline
-  /// closure is a new object on every build, which makes each rebuild look like
-  /// a change.
+  /// Takes part in `==`, so pass the same function on every build: a top-level
+  /// or static function, or a closure stored in a field. A closure written
+  /// inline is a new function every build, which makes each rebuild look like a
+  /// change.
   final EventSnapStrategy eventSnapStrategy;
 
   /// Creates a new [CalendarSnapping] instance with the specified settings.

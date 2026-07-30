@@ -11,17 +11,18 @@ export 'package:kalender/kalender_extensions.dart';
 
 /// A callback that returns the current [DateTime] representing "now" for the calendar.
 ///
-/// The returned [DateTime]'s wall-clock components (year, month, day, hour, minute)
-/// are used as-is to:
-/// - Position the time indicator on the calendar grid.
-/// - Determine which day is "today" for header highlighting
-///   ([DayHeader], [MonthDayHeader], [ScheduleDate]).
-/// - Evaluate [EmptyDayBehavior.showOnlyToday] in schedule views.
+/// See [ViewConfiguration.nowCallback] for what it affects. Any [DateTime]
+/// subtype works, so it can return local time, UTC, or a `TZDateTime` in a
+/// specific zone.
 ///
-/// Any [DateTime] subtype works:
-/// - [DateTime.now] — uses the system's local wall-clock time.
-/// - `() => DateTime.now().toUtc()` — uses the current UTC time.
-/// - `() => TZDateTime.now(location)` — uses the wall-clock time for a specific timezone.
+/// Pass the same function on every build, since it takes part in the view
+/// configuration's equality. These qualify:
+///
+/// - a tear-off, such as [DateTime.now] or a top-level or static function,
+/// - a closure stored in a field, which matters when the callback needs a
+///   captured value such as a location.
+///
+/// A closure written inline does not. It is a new function every build.
 typedef NowCallback = DateTime Function();
 
 /// The base class for all [ViewConfiguration]s.
@@ -67,30 +68,26 @@ abstract class ViewConfiguration {
 
   /// An optional callback that overrides how the calendar resolves "now".
   ///
-  /// When provided, the wall-clock components of the returned [DateTime] are
-  /// used instead of the calendar's [Location]-based time resolution for:
+  /// The wall-clock components of the returned [DateTime] decide:
   ///
-  /// - **Time indicator positioning** — determines both the horizontal (day)
-  ///   and vertical (time-of-day) placement of the current-time line.
-  /// - **"Today" highlighting** — the default [DayHeader], [MonthDayHeader],
-  ///   and [ScheduleDate] widgets use this to decide which day receives the
-  ///   filled-button highlight.
-  /// - **Schedule empty-day logic** — [EmptyDayBehavior.showOnlyToday] uses this
-  ///   to decide whether an empty day should still be shown.
+  /// - where the time indicator sits, both its day and its time of day,
+  /// - which day [DayHeader], [MonthDayHeader] and [ScheduleDate] highlight as
+  ///   today,
+  /// - whether [EmptyDayBehavior.showOnlyToday] keeps an empty day.
   ///
-  /// This is useful when the calendar displays events in UTC but should
-  /// reflect the user's local wall-clock time. For example, a time-tracking
-  /// app that stores wall-clock times as UTC values can pass [DateTime.now]
-  /// to align the indicator and highlighting with local time:
+  /// Useful when the calendar displays UTC but should follow the user's local
+  /// wall clock:
   ///
   /// ```dart
-  /// MultiDayViewConfiguration.week(
-  ///   nowCallback: DateTime.now,
-  /// )
+  /// MultiDayViewConfiguration.week(nowCallback: DateTime.now)
   /// ```
   ///
-  /// When `null` (the default), the calendar uses its configured [Location]
-  /// to determine the current time.
+  /// Pass the same function on every build, since this takes part in `==`. See
+  /// [NowCallback] for the shapes that qualify. [dateResolver] and the
+  /// multi-day resolvers are not compared, because they are read from the
+  /// incoming configuration at a view switch and so are already current.
+  ///
+  /// Null, the default, uses the calendar's [Location].
   final NowCallback? nowCallback;
 
   /// The functions for navigating the [PageView].

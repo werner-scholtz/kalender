@@ -110,6 +110,14 @@ class CalendarViewState extends State<CalendarView> {
       _location.value = widget.location;
     }
 
+    // Move the view controller across when the calendar controller is swapped,
+    // so the new one drives this view and the old one stops.
+    final didChangeCalendarController = widget.calendarController != oldWidget.calendarController;
+    if (didChangeCalendarController) {
+      oldWidget.calendarController.detach();
+      widget.calendarController.attach(_viewController);
+    }
+
     final didChangeViewConfiguration = widget.viewConfiguration != oldWidget.viewConfiguration;
     // If the view configuration has changed or location, recreate the view controller.
     if (didChangeViewConfiguration || didChangeLocation) {
@@ -157,7 +165,7 @@ class CalendarViewState extends State<CalendarView> {
       widget.calendarController.attach(_viewController);
     }
 
-    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale) {
+    if (didChangeViewConfiguration || didChangeLocation || didChangeLocale || didChangeCalendarController) {
       setState(() {});
     }
   }
