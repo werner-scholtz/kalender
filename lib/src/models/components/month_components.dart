@@ -20,6 +20,29 @@ class MonthComponents {
     this.bodyComponents = const MonthBodyComponents(),
     this.headerComponents = const MonthHeaderComponents(),
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthComponents copyWith({
+    MonthBodyComponents? bodyComponents,
+    MonthHeaderComponents? headerComponents,
+  }) {
+    return MonthComponents(
+      bodyComponents: bodyComponents ?? this.bodyComponents,
+      headerComponents: headerComponents ?? this.headerComponents,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthComponents &&
+        other.bodyComponents == bodyComponents &&
+        other.headerComponents == headerComponents;
+  }
+
+  @override
+  int get hashCode => Object.hash(bodyComponents, headerComponents);
 }
 
 /// The component builders used by the [MonthBody].
@@ -66,6 +89,56 @@ class MonthBodyComponents {
     this.rightTriggerBuilder,
     this.overlayBuilders,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthBodyComponents copyWith({
+    MonthGridBuilder? monthGridBuilder,
+    MonthDayHeaderBuilder? monthDayHeaderBuilder,
+    DateStringBuilder? monthDayHeaderStringBuilder,
+    MonthDayCellBuilder? monthDayCellBuilder,
+    WeekNumberBuilder? weekNumberBuilder,
+    HorizontalTriggerWidgetBuilder? leftTriggerBuilder,
+    HorizontalTriggerWidgetBuilder? rightTriggerBuilder,
+    OverlayBuilders? overlayBuilders,
+  }) {
+    return MonthBodyComponents(
+      monthGridBuilder: monthGridBuilder ?? this.monthGridBuilder,
+      monthDayHeaderBuilder: monthDayHeaderBuilder ?? this.monthDayHeaderBuilder,
+      monthDayHeaderStringBuilder: monthDayHeaderStringBuilder ?? this.monthDayHeaderStringBuilder,
+      monthDayCellBuilder: monthDayCellBuilder ?? this.monthDayCellBuilder,
+      weekNumberBuilder: weekNumberBuilder ?? this.weekNumberBuilder,
+      leftTriggerBuilder: leftTriggerBuilder ?? this.leftTriggerBuilder,
+      rightTriggerBuilder: rightTriggerBuilder ?? this.rightTriggerBuilder,
+      overlayBuilders: overlayBuilders ?? this.overlayBuilders,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthBodyComponents &&
+        other.monthGridBuilder == monthGridBuilder &&
+        other.monthDayHeaderBuilder == monthDayHeaderBuilder &&
+        other.monthDayHeaderStringBuilder == monthDayHeaderStringBuilder &&
+        other.monthDayCellBuilder == monthDayCellBuilder &&
+        other.weekNumberBuilder == weekNumberBuilder &&
+        other.leftTriggerBuilder == leftTriggerBuilder &&
+        other.rightTriggerBuilder == rightTriggerBuilder &&
+        other.overlayBuilders == overlayBuilders;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        monthGridBuilder,
+        monthDayHeaderBuilder,
+        monthDayHeaderStringBuilder,
+        monthDayCellBuilder,
+        weekNumberBuilder,
+        leftTriggerBuilder,
+        rightTriggerBuilder,
+        overlayBuilders,
+      );
 }
 
 /// The component builders used by the [MonthHeader].
@@ -85,4 +158,27 @@ class MonthHeaderComponents {
     this.weekDayHeaderBuilder = WeekDayHeader.builder,
     this.weekDayHeaderStringBuilder,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthHeaderComponents copyWith({
+    WeekDayHeaderBuilder? weekDayHeaderBuilder,
+    DateStringBuilder? weekDayHeaderStringBuilder,
+  }) {
+    return MonthHeaderComponents(
+      weekDayHeaderBuilder: weekDayHeaderBuilder ?? this.weekDayHeaderBuilder,
+      weekDayHeaderStringBuilder: weekDayHeaderStringBuilder ?? this.weekDayHeaderStringBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthHeaderComponents &&
+        other.weekDayHeaderBuilder == weekDayHeaderBuilder &&
+        other.weekDayHeaderStringBuilder == weekDayHeaderStringBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(weekDayHeaderBuilder, weekDayHeaderStringBuilder);
 }

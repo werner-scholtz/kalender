@@ -19,6 +19,27 @@ class MonthComponentStyles {
     this.bodyStyles = const MonthBodyComponentStyles(),
     this.headerStyles = const MonthHeaderComponentStyles(),
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthComponentStyles copyWith({
+    MonthBodyComponentStyles? bodyStyles,
+    MonthHeaderComponentStyles? headerStyles,
+  }) {
+    return MonthComponentStyles(
+      bodyStyles: bodyStyles ?? this.bodyStyles,
+      headerStyles: headerStyles ?? this.headerStyles,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthComponentStyles && other.bodyStyles == bodyStyles && other.headerStyles == headerStyles;
+  }
+
+  @override
+  int get hashCode => Object.hash(bodyStyles, headerStyles);
 }
 
 /// The styles of the default components used by the [MonthBody].
@@ -44,6 +65,35 @@ class MonthBodyComponentStyles {
     ),
     this.overlayStyles,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthBodyComponentStyles copyWith({
+    MonthGridStyle? monthGridStyle,
+    MonthDayHeaderStyle? monthDayHeaderStyle,
+    WeekNumberStyle? weekNumberStyle,
+    OverlayStyles? overlayStyles,
+  }) {
+    return MonthBodyComponentStyles(
+      monthGridStyle: monthGridStyle ?? this.monthGridStyle,
+      monthDayHeaderStyle: monthDayHeaderStyle ?? this.monthDayHeaderStyle,
+      weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
+      overlayStyles: overlayStyles ?? this.overlayStyles,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthBodyComponentStyles &&
+        other.monthGridStyle == monthGridStyle &&
+        other.monthDayHeaderStyle == monthDayHeaderStyle &&
+        other.weekNumberStyle == weekNumberStyle &&
+        other.overlayStyles == overlayStyles;
+  }
+
+  @override
+  int get hashCode => Object.hash(monthGridStyle, monthDayHeaderStyle, weekNumberStyle, overlayStyles);
 }
 
 /// The styles of the default components used by the [MonthHeader].
@@ -53,4 +103,19 @@ class MonthHeaderComponentStyles {
 
   /// Creates a override(s) for the default styles used by the [MonthHeader].
   const MonthHeaderComponentStyles({this.weekDayHeaderStyle = const WeekDayHeaderStyle()});
+
+  /// Creates a copy of this with the given fields replaced.
+  MonthHeaderComponentStyles copyWith({WeekDayHeaderStyle? weekDayHeaderStyle}) {
+    return MonthHeaderComponentStyles(weekDayHeaderStyle: weekDayHeaderStyle ?? this.weekDayHeaderStyle);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MonthHeaderComponentStyles && other.weekDayHeaderStyle == weekDayHeaderStyle;
+  }
+
+  @override
+  int get hashCode => weekDayHeaderStyle.hashCode;
 }

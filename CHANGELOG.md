@@ -1,3 +1,10 @@
+## 0.25.0
+
+### Fixes
+
+- Rebuilding the calendar no longer reports the components as changed to every widget that reads them. `CalendarComponents` and the containers reached through it compare by value and can be `const`, so a calendar given no components, or given components built inside the consumer's own `build` method, stops rebuilding every day header, separator, timeline, grid and trigger on each frame it rebuilds.
+- `CalendarComponents` and the containers reached through it gain `copyWith`.
+
 ## 0.24.0
 
 See [MIGRATION.md](MIGRATION.md#v023x--v0240) for what to change.

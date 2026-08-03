@@ -295,7 +295,7 @@ class CalendarViewState extends State<CalendarView> {
         child: Callbacks(
           callbacks: widget.callbacks,
           child: Components(
-            components: widget.components ?? CalendarComponents(),
+            components: widget.components ?? const CalendarComponents(),
             child: EventsControllerProvider(
               eventsController: widget.eventsController,
               child: CalendarControllerProvider(

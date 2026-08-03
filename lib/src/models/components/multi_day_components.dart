@@ -21,6 +21,29 @@ class MultiDayComponents {
     this.bodyComponents = const MultiDayBodyComponents(),
     this.headerComponents = const MultiDayHeaderComponents(),
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayComponents copyWith({
+    MultiDayHeaderComponents? headerComponents,
+    MultiDayBodyComponents? bodyComponents,
+  }) {
+    return MultiDayComponents(
+      headerComponents: headerComponents ?? this.headerComponents,
+      bodyComponents: bodyComponents ?? this.bodyComponents,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayComponents &&
+        other.headerComponents == headerComponents &&
+        other.bodyComponents == bodyComponents;
+  }
+
+  @override
+  int get hashCode => Object.hash(headerComponents, bodyComponents);
 }
 
 /// The component builders used by the [MultiDayHeader].
@@ -62,6 +85,52 @@ class MultiDayHeaderComponents {
     this.rightTriggerBuilder,
     this.overlayBuilders,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayHeaderComponents copyWith({
+    DayHeaderBuilder? dayHeaderBuilder,
+    DateStringBuilder? dayHeaderStringBuilder,
+    DateStringBuilder? dayHeaderNumberStringBuilder,
+    WeekNumberBuilder? weekNumberBuilder,
+    HorizontalTriggerWidgetBuilder? leftTriggerBuilder,
+    HorizontalTriggerWidgetBuilder? rightTriggerBuilder,
+    OverlayBuilders? overlayBuilders,
+  }) {
+    return MultiDayHeaderComponents(
+      dayHeaderBuilder: dayHeaderBuilder ?? this.dayHeaderBuilder,
+      dayHeaderStringBuilder: dayHeaderStringBuilder ?? this.dayHeaderStringBuilder,
+      dayHeaderNumberStringBuilder: dayHeaderNumberStringBuilder ?? this.dayHeaderNumberStringBuilder,
+      weekNumberBuilder: weekNumberBuilder ?? this.weekNumberBuilder,
+      leftTriggerBuilder: leftTriggerBuilder ?? this.leftTriggerBuilder,
+      rightTriggerBuilder: rightTriggerBuilder ?? this.rightTriggerBuilder,
+      overlayBuilders: overlayBuilders ?? this.overlayBuilders,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayHeaderComponents &&
+        other.dayHeaderBuilder == dayHeaderBuilder &&
+        other.dayHeaderStringBuilder == dayHeaderStringBuilder &&
+        other.dayHeaderNumberStringBuilder == dayHeaderNumberStringBuilder &&
+        other.weekNumberBuilder == weekNumberBuilder &&
+        other.leftTriggerBuilder == leftTriggerBuilder &&
+        other.rightTriggerBuilder == rightTriggerBuilder &&
+        other.overlayBuilders == overlayBuilders;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        dayHeaderBuilder,
+        dayHeaderStringBuilder,
+        dayHeaderNumberStringBuilder,
+        weekNumberBuilder,
+        leftTriggerBuilder,
+        rightTriggerBuilder,
+        overlayBuilders,
+      );
 }
 
 /// The component builders used by the [MultiDayBody].
@@ -123,4 +192,62 @@ class MultiDayBodyComponents {
     this.topTriggerBuilder,
     this.bottomTriggerBuilder,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayBodyComponents copyWith({
+    HourLinesBuilder? hourLines,
+    TimeLineBuilder? timeline,
+    TimeOfDayStringBuilder? timelineStringBuilder,
+    TimelineWidthBuilder? timelineWidth,
+    DaySeparatorBuilder? daySeparator,
+    TimeIndicatorBuilder? timeIndicator,
+    HorizontalTriggerWidgetBuilder? leftTriggerBuilder,
+    HorizontalTriggerWidgetBuilder? rightTriggerBuilder,
+    VerticalTriggerWidgetBuilder? topTriggerBuilder,
+    VerticalTriggerWidgetBuilder? bottomTriggerBuilder,
+  }) {
+    return MultiDayBodyComponents(
+      hourLines: hourLines ?? this.hourLines,
+      timeline: timeline ?? this.timeline,
+      timelineStringBuilder: timelineStringBuilder ?? this.timelineStringBuilder,
+      timelineWidth: timelineWidth ?? this.timelineWidth,
+      daySeparator: daySeparator ?? this.daySeparator,
+      timeIndicator: timeIndicator ?? this.timeIndicator,
+      leftTriggerBuilder: leftTriggerBuilder ?? this.leftTriggerBuilder,
+      rightTriggerBuilder: rightTriggerBuilder ?? this.rightTriggerBuilder,
+      topTriggerBuilder: topTriggerBuilder ?? this.topTriggerBuilder,
+      bottomTriggerBuilder: bottomTriggerBuilder ?? this.bottomTriggerBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayBodyComponents &&
+        other.hourLines == hourLines &&
+        other.timeline == timeline &&
+        other.timelineStringBuilder == timelineStringBuilder &&
+        other.timelineWidth == timelineWidth &&
+        other.daySeparator == daySeparator &&
+        other.timeIndicator == timeIndicator &&
+        other.leftTriggerBuilder == leftTriggerBuilder &&
+        other.rightTriggerBuilder == rightTriggerBuilder &&
+        other.topTriggerBuilder == topTriggerBuilder &&
+        other.bottomTriggerBuilder == bottomTriggerBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        hourLines,
+        timeline,
+        timelineStringBuilder,
+        timelineWidth,
+        daySeparator,
+        timeIndicator,
+        leftTriggerBuilder,
+        rightTriggerBuilder,
+        topTriggerBuilder,
+        bottomTriggerBuilder,
+      );
 }
