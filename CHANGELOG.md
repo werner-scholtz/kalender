@@ -1,5 +1,11 @@
 ## 0.25.0
 
+See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
+
+### Breaking Changes
+
+- `CalendarEvent.isMultiDayEvent` is removed. It was deprecated in 0.24.0, which named this release. Use `spansMultipleDays(location:, defaultRule:)`. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
+
 ### Fixes
 
 - Rebuilding the calendar no longer reports the components as changed to every widget that reads them. `CalendarComponents` and the containers reached through it compare by value and can be `const`, so a calendar given no components, or given components built inside the consumer's own `build` method, stops rebuilding every day header, separator, timeline, grid and trigger on each frame it rebuilds.
