@@ -8,8 +8,7 @@ See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
 
 ### Fixes
 
-- Rebuilding the calendar no longer reports the components as changed to every widget that reads them. `CalendarComponents` and the containers reached through it compare by value and can be `const`, so a calendar given no components, or given components built inside the consumer's own `build` method, stops rebuilding every day header, separator, timeline, grid and trigger on each frame it rebuilds.
-- `TileComponents` and `ScheduleTileComponents` compare by value, so the same holds for the event tiles. This only takes effect when the builders are top-level or static functions. A builder written as an inline closure is a new object on every build and still reports a change.
+- `CalendarComponents`, the containers reached through it, `TileComponents` and `ScheduleTileComponents` compare by value, and `CalendarComponents` can be `const`. The inherited widgets carrying them reported a change on every rebuild because they compared by identity, and now report one only when something differs.
 - `CalendarComponents` and the containers reached through it gain `copyWith`.
 
 ## 0.24.0

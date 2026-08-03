@@ -1,3 +1,4 @@
+import 'package:example/tiles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
@@ -180,70 +181,14 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               _calendarToolbar(),
-              CalendarHeader(multiDayTileComponents: _tileComponents()),
+              const CalendarHeader(multiDayTileComponents: tileComponents),
             ],
           ),
         ),
-        body: CalendarBody(
-          multiDayTileComponents: _tileComponents(),
-          monthTileComponents: _tileComponents(),
-          scheduleTileComponents: _scheduleTileComponents(),
-        ),
-      ),
-    );
-  }
-
-  Color _eventColor(CalendarEvent event) =>
-      (event is Event ? event.color : null) ?? Theme.of(context).colorScheme.primaryContainer;
-
-  TileComponents _tileComponents() {
-    final radius = BorderRadius.circular(8);
-    final scheme = Theme.of(context).colorScheme;
-
-    return TileComponents(
-      tileBuilder: (event, tileRange) => Card(
-        color: _eventColor(event),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Text(
-            (event is Event) ? event.title : '',
-            style: TextStyle(color: scheme.onPrimaryContainer, fontSize: 12),
-          ),
-        ),
-      ),
-      dropTargetTile: (event) => DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: scheme.onSurface.withAlpha(80), width: 2),
-          borderRadius: radius,
-        ),
-      ),
-      feedbackTileBuilder: (event, dropTargetWidgetSize) => AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        width: dropTargetWidgetSize.width * 0.8,
-        height: dropTargetWidgetSize.height,
-        decoration: BoxDecoration(color: _eventColor(event).withAlpha(100), borderRadius: radius),
-      ),
-      tileWhenDraggingBuilder: (event) => Container(
-        decoration: BoxDecoration(color: _eventColor(event).withAlpha(80), borderRadius: radius),
-      ),
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      verticalResizeHandle: DecoratedBox(
-        decoration: BoxDecoration(color: scheme.onPrimaryContainer.withAlpha(150), shape: BoxShape.circle),
-      ),
-      horizontalResizeHandle: DecoratedBox(
-        decoration: BoxDecoration(color: scheme.onPrimaryContainer.withAlpha(150), shape: BoxShape.circle),
-      ),
-    );
-  }
-
-  ScheduleTileComponents _scheduleTileComponents() {
-    return ScheduleTileComponents(
-      tileBuilder: (event, tileRange) => Card(
-        margin: const EdgeInsets.symmetric(vertical: 1),
-        color: _eventColor(event),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Text((event is Event) ? event.title : ''),
+        body: const CalendarBody(
+          multiDayTileComponents: tileComponents,
+          monthTileComponents: tileComponents,
+          scheduleTileComponents: scheduleTileComponents,
         ),
       ),
     );
