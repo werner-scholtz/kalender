@@ -6,6 +6,10 @@ See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
 
 - `CalendarEvent.isMultiDayEvent` is removed. It was deprecated in 0.24.0, which named this release. Use `spansMultipleDays(location:, defaultRule:)`. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
 
+### Features
+
+- The style classes and `KalenderThemeData` are `Diagnosticable`, so their resolved values appear in the Flutter devtools inspector and in `toString()` instead of a bare instance hash. Fields left unset are omitted rather than printed as null.
+
 ### Fixes
 
 - `CalendarComponents`, the containers reached through it, `TileComponents` and `ScheduleTileComponents` compare by value, and `CalendarComponents` can be `const`. The inherited widgets carrying them reported a change on every rebuild because they compared by identity, and now report one only when something differs.

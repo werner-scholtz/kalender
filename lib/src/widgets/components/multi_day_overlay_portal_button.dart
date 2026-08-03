@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
@@ -15,7 +16,7 @@ typedef MultiDayPortalOverlayButtonBuilder = Widget Function(
   MultiDayPortalOverlayButtonStyle? style,
 );
 
-class MultiDayPortalOverlayButtonStyle {
+class MultiDayPortalOverlayButtonStyle with Diagnosticable {
   /// The text style of the button.
   final TextStyle? textStyle;
 
@@ -76,6 +77,14 @@ class MultiDayPortalOverlayButtonStyle {
 
   @override
   int get hashCode => Object.hash(textStyle, textPadding, textOverflow);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('textPadding', textPadding, defaultValue: null));
+    properties.add(EnumProperty<TextOverflow>('textOverflow', textOverflow, defaultValue: null));
+  }
 }
 
 class MultiDayPortalOverlayButton extends StatelessWidget {

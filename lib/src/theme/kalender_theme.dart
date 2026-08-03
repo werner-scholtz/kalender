@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -21,7 +22,7 @@ import 'package:kalender/kalender.dart';
 ///   ),
 /// )
 /// ```
-class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
+class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosticable {
   /// The style of the [DayHeader].
   final DayHeaderStyle? dayHeaderStyle;
 
@@ -287,6 +288,41 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
         multiDayOverlayStyle,
         multiDayPortalOverlayButtonStyle,
       );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<DayHeaderStyle>('dayHeaderStyle', dayHeaderStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<TimelineStyle>('timelineStyle', timelineStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<HourLinesStyle>('hourLinesStyle', hourLinesStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<DaySeparatorStyle>('daySeparatorStyle', daySeparatorStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<TimeIndicatorStyle>('timeIndicatorStyle', timeIndicatorStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<WeekNumberStyle>('weekNumberStyle', weekNumberStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<MonthGridStyle>('monthGridStyle', monthGridStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<MonthDayHeaderStyle>('monthDayHeaderStyle', monthDayHeaderStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<WeekDayHeaderStyle>('weekDayHeaderStyle', weekDayHeaderStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<ScheduleDateStyle>('scheduleDateStyle', scheduleDateStyle, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<ScheduleTileHighlightStyle>(
+        'scheduleTileHighlightStyle',
+        scheduleTileHighlightStyle,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<MultiDayOverlayStyle>('multiDayOverlayStyle', multiDayOverlayStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<MultiDayPortalOverlayButtonStyle>(
+        'multiDayPortalOverlayButtonStyle',
+        multiDayPortalOverlayButtonStyle,
+        defaultValue: null,
+      ),
+    );
+  }
 }
 
 /// Resolves the effective [KalenderThemeData] for a [BuildContext].

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -13,7 +14,7 @@ typedef MonthDayHeaderBuilder = Widget Function(
 );
 
 /// The style of the [MonthDayHeader].
-class MonthDayHeaderStyle {
+class MonthDayHeaderStyle with Diagnosticable {
   /// Creates a new [MonthDayHeaderStyle].
   const MonthDayHeaderStyle({
     this.numberTextStyle,
@@ -82,6 +83,14 @@ class MonthDayHeaderStyle {
 
   @override
   int get hashCode => Object.hash(numberTextStyle, buttonSize, margin);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('numberTextStyle', numberTextStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<Size>('buttonSize', buttonSize, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('margin', margin, defaultValue: null));
+  }
 }
 
 /// A widget that displays the day number.

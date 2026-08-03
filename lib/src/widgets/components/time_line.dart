@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -78,7 +79,7 @@ double defaultTimelineWidth(BuildContext context, TimeOfDayRange timeOfDayRange,
 }
 
 /// The style of the [TimeLine] widget.
-class TimelineStyle {
+class TimelineStyle with Diagnosticable {
   /// The style of the text.
   final TextStyle? textStyle;
 
@@ -198,6 +199,19 @@ class TimelineStyle {
         startDecoration,
         endDecoration,
       );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
+    properties.add(EnumProperty<TextAlign>('textAlign', textAlign, defaultValue: null));
+    properties.add(EnumProperty<TextOverflow>('textOverflow', textOverflow, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('textPadding', textPadding, defaultValue: null));
+    properties.add(DoubleProperty('width', width, defaultValue: null));
+    properties.add(DiagnosticsProperty<Decoration>('startDecoration', startDecoration, defaultValue: null));
+    properties.add(DiagnosticsProperty<Decoration>('endDecoration', endDecoration, defaultValue: null));
+  }
 }
 
 /// A mixin that provides utility methods for the [TimeLine] and [HourLines] widget.

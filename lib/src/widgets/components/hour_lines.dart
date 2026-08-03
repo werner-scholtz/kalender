@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -18,7 +19,7 @@ typedef HourLinesBuilder = Widget Function(
 );
 
 /// The style of the [HourLines] widget.
-class HourLinesStyle {
+class HourLinesStyle with Diagnosticable {
   /// The [Color] of the hour lines.
   final Color? color;
 
@@ -88,6 +89,15 @@ class HourLinesStyle {
 
   @override
   int get hashCode => Object.hash(color, thickness, indent, endIndent);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('color', color, defaultValue: null));
+    properties.add(DoubleProperty('thickness', thickness, defaultValue: null));
+    properties.add(DoubleProperty('indent', indent, defaultValue: null));
+    properties.add(DoubleProperty('endIndent', endIndent, defaultValue: null));
+  }
 }
 
 /// A widget that displays lines for each hour based on the [timeOfDayRange] and [heightPerMinute].

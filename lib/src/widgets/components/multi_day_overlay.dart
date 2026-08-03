@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -43,7 +44,7 @@ typedef MultiDayOverlayBuilder = Widget Function({
   required MultiDayOverlayStyle? style,
 });
 
-class MultiDayOverlayStyle {
+class MultiDayOverlayStyle with Diagnosticable {
   /// The function that returns the name of the day.
   final String Function(DateTime date)? dayNameBuilder;
 
@@ -214,6 +215,23 @@ class MultiDayOverlayStyle {
         width,
         headerHeight,
       );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ObjectFlagProperty<String Function(DateTime)>.has('dayNameBuilder', dayNameBuilder));
+    properties.add(DiagnosticsProperty<TextStyle>('dayNameTextStyle', dayNameTextStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<TextStyle>('dateTextStyle', dateTextStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<Icon>('closeIcon', closeIcon, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('headerPadding', headerPadding, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('eventsPadding', eventsPadding, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('eventPadding', eventPadding, defaultValue: null));
+    properties.add(DiagnosticsProperty<CardThemeData>('cardTheme', cardTheme, defaultValue: null));
+    properties.add(DiagnosticsProperty<ButtonStyle>('closeButtonStyle', closeButtonStyle, defaultValue: null));
+    properties.add(ColorProperty('barrierColor', barrierColor, defaultValue: null));
+    properties.add(DoubleProperty('width', width, defaultValue: null));
+    properties.add(DoubleProperty('headerHeight', headerHeight, defaultValue: null));
+  }
 }
 
 /// Positions the overlay card, keeping all four of its edges inside the overlay.

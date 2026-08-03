@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -17,7 +18,7 @@ typedef DayHeaderBuilder = Widget Function(
 ///
 /// This class allows you to customize the appearance of the [DayHeader] widget.
 /// You can change the text style, the string displayed, the number text style, and the alignment.
-class DayHeaderStyle {
+class DayHeaderStyle with Diagnosticable {
   /// The [TextStyle] used by the [DayHeader] widget to display the name of the day.
   final TextStyle? textStyle;
 
@@ -87,6 +88,14 @@ class DayHeaderStyle {
 
   @override
   int get hashCode => Object.hash(textStyle, numberTextStyle, mainAxisAlignment);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<TextStyle>('numberTextStyle', numberTextStyle, defaultValue: null));
+    properties.add(EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment, defaultValue: null));
+  }
 }
 
 /// A widget that displays the name of the day and the day number of the week.
