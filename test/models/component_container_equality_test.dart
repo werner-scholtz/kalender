@@ -78,6 +78,42 @@ void main() {
     });
   });
 
+  group('TileComponents equality', () {
+    test('the default components are one canonical instance', () {
+      expect(TileComponents.defaultComponents(), same(TileComponents.defaultComponents()));
+    });
+
+    test('components built with the same builders are equal', () {
+      // ignore: prefer_const_constructors
+      final a = TileComponents(tileBuilder: _tile);
+      // ignore: prefer_const_constructors
+      final b = TileComponents(tileBuilder: _tile);
+      expect(identical(a, b), isFalse);
+      expect(a, equals(b));
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('a builder written as a closure is never equal', () {
+      final a = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+      final b = TileComponents(tileBuilder: (event, tileRange) => const SizedBox());
+      expect(a, isNot(equals(b)));
+    });
+
+    test('differing a builder breaks equality', () {
+      expect(
+        const TileComponents(tileBuilder: _tile, dropTargetTile: _dropTarget),
+        isNot(equals(const TileComponents(tileBuilder: _tile))),
+      );
+    });
+
+    test('a schedule restriction is not equal to the base with the same builder', () {
+      expect(
+        const ScheduleTileComponents(tileBuilder: _tile),
+        isNot(equals(const TileComponents(tileBuilder: _tile))),
+      );
+    });
+  });
+
   group('Components rebuilds', () {
     /// Counts how often the components actually change for a dependent.
     ///
@@ -142,3 +178,7 @@ class _DependentState extends State<_Dependent> {
 String _dateLabel(BuildContext context, DateTime date) => '';
 
 String _hiddenEventCount(BuildContext context, int numberOfHiddenEvents) => '';
+
+Widget _tile(CalendarEvent event, DateTimeRange tileRange) => const SizedBox();
+
+Widget _dropTarget(CalendarEvent event) => const SizedBox();
