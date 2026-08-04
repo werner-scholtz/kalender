@@ -19,18 +19,21 @@ class CalendarComponents {
   final MonthComponents monthComponents;
 
   /// Styles used by the month view.
+  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
   final MonthComponentStyles monthComponentStyles;
 
   /// Components used to override the default multi day components.
   final MultiDayComponents multiDayComponents;
 
   /// Styles used by the multi day view.
+  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
   final MultiDayComponentStyles multiDayComponentStyles;
 
   /// Components used to override the default schedule components.
   final ScheduleComponents scheduleComponents;
 
   /// Styles used by the schedule view.
+  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
   final ScheduleComponentStyles scheduleComponentStyles;
 
   /// Default override for the overlay widgets.
@@ -41,28 +44,37 @@ class CalendarComponents {
   /// Default styles for the overlay widgets.
   ///
   /// If another style is provided in [multiDayComponentStyles] or [monthComponentStyles], that will be used instead.
+  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
   final OverlayStyles? overlayStyles;
 
   const CalendarComponents({
     this.monthComponents = const MonthComponents(),
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     this.monthComponentStyles = const MonthComponentStyles(),
     this.multiDayComponents = const MultiDayComponents(),
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     this.multiDayComponentStyles = const MultiDayComponentStyles(),
     this.scheduleComponents = const ScheduleComponents(),
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     this.scheduleComponentStyles = const ScheduleComponentStyles(),
     this.overlayBuilders,
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     this.overlayStyles,
   });
 
   /// Creates a copy of this with the given fields replaced.
   CalendarComponents copyWith({
     MonthComponents? monthComponents,
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     MonthComponentStyles? monthComponentStyles,
     MultiDayComponents? multiDayComponents,
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     MultiDayComponentStyles? multiDayComponentStyles,
     ScheduleComponents? scheduleComponents,
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     ScheduleComponentStyles? scheduleComponentStyles,
     OverlayBuilders? overlayBuilders,
+    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
     OverlayStyles? overlayStyles,
   }) {
     return CalendarComponents(

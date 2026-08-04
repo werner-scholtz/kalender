@@ -316,9 +316,16 @@ KalenderThemeData(
 
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets. Styles passed here apply to that one `CalendarView` and win over the [theme](#theming).
+Pass a `CalendarComponents` object to `CalendarView` to override the default widget builders.
 
-Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MultiDayComponentStyles-class.html), [`MonthComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MonthComponentStyles-class.html), [`ScheduleComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/ScheduleComponentStyles-class.html).
+> [!WARNING]
+> The style fields on `CalendarComponents` are deprecated and are removed in
+> 0.26.0. Use `KalenderThemeData` for the whole app, or wrap a calendar in a
+> [`KalenderTheme`](#theming-part-of-the-app) to style one of them. That is the
+> same set of styles reached one way instead of four.
+>
+> `CalendarComponents` keeps its builder fields. Styles move to the theme,
+> builders stay here.
 
 <details>
   <summary>MultiDayComponents</summary>
