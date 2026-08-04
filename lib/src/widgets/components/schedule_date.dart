@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -16,7 +17,7 @@ typedef ScheduleDateBuilder = Widget Function(
 );
 
 /// The style of the [ScheduleDate].
-class ScheduleDateStyle {
+class ScheduleDateStyle with Diagnosticable {
   /// Creates a new [ScheduleDateStyle].
   const ScheduleDateStyle({
     this.textStyle,
@@ -67,6 +68,13 @@ class ScheduleDateStyle {
 
   @override
   int get hashCode => Object.hash(textStyle, numberTextStyle);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<TextStyle>('numberTextStyle', numberTextStyle, defaultValue: null));
+  }
 }
 
 /// A widget that displays the name of the day and the day number of the week.

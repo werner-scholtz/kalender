@@ -6,8 +6,18 @@ See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
 
 - `CalendarEvent.isMultiDayEvent` is removed. It was deprecated in 0.24.0, which named this release. Use `spansMultipleDays(location:, defaultRule:)`. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
 
+### Features
+
+- `KalenderTheme` is a widget, so a theme can be applied to part of the tree instead of the whole app. Wrap a calendar in `KalenderTheme(data: ..., child: ...)` and two calendars in one app can look different. The nearest one wins when they nest, and fields it leaves out still come from the `KalenderThemeData` registered on `ThemeData.extensions`, which keeps working as before. It is an `InheritedTheme`, so the theme also reaches the tile that follows a drag, which is built into an `Overlay` rather than below the calendar.
+- The style classes and `KalenderThemeData` are `Diagnosticable`, so their resolved values appear in the Flutter devtools inspector and in `toString()` instead of a bare instance hash. Fields left unset are omitted rather than printed as null.
+
+### Deprecations
+
+- The style fields on `CalendarComponents` are deprecated and are removed in 0.26.0. Use `KalenderThemeData` for the whole app, or a `KalenderTheme` to scope one calendar. The same thirteen styles were reachable both ways, and `multiDayOverlayStyle` had four different homes. `CalendarComponents` keeps its builder fields. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
+
 ### Fixes
 
+- Styling the month view's week number no longer moves it to the middle of its row. The top alignment came from a default on `MonthBodyComponentStyles`, so setting any week number style there replaced it. The month body now applies that alignment itself, and anything you set merges over it.
 - `CalendarComponents`, the containers reached through it, `TileComponents` and `ScheduleTileComponents` compare by value, and `CalendarComponents` can be `const`. The inherited widgets carrying them reported a change on every rebuild because they compared by identity, and now report one only when something differs.
 - `CalendarComponents` and the containers reached through it gain `copyWith`.
 

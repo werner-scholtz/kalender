@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -13,7 +14,7 @@ typedef WeekNumberBuilder = Widget Function(
 );
 
 /// The style of the [WeekNumber].
-class WeekNumberStyle {
+class WeekNumberStyle with Diagnosticable {
   /// Creates a new [WeekNumberStyle].
   const WeekNumberStyle({
     this.textStyle,
@@ -93,6 +94,16 @@ class WeekNumberStyle {
 
   @override
   int get hashCode => Object.hash(textStyle, visualDensity, tooltip, padding, alignment);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<VisualDensity>('visualDensity', visualDensity, defaultValue: null));
+    properties.add(StringProperty('tooltip', tooltip, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('padding', padding, defaultValue: null));
+    properties.add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment, defaultValue: null));
+  }
 }
 
 /// A widget that displays the week number.

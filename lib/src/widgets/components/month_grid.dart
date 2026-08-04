@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -13,7 +14,7 @@ typedef MonthGridBuilder = Widget Function(
 );
 
 /// The [MonthGridStyle] class is used by the [MonthGrid] widget.
-class MonthGridStyle {
+class MonthGridStyle with Diagnosticable {
   const MonthGridStyle({
     this.color,
     this.thickness,
@@ -60,6 +61,13 @@ class MonthGridStyle {
 
   @override
   int get hashCode => Object.hash(color, thickness);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('color', color, defaultValue: null));
+    properties.add(DoubleProperty('thickness', thickness, defaultValue: null));
+  }
 }
 
 /// A widget that displays the month grid.
@@ -89,23 +97,13 @@ class MonthGrid extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < 8; i++)
-              VerticalDivider(
-                width: thickness,
-                thickness: thickness,
-                color: color,
-              ),
+            for (int i = 0; i < 8; i++) Container(width: thickness, color: color),
           ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < numberOfRows + 1; i++)
-              Divider(
-                height: thickness,
-                thickness: thickness,
-                color: color,
-              ),
+            for (int i = 0; i < numberOfRows + 1; i++) Container(height: thickness, color: color),
           ],
         ),
       ],

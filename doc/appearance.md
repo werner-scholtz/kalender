@@ -252,13 +252,45 @@ MaterialApp(
 )
 ```
 
-Styles resolve in three layers, most specific first:
+### Theming part of the app
+
+Registering on `ThemeData` covers every calendar in the app. To theme one of
+them differently, wrap it in a `KalenderTheme`:
+
+<!-- snippet: expression -->
+```dart
+KalenderTheme(
+  data: const KalenderThemeData(
+    hourLinesStyle: HourLinesStyle(thickness: 2),
+  ),
+  child: CalendarView(
+    eventsController: DefaultEventsController(),
+    calendarController: CalendarController(),
+    viewConfiguration: MultiDayViewConfiguration.week(),
+    body: CalendarBody(),
+  ),
+)
+```
+
+The nearest one wins when they nest, and fields it leaves out fall through to
+the theme registered on `ThemeData`, so a scope can change one thing without
+restating the rest.
+
+This is an `InheritedTheme`, so it also reaches widgets the calendar builds into
+an `Overlay`, such as the tile that follows a drag. Those are not descendants of
+your calendar, so an ordinary inherited widget would not reach them.
+
+### How a style is resolved
+
+Four layers, most specific first. Each one fills in the fields the layer above
+it leaves null.
 
 1. A style passed to a single calendar through `CalendarComponents` (see [Appearance](#appearance--custom-components)).
-2. The `KalenderThemeData` registered on the theme.
-3. The Material 3 defaults.
+2. The nearest `KalenderTheme` above the calendar.
+3. The `KalenderThemeData` registered on `ThemeData.extensions`.
+4. The Material 3 defaults.
 
-Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app.
+Theme changes animate: because `KalenderThemeData` is a `ThemeExtension` with `lerp`, switching themes transitions the calendar's colors along with the rest of the app. A `KalenderTheme` scope does not animate on its own, since it is a plain widget rather than part of `ThemeData`.
 
 ### The overflow overlay
 
@@ -284,9 +316,16 @@ KalenderThemeData(
 
 ## Appearance / Custom Components
 
-Pass a `CalendarComponents` object to `CalendarView` to override default widget builders or just pass style objects to tweak colors, text styles, and padding without defining your own widgets. Styles passed here apply to that one `CalendarView` and win over the [theme](#theming).
+Pass a `CalendarComponents` object to `CalendarView` to override the default widget builders.
 
-Style classes: [`MultiDayComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MultiDayComponentStyles-class.html), [`MonthComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/MonthComponentStyles-class.html), [`ScheduleComponentStyles`](https://pub.dev/documentation/kalender/latest/kalender/ScheduleComponentStyles-class.html).
+> [!WARNING]
+> The style fields on `CalendarComponents` are deprecated and are removed in
+> 0.26.0. Use `KalenderThemeData` for the whole app, or wrap a calendar in a
+> [`KalenderTheme`](#theming-part-of-the-app) to style one of them. That is the
+> same set of styles reached one way instead of four.
+>
+> `CalendarComponents` keeps its builder fields. Styles move to the theme,
+> builders stay here.
 
 <details>
   <summary>MultiDayComponents</summary>

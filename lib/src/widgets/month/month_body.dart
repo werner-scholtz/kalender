@@ -44,7 +44,8 @@ class MonthBody extends StatelessWidget {
     final monthGridStyle =
         (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(monthStyles.monthGridStyle);
     final dividerSide = BorderSide(
-      color: monthGridStyle.color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+      // Never null: KalenderThemeData.defaults always sets it, which a test pins.
+      color: monthGridStyle.color!,
       width: monthGridStyle.thickness ?? 0,
     );
 
@@ -109,7 +110,7 @@ class MonthBody extends StatelessWidget {
                   visibleRange: visibleRange,
                   numberOfRows: numberOfRows,
                   weekNumberBuilder: monthComponents.bodyComponents.weekNumberBuilder,
-                  weekNumberStyle: monthStyles.weekNumberStyle,
+                  weekNumberStyle: monthWeekNumberDefaults.merge(monthStyles.weekNumberStyle),
                   dividerSide: dividerSide,
                 ),
               ),
@@ -230,3 +231,10 @@ class _MonthDayCellBackground extends StatelessWidget {
     );
   }
 }
+
+/// The month grid puts the week number at the top of its row, where the theme
+/// leaves it centred.
+///
+/// Applied as a default rather than an override, so anything set on the theme
+/// or through a [KalenderTheme] still wins.
+const monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);

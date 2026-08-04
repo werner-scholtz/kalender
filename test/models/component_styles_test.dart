@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
@@ -472,6 +473,52 @@ void main() {
         const MultiDayPortalOverlayButtonStyle(textStyle: TextStyle(fontSize: 10), textPadding: EdgeInsets.all(4)),
       );
       expect(a == b, false);
+    });
+  });
+
+  group('Diagnosticable', () {
+    test('a style reports the fields it sets and omits the ones it does not', () {
+      const style = HourLinesStyle(color: Color(0xFF00FF00), thickness: 3);
+      final description = style.toString();
+
+      expect(description, startsWith('HourLinesStyle'));
+      expect(description, contains('thickness: 3.0'));
+      expect(description, contains('color:'));
+      // Unset fields are left out rather than printed as null.
+      expect(description, isNot(contains('indent')));
+    });
+
+    test('the theme reports the styles it carries', () {
+      const theme = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 3));
+      final description = theme.toString();
+
+      expect(description, startsWith('KalenderThemeData'));
+      expect(description, contains('hourLinesStyle: HourLinesStyle'));
+      expect(description, isNot(contains('monthGridStyle')));
+    });
+
+    test('every style class is diagnosticable', () {
+      const styles = <Diagnosticable>[
+        DayHeaderStyle(),
+        TimelineStyle(),
+        HourLinesStyle(),
+        DaySeparatorStyle(),
+        TimeIndicatorStyle(),
+        WeekNumberStyle(),
+        MonthGridStyle(),
+        MonthDayHeaderStyle(),
+        WeekDayHeaderStyle(),
+        ScheduleDateStyle(),
+        ScheduleTileHighlightStyle(),
+        MultiDayOverlayStyle(),
+        MultiDayPortalOverlayButtonStyle(),
+        KalenderThemeData(),
+      ];
+
+      expect(styles, hasLength(14));
+      for (final style in styles) {
+        expect(style.toString(), startsWith(style.runtimeType.toString()));
+      }
     });
   });
 }

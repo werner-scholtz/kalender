@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -13,7 +14,7 @@ typedef WeekDayHeaderBuilder = Widget Function(
 );
 
 /// The [WeekDayHeaderStyle] class is used by the default [WeekDayHeader] widget.
-class WeekDayHeaderStyle {
+class WeekDayHeaderStyle with Diagnosticable {
   const WeekDayHeaderStyle({
     this.textStyle,
     this.padding,
@@ -63,6 +64,13 @@ class WeekDayHeaderStyle {
 
   @override
   int get hashCode => Object.hash(textStyle, padding);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextStyle>('textStyle', textStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<EdgeInsets>('padding', padding, defaultValue: null));
+  }
 }
 
 /// A widget that displays the name of the day of the week.

@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -12,7 +13,7 @@ typedef DaySeparatorBuilder = Widget Function(
 );
 
 /// The style for the [DaySeparator] widget.
-class DaySeparatorStyle {
+class DaySeparatorStyle with Diagnosticable {
   /// The [Color] of the day separator.
   final Color? color;
 
@@ -82,6 +83,15 @@ class DaySeparatorStyle {
 
   @override
   int get hashCode => Object.hash(color, width, topIndent, bottomIndent);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('color', color, defaultValue: null));
+    properties.add(DoubleProperty('width', width, defaultValue: null));
+    properties.add(DoubleProperty('topIndent', topIndent, defaultValue: null));
+    properties.add(DoubleProperty('bottomIndent', bottomIndent, defaultValue: null));
+  }
 }
 
 /// A widget that displays a separator between days.

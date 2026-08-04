@@ -248,10 +248,55 @@ void main() {
         showWeekNumbers: true,
       );
 
+      // The grid draws its column lines in a Row, one more than the number of
+      // day columns.
+      final columnLines = find.descendant(
+        of: find.descendant(of: find.byType(MonthGrid).first, matching: find.byType(Row)),
+        matching: find.byType(Container),
+      );
+
       expect(
-        find.byType(VerticalDivider),
+        columnLines,
         findsNWidgets(8),
         reason: 'Week numbers should use a leading gutter, not an extra day column',
+      );
+    });
+
+    testWidgets('the month week number sits at the top of its row by default', (tester) async {
+      // The month grid overrides the theme's centred alignment. This used to
+      // come from a default on MonthBodyComponentStyles, and moved to the month
+      // body when that style path was deprecated, so it is worth pinning.
+      await pumpMonthView(tester, DateTime(2025, 1), showWeekNumbers: true);
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.topCenter),
+        ),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('a style set for the month keeps the top alignment it does not mention', (tester) async {
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+        components: const CalendarComponents(
+          monthComponentStyles: MonthComponentStyles(
+            bodyStyles: MonthBodyComponentStyles(
+              weekNumberStyle: WeekNumberStyle(tooltip: 'Week'),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.topCenter),
+        ),
+        findsWidgets,
       );
     });
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
@@ -18,7 +19,7 @@ typedef TimeIndicatorBuilder = Widget Function(
 );
 
 /// The style of the [TimeIndicator] widget.
-class TimeIndicatorStyle {
+class TimeIndicatorStyle with Diagnosticable {
   /// The [Color] of the time indicator.
   final Color? lineColor;
 
@@ -89,6 +90,15 @@ class TimeIndicatorStyle {
 
   @override
   int get hashCode => Object.hash(lineColor, thickness, circleColor, circleSize);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(ColorProperty('lineColor', lineColor, defaultValue: null));
+    properties.add(DoubleProperty('thickness', thickness, defaultValue: null));
+    properties.add(ColorProperty('circleColor', circleColor, defaultValue: null));
+    properties.add(DiagnosticsProperty<Size>('circleSize', circleSize, defaultValue: null));
+  }
 }
 
 /// A widget that displays the current time as a line and a circle.
@@ -214,7 +224,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final top = now.difference(startTime).inMinutes * widget.heightPerMinute;
 
     final style = (KalenderTheme.of(context).timeIndicatorStyle ?? const TimeIndicatorStyle()).merge(widget.style);
-    final lineColor = style.lineColor ?? Theme.of(context).colorScheme.error;
+    // Never null: KalenderThemeData.defaults always sets it, which a test pins.
+    final lineColor = style.lineColor!;
     final thickness = style.thickness ?? 1;
 
     final circleWidth = style.circleSize?.width ?? 10;

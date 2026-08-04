@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
@@ -21,7 +22,7 @@ import 'package:kalender/kalender.dart';
 ///   ),
 /// )
 /// ```
-class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
+class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosticable {
   /// The style of the [DayHeader].
   final DayHeaderStyle? dayHeaderStyle;
 
@@ -287,17 +288,93 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> {
         multiDayOverlayStyle,
         multiDayPortalOverlayButtonStyle,
       );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<DayHeaderStyle>('dayHeaderStyle', dayHeaderStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<TimelineStyle>('timelineStyle', timelineStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<HourLinesStyle>('hourLinesStyle', hourLinesStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<DaySeparatorStyle>('daySeparatorStyle', daySeparatorStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<TimeIndicatorStyle>('timeIndicatorStyle', timeIndicatorStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<WeekNumberStyle>('weekNumberStyle', weekNumberStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<MonthGridStyle>('monthGridStyle', monthGridStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<MonthDayHeaderStyle>('monthDayHeaderStyle', monthDayHeaderStyle, defaultValue: null));
+    properties
+        .add(DiagnosticsProperty<WeekDayHeaderStyle>('weekDayHeaderStyle', weekDayHeaderStyle, defaultValue: null));
+    properties.add(DiagnosticsProperty<ScheduleDateStyle>('scheduleDateStyle', scheduleDateStyle, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<ScheduleTileHighlightStyle>(
+        'scheduleTileHighlightStyle',
+        scheduleTileHighlightStyle,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      DiagnosticsProperty<MultiDayOverlayStyle>('multiDayOverlayStyle', multiDayOverlayStyle, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<MultiDayPortalOverlayButtonStyle>(
+        'multiDayPortalOverlayButtonStyle',
+        multiDayPortalOverlayButtonStyle,
+        defaultValue: null,
+      ),
+    );
+  }
 }
 
-/// Resolves the effective [KalenderThemeData] for a [BuildContext].
-abstract final class KalenderTheme {
-  /// The effective theme: the Material 3 defaults overlaid with the app's
-  /// [KalenderThemeData] extension, if one is registered on [ThemeData.extensions].
+/// Applies a [KalenderThemeData] to the calendars below it.
+///
+/// Use this to theme part of the tree. Registering a [KalenderThemeData] on
+/// [ThemeData.extensions] themes the whole app, which is the right place for an
+/// app-wide look, but two calendars in one app cannot differ that way.
+///
+/// ```dart
+/// KalenderTheme(
+///   data: const KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2)),
+///   child: CalendarView(...),
+/// )
+/// ```
+///
+/// This extends [InheritedTheme], so the theme also reaches widgets the
+/// calendar builds into an [Overlay], such as the tile that follows a drag.
+/// Those are not descendants of this widget, so a plain [InheritedWidget] would
+/// not reach them.
+class KalenderTheme extends InheritedTheme {
+  /// The styles applied to the calendars below this widget.
+  final KalenderThemeData data;
+
+  /// Creates a [KalenderTheme].
+  const KalenderTheme({super.key, required this.data, required super.child});
+
+  /// The effective theme for [context].
   ///
-  /// A style passed directly to a widget still takes precedence over the
-  /// value returned here.
+  /// Resolved in this order, each layer filling in the fields the one above
+  /// leaves null:
+  ///
+  /// 1. the nearest [KalenderTheme] ancestor,
+  /// 2. a [KalenderThemeData] registered on [ThemeData.extensions],
+  /// 3. the Material 3 defaults from [KalenderThemeData.defaults].
+  ///
+  /// A style passed directly to a widget still takes precedence over all three.
   static KalenderThemeData of(BuildContext context) {
+    final defaults = KalenderThemeData.defaults(context);
     final extension = Theme.of(context).extension<KalenderThemeData>();
-    return KalenderThemeData.defaults(context).merge(extension);
+    final inherited = context.dependOnInheritedWidgetOfExactType<KalenderTheme>()?.data;
+    return defaults.merge(extension).merge(inherited);
+  }
+
+  @override
+  Widget wrap(BuildContext context, Widget child) => KalenderTheme(data: data, child: child);
+
+  @override
+  bool updateShouldNotify(KalenderTheme oldWidget) => data != oldWidget.data;
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<KalenderThemeData>('data', data));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender_extensions.dart';
 import 'package:kalender/src/theme/kalender_theme.dart';
@@ -15,7 +16,7 @@ typedef ScheduleTileHighlightBuilder = Widget Function(
   Widget child,
 );
 
-class ScheduleTileHighlightStyle {
+class ScheduleTileHighlightStyle with Diagnosticable {
   /// Creates a new [ScheduleTileHighlightStyle].
   const ScheduleTileHighlightStyle({this.decoration});
 
@@ -48,6 +49,12 @@ class ScheduleTileHighlightStyle {
 
   @override
   int get hashCode => decoration.hashCode;
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<BoxDecoration>('decoration', decoration, defaultValue: null));
+  }
 }
 
 /// A widget that highlights the list item if the date is within the given dateTimeRange.
