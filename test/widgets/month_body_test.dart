@@ -257,8 +257,8 @@ void main() {
 
     testWidgets('applies custom week number alignment from style', (tester) async {
       const rows = 5;
-      final components = CalendarComponents(
-        monthComponentStyles: const MonthComponentStyles(
+      final components = const CalendarComponents(
+        monthComponentStyles: MonthComponentStyles(
           bodyStyles: MonthBodyComponentStyles(
             weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter),
           ),

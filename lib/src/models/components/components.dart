@@ -43,7 +43,7 @@ class CalendarComponents {
   /// If another style is provided in [multiDayComponentStyles] or [monthComponentStyles], that will be used instead.
   final OverlayStyles? overlayStyles;
 
-  CalendarComponents({
+  const CalendarComponents({
     this.monthComponents = const MonthComponents(),
     this.monthComponentStyles = const MonthComponentStyles(),
     this.multiDayComponents = const MultiDayComponents(),
@@ -53,6 +53,56 @@ class CalendarComponents {
     this.overlayBuilders,
     this.overlayStyles,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  CalendarComponents copyWith({
+    MonthComponents? monthComponents,
+    MonthComponentStyles? monthComponentStyles,
+    MultiDayComponents? multiDayComponents,
+    MultiDayComponentStyles? multiDayComponentStyles,
+    ScheduleComponents? scheduleComponents,
+    ScheduleComponentStyles? scheduleComponentStyles,
+    OverlayBuilders? overlayBuilders,
+    OverlayStyles? overlayStyles,
+  }) {
+    return CalendarComponents(
+      monthComponents: monthComponents ?? this.monthComponents,
+      monthComponentStyles: monthComponentStyles ?? this.monthComponentStyles,
+      multiDayComponents: multiDayComponents ?? this.multiDayComponents,
+      multiDayComponentStyles: multiDayComponentStyles ?? this.multiDayComponentStyles,
+      scheduleComponents: scheduleComponents ?? this.scheduleComponents,
+      scheduleComponentStyles: scheduleComponentStyles ?? this.scheduleComponentStyles,
+      overlayBuilders: overlayBuilders ?? this.overlayBuilders,
+      overlayStyles: overlayStyles ?? this.overlayStyles,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CalendarComponents &&
+        other.monthComponents == monthComponents &&
+        other.monthComponentStyles == monthComponentStyles &&
+        other.multiDayComponents == multiDayComponents &&
+        other.multiDayComponentStyles == multiDayComponentStyles &&
+        other.scheduleComponents == scheduleComponents &&
+        other.scheduleComponentStyles == scheduleComponentStyles &&
+        other.overlayBuilders == overlayBuilders &&
+        other.overlayStyles == overlayStyles;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        monthComponents,
+        monthComponentStyles,
+        multiDayComponents,
+        multiDayComponentStyles,
+        scheduleComponents,
+        scheduleComponentStyles,
+        overlayBuilders,
+        overlayStyles,
+      );
 }
 
 /// Builders used to create the overlayPortal, overlay and overlay button widgets.
@@ -78,6 +128,41 @@ class OverlayBuilders {
     this.multiDayPortalOverlayButtonBuilder,
     this.multiDayPortalOverlayButtonStringBuilder,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  OverlayBuilders copyWith({
+    MultiDayOverlayBuilder? multiDayOverlayBuilder,
+    MultiDayOverlayPortalBuilder? multiDayOverlayPortalBuilder,
+    MultiDayPortalOverlayButtonBuilder? multiDayPortalOverlayButtonBuilder,
+    HiddenEventCountStringBuilder? multiDayPortalOverlayButtonStringBuilder,
+  }) {
+    return OverlayBuilders(
+      multiDayOverlayBuilder: multiDayOverlayBuilder ?? this.multiDayOverlayBuilder,
+      multiDayOverlayPortalBuilder: multiDayOverlayPortalBuilder ?? this.multiDayOverlayPortalBuilder,
+      multiDayPortalOverlayButtonBuilder: multiDayPortalOverlayButtonBuilder ?? this.multiDayPortalOverlayButtonBuilder,
+      multiDayPortalOverlayButtonStringBuilder:
+          multiDayPortalOverlayButtonStringBuilder ?? this.multiDayPortalOverlayButtonStringBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OverlayBuilders &&
+        other.multiDayOverlayBuilder == multiDayOverlayBuilder &&
+        other.multiDayOverlayPortalBuilder == multiDayOverlayPortalBuilder &&
+        other.multiDayPortalOverlayButtonBuilder == multiDayPortalOverlayButtonBuilder &&
+        other.multiDayPortalOverlayButtonStringBuilder == multiDayPortalOverlayButtonStringBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        multiDayOverlayBuilder,
+        multiDayOverlayPortalBuilder,
+        multiDayPortalOverlayButtonBuilder,
+        multiDayPortalOverlayButtonStringBuilder,
+      );
 }
 
 /// Styles used by the overlay widgets.
@@ -88,10 +173,33 @@ class OverlayStyles {
   /// The style for the multi day overlay portal button.
   final MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle;
 
-  OverlayStyles({
+  const OverlayStyles({
     this.multiDayOverlayStyle,
     this.multiDayPortalOverlayButtonStyle,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  OverlayStyles copyWith({
+    MultiDayOverlayStyle? multiDayOverlayStyle,
+    MultiDayPortalOverlayButtonStyle? multiDayPortalOverlayButtonStyle,
+  }) {
+    return OverlayStyles(
+      multiDayOverlayStyle: multiDayOverlayStyle ?? this.multiDayOverlayStyle,
+      multiDayPortalOverlayButtonStyle: multiDayPortalOverlayButtonStyle ?? this.multiDayPortalOverlayButtonStyle,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OverlayStyles &&
+        other.multiDayOverlayStyle == multiDayOverlayStyle &&
+        other.multiDayPortalOverlayButtonStyle == multiDayPortalOverlayButtonStyle;
+  }
+
+  @override
+  int get hashCode => Object.hash(multiDayOverlayStyle, multiDayPortalOverlayButtonStyle);
 }
 
 /// The trigger widget builder, should be constrained in width.

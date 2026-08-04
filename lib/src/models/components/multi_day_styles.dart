@@ -20,6 +20,27 @@ class MultiDayComponentStyles {
     this.headerStyles = const MultiDayHeaderComponentStyles(),
     this.bodyStyles = const MultiDayBodyComponentStyles(),
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayComponentStyles copyWith({
+    MultiDayHeaderComponentStyles? headerStyles,
+    MultiDayBodyComponentStyles? bodyStyles,
+  }) {
+    return MultiDayComponentStyles(
+      headerStyles: headerStyles ?? this.headerStyles,
+      bodyStyles: bodyStyles ?? this.bodyStyles,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayComponentStyles && other.headerStyles == headerStyles && other.bodyStyles == bodyStyles;
+  }
+
+  @override
+  int get hashCode => Object.hash(headerStyles, bodyStyles);
 }
 
 /// The styles of the default components used by the [MultiDayHeader].
@@ -39,6 +60,32 @@ class MultiDayHeaderComponentStyles {
     this.weekNumberStyle = const WeekNumberStyle(),
     this.overlayStyles,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayHeaderComponentStyles copyWith({
+    DayHeaderStyle? dayHeaderStyle,
+    WeekNumberStyle? weekNumberStyle,
+    OverlayStyles? overlayStyles,
+  }) {
+    return MultiDayHeaderComponentStyles(
+      dayHeaderStyle: dayHeaderStyle ?? this.dayHeaderStyle,
+      weekNumberStyle: weekNumberStyle ?? this.weekNumberStyle,
+      overlayStyles: overlayStyles ?? this.overlayStyles,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayHeaderComponentStyles &&
+        other.dayHeaderStyle == dayHeaderStyle &&
+        other.weekNumberStyle == weekNumberStyle &&
+        other.overlayStyles == overlayStyles;
+  }
+
+  @override
+  int get hashCode => Object.hash(dayHeaderStyle, weekNumberStyle, overlayStyles);
 }
 
 /// The styles of the default components used by the [MultiDayBody].
@@ -62,4 +109,33 @@ class MultiDayBodyComponentStyles {
     this.hourLinesStyle = const HourLinesStyle(),
     this.timelineStyle = const TimelineStyle(),
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  MultiDayBodyComponentStyles copyWith({
+    DaySeparatorStyle? daySeparatorStyle,
+    TimeIndicatorStyle? timeIndicatorStyle,
+    HourLinesStyle? hourLinesStyle,
+    TimelineStyle? timelineStyle,
+  }) {
+    return MultiDayBodyComponentStyles(
+      daySeparatorStyle: daySeparatorStyle ?? this.daySeparatorStyle,
+      timeIndicatorStyle: timeIndicatorStyle ?? this.timeIndicatorStyle,
+      hourLinesStyle: hourLinesStyle ?? this.hourLinesStyle,
+      timelineStyle: timelineStyle ?? this.timelineStyle,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MultiDayBodyComponentStyles &&
+        other.daySeparatorStyle == daySeparatorStyle &&
+        other.timeIndicatorStyle == timeIndicatorStyle &&
+        other.hourLinesStyle == hourLinesStyle &&
+        other.timelineStyle == timelineStyle;
+  }
+
+  @override
+  int get hashCode => Object.hash(daySeparatorStyle, timeIndicatorStyle, hourLinesStyle, timelineStyle);
 }

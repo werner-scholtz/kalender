@@ -71,6 +71,47 @@ class TileComponents {
       dropTargetTile: defaultDropTargetBuilder,
     );
   }
+
+  /// Compares the builders, so components built with the same ones are equal.
+  ///
+  /// A builder written as an inline closure is a new object on every build and
+  /// never compares equal. Pass a top-level or static function to keep two
+  /// instances equal, which is what stops the tiles rebuilding.
+  ///
+  /// [ScheduleTileComponents] restricts several of these to null, so the types
+  /// are compared too rather than only the fields.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TileComponents &&
+        other.runtimeType == runtimeType &&
+        other.tileBuilder == tileBuilder &&
+        other.overlayTileBuilder == overlayTileBuilder &&
+        other.tileWhenDraggingBuilder == tileWhenDraggingBuilder &&
+        other.feedbackTileBuilder == feedbackTileBuilder &&
+        other.dropTargetTile == dropTargetTile &&
+        other.dragAnchorStrategy == dragAnchorStrategy &&
+        other.resizeDragAnchorStrategy == resizeDragAnchorStrategy &&
+        other.resizeHandlePositioner == resizeHandlePositioner &&
+        other.verticalResizeHandle == verticalResizeHandle &&
+        other.horizontalResizeHandle == horizontalResizeHandle;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        runtimeType,
+        tileBuilder,
+        overlayTileBuilder,
+        tileWhenDraggingBuilder,
+        feedbackTileBuilder,
+        dropTargetTile,
+        dragAnchorStrategy,
+        resizeDragAnchorStrategy,
+        resizeHandlePositioner,
+        verticalResizeHandle,
+        horizontalResizeHandle,
+      );
 }
 
 /// The components used by the [ScheduleBody] to render the event tiles.

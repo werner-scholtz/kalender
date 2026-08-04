@@ -135,7 +135,7 @@ class TestProvider extends StatelessWidget {
         child: Callbacks(
           callbacks: null,
           child: Components(
-            components: components ?? CalendarComponents(),
+            components: components ?? const CalendarComponents(),
             child: Interaction(
               notifier: interaction ?? ValueNotifier(CalendarInteraction()),
               child: Snapping(

@@ -33,6 +33,44 @@ class ScheduleComponents {
     this.emptyItemBuilder,
     this.monthItemBuilder,
   });
+
+  /// Creates a copy of this with the given fields replaced.
+  ScheduleComponents copyWith({
+    ScheduleDateBuilder? leadingDateBuilder,
+    DateStringBuilder? leadingDateStringBuilder,
+    ScheduleTileHighlightBuilder? scheduleTileHighlightBuilder,
+    EmptyItemBuilder? emptyItemBuilder,
+    MonthItemBuilder? monthItemBuilder,
+  }) {
+    return ScheduleComponents(
+      leadingDateBuilder: leadingDateBuilder ?? this.leadingDateBuilder,
+      leadingDateStringBuilder: leadingDateStringBuilder ?? this.leadingDateStringBuilder,
+      scheduleTileHighlightBuilder: scheduleTileHighlightBuilder ?? this.scheduleTileHighlightBuilder,
+      emptyItemBuilder: emptyItemBuilder ?? this.emptyItemBuilder,
+      monthItemBuilder: monthItemBuilder ?? this.monthItemBuilder,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ScheduleComponents &&
+        other.leadingDateBuilder == leadingDateBuilder &&
+        other.leadingDateStringBuilder == leadingDateStringBuilder &&
+        other.scheduleTileHighlightBuilder == scheduleTileHighlightBuilder &&
+        other.emptyItemBuilder == emptyItemBuilder &&
+        other.monthItemBuilder == monthItemBuilder;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        leadingDateBuilder,
+        leadingDateStringBuilder,
+        scheduleTileHighlightBuilder,
+        emptyItemBuilder,
+        monthItemBuilder,
+      );
 }
 
 /// The builder for the empty item.

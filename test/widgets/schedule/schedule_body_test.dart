@@ -219,8 +219,8 @@ void main() {
           emptyDay: EmptyDayBehavior.hide,
           initialDate: DateTime(2025, 1, 15),
           nowCallback: () => DateTime(2025, 1, 15, 10),
-          components: CalendarComponents(
-            scheduleComponents: const ScheduleComponents(monthItemBuilder: _customMonthItem),
+          components: const CalendarComponents(
+            scheduleComponents: ScheduleComponents(monthItemBuilder: _customMonthItem),
           ),
         ),
       );
@@ -236,8 +236,8 @@ void main() {
           emptyDay: EmptyDayBehavior.showOnlyToday,
           initialDate: DateTime(2025, 1, 15),
           nowCallback: () => DateTime(2025, 1, 15, 10),
-          components: CalendarComponents(
-            scheduleComponents: const ScheduleComponents(emptyItemBuilder: _customEmptyItem),
+          components: const CalendarComponents(
+            scheduleComponents: ScheduleComponents(emptyItemBuilder: _customEmptyItem),
           ),
         ),
       );
