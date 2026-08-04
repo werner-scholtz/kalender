@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785828002571,
+  "lastUpdate": 1785829598287,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -9115,6 +9115,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 3363.5637181409297,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cbf1466394ffc03711ca2b583a235f0e0eef0210",
+          "message": "Merge pull request #417 from werner-scholtz/refactor/narrow-material-reads\n\nfeat: the rest of the 0.25.0 theming work",
+          "timestamp": "2026-08-04T09:28:09+02:00",
+          "tree_id": "1560151c462abcfbc32de089015ebf72feb0709f",
+          "url": "https://github.com/werner-scholtz/kalender/commit/cbf1466394ffc03711ca2b583a235f0e0eef0210"
+        },
+        "date": 1785829593233,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 178.61780797740911,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 702.68575,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2089.122,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8032.464,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 730.9365,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 2221.76,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 2467.215,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 12271.191616766468,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 247.02554246745194,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 114.45602587053185,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 790.2835,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 3376.5862068965516,
             "unit": "us"
           }
         ]
