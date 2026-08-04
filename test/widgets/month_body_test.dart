@@ -248,8 +248,15 @@ void main() {
         showWeekNumbers: true,
       );
 
+      // The grid draws its column lines in a Row, one more than the number of
+      // day columns.
+      final columnLines = find.descendant(
+        of: find.descendant(of: find.byType(MonthGrid).first, matching: find.byType(Row)),
+        matching: find.byType(Container),
+      );
+
       expect(
-        find.byType(VerticalDivider),
+        columnLines,
         findsNWidgets(8),
         reason: 'Week numbers should use a leading gutter, not an extra day column',
       );

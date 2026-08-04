@@ -230,8 +230,10 @@ mixin TimeLineUtils {
   }
 
   /// The [TextStyle] that will be used for the text.
-  TextStyle textStyle(BuildContext context) =>
-      effectiveStyle(context).textStyle ?? Theme.of(context).textTheme.labelMedium!;
+  ///
+  /// Never null: [effectiveStyle] resolves through [KalenderTheme], and
+  /// [KalenderThemeData.defaults] always sets it.
+  TextStyle textStyle(BuildContext context) => effectiveStyle(context).textStyle!;
 
   /// The [TextDirection] that will be used for the text.
   TextDirection textDirection(BuildContext context) => effectiveStyle(context).textDirection ?? TextDirection.ltr;

@@ -44,7 +44,8 @@ class MonthBody extends StatelessWidget {
     final monthGridStyle =
         (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(monthStyles.monthGridStyle);
     final dividerSide = BorderSide(
-      color: monthGridStyle.color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+      // Never null: KalenderThemeData.defaults always sets it, which a test pins.
+      color: monthGridStyle.color!,
       width: monthGridStyle.thickness ?? 0,
     );
 

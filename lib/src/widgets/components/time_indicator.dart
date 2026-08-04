@@ -224,7 +224,8 @@ class _TimeIndicatorState extends State<TimeIndicator> {
     final top = now.difference(startTime).inMinutes * widget.heightPerMinute;
 
     final style = (KalenderTheme.of(context).timeIndicatorStyle ?? const TimeIndicatorStyle()).merge(widget.style);
-    final lineColor = style.lineColor ?? Theme.of(context).colorScheme.error;
+    // Never null: KalenderThemeData.defaults always sets it, which a test pins.
+    final lineColor = style.lineColor!;
     final thickness = style.thickness ?? 1;
 
     final circleWidth = style.circleSize?.width ?? 10;

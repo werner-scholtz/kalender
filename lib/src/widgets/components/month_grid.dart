@@ -97,23 +97,13 @@ class MonthGrid extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < 8; i++)
-              VerticalDivider(
-                width: thickness,
-                thickness: thickness,
-                color: color,
-              ),
+            for (int i = 0; i < 8; i++) Container(width: thickness, color: color),
           ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            for (int i = 0; i < numberOfRows + 1; i++)
-              Divider(
-                height: thickness,
-                thickness: thickness,
-                color: color,
-              ),
+            for (int i = 0; i < numberOfRows + 1; i++) Container(height: thickness, color: color),
           ],
         ),
       ],
