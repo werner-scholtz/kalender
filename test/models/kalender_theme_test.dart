@@ -105,6 +105,12 @@ void main() {
       expect(copy.hourLinesStyle, data.hourLinesStyle);
     });
 
+    test('copyWith keeps a style it is not given', () {
+      const data = KalenderThemeData(monthGridStyle: MonthGridStyle(thickness: 2));
+      final copy = data.copyWith(hourLinesStyle: const HourLinesStyle(thickness: 1));
+      expect(copy.monthGridStyle, data.monthGridStyle);
+    });
+
     test('merge overlays styles field by field', () {
       const base = KalenderThemeData(
         hourLinesStyle: HourLinesStyle(color: Color(0xFF000000), thickness: 1),
@@ -140,6 +146,40 @@ void main() {
       const c = KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2));
       expect(a, b);
       expect(a == c, false);
+    });
+
+    test('equality compares every field', () {
+      // Built without const, otherwise the two are canonicalized to one instance
+      // and the comparison returns on identical() without reading any field.
+      // ignore: prefer_const_constructors
+      final a = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
+      // ignore: prefer_const_constructors
+      final b = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
+      expect(identical(a, b), isFalse);
+      expect(a, b);
+
+      // The last field compared, so no earlier one can short-circuit ahead of it.
+      final differsLast = a.copyWith(
+        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(
+          textOverflow: TextOverflow.ellipsis,
+        ),
+      );
+      expect(a == differsLast, false);
+    });
+
+    test('hashCode follows equality', () {
+      // Built without const, for the same reason as the case above.
+      // ignore: prefer_const_constructors
+      final a = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
+      // ignore: prefer_const_constructors
+      final b = KalenderThemeData(hourLinesStyle: const HourLinesStyle(thickness: 1));
+      final c = a.copyWith(
+        multiDayPortalOverlayButtonStyle: const MultiDayPortalOverlayButtonStyle(
+          textOverflow: TextOverflow.ellipsis,
+        ),
+      );
+      expect(a.hashCode, b.hashCode);
+      expect(a.hashCode, isNot(c.hashCode));
     });
 
     testWidgets('animated theme change interpolates through ThemeData.lerp', (tester) async {
