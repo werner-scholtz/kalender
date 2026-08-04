@@ -14,6 +14,35 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 ## v0.24.x → v0.25.0
 
+### Styles move off `CalendarComponents`
+
+Deprecated in 0.25.0, removed in 0.26.0. Nothing breaks yet.
+
+```dart
+- CalendarComponents(
+-   multiDayComponentStyles: MultiDayComponentStyles(
+-     bodyStyles: MultiDayBodyComponentStyles(
+-       hourLinesStyle: HourLinesStyle(thickness: 2),
+-     ),
+-   ),
+- )
+
++ KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2))
+```
+
+Register that on `ThemeData.extensions` for the whole app, or wrap one calendar in a `KalenderTheme` to scope it. The same thirteen styles are reachable either way, and `multiDayOverlayStyle` in particular had four different homes.
+
+`CalendarComponents` keeps its builder fields. Styles go to the theme, builders stay where they are.
+
+**If you styled the same thing differently per view,** the containers were how you did it, and a `KalenderTheme` around `CalendarHeader` or `CalendarBody` is how you do it now:
+
+```dart
+CalendarView(
+  header: KalenderTheme(data: headerStyles, child: CalendarHeader()),
+  body: KalenderTheme(data: bodyStyles, child: CalendarBody()),
+)
+```
+
 ### `isMultiDayEvent` is removed
 
 ```dart

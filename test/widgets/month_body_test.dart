@@ -262,6 +262,44 @@ void main() {
       );
     });
 
+    testWidgets('the month week number sits at the top of its row by default', (tester) async {
+      // The month grid overrides the theme's centred alignment. This used to
+      // come from a default on MonthBodyComponentStyles, and moved to the month
+      // body when that style path was deprecated, so it is worth pinning.
+      await pumpMonthView(tester, DateTime(2025, 1), showWeekNumbers: true);
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.topCenter),
+        ),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('a style set for the month keeps the top alignment it does not mention', (tester) async {
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+        components: const CalendarComponents(
+          monthComponentStyles: MonthComponentStyles(
+            bodyStyles: MonthBodyComponentStyles(
+              weekNumberStyle: WeekNumberStyle(tooltip: 'Week'),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.topCenter),
+        ),
+        findsWidgets,
+      );
+    });
+
     testWidgets('applies custom week number alignment from style', (tester) async {
       const rows = 5;
       final components = const CalendarComponents(
