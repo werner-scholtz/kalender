@@ -78,7 +78,11 @@ void main() {
 
     expect(created, isNotNull, reason: 'a drag across the header should create an event');
     expect(confirmed, isNotNull, reason: 'the created event should be confirmed');
-    expect(created!.isMultiDayEvent, isTrue, reason: 'dragging across days should create a multi-day event');
+    expect(
+      created!.spansMultipleDays(location: null, defaultRule: defaultMultiDayRule),
+      isTrue,
+      reason: 'dragging across days should create a multi-day event',
+    );
   });
 
   testWidgets('dragging an existing multi-day tile reschedules it', (tester) async {

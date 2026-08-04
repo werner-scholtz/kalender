@@ -4,12 +4,26 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
 | [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
 | v0.19.x → v0.22.x | No changes needed. |
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.24.x → v0.25.0
+
+### `isMultiDayEvent` is removed
+
+```dart
+- if (event.isMultiDayEvent) { ... }
++ if (event.spansMultipleDays(location: location, defaultRule: viewConfiguration.multiDayRule)) { ... }
+```
+
+Deprecated in 0.24.0, and the deprecation message named this release. The 0.24.0 section below covers why the name changed and what to pass.
+
+To keep the old answer exactly, including its two limitations, pass `location: null` and `defaultRule: defaultMultiDayRule`. Prefer the calendar's own location and rule unless you are pinning existing behaviour in a test.
 
 ## v0.23.x → v0.24.0
 
@@ -117,7 +131,7 @@ The mixin defers move handling to the end of the frame, so it can outlive dispos
 
 Pass the calendar's `location` and the rule from your view configuration. If you never set one, that rule is `defaultMultiDayRule`.
 
-The old getter still works and is removed in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location, and as if no rule were set on the view.
+The old getter still works in 0.24.0 and is gone in 0.25.0. It answers as if the calendar were in UTC, because a getter cannot take a location, and as if no rule were set on the view.
 
 The name had to change. Dart rejects a class declaring both a getter and a method called `isMultiDayEvent`, so reusing the name would have meant no deprecation period at all. Worse, `event.isMultiDayEvent` would have kept compiling anywhere a `dynamic` is accepted, silently becoming a function object rather than a boolean.
 

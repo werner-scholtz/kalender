@@ -114,16 +114,6 @@ class CalendarEvent {
     return (multiDayRule ?? defaultRule).isMultiDay(this, location: location);
   }
 
-  /// Whether this event spans more than one day.
-  ///
-  /// Cannot take a location, so it measures calendar days in UTC, and cannot
-  /// see the calendar's [ViewConfiguration.multiDayRule], so it answers as if
-  /// none were set. That is why it is deprecated: rules such as
-  /// [MultiDayRule.calendarDays] give the wrong answer near midnight and across
-  /// daylight saving changes without a location.
-  @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
-  bool get isMultiDayEvent => spansMultipleDays(location: null, defaultRule: defaultMultiDayRule);
-
   /// All dates this event spans, adjusted for [location].
   List<InternalDateTime> datesSpanned({Location? location}) => internalRange(location: location).dates();
 
