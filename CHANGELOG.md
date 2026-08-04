@@ -8,6 +8,7 @@ See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
 
 ### Features
 
+- `KalenderTheme` is a widget, so a theme can be applied to part of the tree instead of the whole app. Wrap a calendar in `KalenderTheme(data: ..., child: ...)` and two calendars in one app can look different. The nearest one wins when they nest, and fields it leaves out still come from the `KalenderThemeData` registered on `ThemeData.extensions`, which keeps working as before. It is an `InheritedTheme`, so the theme also reaches the tile that follows a drag, which is built into an `Overlay` rather than below the calendar.
 - The style classes and `KalenderThemeData` are `Diagnosticable`, so their resolved values appear in the Flutter devtools inspector and in `toString()` instead of a bare instance hash. Fields left unset are omitted rather than printed as null.
 
 ### Fixes
