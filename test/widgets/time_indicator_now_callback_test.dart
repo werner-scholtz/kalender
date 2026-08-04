@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
-import 'package:kalender/src/widgets/internal_components/positioned_time_indicator.dart';
 import 'package:kalender/src/widgets/internal_components/time_indicator_positioner.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
 import 'package:timezone/timezone.dart';
@@ -10,7 +9,7 @@ import '../utilities.dart';
 
 void main() {
   group('nowCallback', () {
-    group('Page-based PositionedTimeIndicator', () {
+    group('TimeIndicatorPositioner', () {
       final key = UniqueKey();
       final now = InternalDateTime.fromDateTime(DateTime.now()).startOfWeek();
       final range = InternalDateTimeRange(start: now, end: now.endOfWeek());
@@ -158,79 +157,6 @@ void main() {
         final finder = find.byKey(key);
         expect(finder, findsOneWidget);
         expect(tester.getTopLeft(finder).dx, 0.0);
-      });
-    });
-
-    group('Visibility-based PositionedTimeIndicator', () {
-      final now = InternalDateTime.fromDateTime(DateTime.now());
-      final start = now.startOfWeek();
-      final end = now.endOfWeek();
-      final range = InternalDateTimeRange(start: start, end: end);
-      final visibleDates = range.dates();
-
-      for (var weekday = 0; weekday < 7; weekday++) {
-        final day = visibleDates[weekday];
-
-        testWidgets('nowCallback positions at weekday $weekday', (tester) async {
-          const dayWidth = 50.0;
-          await pumpAndSettleWithMaterialApp(
-            tester,
-            Stack(
-              children: [
-                const SizedBox(width: dayWidth * 7),
-                PositionedTimeIndicator(
-                  visibleDates: visibleDates,
-                  dayWidth: dayWidth,
-                  nowCallback: () => DateTime(day.year, day.month, day.day, 12, 0),
-                  child: const SizedBox(
-                    width: dayWidth,
-                    key: ValueKey('child'),
-                  ),
-                ),
-              ],
-            ),
-          );
-
-          final child = find.byKey(const ValueKey('child'));
-          expect(child, findsOneWidget);
-          expect(
-            tester.getTopLeft(child),
-            Offset(weekday * dayWidth, 0),
-            reason: 'Child should be positioned at weekday $weekday',
-          );
-        });
-      }
-
-      testWidgets('nowOverride takes precedence over nowCallback', (tester) async {
-        const dayWidth = 50.0;
-        final mondayOverride = InternalDateTime.fromDateTime(visibleDates[0]);
-        // Callback returns Thursday, but nowOverride points to Monday.
-        await pumpAndSettleWithMaterialApp(
-          tester,
-          Stack(
-            children: [
-              const SizedBox(width: dayWidth * 7),
-              PositionedTimeIndicator(
-                visibleDates: visibleDates,
-                dayWidth: dayWidth,
-                nowOverride: mondayOverride,
-                nowCallback: () => DateTime(visibleDates[3].year, visibleDates[3].month, visibleDates[3].day),
-                child: const SizedBox(
-                  width: dayWidth,
-                  key: ValueKey('child'),
-                ),
-              ),
-            ],
-          ),
-        );
-
-        final child = find.byKey(const ValueKey('child'));
-        expect(child, findsOneWidget);
-        expect(
-          tester.getTopLeft(child),
-          const Offset(0, 0),
-          reason: 'nowOverride (Monday) should take precedence over nowCallback (Thursday)',
-        );
       });
     });
 
