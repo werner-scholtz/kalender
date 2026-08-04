@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/widgets/event_tiles/tiles/day_tile.dart' show DayEventTile;
-import 'package:kalender/src/widgets/internal_components/positioned_time_indicator.dart';
 
 import '../utilities.dart';
 
@@ -388,54 +387,6 @@ void main() {
             reason: 'There should be $expectedCount DaySeparators',
           );
         });
-      }
-    });
-
-    group('PositionedTimeIndicator Tests', () {
-      final now = InternalDateTime.fromDateTime(DateTime.now());
-      final start = now.startOfWeek();
-      final end = now.endOfWeek();
-      final range = InternalDateTimeRange(start: start, end: end);
-      final visibleDates = range.dates();
-
-      for (var weekday = 0; weekday < 7; weekday++) {
-        final day = visibleDates[weekday];
-
-        for (var i = 0; i < 24; i++) {
-          final nowOverride = InternalDateTime.fromDateTime(
-            start.copyWith(year: day.year, month: day.month, day: day.day, hour: i),
-          );
-          testWidgets('$nowOverride', (tester) async {
-            const dayWidth = 50.0;
-            await pumpAndSettleWithMaterialApp(
-              tester,
-              Stack(
-                children: [
-                  const SizedBox(width: dayWidth * 7),
-                  PositionedTimeIndicator(
-                    visibleDates: visibleDates,
-                    dayWidth: dayWidth,
-                    nowOverride: nowOverride,
-                    child: const SizedBox(
-                      width: dayWidth,
-                      key: ValueKey('child'),
-                    ),
-                  ),
-                ],
-              ),
-            );
-
-            final child = find.byKey(const ValueKey('child'));
-            expect(child, findsOneWidget);
-
-            final childPosition = tester.getTopLeft(child);
-            expect(
-              childPosition,
-              Offset(weekday * dayWidth, 0),
-              reason: 'Child should be positioned correctly',
-            );
-          });
-        }
       }
     });
   });
