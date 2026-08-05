@@ -110,7 +110,7 @@ class MonthBody extends StatelessWidget {
                   visibleRange: visibleRange,
                   numberOfRows: numberOfRows,
                   weekNumberBuilder: monthComponents.bodyComponents.weekNumberBuilder,
-                  weekNumberStyle: monthWeekNumberDefaults.merge(monthStyles.weekNumberStyle),
+                  weekNumberStyle: _monthWeekNumberDefaults.merge(monthStyles.weekNumberStyle),
                   dividerSide: dividerSide,
                 ),
               ),
@@ -235,6 +235,8 @@ class _MonthDayCellBackground extends StatelessWidget {
 /// The month grid puts the week number at the top of its row, where the theme
 /// leaves it centred.
 ///
-/// Applied as a default rather than an override, so anything set on the theme
-/// or through a [KalenderTheme] still wins.
-const monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
+/// Applied under [MonthBodyComponentStyles.weekNumberStyle], so a style set
+/// there keeps this alignment unless it sets one of its own. It is passed to
+/// the widget, so it takes precedence over [KalenderThemeData.weekNumberStyle],
+/// which cannot change the month week number's alignment.
+const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
