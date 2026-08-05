@@ -108,6 +108,16 @@ class DemoConfiguration extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether to wrap the calendar in a `KalenderTheme`, styling this one
+  /// calendar rather than every calendar in the app.
+  ValueNotifier<bool> scopedThemeNotifier = ValueNotifier(false);
+  bool get scopedTheme => scopedThemeNotifier.value;
+  set scopedTheme(bool value) {
+    if (scopedThemeNotifier.value == value) return;
+    scopedThemeNotifier.value = value;
+    notifyListeners();
+  }
+
   bool get isMobile => defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android;
 
   @override

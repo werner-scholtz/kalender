@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 
 abstract class BaseEventTile extends StatelessWidget {
@@ -115,6 +116,10 @@ class FeedbackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = eventColorOf(event);
+    // Read from the calendar theme rather than the event, so a scoped
+    // KalenderTheme is visible here. This widget is built into an Overlay, so
+    // it only sees a scope because KalenderTheme is an InheritedTheme.
+    final outline = KalenderTheme.of(context).daySeparatorStyle?.color;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       width: dropTargetWidgetSize.width * 0.85,
@@ -122,7 +127,12 @@ class FeedbackTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: resolveEventColor(context, color, 0.18),
         borderRadius: BaseEventTile.defaultBorderRadius,
-        border: Border(left: BorderSide(color: color, width: 3)),
+        border: Border(
+          left: BorderSide(color: color, width: 3),
+          top: BorderSide(color: outline ?? color, width: 2),
+          right: BorderSide(color: outline ?? color, width: 2),
+          bottom: BorderSide(color: outline ?? color, width: 2),
+        ),
         boxShadow: [
           BoxShadow(color: color.withAlpha(40), blurRadius: 12, offset: const Offset(0, 4)),
         ],

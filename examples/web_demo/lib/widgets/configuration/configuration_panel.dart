@@ -61,6 +61,15 @@ class ConfigurationPanel extends StatelessWidget {
                     ],
                   ),
                 ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: configuration.scopedThemeNotifier,
+                  builder: (context, value, _) => SwitchListTile.adaptive(
+                    title: const Text('Scoped theme'),
+                    subtitle: const Text('Wraps this calendar in a KalenderTheme'),
+                    value: value,
+                    onChanged: (value) => configuration.scopedTheme = value,
+                  ),
+                ),
                 ViewConfigurationEditor(viewConfiguration: configuration.viewConfiguration),
                 if (configuration.viewConfiguration is MultiDayViewConfiguration) ...[
                   MultiDayHeaderEditor(demoConfiguration: configuration),
