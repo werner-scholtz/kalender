@@ -2,6 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/utils.dart';
 
+/// A [KalenderThemeData] to scope over one calendar with a [KalenderTheme].
+///
+/// The app theme in [buildAppTheme] styles every calendar through
+/// `ThemeData.extensions`. This one is deliberately loud so it is obvious which
+/// parts of the calendar a scope reaches, including the tile that follows a
+/// drag, which is built into an `Overlay` rather than below the calendar.
+KalenderThemeData buildScopedCalendarTheme(ColorScheme colorScheme) {
+  final accent = colorScheme.tertiary;
+  return KalenderThemeData(
+    hourLinesStyle: HourLinesStyle(color: accent.withAlpha(70), thickness: 1),
+    daySeparatorStyle: DaySeparatorStyle(color: accent.withAlpha(120), width: 1),
+    monthGridStyle: MonthGridStyle(color: accent.withAlpha(120), thickness: 1),
+    timeIndicatorStyle: TimeIndicatorStyle(lineColor: accent, circleColor: accent, thickness: 2),
+    multiDayOverlayStyle: MultiDayOverlayStyle(barrierColor: accent.withAlpha(40)),
+  );
+}
+
 ThemeData buildAppTheme(Brightness brightness) {
   final colorScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF6366F1), brightness: brightness);
   final lineColor = colorScheme.outlineVariant.withAlpha(60);

@@ -61,6 +61,21 @@ class ConfigurationPanel extends StatelessWidget {
                     ],
                   ),
                 ),
+                // The other switches sit inside an ExpansionTile, which supplies
+                // the Material a ListTile paints its ink on. This one is a direct
+                // child of the panel's decorated Container, so it needs its own.
+                Material(
+                  type: MaterialType.transparency,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: configuration.scopedThemeNotifier,
+                    builder: (context, value, _) => SwitchListTile.adaptive(
+                      title: const Text('Scoped theme'),
+                      subtitle: const Text('Wraps this calendar in a KalenderTheme'),
+                      value: value,
+                      onChanged: (value) => configuration.scopedTheme = value,
+                    ),
+                  ),
+                ),
                 ViewConfigurationEditor(viewConfiguration: configuration.viewConfiguration),
                 if (configuration.viewConfiguration is MultiDayViewConfiguration) ...[
                   MultiDayHeaderEditor(demoConfiguration: configuration),

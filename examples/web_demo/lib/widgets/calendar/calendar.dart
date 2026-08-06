@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:web_demo/models/event.dart';
 import 'package:web_demo/providers.dart';
+import 'package:web_demo/theme.dart';
 import 'package:web_demo/utils.dart';
 import 'package:web_demo/widgets/configuration/configuration_panel.dart';
 import 'package:web_demo/widgets/calendar/detail_overlay.dart';
@@ -55,86 +56,90 @@ class _CalendarContentState extends State<CalendarContent> {
                   listenable: Listenable.merge([
                     context.configuration.viewConfigurationNotifier,
                     context.configuration.shadeAdjacentMonthNotifier,
+                    context.configuration.scopedThemeNotifier,
                     context.location,
                   ]),
-                  builder: (context, _) => CalendarView(
-                    location: context.location.value,
-                    locale: Localizations.localeOf(context).toLanguageTag(),
-                    calendarController: context.controller,
-                    eventsController: context.eventsController,
-                    viewConfiguration: context.configuration.viewConfiguration,
-                    components: _components(context),
-                    callbacks: _callbacks,
-                    header: Column(
-                      spacing: 4,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            border: !context.configuration.showHeader
-                                ? Border(
-                                    bottom: BorderSide(
-                                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
-                                    ),
-                                  )
-                                : null,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                            child: NavigationHeader(
-                              controller: context.controller,
-                              viewConfigurations: context.configuration.viewConfigurations,
-                              viewConfiguration: context.configuration.viewConfiguration,
-                              onToggleConfig:
-                                  canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
-                              configVisible: _showConfig,
+                  builder: (context, _) => _scope(
+                    context,
+                    CalendarView(
+                      location: context.location.value,
+                      locale: Localizations.localeOf(context).toLanguageTag(),
+                      calendarController: context.controller,
+                      eventsController: context.eventsController,
+                      viewConfiguration: context.configuration.viewConfiguration,
+                      components: _components(context),
+                      callbacks: _callbacks,
+                      header: Column(
+                        spacing: 4,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              border: !context.configuration.showHeader
+                                  ? Border(
+                                      bottom: BorderSide(
+                                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              child: NavigationHeader(
+                                controller: context.controller,
+                                viewConfigurations: context.configuration.viewConfigurations,
+                                viewConfiguration: context.configuration.viewConfiguration,
+                                onToggleConfig:
+                                    canShowCustomize ? () => setState(() => _showConfig = !_showConfig) : null,
+                                configVisible: _showConfig,
+                              ),
                             ),
                           ),
-                        ),
-                        if (context.configuration.showHeader)
-                          ListenableBuilder(
-                            listenable: Listenable.merge([
-                              context.configuration.interactionHeader,
-                              context.configuration.multiDayHeaderConfigurationNotifier,
-                            ]),
-                            builder: (context, _) {
-                              return Container(
-                                padding: const EdgeInsets.only(top: 4),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                          if (context.configuration.showHeader)
+                            ListenableBuilder(
+                              listenable: Listenable.merge([
+                                context.configuration.interactionHeader,
+                                context.configuration.multiDayHeaderConfigurationNotifier,
+                              ]),
+                              builder: (context, _) {
+                                return Container(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: CalendarHeader(
-                                  multiDayTileComponents: _multiDayTileComponents,
-                                  multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
-                                  interaction: context.configuration.interactionBody.value,
-                                ),
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-                    body: ListenableBuilder(
-                      listenable: Listenable.merge([
-                        context.configuration.interactionBody,
-                        context.configuration.snapping,
-                        context.configuration.multiDayBodyConfigurationNotifier,
-                        context.configuration.monthBodyConfigurationNotifier,
-                      ]),
-                      builder: (context, _) {
-                        return CalendarBody(
-                          multiDayTileComponents: _tileComponents,
-                          monthTileComponents: _multiDayTileComponents,
-                          multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
-                          monthBodyConfiguration: context.configuration.monthBodyConfiguration,
-                          scheduleTileComponents: _scheduleTileComponents,
-                          interaction: context.configuration.interactionBody.value,
-                          snapping: context.configuration.snapping.value,
-                        );
-                      },
+                                  child: CalendarHeader(
+                                    multiDayTileComponents: _multiDayTileComponents,
+                                    multiDayHeaderConfiguration: context.configuration.multiDayHeaderConfiguration,
+                                    interaction: context.configuration.interactionBody.value,
+                                  ),
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                      body: ListenableBuilder(
+                        listenable: Listenable.merge([
+                          context.configuration.interactionBody,
+                          context.configuration.snapping,
+                          context.configuration.multiDayBodyConfigurationNotifier,
+                          context.configuration.monthBodyConfigurationNotifier,
+                        ]),
+                        builder: (context, _) {
+                          return CalendarBody(
+                            multiDayTileComponents: _tileComponents,
+                            monthTileComponents: _multiDayTileComponents,
+                            multiDayBodyConfiguration: context.configuration.multiDayBodyConfiguration,
+                            monthBodyConfiguration: context.configuration.monthBodyConfiguration,
+                            scheduleTileComponents: _scheduleTileComponents,
+                            interaction: context.configuration.interactionBody.value,
+                            snapping: context.configuration.snapping.value,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -159,6 +164,19 @@ class _CalendarContentState extends State<CalendarContent> {
           ],
         );
       },
+    );
+  }
+
+  /// Wraps the calendar in a [KalenderTheme] when the scoped theme is on.
+  ///
+  /// The app theme already registers a [KalenderThemeData] for every calendar.
+  /// This styles only what is below it, so it is what you would reach for with
+  /// two calendars in one app that need to look different.
+  Widget _scope(BuildContext context, Widget child) {
+    if (!context.configuration.scopedTheme) return child;
+    return KalenderTheme(
+      data: buildScopedCalendarTheme(Theme.of(context).colorScheme),
+      child: child,
     );
   }
 
