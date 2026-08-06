@@ -191,6 +191,8 @@ These are rules, not preferences.
 
 **Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `CalendarInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `CalendarEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
 
+The same reasoning removes a public **type** outright once every entry point to it has gone. It cannot answer anything, and a window would protect a type annotation and nothing else. The style container classes are removed in 0.26.0 alongside the `CalendarComponents` fields that reached them, without a deprecation of their own.
+
 **The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
 
 **Every `@Deprecated` message names the replacement and the removal version.** Both, every time:
@@ -199,7 +201,7 @@ These are rules, not preferences.
 @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
 ```
 
-A message without a version has no deadline and will sit there for years. Three currently do.
+A message without a version has no deadline and will sit there for years. None currently do, and `grep -rn "@Deprecated" lib/` is the check that keeps it that way.
 
 **Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
 
@@ -233,8 +235,10 @@ This is what caught a `copyWith` change in 0.24.0 that broke all seven while the
 Publishing is triggered by a tag, not by a merge. Bump `version` in `pubspec.yaml`, merge that to main, then tag the merge commit:
 
 ```bash
-git tag v0.23.0 && git push origin v0.23.0
+git tag -m v0.23.0 v0.23.0 && git push origin v0.23.0
 ```
+
+The `-m` is not optional. `tag.gpgsign` is set globally, so every tag is signed and therefore annotated, and an annotated tag needs a message. Without it the command fails with `fatal: no tag message?` and nothing is created. Every release from v0.18.0 onwards uses the tag name as its message, and is signed. The tags before that are lightweight and predate the setting.
 
 `publish.yml` refuses the tag unless it points at a commit on main and `pubspec.yaml` matches it, then analyzes, tests, pins the repository links to the tag and publishes. A published version is permanent: it can be retracted within seven days, but the number can never be reused.
 
@@ -247,7 +251,7 @@ The same tag rebuilds the [live demo](https://werner-scholtz.github.io/kalender/
 To ship a preview of the next version, add a `-dev.N` suffix:
 
 ```bash
-git tag v0.24.0-dev.1 && git push origin v0.24.0-dev.1
+git tag -m v0.24.0-dev.1 v0.24.0-dev.1 && git push origin v0.24.0-dev.1
 ```
 
 pub.dev never resolves a pre-release as `latest`, so `dart pub add kalender` is unaffected and people opt in explicitly. This suits breaking releases, where the removals want trying before they are final.
@@ -269,17 +273,22 @@ before tagging it:
   `MultiDayBodyConfiguration` in favour of `VerticalConfiguration`. Find them
   with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
   prose in the API reference, but each one is a decision still owed.
-- **Deprecations past their window.** `CalendarEvent.isMultiDayEvent` is removed
-  in 0.25.0. See [Verifying a removal](#verifying-a-removal).
+- **Deprecations past their window.** The style fields on `CalendarComponents`
+  are removed in 0.26.0, which their shipped deprecation message names. The seven
+  style container classes those fields reached go in the same release, with no
+  deprecation of their own, since nothing public reaches them once the fields are
+  gone. `OverlayStyles` is not one of them and stays, since
+  `MultiDayOverlayPortalBuilder` names it. See
+  [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback`,
   `CalendarSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
   and `HorizontalConfiguration.generateMultiDayLayoutFrame` all take part in
   equality, so a closure written inline is a new function every build and defeats
   the caching the comparison exists to enable. Accepted for now and documented on
-  each field. The alternative is reading them from the current configuration
-  rather than comparing them, which needs a way for the tree to reach it. Decide
-  before 1.0.0. Tracked with the class conversion in
-  [#380](https://github.com/werner-scholtz/kalender/issues/380).
+  each field. Three of the four convert to classes in 0.26.0, and `nowCallback`
+  stays a function because it takes no arguments and has nothing to model. See
+  [#380](https://github.com/werner-scholtz/kalender/issues/380) and the 0.26.0
+  section of [ROADMAP.md](ROADMAP.md).
 
 Key breaking changes to be aware of:
 - **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.
