@@ -84,6 +84,12 @@ void main() {
     test('nowCallback', () {
       expect(week(), isNot(equals(weekWith(nowCallback: _stubNow))));
     });
+
+    // nowCallback was in `==` but not in `hashCode`, which is legal but a sign
+    // the field was missed when the others were added.
+    test('nowCallback also reaches hashCode', () {
+      expect(week().hashCode, isNot(equals(weekWith(nowCallback: _stubNow).hashCode)));
+    });
   });
 
   group('fields that deliberately do not break equality', () {
