@@ -143,7 +143,7 @@ class HourLines extends StatelessWidget with TimeLineUtils {
     HourLinesStyle? style,
     TimelineStyle? timelineStyle,
   }) {
-    final hourLinesStyle = context.components.multiDayComponentStyles.bodyStyles.hourLinesStyle;
+    final hourLinesStyle = KalenderTheme.of(context).hourLinesStyle;
     final components = context.components.multiDayComponents.bodyComponents;
     return components.hourLines.call(context.heightPerMinute, timeOfDayRange, hourLinesStyle, timelineStyle);
   }

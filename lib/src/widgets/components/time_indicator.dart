@@ -157,7 +157,7 @@ class TimeIndicator extends StatefulWidget {
     TimeOfDayRange timeOfDayRange, {
     NowCallback? nowCallback,
   }) {
-    final timeIndicatorStyle = context.components.multiDayComponentStyles.bodyStyles.timeIndicatorStyle;
+    final timeIndicatorStyle = KalenderTheme.of(context).timeIndicatorStyle;
     final components = context.components.multiDayComponents.bodyComponents;
     // If the default builder is used and a nowCallback is provided, pass it through.
     if (nowCallback != null && components.timeIndicator == TimeIndicator.builder) {

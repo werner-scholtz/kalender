@@ -82,9 +82,7 @@ class _SingleDayHeader extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
 
     final headerComponents = components.multiDayComponents.headerComponents;
-    final componentStyles = components.multiDayComponentStyles.headerStyles;
-
-    final dayHeaderStyle = componentStyles.dayHeaderStyle;
+    final dayHeaderStyle = KalenderTheme.of(context).dayHeaderStyle;
     final dayHeaderWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
@@ -119,7 +117,7 @@ class _SingleDayHeader extends StatelessWidget {
                     multiDayCache: viewController.multiDayCache,
                     maxNumberOfVerticalEvents: null,
                     overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                    overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                    overlayStyles: OverlayStyles.fromContext(context),
                   ),
                 ),
                 Positioned.fill(
@@ -159,9 +157,7 @@ class _MultiDayHeader extends StatelessWidget {
     final viewConfiguration = viewController.viewConfiguration;
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final headerComponents = components.multiDayComponents.headerComponents;
-    final componentStyles = components.multiDayComponentStyles.headerStyles;
-
-    final weekNumberStyle = componentStyles.weekNumberStyle;
+    final weekNumberStyle = KalenderTheme.of(context).weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
@@ -200,7 +196,7 @@ class _MultiDayHeader extends StatelessWidget {
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                        overlayStyles: componentStyles.overlayStyles ?? components.overlayStyles,
+                        overlayStyles: OverlayStyles.fromContext(context),
                       ),
                     ),
                     Positioned.fill(
@@ -242,9 +238,7 @@ class _FreeScrollHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final headerComponents = components.multiDayComponents.headerComponents;
-    final componentStyles = components.multiDayComponentStyles.headerStyles;
-
-    final weekNumberStyle = componentStyles.weekNumberStyle;
+    final weekNumberStyle = KalenderTheme.of(context).weekNumberStyle;
     final weekNumberWidget = ValueListenableBuilder(
       valueListenable: context.calendarController.internalDateTimeRange,
       builder: (context, value, child) {
@@ -365,7 +359,6 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
     _numberOfPages = viewController.numberOfPages;
 
     final headerComponents = widget.components.multiDayComponents.headerComponents;
-    final componentStyles = widget.components.multiDayComponentStyles.headerStyles;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -413,7 +406,7 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
-                        overlayStyles: componentStyles.overlayStyles ?? widget.components.overlayStyles,
+                        overlayStyles: OverlayStyles.fromContext(context),
                       ),
                     ),
                     Positioned.fill(

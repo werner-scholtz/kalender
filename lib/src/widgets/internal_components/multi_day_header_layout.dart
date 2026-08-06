@@ -35,10 +35,8 @@ class MultiDayHeaderWidget extends StatelessWidget {
       timelineWidth = override;
     } else {
       final calendarComponents = context.components;
-      final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
       final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
-      final timelineStyle =
-          (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(bodyStyles.timelineStyle);
+      final timelineStyle = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
       timelineWidth = bodyComponents.timelineWidth(context, TimeOfDayRange.allDay(), timelineStyle);
     }
 

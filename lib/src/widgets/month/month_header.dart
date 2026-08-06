@@ -21,9 +21,7 @@ class MonthHeader extends StatelessWidget {
     final viewController = calendarController.viewController as MonthViewController;
     final viewConfiguration = viewController.viewConfiguration;
     final calendarComponents = context.components;
-    final bodyStyles = calendarComponents.monthComponentStyles.bodyStyles;
     final bodyComponents = calendarComponents.monthComponents.bodyComponents;
-    final styles = calendarComponents.monthComponentStyles.headerStyles;
     final components = calendarComponents.monthComponents.headerComponents;
 
     return ValueListenableBuilder(
@@ -34,7 +32,7 @@ class MonthHeader extends StatelessWidget {
           return const SizedBox.shrink();
         }
         final internalVisibleRange = InternalDateTimeRange.fromDateTimeRange(visibleDateTimeRange);
-        final style = styles.weekDayHeaderStyle;
+        final style = KalenderTheme.of(context).weekDayHeaderStyle;
         final showWeekNumbers = viewConfiguration.showWeekNumbers;
         final numberOfRows = viewConfiguration.pageIndexCalculator.numberOfRowsForRange(internalVisibleRange);
 
@@ -45,7 +43,6 @@ class MonthHeader extends StatelessWidget {
                 visibleRange: internalVisibleRange,
                 numberOfRows: numberOfRows,
                 weekNumberBuilder: bodyComponents.weekNumberBuilder,
-                weekNumberStyle: bodyStyles.weekNumberStyle,
               ),
             Expanded(
               child: Row(

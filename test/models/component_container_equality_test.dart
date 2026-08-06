@@ -15,33 +15,15 @@ void main() {
     test('equality reads the fields rather than the identity', () {
       // Built without const, so the comparison cannot return on identical().
       // ignore: prefer_const_constructors
-      final a = CalendarComponents(monthComponentStyles: const MonthComponentStyles());
+      final a = CalendarComponents(monthComponents: const MonthComponents());
       // ignore: prefer_const_constructors
-      final b = CalendarComponents(monthComponentStyles: const MonthComponentStyles());
+      final b = CalendarComponents(monthComponents: const MonthComponents());
       expect(identical(a, b), isFalse);
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
     });
 
     for (final entry in <String, CalendarComponents>{
-      'monthComponentStyles': const CalendarComponents(
-        monthComponentStyles: MonthComponentStyles(
-          bodyStyles: MonthBodyComponentStyles(monthGridStyle: MonthGridStyle(thickness: 4)),
-        ),
-      ),
-      'multiDayComponentStyles': const CalendarComponents(
-        multiDayComponentStyles: MultiDayComponentStyles(
-          bodyStyles: MultiDayBodyComponentStyles(hourLinesStyle: HourLinesStyle(thickness: 4)),
-        ),
-      ),
-      'scheduleComponentStyles': const CalendarComponents(
-        scheduleComponentStyles: ScheduleComponentStyles(
-          scheduleDateStyle: ScheduleDateStyle(numberTextStyle: TextStyle(fontSize: 40)),
-        ),
-      ),
-      'overlayStyles': const CalendarComponents(
-        overlayStyles: OverlayStyles(multiDayOverlayStyle: MultiDayOverlayStyle(width: 400)),
-      ),
       'overlayBuilders': const CalendarComponents(
         overlayBuilders: OverlayBuilders(multiDayPortalOverlayButtonStringBuilder: _hiddenEventCount),
       ),

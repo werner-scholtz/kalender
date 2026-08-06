@@ -63,10 +63,8 @@ class MultiDayBody extends StatelessWidget {
 
     // The single source of truth for the timeline gutter width, shared with the
     // header and drag overlay so their day columns stay aligned.
-    final bodyStyles = context.components.multiDayComponentStyles.bodyStyles;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
-    final timelineStyle =
-        (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(bodyStyles.timelineStyle);
+    final timelineStyle = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
     final timelineWidth = bodyComponents.timelineWidth(context, timeOfDayRange, timelineStyle);
 
     return Stack(

@@ -4,15 +4,17 @@ import 'package:kalender/kalender.dart';
 
 import '../utilities.dart';
 
-// The month body used to resolve overlay builders and styles the wrong way
-// round, letting the global CalendarComponents.overlayStyles shadow the
-// per-view MonthBodyComponentStyles.overlayStyles. The multi-day header always
-// resolved them correctly. CalendarComponents documents that the more specific
-// value wins.
+// Overlay builders still resolve most-specific-first: a per-view
+// OverlayBuilders wins over the global CalendarComponents.overlayBuilders. The
+// month body used to resolve them the wrong way round.
+//
+// Overlay styles have no precedence left to test. The per-view and global style
+// fields were removed in 0.26.0, so the theme is the only source, and these
+// tests check it reaches the overflow button in both views.
 void main() {
-  /// Builds an [OverlayStyles] that colours the overflow button's text with
-  /// [color], which is what these tests read back to see which style resolved.
-  OverlayStyles stylesColoured(Color color) => OverlayStyles(
+  /// A theme that colours the overflow button's text with [color], which is
+  /// what these tests read back.
+  KalenderThemeData themeColoured(Color color) => KalenderThemeData(
         multiDayPortalOverlayButtonStyle: MultiDayPortalOverlayButtonStyle(
           textStyle: TextStyle(color: color),
         ),
@@ -49,43 +51,35 @@ void main() {
     return eventsController;
   }
 
-  group('Month body overlay style precedence', () {
-    Future<void> pumpMonthView(WidgetTester tester, {required CalendarComponents components}) {
+  group('Month body overlay resolution', () {
+    Future<void> pumpMonthView(
+      WidgetTester tester, {
+      CalendarComponents? components,
+      KalenderThemeData? theme,
+    }) {
       // 29 Jan 2025 sits in the last row of a 5-row January.
       final eventsController = controllerWithOverflowOn(DateTime.utc(2025, 1, 29));
+      final view = CalendarView(
+        eventsController: eventsController,
+        calendarController: CalendarController(),
+        viewConfiguration: MonthViewConfiguration.singleMonth(
+          displayRange: year2025DisplayRange,
+          initialDateTime: DateTime(2025, 1, 15),
+        ),
+        components: components,
+        body: const CalendarBody(),
+      );
+
       return pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
-          eventsController: eventsController,
-          calendarController: CalendarController(),
-          viewConfiguration: MonthViewConfiguration.singleMonth(
-            displayRange: year2025DisplayRange,
-            initialDateTime: DateTime(2025, 1, 15),
-          ),
-          components: components,
-          body: const CalendarBody(),
-        ),
+        theme == null ? view : KalenderTheme(data: theme, child: view),
       );
     }
 
-    testWidgets('the month body style wins over the global style', (tester) async {
-      await pumpMonthView(
-        tester,
-        components: CalendarComponents(
-          overlayStyles: stylesColoured(Colors.red),
-          monthComponentStyles: MonthComponentStyles(
-            bodyStyles: MonthBodyComponentStyles(overlayStyles: stylesColoured(Colors.green)),
-          ),
-        ),
-      );
+    testWidgets('the theme styles the overflow button', (tester) async {
+      await pumpMonthView(tester, theme: themeColoured(Colors.green));
 
-      expect(buttonColors(tester), {Colors.green}, reason: 'the more specific month body style should win');
-    });
-
-    testWidgets('the global style is used when the month body sets none', (tester) async {
-      await pumpMonthView(tester, components: CalendarComponents(overlayStyles: stylesColoured(Colors.red)));
-
-      expect(buttonColors(tester), {Colors.red}, reason: 'the global style should still apply as a fallback');
+      expect(buttonColors(tester), {Colors.green});
     });
 
     testWidgets('the month body builders win over the global builders', (tester) async {
@@ -112,38 +106,36 @@ void main() {
     });
   });
 
-  group('Multi-day header overlay style precedence', () {
-    Future<void> pumpWeekView(WidgetTester tester, {required CalendarComponents components}) {
+  group('Multi-day header overlay resolution', () {
+    Future<void> pumpWeekView(
+      WidgetTester tester, {
+      CalendarComponents? components,
+      KalenderThemeData? theme,
+    }) {
       final day = DateTime.utc(2025, 1, 15);
+      final view = CalendarView(
+        eventsController: controllerWithOverflowOn(day),
+        calendarController: CalendarController(),
+        viewConfiguration: MultiDayViewConfiguration.week(
+          displayRange: year2025DisplayRange,
+          initialDateTime: day,
+        ),
+        components: components,
+        header: const CalendarHeader(
+          multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
+        ),
+      );
+
       return pumpAndSettleWithMaterialApp(
         tester,
-        CalendarView(
-          eventsController: controllerWithOverflowOn(day),
-          calendarController: CalendarController(),
-          viewConfiguration: MultiDayViewConfiguration.week(
-            displayRange: year2025DisplayRange,
-            initialDateTime: day,
-          ),
-          components: components,
-          header: const CalendarHeader(
-            multiDayHeaderConfiguration: MultiDayHeaderConfiguration(maximumNumberOfVerticalEvents: 1),
-          ),
-        ),
+        theme == null ? view : KalenderTheme(data: theme, child: view),
       );
     }
 
-    testWidgets('the header style wins over the global style', (tester) async {
-      await pumpWeekView(
-        tester,
-        components: CalendarComponents(
-          overlayStyles: stylesColoured(Colors.red),
-          multiDayComponentStyles: MultiDayComponentStyles(
-            headerStyles: MultiDayHeaderComponentStyles(overlayStyles: stylesColoured(Colors.green)),
-          ),
-        ),
-      );
+    testWidgets('the theme styles the overflow button', (tester) async {
+      await pumpWeekView(tester, theme: themeColoured(Colors.green));
 
-      expect(buttonColors(tester), {Colors.green}, reason: 'the more specific header style should win');
+      expect(buttonColors(tester), {Colors.green});
     });
 
     testWidgets('the header builders win over the global builders', (tester) async {
