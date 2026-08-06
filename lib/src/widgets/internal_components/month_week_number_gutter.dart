@@ -3,6 +3,19 @@ import 'package:flutter/rendering.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
 
+/// The month grid puts the week number at the top of its row rather than
+/// centring it, which is where every other week number sits.
+const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter);
+
+/// The style the month week number is drawn with.
+///
+/// [KalenderThemeData.weekNumberStyle] wins over the top alignment, and [style]
+/// wins over both. Applied in the gutter and the header's spacer alike, so the
+/// two measure the same width.
+WeekNumberStyle _resolveStyle(BuildContext context, WeekNumberStyle? style) {
+  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle).merge(style);
+}
+
 class MonthWeekNumberGutter extends StatelessWidget {
   final InternalDateTimeRange visibleRange;
   final int numberOfRows;
@@ -21,6 +34,8 @@ class MonthWeekNumberGutter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = _resolveStyle(context, weekNumberStyle);
+
     return IntrinsicWidth(
       child: Column(
         children: List.generate(
@@ -37,7 +52,7 @@ class MonthWeekNumberGutter extends StatelessWidget {
                 ),
                 child: weekNumberBuilder(
                   range.forLocation(location: context.location),
-                  weekNumberStyle,
+                  style,
                 ),
               ),
             );
@@ -69,6 +84,8 @@ class MonthWeekNumberSpacer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = _resolveStyle(context, weekNumberStyle);
+
     return _WidthOnly(
       child: IntrinsicWidth(
         child: Stack(
@@ -83,7 +100,7 @@ class MonthWeekNumberSpacer extends StatelessWidget {
 
               return weekNumberBuilder(
                 range.forLocation(location: context.location),
-                weekNumberStyle,
+                style,
               );
             },
           ),

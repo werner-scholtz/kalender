@@ -40,21 +40,25 @@ void main() {
       DateTime initialDateTime, {
       bool showWeekNumbers = false,
       CalendarComponents? components,
-    }) =>
-        pumpAndSettleWithMaterialApp(
-          tester,
-          CalendarView(
-            eventsController: eventsController,
-            calendarController: calendarController,
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: displayRange,
-              initialDateTime: initialDateTime,
-              showWeekNumbers: showWeekNumbers,
-            ),
-            components: components,
-            body: const CalendarBody(),
-          ),
-        );
+      KalenderThemeData? theme,
+    }) {
+      final view = CalendarView(
+        eventsController: eventsController,
+        calendarController: calendarController,
+        viewConfiguration: MonthViewConfiguration.singleMonth(
+          displayRange: displayRange,
+          initialDateTime: initialDateTime,
+          showWeekNumbers: showWeekNumbers,
+        ),
+        components: components,
+        body: const CalendarBody(),
+      );
+
+      return pumpAndSettleWithMaterialApp(
+        tester,
+        theme == null ? view : KalenderTheme(data: theme, child: view),
+      );
+    }
 
     // ---------------------------------------------------------------------------
     // Row count (firstDayOfWeek = Monday / default)
@@ -263,9 +267,8 @@ void main() {
     });
 
     testWidgets('the month week number sits at the top of its row by default', (tester) async {
-      // The month grid overrides the theme's centred alignment. This used to
-      // come from a default on MonthBodyComponentStyles, and moved to the month
-      // body when that style path was deprecated, so it is worth pinning.
+      // The theme leaves alignment null, so the month's own top alignment
+      // applies. Every other week number centres itself instead.
       await pumpMonthView(tester, DateTime(2025, 1), showWeekNumbers: true);
 
       expect(
@@ -295,6 +298,52 @@ void main() {
         find.descendant(
           of: find.byType(WeekNumber),
           matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.topCenter),
+        ),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('the theme can move the month week number off the top', (tester) async {
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+        theme: const KalenderThemeData(
+          weekNumberStyle: WeekNumberStyle(alignment: Alignment.bottomCenter),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.bottomCenter),
+        ),
+        findsWidgets,
+        reason: 'KalenderThemeData.weekNumberStyle.alignment should reach the month week number',
+      );
+    });
+
+    testWidgets('a style set for the month still beats the theme', (tester) async {
+      await pumpMonthView(
+        tester,
+        DateTime(2025, 1),
+        showWeekNumbers: true,
+        theme: const KalenderThemeData(
+          weekNumberStyle: WeekNumberStyle(alignment: Alignment.bottomCenter),
+        ),
+        components: const CalendarComponents(
+          monthComponentStyles: MonthComponentStyles(
+            bodyStyles: MonthBodyComponentStyles(
+              weekNumberStyle: WeekNumberStyle(alignment: Alignment.centerLeft),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(WeekNumber),
+          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.centerLeft),
         ),
         findsWidgets,
       );
