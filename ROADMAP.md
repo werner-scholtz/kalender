@@ -84,6 +84,18 @@ Both of these were scoped for 0.26.0 and moved out to keep that release to one m
 
 **2. A shorter way to call `spansMultipleDays`.** It takes two required named arguments that callers fill from the same two places every time. Additive and small. It waits on the all-day decision, since that may change what the method consults. Worth knowing how little it buys: no example app calls the method, and the only caller outside the package is a generated documentation snippet, so the verbosity is felt almost entirely inside the package.
 
+### 0.28.0, the builders take a context
+
+One break, across the widest customisation surface the package has. It gets a release of its own rather than riding along with model changes, and it happens before 1.0.0 because a freeze would put it behind a 2.0.0.
+
+**Every builder typedef takes a `BuildContext`.** Fourteen of the fifteen builder typedefs that carry a style take none, so a custom builder cannot call `KalenderTheme.of` and resolve anything for itself. The package has to resolve on its behalf and pass the result in, which is the only reason a style parameter sits on those signatures at all.
+
+Flutter does the opposite, and does it inside the widget. `Divider` and `Card` read the component theme in `build` and fall back per property. `ButtonStyleButton` does the same for a whole style object, resolving the widget's style over the theme's over the defaults. Nothing in Flutter hands a child a pre-resolved style through its constructor, and the two merge helpers that look like exceptions, `DefaultTextStyle.merge` and `IconTheme.merge`, merge into the inherited scope so descendants still resolve from context themselves.
+
+kalender's own widgets already follow the Flutter shape. `WeekNumber.build` resolves the passed style over the theme over its own fallback. Only the builder path cannot, and only for want of a context.
+
+Giving the builders one removes the reason for every pre-merge in the package, and the style parameters can then go with them. `MultiDayOverlayPortalBuilder` is the clearest case: after 0.26.0 the only thing keeping `OverlayStyles` alive is that this builder names it and has no other way to reach the theme.
+
 ### Tests
 
 Coverage is 88.2% of lines, up from 84.4% at 0.23.0, and still uneven. It gates the composability work below. The backfill during 0.24.0 went where the known bugs were, so the models improved sharply and the widget directories did not move at all.
