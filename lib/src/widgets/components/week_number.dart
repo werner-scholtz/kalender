@@ -139,8 +139,12 @@ class WeekNumber extends StatelessWidget {
           tooltip: style.tooltip,
           onPressed: null,
           visualDensity: style.visualDensity ?? VisualDensity.compact,
+          // The gutter is sized by the timeline, not by this label, so a range
+          // spanning two weeks wraps. Without this the short second line sits
+          // against the leading edge.
           icon: Text(
             weekNumber,
+            textAlign: TextAlign.center,
             style: style.textStyle,
           ),
         ),
