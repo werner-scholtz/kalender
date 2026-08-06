@@ -6,8 +6,10 @@
 name: Analyze and Test
 
 on:
+  # No branch filter, so a pull request stacked on another branch is checked too.
+  # Filtering on [main, main-wip] meant every pull request above the base of a
+  # stack ran nothing at all.
   pull_request:
-    branches: [main, main-wip]
   push:
     branches: [main, main-wip]
 
