@@ -4,22 +4,31 @@ See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
 
 ### Breaking Changes
 
-- `CalendarEvent.isMultiDayEvent` is removed. It was deprecated in 0.24.0, which named this release. Use `spansMultipleDays(location:, defaultRule:)`. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
+- `CalendarEvent.isMultiDayEvent` is removed. It was deprecated in 0.24.0, which named this release. Use `spansMultipleDays(location:, defaultRule:)`. See [MIGRATION.md](MIGRATION.md#v024x--v0250). [#410](https://github.com/werner-scholtz/kalender/pull/410)
 
 ### Features
 
-- `KalenderTheme` is a widget, so a theme can be applied to part of the tree instead of the whole app. Wrap a calendar in `KalenderTheme(data: ..., child: ...)` and two calendars in one app can look different. The nearest one wins when they nest, and fields it leaves out still come from the `KalenderThemeData` registered on `ThemeData.extensions`, which keeps working as before. It is an `InheritedTheme`, so the theme also reaches the tile that follows a drag, which is built into an `Overlay` rather than below the calendar.
-- The style classes and `KalenderThemeData` are `Diagnosticable`, so their resolved values appear in the Flutter devtools inspector and in `toString()` instead of a bare instance hash. Fields left unset are omitted rather than printed as null.
+- `KalenderTheme` is a widget, so a theme can be applied to part of the tree instead of the whole app. Wrap a calendar in `KalenderTheme(data: ..., child: ...)` and two calendars in one app can look different. The nearest one wins when they nest, and fields it leaves out still come from the `KalenderThemeData` registered on `ThemeData.extensions`, which keeps working as before. It is an `InheritedTheme`, so the theme also reaches the tile that follows a drag, which is built into an `Overlay` rather than below the calendar. [#414](https://github.com/werner-scholtz/kalender/pull/414)
+- The style classes and `KalenderThemeData` are `Diagnosticable`, so their resolved values appear in the Flutter devtools inspector and in `toString()` instead of a bare instance hash. Fields left unset are omitted rather than printed as null. [#412](https://github.com/werner-scholtz/kalender/pull/412)
 
 ### Deprecations
 
-- The style fields on `CalendarComponents` are deprecated and are removed in 0.26.0. Use `KalenderThemeData` for the whole app, or a `KalenderTheme` to scope one calendar. The same thirteen styles were reachable both ways, and `multiDayOverlayStyle` had four different homes. `CalendarComponents` keeps its builder fields. See [MIGRATION.md](MIGRATION.md#v024x--v0250).
+- The style fields on `CalendarComponents` are deprecated and are removed in 0.26.0. Use `KalenderThemeData` for the whole app, or a `KalenderTheme` to scope one calendar. The same thirteen styles were reachable both ways, and `multiDayOverlayStyle` had four different homes. `CalendarComponents` keeps its builder fields. See [MIGRATION.md](MIGRATION.md#v024x--v0250). [#416](https://github.com/werner-scholtz/kalender/pull/416)
 
 ### Fixes
 
-- Styling the month view's week number no longer moves it to the middle of its row. The top alignment came from a default on `MonthBodyComponentStyles`, so setting any week number style there replaced it. The month body now applies that alignment itself, and anything you set merges over it.
-- `CalendarComponents`, the containers reached through it, `TileComponents` and `ScheduleTileComponents` compare by value, and `CalendarComponents` can be `const`. The inherited widgets carrying them reported a change on every rebuild because they compared by identity, and now report one only when something differs.
-- `CalendarComponents` and the containers reached through it gain `copyWith`.
+- Styling the month view's week number no longer moves it to the middle of its row. The top alignment came from a default on `MonthBodyComponentStyles`, so setting any week number style there replaced it. The month body now applies that alignment under your style, and keeps it unless you set an alignment of your own. In the month view a `KalenderThemeData` cannot change this alignment, because the style the month body passes to the widget takes precedence over the theme. The rest of `WeekNumberStyle` resolves from the theme as usual. [#416](https://github.com/werner-scholtz/kalender/pull/416) [#419](https://github.com/werner-scholtz/kalender/pull/419)
+- `CalendarComponents`, the containers reached through it, `TileComponents` and `ScheduleTileComponents` compare by value, and `CalendarComponents` can be `const`. The inherited widgets carrying them reported a change on every rebuild because they compared by identity, and now report one only when something differs. [#409](https://github.com/werner-scholtz/kalender/pull/409)
+- `CalendarComponents` and the containers reached through it gain `copyWith`. [#409](https://github.com/werner-scholtz/kalender/pull/409)
+
+### Tests
+
+- Added coverage for the scoped `KalenderTheme`: it applies below itself, takes precedence over the extension, and fills in from it field by field. The nearest scope wins when they nest, two calendars in one app can be themed differently, changing the data notifies dependents where an equal value does not, and `wrap` carries the theme into a tree built outside the calendar. [#414](https://github.com/werner-scholtz/kalender/pull/414)
+- Added `Diagnosticable` coverage for every style class: a style reports the fields it sets and omits the ones it does not, and the theme reports the styles it carries. [#412](https://github.com/werner-scholtz/kalender/pull/412)
+- Added equality coverage for `CalendarComponents`, the containers reached through it and `TileComponents`: each field breaks equality when it differs, a builder held as a top-level function stays equal across instances, and one written as a closure does not. [#409](https://github.com/werner-scholtz/kalender/pull/409)
+- Added coverage that the month week number sits at the top of its row by default, and that a style set for the month keeps that alignment when it does not mention one. [#416](https://github.com/werner-scholtz/kalender/pull/416)
+- Added the `KalenderThemeData` coverage no test reached: `hashCode`, the fields `==` compares after the third, and one `copyWith` fallback. [#408](https://github.com/werner-scholtz/kalender/pull/408)
+- Added coverage that the time indicator follows the day while the app runs: it moves to the next column when the day rolls over, a rebuild every 30 seconds does not stop the day being noticed, a full day passing moves it off a page it no longer belongs to, and resuming the app corrects it after time passed. [#413](https://github.com/werner-scholtz/kalender/pull/413)
 
 ## 0.24.0
 
