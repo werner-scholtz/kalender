@@ -191,6 +191,8 @@ These are rules, not preferences.
 
 **Deprecate only when the old member still gives a correct answer.** A deprecated member that compiles but silently does nothing is worse than a compile error, because the build stays green while the behaviour is gone. `CalendarInteraction.throttleMilliseconds` was removed outright in 0.24.0 for exactly this reason: nothing was left behind it. `CalendarEvent.isMultiDayEvent` was deprecated instead, because it still returns a usable answer.
 
+The same reasoning removes a public **type** outright once every entry point to it has gone. It cannot answer anything, and a window would protect a type annotation and nothing else. The style container classes are removed in 0.26.0 alongside the `CalendarComponents` fields that reached them, without a deprecation of their own.
+
 **The window is one minor release.** Deprecated in 0.23.0 means removed in 0.24.0. Do not extend it, and do not remove early.
 
 **Every `@Deprecated` message names the replacement and the removal version.** Both, every time:
@@ -199,7 +201,7 @@ These are rules, not preferences.
 @Deprecated('Use spansMultipleDays, which takes a location. Will be removed in 0.25.0.')
 ```
 
-A message without a version has no deadline and will sit there for years. Three currently do.
+A message without a version has no deadline and will sit there for years. None currently do, and `grep -rn "@Deprecated" lib/` is the check that keeps it that way.
 
 **Some changes cannot be deprecated at all.** There is no window available for any of these, so they go straight into a breaking batch with a migration entry:
 
@@ -272,7 +274,11 @@ before tagging it:
   with `grep -rn "TODO" lib/`. They are `//` comments so they do not render as
   prose in the API reference, but each one is a decision still owed.
 - **Deprecations past their window.** The style fields on `CalendarComponents`
-  are removed in 0.26.0, which their shipped deprecation message names. See
+  are removed in 0.26.0, which their shipped deprecation message names. The seven
+  style container classes those fields reached go in the same release, with no
+  deprecation of their own, since nothing public reaches them once the fields are
+  gone. `OverlayStyles` is not one of them and stays, since
+  `MultiDayOverlayPortalBuilder` names it. See
   [Verifying a removal](#verifying-a-removal).
 - **Function fields compared with `==`.** `ViewConfiguration.nowCallback`,
   `CalendarSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
