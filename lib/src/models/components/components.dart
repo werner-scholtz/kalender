@@ -1,91 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/src/models/components/month_components.dart';
-import 'package:kalender/src/models/components/month_styles.dart';
 import 'package:kalender/src/models/components/multi_day_components.dart';
-import 'package:kalender/src/models/components/multi_day_styles.dart';
 import 'package:kalender/src/models/components/schedule_components.dart';
-import 'package:kalender/src/models/components/schedule_styles.dart';
 import 'package:kalender/src/models/components/string_builders.dart';
+import 'package:kalender/src/theme/kalender_theme.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal.dart';
 import 'package:kalender/src/widgets/components/multi_day_overlay_portal_button.dart';
 
-/// A styling class used by the [CalendarView].
+/// A class holding the widget builders used by the [CalendarView].
 ///
-/// Change the style the default widgets with [multiDayComponentStyles] and [monthComponentStyles].
-/// Provide your own widgets with [multiDayComponents] and [monthComponents].
+/// Provide your own widgets with [multiDayComponents], [monthComponents] and
+/// [scheduleComponents]. Styling goes through [KalenderThemeData] for the whole
+/// app, or a [KalenderTheme] to scope one calendar.
 class CalendarComponents {
   /// Components used to override the default month components
   final MonthComponents monthComponents;
 
-  /// Styles used by the month view.
-  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-  final MonthComponentStyles monthComponentStyles;
-
   /// Components used to override the default multi day components.
   final MultiDayComponents multiDayComponents;
 
-  /// Styles used by the multi day view.
-  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-  final MultiDayComponentStyles multiDayComponentStyles;
-
   /// Components used to override the default schedule components.
   final ScheduleComponents scheduleComponents;
-
-  /// Styles used by the schedule view.
-  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-  final ScheduleComponentStyles scheduleComponentStyles;
 
   /// Default override for the overlay widgets.
   ///
   /// If a more specific builder is provided in [multiDayComponents] or [monthComponents], that will be used instead.
   final OverlayBuilders? overlayBuilders;
 
-  /// Default styles for the overlay widgets.
-  ///
-  /// If another style is provided in [multiDayComponentStyles] or [monthComponentStyles], that will be used instead.
-  @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-  final OverlayStyles? overlayStyles;
-
   const CalendarComponents({
     this.monthComponents = const MonthComponents(),
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    this.monthComponentStyles = const MonthComponentStyles(),
     this.multiDayComponents = const MultiDayComponents(),
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    this.multiDayComponentStyles = const MultiDayComponentStyles(),
     this.scheduleComponents = const ScheduleComponents(),
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    this.scheduleComponentStyles = const ScheduleComponentStyles(),
     this.overlayBuilders,
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    this.overlayStyles,
   });
 
   /// Creates a copy of this with the given fields replaced.
   CalendarComponents copyWith({
     MonthComponents? monthComponents,
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    MonthComponentStyles? monthComponentStyles,
     MultiDayComponents? multiDayComponents,
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    MultiDayComponentStyles? multiDayComponentStyles,
     ScheduleComponents? scheduleComponents,
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    ScheduleComponentStyles? scheduleComponentStyles,
     OverlayBuilders? overlayBuilders,
-    @Deprecated('Style through KalenderThemeData, or scope one with KalenderTheme. Removed in 0.26.0.')
-    OverlayStyles? overlayStyles,
   }) {
     return CalendarComponents(
       monthComponents: monthComponents ?? this.monthComponents,
-      monthComponentStyles: monthComponentStyles ?? this.monthComponentStyles,
       multiDayComponents: multiDayComponents ?? this.multiDayComponents,
-      multiDayComponentStyles: multiDayComponentStyles ?? this.multiDayComponentStyles,
       scheduleComponents: scheduleComponents ?? this.scheduleComponents,
-      scheduleComponentStyles: scheduleComponentStyles ?? this.scheduleComponentStyles,
       overlayBuilders: overlayBuilders ?? this.overlayBuilders,
-      overlayStyles: overlayStyles ?? this.overlayStyles,
     );
   }
 
@@ -95,25 +56,17 @@ class CalendarComponents {
 
     return other is CalendarComponents &&
         other.monthComponents == monthComponents &&
-        other.monthComponentStyles == monthComponentStyles &&
         other.multiDayComponents == multiDayComponents &&
-        other.multiDayComponentStyles == multiDayComponentStyles &&
         other.scheduleComponents == scheduleComponents &&
-        other.scheduleComponentStyles == scheduleComponentStyles &&
-        other.overlayBuilders == overlayBuilders &&
-        other.overlayStyles == overlayStyles;
+        other.overlayBuilders == overlayBuilders;
   }
 
   @override
   int get hashCode => Object.hash(
         monthComponents,
-        monthComponentStyles,
         multiDayComponents,
-        multiDayComponentStyles,
         scheduleComponents,
-        scheduleComponentStyles,
         overlayBuilders,
-        overlayStyles,
       );
 }
 
@@ -189,6 +142,18 @@ class OverlayStyles {
     this.multiDayOverlayStyle,
     this.multiDayPortalOverlayButtonStyle,
   });
+
+  /// The overlay styles resolved from the [KalenderTheme] of the given context.
+  ///
+  /// [MultiDayOverlayPortalBuilder] takes no [BuildContext], so a custom portal
+  /// builder cannot resolve these itself and is handed them instead.
+  factory OverlayStyles.fromContext(BuildContext context) {
+    final theme = KalenderTheme.of(context);
+    return OverlayStyles(
+      multiDayOverlayStyle: theme.multiDayOverlayStyle,
+      multiDayPortalOverlayButtonStyle: theme.multiDayPortalOverlayButtonStyle,
+    );
+  }
 
   /// Creates a copy of this with the given fields replaced.
   OverlayStyles copyWith({

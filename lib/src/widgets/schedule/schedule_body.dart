@@ -174,7 +174,6 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
   EventsController get eventsController => widget.eventsController;
   CalendarController get calendarController => context.calendarController;
   CalendarCallbacks? get callbacks => context.callbacks;
-  ScheduleComponentStyles get styles => context.components.scheduleComponentStyles;
   ScheduleComponents get components => context.components.scheduleComponents;
   ScheduleViewConfiguration get viewConfiguration => widget.viewController.viewConfiguration;
 
@@ -381,9 +380,10 @@ class _SchedulePositionListState extends State<SchedulePositionList> {
             final leadingWidth = widget.configuration.leadingWidth;
             Widget leadingSlot(Widget? child) => SizedBox(width: leadingWidth, child: child);
 
+            final theme = KalenderTheme.of(context);
             late final leading =
-                components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), styles.scheduleDateStyle);
-            late final highlightStyle = styles.scheduleTileHighlightStyle;
+                components.leadingDateBuilder.call(InternalDateTime.fromDateTime(date), theme.scheduleDateStyle);
+            late final highlightStyle = theme.scheduleTileHighlightStyle;
             late final highlightBuilder = components.scheduleTileHighlightBuilder;
 
             if (item is MonthItem) {

@@ -16,10 +16,8 @@ class TimelineSizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final calendarComponents = context.components;
-    final bodyStyles = calendarComponents.multiDayComponentStyles.bodyStyles;
     final bodyComponents = calendarComponents.multiDayComponents.bodyComponents;
-    final timelineStyle =
-        (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(bodyStyles.timelineStyle);
+    final timelineStyle = KalenderTheme.of(context).timelineStyle ?? const TimelineStyle();
     final width = bodyComponents.timelineWidth(context, TimeOfDayRange.allDay(), timelineStyle);
 
     return SizedBox(width: width, child: child);

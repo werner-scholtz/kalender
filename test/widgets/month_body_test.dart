@@ -280,18 +280,12 @@ void main() {
       );
     });
 
-    testWidgets('a style set for the month keeps the top alignment it does not mention', (tester) async {
+    testWidgets('a theme keeps the top alignment it does not mention', (tester) async {
       await pumpMonthView(
         tester,
         DateTime(2025, 1),
         showWeekNumbers: true,
-        components: const CalendarComponents(
-          monthComponentStyles: MonthComponentStyles(
-            bodyStyles: MonthBodyComponentStyles(
-              weekNumberStyle: WeekNumberStyle(tooltip: 'Week'),
-            ),
-          ),
-        ),
+        theme: const KalenderThemeData(weekNumberStyle: WeekNumberStyle(tooltip: 'Week')),
       );
 
       expect(
@@ -323,47 +317,16 @@ void main() {
       );
     });
 
-    testWidgets('a style set for the month still beats the theme', (tester) async {
+    testWidgets('applies custom week number alignment from the theme', (tester) async {
+      const rows = 5;
+
       await pumpMonthView(
         tester,
         DateTime(2025, 1),
         showWeekNumbers: true,
         theme: const KalenderThemeData(
-          weekNumberStyle: WeekNumberStyle(alignment: Alignment.bottomCenter),
+          weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter),
         ),
-        components: const CalendarComponents(
-          monthComponentStyles: MonthComponentStyles(
-            bodyStyles: MonthBodyComponentStyles(
-              weekNumberStyle: WeekNumberStyle(alignment: Alignment.centerLeft),
-            ),
-          ),
-        ),
-      );
-
-      expect(
-        find.descendant(
-          of: find.byType(WeekNumber),
-          matching: find.byWidgetPredicate((w) => w is Align && w.alignment == Alignment.centerLeft),
-        ),
-        findsWidgets,
-      );
-    });
-
-    testWidgets('applies custom week number alignment from style', (tester) async {
-      const rows = 5;
-      final components = const CalendarComponents(
-        monthComponentStyles: MonthComponentStyles(
-          bodyStyles: MonthBodyComponentStyles(
-            weekNumberStyle: WeekNumberStyle(alignment: Alignment.topCenter),
-          ),
-        ),
-      );
-
-      await pumpMonthView(
-        tester,
-        DateTime(2025, 1),
-        showWeekNumbers: true,
-        components: components,
       );
 
       expect(

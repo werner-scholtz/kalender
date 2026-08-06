@@ -107,9 +107,8 @@ class MonthDayHeader extends StatelessWidget {
   }
 
   static Widget fromContext(BuildContext context, InternalDateTime date) {
-    final components = context.components;
-    final dayHeader = components.monthComponents.bodyComponents.monthDayHeaderBuilder;
-    final style = components.monthComponentStyles.bodyStyles.monthDayHeaderStyle;
+    final dayHeader = context.components.monthComponents.bodyComponents.monthDayHeaderBuilder;
+    final style = KalenderTheme.of(context).monthDayHeaderStyle;
     return dayHeader(date.forLocation(location: context.location), style);
   }
 

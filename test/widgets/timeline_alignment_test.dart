@@ -25,6 +25,7 @@ void main() {
   Future<void> pumpWeek(
     WidgetTester tester, {
     CalendarComponents? components,
+    KalenderThemeData? theme,
     TextDirection textDirection = TextDirection.ltr,
     dynamic locale,
   }) async {
@@ -39,7 +40,13 @@ void main() {
       header: CalendarHeader(multiDayTileComponents: tiles),
       body: CalendarBody(multiDayTileComponents: tiles),
     );
-    await pumpAndSettleWithMaterialApp(tester, Directionality(textDirection: textDirection, child: view));
+    await pumpAndSettleWithMaterialApp(
+      tester,
+      Directionality(
+        textDirection: textDirection,
+        child: theme == null ? view : KalenderTheme(data: theme, child: view),
+      ),
+    );
   }
 
   double gutterWidth(WidgetTester tester) => tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
@@ -60,11 +67,7 @@ void main() {
     );
   }
 
-  CalendarComponents withTimelineStyle(TimelineStyle style) => CalendarComponents(
-        multiDayComponentStyles: MultiDayComponentStyles(
-          bodyStyles: MultiDayBodyComponentStyles(timelineStyle: style),
-        ),
-      );
+  KalenderThemeData withTimelineStyle(TimelineStyle style) => KalenderThemeData(timelineStyle: style);
 
   CalendarComponents withTimelineStringBuilder(TimeOfDayStringBuilder builder) => CalendarComponents(
         multiDayComponents: MultiDayComponents(
@@ -109,7 +112,7 @@ void main() {
   });
 
   testWidgets('explicit TimelineStyle.width drives the gutter and stays aligned', (tester) async {
-    await pumpWeek(tester, components: withTimelineStyle(const TimelineStyle(width: 100)));
+    await pumpWeek(tester, theme: withTimelineStyle(const TimelineStyle(width: 100)));
 
     expect(gutterWidth(tester), moreOrLessEquals(100, epsilon: 0.5));
     expectAligned(tester);
