@@ -1,3 +1,10 @@
+## 0.26.0
+
+### Behavior Changes
+
+- `KalenderThemeData.weekNumberStyle.alignment` now reaches the month week number. It had no effect there, because the month body passed its own top alignment to the widget and a passed style wins over the theme, so the only way to change it was the deprecated `CalendarComponents` style path. The month still sits at the top when nothing asks otherwise. A calendar that set this on the theme and relied on the month ignoring it will see the month week number move. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+- A custom `weekNumberBuilder` receives the same fully resolved style in the month header as in the month body. The header's spacer passed the style through unresolved, so the two disagreed. [#423](https://github.com/werner-scholtz/kalender/pull/423)
+
 ## 0.25.0
 
 See [MIGRATION.md](MIGRATION.md#v024x--v0250) for what to change.
