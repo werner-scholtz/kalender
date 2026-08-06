@@ -86,6 +86,8 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
   /// - string builders, which use the ambient locale inside the widgets.
   /// - [TimeIndicatorStyle.circleColor], which falls back to the line color.
   /// - text styles that intentionally inherit from [DefaultTextStyle].
+  /// - [WeekNumberStyle.alignment], so a widget can tell an alignment nobody
+  ///   set from one set to centre. Each week number falls back on its own.
   static KalenderThemeData defaults(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -131,7 +133,6 @@ class KalenderThemeData extends ThemeExtension<KalenderThemeData> with Diagnosti
         visualDensity: VisualDensity.compact,
         tooltip: 'Week Number',
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        alignment: Alignment.center,
       ),
       monthGridStyle: MonthGridStyle(
         color: colorScheme.surfaceContainerHighest,

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:kalender/src/models/components/components.dart';
 import 'package:kalender/src/widgets/components/month_day_header.dart';
 import 'package:kalender/src/widgets/components/month_grid.dart';
@@ -60,9 +59,7 @@ class MonthBodyComponentStyles {
   const MonthBodyComponentStyles({
     this.monthGridStyle = const MonthGridStyle(),
     this.monthDayHeaderStyle = const MonthDayHeaderStyle(),
-    this.weekNumberStyle = const WeekNumberStyle(
-      alignment: Alignment.topCenter,
-    ),
+    this.weekNumberStyle = const WeekNumberStyle(),
     this.overlayStyles,
   });
 
