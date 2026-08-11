@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786463045919,
+  "lastUpdate": 1786464146495,
   "repoUrl": "https://github.com/werner-scholtz/kalender",
   "entries": {
     "Kalender Micro-benchmarks": [
@@ -9535,6 +9535,90 @@ window.BENCHMARK_DATA = {
           {
             "name": "eventsFromRange / query 30d",
             "value": 1735.6941529235382,
+            "unit": "us"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "121276491+werner-scholtz@users.noreply.github.com",
+            "name": "Werner",
+            "username": "werner-scholtz"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d4f84620a28d546d70269ad1789b54ce0faa28d6",
+          "message": "Merge pull request #427 from werner-scholtz/fix/week-number-label\n\nfix: centre the week number label when it spans two weeks",
+          "timestamp": "2026-08-11T17:42:57+02:00",
+          "tree_id": "67c27200b30f2864eb0aee2541f14e8d99989f7f",
+          "url": "https://github.com/werner-scholtz/kalender/commit/d4f84620a28d546d70269ad1789b54ce0faa28d6"
+        },
+        "date": 1786464139784,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "dates x200 / 7d",
+            "value": 175.89159843360628,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 30d",
+            "value": 709.79375,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 90d",
+            "value": 2089.614,
+            "unit": "us"
+          },
+          {
+            "name": "dates x200 / 365d",
+            "value": 8283.892,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 100ev x 30d",
+            "value": 452.24785553047406,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 300ev x 30d",
+            "value": 1407.3365,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 7d",
+            "value": 1475.334,
+            "unit": "us"
+          },
+          {
+            "name": "multiDayFrame / 50ev-per-day x 35d",
+            "value": 7616.026217228465,
+            "unit": "us"
+          },
+          {
+            "name": "findLongestChain / 60ev",
+            "value": 226.87785310734463,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 1d",
+            "value": 56.052677761853225,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 7d",
+            "value": 392.39033530571993,
+            "unit": "us"
+          },
+          {
+            "name": "eventsFromRange / query 30d",
+            "value": 1674.6784107946028,
             "unit": "us"
           }
         ]
