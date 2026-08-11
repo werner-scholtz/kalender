@@ -3,8 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kalender/kalender.dart';
 
 /// Exercises the `==` / `hashCode` defined on the abstract [VerticalConfiguration]
-/// and [HorizontalConfiguration] base classes, through concrete subclasses that
-/// do not override them ([MultiDayBodyConfiguration] / [MultiDayHeaderConfiguration]).
+/// and [HorizontalConfiguration] base classes, through the concrete subclasses
+/// that reach them ([MultiDayBodyConfiguration] / [MultiDayHeaderConfiguration]),
+/// and the runtime type check that keeps two subclasses of one base apart.
 void main() {
   // ─── VerticalConfiguration (via MultiDayBodyConfiguration) ───────────────────
 
@@ -39,6 +40,15 @@ void main() {
       );
       expect(a, isNot(equals(b)));
     });
+
+    // keepPagesAlive is declared on MultiDayBodyConfiguration rather than the
+    // base, and the inherited equality did not reach it.
+    test('differing keepPagesAlive breaks equality', () {
+      const a = MultiDayBodyConfiguration();
+      const b = MultiDayBodyConfiguration(keepPagesAlive: true);
+      expect(a, isNot(equals(b)));
+      expect(a.hashCode, isNot(equals(b.hashCode)));
+    });
   });
 
   // ─── HorizontalConfiguration (via MultiDayHeaderConfiguration) ───────────────
@@ -65,6 +75,26 @@ void main() {
       const b = MultiDayHeaderConfiguration(allowSingleDayEvents: true);
       expect(a, isNot(equals(b)));
       expect(a.hashCode, isNot(equals(b.hashCode)));
+    });
+  });
+
+  // ─── Two subclasses of one base are not each other ───────────────────────────
+
+  group('Configuration types stay distinct', () {
+    // MonthBodyConfiguration and MultiDayHeaderConfiguration both extend
+    // HorizontalConfiguration and add no equality of their own, so with only an
+    // `other is HorizontalConfiguration` test they compared equal.
+    test('MonthBodyConfiguration is not a MultiDayHeaderConfiguration', () {
+      const month = MonthBodyConfiguration();
+      const header = MultiDayHeaderConfiguration();
+      expect(month, isNot(equals(header)));
+      expect(header, isNot(equals(month)));
+    });
+
+    test('each still equals its own type', () {
+      expect(const MonthBodyConfiguration(), equals(const MonthBodyConfiguration()));
+      expect(const MultiDayHeaderConfiguration(), equals(const MultiDayHeaderConfiguration()));
+      expect(const MultiDayBodyConfiguration(), equals(const MultiDayBodyConfiguration()));
     });
   });
 }

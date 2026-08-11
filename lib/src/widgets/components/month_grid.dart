@@ -81,10 +81,8 @@ class MonthGrid extends StatelessWidget {
   }
 
   static Widget fromContext(BuildContext context, int numberOfRows) {
-    final components = context.components;
-    final component = components.monthComponents.bodyComponents.monthGridBuilder;
-    final style = components.monthComponentStyles.bodyStyles.monthGridStyle;
-    return component.call(style, numberOfRows);
+    final component = context.components.monthComponents.bodyComponents.monthGridBuilder;
+    return component.call(KalenderTheme.of(context).monthGridStyle, numberOfRows);
   }
 
   @override

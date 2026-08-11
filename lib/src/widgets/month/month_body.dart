@@ -40,9 +40,7 @@ class MonthBody extends StatelessWidget {
     final pageNavigation = viewConfiguration.pageIndexCalculator;
     final components = context.components;
     final monthComponents = components.monthComponents;
-    final monthStyles = components.monthComponentStyles.bodyStyles;
-    final monthGridStyle =
-        (KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle()).merge(monthStyles.monthGridStyle);
+    final monthGridStyle = KalenderTheme.of(context).monthGridStyle ?? const MonthGridStyle();
     final dividerSide = BorderSide(
       // Never null: KalenderThemeData.defaults always sets it, which a test pins.
       color: monthGridStyle.color!,
@@ -110,7 +108,6 @@ class MonthBody extends StatelessWidget {
                   visibleRange: visibleRange,
                   numberOfRows: numberOfRows,
                   weekNumberBuilder: monthComponents.bodyComponents.weekNumberBuilder,
-                  weekNumberStyle: monthStyles.weekNumberStyle,
                   dividerSide: dividerSide,
                 ),
               ),
@@ -175,8 +172,7 @@ class MonthWeek extends StatelessWidget {
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
                       multiDayCache: viewController.multiDayCache,
                       overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
-                      overlayStyles:
-                          components.monthComponentStyles.bodyStyles.overlayStyles ?? components.overlayStyles,
+                      overlayStyles: OverlayStyles.fromContext(context),
                     );
                   },
                 ),

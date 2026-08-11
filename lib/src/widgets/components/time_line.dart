@@ -330,7 +330,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   static Widget fromContext(BuildContext context, TimeOfDayRange timeOfDayRange) {
     final calendarController = context.calendarController;
     final selectedEvent = calendarController.selectedEvent;
-    final timelineStyle = context.components.multiDayComponentStyles.bodyStyles.timelineStyle;
+    final timelineStyle = KalenderTheme.of(context).timelineStyle;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
     return bodyComponents.timeline.call(
       context.heightPerMinute,

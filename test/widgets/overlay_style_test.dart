@@ -12,8 +12,9 @@ void main() {
 
   /// Pumps a month view and opens the overlay for [day].
   ///
-  /// [extension] goes on `ThemeData.extensions`, [style] on the widget, which
-  /// is the precedence ladder: widget style over extension over M3 defaults.
+  /// [extension] goes on `ThemeData.extensions`, [style] into a [KalenderTheme]
+  /// scoped to the calendar, which is the precedence ladder: scoped theme over
+  /// extension over M3 defaults.
   Future<void> openOverlay(
     WidgetTester tester, {
     KalenderThemeData? extension,
@@ -32,25 +33,22 @@ void main() {
       );
     }
 
+    final view = CalendarView(
+      eventsController: eventsController,
+      calendarController: CalendarController(),
+      viewConfiguration: MonthViewConfiguration.singleMonth(
+        displayRange: year2025DisplayRange,
+        initialDateTime: DateTime(2025, 1, 15),
+        nowCallback: nowCallback,
+      ),
+      body: const CalendarBody(),
+    );
+
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(cardTheme: appCardTheme, extensions: [if (extension != null) extension]),
         home: Scaffold(
-          body: CalendarView(
-            eventsController: eventsController,
-            calendarController: CalendarController(),
-            viewConfiguration: MonthViewConfiguration.singleMonth(
-              displayRange: year2025DisplayRange,
-              initialDateTime: DateTime(2025, 1, 15),
-              nowCallback: nowCallback,
-            ),
-            components: CalendarComponents(
-              monthComponentStyles: MonthComponentStyles(
-                bodyStyles: MonthBodyComponentStyles(overlayStyles: OverlayStyles(multiDayOverlayStyle: style)),
-              ),
-            ),
-            body: const CalendarBody(),
-          ),
+          body: style == null ? view : KalenderTheme(data: KalenderThemeData(multiDayOverlayStyle: style), child: view),
         ),
       ),
     );

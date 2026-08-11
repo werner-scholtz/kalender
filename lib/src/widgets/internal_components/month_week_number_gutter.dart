@@ -9,18 +9,16 @@ const _monthWeekNumberDefaults = WeekNumberStyle(alignment: Alignment.topCenter)
 
 /// The style the month week number is drawn with.
 ///
-/// [KalenderThemeData.weekNumberStyle] wins over the top alignment, and [style]
-/// wins over both. Applied in the gutter and the header's spacer alike, so the
-/// two measure the same width.
-WeekNumberStyle _resolveStyle(BuildContext context, WeekNumberStyle? style) {
-  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle).merge(style);
+/// [KalenderThemeData.weekNumberStyle] wins over the top alignment. Applied in
+/// the gutter and the header's spacer alike, so the two measure the same width.
+WeekNumberStyle _resolveStyle(BuildContext context) {
+  return _monthWeekNumberDefaults.merge(KalenderTheme.of(context).weekNumberStyle);
 }
 
 class MonthWeekNumberGutter extends StatelessWidget {
   final InternalDateTimeRange visibleRange;
   final int numberOfRows;
   final WeekNumberBuilder weekNumberBuilder;
-  final WeekNumberStyle? weekNumberStyle;
   final BorderSide dividerSide;
 
   const MonthWeekNumberGutter({
@@ -28,13 +26,12 @@ class MonthWeekNumberGutter extends StatelessWidget {
     required this.visibleRange,
     required this.numberOfRows,
     required this.weekNumberBuilder,
-    required this.weekNumberStyle,
     required this.dividerSide,
   });
 
   @override
   Widget build(BuildContext context) {
-    final style = _resolveStyle(context, weekNumberStyle);
+    final style = _resolveStyle(context);
 
     return IntrinsicWidth(
       child: Column(
@@ -72,19 +69,17 @@ class MonthWeekNumberSpacer extends StatelessWidget {
   final InternalDateTimeRange visibleRange;
   final int numberOfRows;
   final WeekNumberBuilder weekNumberBuilder;
-  final WeekNumberStyle? weekNumberStyle;
 
   const MonthWeekNumberSpacer({
     super.key,
     required this.visibleRange,
     required this.numberOfRows,
     required this.weekNumberBuilder,
-    required this.weekNumberStyle,
   });
 
   @override
   Widget build(BuildContext context) {
-    final style = _resolveStyle(context, weekNumberStyle);
+    final style = _resolveStyle(context);
 
     return _WidthOnly(
       child: IntrinsicWidth(

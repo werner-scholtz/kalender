@@ -4,6 +4,7 @@ Each section covers one upgrade. Versions not listed below need no changes.
 
 | Upgrade | What changes |
 | --- | --- |
+| [v0.25.x → v0.26.0](#v025x--v0260) | The deprecated style fields on `CalendarComponents` are removed, along with the containers reached through them. |
 | [v0.24.x → v0.25.0](#v024x--v0250) | The deprecated `isMultiDayEvent` getter is removed. |
 | [v0.23.x → v0.24.0](#v023x--v0240) | The timezone re-export, the deprecated string builders, the multi-day rule, and six smaller removals. |
 | [v0.22.x → v0.23.0](#v022x--v0230) | String builders move off the style classes. Nothing stops compiling, but an unchanged calendar renders differently. |
@@ -11,6 +12,47 @@ Each section covers one upgrade. Versions not listed below need no changes.
 | [v0.18.x → v0.19.0](#v018x--v0190) | The timeline gutter width, view-transition controls, and the month day header's date type. |
 | [v0.16.x → v0.17.0](#v016x--v0170) | Input mode replaces the mobile/desktop split. |
 | [v0.15.x → v0.16.0](#v015x--v0160) | `CalendarEvent` is no longer generic and event ids become `String`. |
+
+## v0.25.x → v0.26.0
+
+### The style fields on `CalendarComponents` are removed
+
+Deprecated in 0.25.0, which named this release. Move each style to `KalenderThemeData`.
+
+```dart
+- CalendarComponents(
+-   multiDayComponentStyles: MultiDayComponentStyles(
+-     bodyStyles: MultiDayBodyComponentStyles(
+-       hourLinesStyle: HourLinesStyle(thickness: 2),
+-     ),
+-   ),
+- )
+
++ KalenderThemeData(hourLinesStyle: HourLinesStyle(thickness: 2))
+```
+
+Register that on `ThemeData.extensions` for the whole app, or wrap one calendar in a `KalenderTheme` to scope it. `CalendarComponents` keeps its builder fields, so only the four style arguments are deleted.
+
+The seven container classes go with the fields, without a deprecation of their own, because nothing public reached them once the fields were gone. If you held one in a variable or named it in a signature, delete it:
+
+`MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles`, `ScheduleComponentStyles`.
+
+`OverlayStyles` is not one of them and stays, because `MultiDayOverlayPortalBuilder` names it. That typedef is unchanged. Its `overlayStyles` argument is now resolved from the theme, so a portal builder that reads it gets the app's overlay styles rather than an empty pair.
+
+**If you styled the same thing differently per view,** the containers were how you did it, and a `KalenderTheme` around `CalendarHeader` or `CalendarBody` is how you do it now:
+
+```dart
+CalendarView(
+  header: KalenderTheme(data: headerStyles, child: CalendarHeader()),
+  body: KalenderTheme(data: bodyStyles, child: CalendarBody()),
+)
+```
+
+### The month week number's alignment moves to the theme
+
+Nothing to change unless you set `KalenderThemeData.weekNumberStyle.alignment`. That had no effect in the month view before and now applies, so the month week number may move. It still sits at the top when the theme sets no alignment.
+
+The theme field feeds both the month gutter and the multi-day header, so the two can no longer be given different alignments. `MonthBodyComponentStyles` was the only way to set them apart and it is gone.
 
 ## v0.24.x → v0.25.0
 

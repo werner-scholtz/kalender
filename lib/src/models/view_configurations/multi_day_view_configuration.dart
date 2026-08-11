@@ -337,6 +337,7 @@ class MultiDayViewConfiguration extends ViewConfiguration {
       name,
       initialDateTime,
       dateTransition,
+      nowCallback,
       scrollTransition,
       zoomTransition,
       timeOfDayRange,
@@ -416,6 +417,14 @@ class MultiDayBodyConfiguration extends VerticalConfiguration {
       keepPagesAlive: keepPagesAlive ?? this.keepPagesAlive,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return super == other && other is MultiDayBodyConfiguration && other.keepPagesAlive == keepPagesAlive;
+  }
+
+  @override
+  int get hashCode => Object.hash(super.hashCode, keepPagesAlive);
 }
 
 /// The configuration used by the [MultiDayHeader] and [MonthBody].

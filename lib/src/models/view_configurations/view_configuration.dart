@@ -151,6 +151,10 @@ abstract class VerticalConfiguration {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
+    // Subclasses add fields but not all of them override this, so without a
+    // runtime type check two different configuration types compare equal.
+    if (other.runtimeType != runtimeType) return false;
+
     return other is VerticalConfiguration &&
         other.showMultiDayEvents == showMultiDayEvents &&
         other.horizontalPadding == horizontalPadding &&
@@ -230,6 +234,11 @@ abstract class HorizontalConfiguration {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
+
+    // MonthBodyConfiguration and MultiDayHeaderConfiguration both extend this
+    // and add no equality of their own, so without a runtime type check they
+    // compare equal to each other.
+    if (other.runtimeType != runtimeType) return false;
 
     return other is HorizontalConfiguration &&
         other.tileHeight == tileHeight &&

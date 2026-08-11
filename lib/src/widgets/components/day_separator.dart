@@ -103,7 +103,7 @@ class DaySeparator extends StatelessWidget {
   }
 
   static Widget fromContext(BuildContext context) {
-    final daySeparatorStyle = context.components.multiDayComponentStyles.bodyStyles.daySeparatorStyle;
+    final daySeparatorStyle = KalenderTheme.of(context).daySeparatorStyle;
     final components = context.components.multiDayComponents.bodyComponents;
     return components.daySeparator.call(daySeparatorStyle);
   }
