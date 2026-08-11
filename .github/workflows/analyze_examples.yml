@@ -3,8 +3,8 @@ name: Analyze Examples
 # Only run when something that could affect the example apps changes: the package
 # they depend on, the examples themselves, the root pubspec, or this workflow.
 on:
+  # No branch filter, so a pull request stacked on another branch is checked too.
   pull_request:
-    branches: [main, main-wip]
     paths:
       - 'lib/**'
       - 'examples/**'
