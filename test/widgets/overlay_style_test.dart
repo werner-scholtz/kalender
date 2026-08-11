@@ -48,9 +48,7 @@ void main() {
       MaterialApp(
         theme: ThemeData(cardTheme: appCardTheme, extensions: [if (extension != null) extension]),
         home: Scaffold(
-          body: style == null
-              ? view
-              : KalenderTheme(data: KalenderThemeData(multiDayOverlayStyle: style), child: view),
+          body: style == null ? view : KalenderTheme(data: KalenderThemeData(multiDayOverlayStyle: style), child: view),
         ),
       ),
     );
