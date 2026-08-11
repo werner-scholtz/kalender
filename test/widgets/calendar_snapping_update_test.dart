@@ -5,16 +5,6 @@ import 'package:kalender/src/models/providers/calendar_provider.dart';
 
 import '../utilities.dart';
 
-/// A strategy that snaps nothing, so it is distinguishable from
-/// [defaultSnapStrategy] by behavior rather than by identity alone.
-InternalDateTime noSnapStrategy(
-  InternalDateTime cursorDate,
-  InternalDateTime startOfDay,
-  int snapIntervalMinutes,
-) {
-  return cursorDate;
-}
-
 void main() {
   late DefaultEventsController eventsController;
   late CalendarController calendarController;
@@ -46,20 +36,21 @@ void main() {
     return tester.widget<Snapping>(find.byType(Snapping)).notifier!.value;
   }
 
-  /// 00:08 with a 15 minute interval. [defaultSnapStrategy] moves it to 00:15,
-  /// [noSnapStrategy] leaves it alone, so the result names the strategy in use.
+  /// 00:08 with a 15 minute interval. [EventSnapStrategy.interval] moves it to
+  /// 00:15 and [EventSnapStrategy.none] leaves it alone, so the result names the
+  /// strategy in use by behavior rather than by identity alone.
   InternalDateTime applyStrategy(CalendarSnapping snapping) {
-    return snapping.eventSnapStrategy(
-      InternalDateTime(2025, 1, 1, 0, 8),
-      InternalDateTime(2025, 1, 1),
-      15,
+    return snapping.eventSnapStrategy.snap(
+      cursorDate: InternalDateTime(2025, 1, 1, 0, 8),
+      startOfDay: InternalDateTime(2025, 1, 1),
+      snapIntervalMinutes: 15,
     );
   }
 
   testWidgets('the initial eventSnapStrategy reaches the widget tree', (tester) async {
     await pumpAndSettleWithMaterialApp(
       tester,
-      buildCalendar(const CalendarSnapping(eventSnapStrategy: noSnapStrategy)),
+      buildCalendar(const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none())),
     );
 
     expect(applyStrategy(resolvedSnapping(tester)), equals(InternalDateTime(2025, 1, 1, 0, 8)));
@@ -74,7 +65,7 @@ void main() {
     // Rebuild with a snapping that differs only by its strategy.
     await pumpAndSettleWithMaterialApp(
       tester,
-      buildCalendar(const CalendarSnapping(eventSnapStrategy: noSnapStrategy)),
+      buildCalendar(const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none())),
     );
 
     expect(
@@ -89,7 +80,7 @@ void main() {
 
     await pumpAndSettleWithMaterialApp(
       tester,
-      buildCalendar(const CalendarSnapping(snapIntervalMinutes: 30, eventSnapStrategy: noSnapStrategy)),
+      buildCalendar(const CalendarSnapping(snapIntervalMinutes: 30, eventSnapStrategy: EventSnapStrategy.none())),
     );
 
     final snapping = resolvedSnapping(tester);

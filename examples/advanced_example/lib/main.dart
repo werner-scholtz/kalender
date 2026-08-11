@@ -178,27 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
             monthTileComponents: multiDayTileComponents,
             scheduleTileComponents: scheduleTileComponents,
             multiDayBodyConfiguration: MultiDayBodyConfiguration(
-              eventLayoutStrategy:
-                  (
-                    events,
-                    date,
-                    timeOfDayRange,
-                    heightPerMinute,
-                    minimumTileHeight,
-                    cache,
-                    location,
-                  ) {
-                    return CustomSideBySideLayoutDelegate(
-                      events: events,
-                      heightPerMinute: heightPerMinute,
-                      date: date,
-                      timeOfDayRange: timeOfDayRange,
-                      minimumTileHeight: minimumTileHeight,
-                      layoutCache: cache ?? EventLayoutDelegateCache(),
-                      people: people,
-                      location: location,
-                    );
-                  },
+              eventLayoutStrategy: PeopleLayoutStrategy(people),
             ),
           ),
         ),

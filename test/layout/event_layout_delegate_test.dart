@@ -79,12 +79,20 @@ void main() {
     }
   }
 
-  group('overlapLayoutStrategy', () {
+  group('OverlapLayoutStrategy', () {
     for (final heightPerMinute in heightPerMinutes) {
       testWidgets('height per minute $heightPerMinute', (tester) async {
         await tester.pumpWidget(
           buildLayout(
-            overlapLayoutStrategy(events, internalDate, TimeOfDayRange.allDay(), heightPerMinute, null, null, null),
+            const EventLayoutStrategy.overlap().createDelegate(
+              events: events,
+              date: internalDate,
+              timeOfDayRange: TimeOfDayRange.allDay(),
+              heightPerMinute: heightPerMinute,
+              minimumTileHeight: null,
+              cache: null,
+              location: null,
+            ),
           ),
         );
         await tester.pumpAndSettle();
@@ -93,12 +101,20 @@ void main() {
     }
   });
 
-  group('sideBySideLayoutStrategy', () {
+  group('SideBySideLayoutStrategy', () {
     for (final heightPerMinute in heightPerMinutes) {
       testWidgets('height per minute $heightPerMinute', (tester) async {
         await tester.pumpWidget(
           buildLayout(
-            sideBySideLayoutStrategy(events, internalDate, TimeOfDayRange.allDay(), heightPerMinute, null, null, null),
+            const EventLayoutStrategy.sideBySide().createDelegate(
+              events: events,
+              date: internalDate,
+              timeOfDayRange: TimeOfDayRange.allDay(),
+              heightPerMinute: heightPerMinute,
+              minimumTileHeight: null,
+              cache: null,
+              location: null,
+            ),
           ),
         );
         await tester.pumpAndSettle();

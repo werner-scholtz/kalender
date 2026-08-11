@@ -5,10 +5,14 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 ### Breaking Changes
 
 - The style fields on `CalendarComponents` are removed, as their 0.25.0 deprecation message named. `monthComponentStyles`, `multiDayComponentStyles`, `scheduleComponentStyles` and `overlayStyles` are gone from the constructor, `copyWith`, `==` and `hashCode`. Use `KalenderThemeData` for the whole app, or wrap a calendar in `KalenderTheme` to scope it. `CalendarComponents` keeps its builder fields. See [MIGRATION.md](MIGRATION.md#v025x--v0260).
+- `eventLayoutStrategy`, `generateMultiDayLayoutFrame` and `eventSnapStrategy` are classes rather than function typedefs. Each has value equality and named factories for the built-ins: `EventLayoutStrategy.overlap()` and `.sideBySide()`, `MultiDayLayoutStrategy.byDuration()`, and `EventSnapStrategy.interval()`. A configuration holding one of these written as an inline closure was a new value on every build, so the calendar read every rebuild as a change, and for the multi-day frame that cleared the layout frame cache and regenerated every row. A function cannot be deprecated into a class, so these change without a window. See [MIGRATION.md](MIGRATION.md#v025x--v0260). [#380](https://github.com/werner-scholtz/kalender/issues/380)
+- `HorizontalConfiguration.generateMultiDayLayoutFrame` is renamed to `multiDayLayoutStrategy` and is no longer nullable. It defaults to `MultiDayLayoutStrategy.byDuration()`, which is what `null` selected before.
 - The seven style container classes reached through those fields are removed with them: `MonthComponentStyles`, `MonthBodyComponentStyles`, `MonthHeaderComponentStyles`, `MultiDayComponentStyles`, `MultiDayBodyComponentStyles`, `MultiDayHeaderComponentStyles` and `ScheduleComponentStyles`. Nothing public reached them once the fields were gone, so they carry no deprecation of their own. `OverlayStyles` is not one of them and stays, since `MultiDayOverlayPortalBuilder` names it.
 
 ### Features
 
+- `EventSnapStrategy.none()` leaves a dragged event where the cursor is, without needing a hand-written strategy.
+- `defaultMultiDayFrameGenerator` stays public, so a custom `MultiDayLayoutStrategy` can reuse the built-in row assignment and change only the order events are placed in, through the `eventComparator` the strategy itself does not expose.
 - A custom builder receives the theme-resolved style rather than an empty one. Previously a builder was handed whatever the deprecated container carried, which was an empty style unless the app had set one, so a custom builder had no way to see the theme. `OverlayStyles.fromContext` resolves the overlay pair for `MultiDayOverlayPortalBuilder`, which takes no `BuildContext` of its own.
 
 ### Fixes
@@ -16,6 +20,10 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 - `MultiDayBodyConfiguration.keepPagesAlive` takes part in `==` and `hashCode`. It is declared on that class rather than the `VerticalConfiguration` base, and the inherited equality did not reach it, so changing only that value did not reach the calendar.
 - `MonthBodyConfiguration` and `MultiDayHeaderConfiguration` no longer compare equal to each other. Both extend `HorizontalConfiguration` and add no equality of their own, and its `==` tested only `other is HorizontalConfiguration` with no runtime type check. The same applied to `VerticalConfiguration`.
 - `MultiDayViewConfiguration.nowCallback` is included in `hashCode`, where it already took part in `==`. Unequal objects may share a hash, so nothing was broken, but the other two configurations include it.
+
+### Tests
+
+- Added equality coverage for the three strategy classes: two of a kind compare equal with matching hash codes, the built-ins differ from each other, a configuration built twice in a row is equal, and changing only the strategy still breaks equality.
 
 ### Behavior Changes
 

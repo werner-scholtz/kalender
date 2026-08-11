@@ -27,10 +27,10 @@ class MultiDayBodyEditor extends StatelessWidget {
         ),
         DropDownEditor<bool>(
           label: context.l10n.tileLayout,
-          value: configuration.eventLayoutStrategy == sideBySideLayoutStrategy,
+          value: configuration.eventLayoutStrategy == const EventLayoutStrategy.sideBySide(),
           items: const [true, false],
           onChanged: (value) => demoConfiguration.multiDayBodyConfiguration = configuration.copyWith(
-            eventLayoutStrategy: value ? sideBySideLayoutStrategy : overlapLayoutStrategy,
+            eventLayoutStrategy: value ? const EventLayoutStrategy.sideBySide() : const EventLayoutStrategy.overlap(),
           ),
           itemToString: (value) => value ? 'Side-by-side' : 'Overlap',
         ),

@@ -5,24 +5,46 @@ import 'package:kalender/kalender.dart';
 void main() {
   // ─── defaultSnapStrategy ─────────────────────────────────────────────────────
 
-  group('defaultSnapStrategy', () {
+  group('IntervalSnapStrategy', () {
     final startOfDay = InternalDateTime(2024, 1, 15);
+    InternalDateTime snap(InternalDateTime cursor) {
+      return defaultSnapStrategy.snap(cursorDate: cursor, startOfDay: startOfDay, snapIntervalMinutes: 15);
+    }
 
     test('snaps the cursor down to the nearest interval (rounds toward the lower boundary)', () {
       // 00:07 is 7 min in → 7/15 rounds to 0 → snaps back to 00:00.
-      final snapped = defaultSnapStrategy(InternalDateTime(2024, 1, 15, 0, 7), startOfDay, 15);
-      expect(snapped, equals(InternalDateTime(2024, 1, 15)));
+      expect(snap(InternalDateTime(2024, 1, 15, 0, 7)), equals(InternalDateTime(2024, 1, 15)));
     });
 
     test('snaps the cursor up to the nearest interval (rounds toward the upper boundary)', () {
       // 00:08 is 8 min in → 8/15 rounds to 1 → snaps forward to 00:15.
-      final snapped = defaultSnapStrategy(InternalDateTime(2024, 1, 15, 0, 8), startOfDay, 15);
-      expect(snapped, equals(InternalDateTime(2024, 1, 15, 0, 15)));
+      expect(snap(InternalDateTime(2024, 1, 15, 0, 8)), equals(InternalDateTime(2024, 1, 15, 0, 15)));
     });
 
     test('a cursor already on an interval boundary is unchanged', () {
       final onBoundary = InternalDateTime(2024, 1, 15, 9, 30);
-      expect(defaultSnapStrategy(onBoundary, startOfDay, 15), equals(onBoundary));
+      expect(snap(onBoundary), equals(onBoundary));
+    });
+
+    test('the default strategy is the interval one', () {
+      expect(defaultSnapStrategy, equals(const EventSnapStrategy.interval()));
+    });
+  });
+
+  group('NoSnapStrategy', () {
+    test('returns the cursor unchanged', () {
+      final cursor = InternalDateTime(2024, 1, 15, 0, 7);
+      final snapped = const EventSnapStrategy.none().snap(
+        cursorDate: cursor,
+        startOfDay: InternalDateTime(2024, 1, 15),
+        snapIntervalMinutes: 15,
+      );
+      expect(snapped, equals(cursor));
+    });
+
+    test('two instances compare equal, and differ from the interval strategy', () {
+      expect(const EventSnapStrategy.none(), equals(const EventSnapStrategy.none()));
+      expect(const EventSnapStrategy.none(), isNot(equals(const EventSnapStrategy.interval())));
     });
   });
 
@@ -218,15 +240,15 @@ void main() {
     });
 
     test('copyWith preserves a custom eventSnapStrategy', () {
-      const original = CalendarSnapping(eventSnapStrategy: _noSnapStrategy);
+      const original = CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none());
       final copy = original.copyWith(snapIntervalMinutes: 30);
-      expect(copy.eventSnapStrategy, same(_noSnapStrategy));
+      expect(copy.eventSnapStrategy, equals(const EventSnapStrategy.none()));
     });
 
     test('copyWith replaces eventSnapStrategy when given one', () {
       const original = CalendarSnapping();
-      final copy = original.copyWith(eventSnapStrategy: _noSnapStrategy);
-      expect(copy.eventSnapStrategy, same(_noSnapStrategy));
+      final copy = original.copyWith(eventSnapStrategy: const EventSnapStrategy.none());
+      expect(copy.eventSnapStrategy, equals(const EventSnapStrategy.none()));
     });
 
     test('identical configurations are equal with matching hashCodes', () {
@@ -239,7 +261,7 @@ void main() {
       'snapToTimeIndicator': const CalendarSnapping(snapToTimeIndicator: false),
       'snapToOtherEvents': const CalendarSnapping(snapToOtherEvents: false),
       'snapRange': const CalendarSnapping(snapRange: Duration(minutes: 30)),
-      'eventSnapStrategy': const CalendarSnapping(eventSnapStrategy: _noSnapStrategy),
+      'eventSnapStrategy': const CalendarSnapping(eventSnapStrategy: EventSnapStrategy.none()),
     }.entries) {
       test('differing ${entry.key} breaks equality', () {
         expect(entry.value, isNot(equals(const CalendarSnapping())));
@@ -247,14 +269,4 @@ void main() {
       });
     }
   });
-}
-
-/// A strategy that snaps nothing, so it is distinguishable from
-/// [defaultSnapStrategy].
-InternalDateTime _noSnapStrategy(
-  InternalDateTime cursorDate,
-  InternalDateTime startOfDay,
-  int snapIntervalMinutes,
-) {
-  return cursorDate;
 }

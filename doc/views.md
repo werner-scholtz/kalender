@@ -125,8 +125,8 @@ the calendar exactly as it was. Change only the lines you care about.
       tileHeight: 24,
       eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
       pageTriggerConfiguration: PageTriggerConfiguration(),
-      // Null uses defaultMultiDayFrameGenerator, see Layout.
-      generateMultiDayLayoutFrame: null,
+      // See Layout for writing your own.
+      multiDayLayoutStrategy: const MultiDayLayoutStrategy.byDuration(),
       // Null means no cap on the rows of events shown per day.
       maximumNumberOfVerticalEvents: null,
     ),
@@ -143,7 +143,7 @@ the calendar exactly as it was. Change only the lines you care about.
     multiDayBodyConfiguration: MultiDayBodyConfiguration(
       showMultiDayEvents: false,
       horizontalPadding: EdgeInsets.only(left: 0, right: 4),
-      eventLayoutStrategy: overlapLayoutStrategy,
+      eventLayoutStrategy: const EventLayoutStrategy.overlap(),
       pageTriggerConfiguration: PageTriggerConfiguration(),
       scrollTriggerConfiguration: ScrollTriggerConfiguration(),
       keepPagesAlive: false,
@@ -168,8 +168,8 @@ the calendar exactly as it was. Change only the lines you care about.
       tileHeight: 24,
       eventPadding: EdgeInsets.only(left: 0, right: 4, bottom: 2),
       pageTriggerConfiguration: PageTriggerConfiguration(),
-      // Null uses defaultMultiDayFrameGenerator, see Layout.
-      generateMultiDayLayoutFrame: null,
+      // See Layout for writing your own.
+      multiDayLayoutStrategy: const MultiDayLayoutStrategy.byDuration(),
     ),
   )
   ```

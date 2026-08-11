@@ -3,26 +3,77 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 
-/// A function type that generates a layout frame for multi-day events.
+/// Assigns each event in the multi-day lane a row and a span of columns.
 ///
-/// This function is responsible for calculating the layout information required
-/// to position and size multi-day events within a calendar view. The layout frame
-/// includes metadata such as the row and column assignments for events, the total number of rows,
-/// and a mapping of columns (dates) to the number of rows.
-/// * (columns and rows in this context does not refer to widgets instead it is a concept used within within the [MultiDayLayout] to position and layout events)
+/// Columns are the visible dates and rows are the stacking order within the
+/// lane. Neither refers to a widget: both are concepts [MultiDayLayout] uses to
+/// position events.
 ///
-/// - [visibleDateTimeRange]: The range of dates for which the layout is being generated.
-/// - [events]: A list of [CalendarEvent] objects representing the events to be laid out.
-/// - [textDirection]: The text direction (LTR or RTL) for the layout.
-typedef GenerateMultiDayLayoutFrame = MultiDayLayoutFrame Function({
-  required InternalDateTimeRange visibleDateTimeRange,
-  required List<CalendarEvent> events,
-  required TextDirection textDirection,
-  required Location? location,
-  MultiDayLayoutFrameCache? cache,
-});
+/// Set it on the header or month body configuration:
+///
+/// ```dart
+/// MonthBodyConfiguration(
+///   multiDayLayoutStrategy: const MultiDayLayoutStrategy.byDuration(),
+/// )
+/// ```
+///
+/// Write your own by extending this class. Call
+/// [defaultMultiDayFrameGenerator] from [generateFrame] to keep the built-in
+/// row assignment and change only the order events are placed in, or build the
+/// frame yourself.
+///
+/// This is a class rather than a function so that it has value equality. Header
+/// and month configurations are compared with `==` to decide whether the layout
+/// frame cache survives, and a function field written inline would clear that
+/// cache on every build.
+abstract class MultiDayLayoutStrategy {
+  const MultiDayLayoutStrategy();
 
-/// The default implementation of [GenerateMultiDayLayoutFrame].
+  /// Places the longest events first, breaking ties by start time. The default.
+  const factory MultiDayLayoutStrategy.byDuration() = DurationMultiDayLayoutStrategy;
+
+  /// The layout frame for [events] across [visibleDateTimeRange].
+  MultiDayLayoutFrame generateFrame({
+    required InternalDateTimeRange visibleDateTimeRange,
+    required List<CalendarEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  });
+}
+
+/// Places the longest events first, breaking ties by start time.
+class DurationMultiDayLayoutStrategy extends MultiDayLayoutStrategy {
+  const DurationMultiDayLayoutStrategy();
+
+  @override
+  MultiDayLayoutFrame generateFrame({
+    required InternalDateTimeRange visibleDateTimeRange,
+    required List<CalendarEvent> events,
+    required TextDirection textDirection,
+    required Location? location,
+    required MultiDayLayoutFrameCache? cache,
+  }) {
+    return defaultMultiDayFrameGenerator(
+      visibleDateTimeRange: visibleDateTimeRange,
+      events: events,
+      textDirection: textDirection,
+      location: location,
+      cache: cache,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is DurationMultiDayLayoutStrategy;
+
+  @override
+  int get hashCode => (DurationMultiDayLayoutStrategy).hashCode;
+}
+
+/// The row assignment behind [MultiDayLayoutStrategy.byDuration].
+///
+/// Exposed so a custom [MultiDayLayoutStrategy] can reuse it and pass its own
+/// [eventComparator], which the strategy itself does not take.
 ///
 /// This function generates a layout frame for multi-day events by:
 /// 1. Sorting the events by their duration (descending) and start time (ascending).

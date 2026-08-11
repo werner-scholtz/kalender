@@ -9,64 +9,102 @@ export 'package:kalender/kalender_extensions.dart';
 export 'package:kalender/src/models/calendar_events/calendar_event.dart';
 export 'package:kalender/src/models/time_of_day_range.dart';
 
-/// Signature for the strategy that determines how DayEvents are laid out.
+/// Decides how tiles that overlap in time share a day column.
 ///
-/// There are two built-in strategies:
+/// Set it on the body configuration:
 ///
-///  * [overlapLayoutStrategy], which displays the tile over each other.
+/// ```dart
+/// MultiDayBodyConfiguration(
+///   eventLayoutStrategy: const EventLayoutStrategy.sideBySide(),
+/// )
+/// ```
 ///
-///  * [sideBySideLayoutStrategy], which displays the tiles next to each other.
-///
-typedef EventLayoutStrategy = EventLayoutDelegate Function(
-  Iterable<CalendarEvent> events,
-  InternalDateTime date,
-  TimeOfDayRange timeOfDayRange,
-  double heightPerMinute,
-  double? minimumTileHeight,
-  EventLayoutDelegateCache? cache,
-  Location? location,
-);
+/// This is a class rather than a function so that it has value equality. Body
+/// configurations are compared with `==` to decide whether the calendar needs to
+/// rebuild, and a function field would defeat that.
+abstract class EventLayoutStrategy {
+  const EventLayoutStrategy();
 
-/// A [EventLayoutStrategy] that lays out the tiles on top of each other.
-EventLayoutDelegate overlapLayoutStrategy(
-  Iterable<CalendarEvent> events,
-  InternalDateTime date,
-  TimeOfDayRange timeOfDayRange,
-  double heightPerMinute,
-  double? minimumTileHeight,
-  EventLayoutDelegateCache? cache,
-  Location? location,
-) {
-  return OverlapLayoutDelegate(
-    events: events,
-    date: date,
-    heightPerMinute: heightPerMinute,
-    timeOfDayRange: timeOfDayRange,
-    minimumTileHeight: minimumTileHeight,
-    layoutCache: cache ?? EventLayoutDelegateCache(),
-    location: location,
-  );
+  /// Tiles are drawn over each other. The default.
+  const factory EventLayoutStrategy.overlap() = OverlapLayoutStrategy;
+
+  /// Tiles that overlap in time divide the width of the column between them.
+  const factory EventLayoutStrategy.sideBySide() = SideBySideLayoutStrategy;
+
+  /// The delegate that lays out [events] in the column for [date].
+  EventLayoutDelegate createDelegate({
+    required Iterable<CalendarEvent> events,
+    required InternalDateTime date,
+    required TimeOfDayRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  });
 }
 
-/// A [EventLayoutStrategy] that lays out the tiles side by side.
-EventLayoutDelegate sideBySideLayoutStrategy(
-  Iterable<CalendarEvent> events,
-  InternalDateTime date,
-  TimeOfDayRange timeOfDayRange,
-  double heightPerMinute,
-  double? minimumTileHeight,
-  EventLayoutDelegateCache? cache,
-  Location? location,
-) {
-  return SideBySideLayoutDelegate(
-    events: events,
-    date: date,
-    heightPerMinute: heightPerMinute,
-    timeOfDayRange: timeOfDayRange,
-    minimumTileHeight: minimumTileHeight,
-    layoutCache: cache ?? EventLayoutDelegateCache(),
-    location: location,
-  );
+/// Lays out the tiles on top of each other.
+class OverlapLayoutStrategy extends EventLayoutStrategy {
+  const OverlapLayoutStrategy();
+
+  @override
+  EventLayoutDelegate createDelegate({
+    required Iterable<CalendarEvent> events,
+    required InternalDateTime date,
+    required TimeOfDayRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  }) {
+    return OverlapLayoutDelegate(
+      events: events,
+      date: date,
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      minimumTileHeight: minimumTileHeight,
+      layoutCache: cache ?? EventLayoutDelegateCache(),
+      location: location,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is OverlapLayoutStrategy;
+
+  @override
+  int get hashCode => (OverlapLayoutStrategy).hashCode;
+}
+
+/// Lays out the tiles side by side.
+class SideBySideLayoutStrategy extends EventLayoutStrategy {
+  const SideBySideLayoutStrategy();
+
+  @override
+  EventLayoutDelegate createDelegate({
+    required Iterable<CalendarEvent> events,
+    required InternalDateTime date,
+    required TimeOfDayRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  }) {
+    return SideBySideLayoutDelegate(
+      events: events,
+      date: date,
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      minimumTileHeight: minimumTileHeight,
+      layoutCache: cache ?? EventLayoutDelegateCache(),
+      location: location,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other is SideBySideLayoutStrategy;
+
+  @override
+  int get hashCode => (SideBySideLayoutStrategy).hashCode;
 }
 
 /// A cache for [EventLayoutDelegate]s.

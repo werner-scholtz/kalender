@@ -189,10 +189,8 @@ abstract class HorizontalConfiguration {
   /// Whether to show event tiles.
   final bool showTiles;
 
-  /// The function that generates the layout frame for the multi-day event.
-  ///
-  /// * see [defaultMultiDayFrameGenerator] for default implementation.
-  final GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame;
+  /// The strategy that assigns each multi-day event a row and a span of columns.
+  final MultiDayLayoutStrategy multiDayLayoutStrategy;
 
   /// The maximum number of events that can be displayed vertically.
   ///
@@ -214,7 +212,7 @@ abstract class HorizontalConfiguration {
   const HorizontalConfiguration({
     this.showTiles = defaultShowEventTiles,
     this.tileHeight = defaultTileHeight,
-    this.generateMultiDayLayoutFrame,
+    this.multiDayLayoutStrategy = defaultMultiDayLayoutStrategy,
     this.maximumNumberOfVerticalEvents,
     this.eventPadding = kDefaultMultiDayEventPadding,
     required this.allowSingleDayEvents,
@@ -224,7 +222,7 @@ abstract class HorizontalConfiguration {
   HorizontalConfiguration copyWith({
     double? tileHeight,
     bool? showTiles,
-    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
+    MultiDayLayoutStrategy? multiDayLayoutStrategy,
     int? maximumNumberOfVerticalEvents,
     EdgeInsets? eventPadding,
     bool? allowSingleDayEvents,
@@ -244,7 +242,7 @@ abstract class HorizontalConfiguration {
         other.tileHeight == tileHeight &&
         other.showTiles == showTiles &&
         other.pageTriggerConfiguration == pageTriggerConfiguration &&
-        other.generateMultiDayLayoutFrame == generateMultiDayLayoutFrame &&
+        other.multiDayLayoutStrategy == multiDayLayoutStrategy &&
         other.maximumNumberOfVerticalEvents == maximumNumberOfVerticalEvents &&
         other.eventPadding == eventPadding &&
         other.allowSingleDayEvents == allowSingleDayEvents;
@@ -256,7 +254,7 @@ abstract class HorizontalConfiguration {
       tileHeight,
       showTiles,
       pageTriggerConfiguration,
-      generateMultiDayLayoutFrame,
+      multiDayLayoutStrategy,
       maximumNumberOfVerticalEvents,
       eventPadding,
       allowSingleDayEvents,
@@ -268,7 +266,8 @@ abstract class HorizontalConfiguration {
 const defaultTileHeight = 24.0;
 const defaultNewEventDuration = Duration(minutes: 30);
 const defaultShowMultiDayEvents = false;
-const defaultEventLayoutStrategy = overlapLayoutStrategy;
+const defaultEventLayoutStrategy = EventLayoutStrategy.overlap();
+const defaultMultiDayLayoutStrategy = MultiDayLayoutStrategy.byDuration();
 const defaultFirstDayOfWeek = DateTime.monday;
 const defaultShowEventTiles = true;
 const defaultInitialTimeOfDay = TimeOfDay(hour: 0, minute: 0);

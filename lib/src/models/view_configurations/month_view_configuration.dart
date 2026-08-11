@@ -99,7 +99,7 @@ class MonthViewConfiguration extends ViewConfiguration {
 
 class MonthBodyConfiguration extends HorizontalConfiguration {
   const MonthBodyConfiguration({
-    super.generateMultiDayLayoutFrame,
+    super.multiDayLayoutStrategy,
     super.pageTriggerConfiguration,
     super.tileHeight,
     super.eventPadding,
@@ -109,7 +109,7 @@ class MonthBodyConfiguration extends HorizontalConfiguration {
   MonthBodyConfiguration copyWith({
     double? tileHeight,
     bool? showTiles,
-    GenerateMultiDayLayoutFrame? generateMultiDayLayoutFrame,
+    MultiDayLayoutStrategy? multiDayLayoutStrategy,
     int? maximumNumberOfVerticalEvents,
     EdgeInsets? eventPadding,
     bool? allowSingleDayEvents,
@@ -117,7 +117,7 @@ class MonthBodyConfiguration extends HorizontalConfiguration {
   }) {
     return MonthBodyConfiguration(
       tileHeight: tileHeight ?? this.tileHeight,
-      generateMultiDayLayoutFrame: generateMultiDayLayoutFrame ?? this.generateMultiDayLayoutFrame,
+      multiDayLayoutStrategy: multiDayLayoutStrategy ?? this.multiDayLayoutStrategy,
       eventPadding: eventPadding ?? this.eventPadding,
       pageTriggerConfiguration: pageTriggerConfiguration ?? this.pageTriggerConfiguration,
     );
