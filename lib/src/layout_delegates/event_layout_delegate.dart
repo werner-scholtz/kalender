@@ -69,7 +69,7 @@ class OverlapLayoutStrategy extends EventLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is OverlapLayoutStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (OverlapLayoutStrategy).hashCode;
@@ -101,7 +101,7 @@ class SideBySideLayoutStrategy extends EventLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is SideBySideLayoutStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (SideBySideLayoutStrategy).hashCode;

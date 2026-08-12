@@ -56,7 +56,7 @@ class IntervalSnapStrategy extends EventSnapStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is IntervalSnapStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (IntervalSnapStrategy).hashCode;
@@ -76,7 +76,7 @@ class NoSnapStrategy extends EventSnapStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is NoSnapStrategy;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (NoSnapStrategy).hashCode;

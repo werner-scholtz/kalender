@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/gutter_styles.dart';
 import 'package:kalender/src/widgets/internal_components/expandable_page_view.dart' show ExpandablePageView;
 import 'package:kalender/src/widgets/internal_components/month_week_number_gutter.dart';
+import 'package:kalender/src/widgets/internal_components/timeline_sizer.dart';
 
 import '../utilities.dart';
 
@@ -192,6 +193,42 @@ void main() {
       });
 
       expect(warnings.where((w) => w.contains('timelineStyle')), isNotEmpty);
+    });
+
+    // The gutter is measured three times: the body draws it, the header reserves
+    // it, and TimelineSizer reserves it again for the drag target row. A scoped
+    // style that reached only one of them put the drag target out of line with
+    // the day columns, so a drag landed in the wrong day.
+    testWidgets('the drag target spacer matches the drawn gutter', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        splitTheme(
+          week(),
+          const KalenderThemeData(timelineStyle: TimelineStyle(width: 140)),
+        ),
+      );
+
+      final drawn = tester.getSize(find.byKey(MultiDayBody.timelineKey)).width;
+      final reserved = tester.getSize(find.byType(TimelineSizer)).width;
+      expect(reserved, moreOrLessEquals(drawn, epsilon: 0.5));
+    });
+
+    testWidgets('the timeline labels fit the gutter they are drawn in', (tester) async {
+      await pumpAndSettleWithMaterialApp(
+        tester,
+        splitTheme(
+          week(),
+          const KalenderThemeData(timelineStyle: TimelineStyle(textStyle: TextStyle(fontSize: 40))),
+        ),
+      );
+
+      final gutter = tester.getRect(find.byKey(MultiDayBody.timelineKey));
+      final label = tester.getRect(find.byKey(TimeLine.getTimeKey(1, 0)).first);
+      expect(
+        label.width,
+        lessThanOrEqualTo(gutter.width + 0.5),
+        reason: 'a scoped text size must not lay the labels out wider than the box measured for them',
+      );
     });
   });
 }

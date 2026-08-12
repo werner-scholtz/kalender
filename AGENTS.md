@@ -22,7 +22,7 @@ Kalender is a Flutter calendar widget package providing four views: **MultiDay**
 | `lib/src/models/view_configurations/` | `ViewConfiguration` (abstract base), `MultiDayViewConfiguration`, `MonthViewConfiguration`, `ScheduleViewConfiguration` |
 | `lib/src/models/calendar_events/` | `CalendarEvent` base class (extensible via subclassing) |
 | `lib/src/widgets/` | UI widgets by view (`month/`, `multi_day/`, `schedule/`) plus shared (`components/`, `event_tiles/`, `draggable/`, `drag_targets/`) |
-| `lib/src/layout_delegates/` | Event layout/positioning strategies (`overlapLayoutStrategy`, `sideBySideLayoutStrategy`) with caching |
+| `lib/src/layout_delegates/` | Event layout/positioning strategies (`EventLayoutStrategy`, `MultiDayLayoutStrategy`) with caching |
 | `lib/src/extensions/` | Internal DateTime/TimeOfDay utilities (DST-safe wall-clock arithmetic) |
 | `lib/src/calendar_body.dart` | Top-level body widget that delegates to the correct view |
 | `lib/src/calendar_header.dart` | Top-level header widget |
@@ -124,7 +124,7 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/c
 - `CalendarEvent` is the base class — extend it to attach custom data (title, colour, etc.).
 - Events store UTC internally (`start` and `end` as `DateTime` in UTC). Use `internalStart()`/`internalEnd()` for wall-clock access.
 - Event IDs are `String` (10-char random alphanumeric, auto-generated).
-- Override `copyWith()`, `==`, and `hashCode` in subclasses.
+- Override `copyWithData()`, `==`, and `hashCode` in subclasses. `copyWithData` carries `@mustBeOverridden`, and `CalendarEvent` reapplies `id`, `interaction` and `multiDayRule` through `carryOver` afterwards, so a subclass never forwards those by hand.
 - `EventInteraction` controls per-event permissions (resizing, rescheduling).
 - `layoutEquals()` is used for render optimisation — returns true if the event occupies the same visual space.
 
@@ -144,8 +144,9 @@ All state flows through InheritedWidget providers in `lib/src/models/providers/c
 
 ### Layout Delegates
 
-- `EventLayoutStrategy` is a typedef — a function returning an `EventLayoutDelegate`.
-- Built-in strategies: `overlapLayoutStrategy` (layered stacking), `sideBySideLayoutStrategy` (adjacent columns).
+- `EventLayoutStrategy` is an abstract class whose `createDelegate` returns an `EventLayoutDelegate`.
+- Built-in strategies: `EventLayoutStrategy.overlap()` (layered stacking), `EventLayoutStrategy.sideBySide()` (adjacent columns).
+- The base stays open, so an app can extend it. Compare on `runtimeType` rather than `other is X`, or a subclass compares equal to what it extends.
 - `EventLayoutDelegateCache` caches layouts per date/heightPerMinute/timeRange for performance.
 - Custom strategies can be provided via `VerticalConfiguration.eventLayoutStrategy`.
 
@@ -280,15 +281,16 @@ before tagging it:
   gone. `OverlayStyles` is not one of them and stays, since
   `MultiDayOverlayPortalBuilder` names it. See
   [Verifying a removal](#verifying-a-removal).
-- **Function fields compared with `==`.** `ViewConfiguration.nowCallback`,
+- **Function fields compared with `==`.** `ViewConfiguration.nowCallback` is the
+  one left. It takes part in equality, so a closure written inline is a new
+  function every build and defeats the caching the comparison exists to enable.
+  It stays a function because it takes no arguments and has nothing to model, and
+  its place in `==` is what makes a change reach the calendar at all. Documented
+  on the field. The other three converted to classes in 0.26.0
+  ([#380](https://github.com/werner-scholtz/kalender/issues/380)):
   `CalendarSnapping.eventSnapStrategy`, `VerticalConfiguration.eventLayoutStrategy`
-  and `HorizontalConfiguration.generateMultiDayLayoutFrame` all take part in
-  equality, so a closure written inline is a new function every build and defeats
-  the caching the comparison exists to enable. Accepted for now and documented on
-  each field. Three of the four convert to classes in 0.26.0, and `nowCallback`
-  stays a function because it takes no arguments and has nothing to model. See
-  [#380](https://github.com/werner-scholtz/kalender/issues/380) and the 0.26.0
-  section of [ROADMAP.md](ROADMAP.md).
+  and `HorizontalConfiguration.multiDayLayoutStrategy`, renamed from
+  `generateMultiDayLayoutFrame`.
 
 Key breaking changes to be aware of:
 - **v0.16.0**: `CalendarEvent` removed generic type parameter (use subclassing instead of `CalendarEvent<T>`). Event IDs changed from `int` to `String`. `EventsController` refactored to abstract interface.

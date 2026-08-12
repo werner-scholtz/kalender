@@ -61,29 +61,49 @@ class MyLayoutDelegate extends EventLayoutDelegate {
 }
 ```
 
-Then create your strategy function:
+Then wrap it in a strategy. Give the class value equality, comparing on `runtimeType` so a subclass of it does not compare equal. The field takes part in the body configuration's equality, and a strategy that compares unequal on every build makes every rebuild look like a change.
 
 <!-- snippet: continues -->
 ```dart
-EventLayoutDelegate myLayoutStrategy(
-  Iterable<CalendarEvent> events,
-  InternalDateTime date,
-  TimeOfDayRange timeOfDayRange,
-  double heightPerMinute,
-  double? minimumTileHeight,
-  EventLayoutDelegateCache? cache,
-  Location? location,
-) {
-  return MyLayoutDelegate(
-    events: events,
-    date: date,
-    heightPerMinute: heightPerMinute,
-    timeOfDayRange: timeOfDayRange,
-    minimumTileHeight: minimumTileHeight,
-    layoutCache: cache ?? EventLayoutDelegateCache(),
-    location: location,
-  );
+class MyLayoutStrategy extends EventLayoutStrategy {
+  const MyLayoutStrategy();
+
+  @override
+  EventLayoutDelegate createDelegate({
+    required Iterable<CalendarEvent> events,
+    required InternalDateTime date,
+    required TimeOfDayRange timeOfDayRange,
+    required double heightPerMinute,
+    required double? minimumTileHeight,
+    required EventLayoutDelegateCache? cache,
+    required Location? location,
+  }) {
+    return MyLayoutDelegate(
+      events: events,
+      date: date,
+      heightPerMinute: heightPerMinute,
+      timeOfDayRange: timeOfDayRange,
+      minimumTileHeight: minimumTileHeight,
+      layoutCache: cache ?? EventLayoutDelegateCache(),
+      location: location,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
+
+  @override
+  int get hashCode => (MyLayoutStrategy).hashCode;
 }
+```
+
+<!-- snippet: continues -->
+```dart
+final body = CalendarBody(
+  multiDayBodyConfiguration: const MultiDayBodyConfiguration(
+    eventLayoutStrategy: MyLayoutStrategy(),
+  ),
+);
 ```
 
 ## Horizontal layout (Month view / MultiDay header)
@@ -94,9 +114,7 @@ Events are placed in a grid of rows × columns (rows = concurrent events, column
 
 Write your own by extending `MultiDayLayoutStrategy`. Call `defaultMultiDayFrameGenerator` to keep the built-in row assignment and change only the order, by supplying an `eventComparator`.
 
-Give the class value equality. This field takes part in the body configuration's
-equality, and a strategy that compares unequal on every build clears the layout
-frame cache and regenerates every row each time.
+Give the class value equality, comparing on `runtimeType` for the same reason as above. This field takes part in the body configuration's equality, and a strategy that compares unequal on every build clears the layout frame cache and regenerates every row each time.
 
 <!-- snippet: file -->
 ```dart
@@ -122,7 +140,7 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is FrameSortedByEnd;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (FrameSortedByEnd).hashCode;

@@ -167,7 +167,42 @@ The multi-day frame generator also changes name, since the field now holds a str
 
 The field is no longer nullable. Passing `null` for the default becomes `const MultiDayLayoutStrategy.byDuration()`, or leave the argument out.
 
-**If you wrote a custom strategy,** extend the base class and give it `==` and `hashCode`. `defaultMultiDayFrameGenerator` stays public, so a custom multi-day strategy can reuse the built-in row assignment and change only the sort order:
+**If you wrote a custom layout strategy as a function,** it becomes a class. This is the shape `examples/advanced_example` had, as an inline closure:
+
+```dart
+- eventLayoutStrategy: (events, date, timeOfDayRange, heightPerMinute, minimumTileHeight, cache, location) {
+-   return MyLayoutDelegate(events: events, date: date, /* ... */);
+- }
+
++ class MyLayoutStrategy extends EventLayoutStrategy {
++   const MyLayoutStrategy();
++
++   @override
++   EventLayoutDelegate createDelegate({
++     required Iterable<CalendarEvent> events,
++     required InternalDateTime date,
++     required TimeOfDayRange timeOfDayRange,
++     required double heightPerMinute,
++     required double? minimumTileHeight,
++     required EventLayoutDelegateCache? cache,
++     required Location? location,
++   }) {
++     return MyLayoutDelegate(events: events, date: date, /* ... */);
++   }
++
++   @override
++   bool operator ==(Object other) => other.runtimeType == runtimeType;
++
++   @override
++   int get hashCode => (MyLayoutStrategy).hashCode;
++ }
++
++ eventLayoutStrategy: const MyLayoutStrategy(),
+```
+
+A strategy that carries fields compares them as well, as `PeopleLayoutStrategy` in `examples/advanced_example` does.
+
+**If you wrote a custom multi-day strategy,** extend the base class and give it `==` and `hashCode`. `defaultMultiDayFrameGenerator` stays public, so a custom multi-day strategy can reuse the built-in row assignment and change only the sort order:
 
 ```dart
 class FrameSortedByEnd extends MultiDayLayoutStrategy {
@@ -192,14 +227,14 @@ class FrameSortedByEnd extends MultiDayLayoutStrategy {
   }
 
   @override
-  bool operator ==(Object other) => other is FrameSortedByEnd;
+  bool operator ==(Object other) => other.runtimeType == runtimeType;
 
   @override
   int get hashCode => (FrameSortedByEnd).hashCode;
 }
 ```
 
-Without `==` the class compares by identity, which is what the function fields did. A strategy constructed inline in `build` then reads as a change on every build, so give it value equality or hold a single instance in a field.
+Compare on `runtimeType` rather than `other is FrameSortedByEnd`, so a subclass of your strategy does not compare equal to it. Without `==` at all the class compares by identity, which is what the function fields did. A strategy constructed inline in `build` then reads as a change on every build, so give it value equality or hold a single instance in a field.
 
 The methods take named parameters where the typedefs took positional ones. `EventLayoutStrategy.createDelegate` and `EventSnapStrategy.snap` both changed shape this way.
 

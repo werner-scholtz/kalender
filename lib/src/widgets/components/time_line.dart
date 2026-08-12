@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:kalender/src/models/providers/calendar_provider.dart';
+import 'package:kalender/src/models/providers/gutter_styles.dart';
 
 // TODO: Update docs to reflect visibleDateTimeRange change.
 /// The time line builder.
@@ -219,9 +220,16 @@ mixin TimeLineUtils {
   /// The style of the timeline.
   TimelineStyle? get timelineStyle;
 
-  /// The theme's timeline style overlaid with [timelineStyle].
-  TimelineStyle effectiveStyle(BuildContext context) =>
-      (KalenderTheme.of(context).timelineStyle ?? const TimelineStyle()).merge(timelineStyle);
+  /// The shared gutter style overlaid with [timelineStyle].
+  ///
+  /// The base comes from [GutterStyles], the same value the gutter width is
+  /// measured from, so labels cannot be laid out wider than the box holding
+  /// them. Outside a [CalendarView] there is no [GutterStyles], so the theme
+  /// stands in.
+  TimelineStyle effectiveStyle(BuildContext context) {
+    final shared = GutterStyles.maybeOf(context)?.timelineStyle ?? KalenderTheme.of(context).timelineStyle;
+    return (shared ?? const TimelineStyle()).merge(timelineStyle);
+  }
 
   /// The label shown for [time].
   String timelineString(BuildContext context, TimeOfDay time) {
@@ -330,7 +338,7 @@ class TimeLine extends StatelessWidget with TimeLineUtils {
   static Widget fromContext(BuildContext context, TimeOfDayRange timeOfDayRange) {
     final calendarController = context.calendarController;
     final selectedEvent = calendarController.selectedEvent;
-    final timelineStyle = KalenderTheme.of(context).timelineStyle;
+    final timelineStyle = GutterStyles.of(context).timelineStyle;
     final bodyComponents = context.components.multiDayComponents.bodyComponents;
     return bodyComponents.timeline.call(
       context.heightPerMinute,
