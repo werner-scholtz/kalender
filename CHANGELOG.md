@@ -18,6 +18,7 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 - The month week number gutter and the multi-day timeline are measured once above both the header and the body, so the two halves cannot be given different widths. Each is drawn in the body and reserved again in the header, and both used to resolve their style from their own position in the tree. A `KalenderTheme` scoped to only one half moved one and left the other behind, which shifted every day column out of line with its header. A scoped `weekNumberStyle` or `timelineStyle` that the calendar has to ignore is now reported in debug builds.
 - The week number label is centred when the visible range crosses a week boundary. The gutter is sized by the timeline rather than by the label, so `32 - 33` wraps, and the short second line sat against the leading edge. [#427](https://github.com/werner-scholtz/kalender/pull/427)
+- The overlay styles are resolved once, where a custom portal builder is called, rather than at four call sites in the header and the month body. The pair used to be built eagerly on every header and month week build, carried through three widgets, and merged at the end with the identical value the built-in overlay widgets resolve for themselves. Nothing is passed to those now, and a custom builder is handed the pair only when a column actually overflows. `MultiDayOverlayPortal.overlayStyles` is optional, where null leaves each overlay widget to resolve its own.
 - The Material defaults are built once per `ThemeData` rather than on every theme lookup. `KalenderTheme.of` runs on nearly every widget build and rebuilt thirteen style objects each time, which the month view did twice per day cell and the schedule view once per row. The cache is keyed weakly on the theme, so an entry is collected with the theme it belongs to.
 - A schedule row resolves the theme only when it reads one of the two styles that need it. A month separator row reads neither and paid for a full resolution regardless.
 - `HourLines.fromContext` no longer takes a `style` argument. It resolved the style from the theme and discarded whatever was passed, so the argument silently did nothing. `timelineStyle` is unaffected.
@@ -27,6 +28,7 @@ See [MIGRATION.md](MIGRATION.md#v025x--v0260) for what to change.
 
 ### Tests
 
+- Added coverage for `multiDayOverlayPortalBuilder`, which had none: a custom portal builder is handed styles resolved from the theme, a scoped theme reaches it, and the built-in overlay still follows a scoped theme with nothing passed to it, across the `Overlay` boundary it is built into.
 - Added coverage that a `KalenderTheme` scoped to the body cannot move the month week number gutter or the multi-day timeline away from what the header reserves, that a theme above the calendar still reaches both, and that an ignored scoped value is reported once rather than on every frame.
 - Added equality coverage for the three strategy classes: two of a kind compare equal with matching hash codes, the built-ins differ from each other, a configuration built twice in a row is equal, and changing only the strategy still breaks equality.
 

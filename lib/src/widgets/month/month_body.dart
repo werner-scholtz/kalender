@@ -172,7 +172,6 @@ class MonthWeek extends StatelessWidget {
                       maxNumberOfVerticalEvents: maxNumberOfVerticalEvents,
                       multiDayCache: viewController.multiDayCache,
                       overlayBuilders: monthComponents.bodyComponents.overlayBuilders ?? components.overlayBuilders,
-                      overlayStyles: OverlayStyles.fromContext(context),
                     );
                   },
                 ),

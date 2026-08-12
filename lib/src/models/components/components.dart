@@ -146,7 +146,8 @@ class OverlayStyles {
   /// The overlay styles resolved from the [KalenderTheme] of the given context.
   ///
   /// [MultiDayOverlayPortalBuilder] takes no [BuildContext], so a custom portal
-  /// builder cannot resolve these itself and is handed them instead.
+  /// builder cannot resolve these itself and is handed them instead. The
+  /// built-in overlay widgets resolve their own, so nothing is passed to them.
   factory OverlayStyles.fromContext(BuildContext context) {
     final theme = KalenderTheme.of(context);
     return OverlayStyles(

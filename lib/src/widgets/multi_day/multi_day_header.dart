@@ -117,7 +117,6 @@ class _SingleDayHeader extends StatelessWidget {
                     multiDayCache: viewController.multiDayCache,
                     maxNumberOfVerticalEvents: null,
                     overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                    overlayStyles: OverlayStyles.fromContext(context),
                   ),
                 ),
                 Positioned.fill(
@@ -196,7 +195,6 @@ class _MultiDayHeader extends StatelessWidget {
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? components.overlayBuilders,
-                        overlayStyles: OverlayStyles.fromContext(context),
                       ),
                     ),
                     Positioned.fill(
@@ -406,7 +404,6 @@ class _FreeScrollMultiDayBandState extends State<_FreeScrollMultiDayBand> {
                         multiDayCache: viewController.multiDayCache,
                         maxNumberOfVerticalEvents: null,
                         overlayBuilders: headerComponents.overlayBuilders ?? widget.components.overlayBuilders,
-                        overlayStyles: OverlayStyles.fromContext(context),
                       ),
                     ),
                     Positioned.fill(

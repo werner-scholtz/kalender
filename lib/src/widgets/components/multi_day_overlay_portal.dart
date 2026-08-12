@@ -46,6 +46,10 @@ class MultiDayOverlayPortal extends StatefulWidget {
   final OverlayBuilders? overlayBuilders;
 
   /// The styles for the overlay widgets.
+  ///
+  /// Null leaves each overlay widget to resolve its own style from the
+  /// [KalenderTheme], which is what the built-in ones do. Pass a value only to
+  /// override the theme.
   final OverlayStyles? overlayStyles;
 
   const MultiDayOverlayPortal({
@@ -56,7 +60,7 @@ class MultiDayOverlayPortal extends StatefulWidget {
     required this.getMultiDayEventLayoutRenderBox,
     required this.overlayTileBuilder,
     required this.overlayBuilders,
-    required this.overlayStyles,
+    this.overlayStyles,
     super.key,
   });
 
