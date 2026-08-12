@@ -48,47 +48,9 @@ CalendarBody(
 
 ### Snapping strategies
 
-`eventSnapStrategy` decides where a dragged event lands. Two are built in:
+`eventSnapStrategy` decides where a dragged event lands. `EventSnapStrategy.interval()`, the default, snaps to the nearest multiple of `snapIntervalMinutes`. `EventSnapStrategy.none()` leaves the cursor position alone. `snapToTimeIndicator` and `snapToOtherEvents` apply either way.
 
-| Strategy | Behaviour |
-| --- | --- |
-| `EventSnapStrategy.interval()` | Snaps to the nearest multiple of `snapIntervalMinutes`, measured from the start of the day. The default. |
-| `EventSnapStrategy.none()` | Leaves the cursor position alone. |
-
-Write your own by extending `EventSnapStrategy`. Give the class value equality, comparing on `runtimeType` so a subclass of yours does not compare equal to it, because `CalendarSnapping` is compared with `==` to decide whether a change reaches the calendar.
-
-<!-- snippet: file -->
-```dart
-/// Snaps to the nearest quarter hour, ignoring the configured interval.
-class QuarterHourSnap extends EventSnapStrategy {
-  const QuarterHourSnap();
-
-  @override
-  InternalDateTime snap({
-    required InternalDateTime cursorDate,
-    required InternalDateTime startOfDay,
-    required int snapIntervalMinutes,
-  }) {
-    final minutes = cursorDate.difference(startOfDay).inMinutes;
-    return startOfDay.add(Duration(minutes: (minutes / 15).round() * 15));
-  }
-
-  @override
-  bool operator ==(Object other) => other.runtimeType == runtimeType;
-
-  @override
-  int get hashCode => (QuarterHourSnap).hashCode;
-}
-```
-
-<!-- snippet: continues -->
-```dart
-final body = CalendarBody(
-  snapping: const CalendarSnapping(eventSnapStrategy: QuarterHourSnap()),
-);
-```
-
-`snapToTimeIndicator` and `snapToOtherEvents` are applied separately from the strategy, so they keep working whichever one you use.
+For anything else, extend `EventSnapStrategy` and override `snap`. Compare on `runtimeType` in `==`, as [Layout](layout.md) describes for the layout strategies and for the same reason.
 
 ---
 
