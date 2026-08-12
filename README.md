@@ -39,7 +39,7 @@ A highly customizable Flutter calendar widget with Day, Multi-day, Month and Sch
 - **MIT licensed.** No commercial license to buy.
 
 > [!WARNING]
-> This package is still in development, so breaking changes land in minor releases until 1.0.0. A caret range like `^0.25.0` keeps you on 0.25.x, which is where fixes land. Every minor bump has an entry in the [migration guide](MIGRATION.md).
+> This package is still in development, so breaking changes land in minor releases until 1.0.0. A caret range like `^0.26.0` keeps you on 0.26.x, which is where fixes land. Every minor bump has an entry in the [migration guide](MIGRATION.md).
 >
 > If part of the API does not work for you, please [open an issue](https://github.com/werner-scholtz/kalender/issues).
 
